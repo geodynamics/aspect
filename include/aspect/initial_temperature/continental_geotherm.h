@@ -42,34 +42,34 @@ namespace aspect
         /**
          * Constructor.
          */
-        ContinentalGeotherm ();
+        ContinentalGeotherm();
 
         /**
          * Initialization function. This function is called once at the
          * beginning of the program. Checks preconditions.
          */
         void
-        initialize () override;
+        initialize() override;
 
         /**
          * Return the initial temperature as a function of depth,
          * based on the solution of the steady-state heat conduction
          * differential equation.
          */
-        double initial_temperature (const Point<dim> &position) const override;
+        double
+        initial_temperature(const Point<dim> &position) const override;
 
         /**
          * Declare the parameters this class takes through input files.
          */
-        static
-        void
-        declare_parameters (ParameterHandler &prm);
+        static void
+        declare_parameters(ParameterHandler &prm);
 
         /**
          * Read the parameters this class declares from the parameter file.
          */
         void
-        parse_parameters (ParameterHandler &prm) override;
+        parse_parameters(ParameterHandler &prm) override;
 
       private:
         /**

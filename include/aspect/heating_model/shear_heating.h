@@ -23,8 +23,8 @@
 #define _aspect_heating_model_shear_heating_h
 
 #include <aspect/heating_model/interface.h>
-#include <aspect/simulator_access.h>
 #include <aspect/material_model/rheology/drucker_prager.h>
+#include <aspect/simulator_access.h>
 
 namespace aspect
 {
@@ -50,9 +50,9 @@ namespace aspect
          * Compute the heating model outputs for this class.
          */
         void
-        evaluate (const MaterialModel::MaterialModelInputs<dim> &material_model_inputs,
-                  const MaterialModel::MaterialModelOutputs<dim> &material_model_outputs,
-                  HeatingModel::HeatingModelOutputs &heating_model_outputs) const override;
+        evaluate(const MaterialModel::MaterialModelInputs<dim>  &material_model_inputs,
+                 const MaterialModel::MaterialModelOutputs<dim> &material_model_outputs,
+                 HeatingModel::HeatingModelOutputs              &heating_model_outputs) const override;
 
         /**
          * Allow the heating model to attach additional material model outputs.
@@ -65,20 +65,19 @@ namespace aspect
          * for computing the heating terms.
          */
         MaterialModel::MaterialProperties::Property
-        get_required_properties () const override;
+        get_required_properties() const override;
 
         /**
          * Declare the parameters this class takes through input files.
          */
-        static
-        void
-        declare_parameters (ParameterHandler &prm);
+        static void
+        declare_parameters(ParameterHandler &prm);
 
         /**
          * Read the parameters this class declares from the parameter file.
          */
         void
-        parse_parameters (ParameterHandler &prm) override;
+        parse_parameters(ParameterHandler &prm) override;
 
       private:
         /**
@@ -100,7 +99,7 @@ namespace aspect
         /**
          * This variable is read from the parameter file through a parameter called 'Friction angle for maximum shear stress'.
          */
-        double friction_angle;
+        double                                      friction_angle;
         MaterialModel::Rheology::DruckerPrager<dim> drucker_prager_plasticity;
     };
 
@@ -119,7 +118,8 @@ namespace aspect
       public:
         ShearHeatingOutputs(const unsigned int n_points);
 
-        std::vector<double> get_nth_output(const unsigned int idx) const override;
+        std::vector<double>
+        get_nth_output(const unsigned int idx) const override;
 
         /**
          * The fraction of the deformation work that is released as shear heating
@@ -144,7 +144,8 @@ namespace aspect
       public:
         PrescribedShearHeatingOutputs(const unsigned int n_points);
 
-        std::vector<double> get_nth_output(const unsigned int idx) const override;
+        std::vector<double>
+        get_nth_output(const unsigned int idx) const override;
 
         /**
          * The viscous dissipation rate contributing to shear heating.

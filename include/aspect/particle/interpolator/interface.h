@@ -21,15 +21,16 @@
 #ifndef _aspect_particle_interpolator_interface_h
 #define _aspect_particle_interpolator_interface_h
 
-#include <aspect/particle/interface.h>
 #include <aspect/global.h>
 
-#include <deal.II/particles/particle.h>
-#include <deal.II/particles/particle_handler.h>
-#include <deal.II/base/point.h>
+#include <aspect/particle/interface.h>
+
 #include <deal.II/base/parameter_handler.h>
+#include <deal.II/base/point.h>
 #include <deal.II/distributed/tria.h>
 #include <deal.II/fe/component_mask.h>
+#include <deal.II/particles/particle.h>
+#include <deal.II/particles/particle_handler.h>
 
 namespace aspect
 {
@@ -74,11 +75,10 @@ namespace aspect
            * properties, however entries that have not been selected in
            * @p selected_properties are filled with signalling NaNs.
            */
-          virtual
-          std::vector<std::vector<double>>
-          properties_at_points(const ParticleHandler<dim> &particle_handler,
-                               const std::vector<Point<dim>> &positions,
-                               const ComponentMask &selected_properties,
+          virtual std::vector<std::vector<double>>
+          properties_at_points(const ParticleHandler<dim>                                                     &particle_handler,
+                               const std::vector<Point<dim>>                                                  &positions,
+                               const ComponentMask                                                            &selected_properties,
                                const typename parallel::distributed::Triangulation<dim>::active_cell_iterator &cell) const = 0;
       };
 
@@ -88,7 +88,7 @@ namespace aspect
        * classes for particles.
        */
       std::string
-      interpolator_object_names ();
+      interpolator_object_names();
 
 
       /**
@@ -108,10 +108,10 @@ namespace aspect
        */
       template <int dim>
       void
-      register_particle_interpolator (const std::string &name,
-                                      const std::string &description,
-                                      void (*declare_parameters_function) (ParameterHandler &),
-                                      std::unique_ptr<Interface<dim>> (*factory_function) ());
+      register_particle_interpolator(const std::string &name,
+                                     const std::string &description,
+                                     void (*declare_parameters_function)(ParameterHandler &),
+                                     std::unique_ptr<Interface<dim>> (*factory_function)());
 
       /**
        * A function that given the name of a model returns a pointer to an
@@ -125,7 +125,7 @@ namespace aspect
        */
       template <int dim>
       std::unique_ptr<Interface<dim>>
-      create_particle_interpolator (ParameterHandler &prm);
+      create_particle_interpolator(ParameterHandler &prm);
 
 
       /**
@@ -135,7 +135,7 @@ namespace aspect
        */
       template <int dim>
       void
-      declare_parameters (ParameterHandler &prm);
+      declare_parameters(ParameterHandler &prm);
 
 
       /**
@@ -149,7 +149,7 @@ namespace aspect
        */
       template <int dim>
       void
-      write_plugin_graph (std::ostream &output_stream);
+      write_plugin_graph(std::ostream &output_stream);
 
       /**
        * Given a class name, a name, and a description for the parameter file
@@ -161,14 +161,12 @@ namespace aspect
 #define ASPECT_REGISTER_PARTICLE_INTERPOLATOR(classname, name, description) \
   template class classname<2>; \
   template class classname<3>; \
-  namespace ASPECT_REGISTER_PARTICLE_INTERPOLATOR_ ## classname \
+  namespace ASPECT_REGISTER_PARTICLE_INTERPOLATOR_##classname \
   { \
-    aspect::internal::Plugins::RegisterHelper<aspect::Particle::Interpolator::Interface<2>,classname<2>> \
-    dummy_ ## classname ## _2d (&aspect::Particle::Interpolator::register_particle_interpolator<2>, \
-                                name, description); \
-    aspect::internal::Plugins::RegisterHelper<aspect::Particle::Interpolator::Interface<3>,classname<3>> \
-    dummy_ ## classname ## _3d (&aspect::Particle::Interpolator::register_particle_interpolator<3>, \
-                                name, description); \
+    aspect::internal::Plugins::RegisterHelper<aspect::Particle::Interpolator::Interface<2>, classname<2>> dummy_##classname##_2d( \
+      &aspect::Particle::Interpolator::register_particle_interpolator<2>, name, description); \
+    aspect::internal::Plugins::RegisterHelper<aspect::Particle::Interpolator::Interface<3>, classname<3>> dummy_##classname##_3d( \
+      &aspect::Particle::Interpolator::register_particle_interpolator<3>, name, description); \
   }
     }
   }

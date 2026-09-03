@@ -29,10 +29,10 @@ namespace aspect
   namespace MaterialModel
   {
     /**
-      * Additional output fields for anisotropic viscosities to be added to
-      * the MaterialModel::MaterialModelOutputs structure and filled in the
-      * MaterialModel::Interface::evaluate() function.
-      */
+     * Additional output fields for anisotropic viscosities to be added to
+     * the MaterialModel::MaterialModelOutputs structure and filled in the
+     * MaterialModel::Interface::evaluate() function.
+     */
     template <int dim>
     class AnisotropicViscosity : public NamedAdditionalMaterialOutputs<dim>
     {
@@ -53,7 +53,7 @@ namespace aspect
          * This leaves the isotropic constitutive law unchanged if the material
          * model does not explicitly assign a value.
          */
-        std::vector<SymmetricTensor<4,dim>> stress_strain_directors;
+        std::vector<SymmetricTensor<4, dim>> stress_strain_directors;
     };
   }
 }

@@ -23,8 +23,8 @@
 #define _aspect_gravity_model_ascii_data_h
 
 #include <aspect/gravity_model/interface.h>
-#include <aspect/utilities.h>
 #include <aspect/simulator_access.h>
+#include <aspect/utilities.h>
 
 namespace aspect
 {
@@ -43,14 +43,14 @@ namespace aspect
         /**
          * Constructor.
          */
-        AsciiData ();
+        AsciiData();
 
         /**
          * Initialization function. This function is called once at the
          * beginning of the program. Checks preconditions.
          */
         void
-        initialize () override;
+        initialize() override;
 
         // avoid -Woverloaded-virtual:
         using Utilities::AsciiDataProfile<dim>::initialize;
@@ -58,20 +58,20 @@ namespace aspect
         /**
          * Return the gravity as a function of position.
          */
-        Tensor<1,dim> gravity_vector (const Point<dim> &position) const override;
+        Tensor<1, dim>
+        gravity_vector(const Point<dim> &position) const override;
 
         /**
          * Declare the parameters this class takes through input files.
          */
-        static
-        void
-        declare_parameters (ParameterHandler &prm);
+        static void
+        declare_parameters(ParameterHandler &prm);
 
         /**
          * Read the parameters this class declares from the parameter file.
          */
         void
-        parse_parameters (ParameterHandler &prm) override;
+        parse_parameters(ParameterHandler &prm) override;
 
       private:
         /**

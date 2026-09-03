@@ -38,12 +38,9 @@ namespace aspect
 
       const QMidpoint<dim> quadrature;
 
-      FEValues<dim> fe_values (this->get_mapping(),
-                               this->get_fe(),
-                               quadrature,
-                               update_quadrature_points | update_values | update_gradients);
+      FEValues<dim> fe_values(this->get_mapping(), this->get_fe(), quadrature, update_quadrature_points | update_values | update_gradients);
 
-      std::vector<SymmetricTensor<2,dim>> strain_rates (quadrature.size());
+      std::vector<SymmetricTensor<2, dim>> strain_rates(quadrature.size());
 
       for (const auto &cell : this->get_dof_handler().active_cell_iterators())
         if (cell->is_locally_owned())
@@ -51,12 +48,10 @@ namespace aspect
             const unsigned int idx = cell->active_cell_index();
             fe_values.reinit(cell);
 
-            fe_values[this->introspection().extractors.velocities].get_function_symmetric_gradients (this->get_solution(),
-                strain_rates);
+            fe_values[this->introspection().extractors.velocities].get_function_symmetric_gradients(this->get_solution(), strain_rates);
 
             indicators(idx) = strain_rates[0].norm();
           }
-
     }
   }
 }

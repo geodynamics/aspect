@@ -18,13 +18,13 @@
   <http://www.gnu.org/licenses/>.
 */
 
-#include <aspect/material_model/interface.h>
-#include <aspect/simulator_access.h>
 #include <aspect/global.h>
 
 #include <aspect/geometry_model/interface.h>
-#include <aspect/material_model/rheology/ascii_depth_profile.h>
 #include <aspect/lateral_averaging.h>
+#include <aspect/material_model/interface.h>
+#include <aspect/material_model/rheology/ascii_depth_profile.h>
+#include <aspect/simulator_access.h>
 
 namespace aspect
 {
@@ -40,8 +40,7 @@ namespace aspect
     {
       public:
         UnscaledViscosityAdditionalOutputs(const unsigned int n_points)
-          : NamedAdditionalMaterialOutputs<dim>(std::vector<std::string>(1, "unscaled_viscosity"),
-                                                n_points)
+          : NamedAdditionalMaterialOutputs<dim>(std::vector<std::string>(1, "unscaled_viscosity"), n_points)
         {}
     };
   }
@@ -49,40 +48,41 @@ namespace aspect
   namespace internal
   {
     template <int dim>
-    class FunctorDepthAverageUnscaledViscosity: public internal::FunctorBase<dim>
+    class FunctorDepthAverageUnscaledViscosity : public internal::FunctorBase<dim>
     {
       public:
         FunctorDepthAverageUnscaledViscosity()
         {}
 
-        bool need_material_properties() const override
+        bool
+        need_material_properties() const override
         {
           return true;
         }
 
         void
-        create_additional_material_model_outputs (const unsigned int n_points,
-                                                  MaterialModel::MaterialModelOutputs<dim> &outputs) const override
+        create_additional_material_model_outputs(const unsigned int                        n_points,
+                                                 MaterialModel::MaterialModelOutputs<dim> &outputs) const override
         {
           if (outputs.template has_additional_output_object<MaterialModel::UnscaledViscosityAdditionalOutputs<dim>>() == false)
             {
-              outputs.additional_outputs.push_back(
-                std::make_unique<MaterialModel::UnscaledViscosityAdditionalOutputs<dim>> (n_points));
+              outputs.additional_outputs.push_back(std::make_unique<MaterialModel::UnscaledViscosityAdditionalOutputs<dim>>(n_points));
             }
         }
 
-        void operator()(const MaterialModel::MaterialModelInputs<dim> &,
-                        const MaterialModel::MaterialModelOutputs<dim> &out,
-                        const FEValues<dim> &,
-                        const LinearAlgebra::BlockVector &,
-                        std::vector<double> &output) override
+        void
+        operator()(const MaterialModel::MaterialModelInputs<dim> &,
+                   const MaterialModel::MaterialModelOutputs<dim> &out,
+                   const FEValues<dim> &,
+                   const LinearAlgebra::BlockVector &,
+                   std::vector<double> &output) override
         {
-          const std::shared_ptr<const MaterialModel::UnscaledViscosityAdditionalOutputs<dim>> unscaled_viscosity_outputs
-            = out.template get_additional_output_object<const MaterialModel::UnscaledViscosityAdditionalOutputs<dim>>();
+          const std::shared_ptr<const MaterialModel::UnscaledViscosityAdditionalOutputs<dim>> unscaled_viscosity_outputs =
+            out.template get_additional_output_object<const MaterialModel::UnscaledViscosityAdditionalOutputs<dim>>();
 
-          Assert(unscaled_viscosity_outputs != nullptr,ExcInternalError());
+          Assert(unscaled_viscosity_outputs != nullptr, ExcInternalError());
 
-          for (unsigned int q=0; q<output.size(); ++q)
+          for (unsigned int q = 0; q < output.size(); ++q)
             output[q] = unscaled_viscosity_outputs->output_values[0][q];
         }
     };
@@ -100,19 +100,20 @@ namespace aspect
     class ScaledViscosityProfileMaterial : public MaterialModel::Interface<dim>, public aspect::SimulatorAccess<dim>
     {
       public:
-        void initialize() override
+        void
+        initialize() override
         {
           reference_viscosity_coordinates = reference_viscosity_profile->get_interpolation_point_coordinates();
         }
 
-        void update() override
+        void
+        update() override
         {
           std::vector<std::unique_ptr<internal::FunctorBase<dim>>> lateral_averaging_properties;
           lateral_averaging_properties.push_back(std::make_unique<internal::FunctorDepthAverageUnscaledViscosity<dim>>());
 
           std::vector<std::vector<double>> averages =
-            this->get_lateral_averaging().compute_lateral_averages(reference_viscosity_coordinates,
-                                                                   lateral_averaging_properties);
+            this->get_lateral_averaging().compute_lateral_averages(reference_viscosity_coordinates, lateral_averaging_properties);
 
           laterally_averaged_viscosity_profile.swap(averages[0]);
 
@@ -128,11 +129,10 @@ namespace aspect
 
 
         double
-        compute_viscosity_scaling (const double depth) const
+        compute_viscosity_scaling(const double depth) const
         {
           // Make maximal depth slightly larger to ensure depth < maximal_depth
-          const double maximal_depth = this->get_geometry_model().maximal_depth() *
-                                       (1.0+std::numeric_limits<double>::epsilon());
+          const double maximal_depth = this->get_geometry_model().maximal_depth() * (1.0 + std::numeric_limits<double>::epsilon());
           Assert(depth < maximal_depth, ExcInternalError());
 
           unsigned int depth_index;
@@ -146,10 +146,9 @@ namespace aspect
             }
           else
             {
-              depth_index = std::distance(reference_viscosity_coordinates.begin(),
-                                          std::lower_bound(reference_viscosity_coordinates.begin(),
-                                                           reference_viscosity_coordinates.end(),
-                                                           depth));
+              depth_index =
+                std::distance(reference_viscosity_coordinates.begin(),
+                              std::lower_bound(reference_viscosity_coordinates.begin(), reference_viscosity_coordinates.end(), depth));
             }
           // depth_index calculated above is the first layer boundary larger than depth,
           // the correct layer index is then one less than this (except for depth == depth_bounds[0],
@@ -164,7 +163,8 @@ namespace aspect
           // in the reference profile instead of the actual depth. This makes the profile piecewise
           // constant. This will be specific to the viscosity profile used (and ignore the entry with
           // the largest depth in the profile).
-          const double reference_viscosity = reference_viscosity_profile->compute_viscosity(reference_viscosity_coordinates.at(depth_index));
+          const double reference_viscosity =
+            reference_viscosity_profile->compute_viscosity(reference_viscosity_coordinates.at(depth_index));
 
           const double average_viscosity = laterally_averaged_viscosity_profile[depth_index];
 
@@ -173,21 +173,21 @@ namespace aspect
 
 
 
-        void evaluate(const MaterialModel::MaterialModelInputs<dim> &in,
-                      MaterialModel::MaterialModelOutputs<dim> &out) const override
+        void
+        evaluate(const MaterialModel::MaterialModelInputs<dim> &in, MaterialModel::MaterialModelOutputs<dim> &out) const override
         {
           const std::shared_ptr<UnscaledViscosityAdditionalOutputs<dim>> unscaled_viscosity_out =
             out.template get_additional_output_object<MaterialModel::UnscaledViscosityAdditionalOutputs<dim>>();
 
-          for (unsigned int i=0; i < in.n_evaluation_points(); ++i)
+          for (unsigned int i = 0; i < in.n_evaluation_points(); ++i)
             {
-              const double depth = this->get_geometry_model().depth(in.position[i]);
+              const double                  depth = this->get_geometry_model().depth(in.position[i]);
               const std::array<double, dim> spherical_coordinates =
                 Utilities::Coordinates::cartesian_to_spherical_coordinates(in.position[i]);
 
               out.densities[i] = 3300.0;
-              out.viscosities[i] = (1 - 2. * spherical_coordinates[1]/numbers::PI) * 1e20 +
-                                   2. * spherical_coordinates[1]/numbers::PI * 1e21;
+              out.viscosities[i] =
+                (1 - 2. * spherical_coordinates[1] / numbers::PI) * 1e20 + 2. * spherical_coordinates[1] / numbers::PI * 1e21;
 
               // store unscaled viscosity to compute averaged profile use for compute scaling factor
               if (unscaled_viscosity_out != nullptr)
@@ -198,31 +198,30 @@ namespace aspect
               if (this->simulator_is_past_initialization() == true && this->get_timestep_number() > 0)
                 out.viscosities[i] *= compute_viscosity_scaling(depth);
 
-              out.compressibilities[i] = 0;
-              out.specific_heat[i] = 1200;
+              out.compressibilities[i]              = 0;
+              out.specific_heat[i]                  = 1200;
               out.thermal_expansion_coefficients[i] = 3e-5;
-              out.thermal_conductivities[i] = 4.7;
+              out.thermal_conductivities[i]         = 4.7;
             }
         }
 
-        bool is_compressible() const override
+        bool
+        is_compressible() const override
         {
           return false;
         }
 
         void
-        create_additional_named_outputs (MaterialModelOutputs<dim> &outputs) const override
+        create_additional_named_outputs(MaterialModelOutputs<dim> &outputs) const override
         {
           if (outputs.template has_additional_output_object<UnscaledViscosityAdditionalOutputs<dim>>() == false)
             {
               const unsigned int n_points = outputs.n_evaluation_points();
-              outputs.additional_outputs.push_back(
-                std::make_unique<UnscaledViscosityAdditionalOutputs<dim>> (n_points));
+              outputs.additional_outputs.push_back(std::make_unique<UnscaledViscosityAdditionalOutputs<dim>>(n_points));
             }
         }
 
-        static
-        void
+        static void
         declare_parameters(ParameterHandler &prm)
         {
           prm.enter_subsection("Material model");
@@ -239,16 +238,16 @@ namespace aspect
           prm.enter_subsection("Material model");
           {
             reference_viscosity_profile = std::make_unique<Rheology::AsciiDepthProfile<dim>>();
-            reference_viscosity_profile->initialize_simulator (this->get_simulator());
+            reference_viscosity_profile->initialize_simulator(this->get_simulator());
             reference_viscosity_profile->parse_parameters(prm, "Depth dependent model");
             reference_viscosity_profile->initialize();
           }
           prm.leave_subsection();
 
-          this->model_dependence.viscosity = MaterialModel::NonlinearDependence::none;
-          this->model_dependence.density = MaterialModel::NonlinearDependence::none;
-          this->model_dependence.compressibility = MaterialModel::NonlinearDependence::none;
-          this->model_dependence.specific_heat = MaterialModel::NonlinearDependence::none;
+          this->model_dependence.viscosity            = MaterialModel::NonlinearDependence::none;
+          this->model_dependence.density              = MaterialModel::NonlinearDependence::none;
+          this->model_dependence.compressibility      = MaterialModel::NonlinearDependence::none;
+          this->model_dependence.specific_heat        = MaterialModel::NonlinearDependence::none;
           this->model_dependence.thermal_conductivity = MaterialModel::NonlinearDependence::none;
         }
 
@@ -285,8 +284,7 @@ namespace aspect
                                    "A material model that scales a constant viscosity to a given "
                                    "reference profile.")
 
-#define INSTANTIATE(dim) \
-  template class UnscaledViscosityAdditionalOutputs<dim>;
+#define INSTANTIATE(dim) template class UnscaledViscosityAdditionalOutputs<dim>;
 
     ASPECT_INSTANTIATE(INSTANTIATE)
 

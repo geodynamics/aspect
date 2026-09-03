@@ -19,16 +19,16 @@
 */
 
 
-#include <aspect/simulator.h>
 #include <aspect/global.h>
-#include <aspect/mesh_deformation/free_surface.h>
-#include <aspect/volume_of_fluid/handler.h>
-#include <aspect/newton.h>
+
 #include <aspect/melt.h>
+#include <aspect/mesh_deformation/free_surface.h>
+#include <aspect/newton.h>
+#include <aspect/simulator.h>
+#include <aspect/simulator/solver/stokes_matrix_free.h>
+#include <aspect/volume_of_fluid/handler.h>
 
 #include <deal.II/numerics/vector_tools.h>
-
-#include <aspect/simulator/solver/stokes_matrix_free.h>
 
 namespace aspect
 {
@@ -57,30 +57,25 @@ namespace aspect
          *     resulting Function object.
          **/
 
-        VectorFunctionFromVectorFunctionObject (const std::function<void (const Point<dim> &,Vector<double> &)> &function_object,
-                                                const unsigned int first_component,
-                                                const unsigned int n_object_components,
-                                                const unsigned int n_total_components)
-          :
-          Function<dim>(n_total_components),
-          function_object (function_object),
-          first_component (first_component),
-          n_object_components (n_object_components)
+        VectorFunctionFromVectorFunctionObject(const std::function<void(const Point<dim> &, Vector<double> &)> &function_object,
+                                               const unsigned int                                               first_component,
+                                               const unsigned int                                               n_object_components,
+                                               const unsigned int                                               n_total_components)
+          : Function<dim>(n_total_components)
+          , function_object(function_object)
+          , first_component(first_component)
+          , n_object_components(n_object_components)
         {
-          Assert ((n_object_components > 0
-                   &&
-                   first_component+n_object_components <= n_total_components),
-                  ExcMessage ("Number of objects components needs to be less than number of total components"));
+          Assert((n_object_components > 0 && first_component + n_object_components <= n_total_components),
+                 ExcMessage("Number of objects components needs to be less than number of total components"));
         }
 
 
 
         double
-        value (const Point<dim> &p,
-               const unsigned int component) const override
+        value(const Point<dim> &p, const unsigned int component) const override
         {
-          Assert (component < this->n_components,
-                  ExcIndexRange (component, 0, this->n_components));
+          Assert(component < this->n_components, ExcIndexRange(component, 0, this->n_components));
 
           if (component < first_component)
             return 0;
@@ -89,7 +84,7 @@ namespace aspect
           else
             {
               Vector<double> temp(n_object_components);
-              function_object (p, temp);
+              function_object(p, temp);
               return temp(component - first_component);
             }
         }
@@ -97,15 +92,14 @@ namespace aspect
 
 
         void
-        vector_value (const Point<dim>   &p,
-                      Vector<double>     &values) const override
+        vector_value(const Point<dim> &p, Vector<double> &values) const override
         {
           AssertDimension(values.size(), this->n_components);
 
           // set everything to zero, and then the right components to their correct values
           values = 0;
           Vector<double> temp(n_object_components);
-          function_object (p, temp);
+          function_object(p, temp);
           for (unsigned int i = 0; i < n_object_components; ++i)
             {
               values(first_component + i) = temp(i);
@@ -118,7 +112,7 @@ namespace aspect
         /**
          * The function object which we call when this class's solution() function is called.
          **/
-        const std::function<void (const Point<dim> &,Vector<double> &)> function_object;
+        const std::function<void(const Point<dim> &, Vector<double> &)> function_object;
 
         /**
          * The first vector component whose value is to be filled by the given
@@ -130,7 +124,6 @@ namespace aspect
          * function.
          */
         const unsigned int n_object_components;
-
     };
 
   }
@@ -138,8 +131,8 @@ namespace aspect
 
 
   template <int dim>
-  double Simulator<dim>::assemble_and_solve_temperature (const double &initial_residual,
-                                                         double *residual)
+  double
+  Simulator<dim>::assemble_and_solve_temperature(const double &initial_residual, double *residual)
   {
     double current_residual = 0.0;
 
@@ -147,73 +140,66 @@ namespace aspect
       {
         case Parameters<dim>::AdvectionFieldMethod::fem_field:
         case Parameters<dim>::AdvectionFieldMethod::prescribed_field_with_diffusion:
-        {
-          const AdvectionField adv_field (AdvectionField::temperature());
+          {
+            const AdvectionField adv_field(AdvectionField::temperature());
 
-          // if this is a prescribed field with diffusion, we first have to copy the material model
-          // outputs into the prescribed field before we assemble and solve the equation
-          if (parameters.temperature_method == Parameters<dim>::AdvectionFieldMethod::prescribed_field_with_diffusion)
-            {
-              computing_timer.enter_subsection("Interpolate prescribed temperature");
+            // if this is a prescribed field with diffusion, we first have to copy the material model
+            // outputs into the prescribed field before we assemble and solve the equation
+            if (parameters.temperature_method == Parameters<dim>::AdvectionFieldMethod::prescribed_field_with_diffusion)
+              {
+                computing_timer.enter_subsection("Interpolate prescribed temperature");
 
-              interpolate_material_output_into_advection_field({adv_field});
+                interpolate_material_output_into_advection_field({adv_field});
 
-              // Also set the old_solution block to the prescribed field. The old
-              // solution is the one that is used to assemble the diffusion system in
-              // assemble_advection_system() for this solver scheme.
-              old_solution.block(adv_field.block_index(introspection)) = solution.block(adv_field.block_index(introspection));
+                // Also set the old_solution block to the prescribed field. The old
+                // solution is the one that is used to assemble the diffusion system in
+                // assemble_advection_system() for this solver scheme.
+                old_solution.block(adv_field.block_index(introspection)) = solution.block(adv_field.block_index(introspection));
 
-              computing_timer.leave_subsection("Interpolate prescribed temperature");
-            }
+                computing_timer.leave_subsection("Interpolate prescribed temperature");
+              }
 
-          assemble_advection_system (adv_field);
+            assemble_advection_system(adv_field);
 
-          if (residual)
-            *residual = system_rhs.block(introspection.block_indices.temperature).l2_norm();
+            if (residual)
+              *residual = system_rhs.block(introspection.block_indices.temperature).l2_norm();
 
-          current_residual = solve_advection(adv_field);
-          break;
-        }
+            current_residual = solve_advection(adv_field);
+            break;
+          }
 
         case Parameters<dim>::AdvectionFieldMethod::prescribed_field:
-        {
-          const AdvectionField adv_field (AdvectionField::temperature());
+          {
+            const AdvectionField adv_field(AdvectionField::temperature());
 
-          computing_timer.enter_subsection("Interpolate prescribed temperature");
+            computing_timer.enter_subsection("Interpolate prescribed temperature");
 
-          interpolate_material_output_into_advection_field({adv_field});
+            interpolate_material_output_into_advection_field({adv_field});
 
-          // Call the signal in case the user wants to do something with the variable:
-          SolverControl dummy;
-          signals.post_advection_solver(*this,
-                                        adv_field.is_temperature(),
-                                        adv_field.compositional_variable,
-                                        dummy);
+            // Call the signal in case the user wants to do something with the variable:
+            SolverControl dummy;
+            signals.post_advection_solver(*this, adv_field.is_temperature(), adv_field.compositional_variable, dummy);
 
-          computing_timer.leave_subsection("Interpolate prescribed temperature");
+            computing_timer.leave_subsection("Interpolate prescribed temperature");
 
-          break;
-        }
+            break;
+          }
 
         case Parameters<dim>::AdvectionFieldMethod::static_field:
-        {
-          const AdvectionField adv_field (AdvectionField::temperature());
-          // Do nothing here, but at least call the signal in case the
-          // user wants to do something with the variable:
-          SolverControl dummy;
-          signals.post_advection_solver(*this,
-                                        adv_field.is_temperature(),
-                                        adv_field.compositional_variable,
-                                        dummy);
-          break;
-        }
+          {
+            const AdvectionField adv_field(AdvectionField::temperature());
+            // Do nothing here, but at least call the signal in case the
+            // user wants to do something with the variable:
+            SolverControl dummy;
+            signals.post_advection_solver(*this, adv_field.is_temperature(), adv_field.compositional_variable, dummy);
+            break;
+          }
 
         default:
-          AssertThrow(false,ExcNotImplemented());
+          AssertThrow(false, ExcNotImplemented());
       }
 
-    current_linearization_point.block(introspection.block_indices.temperature)
-      = solution.block(introspection.block_indices.temperature);
+    current_linearization_point.block(introspection.block_indices.temperature) = solution.block(introspection.block_indices.temperature);
 
     if (initial_residual > 0)
       return current_residual / initial_residual;
@@ -225,9 +211,9 @@ namespace aspect
 
   template <int dim>
   std::vector<double>
-  Simulator<dim>::assemble_and_solve_composition (const std::vector<double> &initial_residual,
-                                                  const unsigned int nonlinear_iteration,
-                                                  std::vector<double> *residual)
+  Simulator<dim>::assemble_and_solve_composition(const std::vector<double> &initial_residual,
+                                                 const unsigned int         nonlinear_iteration,
+                                                 std::vector<double>       *residual)
   {
     // Prepare the particles for use by the compositional fields
     for (auto &particle_manager : particle_managers)
@@ -243,8 +229,7 @@ namespace aspect
         signals.post_restore_particles(particle_manager);
 
         // Advect particles, but not if we are in the initial refinement stage
-        const bool in_initial_refinement = (timestep_number == 0)
-                                           && (pre_refinement_step < parameters.initial_adaptive_refinement);
+        const bool in_initial_refinement = (timestep_number == 0) && (pre_refinement_step < parameters.initial_adaptive_refinement);
 
         if (!in_initial_refinement)
           particle_manager.advance_timestep();
@@ -254,7 +239,7 @@ namespace aspect
           particle_manager.update_particles();
       }
 
-    std::vector<double> current_residual(introspection.n_compositional_fields,0.0);
+    std::vector<double> current_residual(introspection.n_compositional_fields, 0.0);
 
     if (residual)
       Assert(residual->size() == introspection.n_compositional_fields, ExcInternalError());
@@ -262,9 +247,9 @@ namespace aspect
     std::vector<AdvectionField> fields_advected_by_particles;
     std::vector<AdvectionField> fields_interpolated_from_material_output;
 
-    for (unsigned int c=0; c < introspection.n_compositional_fields; ++c)
+    for (unsigned int c = 0; c < introspection.n_compositional_fields; ++c)
       {
-        const AdvectionField adv_field (AdvectionField::composition(c));
+        const AdvectionField                                       adv_field(AdvectionField::composition(c));
         const typename Parameters<dim>::AdvectionFieldMethod::Kind method = adv_field.advection_method(introspection);
         switch (method)
           {
@@ -272,108 +257,106 @@ namespace aspect
             case Parameters<dim>::AdvectionFieldMethod::fem_melt_field:
             case Parameters<dim>::AdvectionFieldMethod::prescribed_field_with_diffusion:
             case Parameters<dim>::AdvectionFieldMethod::fem_darcy_field:
-            {
-              // if this is a prescribed field with diffusion, we first have to copy the material model
-              // outputs into the prescribed field before we assemble and solve the equation
-              if (method == Parameters<dim>::AdvectionFieldMethod::prescribed_field_with_diffusion)
-                {
-                  computing_timer.enter_subsection("Interpolate prescribed composition");
+              {
+                // if this is a prescribed field with diffusion, we first have to copy the material model
+                // outputs into the prescribed field before we assemble and solve the equation
+                if (method == Parameters<dim>::AdvectionFieldMethod::prescribed_field_with_diffusion)
+                  {
+                    computing_timer.enter_subsection("Interpolate prescribed composition");
 
-                  interpolate_material_output_into_advection_field({adv_field});
+                    interpolate_material_output_into_advection_field({adv_field});
 
-                  // Also set the old_solution block to the prescribed field. The old
-                  // solution is the one that is used to assemble the diffusion system in
-                  // assemble_advection_system() for this solver scheme.
-                  old_solution.block(adv_field.block_index(introspection)) = solution.block(adv_field.block_index(introspection));
+                    // Also set the old_solution block to the prescribed field. The old
+                    // solution is the one that is used to assemble the diffusion system in
+                    // assemble_advection_system() for this solver scheme.
+                    old_solution.block(adv_field.block_index(introspection)) = solution.block(adv_field.block_index(introspection));
 
-                  computing_timer.leave_subsection("Interpolate prescribed composition");
-                }
+                    computing_timer.leave_subsection("Interpolate prescribed composition");
+                  }
 
-              assemble_advection_system (adv_field);
+                assemble_advection_system(adv_field);
 
-              if (residual)
-                (*residual)[c] = system_rhs.block(introspection.block_indices.compositional_fields[c]).l2_norm();
+                if (residual)
+                  (*residual)[c] = system_rhs.block(introspection.block_indices.compositional_fields[c]).l2_norm();
 
-              current_residual[c] = solve_advection(adv_field);
+                current_residual[c] = solve_advection(adv_field);
 
-              // When using the entropy formulation (See Dannberg et al., 2022 and the entropy_adiabat benchmark),
-              // each components have their own entropy fields.
-              // In each nonlinear iteration, we need to interpolate the temperature field again
-              // after all entropy fields are solved to ensure the temperature is consistent
-              // with the entropy in the output.
-              if (introspection.composition_type_exists(CompositionalFieldDescription::entropy))
-                {
-                  // There are multiple entropy fields if the model has multiple chemical components.
-                  // The temperature is solved before all entropy fields, and it does not change
-                  // when solving the entropies. After updating all of these entropies,
-                  // we want to update the temperature.
-                  // We compute the updated temperature using the multi-component averaging method
-                  // (implemented in the entropy material model). This calculation is based on
-                  // all of the components' entropies, so it is done only after all entropy fields are solved.
-                  // Thus, here we first determine which of the compositional fields
-                  // are in fact entropies:
-                  const std::vector<unsigned int> &entropy_indices = introspection.get_indices_for_fields_of_type(CompositionalFieldDescription::entropy);
+                // When using the entropy formulation (See Dannberg et al., 2022 and the entropy_adiabat benchmark),
+                // each components have their own entropy fields.
+                // In each nonlinear iteration, we need to interpolate the temperature field again
+                // after all entropy fields are solved to ensure the temperature is consistent
+                // with the entropy in the output.
+                if (introspection.composition_type_exists(CompositionalFieldDescription::entropy))
+                  {
+                    // There are multiple entropy fields if the model has multiple chemical components.
+                    // The temperature is solved before all entropy fields, and it does not change
+                    // when solving the entropies. After updating all of these entropies,
+                    // we want to update the temperature.
+                    // We compute the updated temperature using the multi-component averaging method
+                    // (implemented in the entropy material model). This calculation is based on
+                    // all of the components' entropies, so it is done only after all entropy fields are solved.
+                    // Thus, here we first determine which of the compositional fields
+                    // are in fact entropies:
+                    const std::vector<unsigned int> &entropy_indices =
+                      introspection.get_indices_for_fields_of_type(CompositionalFieldDescription::entropy);
 
-                  // Then determine which entropy field is the one that was computed last:
-                  const unsigned int last_entropy_field_index = *std::max_element(entropy_indices.begin(), entropy_indices.end());
+                    // Then determine which entropy field is the one that was computed last:
+                    const unsigned int last_entropy_field_index = *std::max_element(entropy_indices.begin(), entropy_indices.end());
 
-                  // If the field we are currently considering (with index 'c')
-                  // is that last entropy field, then update the temperature
-                  // based on all elements of the entropy fields:
-                  if (c == last_entropy_field_index)
-                    {
-                      if (parameters.use_operator_splitting)
-                        compute_reactions ();
-                      const AdvectionField T_field (AdvectionField::temperature());
-                      interpolate_material_output_into_advection_field({T_field});
-                    }
-                }
+                    // If the field we are currently considering (with index 'c')
+                    // is that last entropy field, then update the temperature
+                    // based on all elements of the entropy fields:
+                    if (c == last_entropy_field_index)
+                      {
+                        if (parameters.use_operator_splitting)
+                          compute_reactions();
+                        const AdvectionField T_field(AdvectionField::temperature());
+                        interpolate_material_output_into_advection_field({T_field});
+                      }
+                  }
 
-              // Release the contents of the matrix block we used again:
-              const unsigned int block_idx = adv_field.block_index(introspection);
-              if (adv_field.sparsity_pattern_block_index(introspection)!=block_idx)
-                system_matrix.block(block_idx, block_idx).clear();
+                // Release the contents of the matrix block we used again:
+                const unsigned int block_idx = adv_field.block_index(introspection);
+                if (adv_field.sparsity_pattern_block_index(introspection) != block_idx)
+                  system_matrix.block(block_idx, block_idx).clear();
 
-              // No need to call the post_advection_solver signal here: It is
-              // automatically called from solve_advection() above.
+                // No need to call the post_advection_solver signal here: It is
+                // automatically called from solve_advection() above.
 
-              break;
-            }
+                break;
+              }
 
             case Parameters<dim>::AdvectionFieldMethod::particles:
-            {
-              // handle all particle fields together to increase efficiency
-              fields_advected_by_particles.push_back(adv_field);
-              break;
-            }
+              {
+                // handle all particle fields together to increase efficiency
+                fields_advected_by_particles.push_back(adv_field);
+                break;
+              }
 
             case Parameters<dim>::AdvectionFieldMethod::prescribed_field:
-            {
-              // handle all prescribed fields together to increase efficiency
-              fields_interpolated_from_material_output.push_back(adv_field);
-              break;
-            }
+              {
+                // handle all prescribed fields together to increase efficiency
+                fields_interpolated_from_material_output.push_back(adv_field);
+                break;
+              }
 
             case Parameters<dim>::AdvectionFieldMethod::volume_of_fluid:
-            {
-              volume_of_fluid_handler->do_volume_of_fluid_update(adv_field);
-              break;
-            }
+              {
+                volume_of_fluid_handler->do_volume_of_fluid_update(adv_field);
+                break;
+              }
 
             case Parameters<dim>::AdvectionFieldMethod::static_field:
-            {
-              // Do nothing here, but at least call the signal in case the
-              // user wants to do something with the variable:
-              SolverControl dummy;
-              signals.post_advection_solver(*this,
-                                            adv_field.is_temperature(),
-                                            adv_field.compositional_variable,
-                                            dummy);
-              break;
-            }
+              {
+                // Do nothing here, but at least call the signal in case the
+                // user wants to do something with the variable:
+                SolverControl dummy;
+                signals.post_advection_solver(*this, adv_field.is_temperature(), adv_field.compositional_variable, dummy);
+                break;
+              }
 
             default:
-              AssertThrow(false,ExcNotImplemented());
+              AssertThrow(false, ExcNotImplemented());
           }
       }
 
@@ -383,14 +366,11 @@ namespace aspect
 
         interpolate_material_output_into_advection_field(fields_interpolated_from_material_output);
 
-        for (const auto &adv_field: fields_interpolated_from_material_output)
+        for (const auto &adv_field : fields_interpolated_from_material_output)
           {
             // Call the signal in case the user wants to do something with the variable:
             SolverControl dummy;
-            signals.post_advection_solver(*this,
-                                          adv_field.is_temperature(),
-                                          adv_field.compositional_variable,
-                                          dummy);
+            signals.post_advection_solver(*this, adv_field.is_temperature(), adv_field.compositional_variable, dummy);
           }
 
         computing_timer.leave_subsection("Interpolate prescribed composition");
@@ -410,7 +390,7 @@ namespace aspect
     // TODO Is this residual calculation representative of a second order tensor?
     if (parameters.enable_elasticity == true)
       {
-        double stress_initial_residual = 0.0;
+        double                    stress_initial_residual = 0.0;
         std::vector<unsigned int> stress_indices;
         std::vector<unsigned int> old_stress_indices;
         stress_indices.push_back(introspection.compositional_index_for_name("ve_stress_xx"));
@@ -452,10 +432,10 @@ namespace aspect
 
     // for consistency we update the current linearization point only after we have solved
     // all fields, so that we use the same point in time for every field when solving
-    for (unsigned int c=0; c<introspection.n_compositional_fields; ++c)
+    for (unsigned int c = 0; c < introspection.n_compositional_fields; ++c)
       {
-        current_linearization_point.block(introspection.block_indices.compositional_fields[c])
-          = solution.block(introspection.block_indices.compositional_fields[c]);
+        current_linearization_point.block(introspection.block_indices.compositional_fields[c]) =
+          solution.block(introspection.block_indices.compositional_fields[c]);
 
         if ((initial_residual.size() > 0) && (initial_residual[c] > 0))
           {
@@ -472,8 +452,7 @@ namespace aspect
 
   template <int dim>
   double
-  Simulator<dim>::assemble_and_solve_stokes (const double &initial_nonlinear_residual,
-                                             double *nonlinear_residual)
+  Simulator<dim>::assemble_and_solve_stokes(const double &initial_nonlinear_residual, double *nonlinear_residual)
   {
     // If the Stokes matrix depends on the solution, or we have active
     // velocity boundary conditions, we need to re-assemble the system matrix
@@ -482,11 +461,8 @@ namespace aspect
     // cases, just assembling the RHS will be incorrect.  If no active
     // boundaries exist, we only have no-slip or free slip conditions, so we
     // don't need to force assembly of the matrix.
-    if (stokes_matrix_depends_on_solution()
-        ||
-        (boundary_velocity_manager.get_prescribed_boundary_velocity_indicators().size() > 0)
-        || parameters.mesh_deformation_enabled
-       )
+    if (stokes_matrix_depends_on_solution() || (boundary_velocity_manager.get_prescribed_boundary_velocity_indicators().size() > 0) ||
+        parameters.mesh_deformation_enabled)
       rebuild_stokes_matrix = rebuild_stokes_preconditioner = true;
 
     // set constraints for p_c if porosity is below a threshold
@@ -495,8 +471,8 @@ namespace aspect
         compute_current_constraints();
         if (rebuild_sparsity_and_matrices)
           {
-            setup_system_matrix (introspection.index_sets.system_partitioning);
-            setup_system_preconditioner (introspection.index_sets.system_partitioning);
+            setup_system_matrix(introspection.index_sets.system_partitioning);
+            setup_system_preconditioner(introspection.index_sets.system_partitioning);
 
             rebuild_stokes_matrix = rebuild_stokes_preconditioner = true;
           }
@@ -504,11 +480,11 @@ namespace aspect
 
     // Re-compute the pressure scaling factor for the Stokes assembly
     pressure_scaling = compute_pressure_scaling_factor();
-    assemble_stokes_system ();
+    assemble_stokes_system();
 
     // build the preconditioner
     if (is_stokes_matrix_free())
-      dynamic_cast<StokesMatrixFreeHandler<dim>*>(stokes_solver.get())->build_preconditioner();
+      dynamic_cast<StokesMatrixFreeHandler<dim> *>(stokes_solver.get())->build_preconditioner();
     else
       build_stokes_preconditioner();
 
@@ -517,19 +493,17 @@ namespace aspect
 
     const double current_nonlinear_residual = solve_stokes(solution).first;
 
-    current_linearization_point.block(introspection.block_indices.velocities)
-      = solution.block(introspection.block_indices.velocities);
+    current_linearization_point.block(introspection.block_indices.velocities) = solution.block(introspection.block_indices.velocities);
 
     if (introspection.block_indices.velocities != introspection.block_indices.pressure)
-      current_linearization_point.block(introspection.block_indices.pressure)
-        = solution.block(introspection.block_indices.pressure);
+      current_linearization_point.block(introspection.block_indices.pressure) = solution.block(introspection.block_indices.pressure);
 
     if (parameters.include_melt_transport)
       {
         // Note that the compaction pressure is in the fluid pressure block
         // and will therefore be updated as well.
-        const unsigned int fluid_velocity_block = introspection.variable("fluid velocity").block_index;
-        const unsigned int fluid_pressure_block = introspection.variable("fluid pressure").block_index;
+        const unsigned int fluid_velocity_block                 = introspection.variable("fluid velocity").block_index;
+        const unsigned int fluid_pressure_block                 = introspection.variable("fluid pressure").block_index;
         current_linearization_point.block(fluid_velocity_block) = solution.block(fluid_velocity_block);
         current_linearization_point.block(fluid_pressure_block) = solution.block(fluid_pressure_block);
       }
@@ -543,61 +517,51 @@ namespace aspect
 
 
   template <int dim>
-  void Simulator<dim>::do_one_defect_correction_Stokes_step(DefectCorrectionResiduals &dcr,
-                                                            const bool use_picard)
+  void
+  Simulator<dim>::do_one_defect_correction_Stokes_step(DefectCorrectionResiduals &dcr, const bool use_picard)
   {
     // Many parts of the solver depend on the block layout (velocity = 0,
     // pressure = 1). For example the linearized_stokes_initial_guess vector or the StokesBlock matrix
     // wrapper. Let us make sure that this holds (and shorten their names):
-    const unsigned int pressure_block_index = (parameters.include_melt_transport) ?
-                                              introspection.variable("fluid pressure").block_index
-                                              : introspection.block_indices.pressure;
+    const unsigned int pressure_block_index =
+      (parameters.include_melt_transport) ? introspection.variable("fluid pressure").block_index : introspection.block_indices.pressure;
     const unsigned int velocity_block_index = introspection.block_indices.velocities;
     Assert(velocity_block_index == 0, ExcNotImplemented());
     Assert(pressure_block_index == 1, ExcNotImplemented());
-    (void) pressure_block_index;
-    Assert(!parameters.include_melt_transport
-           || introspection.variable("compaction pressure").block_index == 1, ExcNotImplemented());
+    (void)pressure_block_index;
+    Assert(!parameters.include_melt_transport || introspection.variable("compaction pressure").block_index == 1, ExcNotImplemented());
 
     // Define some lambda functions here for readability
-    auto update_residuals = [&]()
-    {
+    auto update_residuals = [&]() {
       dcr.velocity_residual = system_rhs.block(velocity_block_index).l2_norm();
       dcr.pressure_residual = system_rhs.block(pressure_block_index).l2_norm();
-      dcr.residual = std::sqrt(dcr.velocity_residual * dcr.velocity_residual +
-                               dcr.pressure_residual * dcr.pressure_residual);
+      dcr.residual          = std::sqrt(dcr.velocity_residual * dcr.velocity_residual + dcr.pressure_residual * dcr.pressure_residual);
     };
 
     // Eisenstat Walker method for determining the linear solver tolerance
-    auto update_Eisenstat_Walker_tolerance = [&]()
-    {
+    auto update_Eisenstat_Walker_tolerance = [&]() {
       const bool EisenstatWalkerChoiceOne = true;
-      parameters.linear_stokes_solver_tolerance = compute_Eisenstat_Walker_linear_tolerance(EisenstatWalkerChoiceOne,
+      parameters.linear_stokes_solver_tolerance =
+        compute_Eisenstat_Walker_linear_tolerance(EisenstatWalkerChoiceOne,
                                                   newton_handler->parameters.maximum_linear_stokes_solver_tolerance,
                                                   parameters.linear_stokes_solver_tolerance,
                                                   dcr.stokes_residuals.second,
                                                   dcr.residual,
                                                   dcr.residual_old);
 
-      pcout << "   The linear solver tolerance is set to "
-            << parameters.linear_stokes_solver_tolerance
-            << ". ";
+      pcout << "   The linear solver tolerance is set to " << parameters.linear_stokes_solver_tolerance << ". ";
       if (!use_picard)
         {
-          pcout << "Stabilization Preconditioner is "
-                << Newton::to_string(newton_handler->parameters.preconditioner_stabilization)
-                << " and A block is "
-                << Newton::to_string(newton_handler->parameters.velocity_block_stabilization)
-                << '.';
+          pcout << "Stabilization Preconditioner is " << Newton::to_string(newton_handler->parameters.preconditioner_stabilization)
+                << " and A block is " << Newton::to_string(newton_handler->parameters.velocity_block_stabilization) << '.';
         }
       pcout << std::endl;
     };
 
     // build the preconditioner
-    auto build_preconditioner = [&]()
-    {
+    auto build_preconditioner = [&]() {
       if (is_stokes_matrix_free())
-        dynamic_cast<StokesMatrixFreeHandler<dim>*>(stokes_solver.get())->build_preconditioner();
+        dynamic_cast<StokesMatrixFreeHandler<dim> *>(stokes_solver.get())->build_preconditioner();
       else
         build_stokes_preconditioner();
     };
@@ -607,10 +571,10 @@ namespace aspect
 
     if (nonlinear_iteration == 0)
       {
-        dcr.initial_residual = compute_initial_newton_residual();
-        dcr.switch_initial_residual = dcr.initial_residual;
-        dcr.residual_old = dcr.initial_residual;
-        dcr.residual = dcr.initial_residual;
+        dcr.initial_residual          = compute_initial_newton_residual();
+        dcr.switch_initial_residual   = dcr.initial_residual;
+        dcr.residual_old              = dcr.initial_residual;
+        dcr.residual                  = dcr.initial_residual;
         assemble_newton_stokes_system = assemble_newton_stokes_matrix = false;
       }
     else
@@ -622,7 +586,7 @@ namespace aspect
     if (nonlinear_iteration <= 1)
       {
         set_assemblers();
-        compute_current_constraints ();
+        compute_current_constraints();
       }
 
     // If the Stokes matrix depends on the solution, or we have active
@@ -632,9 +596,7 @@ namespace aspect
     // cases, just assembling the RHS will be incorrect.  If no active
     // boundaries exist, we only have no-slip or free slip conditions, so we
     // don't need to force assembly of the matrix.
-    if (stokes_matrix_depends_on_solution()
-        ||
-        nonlinear_iteration == 0)
+    if (stokes_matrix_depends_on_solution() || nonlinear_iteration == 0)
       rebuild_stokes_matrix = rebuild_stokes_preconditioner = assemble_newton_stokes_matrix = true;
     else if (parameters.enable_prescribed_dilation)
       // The dilation requires the Stokes matrix (which is on the rhs
@@ -648,8 +610,7 @@ namespace aspect
     // Test whether the rhs has dropped so much that we can assume that the iteration is done.
     if (dcr.residual < dcr.residual_old * 1e-8)
       {
-        pcout << "   Nonlinear residual reduction has been very large ("
-              << dcr.residual/dcr.residual_old << "); skipping Stokes solve"
+        pcout << "   Nonlinear residual reduction has been very large (" << dcr.residual / dcr.residual_old << "); skipping Stokes solve"
               << std::endl;
 
         // Update old residual so that if the nonlinear solver is not done,
@@ -685,8 +646,7 @@ namespace aspect
         // If the exception we got is not one of the two documented by
         // throw_linear_solver_failure_exception(), then we have a genuine
         // problem here, and will need to get outta here right away:
-        if ((dynamic_cast<const ExcMessage *>(&exc)==nullptr) &&
-            (dynamic_cast<const QuietException *>(&exc)==nullptr))
+        if ((dynamic_cast<const ExcMessage *>(&exc) == nullptr) && (dynamic_cast<const QuietException *>(&exc) == nullptr))
           throw;
 
         // Otherwise, the solver presumably failed because the Newton matrix
@@ -707,8 +667,7 @@ namespace aspect
         // cases, just assembling the RHS will be incorrect.  If no active
         // boundaries exist, we only have no-slip or free slip conditions, so we
         // don't need to force assembly of the matrix.
-        if (stokes_matrix_depends_on_solution()
-            ||
+        if (stokes_matrix_depends_on_solution() ||
             (nonlinear_iteration == 0 && boundary_velocity_manager.get_prescribed_boundary_velocity_indicators().size() > 0))
           rebuild_stokes_matrix = rebuild_stokes_preconditioner = assemble_newton_stokes_matrix = true;
         else if (parameters.enable_prescribed_dilation)
@@ -744,7 +703,7 @@ namespace aspect
         // In the first nonlinear iteration, the nonlinear residual and old
         // residual should be the same, both depend on the accuracy of
         // the initial guess.
-        dcr.residual = dcr.stokes_residuals.first;
+        dcr.residual     = dcr.stokes_residuals.first;
         dcr.residual_old = dcr.residual;
 
         // The first nonlinear iteration we are computing the whole system in a non-defect corrected Picard way,
@@ -770,7 +729,7 @@ namespace aspect
         // newton_derivative_scaling_factor at zero. The newton_derivative_scaling_factor
         // is calculated above as std::max(0.0, (1.0-(
         // newton_residual_for_derivative_scaling_factor/switch_initial_residual)))
-        dcr.switch_initial_residual = dcr.residual;
+        dcr.switch_initial_residual                       = dcr.residual;
         dcr.newton_residual_for_derivative_scaling_factor = dcr.residual;
       }
     else
@@ -796,83 +755,81 @@ namespace aspect
 
 
   template <int dim>
-  void Simulator<dim>::solve_no_advection_no_stokes ()
+  void
+  Simulator<dim>::solve_no_advection_no_stokes()
   {
     if (parameters.run_postprocessors_on_nonlinear_iterations)
-      postprocess ();
+      postprocess();
 
     // Setup a nonlinear solver control that only allows a single iteration
-    SolverControl nonlinear_solver_control(1,1.0);
+    SolverControl nonlinear_solver_control(1, 1.0);
     // Announce that we did a single iteration, and assume we have converged
-    nonlinear_solver_control.check(1,0.0);
+    nonlinear_solver_control.check(1, 0.0);
     signals.post_nonlinear_solver(nonlinear_solver_control);
   }
 
 
 
   template <int dim>
-  void Simulator<dim>::solve_no_advection_single_stokes ()
+  void
+  Simulator<dim>::solve_no_advection_single_stokes()
   {
     assemble_and_solve_stokes();
 
     if (parameters.run_postprocessors_on_nonlinear_iterations)
-      postprocess ();
+      postprocess();
 
     // Setup a nonlinear solver control that only allows a single iteration
-    SolverControl nonlinear_solver_control(1,1.0);
+    SolverControl nonlinear_solver_control(1, 1.0);
     // Announce that we did a single iteration, and assume we have converged
-    nonlinear_solver_control.check(1,0.0);
+    nonlinear_solver_control.check(1, 0.0);
     signals.post_nonlinear_solver(nonlinear_solver_control);
   }
 
 
 
   template <int dim>
-  void Simulator<dim>::solve_no_advection_single_stokes_first_timestep_only ()
+  void
+  Simulator<dim>::solve_no_advection_single_stokes_first_timestep_only()
   {
     if (timestep_number == 0)
       assemble_and_solve_stokes();
 
     // Setup a nonlinear solver control that only allows a single iteration
-    SolverControl nonlinear_solver_control(1,1.0);
+    SolverControl nonlinear_solver_control(1, 1.0);
     // Announce that we did a single iteration, and assume we have converged
-    nonlinear_solver_control.check(1,0.0);
+    nonlinear_solver_control.check(1, 0.0);
     signals.post_nonlinear_solver(nonlinear_solver_control);
   }
 
 
 
   template <int dim>
-  void Simulator<dim>::solve_no_advection_iterated_stokes ()
+  void
+  Simulator<dim>::solve_no_advection_iterated_stokes()
   {
     double initial_stokes_residual = 0.0;
 
     const unsigned int max_nonlinear_iterations =
-      (pre_refinement_step < parameters.initial_adaptive_refinement)
-      ?
-      std::min(parameters.max_nonlinear_iterations,
-               parameters.max_nonlinear_iterations_in_prerefinement)
-      :
-      parameters.max_nonlinear_iterations;
+      (pre_refinement_step < parameters.initial_adaptive_refinement) ?
+        std::min(parameters.max_nonlinear_iterations, parameters.max_nonlinear_iterations_in_prerefinement) :
+        parameters.max_nonlinear_iterations;
 
-    SolverControl nonlinear_solver_control(max_nonlinear_iterations,
-                                           parameters.nonlinear_tolerance);
+    SolverControl nonlinear_solver_control(max_nonlinear_iterations, parameters.nonlinear_tolerance);
 
     double relative_residual = std::numeric_limits<double>::max();
-    nonlinear_iteration = 0;
+    nonlinear_iteration      = 0;
     do
       {
         relative_residual =
-          assemble_and_solve_stokes(initial_stokes_residual,
-                                    nonlinear_iteration == 0 ? &initial_stokes_residual : nullptr);
+          assemble_and_solve_stokes(initial_stokes_residual, nonlinear_iteration == 0 ? &initial_stokes_residual : nullptr);
 
-        pcout << "      Relative nonlinear residual (Stokes system) after nonlinear iteration " << nonlinear_iteration+1
-              << ": " << relative_residual
-              << std::endl
+        pcout << "      Relative nonlinear residual (Stokes system) after nonlinear iteration " << nonlinear_iteration + 1 << ": "
+              << relative_residual << std::endl
               << std::endl;
 
         if (parameters.run_postprocessors_on_nonlinear_iterations)
-          postprocess ();
+          postprocess();
 
         ++nonlinear_iteration;
       }
@@ -885,7 +842,8 @@ namespace aspect
 
 
   template <int dim>
-  void Simulator<dim>::solve_no_advection_iterated_defect_correction_stokes ()
+  void
+  Simulator<dim>::solve_no_advection_iterated_defect_correction_stokes()
   {
     // Now store the linear_tolerance we started out with, because we might change
     // it within this timestep.
@@ -896,42 +854,36 @@ namespace aspect
 
     dcr.velocity_residual = 0;
     dcr.pressure_residual = 0;
-    dcr.residual = 1;
-    dcr.residual_old = 1;
+    dcr.residual          = 1;
+    dcr.residual_old      = 1;
 
-    dcr.switch_initial_residual = 1;
+    dcr.switch_initial_residual                       = 1;
     dcr.newton_residual_for_derivative_scaling_factor = 1;
 
     const unsigned int max_nonlinear_iterations =
-      (pre_refinement_step < parameters.initial_adaptive_refinement)
-      ?
-      std::min(parameters.max_nonlinear_iterations,
-               parameters.max_nonlinear_iterations_in_prerefinement)
-      :
-      parameters.max_nonlinear_iterations;
+      (pre_refinement_step < parameters.initial_adaptive_refinement) ?
+        std::min(parameters.max_nonlinear_iterations, parameters.max_nonlinear_iterations_in_prerefinement) :
+        parameters.max_nonlinear_iterations;
 
-    SolverControl nonlinear_solver_control(max_nonlinear_iterations,
-                                           parameters.nonlinear_tolerance);
+    SolverControl nonlinear_solver_control(max_nonlinear_iterations, parameters.nonlinear_tolerance);
 
     // Now iterate out the nonlinearities.
-    dcr.stokes_residuals = std::pair<double,double>  (numbers::signaling_nan<double>(),
-                                                      numbers::signaling_nan<double>());
+    dcr.stokes_residuals = std::pair<double, double>(numbers::signaling_nan<double>(), numbers::signaling_nan<double>());
 
     double relative_residual = std::numeric_limits<double>::max();
-    nonlinear_iteration = 0;
+    nonlinear_iteration      = 0;
     do
       {
-        do_one_defect_correction_Stokes_step(dcr, /* use_picard= */true);
+        do_one_defect_correction_Stokes_step(dcr, /* use_picard= */ true);
 
-        relative_residual = dcr.residual/dcr.initial_residual;
+        relative_residual = dcr.residual / dcr.initial_residual;
 
-        pcout << "      Relative nonlinear residual (Stokes system) after nonlinear iteration " << nonlinear_iteration+1
-              << ": " << relative_residual
-              << std::endl
+        pcout << "      Relative nonlinear residual (Stokes system) after nonlinear iteration " << nonlinear_iteration + 1 << ": "
+              << relative_residual << std::endl
               << std::endl;
 
         if (parameters.run_postprocessors_on_nonlinear_iterations)
-          postprocess ();
+          postprocess();
 
         ++nonlinear_iteration;
       }
@@ -948,7 +900,8 @@ namespace aspect
 
 
   template <int dim>
-  void Simulator<dim>::solve_single_advection_no_stokes ()
+  void
+  Simulator<dim>::solve_single_advection_no_stokes()
   {
     assemble_and_solve_temperature();
     assemble_and_solve_composition();
@@ -957,71 +910,68 @@ namespace aspect
       computing_timer.enter_subsection("Interpolate Stokes solution");
 
       // Assign Stokes solution
-      LinearAlgebra::BlockVector distributed_stokes_solution (introspection.index_sets.system_partitioning, mpi_communicator);
+      LinearAlgebra::BlockVector distributed_stokes_solution(introspection.index_sets.system_partitioning, mpi_communicator);
 
       VectorFunctionFromVectorFunctionObject<dim> func(
-        [&](const Point<dim> &p, Vector<double> &result)
-      {
-        prescribed_stokes_solution->stokes_solution(p, result);
-      },
-      0,
-      parameters.include_melt_transport ? 2*dim+3 : dim+1, // velocity and pressure
-      introspection.n_components);
+        [&](const Point<dim> &p, Vector<double> &result) { prescribed_stokes_solution->stokes_solution(p, result); },
+        0,
+        parameters.include_melt_transport ? 2 * dim + 3 : dim + 1, // velocity and pressure
+        introspection.n_components);
 
-      VectorTools::interpolate (*mapping, dof_handler, func, distributed_stokes_solution);
+      VectorTools::interpolate(*mapping, dof_handler, func, distributed_stokes_solution);
 
       // distribute hanging node and other constraints
-      current_constraints.distribute (distributed_stokes_solution);
+      current_constraints.distribute(distributed_stokes_solution);
 
-      solution.block(introspection.block_indices.velocities) =
-        distributed_stokes_solution.block(introspection.block_indices.velocities);
-      solution.block(introspection.block_indices.pressure) =
-        distributed_stokes_solution.block(introspection.block_indices.pressure);
+      solution.block(introspection.block_indices.velocities) = distributed_stokes_solution.block(introspection.block_indices.velocities);
+      solution.block(introspection.block_indices.pressure)   = distributed_stokes_solution.block(introspection.block_indices.pressure);
 
       if (parameters.include_melt_transport)
         {
           const unsigned int block_u_f = introspection.variable("fluid velocity").block_index;
           const unsigned int block_p_f = introspection.variable("fluid pressure").block_index;
-          solution.block(block_u_f) = distributed_stokes_solution.block(block_u_f);
-          solution.block(block_p_f) = distributed_stokes_solution.block(block_p_f);
+          solution.block(block_u_f)    = distributed_stokes_solution.block(block_u_f);
+          solution.block(block_p_f)    = distributed_stokes_solution.block(block_p_f);
         }
 
       computing_timer.leave_subsection("Interpolate Stokes solution");
     }
 
     if (parameters.run_postprocessors_on_nonlinear_iterations)
-      postprocess ();
+      postprocess();
 
     // Setup a nonlinear solver control that only allows a single iteration
-    SolverControl nonlinear_solver_control(1,1.0);
+    SolverControl nonlinear_solver_control(1, 1.0);
     // Announce that we did a single iteration, and assume we have converged
-    nonlinear_solver_control.check(1,0.0);
+    nonlinear_solver_control.check(1, 0.0);
     signals.post_nonlinear_solver(nonlinear_solver_control);
   }
 
 
 
   template <int dim>
-  void Simulator<dim>::solve_single_advection_single_stokes ()
+  void
+  Simulator<dim>::solve_single_advection_single_stokes()
   {
     assemble_and_solve_temperature();
     assemble_and_solve_composition();
     assemble_and_solve_stokes();
 
     if (parameters.run_postprocessors_on_nonlinear_iterations)
-      postprocess ();
+      postprocess();
 
     // Setup a nonlinear solver control that only allows a single iteration
-    SolverControl nonlinear_solver_control(1,1.0);
+    SolverControl nonlinear_solver_control(1, 1.0);
     // Announce that we did a single iteration, and assume we have converged
-    nonlinear_solver_control.check(1,0.0);
+    nonlinear_solver_control.check(1, 0.0);
     signals.post_nonlinear_solver(nonlinear_solver_control);
   }
 
 
 
   template <int dim>
-  void Simulator<dim>::solve_single_advection_iterated_stokes ()
+  void
+  Simulator<dim>::solve_single_advection_iterated_stokes()
   {
     // solve the temperature and composition systems once...
     assemble_and_solve_temperature();
@@ -1031,31 +981,25 @@ namespace aspect
     double initial_stokes_residual = 0;
 
     const unsigned int max_nonlinear_iterations =
-      (pre_refinement_step < parameters.initial_adaptive_refinement)
-      ?
-      std::min(parameters.max_nonlinear_iterations,
-               parameters.max_nonlinear_iterations_in_prerefinement)
-      :
-      parameters.max_nonlinear_iterations;
+      (pre_refinement_step < parameters.initial_adaptive_refinement) ?
+        std::min(parameters.max_nonlinear_iterations, parameters.max_nonlinear_iterations_in_prerefinement) :
+        parameters.max_nonlinear_iterations;
 
-    SolverControl nonlinear_solver_control(max_nonlinear_iterations,
-                                           parameters.nonlinear_tolerance);
+    SolverControl nonlinear_solver_control(max_nonlinear_iterations, parameters.nonlinear_tolerance);
 
     double relative_residual = std::numeric_limits<double>::max();
-    nonlinear_iteration = 0;
+    nonlinear_iteration      = 0;
     do
       {
         relative_residual =
-          assemble_and_solve_stokes(initial_stokes_residual,
-                                    nonlinear_iteration == 0 ? &initial_stokes_residual : nullptr);
+          assemble_and_solve_stokes(initial_stokes_residual, nonlinear_iteration == 0 ? &initial_stokes_residual : nullptr);
 
-        pcout << "      Relative nonlinear residual (Stokes system) after nonlinear iteration " << nonlinear_iteration+1
-              << ": " << relative_residual
-              << std::endl
+        pcout << "      Relative nonlinear residual (Stokes system) after nonlinear iteration " << nonlinear_iteration + 1 << ": "
+              << relative_residual << std::endl
               << std::endl;
 
         if (parameters.run_postprocessors_on_nonlinear_iterations)
-          postprocess ();
+          postprocess();
 
         ++nonlinear_iteration;
       }
@@ -1068,7 +1012,8 @@ namespace aspect
 
 
   template <int dim>
-  void Simulator<dim>::solve_single_advection_iterated_defect_correction_stokes ()
+  void
+  Simulator<dim>::solve_single_advection_iterated_defect_correction_stokes()
   {
     // The defect correction solver is just the Newton solver without derivatives.
     solve_single_advection_iterated_newton_stokes(/*use_newton_iterations = */ false);
@@ -1077,7 +1022,8 @@ namespace aspect
 
 
   template <int dim>
-  void Simulator<dim>::solve_single_advection_iterated_newton_stokes (const bool use_newton_iterations)
+  void
+  Simulator<dim>::solve_single_advection_iterated_newton_stokes(const bool use_newton_iterations)
   {
     // First assemble and solve the temperature and compositional fields
     assemble_and_solve_temperature();
@@ -1087,17 +1033,17 @@ namespace aspect
     // it within this timestep.
     double begin_linear_tolerance = parameters.linear_stokes_solver_tolerance;
 
-    std::vector<double> initial_composition_residual (parameters.n_compositional_fields,0);
+    std::vector<double> initial_composition_residual(parameters.n_compositional_fields, 0);
 
     DefectCorrectionResiduals dcr;
     dcr.initial_residual = 1;
 
     dcr.velocity_residual = 0;
     dcr.pressure_residual = 0;
-    dcr.residual = 1;
-    dcr.residual_old = 1;
+    dcr.residual          = 1;
+    dcr.residual_old      = 1;
 
-    dcr.switch_initial_residual = 1;
+    dcr.switch_initial_residual                       = 1;
     dcr.newton_residual_for_derivative_scaling_factor = 1;
 
     bool use_picard = true;
@@ -1106,15 +1052,11 @@ namespace aspect
     const Newton::Parameters::Stabilization starting_velocity_block_stabilization = newton_handler->parameters.velocity_block_stabilization;
 
     const unsigned int max_nonlinear_iterations =
-      (pre_refinement_step < parameters.initial_adaptive_refinement)
-      ?
-      std::min(parameters.max_nonlinear_iterations,
-               parameters.max_nonlinear_iterations_in_prerefinement)
-      :
-      parameters.max_nonlinear_iterations;
+      (pre_refinement_step < parameters.initial_adaptive_refinement) ?
+        std::min(parameters.max_nonlinear_iterations, parameters.max_nonlinear_iterations_in_prerefinement) :
+        parameters.max_nonlinear_iterations;
 
-    SolverControl nonlinear_solver_control(max_nonlinear_iterations,
-                                           parameters.nonlinear_tolerance);
+    SolverControl nonlinear_solver_control(max_nonlinear_iterations, parameters.nonlinear_tolerance);
 
     SolverControl nonlinear_solver_control_picard(newton_handler->parameters.max_pre_newton_nonlinear_iterations,
                                                   newton_handler->parameters.nonlinear_switch_tolerance);
@@ -1123,7 +1065,7 @@ namespace aspect
     dcr.stokes_residuals = {numbers::signaling_nan<double>(), numbers::signaling_nan<double>()};
 
     double relative_residual = std::numeric_limits<double>::max();
-    nonlinear_iteration = 0;
+    nonlinear_iteration      = 0;
     do
       {
         // If we are in the Picard phase, check if we can switch to Newton
@@ -1143,21 +1085,19 @@ namespace aspect
               dcr.newton_residual_for_derivative_scaling_factor = 0;
           }
 
-        newton_handler->parameters.newton_derivative_scaling_factor
-          = (std::max(0.0,
-                      (1.0-(dcr.newton_residual_for_derivative_scaling_factor/dcr.switch_initial_residual))));
+        newton_handler->parameters.newton_derivative_scaling_factor =
+          (std::max(0.0, (1.0 - (dcr.newton_residual_for_derivative_scaling_factor / dcr.switch_initial_residual))));
 
         do_one_defect_correction_Stokes_step(dcr, use_picard);
 
-        relative_residual = dcr.residual/dcr.initial_residual;
+        relative_residual = dcr.residual / dcr.initial_residual;
 
-        pcout << "      Relative nonlinear residual (Stokes system) after nonlinear iteration " << nonlinear_iteration+1
-              << ": " << relative_residual
-              << std::endl
+        pcout << "      Relative nonlinear residual (Stokes system) after nonlinear iteration " << nonlinear_iteration + 1 << ": "
+              << relative_residual << std::endl
               << std::endl;
 
         if (parameters.run_postprocessors_on_nonlinear_iterations)
-          postprocess ();
+          postprocess();
 
         ++nonlinear_iteration;
       }
@@ -1178,57 +1118,50 @@ namespace aspect
 
 
   template <int dim>
-  void Simulator<dim>::solve_iterated_advection_no_stokes ()
+  void
+  Simulator<dim>::solve_iterated_advection_no_stokes()
   {
-    double initial_temperature_residual = 0;
-    std::vector<double> initial_composition_residual (introspection.n_compositional_fields,0);
+    double              initial_temperature_residual = 0;
+    std::vector<double> initial_composition_residual(introspection.n_compositional_fields, 0);
 
     const unsigned int max_nonlinear_iterations =
-      (pre_refinement_step < parameters.initial_adaptive_refinement)
-      ?
-      std::min(parameters.max_nonlinear_iterations,
-               parameters.max_nonlinear_iterations_in_prerefinement)
-      :
-      parameters.max_nonlinear_iterations;
+      (pre_refinement_step < parameters.initial_adaptive_refinement) ?
+        std::min(parameters.max_nonlinear_iterations, parameters.max_nonlinear_iterations_in_prerefinement) :
+        parameters.max_nonlinear_iterations;
 
-    SolverControl nonlinear_solver_control(max_nonlinear_iterations,
-                                           parameters.nonlinear_tolerance);
+    SolverControl nonlinear_solver_control(max_nonlinear_iterations, parameters.nonlinear_tolerance);
 
     double relative_residual = std::numeric_limits<double>::max();
-    nonlinear_iteration = 0;
+    nonlinear_iteration      = 0;
 
     do
       {
         const double relative_temperature_residual =
-          assemble_and_solve_temperature(initial_temperature_residual,
-                                         nonlinear_iteration == 0 ? &initial_temperature_residual : nullptr);
+          assemble_and_solve_temperature(initial_temperature_residual, nonlinear_iteration == 0 ? &initial_temperature_residual : nullptr);
 
-        const std::vector<double>  relative_composition_residual =
+        const std::vector<double> relative_composition_residual =
           assemble_and_solve_composition(initial_composition_residual,
                                          nonlinear_iteration,
                                          nonlinear_iteration == 0 ? &initial_composition_residual : nullptr);
 
         // write the residual output in the same order as the solutions
         pcout << "      Relative nonlinear residuals (temperature"
-              << (introspection.n_compositional_fields > 0 ? ", compositional fields" : "")
-              << "): "
-              << relative_temperature_residual;
-        for (unsigned int c=0; c<introspection.n_compositional_fields; ++c)
+              << (introspection.n_compositional_fields > 0 ? ", compositional fields" : "") << "): " << relative_temperature_residual;
+        for (unsigned int c = 0; c < introspection.n_compositional_fields; ++c)
           pcout << ", " << relative_composition_residual[c];
         pcout << std::endl;
 
         // Find the maximum residual of the individual equations
         relative_residual = relative_temperature_residual;
-        for (unsigned int c=0; c<introspection.n_compositional_fields; ++c)
-          relative_residual = std::max(relative_composition_residual[c],relative_residual);
+        for (unsigned int c = 0; c < introspection.n_compositional_fields; ++c)
+          relative_residual = std::max(relative_composition_residual[c], relative_residual);
 
-        pcout << "      Relative nonlinear residual (total system) after nonlinear iteration " << nonlinear_iteration+1
-              << ": " << relative_residual
-              << std::endl
+        pcout << "      Relative nonlinear residual (total system) after nonlinear iteration " << nonlinear_iteration + 1 << ": "
+              << relative_residual << std::endl
               << std::endl;
 
         if (parameters.run_postprocessors_on_nonlinear_iterations)
-          postprocess ();
+          postprocess();
 
         ++nonlinear_iteration;
       }
@@ -1236,37 +1169,31 @@ namespace aspect
 
     // Assign Stokes solution
     {
-      TimerOutput::Scope timer (computing_timer, "Interpolate Stokes solution");
+      TimerOutput::Scope timer(computing_timer, "Interpolate Stokes solution");
 
-      LinearAlgebra::BlockVector distributed_stokes_solution (introspection.index_sets.system_partitioning, mpi_communicator);
+      LinearAlgebra::BlockVector distributed_stokes_solution(introspection.index_sets.system_partitioning, mpi_communicator);
 
       VectorFunctionFromVectorFunctionObject<dim> func(
-        [&](const Point<dim> &p, Vector<double> &result)
-      {
-        prescribed_stokes_solution->stokes_solution(p, result);
-      },
-      0,
-      parameters.include_melt_transport ? 2*dim+3 : dim+1, // velocity and pressure
-      introspection.n_components);
+        [&](const Point<dim> &p, Vector<double> &result) { prescribed_stokes_solution->stokes_solution(p, result); },
+        0,
+        parameters.include_melt_transport ? 2 * dim + 3 : dim + 1, // velocity and pressure
+        introspection.n_components);
 
-      VectorTools::interpolate (*mapping, dof_handler, func, distributed_stokes_solution);
+      VectorTools::interpolate(*mapping, dof_handler, func, distributed_stokes_solution);
 
       // distribute hanging node and other constraints
-      current_constraints.distribute (distributed_stokes_solution);
+      current_constraints.distribute(distributed_stokes_solution);
 
-      solution.block(introspection.block_indices.velocities) =
-        distributed_stokes_solution.block(introspection.block_indices.velocities);
-      solution.block(introspection.block_indices.pressure) =
-        distributed_stokes_solution.block(introspection.block_indices.pressure);
+      solution.block(introspection.block_indices.velocities) = distributed_stokes_solution.block(introspection.block_indices.velocities);
+      solution.block(introspection.block_indices.pressure)   = distributed_stokes_solution.block(introspection.block_indices.pressure);
 
       if (parameters.include_melt_transport)
         {
           const unsigned int block_u_f = introspection.variable("fluid velocity").block_index;
           const unsigned int block_p_f = introspection.variable("fluid pressure").block_index;
-          solution.block(block_u_f) = distributed_stokes_solution.block(block_u_f);
-          solution.block(block_p_f) = distributed_stokes_solution.block(block_p_f);
+          solution.block(block_u_f)    = distributed_stokes_solution.block(block_u_f);
+          solution.block(block_p_f)    = distributed_stokes_solution.block(block_p_f);
         }
-
     }
 
     AssertThrow(nonlinear_solver_control.last_check() != SolverControl::failure, ExcNonlinearSolverNoConvergence());
@@ -1276,75 +1203,67 @@ namespace aspect
 
 
   template <int dim>
-  void Simulator<dim>::solve_iterated_advection_and_stokes ()
+  void
+  Simulator<dim>::solve_iterated_advection_and_stokes()
   {
-    double initial_temperature_residual = 0;
-    double initial_stokes_residual      = 0;
-    std::vector<double> initial_composition_residual (introspection.n_compositional_fields,0);
+    double              initial_temperature_residual = 0;
+    double              initial_stokes_residual      = 0;
+    std::vector<double> initial_composition_residual(introspection.n_compositional_fields, 0);
 
     const unsigned int max_nonlinear_iterations =
-      (pre_refinement_step < parameters.initial_adaptive_refinement)
-      ?
-      std::min(parameters.max_nonlinear_iterations,
-               parameters.max_nonlinear_iterations_in_prerefinement)
-      :
-      parameters.max_nonlinear_iterations;
+      (pre_refinement_step < parameters.initial_adaptive_refinement) ?
+        std::min(parameters.max_nonlinear_iterations, parameters.max_nonlinear_iterations_in_prerefinement) :
+        parameters.max_nonlinear_iterations;
 
-    SolverControl nonlinear_solver_control(max_nonlinear_iterations,
-                                           parameters.nonlinear_tolerance);
+    SolverControl nonlinear_solver_control(max_nonlinear_iterations, parameters.nonlinear_tolerance);
 
     double relative_residual = std::numeric_limits<double>::max();
-    nonlinear_iteration = 0;
+    nonlinear_iteration      = 0;
 
     do
       {
         const double relative_temperature_residual =
-          assemble_and_solve_temperature(initial_temperature_residual,
-                                         nonlinear_iteration == 0 ? &initial_temperature_residual : nullptr);
+          assemble_and_solve_temperature(initial_temperature_residual, nonlinear_iteration == 0 ? &initial_temperature_residual : nullptr);
 
-        const std::vector<double>  relative_composition_residual =
+        const std::vector<double> relative_composition_residual =
           assemble_and_solve_composition(initial_composition_residual,
                                          nonlinear_iteration,
                                          nonlinear_iteration == 0 ? &initial_composition_residual : nullptr);
 
         const double relative_nonlinear_stokes_residual =
-          assemble_and_solve_stokes(initial_stokes_residual,
-                                    nonlinear_iteration == 0 ? &initial_stokes_residual : nullptr);
+          assemble_and_solve_stokes(initial_stokes_residual, nonlinear_iteration == 0 ? &initial_stokes_residual : nullptr);
 
         // write the residual output in the same order as the solutions
         pcout << "      Relative nonlinear residuals (temperature"
               << (introspection.n_compositional_fields > 0 ? ", compositional fields" : "")
               << ", Stokes system): " << relative_temperature_residual;
-        for (unsigned int c=0; c<introspection.n_compositional_fields; ++c)
+        for (unsigned int c = 0; c < introspection.n_compositional_fields; ++c)
           pcout << ", " << relative_composition_residual[c];
         pcout << ", " << relative_nonlinear_stokes_residual;
         pcout << std::endl;
 
         // Find the maximum residual of the individual equations
         relative_residual = relative_temperature_residual;
-        for (unsigned int c=0; c<introspection.n_compositional_fields; ++c)
+        for (unsigned int c = 0; c < introspection.n_compositional_fields; ++c)
           {
             // in models with melt migration the melt advection equation includes the divergence of the velocity
             // and can not be expected to converge to a smaller value than the residual of the Stokes equation.
             // thus, we set a threshold for the initial composition residual.
             // this only plays a role if the right-hand side of the advection equation is very small.
-            const double threshold = (parameters.include_melt_transport && c == introspection.compositional_index_for_name("porosity")
-                                      ?
-                                      parameters.linear_stokes_solver_tolerance * time_step
-                                      :
-                                      0.0);
-            if (initial_composition_residual[c]>threshold)
-              relative_residual = std::max(relative_composition_residual[c],relative_residual);
+            const double threshold = (parameters.include_melt_transport && c == introspection.compositional_index_for_name("porosity") ?
+                                        parameters.linear_stokes_solver_tolerance * time_step :
+                                        0.0);
+            if (initial_composition_residual[c] > threshold)
+              relative_residual = std::max(relative_composition_residual[c], relative_residual);
           }
         relative_residual = std::max(relative_nonlinear_stokes_residual, relative_residual);
 
-        pcout << "      Relative nonlinear residual (total system) after nonlinear iteration " << nonlinear_iteration+1
-              << ": " << relative_residual
-              << std::endl
+        pcout << "      Relative nonlinear residual (total system) after nonlinear iteration " << nonlinear_iteration + 1 << ": "
+              << relative_residual << std::endl
               << std::endl;
 
         if (parameters.run_postprocessors_on_nonlinear_iterations)
-          postprocess ();
+          postprocess();
 
         ++nonlinear_iteration;
       }
@@ -1357,7 +1276,8 @@ namespace aspect
 
 
   template <int dim>
-  void Simulator<dim>::solve_iterated_advection_and_defect_correction_stokes ()
+  void
+  Simulator<dim>::solve_iterated_advection_and_defect_correction_stokes()
   {
     // The defect correction solver is just the Newton solver without derivatives.
     solve_iterated_advection_and_newton_stokes(/*use_newton_iterations = */ false);
@@ -1366,23 +1286,24 @@ namespace aspect
 
 
   template <int dim>
-  void Simulator<dim>::solve_iterated_advection_and_newton_stokes (bool use_newton_iterations)
+  void
+  Simulator<dim>::solve_iterated_advection_and_newton_stokes(bool use_newton_iterations)
   {
     // Now store the linear_tolerance we started out with, because we might change
     // it within this timestep.
-    const double begin_linear_tolerance = parameters.linear_stokes_solver_tolerance;
-    double initial_temperature_residual = 0;
-    std::vector<double> initial_composition_residual (parameters.n_compositional_fields,0);
+    const double        begin_linear_tolerance       = parameters.linear_stokes_solver_tolerance;
+    double              initial_temperature_residual = 0;
+    std::vector<double> initial_composition_residual(parameters.n_compositional_fields, 0);
 
     DefectCorrectionResiduals dcr;
     dcr.initial_residual = 1;
 
     dcr.velocity_residual = 0;
     dcr.pressure_residual = 0;
-    dcr.residual = 1;
-    dcr.residual_old = 1;
+    dcr.residual          = 1;
+    dcr.residual_old      = 1;
 
-    dcr.switch_initial_residual = 1;
+    dcr.switch_initial_residual                       = 1;
     dcr.newton_residual_for_derivative_scaling_factor = 1;
 
     bool use_picard = true;
@@ -1391,33 +1312,27 @@ namespace aspect
     const Newton::Parameters::Stabilization starting_velocity_block_stabilization = newton_handler->parameters.velocity_block_stabilization;
 
     const unsigned int max_nonlinear_iterations =
-      (pre_refinement_step < parameters.initial_adaptive_refinement)
-      ?
-      std::min(parameters.max_nonlinear_iterations,
-               parameters.max_nonlinear_iterations_in_prerefinement)
-      :
-      parameters.max_nonlinear_iterations;
+      (pre_refinement_step < parameters.initial_adaptive_refinement) ?
+        std::min(parameters.max_nonlinear_iterations, parameters.max_nonlinear_iterations_in_prerefinement) :
+        parameters.max_nonlinear_iterations;
 
     // Now iterate out the nonlinearities.
-    dcr.stokes_residuals = std::pair<double,double>  (numbers::signaling_nan<double>(),
-                                                      numbers::signaling_nan<double>());
+    dcr.stokes_residuals = std::pair<double, double>(numbers::signaling_nan<double>(), numbers::signaling_nan<double>());
 
-    SolverControl nonlinear_solver_control(max_nonlinear_iterations,
-                                           parameters.nonlinear_tolerance);
+    SolverControl nonlinear_solver_control(max_nonlinear_iterations, parameters.nonlinear_tolerance);
 
     SolverControl nonlinear_solver_control_picard(newton_handler->parameters.max_pre_newton_nonlinear_iterations,
                                                   newton_handler->parameters.nonlinear_switch_tolerance);
 
     double relative_residual = std::numeric_limits<double>::max();
-    nonlinear_iteration = 0;
+    nonlinear_iteration      = 0;
 
     do
       {
         const double relative_temperature_residual =
-          assemble_and_solve_temperature(initial_temperature_residual,
-                                         nonlinear_iteration == 0 ? &initial_temperature_residual : nullptr);
+          assemble_and_solve_temperature(initial_temperature_residual, nonlinear_iteration == 0 ? &initial_temperature_residual : nullptr);
 
-        const std::vector<double>  relative_composition_residual =
+        const std::vector<double> relative_composition_residual =
           assemble_and_solve_composition(initial_composition_residual,
                                          nonlinear_iteration,
                                          nonlinear_iteration == 0 ? &initial_composition_residual : nullptr);
@@ -1438,44 +1353,40 @@ namespace aspect
               dcr.newton_residual_for_derivative_scaling_factor = 0;
           }
 
-        newton_handler->parameters.newton_derivative_scaling_factor
-          = (std::max(0.0,
-                      (1.0-(dcr.newton_residual_for_derivative_scaling_factor/dcr.switch_initial_residual))));
+        newton_handler->parameters.newton_derivative_scaling_factor =
+          (std::max(0.0, (1.0 - (dcr.newton_residual_for_derivative_scaling_factor / dcr.switch_initial_residual))));
 
         do_one_defect_correction_Stokes_step(dcr, use_picard);
 
         double max_residual = relative_temperature_residual;
-        for (unsigned int c=0; c<introspection.n_compositional_fields; ++c)
+        for (unsigned int c = 0; c < introspection.n_compositional_fields; ++c)
           {
             // in models with melt migration the melt advection equation includes the divergence of the velocity
             // and can not be expected to converge to a smaller value than the residual of the Stokes equation.
             // thus, we set a threshold for the initial composition residual.
             // this only plays a role if the right-hand side of the advection equation is very small.
-            const double threshold = (parameters.include_melt_transport && c == introspection.compositional_index_for_name("porosity")
-                                      ?
-                                      parameters.linear_stokes_solver_tolerance * time_step
-                                      :
-                                      0.0);
-            if (initial_composition_residual[c]>threshold)
-              max_residual = std::max(relative_composition_residual[c],max_residual);
+            const double threshold = (parameters.include_melt_transport && c == introspection.compositional_index_for_name("porosity") ?
+                                        parameters.linear_stokes_solver_tolerance * time_step :
+                                        0.0);
+            if (initial_composition_residual[c] > threshold)
+              max_residual = std::max(relative_composition_residual[c], max_residual);
           }
 
         // write the residual output in the same order as the solutions
         pcout << "      Relative nonlinear residuals (temperature"
               << (introspection.n_compositional_fields > 0 ? ", compositional fields" : "")
               << ", Stokes system): " << relative_temperature_residual;
-        for (unsigned int c=0; c<introspection.n_compositional_fields; ++c)
+        for (unsigned int c = 0; c < introspection.n_compositional_fields; ++c)
           pcout << ", " << relative_composition_residual[c];
-        pcout << ", " << dcr.residual/dcr.initial_residual << std::endl;
+        pcout << ", " << dcr.residual / dcr.initial_residual << std::endl;
 
-        relative_residual = std::max(dcr.residual/dcr.initial_residual, max_residual);
-        pcout << "      Relative nonlinear residual (total system) after nonlinear iteration " << nonlinear_iteration+1
-              << ": " << relative_residual
-              << std::endl
+        relative_residual = std::max(dcr.residual / dcr.initial_residual, max_residual);
+        pcout << "      Relative nonlinear residual (total system) after nonlinear iteration " << nonlinear_iteration + 1 << ": "
+              << relative_residual << std::endl
               << std::endl;
 
         if (parameters.run_postprocessors_on_nonlinear_iterations)
-          postprocess ();
+          postprocess();
 
         ++nonlinear_iteration;
       }
@@ -1498,23 +1409,25 @@ namespace aspect
 namespace aspect
 {
 #define INSTANTIATE(dim) \
-  template double Simulator<dim>::assemble_and_solve_temperature(const double &, double*); \
-  template std::vector<double> Simulator<dim>::assemble_and_solve_composition(const std::vector<double> &, const unsigned int, std::vector<double> *); \
-  template double Simulator<dim>::assemble_and_solve_stokes(const double &, double*); \
-  template void Simulator<dim>::solve_no_advection_no_stokes(); \
-  template void Simulator<dim>::solve_no_advection_single_stokes(); \
-  template void Simulator<dim>::solve_no_advection_single_stokes_first_timestep_only(); \
-  template void Simulator<dim>::solve_no_advection_iterated_stokes(); \
-  template void Simulator<dim>::solve_no_advection_iterated_defect_correction_stokes(); \
-  template void Simulator<dim>::solve_single_advection_no_stokes(); \
-  template void Simulator<dim>::solve_single_advection_single_stokes(); \
-  template void Simulator<dim>::solve_single_advection_iterated_stokes(); \
-  template void Simulator<dim>::solve_single_advection_iterated_defect_correction_stokes(); \
-  template void Simulator<dim>::solve_single_advection_iterated_newton_stokes(bool); \
-  template void Simulator<dim>::solve_iterated_advection_no_stokes(); \
-  template void Simulator<dim>::solve_iterated_advection_and_stokes(); \
-  template void Simulator<dim>::solve_iterated_advection_and_defect_correction_stokes(); \
-  template void Simulator<dim>::solve_iterated_advection_and_newton_stokes(bool); \
+  template double              Simulator<dim>::assemble_and_solve_temperature(const double &, double *); \
+  template std::vector<double> Simulator<dim>::assemble_and_solve_composition(const std::vector<double> &, \
+                                                                              const unsigned int, \
+                                                                              std::vector<double> *); \
+  template double              Simulator<dim>::assemble_and_solve_stokes(const double &, double *); \
+  template void                Simulator<dim>::solve_no_advection_no_stokes(); \
+  template void                Simulator<dim>::solve_no_advection_single_stokes(); \
+  template void                Simulator<dim>::solve_no_advection_single_stokes_first_timestep_only(); \
+  template void                Simulator<dim>::solve_no_advection_iterated_stokes(); \
+  template void                Simulator<dim>::solve_no_advection_iterated_defect_correction_stokes(); \
+  template void                Simulator<dim>::solve_single_advection_no_stokes(); \
+  template void                Simulator<dim>::solve_single_advection_single_stokes(); \
+  template void                Simulator<dim>::solve_single_advection_iterated_stokes(); \
+  template void                Simulator<dim>::solve_single_advection_iterated_defect_correction_stokes(); \
+  template void                Simulator<dim>::solve_single_advection_iterated_newton_stokes(bool); \
+  template void                Simulator<dim>::solve_iterated_advection_no_stokes(); \
+  template void                Simulator<dim>::solve_iterated_advection_and_stokes(); \
+  template void                Simulator<dim>::solve_iterated_advection_and_defect_correction_stokes(); \
+  template void                Simulator<dim>::solve_iterated_advection_and_newton_stokes(bool);
 
   ASPECT_INSTANTIATE(INSTANTIATE)
 

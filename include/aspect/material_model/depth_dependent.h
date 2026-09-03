@@ -22,8 +22,8 @@
 #define _aspect_material_model_depth_dependent_h
 
 #include <aspect/material_model/interface.h>
-#include <aspect/simulator_access.h>
 #include <aspect/material_model/rheology/ascii_depth_profile.h>
+#include <aspect/simulator_access.h>
 
 #include <deal.II/base/function_lib.h>
 #include <deal.II/base/parsed_function.h>
@@ -48,41 +48,43 @@ namespace aspect
         /**
          * Initialize the base model at the beginning of the run.
          */
-        void initialize() override;
+        void
+        initialize() override;
 
         /**
          * Update the base model and viscosity function at the beginning of
          * each timestep.
          */
-        void update() override;
+        void
+        update() override;
 
         /**
          * Method that indicates whether material is compressible. Depth dependent model is compressible
          * if and only if base model is compressible.
          */
-        bool is_compressible () const override;
+        bool
+        is_compressible() const override;
 
         /**
          * Function to compute the material properties in @p out given the
          * inputs in @p in.
          */
         void
-        evaluate (const typename Interface<dim>::MaterialModelInputs &in,
-                  typename Interface<dim>::MaterialModelOutputs &out) const override;
+        evaluate(const typename Interface<dim>::MaterialModelInputs &in, typename Interface<dim>::MaterialModelOutputs &out) const override;
         /**
          * Method to declare parameters related to depth-dependent model
          */
         static void
-        declare_parameters (ParameterHandler &prm);
+        declare_parameters(ParameterHandler &prm);
 
         /**
          * Method to parse parameters related to depth-dependent model
          */
         void
-        parse_parameters (ParameterHandler &prm) override;
+        parse_parameters(ParameterHandler &prm) override;
 
         void
-        create_additional_named_outputs (MaterialModel::MaterialModelOutputs<dim> &out) const override;
+        create_additional_named_outputs(MaterialModel::MaterialModelOutputs<dim> &out) const override;
 
       private:
         /**

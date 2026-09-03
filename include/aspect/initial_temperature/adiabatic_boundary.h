@@ -47,13 +47,13 @@ namespace aspect
     class AdiabaticBoundary : public Interface<dim>, public Utilities::AsciiDataBoundary<dim>
     {
       public:
-
         /**
          * Constructor.
          */
-        AdiabaticBoundary ();
+        AdiabaticBoundary();
 
-        void initialize () override;
+        void
+        initialize() override;
 
         // avoid -Woverloaded-virtual:
         using Utilities::AsciiDataBoundary<dim>::initialize;
@@ -61,21 +61,22 @@ namespace aspect
         /**
          * Return the initial temperature as a function of position.
          */
-        double initial_temperature (const Point<dim> &position) const override;
+        double
+        initial_temperature(const Point<dim> &position) const override;
 
         /**
          * Declare the parameters that this class needs.
          */
-        static
-        void declare_parameters (ParameterHandler &prm);
+        static void
+        declare_parameters(ParameterHandler &prm);
 
         /**
          * Read the parameters above from the parameter file.
          */
-        void parse_parameters (ParameterHandler &prm) override;
+        void
+        parse_parameters(ParameterHandler &prm) override;
 
       private:
-
         /**
          * This variable is read from the parameter file through a parameter called 'Isotherm temperature'.
          */
@@ -87,9 +88,8 @@ namespace aspect
         /**
          * This variable is read from the parameter file through a parameter called 'Adiabatic temperature gradient'.
          */
-        double temperature_gradient;
+        double             temperature_gradient;
         types::boundary_id surface_boundary_id;
-
     };
   }
 }

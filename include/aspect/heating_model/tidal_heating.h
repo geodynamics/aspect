@@ -43,36 +43,36 @@ namespace aspect
          * Initialize function, which sets the start time and
          * start timestep of tidal heating.
          */
-        void initialize() override;
+        void
+        initialize() override;
 
       public:
         /**
          * Return the tidal heating terms.
          */
         void
-        evaluate (const MaterialModel::MaterialModelInputs<dim> &material_model_inputs,
-                  const MaterialModel::MaterialModelOutputs<dim> &material_model_outputs,
-                  HeatingModel::HeatingModelOutputs &heating_model_outputs) const override;
+        evaluate(const MaterialModel::MaterialModelInputs<dim>  &material_model_inputs,
+                 const MaterialModel::MaterialModelOutputs<dim> &material_model_outputs,
+                 HeatingModel::HeatingModelOutputs              &heating_model_outputs) const override;
 
         /**
          * Specify which material model outputs the heating model requires
          * for computing the heating terms.
          */
         MaterialModel::MaterialProperties::Property
-        get_required_properties () const override;
+        get_required_properties() const override;
 
         /**
          * Declare the parameters this class takes through input files.
          */
-        static
-        void
-        declare_parameters (ParameterHandler &prm);
+        static void
+        declare_parameters(ParameterHandler &prm);
 
         /**
          * Read the parameters this class declares from the parameter file.
          */
         void
-        parse_parameters (ParameterHandler &prm) override;
+        parse_parameters(ParameterHandler &prm) override;
 
       private:
         /**
@@ -87,8 +87,9 @@ namespace aspect
          * strain_rate_distribution lets selection for distribution of tidal strain rate.
          * If 'constant', the tidal strain rate is fixed to 'Constant tidal strain rate'.
          * If 'latitudinal variation', 'Maximum tidal strain rate' and 'Minimum tidal strain rate' are used.
-         * Then, the equation follows as (maximum_tidal_strain_rate - minimum_tidal_strain_rate)*cos(theta/2)+(maximum_tidal_strain_rate+minimum_tidal_strain_rate)/2.
-         * This is shown in Fig.3 of Nimmo et al. (2007) (https://doi.org/10.1016/j.icarus.2007.04.021).
+         * Then, the equation follows as (maximum_tidal_strain_rate -
+         * minimum_tidal_strain_rate)*cos(theta/2)+(maximum_tidal_strain_rate+minimum_tidal_strain_rate)/2. This is shown in Fig.3 of Nimmo
+         * et al. (2007) (https://doi.org/10.1016/j.icarus.2007.04.021).
          *
          * This variable is read from the parameter file through the 'Tidal
          * frequency' parameter.

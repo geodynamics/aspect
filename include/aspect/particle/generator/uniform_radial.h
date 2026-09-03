@@ -62,18 +62,16 @@ namespace aspect
           /**
            * Declare the parameters this class takes through input files.
            */
-          static
-          void
-          declare_parameters (ParameterHandler &prm);
+          static void
+          declare_parameters(ParameterHandler &prm);
 
           /**
            * Read the parameters this class declares from the parameter file.
            */
           void
-          parse_parameters (ParameterHandler &prm) override;
+          parse_parameters(ParameterHandler &prm) override;
 
         private:
-
           /**
            * The minimum spherical coordinates of the particle region, i.e.
            * the first radius, colatitude and longitude from the given
@@ -82,7 +80,7 @@ namespace aspect
            * This variable is read from the parameter file through parameters
            * called 'Minimum radius', 'Minimum longitude', and 'Minimum latitude'.
            */
-          std::array<double,dim> P_min;
+          std::array<double, dim> P_min;
 
           /**
            * The maximum spherical coordinates of the particle region, i.e.
@@ -91,7 +89,7 @@ namespace aspect
            * This variable is read from the parameter file through parameters
            * called 'Maximum radius', 'Maximum longitude', and 'Maximum latitude'.
            */
-          std::array<double,dim> P_max;
+          std::array<double, dim> P_max;
 
           /**
            * The center of the particle region. Defaults to the origin.

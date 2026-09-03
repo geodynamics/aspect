@@ -23,12 +23,14 @@
 
 #include <aspect/postprocess/interface.h>
 #include <aspect/simulator_access.h>
+
+#include <deal.II/base/function_lib.h>
+#include <deal.II/base/table.h>
+#include <deal.II/particles/particle_handler.h>
+#include <deal.II/particles/property_pool.h>
+
 #include <algorithm>
 #include <limits>
-#include <deal.II/base/table.h>
-#include <deal.II/particles/property_pool.h>
-#include <deal.II/particles/particle_handler.h>
-#include <deal.II/base/function_lib.h>
 #include <vector>
 
 namespace aspect
@@ -48,7 +50,6 @@ namespace aspect
     class ParticlePDF
     {
       public:
-
         /**
          * The `KernelFunctions` enum class is a data structure which
          * contains the kernel functions available for use in the Kernel
@@ -74,9 +75,7 @@ namespace aspect
          * @param bandwidth determines the bandwidth to be used in the kernel function.
          * @param kernel_function determines which kernel function to use when generating the point-density function.
          */
-        ParticlePDF(const unsigned int granularity,
-                    const double bandwidth,
-                    const KernelFunction kernel_function);
+        ParticlePDF(const unsigned int granularity, const double bandwidth, const KernelFunction kernel_function);
 
         /**
          * This is the constructor for ParticlePDF.
@@ -86,8 +85,7 @@ namespace aspect
          * @param bandwidth determines the bandwidth to be used in the kernel function.
          * @param kernel_function determines which kernel function to use when generating the point-density function.
          */
-        ParticlePDF(const double bandwidth,
-                    const KernelFunction kernel_function);
+        ParticlePDF(const double bandwidth, const KernelFunction kernel_function);
 
         /**
          * Fills the point-density function with values from the particles in the given cell.
@@ -99,12 +97,12 @@ namespace aspect
          * @param cell The cell for which the ParticlePDF is to be computed.
          */
         void
-        fill_from_particle_range(const typename Particles::ParticleHandler<dim>::particle_iterator_range &particle_range,
-                                 const std::vector<typename Particles::ParticleHandler<dim>::particle_iterator_range>
-                                 &particle_ranges_to_sum_over,
-                                 const unsigned int n_particles_in_cell,
-                                 const typename dealii::Mapping<dim> &mapping,
-                                 const typename Triangulation<dim>::active_cell_iterator &cell);
+        fill_from_particle_range(
+          const typename Particles::ParticleHandler<dim>::particle_iterator_range              &particle_range,
+          const std::vector<typename Particles::ParticleHandler<dim>::particle_iterator_range> &particle_ranges_to_sum_over,
+          const unsigned int                                                                    n_particles_in_cell,
+          const typename dealii::Mapping<dim>                                                  &mapping,
+          const typename Triangulation<dim>::active_cell_iterator                              &cell);
 
         /**
          * This function iterates through every particle in the cell and
@@ -118,12 +116,12 @@ namespace aspect
          * real coordinates
          */
         void
-        insert_kernel_sum_from_particle_range(const Point<dim> &reference_point,
-                                              const std::array<unsigned int,dim> &table_index,
-                                              const typename Triangulation<dim>::active_cell_iterator &cell,
-                                              const std::vector<typename Particles::ParticleHandler<dim>::particle_iterator_range>
-                                              &particle_ranges_to_sum_over,
-                                              const typename dealii::Mapping<dim> &mapping);
+        insert_kernel_sum_from_particle_range(
+          const Point<dim>                                                                     &reference_point,
+          const std::array<unsigned int, dim>                                                  &table_index,
+          const typename Triangulation<dim>::active_cell_iterator                              &cell,
+          const std::vector<typename Particles::ParticleHandler<dim>::particle_iterator_range> &particle_ranges_to_sum_over,
+          const typename dealii::Mapping<dim>                                                  &mapping);
 
         /**
          * Inserts a value into the point-density function.
@@ -136,7 +134,7 @@ namespace aspect
         add_value_to_function_table(const unsigned int x_index,
                                     const unsigned int y_index,
                                     const unsigned int z_index,
-                                    const double input_value);
+                                    const double       input_value);
 
         /**
          * Inserts a value into the point-density function.
@@ -145,8 +143,7 @@ namespace aspect
          * @param input_value The value to insert into the point-density function.
          */
         void
-        add_value_to_function_table(const std::array<unsigned int,dim> &index_point,
-                                    const double input_value);
+        add_value_to_function_table(const std::array<unsigned int, dim> &index_point, const double input_value);
 
         /**
          * Inserts a value into the point-density function. This version of the
@@ -156,8 +153,7 @@ namespace aspect
          * @param reference_particle_id the id of the particle from which the input value is taken in reference to.
          */
         void
-        add_value_to_function_table(const double input_value,
-                                    const types::particle_index reference_particle_id);
+        add_value_to_function_table(const double input_value, const types::particle_index reference_particle_id);
 
         /**
          * Returns the value of the function at the given index.
@@ -167,13 +163,11 @@ namespace aspect
          * @param z_index The z index in the point-density function to evaluate at.
          */
         double
-        evaluate_function_at_index(const unsigned int x_index,
-                                   const unsigned int y_index,
-                                   const unsigned int z_index) const;
+        evaluate_function_at_index(const unsigned int x_index, const unsigned int y_index, const unsigned int z_index) const;
 
         /**
-        * Calculates the relevant statistics from the contents of the PDF.
-        */
+         * Calculates the relevant statistics from the contents of the PDF.
+         */
         void
         compute_statistical_values();
 
@@ -230,7 +224,7 @@ namespace aspect
          * has been generated at regular intervals throughout the cell (as opposed
          * to being defined at the position of each particle.
          */
-        Table<dim,double> function_output_table;
+        Table<dim, double> function_output_table;
 
         /**
          * The `bandwidth` variable scales the point-density function.
@@ -318,7 +312,8 @@ namespace aspect
          *
          * @param distance the distance to pass to the selected kernel function.
          */
-        double apply_selected_kernel_function(const double distance) const;
+        double
+        apply_selected_kernel_function(const double distance) const;
 
         /**
          * The Uniform kernel function returns a value of 1.0 as long as the
@@ -326,7 +321,8 @@ namespace aspect
          *
          * @param distance the output of the kernel function depends on the distance between the reference point and the center of the kernel function.
          */
-        double kernelfunction_uniform(const double distance) const;
+        double
+        kernelfunction_uniform(const double distance) const;
 
         /**
          * The Triangular kernel function returns a value of 1.0 minus
@@ -334,7 +330,8 @@ namespace aspect
          *
          * @param distance the output of the kernel function depends on the distance between the reference point and the center of the kernel function.
          */
-        double kernelfunction_triangular(const double distance) const;
+        double
+        kernelfunction_triangular(const double distance) const;
 
         /**
          * The gaussian function returns the value of a gaussian distribution
@@ -342,7 +339,8 @@ namespace aspect
          *
          * @param distance the output of the kernel function depends on the distance between the reference point and the center of the kernel function.
          */
-        double kernelfunction_gaussian(const double distance) const;
+        double
+        kernelfunction_gaussian(const double distance) const;
 
         /**
          * The epanechnikov function returns the value of an epanechnikov parabolic function
@@ -350,7 +348,8 @@ namespace aspect
          *
          * @param distance the output of the kernel function depends on the distance between the reference point and the center of the kernel function.
          */
-        double kernelfunction_epanechnikov(const double distance) const;
+        double
+        kernelfunction_epanechnikov(const double distance) const;
     };
   }
 }

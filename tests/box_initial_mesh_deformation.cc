@@ -19,8 +19,8 @@
 */
 
 
-#include <aspect/mesh_deformation/interface.h>
 #include <aspect/gravity_model/interface.h>
+#include <aspect/mesh_deformation/interface.h>
 #include <aspect/simulator_access.h>
 
 namespace aspect
@@ -37,16 +37,15 @@ namespace aspect
         PrescribedDeformation()
         {}
 
-        Tensor<1,dim>
-        compute_initial_deformation_on_boundary(const types::boundary_id /*boundary_indicator*/,
-                                                const Point<dim> &position) const
+        Tensor<1, dim>
+        compute_initial_deformation_on_boundary(const types::boundary_id /*boundary_indicator*/, const Point<dim> &position) const
         {
-          const Tensor<1,dim> gravity = this->get_gravity_model().gravity_vector(position);
-          Tensor<1,dim> topography_direction;
+          const Tensor<1, dim> gravity = this->get_gravity_model().gravity_vector(position);
+          Tensor<1, dim>       topography_direction;
           if (gravity.norm() > 0.0)
             topography_direction = -gravity / gravity.norm();
 
-          const double topography_amplitude = 20000. * std::cos(2.*numbers::PI*position[0]/(660000.));
+          const double topography_amplitude = 20000. * std::cos(2. * numbers::PI * position[0] / (660000.));
           return topography_amplitude * topography_direction;
         }
     };
@@ -59,8 +58,6 @@ namespace aspect
 {
   namespace MeshDeformation
   {
-    ASPECT_REGISTER_MESH_DEFORMATION_MODEL(PrescribedDeformation,
-                                           "prescribed deformation",
-                                           "A test plugin for initial mesh deformation.")
+    ASPECT_REGISTER_MESH_DEFORMATION_MODEL(PrescribedDeformation, "prescribed deformation", "A test plugin for initial mesh deformation.")
   }
 }

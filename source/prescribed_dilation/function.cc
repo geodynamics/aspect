@@ -19,39 +19,33 @@
 */
 
 
-#include <aspect/prescribed_dilation/function.h>
-
 #include <aspect/geometry_model/interface.h>
+#include <aspect/prescribed_dilation/function.h>
 
 namespace aspect
 {
   namespace PrescribedDilation
   {
     template <int dim>
-    Function<dim>::Function ()
-      :
-      function (1)
+    Function<dim>::Function()
+      : function(1)
     {}
-
-
 
 
 
     template <int dim>
     void
-    Function<dim>::
-    evaluate ( const aspect::MaterialModel::MaterialModelInputs<dim> &in,
-               PrescribedDilationOutputs<dim> &out) const
+    Function<dim>::evaluate(const aspect::MaterialModel::MaterialModelInputs<dim> &in, PrescribedDilationOutputs<dim> &out) const
     {
-      Assert (  out.n_evaluation_points() == in.n_evaluation_points(),
-                ExcMessage("The number of points in the MaterialModelInputs and "
-                           "PrescribedDilationOutputs do not match."));
-      for ( unsigned int q = 0; q < out.n_evaluation_points(); ++q )
+      Assert(out.n_evaluation_points() == in.n_evaluation_points(),
+             ExcMessage("The number of points in the MaterialModelInputs and "
+                        "PrescribedDilationOutputs do not match."));
+      for (unsigned int q = 0; q < out.n_evaluation_points(); ++q)
         {
           const Utilities::NaturalCoordinate<dim> point =
             this->get_geometry_model().cartesian_to_other_coordinates(in.position[q], coordinate_system);
           const Point<dim> point_in_coordinate_system = Utilities::convert_array_to_point<dim>(point.get_coordinates());
-          out.dilation[q] = function.value(point_in_coordinate_system);
+          out.dilation[q]                             = function.value(point_in_coordinate_system);
         }
     }
 
@@ -59,39 +53,40 @@ namespace aspect
 
     template <int dim>
     void
-    Function<dim>::update ()
+    Function<dim>::update()
     {
       const double time = this->get_time();
       // we get time passed as seconds (always) but may want
       // to reinterpret it in years
       if (this->convert_output_to_years())
-        function.set_time (time / year_in_seconds);
+        function.set_time(time / year_in_seconds);
       else
-        function.set_time (time);
+        function.set_time(time);
     }
 
 
 
     template <int dim>
     void
-    Function<dim>::declare_parameters (ParameterHandler &prm)
+    Function<dim>::declare_parameters(ParameterHandler &prm)
     {
       prm.enter_subsection("Prescribed dilation");
       {
         prm.enter_subsection("Function");
         {
-          prm.declare_entry ("Coordinate system", "cartesian",
-                             Patterns::Selection ("cartesian|spherical|depth"),
-                             "A selection that determines the assumed coordinate "
-                             "system for the function variables. Allowed values "
-                             "are `cartesian', `spherical', and `depth'. `spherical' coordinates "
-                             "are interpreted as r,phi or r,phi,theta in 2d/3d "
-                             "respectively with theta being the polar angle. `depth' "
-                             "will create a function, in which only the first "
-                             "parameter is non-zero, which is interpreted to "
-                             "be the depth of the point.");
+          prm.declare_entry("Coordinate system",
+                            "cartesian",
+                            Patterns::Selection("cartesian|spherical|depth"),
+                            "A selection that determines the assumed coordinate "
+                            "system for the function variables. Allowed values "
+                            "are `cartesian', `spherical', and `depth'. `spherical' coordinates "
+                            "are interpreted as r,phi or r,phi,theta in 2d/3d "
+                            "respectively with theta being the polar angle. `depth' "
+                            "will create a function, in which only the first "
+                            "parameter is non-zero, which is interpreted to "
+                            "be the depth of the point.");
 
-          Functions::ParsedFunction<dim>::declare_parameters (prm, 1);
+          Functions::ParsedFunction<dim>::declare_parameters(prm, 1);
         }
         prm.leave_subsection();
       }
@@ -102,7 +97,7 @@ namespace aspect
 
     template <int dim>
     void
-    Function<dim>::parse_parameters (ParameterHandler &prm)
+    Function<dim>::parse_parameters(ParameterHandler &prm)
     {
       prm.enter_subsection("Prescribed dilation");
       {
@@ -112,7 +107,7 @@ namespace aspect
         }
         try
           {
-            function.parse_parameters (prm);
+            function.parse_parameters(prm);
           }
         catch (...)
           {

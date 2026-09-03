@@ -24,13 +24,12 @@
 #include <aspect/particle/interface.h>
 #include <aspect/simulator_access.h>
 
-#include <deal.II/particles/particle.h>
-#include <deal.II/particles/generators.h>
 #include <deal.II/base/parameter_handler.h>
-
-#include <random>
+#include <deal.II/particles/generators.h>
+#include <deal.II/particles/particle.h>
 
 #include <map>
+#include <random>
 
 namespace aspect
 {
@@ -50,13 +49,13 @@ namespace aspect
       /**
        * Exception denoting a division by zero.
        */
-      DeclExceptionMsg (ExcParticlePointNotInDomain,
-                        "You requested to generate a particle at a position that "
-                        "is not owned by this process, therefore the "
-                        "Particle::Generator::Interface::generate_particle() function "
-                        "refused to create it. You can circumvent this error message "
-                        "by catching the ExcParticlePointNotInDomain exception and "
-                        "do whatever you think is appropriate in this case.");
+      DeclExceptionMsg(ExcParticlePointNotInDomain,
+                       "You requested to generate a particle at a position that "
+                       "is not owned by this process, therefore the "
+                       "Particle::Generator::Interface::generate_particle() function "
+                       "refused to create it. You can circumvent this error message "
+                       "by catching the ExcParticlePointNotInDomain exception and "
+                       "do whatever you think is appropriate in this case.");
 
       /**
        * Abstract base class used for classes that generate particles.
@@ -84,8 +83,7 @@ namespace aspect
            * @param [in,out] particle_handler The particle handler into which
            * the generated particles should be inserted.
            */
-          virtual
-          void
+          virtual void
           generate_particles(Particles::ParticleHandler<dim> &particle_handler) = 0;
 
           /**
@@ -96,9 +94,9 @@ namespace aspect
            * @param cell the target cell in which to generate the particle.
            * @param id the particle_index of the particle to generate in the cell.
            */
-          std::pair<Particles::internal::LevelInd,Particle<dim>>
-          generate_particle (const typename parallel::distributed::Triangulation<dim>::active_cell_iterator &cell,
-                             const types::particle_index id);
+          std::pair<Particles::internal::LevelInd, Particle<dim>>
+          generate_particle(const typename parallel::distributed::Triangulation<dim>::active_cell_iterator &cell,
+                            const types::particle_index                                                     id);
 
           /**
            * Generate one particle at a specific position in the given cell. This function's main purpose
@@ -110,10 +108,10 @@ namespace aspect
            * @param reference_position the position within the cell to generate the particle. This position is defined within
            * the frame of reference of the cell.
            */
-          std::pair<Particles::internal::LevelInd,Particle<dim>>
-          generate_particle (const typename parallel::distributed::Triangulation<dim>::active_cell_iterator &cell,
-                             const types::particle_index id,
-                             const Point<dim> &reference_position);
+          std::pair<Particles::internal::LevelInd, Particle<dim>>
+          generate_particle(const typename parallel::distributed::Triangulation<dim>::active_cell_iterator &cell,
+                            const types::particle_index                                                     id,
+                            const Point<dim>                                                               &reference_position);
 
         protected:
           /**
@@ -128,9 +126,8 @@ namespace aspect
            * Use the insert_particle_at_position() function below instead.
            */
           DEAL_II_DEPRECATED
-          std::pair<Particles::internal::LevelInd,Particle<dim>>
-          generate_particle(const Point<dim> &position,
-                            const types::particle_index id) const;
+          std::pair<Particles::internal::LevelInd, Particle<dim>>
+          generate_particle(const Point<dim> &position, const types::particle_index id) const;
 
           /**
            * Generate a particle at the specified position and with the
@@ -153,8 +150,8 @@ namespace aspect
            * returned.
            */
           Particles::ParticleIterator<dim>
-          insert_particle_at_position(const Point<dim> &position,
-                                      const types::particle_index id,
+          insert_particle_at_position(const Point<dim>                &position,
+                                      const types::particle_index      id,
                                       Particles::ParticleHandler<dim> &particle_handler) const;
 
           /**
@@ -166,7 +163,7 @@ namespace aspect
            * has a deterministic state at the beginning of each time step. It
            * does not need to be restored from a checkpoint.
            */
-          std::mt19937            random_number_generator;
+          std::mt19937 random_number_generator;
       };
 
       /**
@@ -186,10 +183,10 @@ namespace aspect
        */
       template <int dim>
       void
-      register_particle_generator (const std::string &name,
-                                   const std::string &description,
-                                   void (*declare_parameters_function) (ParameterHandler &),
-                                   std::unique_ptr<Interface<dim>> (*factory_function) ());
+      register_particle_generator(const std::string &name,
+                                  const std::string &description,
+                                  void (*declare_parameters_function)(ParameterHandler &),
+                                  std::unique_ptr<Interface<dim>> (*factory_function)());
 
       /**
        * A function that given the name of a model returns a pointer to an
@@ -203,7 +200,7 @@ namespace aspect
        */
       template <int dim>
       std::unique_ptr<Interface<dim>>
-      create_particle_generator (ParameterHandler &prm);
+      create_particle_generator(ParameterHandler &prm);
 
       /**
        * Declare the runtime parameters of the registered particle generators.
@@ -212,7 +209,7 @@ namespace aspect
        */
       template <int dim>
       void
-      declare_parameters (ParameterHandler &prm);
+      declare_parameters(ParameterHandler &prm);
 
 
       /**
@@ -226,7 +223,7 @@ namespace aspect
        */
       template <int dim>
       void
-      write_plugin_graph (std::ostream &output_stream);
+      write_plugin_graph(std::ostream &output_stream);
 
 
       /**
@@ -239,14 +236,12 @@ namespace aspect
 #define ASPECT_REGISTER_PARTICLE_GENERATOR(classname, name, description) \
   template class classname<2>; \
   template class classname<3>; \
-  namespace ASPECT_REGISTER_PARTICLE_GENERATOR_ ## classname \
+  namespace ASPECT_REGISTER_PARTICLE_GENERATOR_##classname \
   { \
-    aspect::internal::Plugins::RegisterHelper<aspect::Particle::Generator::Interface<2>,classname<2 >> \
-    dummy_ ## classname ## _2d (&aspect::Particle::Generator::register_particle_generator<2>, \
-                                name, description); \
-    aspect::internal::Plugins::RegisterHelper<aspect::Particle::Generator::Interface<3>,classname<3>> \
-    dummy_ ## classname ## _3d (&aspect::Particle::Generator::register_particle_generator<3>, \
-                                name, description); \
+    aspect::internal::Plugins::RegisterHelper<aspect::Particle::Generator::Interface<2>, classname<2>> dummy_##classname##_2d( \
+      &aspect::Particle::Generator::register_particle_generator<2>, name, description); \
+    aspect::internal::Plugins::RegisterHelper<aspect::Particle::Generator::Interface<3>, classname<3>> dummy_##classname##_3d( \
+      &aspect::Particle::Generator::register_particle_generator<3>, name, description); \
   }
     }
   }

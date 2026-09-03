@@ -31,13 +31,12 @@ namespace aspect
     class NewPostprocessor : public aspect::InclusionBenchmark::SolCxPostprocessor<dim>
     {
       public:
-        virtual
-        std::list<std::string>
-        required_other_postprocessors () const
+        virtual std::list<std::string>
+        required_other_postprocessors() const
         {
           // select a postprocessor that is not selected in the .prm file
           std::list<std::string> deps;
-          deps.push_back ("velocity statistics");
+          deps.push_back("velocity statistics");
           return deps;
         }
     };
@@ -49,8 +48,6 @@ namespace aspect
 {
   namespace Postprocess
   {
-    ASPECT_REGISTER_POSTPROCESSOR(NewPostprocessor,
-                                  "new postprocessor",
-                                  ".")
+    ASPECT_REGISTER_POSTPROCESSOR(NewPostprocessor, "new postprocessor", ".")
   }
 }

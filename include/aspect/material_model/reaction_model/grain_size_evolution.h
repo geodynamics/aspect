@@ -55,7 +55,8 @@ namespace aspect
            * material crossed a phase transition and grain size needs to be
            * reset.
            */
-          void initialize_phase_function(std::shared_ptr<MaterialUtilities::PhaseFunction<dim>> &phase_function);
+          void
+          initialize_phase_function(std::shared_ptr<MaterialUtilities::PhaseFunction<dim>> &phase_function);
 
           /**
            * Rate of grain size growth (Ostwald ripening) or reduction
@@ -77,16 +78,22 @@ namespace aspect
            * interface of the DiffusionCreep and DislocationCreep rheology modules.
            */
           void
-          calculate_reaction_terms (const typename Interface<dim>::MaterialModelInputs  &in,
-                                    const std::vector<double>                           &adiabatic_pressure,
-                                    const std::vector<unsigned int>                     &phase_indices,
-                                    const std::function<double(const double,const double,
-                                                               const double,const SymmetricTensor<2,dim> &,const unsigned int,const double, const double)>          &dislocation_viscosity,
-                                    const std::function<double(
-                                      const double, const double, const double,const double,const double,const unsigned int)> &diffusion_viscosity,
-                                    const double                                         min_eta,
-                                    const double                                         max_eta,
-                                    typename Interface<dim>::MaterialModelOutputs       &out) const;
+          calculate_reaction_terms(
+            const typename Interface<dim>::MaterialModelInputs &in,
+            const std::vector<double>                          &adiabatic_pressure,
+            const std::vector<unsigned int>                    &phase_indices,
+            const std::function<double(const double,
+                                       const double,
+                                       const double,
+                                       const SymmetricTensor<2, dim> &,
+                                       const unsigned int,
+                                       const double,
+                                       const double)>          &dislocation_viscosity,
+            const std::function<double(const double, const double, const double, const double, const double, const unsigned int)>
+                                                          &diffusion_viscosity,
+            const double                                   min_eta,
+            const double                                   max_eta,
+            typename Interface<dim>::MaterialModelOutputs &out) const;
 
           /**
            * Create the additional material model outputs produced by this reaction model.
@@ -95,7 +102,7 @@ namespace aspect
            * reduce the grain size.
            */
           void
-          create_additional_named_outputs (MaterialModel::MaterialModelOutputs<dim> &out) const;
+          create_additional_named_outputs(MaterialModel::MaterialModelOutputs<dim> &out) const;
 
           /**
            * Fill the additional output objects created by the function
@@ -104,24 +111,23 @@ namespace aspect
            * ones it created.
            */
           void
-          fill_additional_outputs (const typename MaterialModel::MaterialModelInputs<dim> &in,
-                                   const typename MaterialModel::MaterialModelOutputs<dim> &out,
-                                   const std::vector<unsigned int> &phase_indices,
-                                   const std::vector<double> &dislocation_viscosities,
-                                   std::vector<std::shared_ptr<MaterialModel::AdditionalMaterialOutputs<dim>>> &additional_outputs) const;
+          fill_additional_outputs(const typename MaterialModel::MaterialModelInputs<dim>                      &in,
+                                  const typename MaterialModel::MaterialModelOutputs<dim>                     &out,
+                                  const std::vector<unsigned int>                                             &phase_indices,
+                                  const std::vector<double>                                                   &dislocation_viscosities,
+                                  std::vector<std::shared_ptr<MaterialModel::AdditionalMaterialOutputs<dim>>> &additional_outputs) const;
 
           /**
            * Declare the parameters this function takes through input files.
            */
-          static
-          void
-          declare_parameters (ParameterHandler &prm);
+          static void
+          declare_parameters(ParameterHandler &prm);
 
           /**
            * Read the parameters from the parameter file.
            */
           void
-          parse_parameters (ParameterHandler &prm);
+          parse_parameters(ParameterHandler &prm);
 
         private:
           /**
@@ -145,7 +151,7 @@ namespace aspect
           /**
            *  This variable is read from the parameter file through a parameter called 'Minimum grain size'.
            */
-          double              minimum_grain_size;
+          double minimum_grain_size;
           /**
            *  This variable is read from the parameter file through a parameter called 'Reciprocal required strain'.
            */
@@ -175,52 +181,51 @@ namespace aspect
            */
           struct Formulation
           {
-            /**
-             * This enum lists available options that
-             * determine the equations being used for grain size evolution.
-             *
-             * We currently support three approaches:
-             *
-             * 'paleowattmeter':
-             * Austin, N. J., & Evans, B. (2007). Paleowattmeters: A scaling
-             * relation for dynamically recrystallized grain size. Geology, 354), 343-346.).
-             *
-             * 'paleopiezometer':
-             * Hall, C. E., Parmentier, E. M. (2003). Influence of grain size
-             * evolution on convective instability. Geochemistry, Geophysics,
-             * Geosystems, 4(3).
-             *
-             * 'pinned_grain_damage':
-             * Mulyukova, E., & Bercovici, D. (2018). Collapse of passive margins
-             * by lithospheric damage and plunging grain size. Earth and Planetary
-             * Science Letters, 484, 341-352.
-             */
-            enum Kind
-            {
-              paleowattmeter,
-              paleopiezometer,
-              pinned_grain_damage
-            };
+              /**
+               * This enum lists available options that
+               * determine the equations being used for grain size evolution.
+               *
+               * We currently support three approaches:
+               *
+               * 'paleowattmeter':
+               * Austin, N. J., & Evans, B. (2007). Paleowattmeters: A scaling
+               * relation for dynamically recrystallized grain size. Geology, 354), 343-346.).
+               *
+               * 'paleopiezometer':
+               * Hall, C. E., Parmentier, E. M. (2003). Influence of grain size
+               * evolution on convective instability. Geochemistry, Geophysics,
+               * Geosystems, 4(3).
+               *
+               * 'pinned_grain_damage':
+               * Mulyukova, E., & Bercovici, D. (2018). Collapse of passive margins
+               * by lithospheric damage and plunging grain size. Earth and Planetary
+               * Science Letters, 484, 341-352.
+               */
+              enum Kind
+              {
+                paleowattmeter,
+                paleopiezometer,
+                pinned_grain_damage
+              };
 
-            /**
-             * This function translates an input string into the
-             * available enum options.
-             */
-            static
-            Kind
-            parse(const std::string &input)
-            {
-              if (input == "paleowattmeter")
-                return Formulation::paleowattmeter;
-              else if (input == "paleopiezometer")
-                return Formulation::paleopiezometer;
-              else if (input == "pinned grain damage")
-                return Formulation::pinned_grain_damage;
-              else
-                AssertThrow(false, ExcNotImplemented());
+              /**
+               * This function translates an input string into the
+               * available enum options.
+               */
+              static Kind
+              parse(const std::string &input)
+              {
+                if (input == "paleowattmeter")
+                  return Formulation::paleowattmeter;
+                else if (input == "paleopiezometer")
+                  return Formulation::paleopiezometer;
+                else if (input == "pinned grain damage")
+                  return Formulation::pinned_grain_damage;
+                else
+                  AssertThrow(false, ExcNotImplemented());
 
-              return Formulation::Kind();
-            }
+                return Formulation::Kind();
+              }
           };
 
           /**
@@ -236,7 +241,8 @@ namespace aspect
            * Collapse of passive margins by lithospheric damage
            * and plunging grain size. Earth and Planetary Science Letters, 484, 341-352.
            */
-          double compute_partitioning_fraction (const double temperature) const;
+          double
+          compute_partitioning_fraction(const double temperature) const;
 
           /**
            * Parameters controlling the partitioning of energy

@@ -1,0 +1,144 @@
+#
+# The clang-format (Clang 16) style file used by deal.II.
+#
+
+IndentAccessModifiers: true
+
+AlignAfterOpenBracket: Align
+AlignConsecutiveAssignments: true
+AlignConsecutiveDeclarations: true
+AlignEscapedNewlines: DontAlign
+AlignOperands: true
+AlignTrailingComments: true
+
+AllowAllParametersOfDeclarationOnNextLine: false
+AllowShortBlocksOnASingleLine: false
+AllowShortCaseLabelsOnASingleLine: false
+AllowShortFunctionsOnASingleLine: None
+AllowShortIfStatementsOnASingleLine: false
+AllowShortLoopsOnASingleLine: false
+
+AlwaysBreakAfterReturnType: All
+AlwaysBreakBeforeMultilineStrings: false
+AlwaysBreakTemplateDeclarations: true
+
+BinPackArguments: false
+BinPackParameters: false
+
+BraceWrapping:
+  AfterCaseLabel: true
+  AfterClass: true
+  AfterControlStatement: Always
+  AfterEnum: true
+  AfterExternBlock: true
+  AfterFunction: true
+  AfterNamespace: true
+  AfterStruct: true
+  AfterUnion: true
+  BeforeCatch: true
+  BeforeElse: true
+  BeforeLambdaBody: false
+  BeforeWhile: true
+  IndentBraces: true
+  SplitEmptyFunction: false
+  SplitEmptyRecord: false
+  SplitEmptyNamespace: false
+
+BreakBeforeBinaryOperators: None
+BreakBeforeBraces: Custom
+BreakBeforeInheritanceComma: false
+BreakBeforeTernaryOperators: false
+BreakConstructorInitializers: BeforeComma
+BreakStringLiterals: false
+
+ColumnLimit: 140
+
+CompactNamespaces: false
+
+ConstructorInitializerIndentWidth: 2
+
+ContinuationIndentWidth: 2
+
+Cpp11BracedListStyle: true
+
+DerivePointerAlignment: false
+
+FixNamespaceComments: false
+
+IncludeBlocks: Regroup
+IncludeCategories:
+# global.h must always be first:
+  - Regex:    "aspect/global.h"
+    Priority: -2
+# plugins.h next:
+  - Regex:    "aspect/plugins.h"
+    Priority: -1
+# ASPECT folders
+  - Regex:    "aspect/.*\\.h"
+    Priority: 10
+# deal.II folders in sorted order:
+  - Regex:    "deal.II/.*\\.h"
+    Priority: 100
+# put boost right after deal:
+  - Regex: "<boost.*>"
+    Priority: 500
+# try to group PETSc headers:
+  - Regex: "<petsc.*\\.h>"
+    Priority: 1000
+# try to catch all third party headers and put them after deal.II but before
+# standard headers:
+  - Regex: "<.*\\.(h|hpp|hxx)>"
+    Priority: 2000
+# match all standard headers. Things like '#include <armadillo>' should be
+# surrounded by #ifdef checks (which will not be merged by clang-format) so they
+# should not be caught here
+  - Regex: "<[a-z_]+>"
+    Priority: 100000
+# make sure that "../tests.h" appears before all other local include files
+# such that replacing Assert in tests also applies to the testing header files.
+  - Regex: "\\.\\./tests\\.h"
+    Priority: 200000
+
+IndentCaseLabels: true
+IndentPPDirectives: AfterHash
+IndentWidth: 2
+
+IndentWrappedFunctionNames: false
+
+KeepEmptyLinesAtTheStartOfBlocks: false
+
+Language: Cpp
+
+MaxEmptyLinesToKeep: 3
+
+NamespaceIndentation: All
+
+PenaltyBreakBeforeFirstCallParameter: 90
+
+PointerAlignment: Right
+
+ReflowComments: true
+CommentPragmas: '( \| |\*--|<li>|@ref | @p |@param |@name |@returns |@warning |@ingroup |@author |@date |@related |@relates |@relatesalso |@deprecated |@image |@return |@brief |@attention |@copydoc |@addtogroup |@todo |@tparam |@see |@note |@skip |@skipline |@until |@line |@dontinclude |@include)'
+
+QualifierAlignment: Left
+
+SortIncludes: true
+SortUsingDeclarations: true
+
+SpaceAfterCStyleCast: false
+SpaceAfterTemplateKeyword: true
+SpaceBeforeAssignmentOperators: true
+SpaceBeforeParens: ControlStatements
+SpaceInEmptyParentheses: false
+SpacesBeforeTrailingComments: 1
+SpacesInAngles: false
+SpacesInCStyleCastParentheses: false
+SpacesInContainerLiterals: false
+SpacesInParentheses: false
+SpacesInSquareBrackets: false
+
+Standard: c++20
+
+TabWidth: 2
+
+UseTab: Never

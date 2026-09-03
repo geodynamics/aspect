@@ -44,8 +44,7 @@ namespace aspect
            * @copydoc aspect::Particle::Property::Interface::initialize_one_particle_property()
            */
           void
-          initialize_one_particle_property (const Point<dim> &position,
-                                            std::vector<double> &particle_properties) const override;
+          initialize_one_particle_property(const Point<dim> &position, std::vector<double> &particle_properties) const override;
 
           /**
            * Returns an enum, which determines how this particle property is
@@ -54,11 +53,11 @@ namespace aspect
            * generated particles is set to the initialized value.
            */
           InitializationModeForLateParticles
-          late_initialization_mode () const override;
+          late_initialization_mode() const override;
 
           /**
-          * @copydoc aspect::Particle::Property::Interface::get_property_information()
-          */
+           * @copydoc aspect::Particle::Property::Interface::get_property_information()
+           */
           std::vector<std::pair<std::string, unsigned int>>
           get_property_information() const override;
       };

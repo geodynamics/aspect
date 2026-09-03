@@ -54,15 +54,14 @@ namespace aspect
            * properties.
            */
           void
-          initialize_one_particle_property (const Point<dim> &position,
-                                            std::vector<double> &particle_properties) const override;
+          initialize_one_particle_property(const Point<dim> &position, std::vector<double> &particle_properties) const override;
 
           /**
            * @copydoc aspect::Particle::Property::Interface::update_particle_properties()
            */
           void
-          update_particle_properties (const ParticleUpdateInputs<dim> &inputs,
-                                      typename ParticleHandler<dim>::particle_iterator_range &particles) const override;
+          update_particle_properties(const ParticleUpdateInputs<dim>                        &inputs,
+                                     typename ParticleHandler<dim>::particle_iterator_range &particles) const override;
 
           /**
            * Returns an enum, which determines how this particle property is
@@ -73,7 +72,7 @@ namespace aspect
            * condition, in which case it uses the boundary condition value.
            */
           InitializationModeForLateParticles
-          late_initialization_mode () const override;
+          late_initialization_mode() const override;
 
           /**
            * A function that returns the advection field to be used
@@ -100,15 +99,14 @@ namespace aspect
           /**
            * Declare the parameters this class takes through input files.
            */
-          static
-          void
-          declare_parameters (ParameterHandler &prm);
+          static void
+          declare_parameters(ParameterHandler &prm);
 
           /**
            * Read the parameters this class declares from the parameter file.
            */
           void
-          parse_parameters (ParameterHandler &prm) override;
+          parse_parameters(ParameterHandler &prm) override;
 
 
         private:

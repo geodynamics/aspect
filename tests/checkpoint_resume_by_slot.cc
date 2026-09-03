@@ -17,11 +17,10 @@
 
 namespace
 {
-  int run_command(const std::string &command)
+  int
+  run_command(const std::string &command)
   {
-    std::cout << "Executing the following command:\n"
-              << command
-              << std::endl;
+    std::cout << "Executing the following command:\n" << command << std::endl;
 
     const int ret = system(command.c_str());
     if (ret != 0)
@@ -31,7 +30,8 @@ namespace
   }
 }
 
-int f()
+int
+f()
 {
   std::cout << "* starting from beginning:" << std::endl;
 

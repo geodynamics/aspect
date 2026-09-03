@@ -22,12 +22,10 @@
 #ifndef _aspect_block_stokes_preconditioner_h
 #define _aspect_block_stokes_preconditioner_h
 
+#include <deal.II/lac/la_parallel_block_vector.h>
+#include <deal.II/lac/la_parallel_vector.h>
 #include <deal.II/lac/solver_bicgstab.h>
 #include <deal.II/lac/solver_cg.h>
-
-
-#include <deal.II/lac/la_parallel_vector.h>
-#include <deal.II/lac/la_parallel_block_vector.h>
 
 namespace aspect
 {
@@ -35,11 +33,11 @@ namespace aspect
   namespace internal
   {
     /**
-      * This class is used in the implementation of the right preconditioner
-      * as an approximation for the inverse of the velocity (A) block.
-      * This operator can either just apply the preconditioner (AMG)
-      * or perform an inner CG / BiCGStab solve with the same preconditioner.
-      */
+     * This class is used in the implementation of the right preconditioner
+     * as an approximation for the inverse of the velocity (A) block.
+     * This operator can either just apply the preconditioner (AMG)
+     * or perform an inner CG / BiCGStab solve with the same preconditioner.
+     */
     template <class PreconditionerA, class VectorType, class ABlockType>
     class InverseVelocityBlock
     {
@@ -54,60 +52,59 @@ namespace aspect
          * @param solver_tolerance The tolerance for the CG solver which computes
          *     the inverse of the A block.
          */
-        InverseVelocityBlock(const ABlockType &matrix,
+        InverseVelocityBlock(const ABlockType      &matrix,
                              const PreconditionerA &preconditioner,
-                             const bool do_solve_A,
-                             const bool A_block_is_symmetric,
-                             const double solver_tolerance);
+                             const bool             do_solve_A,
+                             const bool             A_block_is_symmetric,
+                             const double           solver_tolerance);
 
-        void vmult(VectorType &dst,
-                   const VectorType &src) const;
+        void
+        vmult(VectorType &dst, const VectorType &src) const;
 
-        unsigned int n_iterations() const;
+        unsigned int
+        n_iterations() const;
 
       private:
-        mutable unsigned int n_iterations_;
-        const ABlockType &matrix;
+        mutable unsigned int   n_iterations_;
+        const ABlockType      &matrix;
         const PreconditionerA &preconditioner;
-        const bool do_solve_A;
-        const bool A_block_is_symmetric;
-        const double solver_tolerance;
+        const bool             do_solve_A;
+        const bool             A_block_is_symmetric;
+        const double           solver_tolerance;
     };
 
 
 
-    template <class PreconditionerA,class VectorType, class ABlockType>
-    InverseVelocityBlock<PreconditionerA,VectorType,ABlockType>::InverseVelocityBlock(
-      const ABlockType &matrix,
-      const PreconditionerA &preconditioner,
-      const bool do_solve_A,
-      const bool A_block_is_symmetric,
-      const double solver_tolerance)
-      : n_iterations_ (0),
-        matrix (matrix),
-        preconditioner (preconditioner),
-        do_solve_A (do_solve_A),
-        A_block_is_symmetric (A_block_is_symmetric),
-        solver_tolerance (solver_tolerance)
+    template <class PreconditionerA, class VectorType, class ABlockType>
+    InverseVelocityBlock<PreconditionerA, VectorType, ABlockType>::InverseVelocityBlock(const ABlockType      &matrix,
+                                                                                        const PreconditionerA &preconditioner,
+                                                                                        const bool             do_solve_A,
+                                                                                        const bool             A_block_is_symmetric,
+                                                                                        const double           solver_tolerance)
+      : n_iterations_(0)
+      , matrix(matrix)
+      , preconditioner(preconditioner)
+      , do_solve_A(do_solve_A)
+      , A_block_is_symmetric(A_block_is_symmetric)
+      , solver_tolerance(solver_tolerance)
     {}
 
 
 
     /**
-    * Implements the vmult for InverseVelocityBlock. This applies the action of A^{-1} by either
-    * performing a solve with A or using a preconditioner sweep.
-    */
+     * Implements the vmult for InverseVelocityBlock. This applies the action of A^{-1} by either
+     * performing a solve with A or using a preconditioner sweep.
+     */
     template <class PreconditionerA, class VectorType, class ABlockType>
-    void InverseVelocityBlock<PreconditionerA,VectorType,ABlockType>::vmult(VectorType &dst,
-                                                                            const VectorType &src) const
+    void
+    InverseVelocityBlock<PreconditionerA, VectorType, ABlockType>::vmult(VectorType &dst, const VectorType &src) const
     {
-
       // Either solve with the top left block
       // or just apply one preconditioner sweep (for the first few
       // iterations of our two-stage outer GMRES iteration)
       if (do_solve_A == true)
         {
-          SolverControl solver_control(10000, src.l2_norm() * solver_tolerance);
+          SolverControl                     solver_control(10000, src.l2_norm() * solver_tolerance);
           PrimitiveVectorMemory<VectorType> mem;
 
           try
@@ -125,10 +122,9 @@ namespace aspect
                   // BiCGStab can also solve indefinite systems if necessary.
                   // Do not compute the exact residual, as this
                   // is more expensive, and we only need an approximate solution.
-                  SolverBicgstab<VectorType>
-                  solver(solver_control,
-                         mem,
-                         typename SolverBicgstab<VectorType>::AdditionalData(/*exact_residual=*/ false));
+                  SolverBicgstab<VectorType> solver(solver_control,
+                                                    mem,
+                                                    typename SolverBicgstab<VectorType>::AdditionalData(/*exact_residual=*/false));
                   solver.solve(matrix, dst, src, preconditioner);
                 }
               n_iterations_ += solver_control.last_step();
@@ -140,14 +136,14 @@ namespace aspect
               // processors
               Utilities::throw_linear_solver_failure_exception("iterative (top left) solver",
                                                                "BlockSchurPreconditioner::vmult",
-                                                               std::vector<SolverControl> {solver_control},
+                                                               std::vector<SolverControl>{solver_control},
                                                                exc,
                                                                src.get_mpi_communicator());
             }
         }
       else
         {
-          preconditioner.vmult (dst, src);
+          preconditioner.vmult(dst, src);
           n_iterations_ += 1;
         }
     }
@@ -155,7 +151,8 @@ namespace aspect
 
 
     template <class PreconditionerA, class VectorType, class ABlockType>
-    unsigned int InverseVelocityBlock<PreconditionerA, VectorType, ABlockType>::n_iterations() const
+    unsigned int
+    InverseVelocityBlock<PreconditionerA, VectorType, ABlockType>::n_iterations() const
     {
       return n_iterations_;
     }
@@ -164,12 +161,12 @@ namespace aspect
      * Implement the block Schur preconditioner
      * (A B^T; 0 S)^{-1}.
      */
-    template <class AInvOperator, class SInvOperator, class BTOperator,  class VectorType>
+    template <class AInvOperator, class SInvOperator, class BTOperator, class VectorType>
     class BlockSchurPreconditioner : public
-#if DEAL_II_VERSION_GTE(9,7,0)
-      EnableObserverPointer
+#if DEAL_II_VERSION_GTE(9, 7, 0)
+                                     EnableObserverPointer
 #else
-      Subscriptor
+                                     Subscriptor
 #endif
 
     {
@@ -180,58 +177,53 @@ namespace aspect
          * @param S_inverse_operator Approximation for the inverse Schur complement.
          * @param BT_operator Operator for the B^T block of the Stokes system.
          */
-        BlockSchurPreconditioner (
-          const AInvOperator                         &A_inverse_operator,
-          const SInvOperator                         &S_inverse_operator,
-          const BTOperator                           &BT_operator);
+        BlockSchurPreconditioner(const AInvOperator &A_inverse_operator,
+                                 const SInvOperator &S_inverse_operator,
+                                 const BTOperator   &BT_operator);
 
         /**
          * Matrix vector product with this preconditioner object.
          */
-        void vmult (VectorType       &dst,
-                    const VectorType &src) const;
+        void
+        vmult(VectorType &dst, const VectorType &src) const;
 
       private:
         /**
          * References to the various operators this preconditioner works with.
          */
 
-        const AInvOperator                     &A_inverse_operator;
-        const SInvOperator                     &S_inverse_operator;
-        const BTOperator                       &BT_operator;
-        mutable VectorType                      tmp;
+        const AInvOperator &A_inverse_operator;
+        const SInvOperator &S_inverse_operator;
+        const BTOperator   &BT_operator;
+        mutable VectorType  tmp;
     };
 
 
-    template <class AInvOperator, class SInvOperator, class BTOperator,  class VectorType>
-    BlockSchurPreconditioner<AInvOperator, SInvOperator, BTOperator, VectorType>::
-    BlockSchurPreconditioner (
-      const AInvOperator                         &A_inverse_operator,
-      const SInvOperator                         &S_inverse_operator,
-      const BTOperator                           &BT_operator)
-      :
-      A_inverse_operator (A_inverse_operator),
-      S_inverse_operator (S_inverse_operator),
-      BT_operator        (BT_operator)
+    template <class AInvOperator, class SInvOperator, class BTOperator, class VectorType>
+    BlockSchurPreconditioner<AInvOperator, SInvOperator, BTOperator, VectorType>::BlockSchurPreconditioner(
+      const AInvOperator &A_inverse_operator,
+      const SInvOperator &S_inverse_operator,
+      const BTOperator   &BT_operator)
+      : A_inverse_operator(A_inverse_operator)
+      , S_inverse_operator(S_inverse_operator)
+      , BT_operator(BT_operator)
     {}
 
 
 
     template <class AInvOperator, class SInvOperator, class BTOperator, class VectorType>
     void
-    BlockSchurPreconditioner<AInvOperator, SInvOperator, BTOperator, VectorType>::
-    vmult (VectorType       &dst,
-           const VectorType &src) const
+    BlockSchurPreconditioner<AInvOperator, SInvOperator, BTOperator, VectorType>::vmult(VectorType &dst, const VectorType &src) const
     {
       if (tmp.size() == 0)
         tmp.reinit(src);
 
 
-      dst=0.0;
+      dst = 0.0;
 
       // first apply the Schur Complement inverse operator.
       {
-        S_inverse_operator.vmult(dst.block(1),src.block(1));
+        S_inverse_operator.vmult(dst.block(1), src.block(1));
         dst.block(1) *= -1.0;
       }
 
@@ -256,7 +248,7 @@ namespace aspect
 
 
 
-    template<class OperatorType, class StokesMatrixType, class SchurComplementMatrixType, class VectorType>
+    template <class OperatorType, class StokesMatrixType, class SchurComplementMatrixType, class VectorType>
     class SchurApproximation
     {
       public:
@@ -268,51 +260,51 @@ namespace aspect
          * @param do_solve_Schur_complement Flag that determines whether to do a full solve with the Schur complement or a v-cycle.
          * @param Schur_complement_tolerance Tolerance in case a full solve for the Schur complement is used.
          */
-        SchurApproximation(const OperatorType &schur_preconditioner,
-                           const StokesMatrixType &stokes_matrix,
+        SchurApproximation(const OperatorType              &schur_preconditioner,
+                           const StokesMatrixType          &stokes_matrix,
                            const SchurComplementMatrixType &Schur_complement_block,
-                           const bool do_solve_Schur_complement,
-                           const double Schur_complement_tolerance);
-        void vmult( VectorType &dst, const VectorType &src) const;
-        unsigned int n_iterations() const;
+                           const bool                       do_solve_Schur_complement,
+                           const double                     Schur_complement_tolerance);
+        void
+        vmult(VectorType &dst, const VectorType &src) const;
+        unsigned int
+        n_iterations() const;
 
       private:
-        const OperatorType &schur_preconditioner;
-        const StokesMatrixType &stokes_matrix;
+        const OperatorType              &schur_preconditioner;
+        const StokesMatrixType          &stokes_matrix;
         const SchurComplementMatrixType &Schur_complement_block;
-        const bool do_solve_Schur_complement;
-        const double Schur_complement_tolerance;
-        mutable unsigned int n_iterations_Schur_complement_;
-
-
+        const bool                       do_solve_Schur_complement;
+        const double                     Schur_complement_tolerance;
+        mutable unsigned int             n_iterations_Schur_complement_;
     };
 
 
 
     template <class OperatorType, class StokesMatrixType, class SchurComplementMatrixType, class VectorType>
-    SchurApproximation<OperatorType, StokesMatrixType, SchurComplementMatrixType, VectorType>::SchurApproximation(const OperatorType &schur_preconditioner,
-        const StokesMatrixType &stokes_matrix,
-        const SchurComplementMatrixType &Schur_complement_block,
-        const bool do_solve_Schur_complement,
-        const double Schur_complement_tolerance)
-      :
-      schur_preconditioner(schur_preconditioner),
-      stokes_matrix(stokes_matrix),
-      Schur_complement_block(Schur_complement_block),
-      do_solve_Schur_complement(do_solve_Schur_complement),
-      Schur_complement_tolerance(Schur_complement_tolerance),
-      n_iterations_Schur_complement_(0)
+    SchurApproximation<OperatorType, StokesMatrixType, SchurComplementMatrixType, VectorType>::SchurApproximation(
+      const OperatorType              &schur_preconditioner,
+      const StokesMatrixType          &stokes_matrix,
+      const SchurComplementMatrixType &Schur_complement_block,
+      const bool                       do_solve_Schur_complement,
+      const double                     Schur_complement_tolerance)
+      : schur_preconditioner(schur_preconditioner)
+      , stokes_matrix(stokes_matrix)
+      , Schur_complement_block(Schur_complement_block)
+      , do_solve_Schur_complement(do_solve_Schur_complement)
+      , Schur_complement_tolerance(Schur_complement_tolerance)
+      , n_iterations_Schur_complement_(0)
     {}
 
 
-    template<class OperatorType, class StokesMatrixType, class SchurComplementMatrixType, class VectorType>
-    void SchurApproximation<OperatorType, StokesMatrixType, SchurComplementMatrixType, VectorType>::vmult(VectorType &dst,
-        const VectorType &src) const
+    template <class OperatorType, class StokesMatrixType, class SchurComplementMatrixType, class VectorType>
+    void
+    SchurApproximation<OperatorType, StokesMatrixType, SchurComplementMatrixType, VectorType>::vmult(VectorType       &dst,
+                                                                                                     const VectorType &src) const
     {
       if (do_solve_Schur_complement)
         {
-
-          SolverControl solver_control(100, src.l2_norm() * Schur_complement_tolerance,true);
+          SolverControl solver_control(100, src.l2_norm() * Schur_complement_tolerance, true);
 
           SolverCG<VectorType> solver(solver_control);
           // Trilinos reports a breakdown in case src=dst=0, even
@@ -325,9 +317,7 @@ namespace aspect
                   // explicitly zero out because GMRES does not guarantee that dst is zeroed out
                   dst = 0.0;
 
-                  solver.solve(Schur_complement_block,
-                               dst, src,
-                               schur_preconditioner);
+                  solver.solve(Schur_complement_block, dst, src, schur_preconditioner);
                   n_iterations_Schur_complement_ += solver_control.last_step();
                 }
               // if the solver fails, report the error from processor 0 with some additional
@@ -337,7 +327,7 @@ namespace aspect
                 {
                   Utilities::throw_linear_solver_failure_exception("iterative (bottom right) solver",
                                                                    "BlockSchurPreconditioner::vmult",
-                                                                   std::vector<SolverControl> {solver_control},
+                                                                   std::vector<SolverControl>{solver_control},
                                                                    exc,
                                                                    src.get_mpi_communicator());
                 }
@@ -346,12 +336,13 @@ namespace aspect
       else
         {
           dst = 0.0;
-          schur_preconditioner.vmult(dst,src);
+          schur_preconditioner.vmult(dst, src);
           n_iterations_Schur_complement_ += 1;
         }
     }
-    template<class OperatorType, class StokesMatrixType, class SchurComplementMatrixType, class VectorType>
-    unsigned int SchurApproximation<OperatorType, StokesMatrixType, SchurComplementMatrixType, VectorType>::n_iterations() const
+    template <class OperatorType, class StokesMatrixType, class SchurComplementMatrixType, class VectorType>
+    unsigned int
+    SchurApproximation<OperatorType, StokesMatrixType, SchurComplementMatrixType, VectorType>::n_iterations() const
     {
       return n_iterations_Schur_complement_;
     }

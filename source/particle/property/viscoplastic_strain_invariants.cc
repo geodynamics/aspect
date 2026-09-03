@@ -18,10 +18,10 @@
  <http://www.gnu.org/licenses/>.
  */
 
-#include <aspect/particle/property/viscoplastic_strain_invariants.h>
-#include <aspect/material_model/visco_plastic.h>
 #include <aspect/initial_composition/interface.h>
 #include <aspect/material_model/compositing.h>
+#include <aspect/material_model/visco_plastic.h>
+#include <aspect/particle/property/viscoplastic_strain_invariants.h>
 
 
 namespace aspect
@@ -32,25 +32,24 @@ namespace aspect
     {
 
       template <int dim>
-      ViscoPlasticStrainInvariant<dim>::ViscoPlasticStrainInvariant ()
-        :
-        n_components(0),
-        material_inputs(0,0)
+      ViscoPlasticStrainInvariant<dim>::ViscoPlasticStrainInvariant()
+        : n_components(0)
+        , material_inputs(0, 0)
       {}
 
 
 
       template <int dim>
       void
-      ViscoPlasticStrainInvariant<dim>::initialize ()
+      ViscoPlasticStrainInvariant<dim>::initialize()
       {
-        AssertThrow((MaterialModel::material_model_matches_or_uses<const MaterialModel::ViscoPlastic<dim>, dim>
-                     (this->get_material_model(), MaterialModel::Property::viscosity)),
+        AssertThrow((MaterialModel::material_model_matches_or_uses<const MaterialModel::ViscoPlastic<dim>, dim>(
+                      this->get_material_model(), MaterialModel::Property::viscosity)),
                     ExcMessage("This initial condition only makes sense in combination "
                                "with the visco_plastic material model."));
 
         n_components = 0;
-        material_inputs.resize (1,this->n_compositional_fields());
+        material_inputs.resize(1, this->n_compositional_fields());
 
         // Find out which fields are used.
         if (this->introspection().compositional_name_exists("plastic_strain"))
@@ -76,55 +75,56 @@ namespace aspect
 
       template <int dim>
       void
-      ViscoPlasticStrainInvariant<dim>::initialize_one_particle_property(const Point<dim> &position,
-                                                                         std::vector<double> &data) const
+      ViscoPlasticStrainInvariant<dim>::initialize_one_particle_property(const Point<dim> &position, std::vector<double> &data) const
       {
         // Give each strain field its initial composition if one is prescribed.
         if (this->introspection().compositional_name_exists("plastic_strain"))
-          data.push_back(this->get_initial_composition_manager().initial_composition(position,this->introspection().compositional_index_for_name("plastic_strain")));
+          data.push_back(this->get_initial_composition_manager().initial_composition(
+            position, this->introspection().compositional_index_for_name("plastic_strain")));
 
         if (this->introspection().compositional_name_exists("viscous_strain"))
-          data.push_back(this->get_initial_composition_manager().initial_composition(position,this->introspection().compositional_index_for_name("viscous_strain")));
+          data.push_back(this->get_initial_composition_manager().initial_composition(
+            position, this->introspection().compositional_index_for_name("viscous_strain")));
 
         if (this->introspection().compositional_name_exists("total_strain"))
-          data.push_back(this->get_initial_composition_manager().initial_composition(position,this->introspection().compositional_index_for_name("total_strain")));
+          data.push_back(this->get_initial_composition_manager().initial_composition(
+            position, this->introspection().compositional_index_for_name("total_strain")));
 
         if (this->introspection().compositional_name_exists("noninitial_plastic_strain"))
-          data.push_back(this->get_initial_composition_manager().initial_composition(position,this->introspection().compositional_index_for_name("noninitial_plastic_strain")));
-
+          data.push_back(this->get_initial_composition_manager().initial_composition(
+            position, this->introspection().compositional_index_for_name("noninitial_plastic_strain")));
       }
 
 
 
       template <int dim>
       void
-      ViscoPlasticStrainInvariant<dim>::update_particle_properties(const ParticleUpdateInputs<dim> &inputs,
+      ViscoPlasticStrainInvariant<dim>::update_particle_properties(const ParticleUpdateInputs<dim>                        &inputs,
                                                                    typename ParticleHandler<dim>::particle_iterator_range &particles) const
       {
         // Find out plastic yielding by calling function in material model.
-        const MaterialModel::ViscoPlastic<dim> &viscoplastic
-          = MaterialModel::get_material_model_matches_or_uses<const MaterialModel::ViscoPlastic<dim>, dim>
-            (this->get_material_model(), MaterialModel::Property::viscosity);
+        const MaterialModel::ViscoPlastic<dim> &viscoplastic =
+          MaterialModel::get_material_model_matches_or_uses<const MaterialModel::ViscoPlastic<dim>, dim>(
+            this->get_material_model(), MaterialModel::Property::viscosity);
 
         // Current timestep
-        const double dt = this->get_timestep();
+        const double       dt            = this->get_timestep();
         const unsigned int data_position = this->data_position;
 
         unsigned int p = 0;
-        for (auto &particle: particles)
+        for (auto &particle : particles)
           {
-
             // Velocity gradients
-            Tensor<2,dim> grad_u;
-            for (unsigned int d=0; d<dim; ++d)
+            Tensor<2, dim> grad_u;
+            for (unsigned int d = 0; d < dim; ++d)
               grad_u[d] = inputs.gradients[p][d];
 
-            material_inputs.pressure[0] = inputs.solution[p][this->introspection().component_indices.pressure];
+            material_inputs.pressure[0]    = inputs.solution[p][this->introspection().component_indices.pressure];
             material_inputs.temperature[0] = inputs.solution[p][this->introspection().component_indices.temperature];
-            material_inputs.position[0] = particle.get_location();
+            material_inputs.position[0]    = particle.get_location();
 
             // Calculate strain rate from velocity gradients
-            material_inputs.strain_rate[0] = symmetrize (grad_u);
+            material_inputs.strain_rate[0] = symmetrize(grad_u);
 
             // Put compositional fields into single variable
             for (unsigned int i = 0; i < this->n_compositional_fields(); ++i)
@@ -139,10 +139,12 @@ namespace aspect
             const auto data = particle.get_properties();
 
             // Calculate strain rate second invariant
-            const double edot_ii = std::sqrt(std::max(-Utilities::Tensors::consistent_second_invariant_of_deviatoric_tensor(Utilities::Tensors::consistent_deviator(material_inputs.strain_rate[0])), 0.));
+            const double edot_ii = std::sqrt(std::max(-Utilities::Tensors::consistent_second_invariant_of_deviatoric_tensor(
+                                                        Utilities::Tensors::consistent_deviator(material_inputs.strain_rate[0])),
+                                                      0.));
 
             // Calculate strain invariant magnitude over the last time step
-            const double strain_update = dt*edot_ii;
+            const double strain_update = dt * edot_ii;
 
             /* Update the strain values that are used in the simulation, which use the following assumptions
              * to identify the correct position in the data vector for each value:
@@ -171,7 +173,7 @@ namespace aspect
                 // and noninitial plastic strain (third data position). In either case, the viscous
                 // strain is in the second data position, allowing us to use a single expression.
                 if (n_components > 1)
-                  data[data_position+1] += strain_update;
+                  data[data_position + 1] += strain_update;
               }
 
             // Only one field, which tracks total strain and is updated regardless of whether the
@@ -181,7 +183,7 @@ namespace aspect
 
             // Yielding, and noninitial plastic strain (last data position, updated below) is tracked.
             if (this->introspection().compositional_name_exists("noninitial_plastic_strain") && plastic_yielding == true)
-              data[data_position+(n_components-1)] += strain_update;
+              data[data_position + (n_components - 1)] += strain_update;
 
             ++p;
           }
@@ -200,7 +202,7 @@ namespace aspect
 
       template <int dim>
       UpdateFlags
-      ViscoPlasticStrainInvariant<dim>::get_update_flags (const unsigned int component) const
+      ViscoPlasticStrainInvariant<dim>::get_update_flags(const unsigned int component) const
       {
         if (this->introspection().component_masks.velocities[component] == true)
           return update_values | update_gradients;
@@ -212,9 +214,9 @@ namespace aspect
       std::vector<std::pair<std::string, unsigned int>>
       ViscoPlasticStrainInvariant<dim>::get_property_information() const
       {
-        std::vector<std::pair<std::string,unsigned int>> property_information;
+        std::vector<std::pair<std::string, unsigned int>> property_information;
 
-        //Check which fields are used in model and make an output for each.
+        // Check which fields are used in model and make an output for each.
         if (this->introspection().compositional_name_exists("plastic_strain"))
           property_information.emplace_back("plastic_strain", 1);
 
@@ -240,15 +242,16 @@ namespace aspect
   {
     namespace Property
     {
-      ASPECT_REGISTER_PARTICLE_PROPERTY(ViscoPlasticStrainInvariant,
-                                        "viscoplastic strain invariants",
-                                        "A plugin that calculates the finite strain invariant a particle has "
-                                        "experienced and assigns it to either the plastic and/or viscous strain field based "
-                                        "on whether the material is plastically yielding, or the total strain field "
-                                        "used in the visco plastic material model. The implementation of this property "
-                                        "is equivalent to the implementation for compositional fields that is located in "
-                                        "the plugin in \\texttt{benchmarks/buiter\\_et\\_al\\_2008\\_jgr/plugin/},"
-                                        "and is effectively the same as what the visco plastic material model uses for compositional fields.")
+      ASPECT_REGISTER_PARTICLE_PROPERTY(
+        ViscoPlasticStrainInvariant,
+        "viscoplastic strain invariants",
+        "A plugin that calculates the finite strain invariant a particle has "
+        "experienced and assigns it to either the plastic and/or viscous strain field based "
+        "on whether the material is plastically yielding, or the total strain field "
+        "used in the visco plastic material model. The implementation of this property "
+        "is equivalent to the implementation for compositional fields that is located in "
+        "the plugin in \\texttt{benchmarks/buiter\\_et\\_al\\_2008\\_jgr/plugin/},"
+        "and is effectively the same as what the visco plastic material model uses for compositional fields.")
     }
   }
 }

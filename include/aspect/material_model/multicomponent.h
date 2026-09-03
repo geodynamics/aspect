@@ -21,9 +21,9 @@
 #ifndef _aspect_material_model_multicomponent_h
 #define _aspect_material_model_multicomponent_h
 
+#include <aspect/material_model/equation_of_state/multicomponent_incompressible.h>
 #include <aspect/material_model/interface.h>
 #include <aspect/simulator_access.h>
-#include <aspect/material_model/equation_of_state/multicomponent_incompressible.h>
 
 
 namespace aspect
@@ -62,13 +62,12 @@ namespace aspect
     class Multicomponent : public MaterialModel::Interface<dim>, public ::aspect::SimulatorAccess<dim>
     {
       public:
-
         /**
          * Function to compute the material properties in @p out given the
          * inputs in @p in.
          */
-        void evaluate(const MaterialModel::MaterialModelInputs<dim> &in,
-                      MaterialModel::MaterialModelOutputs<dim> &out) const override;
+        void
+        evaluate(const MaterialModel::MaterialModelInputs<dim> &in, MaterialModel::MaterialModelOutputs<dim> &out) const override;
 
         /**
          * @name Qualitative properties one can ask a material model
@@ -78,7 +77,8 @@ namespace aspect
         /**
          * This model is not compressible, so this returns false.
          */
-        bool is_compressible () const override;
+        bool
+        is_compressible() const override;
 
         /**
          * @}
@@ -92,15 +92,14 @@ namespace aspect
         /**
          * Declare the parameters this class takes through input files.
          */
-        static
-        void
-        declare_parameters (ParameterHandler &prm);
+        static void
+        declare_parameters(ParameterHandler &prm);
 
         /**
          * Read the parameters this class declares from the parameter file.
          */
         void
-        parse_parameters (ParameterHandler &prm) override;
+        parse_parameters(ParameterHandler &prm) override;
 
         /**
          * @}

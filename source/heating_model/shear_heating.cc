@@ -28,55 +28,52 @@ namespace aspect
   {
     template <int dim>
     void
-    ShearHeating<dim>::
-    evaluate (const MaterialModel::MaterialModelInputs<dim> &material_model_inputs,
-              const MaterialModel::MaterialModelOutputs<dim> &material_model_outputs,
-              HeatingModel::HeatingModelOutputs &heating_model_outputs) const
+    ShearHeating<dim>::evaluate(const MaterialModel::MaterialModelInputs<dim>  &material_model_inputs,
+                                const MaterialModel::MaterialModelOutputs<dim> &material_model_outputs,
+                                HeatingModel::HeatingModelOutputs              &heating_model_outputs) const
     {
       Assert(heating_model_outputs.heating_source_terms.size() == material_model_inputs.n_evaluation_points(),
-             ExcMessage ("Heating outputs need to have the same number of entries as the material model inputs."));
+             ExcMessage("Heating outputs need to have the same number of entries as the material model inputs."));
 
       // Check if the material model has additional outputs relevant for the shear heating.
-      const std::shared_ptr<const ShearHeatingOutputs<dim>> shear_heating_out
-        = material_model_outputs.template get_additional_output_object<ShearHeatingOutputs<dim>>();
+      const std::shared_ptr<const ShearHeatingOutputs<dim>> shear_heating_out =
+        material_model_outputs.template get_additional_output_object<ShearHeatingOutputs<dim>>();
 
-      const std::shared_ptr<const PrescribedShearHeatingOutputs<dim>> prescribed_shear_heating_out
-        = material_model_outputs.template get_additional_output_object<PrescribedShearHeatingOutputs<dim>>();
+      const std::shared_ptr<const PrescribedShearHeatingOutputs<dim>> prescribed_shear_heating_out =
+        material_model_outputs.template get_additional_output_object<PrescribedShearHeatingOutputs<dim>>();
 
-      for (unsigned int q=0; q<heating_model_outputs.heating_source_terms.size(); ++q)
+      for (unsigned int q = 0; q < heating_model_outputs.heating_source_terms.size(); ++q)
         {
           // If the viscous dissipation rate was precomputed by the material model,
           // use it and skip the rest of the calculation.
           if (prescribed_shear_heating_out != nullptr)
             {
-              heating_model_outputs.heating_source_terms[q] = prescribed_shear_heating_out->prescribed_shear_heating_rates[q];
+              heating_model_outputs.heating_source_terms[q]  = prescribed_shear_heating_out->prescribed_shear_heating_rates[q];
               heating_model_outputs.lhs_latent_heat_terms[q] = 0.0;
               continue;
             }
 
-          const SymmetricTensor<2,dim> deviatoric_strain_rate =
-            (this->get_material_model().is_compressible()
-             ?
-             material_model_inputs.strain_rate[q]
-             - 1./3. * trace(material_model_inputs.strain_rate[q]) * unit_symmetric_tensor<dim>()
-             :
-             material_model_inputs.strain_rate[q]);
+          const SymmetricTensor<2, dim> deviatoric_strain_rate =
+            (this->get_material_model().is_compressible() ?
+               material_model_inputs.strain_rate[q] - 1. / 3. * trace(material_model_inputs.strain_rate[q]) * unit_symmetric_tensor<dim>() :
+               material_model_inputs.strain_rate[q]);
 
-          SymmetricTensor<2,dim> stress = 2 * material_model_outputs.viscosities[q] * deviatoric_strain_rate;
+          SymmetricTensor<2, dim> stress = 2 * material_model_outputs.viscosities[q] * deviatoric_strain_rate;
 
           if (limit_stress)
             {
               // Compute yield stress.
               MaterialModel::Rheology::DruckerPragerParameters drucker_prager_parameters;
-              drucker_prager_parameters.cohesion = cohesion;
+              drucker_prager_parameters.cohesion                = cohesion;
               drucker_prager_parameters.angle_internal_friction = friction_angle;
-              drucker_prager_parameters.max_yield_stress = std::numeric_limits<double>::max();
-              const double pressure = std::max(material_model_inputs.pressure[q], 0.0);
-              const double yield_stress = drucker_prager_plasticity.compute_yield_stress(pressure,
-                                                                                         drucker_prager_parameters);
+              drucker_prager_parameters.max_yield_stress        = std::numeric_limits<double>::max();
+              const double pressure                             = std::max(material_model_inputs.pressure[q], 0.0);
+              const double yield_stress = drucker_prager_plasticity.compute_yield_stress(pressure, drucker_prager_parameters);
 
               // Scale the stress accordingly.
-              const double deviatoric_stress = 2 * material_model_outputs.viscosities[q] * std::sqrt(std::fabs(Utilities::Tensors::consistent_second_invariant_of_deviatoric_tensor(deviatoric_strain_rate)));
+              const double deviatoric_stress =
+                2 * material_model_outputs.viscosities[q] *
+                std::sqrt(std::fabs(Utilities::Tensors::consistent_second_invariant_of_deviatoric_tensor(deviatoric_strain_rate)));
               double scaling_factor = 1.0;
               if (deviatoric_stress > 0.0)
                 scaling_factor = std::min(yield_stress / deviatoric_stress, 1.0);
@@ -103,51 +100,52 @@ namespace aspect
 
     template <int dim>
     MaterialModel::MaterialProperties::Property
-    ShearHeating<dim>::
-    get_required_properties () const
+    ShearHeating<dim>::get_required_properties() const
     {
-      return MaterialModel::MaterialProperties::viscosity |
-             MaterialModel::MaterialProperties::additional_outputs;
+      return MaterialModel::MaterialProperties::viscosity | MaterialModel::MaterialProperties::additional_outputs;
     }
 
 
 
     template <int dim>
     void
-    ShearHeating<dim>::declare_parameters (ParameterHandler &prm)
+    ShearHeating<dim>::declare_parameters(ParameterHandler &prm)
     {
       prm.enter_subsection("Heating model");
       {
         prm.enter_subsection("Shear heating");
         {
-          prm.declare_entry ("Limit stress contribution to shear heating", "false",
-                             Patterns::Bool (),
-                             "In models with prescribed boundary velocities, stresses can become "
-                             "unrealistically large. Using these large stresses when calculating "
-                             "the amount of shear heating would then lead to an unreasonable "
-                             "increase in temperature. This parameter indicates if the stress being "
-                             "used to compute the amount of shear heating should be limited based on "
-                             "a Drucker-Prager yield criterion with the cohesion given by the "
-                             "'Cohesion for maximum shear stress' parameter and the friction angle "
-                             "given by the 'Friction angle for maximum shear stress' parameter.");
-          prm.declare_entry ("Cohesion for maximum shear stress", "2e7",
-                             Patterns::Double (0),
-                             "Cohesion for maximum shear stress that should be used for the computation "
-                             "of shear heating. It can be useful to limit the shear stress "
-                             "in models where velocities are prescribed, and actual stresses "
-                             "in the Earth would be lower than the stresses introduced by the "
-                             "boundary conditions. Only used if 'Limit stress contribution to shear heating' "
-                             "is true. "
-                             "Units: \\si{\\pascal}.");
-          prm.declare_entry ("Friction angle for maximum shear stress", "0",
-                             Patterns::Double (0),
-                             "Friction angle for maximum shear stress that should be used for the computation "
-                             "of shear heating. It can be useful to limit the shear stress "
-                             "in models where velocities are prescribed, and actual stresses "
-                             "in the Earth would be lower than the stresses introduced by the "
-                             "boundary conditions. Only used if 'Limit stress contribution to shear heating' "
-                             "is true. "
-                             "Units: none.");
+          prm.declare_entry("Limit stress contribution to shear heating",
+                            "false",
+                            Patterns::Bool(),
+                            "In models with prescribed boundary velocities, stresses can become "
+                            "unrealistically large. Using these large stresses when calculating "
+                            "the amount of shear heating would then lead to an unreasonable "
+                            "increase in temperature. This parameter indicates if the stress being "
+                            "used to compute the amount of shear heating should be limited based on "
+                            "a Drucker-Prager yield criterion with the cohesion given by the "
+                            "'Cohesion for maximum shear stress' parameter and the friction angle "
+                            "given by the 'Friction angle for maximum shear stress' parameter.");
+          prm.declare_entry("Cohesion for maximum shear stress",
+                            "2e7",
+                            Patterns::Double(0),
+                            "Cohesion for maximum shear stress that should be used for the computation "
+                            "of shear heating. It can be useful to limit the shear stress "
+                            "in models where velocities are prescribed, and actual stresses "
+                            "in the Earth would be lower than the stresses introduced by the "
+                            "boundary conditions. Only used if 'Limit stress contribution to shear heating' "
+                            "is true. "
+                            "Units: \\si{\\pascal}.");
+          prm.declare_entry("Friction angle for maximum shear stress",
+                            "0",
+                            Patterns::Double(0),
+                            "Friction angle for maximum shear stress that should be used for the computation "
+                            "of shear heating. It can be useful to limit the shear stress "
+                            "in models where velocities are prescribed, and actual stresses "
+                            "in the Earth would be lower than the stresses introduced by the "
+                            "boundary conditions. Only used if 'Limit stress contribution to shear heating' "
+                            "is true. "
+                            "Units: none.");
         }
         prm.leave_subsection();
       }
@@ -158,15 +156,15 @@ namespace aspect
 
     template <int dim>
     void
-    ShearHeating<dim>::parse_parameters (ParameterHandler &prm)
+    ShearHeating<dim>::parse_parameters(ParameterHandler &prm)
     {
       prm.enter_subsection("Heating model");
       {
         prm.enter_subsection("Shear heating");
         {
-          limit_stress = prm.get_bool ("Limit stress contribution to shear heating");
-          cohesion = prm.get_double ("Cohesion for maximum shear stress");
-          friction_angle = prm.get_double ("Friction angle for maximum shear stress");
+          limit_stress   = prm.get_bool("Limit stress contribution to shear heating");
+          cohesion       = prm.get_double("Cohesion for maximum shear stress");
+          friction_angle = prm.get_double("Friction angle for maximum shear stress");
         }
         prm.leave_subsection();
       }
@@ -175,11 +173,9 @@ namespace aspect
 
 
 
-
     template <int dim>
     void
-    ShearHeating<dim>::
-    create_additional_material_model_outputs(MaterialModel::MaterialModelOutputs<dim> &material_model_outputs) const
+    ShearHeating<dim>::create_additional_material_model_outputs(MaterialModel::MaterialModelOutputs<dim> &material_model_outputs) const
     {
       this->get_material_model().create_additional_named_outputs(material_model_outputs);
     }
@@ -187,10 +183,9 @@ namespace aspect
 
 
     template <int dim>
-    ShearHeatingOutputs<dim>::ShearHeatingOutputs (const unsigned int n_points)
-      :
-      MaterialModel::NamedAdditionalMaterialOutputs<dim>({"shear_heating_work_fraction"}),
-                  shear_heating_work_fractions(n_points, numbers::signaling_nan<double>())
+    ShearHeatingOutputs<dim>::ShearHeatingOutputs(const unsigned int n_points)
+      : MaterialModel::NamedAdditionalMaterialOutputs<dim>({"shear_heating_work_fraction"})
+      , shear_heating_work_fractions(n_points, numbers::signaling_nan<double>())
     {}
 
 
@@ -199,8 +194,8 @@ namespace aspect
     std::vector<double>
     ShearHeatingOutputs<dim>::get_nth_output(const unsigned int idx) const
     {
-      (void) idx;
-      AssertIndexRange (idx, 1);
+      (void)idx;
+      AssertIndexRange(idx, 1);
 
       return shear_heating_work_fractions;
     }
@@ -208,10 +203,9 @@ namespace aspect
 
 
     template <int dim>
-    PrescribedShearHeatingOutputs<dim>::PrescribedShearHeatingOutputs (const unsigned int n_points)
-      :
-      MaterialModel::NamedAdditionalMaterialOutputs<dim>({"prescribed_shear_heating_rates"}),
-                  prescribed_shear_heating_rates(n_points, numbers::signaling_nan<double>())
+    PrescribedShearHeatingOutputs<dim>::PrescribedShearHeatingOutputs(const unsigned int n_points)
+      : MaterialModel::NamedAdditionalMaterialOutputs<dim>({"prescribed_shear_heating_rates"})
+      , prescribed_shear_heating_rates(n_points, numbers::signaling_nan<double>())
     {}
 
 
@@ -220,8 +214,8 @@ namespace aspect
     std::vector<double>
     PrescribedShearHeatingOutputs<dim>::get_nth_output(const unsigned int idx) const
     {
-      (void) idx;
-      AssertIndexRange (idx, 1);
+      (void)idx;
+      AssertIndexRange(idx, 1);
 
       return prescribed_shear_heating_rates;
     }

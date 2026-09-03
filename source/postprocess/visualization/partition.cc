@@ -30,26 +30,22 @@ namespace aspect
     namespace VisualizationPostprocessors
     {
       template <int dim>
-      Partition<dim>::
-      Partition ()
-        :
-        // we don't need to know about any of the solution values
-        // in order to determine the partition number. thus, no
-        // need to specify any update flags
-        DataPostprocessorScalar<dim> ("partition",
-                                      update_default),
-        Interface<dim>("")  // no physical units
+      Partition<dim>::Partition()
+        : // we don't need to know about any of the solution values
+          // in order to determine the partition number. thus, no
+          // need to specify any update flags
+        DataPostprocessorScalar<dim>("partition", update_default)
+        , Interface<dim>("") // no physical units
       {}
 
 
 
       template <int dim>
       void
-      Partition<dim>::
-      evaluate_vector_field(const DataPostprocessorInputs::Vector<dim> &/*input_data*/,
-                            std::vector<Vector<double>> &computed_quantities) const
+      Partition<dim>::evaluate_vector_field(const DataPostprocessorInputs::Vector<dim> & /*input_data*/,
+                                            std::vector<Vector<double>> &computed_quantities) const
       {
-        Assert (computed_quantities[0].size() == 1, ExcInternalError());
+        Assert(computed_quantities[0].size() == 1, ExcInternalError());
 
         for (auto &quantity : computed_quantities)
           {

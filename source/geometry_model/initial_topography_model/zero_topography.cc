@@ -28,8 +28,7 @@ namespace aspect
   {
     template <int dim>
     double
-    ZeroTopography<dim>::
-    value (const Point<dim-1> &/*p*/) const
+    ZeroTopography<dim>::value(const Point<dim - 1> & /*p*/) const
     {
       // return a zero value regardless of position
       return 0.0;
@@ -37,8 +36,7 @@ namespace aspect
 
     template <int dim>
     double
-    ZeroTopography<dim>::
-    max_topography () const
+    ZeroTopography<dim>::max_topography() const
     {
       return 0;
     }

@@ -20,8 +20,8 @@
 
 #include <aspect/particle/interpolator/cell_average.h>
 
-#include <deal.II/grid/grid_tools.h>
 #include <deal.II/base/signaling_nan.h>
+#include <deal.II/grid/grid_tools.h>
 
 namespace aspect
 {
@@ -31,18 +31,17 @@ namespace aspect
     {
       template <int dim>
       std::vector<std::vector<double>>
-      CellAverage<dim>::properties_at_points(const ParticleHandler<dim> &particle_handler,
+      CellAverage<dim>::properties_at_points(const ParticleHandler<dim>    &particle_handler,
                                              const std::vector<Point<dim>> &positions,
-                                             const ComponentMask &selected_properties,
+                                             const ComponentMask           &selected_properties,
                                              const typename parallel::distributed::Triangulation<dim>::active_cell_iterator &cell) const
       {
-        const typename ParticleHandler<dim>::particle_iterator_range particle_range =
-          particle_handler.particles_in_cell(cell);
+        const typename ParticleHandler<dim>::particle_iterator_range particle_range = particle_handler.particles_in_cell(cell);
 
-        const unsigned int n_particles = std::distance(particle_range.begin(),particle_range.end());
+        const unsigned int n_particles           = std::distance(particle_range.begin(), particle_range.end());
         const unsigned int n_particle_properties = particle_handler.n_properties_per_particle();
 
-        std::vector<double> cell_properties (n_particle_properties,numbers::signaling_nan<double>());
+        std::vector<double> cell_properties(n_particle_properties, numbers::signaling_nan<double>());
 
         for (unsigned int i = 0; i < n_particle_properties; ++i)
           if (selected_properties[i])
@@ -68,10 +67,10 @@ namespace aspect
         else
           {
             std::vector<typename parallel::distributed::Triangulation<dim>::active_cell_iterator> neighbors;
-            GridTools::get_active_neighbors<parallel::distributed::Triangulation<dim>>(cell,neighbors);
+            GridTools::get_active_neighbors<parallel::distributed::Triangulation<dim>>(cell, neighbors);
 
             unsigned int non_empty_neighbors = 0;
-            for (unsigned int i=0; i<neighbors.size(); ++i)
+            for (unsigned int i = 0; i < neighbors.size(); ++i)
               {
                 // Only recursively evaluate with cells whose particles can be accessed safely.
                 if (!neighbors[i]->is_locally_owned())
@@ -81,10 +80,8 @@ namespace aspect
                 if (particle_handler.n_particles_in_cell(neighbors[i]) == 0)
                   continue;
 
-                const std::vector<double> neighbor_properties = properties_at_points(particle_handler,
-                                                                                     std::vector<Point<dim>> (1,neighbors[i]->center(true,false)),
-                                                                                     selected_properties,
-                                                                                     neighbors[i])[0];
+                const std::vector<double> neighbor_properties = properties_at_points(
+                  particle_handler, std::vector<Point<dim>>(1, neighbors[i]->center(true, false)), selected_properties, neighbors[i])[0];
 
                 for (unsigned int i = 0; i < n_particle_properties; ++i)
                   if (selected_properties[i])
@@ -109,31 +106,31 @@ namespace aspect
                 else if (allow_cells_without_particles && non_empty_neighbors == 0)
                   cell_properties[i] = 0;
               }
-
           }
 
-        return std::vector<std::vector<double>> (positions.size(),cell_properties);
+        return std::vector<std::vector<double>>(positions.size(), cell_properties);
       }
 
 
 
       template <int dim>
       void
-      CellAverage<dim>::declare_parameters (ParameterHandler &prm)
+      CellAverage<dim>::declare_parameters(ParameterHandler &prm)
       {
-        prm.declare_entry ("Allow cells without particles", "false",
-                           Patterns::Bool (),
-                           "By default, every cell needs to contain particles to use this interpolator "
-                           "plugin. If this parameter is set to true, cells are allowed to have no particles. "
-                           "In case both the current cell and its neighbors are empty, "
-                           "the interpolator will return 0 for the current cell's properties.");
+        prm.declare_entry("Allow cells without particles",
+                          "false",
+                          Patterns::Bool(),
+                          "By default, every cell needs to contain particles to use this interpolator "
+                          "plugin. If this parameter is set to true, cells are allowed to have no particles. "
+                          "In case both the current cell and its neighbors are empty, "
+                          "the interpolator will return 0 for the current cell's properties.");
       }
 
 
 
       template <int dim>
       void
-      CellAverage<dim>::parse_parameters (ParameterHandler &prm)
+      CellAverage<dim>::parse_parameters(ParameterHandler &prm)
       {
         allow_cells_without_particles = prm.get_bool("Allow cells without particles");
       }

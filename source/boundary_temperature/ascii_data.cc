@@ -20,6 +20,7 @@
 
 
 #include <aspect/global.h>
+
 #include <aspect/boundary_temperature/ascii_data.h>
 
 #include <deal.II/base/parameter_handler.h>
@@ -31,42 +32,37 @@ namespace aspect
   namespace BoundaryTemperature
   {
     template <int dim>
-    AsciiData<dim>::AsciiData ()
-      = default;
+    AsciiData<dim>::AsciiData() = default;
 
 
     template <int dim>
     void
-    AsciiData<dim>::initialize ()
+    AsciiData<dim>::initialize()
     {
-      Utilities::AsciiDataBoundary<dim>::initialize(this->get_fixed_temperature_boundary_indicators(),
-                                                    1);
+      Utilities::AsciiDataBoundary<dim>::initialize(this->get_fixed_temperature_boundary_indicators(), 1);
     }
 
 
     template <int dim>
     void
-    AsciiData<dim>::update ()
+    AsciiData<dim>::update()
     {
-      Interface<dim>::update ();
+      Interface<dim>::update();
       Utilities::AsciiDataBoundary<dim>::update();
     }
 
 
     template <int dim>
     double
-    AsciiData<dim>::boundary_temperature (const types::boundary_id boundary_indicator,
-                                          const Point<dim> &position) const
+    AsciiData<dim>::boundary_temperature(const types::boundary_id boundary_indicator, const Point<dim> &position) const
     {
-      return Utilities::AsciiDataBoundary<dim>::get_data_component(boundary_indicator,
-                                                                   position,
-                                                                   0);
+      return Utilities::AsciiDataBoundary<dim>::get_data_component(boundary_indicator, position, 0);
     }
 
 
     template <int dim>
     double
-    AsciiData<dim>::minimal_temperature (const std::set<types::boundary_id> &) const
+    AsciiData<dim>::minimal_temperature(const std::set<types::boundary_id> &) const
     {
       return 0;
     }
@@ -74,7 +70,7 @@ namespace aspect
 
     template <int dim>
     double
-    AsciiData<dim>::maximal_temperature (const std::set<types::boundary_id> &) const
+    AsciiData<dim>::maximal_temperature(const std::set<types::boundary_id> &) const
     {
       return 0;
     }
@@ -82,7 +78,7 @@ namespace aspect
 
     template <int dim>
     void
-    AsciiData<dim>::declare_parameters (ParameterHandler &prm)
+    AsciiData<dim>::declare_parameters(ParameterHandler &prm)
     {
       prm.enter_subsection("Boundary temperature model");
       {
@@ -96,7 +92,7 @@ namespace aspect
 
     template <int dim>
     void
-    AsciiData<dim>::parse_parameters (ParameterHandler &prm)
+    AsciiData<dim>::parse_parameters(ParameterHandler &prm)
     {
       prm.enter_subsection("Boundary temperature model");
       {

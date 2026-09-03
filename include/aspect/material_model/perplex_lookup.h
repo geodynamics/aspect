@@ -66,12 +66,13 @@ namespace aspect
          * pointers.
          */
         void
-        initialize () override;
+        initialize() override;
 
-        bool is_compressible () const override;
+        bool
+        is_compressible() const override;
 
-        void evaluate(const MaterialModel::MaterialModelInputs<dim> &in,
-                      MaterialModel::MaterialModelOutputs<dim> &out) const override;
+        void
+        evaluate(const MaterialModel::MaterialModelInputs<dim> &in, MaterialModel::MaterialModelOutputs<dim> &out) const override;
 
 
         /**
@@ -81,15 +82,14 @@ namespace aspect
         /**
          * Declare the parameters this class takes through input files.
          */
-        static
-        void
-        declare_parameters (ParameterHandler &prm);
+        static void
+        declare_parameters(ParameterHandler &prm);
 
         /**
          * Read the parameters this class declares from the parameter file.
          */
         void
-        parse_parameters (ParameterHandler &prm) override;
+        parse_parameters(ParameterHandler &prm) override;
         /**
          * @}
          */

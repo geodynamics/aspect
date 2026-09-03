@@ -19,10 +19,10 @@
 */
 
 
-#include <aspect/mesh_refinement/slope.h>
-#include <aspect/gravity_model/interface.h>
-#include <aspect/geometry_model/interface.h>
 #include <aspect/geometry_model/initial_topography_model/zero_topography.h>
+#include <aspect/geometry_model/interface.h>
+#include <aspect/gravity_model/interface.h>
+#include <aspect/mesh_refinement/slope.h>
 
 #include <deal.II/base/quadrature_lib.h>
 #include <deal.II/fe/fe_values.h>
@@ -40,9 +40,9 @@ namespace aspect
 
       indicators = 0;
 
-      QMidpoint<dim-1> quadrature;
-      UpdateFlags update_flags = UpdateFlags(update_normal_vectors | update_quadrature_points );
-      FEFaceValues<dim> fe_face_values (this->get_mapping(), this->get_fe(), quadrature, update_flags);
+      QMidpoint<dim - 1> quadrature;
+      UpdateFlags        update_flags = UpdateFlags(update_normal_vectors | update_quadrature_points);
+      FEFaceValues<dim>  fe_face_values(this->get_mapping(), this->get_fe(), quadrature, update_flags);
 
       // iterate over all of the cells, get a face normal, then
       // dot it with the local gravity
@@ -54,30 +54,30 @@ namespace aspect
             for (const unsigned int face_no : cell->face_indices())
               if (cell->face(face_no)->at_boundary())
                 {
-                  const types::boundary_id boundary_indicator
-                    = cell->face(face_no)->boundary_id();
+                  const types::boundary_id boundary_indicator = cell->face(face_no)->boundary_id();
 
                   // Use cases for this plugin include a deforming mesh,
                   // or a fixed mesh with initial topography
-                  if ( (this->get_parameters().mesh_deformation_enabled &&
-                        this->get_mesh_deformation_boundary_indicators().find(boundary_indicator) !=
-                        this->get_mesh_deformation_boundary_indicators().end()) ||
-                       (Plugins::plugin_type_matches<const InitialTopographyModel::ZeroTopography<dim>>(this->get_initial_topography_model()) &&
-                        boundary_indicator == top_boundary_id)  )
+                  if ((this->get_parameters().mesh_deformation_enabled &&
+                       this->get_mesh_deformation_boundary_indicators().find(boundary_indicator) !=
+                         this->get_mesh_deformation_boundary_indicators().end()) ||
+                      (Plugins::plugin_type_matches<const InitialTopographyModel::ZeroTopography<dim>>(
+                         this->get_initial_topography_model()) &&
+                       boundary_indicator == top_boundary_id))
                     {
                       fe_face_values.reinit(cell, face_no);
 
-                      const Tensor<1,dim> normal( fe_face_values.normal_vector(0) ); // Only one q point
-                      const Point<dim> midpoint = fe_face_values.quadrature_point(0);
-                      const Tensor<1,dim> gravity = this->get_gravity_model().gravity_vector(midpoint);
+                      const Tensor<1, dim> normal(fe_face_values.normal_vector(0)); // Only one q point
+                      const Point<dim>     midpoint = fe_face_values.quadrature_point(0);
+                      const Tensor<1, dim> gravity  = this->get_gravity_model().gravity_vector(midpoint);
 
-                      indicators(idx) = std::acos( std::abs ( normal * gravity / gravity.norm() ) ) // Don't care whether gravity is in the opposite direction
-                                        * Utilities::fixed_power<dim-1>(cell->diameter()); // scale with approximate surface area of the cell
-                      break;  // no need to loop over the rest of the faces
+                      indicators(idx) =
+                        std::acos(std::abs(normal * gravity / gravity.norm())) // Don't care whether gravity is in the opposite direction
+                        * Utilities::fixed_power<dim - 1>(cell->diameter());   // scale with approximate surface area of the cell
+                      break;                                                   // no need to loop over the rest of the faces
                     }
                 }
           }
-
     }
   }
 }

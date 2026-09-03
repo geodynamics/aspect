@@ -19,9 +19,9 @@
 */
 
 
-#include <aspect/material_model/nondimensional.h>
-#include <aspect/geometry_model/interface.h>
 #include <aspect/adiabatic_conditions/interface.h>
+#include <aspect/geometry_model/interface.h>
+#include <aspect/material_model/nondimensional.h>
 
 
 namespace aspect
@@ -30,25 +30,21 @@ namespace aspect
   {
     template <int dim>
     void
-    Nondimensional<dim>::initialize ()
+    Nondimensional<dim>::initialize()
     {
-      Assert(this->get_parameters().formulation_temperature_equation
-             == Parameters<dim>::Formulation::TemperatureEquation::reference_density_profile,
+      Assert(this->get_parameters().formulation_temperature_equation ==
+               Parameters<dim>::Formulation::TemperatureEquation::reference_density_profile,
              ExcMessage("The Nondimensional material model can only work with a "
                         "temperature formulation that is based on the reference "
                         "profile."));
-      Assert((this->get_parameters().formulation_mass_conservation
-              == Parameters<dim>::Formulation::MassConservation::incompressible
-              && !compressible)
-             ||
-             (this->get_parameters().formulation_mass_conservation
-              == Parameters<dim>::Formulation::MassConservation::reference_density_profile
-              && compressible)
-             ||
-             (this->get_parameters().formulation_mass_conservation
-              == Parameters<dim>::Formulation::MassConservation::implicit_reference_density_profile
-              && compressible)
-             ,
+      Assert((this->get_parameters().formulation_mass_conservation == Parameters<dim>::Formulation::MassConservation::incompressible &&
+              !compressible) ||
+               (this->get_parameters().formulation_mass_conservation ==
+                  Parameters<dim>::Formulation::MassConservation::reference_density_profile &&
+                compressible) ||
+               (this->get_parameters().formulation_mass_conservation ==
+                  Parameters<dim>::Formulation::MassConservation::implicit_reference_density_profile &&
+                compressible),
              ExcMessage("The Nondimensional material model can only work with a "
                         "mass formulation that is incompressible or based on "
                         "the reference profile and the Di has to be chosen "
@@ -58,37 +54,33 @@ namespace aspect
 
     template <int dim>
     void
-    Nondimensional<dim>::
-    evaluate(const MaterialModel::MaterialModelInputs<dim> &in,
-             MaterialModel::MaterialModelOutputs<dim> &out) const
+    Nondimensional<dim>::evaluate(const MaterialModel::MaterialModelInputs<dim> &in, MaterialModel::MaterialModelOutputs<dim> &out) const
     {
-      for (unsigned int i=0; i < in.n_evaluation_points(); ++i)
+      for (unsigned int i = 0; i < in.n_evaluation_points(); ++i)
         {
-          const Point<dim> position = in.position[i];
-          const double temperature_deviation = in.temperature[i] - this->get_adiabatic_conditions().temperature(position);
-          const double pressure_deviation = in.pressure[i] - this->get_adiabatic_conditions().pressure(position);
+          const Point<dim> position              = in.position[i];
+          const double     temperature_deviation = in.temperature[i] - this->get_adiabatic_conditions().temperature(position);
+          const double     pressure_deviation    = in.pressure[i] - this->get_adiabatic_conditions().pressure(position);
 
           const double depth = this->get_geometry_model().depth(position);
 
-          out.viscosities[i] = (compressible ? Di : 1.0) / Ra
-                               * std::exp( -exponential_viscosity_temperature_prefactor * temperature_deviation
-                                           + exponential_viscosity_depth_prefactor * depth);
+          out.viscosities[i] =
+            (compressible ? Di : 1.0) / Ra *
+            std::exp(-exponential_viscosity_temperature_prefactor * temperature_deviation + exponential_viscosity_depth_prefactor * depth);
 
-          out.specific_heat[i] = reference_specific_heat;
-          out.thermal_conductivities[i] = 1.0;
+          out.specific_heat[i]                  = reference_specific_heat;
+          out.thermal_conductivities[i]         = 1.0;
           out.thermal_expansion_coefficients[i] = compressible ? Di : 1.0;
 
-          out.densities[i] = reference_rho
-                             * std::exp(depth * Di/gamma)
-                             * (1.0
-                                - out.thermal_expansion_coefficients[i] * temperature_deviation
-                                + (tala ? 0.0 : 1.0) * Di * gamma * pressure_deviation);
+          out.densities[i] =
+            reference_rho * std::exp(depth * Di / gamma) *
+            (1.0 - out.thermal_expansion_coefficients[i] * temperature_deviation + (tala ? 0.0 : 1.0) * Di * gamma * pressure_deviation);
 
-          out.compressibilities[i] = 0.0;
-          out.entropy_derivative_pressure[i] = 0.0;
+          out.compressibilities[i]              = 0.0;
+          out.entropy_derivative_pressure[i]    = 0.0;
           out.entropy_derivative_temperature[i] = 0.0;
 
-          for (unsigned int c=0; c<in.composition[i].size(); ++c)
+          for (unsigned int c = 0; c < in.composition[i].size(); ++c)
             out.reaction_terms[i][c] = 0.0;
         }
     }
@@ -97,8 +89,7 @@ namespace aspect
 
     template <int dim>
     bool
-    Nondimensional<dim>::
-    is_compressible () const
+    Nondimensional<dim>::is_compressible() const
     {
       return compressible;
     }
@@ -107,41 +98,39 @@ namespace aspect
 
     template <int dim>
     void
-    Nondimensional<dim>::declare_parameters (ParameterHandler &prm)
+    Nondimensional<dim>::declare_parameters(ParameterHandler &prm)
     {
       prm.enter_subsection("Material model");
       {
         prm.enter_subsection("Nondimensional model");
         {
-          prm.declare_entry ("Reference density", "1.0",
-                             Patterns::Double (0.),
-                             "Reference density $\\rho_0$. "
-                             "Units: \\si{\\kilogram\\per\\meter\\cubed}.");
-          prm.declare_entry ("Ra", "1e4",
-                             Patterns::Double (0.),
-                             "Rayleigh number Ra");
-          prm.declare_entry ("Di", "0.0",
-                             Patterns::Double (0.),
-                             "Dissipation number. Pick 0.0 for incompressible "
-                             "computations.");
-          prm.declare_entry ("gamma", "1.0",
-                             Patterns::Double (0.),
-                             "Grueneisen parameter");
-          prm.declare_entry ("Reference specific heat", "1.0",
-                             Patterns::Double (0.),
-                             "The value of the specific heat $C_p$. "
-                             "Units: \\si{\\joule\\per\\kelvin\\per\\kilogram}.");
-          prm.declare_entry ("Viscosity temperature prefactor", "0.0",
-                             Patterns::Double (0.),
-                             "Exponential temperature prefactor for viscosity.");
-          prm.declare_entry ("Viscosity depth prefactor", "0.0",
-                             Patterns::Double (0.),
-                             "Exponential depth prefactor for viscosity.");
-          prm.declare_entry ("Use TALA", "false",
-                             Patterns::Bool (),
-                             "Whether to use the TALA instead of the ALA "
-                             "approximation.");
-
+          prm.declare_entry("Reference density",
+                            "1.0",
+                            Patterns::Double(0.),
+                            "Reference density $\\rho_0$. "
+                            "Units: \\si{\\kilogram\\per\\meter\\cubed}.");
+          prm.declare_entry("Ra", "1e4", Patterns::Double(0.), "Rayleigh number Ra");
+          prm.declare_entry("Di",
+                            "0.0",
+                            Patterns::Double(0.),
+                            "Dissipation number. Pick 0.0 for incompressible "
+                            "computations.");
+          prm.declare_entry("gamma", "1.0", Patterns::Double(0.), "Grueneisen parameter");
+          prm.declare_entry("Reference specific heat",
+                            "1.0",
+                            Patterns::Double(0.),
+                            "The value of the specific heat $C_p$. "
+                            "Units: \\si{\\joule\\per\\kelvin\\per\\kilogram}.");
+          prm.declare_entry("Viscosity temperature prefactor",
+                            "0.0",
+                            Patterns::Double(0.),
+                            "Exponential temperature prefactor for viscosity.");
+          prm.declare_entry("Viscosity depth prefactor", "0.0", Patterns::Double(0.), "Exponential depth prefactor for viscosity.");
+          prm.declare_entry("Use TALA",
+                            "false",
+                            Patterns::Bool(),
+                            "Whether to use the TALA instead of the ALA "
+                            "approximation.");
         }
         prm.leave_subsection();
       }
@@ -152,34 +141,33 @@ namespace aspect
 
     template <int dim>
     void
-    Nondimensional<dim>::parse_parameters (ParameterHandler &prm)
+    Nondimensional<dim>::parse_parameters(ParameterHandler &prm)
     {
       prm.enter_subsection("Material model");
       {
         prm.enter_subsection("Nondimensional model");
         {
-          reference_rho   = prm.get_double ("Reference density");
-          exponential_viscosity_temperature_prefactor = prm.get_double ("Viscosity temperature prefactor");
-          exponential_viscosity_depth_prefactor = prm.get_double ("Viscosity depth prefactor");
-          Di              = prm.get_double ("Di");
-          Ra              = prm.get_double ("Ra");
-          gamma           = prm.get_double ("gamma");
-          tala            = prm.get_bool ("Use TALA");
-          reference_specific_heat = prm.get_double ("Reference specific heat");
+          reference_rho                               = prm.get_double("Reference density");
+          exponential_viscosity_temperature_prefactor = prm.get_double("Viscosity temperature prefactor");
+          exponential_viscosity_depth_prefactor       = prm.get_double("Viscosity depth prefactor");
+          Di                                          = prm.get_double("Di");
+          Ra                                          = prm.get_double("Ra");
+          gamma                                       = prm.get_double("gamma");
+          tala                                        = prm.get_bool("Use TALA");
+          reference_specific_heat                     = prm.get_double("Reference specific heat");
 
-          compressible = (Di!=0.0);
+          compressible = (Di != 0.0);
         }
         prm.leave_subsection();
       }
       prm.leave_subsection();
 
       // Declare dependencies on solution variables
-      this->model_dependence.viscosity = NonlinearDependence::temperature;
-      this->model_dependence.density = NonlinearDependence::pressure | NonlinearDependence::temperature;
-      this->model_dependence.compressibility = NonlinearDependence::none;
-      this->model_dependence.specific_heat = NonlinearDependence::none;
+      this->model_dependence.viscosity            = NonlinearDependence::temperature;
+      this->model_dependence.density              = NonlinearDependence::pressure | NonlinearDependence::temperature;
+      this->model_dependence.compressibility      = NonlinearDependence::none;
+      this->model_dependence.specific_heat        = NonlinearDependence::none;
       this->model_dependence.thermal_conductivity = NonlinearDependence::none;
-
     }
   }
 }

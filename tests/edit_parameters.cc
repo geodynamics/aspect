@@ -18,48 +18,46 @@
   <http://www.gnu.org/licenses/>.
 */
 
-#include <deal.II/base/parameter_handler.h>
 #include <aspect/global.h>
-#include <aspect/simulator_signals.h>
+
 #include <aspect/boundary_temperature/interface.h>
+#include <aspect/simulator_signals.h>
+
+#include <deal.II/base/parameter_handler.h>
 
 namespace aspect
 {
   // Global variables (to be set by parameters)
   unsigned int switch_step;
-  bool switched;
+  bool         switched;
 
   /**
    * Declare additional parameters.
    */
-  void declare_parameters(const unsigned int,
-                          ParameterHandler &prm)
+  void
+  declare_parameters(const unsigned int, ParameterHandler &prm)
   {
-    prm.declare_entry("Switch step", "0",
-                      Patterns::Integer(0),
-                      "Switch CFL at the timestep given.");
+    prm.declare_entry("Switch step", "0", Patterns::Integer(0), "Switch CFL at the timestep given.");
   }
 
   template <int dim>
-  void parse_parameters(const Parameters<dim> &,
-                        ParameterHandler &prm)
+  void
+  parse_parameters(const Parameters<dim> &, ParameterHandler &prm)
   {
     switch_step = prm.get_integer("Switch step");
-    switched = false;
+    switched    = false;
   }
 
   template <int dim>
-  void on_start_timestep (const SimulatorAccess<dim> &simulator_access)
+  void
+  on_start_timestep(const SimulatorAccess<dim> &simulator_access)
   {
     simulator_access.get_pcout() << "Signal start_timestep triggered!" << std::endl;
-    if (simulator_access.get_timestep_number() != numbers::invalid_unsigned_int
-        &&
-        simulator_access.get_timestep_number() >= switch_step
-        &&
-        !switched )
+    if (simulator_access.get_timestep_number() != numbers::invalid_unsigned_int && simulator_access.get_timestep_number() >= switch_step &&
+        !switched)
       {
         simulator_access.get_pcout() << "Reducing CFL number!" << std::endl;
-        const_cast<Parameters<dim>&>(simulator_access.get_parameters()).CFL_number *= 0.5;
+        const_cast<Parameters<dim> &>(simulator_access.get_parameters()).CFL_number *= 0.5;
 
         switched = true;
       }
@@ -67,26 +65,28 @@ namespace aspect
 
 
   template <int dim>
-  void on_edit_parameters (const SimulatorAccess<dim> &simulator_access,
-                           Parameters<dim> &/*parameters*/)
+  void
+  on_edit_parameters(const SimulatorAccess<dim> &simulator_access, Parameters<dim> & /*parameters*/)
   {
-    simulator_access.get_pcout()<<"Signal edit_parameters triggered!"<<std::endl;
+    simulator_access.get_pcout() << "Signal edit_parameters triggered!" << std::endl;
   }
 
   // Connect declare_parameters and parse_parameters to appropriate signals.
-  void parameter_connector ()
+  void
+  parameter_connector()
   {
-    SimulatorSignals<2>::declare_additional_parameters.connect (&declare_parameters);
-    SimulatorSignals<3>::declare_additional_parameters.connect (&declare_parameters);
+    SimulatorSignals<2>::declare_additional_parameters.connect(&declare_parameters);
+    SimulatorSignals<3>::declare_additional_parameters.connect(&declare_parameters);
 
-    SimulatorSignals<2>::parse_additional_parameters.connect (&parse_parameters<2>);
-    SimulatorSignals<3>::parse_additional_parameters.connect (&parse_parameters<3>);
+    SimulatorSignals<2>::parse_additional_parameters.connect(&parse_parameters<2>);
+    SimulatorSignals<3>::parse_additional_parameters.connect(&parse_parameters<3>);
   }
 
   template <int dim>
-  void signal_connector (SimulatorSignals<dim> &signals)
+  void
+  signal_connector(SimulatorSignals<dim> &signals)
   {
-    signals.edit_parameters_pre_setup_dofs.connect (&on_edit_parameters<dim>);
+    signals.edit_parameters_pre_setup_dofs.connect(&on_edit_parameters<dim>);
     signals.start_timestep.connect(&on_start_timestep<dim>);
   }
 

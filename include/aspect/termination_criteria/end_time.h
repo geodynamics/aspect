@@ -22,8 +22,8 @@
 #ifndef _aspect_termination_criteria_end_time_h
 #define _aspect_termination_criteria_end_time_h
 
-#include <aspect/termination_criteria/interface.h>
 #include <aspect/simulator_access.h>
+#include <aspect/termination_criteria/interface.h>
 
 namespace aspect
 {
@@ -40,11 +40,11 @@ namespace aspect
     class EndTime : public Interface<dim>, public SimulatorAccess<dim>
     {
       public:
-
         /**
          * Check this termination criterion and possibly reduce time step size
          */
-        double check_for_last_time_step (const double time_step) const override;
+        double
+        check_for_last_time_step(const double time_step) const override;
 
         /**
          * Evaluate this termination criterion.
@@ -53,20 +53,19 @@ namespace aspect
          * (false).
          */
         bool
-        execute () override;
+        execute() override;
 
         /**
          * Declare the parameters this class takes through input files.
          */
-        static
-        void
-        declare_parameters (ParameterHandler &prm);
+        static void
+        declare_parameters(ParameterHandler &prm);
 
         /**
          * Read the parameters this class declares from the parameter file.
          */
         void
-        parse_parameters (ParameterHandler &prm) override;
+        parse_parameters(ParameterHandler &prm) override;
 
       private:
         /**

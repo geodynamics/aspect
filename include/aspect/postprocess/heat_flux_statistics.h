@@ -49,8 +49,8 @@ namespace aspect
         /**
          * Evaluate the solution for some heat_flux statistics.
          */
-        std::pair<std::string,std::string>
-        execute (TableHandler &statistics) override;
+        std::pair<std::string, std::string>
+        execute(TableHandler &statistics) override;
     };
   }
 }

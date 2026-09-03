@@ -48,8 +48,8 @@ namespace aspect
         /**
          * Evaluate the solution for particle clustering.
          */
-        std::pair<std::string,std::string>
-        execute (TableHandler &statistics) override;
+        std::pair<std::string, std::string>
+        execute(TableHandler &statistics) override;
 
         /**
          * Let the postprocessor manager know about the other postprocessors
@@ -61,15 +61,14 @@ namespace aspect
         /**
          * Declare the parameters this class takes through input files.
          */
-        static
-        void
-        declare_parameters (ParameterHandler &prm);
+        static void
+        declare_parameters(ParameterHandler &prm);
 
         /**
          * Read the parameters this class declares from the parameter file.
          */
         void
-        parse_parameters (ParameterHandler &prm) override;
+        parse_parameters(ParameterHandler &prm) override;
 
       private:
         /**
@@ -89,10 +88,10 @@ namespace aspect
          * @param particle_manager_index The particle manager to grab the particles from.
          * @return The table with the particle information.
          */
-        Table<dim,unsigned int>
+        Table<dim, unsigned int>
         sort_particles_into_buckets(const typename Triangulation<dim>::active_cell_iterator &cell,
-                                    const unsigned int particle_manager_index,
-                                    const double bucket_width) const;
+                                    const unsigned int                                       particle_manager_index,
+                                    const double                                             bucket_width) const;
     };
   }
 }

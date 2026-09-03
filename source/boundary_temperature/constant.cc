@@ -21,8 +21,8 @@
 
 #include <aspect/boundary_temperature/constant.h>
 
-#include <deal.II/base/utilities.h>
 #include <deal.II/base/signaling_nan.h>
+#include <deal.II/base/utilities.h>
 
 #include <limits>
 
@@ -31,23 +31,22 @@ namespace aspect
 {
   namespace BoundaryTemperature
   {
-// ------------------------------ Constant -------------------
+    // ------------------------------ Constant -------------------
 
     template <int dim>
     double
-    Constant<dim>::
-    boundary_temperature (const types::boundary_id boundary_indicator,
-                          const Point<dim> &/*position*/) const
+    Constant<dim>::boundary_temperature(const types::boundary_id boundary_indicator, const Point<dim> & /*position*/) const
     {
       const std::map<types::boundary_id, double>::const_iterator it = boundary_temperatures.find(boundary_indicator);
       if (it != boundary_temperatures.end())
         return it->second;
       else
         {
-          Assert (false,
-                  ExcMessage ("Unknown boundary indicator with number <" + Utilities::int_to_string(boundary_indicator) + ">. "
-                              "You may not have specified the temperature for this boundary indicator "
-                              "in the input file."));
+          Assert(false,
+                 ExcMessage("Unknown boundary indicator with number <" + Utilities::int_to_string(boundary_indicator) +
+                            ">. "
+                            "You may not have specified the temperature for this boundary indicator "
+                            "in the input file."));
           return numbers::signaling_nan<double>();
         }
     }
@@ -55,15 +54,14 @@ namespace aspect
 
     template <int dim>
     double
-    Constant<dim>::
-    minimal_temperature (const std::set<types::boundary_id> &) const
+    Constant<dim>::minimal_temperature(const std::set<types::boundary_id> &) const
     {
-      std::map<types::boundary_id, double>::const_iterator it = boundary_temperatures.begin();
-      double min = it->second;
+      std::map<types::boundary_id, double>::const_iterator it  = boundary_temperatures.begin();
+      double                                               min = it->second;
       ++it;
 
-      for ( ; it != boundary_temperatures.end(); ++it)
-        if ( it->second < min )
+      for (; it != boundary_temperatures.end(); ++it)
+        if (it->second < min)
           min = it->second;
 
       return min;
@@ -73,15 +71,14 @@ namespace aspect
 
     template <int dim>
     double
-    Constant<dim>::
-    maximal_temperature (const std::set<types::boundary_id> &) const
+    Constant<dim>::maximal_temperature(const std::set<types::boundary_id> &) const
     {
-      std::map<types::boundary_id, double>::const_iterator it = boundary_temperatures.begin();
-      double max = it->second;
+      std::map<types::boundary_id, double>::const_iterator it  = boundary_temperatures.begin();
+      double                                               max = it->second;
       ++it;
 
-      for ( ; it != boundary_temperatures.end(); ++it)
-        if ( it->second > max )
+      for (; it != boundary_temperatures.end(); ++it)
+        if (it->second > max)
           max = it->second;
 
       return max;
@@ -91,86 +88,90 @@ namespace aspect
 
     template <int dim>
     void
-    Constant<dim>::declare_parameters (ParameterHandler &prm)
+    Constant<dim>::declare_parameters(ParameterHandler &prm)
     {
       prm.enter_subsection("Boundary temperature model");
       {
         prm.enter_subsection("Constant");
         {
-          prm.declare_entry ("Boundary indicator to temperature mappings", "",
-                             Patterns::Map (Patterns::Anything(),
-                                            Patterns::Double()),
-                             "A comma separated list of mappings between boundary "
-                             "indicators and the temperature associated with the "
-                             "boundary indicators. The format for this list is "
-                             "``indicator1 : value1, indicator2 : value2, ...'', "
-                             "where each indicator is a valid boundary indicator "
-                             "(either a number or the symbolic name of a boundary as provided "
-                             "by the geometry model) "
-                             "and each value is the temperature of that boundary." );
+          prm.declare_entry("Boundary indicator to temperature mappings",
+                            "",
+                            Patterns::Map(Patterns::Anything(), Patterns::Double()),
+                            "A comma separated list of mappings between boundary "
+                            "indicators and the temperature associated with the "
+                            "boundary indicators. The format for this list is "
+                            "``indicator1 : value1, indicator2 : value2, ...'', "
+                            "where each indicator is a valid boundary indicator "
+                            "(either a number or the symbolic name of a boundary as provided "
+                            "by the geometry model) "
+                            "and each value is the temperature of that boundary.");
         }
-        prm.leave_subsection ();
+        prm.leave_subsection();
       }
-      prm.leave_subsection ();
+      prm.leave_subsection();
     }
 
 
     template <int dim>
     void
-    Constant<dim>::parse_parameters (ParameterHandler &prm)
+    Constant<dim>::parse_parameters(ParameterHandler &prm)
     {
       prm.enter_subsection("Boundary temperature model");
       {
         prm.enter_subsection("Constant");
         {
           // get the list of mappings
-          const std::vector<std::string> x_boundary_temperatures
-            = Utilities::split_string_list(prm.get ("Boundary indicator to temperature mappings"));
+          const std::vector<std::string> x_boundary_temperatures =
+            Utilities::split_string_list(prm.get("Boundary indicator to temperature mappings"));
 
 
           for (const auto &boundary_id_string : x_boundary_temperatures)
             {
               // each entry has the format (white space is optional):
               // <id> : <value (might have spaces)>
-              const std::vector<std::string> parts = Utilities::split_string_list (boundary_id_string, ':');
+              const std::vector<std::string> parts = Utilities::split_string_list(boundary_id_string, ':');
 
-              AssertThrow (parts.size() == 2,
-                           ExcMessage (std::string("Invalid entry trying to describe boundary "
-                                                   "temperatures. Each entry needs to have the form "
-                                                   "<boundary_id : name>, "
-                                                   "but there is an entry of the form <") + boundary_id_string + ">"));
+              AssertThrow(parts.size() == 2,
+                          ExcMessage(std::string("Invalid entry trying to describe boundary "
+                                                 "temperatures. Each entry needs to have the form "
+                                                 "<boundary_id : name>, "
+                                                 "but there is an entry of the form <") +
+                                     boundary_id_string + ">"));
 
               types::boundary_id boundary_id;
               try
                 {
-                  boundary_id
-                    = this->get_geometry_model().translate_symbolic_boundary_name_to_id (parts[0]);
+                  boundary_id = this->get_geometry_model().translate_symbolic_boundary_name_to_id(parts[0]);
                 }
               catch (const std::string &error)
                 {
-                  AssertThrow (false, ExcMessage ("While parsing the entry <Boundary temperature model/Constant>, "
-                                                  "there was an error. Specifically, "
-                                                  "the conversion function complained as follows:\n\n"
-                                                  + error));
+                  AssertThrow(false,
+                              ExcMessage("While parsing the entry <Boundary temperature model/Constant>, "
+                                         "there was an error. Specifically, "
+                                         "the conversion function complained as follows:\n\n" +
+                                         error));
                 }
 
-              AssertThrow((this->get_fixed_temperature_boundary_indicators().find(boundary_id) != this->get_fixed_temperature_boundary_indicators().end()),
-                          ExcMessage ("You have indicated a temperature mapping for "
-                                      "boundary indicator " + parts[0] + ", but that "
-                                      "indicator isn't in the "
-                                      "list of Fixed temperature boundary indicators."));
+              AssertThrow((this->get_fixed_temperature_boundary_indicators().find(boundary_id) !=
+                           this->get_fixed_temperature_boundary_indicators().end()),
+                          ExcMessage("You have indicated a temperature mapping for "
+                                     "boundary indicator " +
+                                     parts[0] +
+                                     ", but that "
+                                     "indicator isn't in the "
+                                     "list of Fixed temperature boundary indicators."));
 
-              AssertThrow (boundary_temperatures.find(boundary_id) == boundary_temperatures.end(),
-                           ExcMessage ("Boundary indicator <" + Utilities::int_to_string(boundary_id) +
-                                       "> appears more than once in the list of indicators "
-                                       "for constant temperature boundary conditions."));
+              AssertThrow(boundary_temperatures.find(boundary_id) == boundary_temperatures.end(),
+                          ExcMessage("Boundary indicator <" + Utilities::int_to_string(boundary_id) +
+                                     "> appears more than once in the list of indicators "
+                                     "for constant temperature boundary conditions."));
 
-              boundary_temperatures[boundary_id] = Utilities::string_to_double (parts[1]);
+              boundary_temperatures[boundary_id] = Utilities::string_to_double(parts[1]);
             }
         }
-        prm.leave_subsection ();
+        prm.leave_subsection();
       }
-      prm.leave_subsection ();
+      prm.leave_subsection();
     }
   }
 }

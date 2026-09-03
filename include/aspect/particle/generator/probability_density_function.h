@@ -35,11 +35,11 @@ namespace aspect
        * Exception
        */
       template <int dim>
-      DeclException1 (ProbabilityFunctionNegative,
-                      Point<dim>,
-                      << "Your probability density function in the particle generator "
-                      "returned a negative probability density for the following position: "
-                      << arg1 << ". Please check your function expression.");
+      DeclException1(ProbabilityFunctionNegative,
+                     Point<dim>,
+                     << "Your probability density function in the particle generator "
+                        "returned a negative probability density for the following position: "
+                     << arg1 << ". Please check your function expression.");
 
 
       /**
@@ -76,15 +76,14 @@ namespace aspect
           /**
            * Declare the parameters this class takes through input files.
            */
-          static
-          void
-          declare_parameters (ParameterHandler &prm);
+          static void
+          declare_parameters(ParameterHandler &prm);
 
           /**
            * Read the parameters this class declares from the parameter file.
            */
           void
-          parse_parameters (ParameterHandler &prm) override;
+          parse_parameters(ParameterHandler &prm) override;
 
         private:
           /**

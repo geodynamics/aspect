@@ -22,8 +22,8 @@
 #ifndef _aspect_postprocess_fluid_velocity_statistics_h
 #define _aspect_postprocess_fluid_velocity_statistics_h
 
-#include <aspect/postprocess/interface.h>
 #include <aspect/melt.h>
+#include <aspect/postprocess/interface.h>
 #include <aspect/simulator_access.h>
 
 namespace aspect
@@ -43,8 +43,8 @@ namespace aspect
         /**
          * Evaluate the solution for the maximum fluid velocity.
          */
-        std::pair<std::string,std::string>
-        execute (TableHandler &statistics) override;
+        std::pair<std::string, std::string>
+        execute(TableHandler &statistics) override;
     };
   }
 }

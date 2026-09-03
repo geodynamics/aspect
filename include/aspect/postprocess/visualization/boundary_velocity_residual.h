@@ -48,14 +48,13 @@ namespace aspect
        * base class. See there for their meaning.
        */
       template <int dim>
-      class BoundaryVelocityResidual
-        : public DataPostprocessorVector<dim>,
-          public SurfaceOnlyVisualization<dim>,
-          public SimulatorAccess<dim>,
-          public Interface<dim>
+      class BoundaryVelocityResidual : public DataPostprocessorVector<dim>,
+                                       public SurfaceOnlyVisualization<dim>,
+                                       public SimulatorAccess<dim>,
+                                       public Interface<dim>
       {
         public:
-          BoundaryVelocityResidual ();
+          BoundaryVelocityResidual();
 
           /**
            * Evaluate the velocity residual for the current cell.
@@ -64,7 +63,7 @@ namespace aspect
            */
           void
           evaluate_vector_field(const DataPostprocessorInputs::Vector<dim> &input_data,
-                                std::vector<Vector<double>> &computed_quantities) const override;
+                                std::vector<Vector<double>>                &computed_quantities) const override;
 
           /**
            * Let the postprocessor manager know about the other postprocessors
@@ -74,7 +73,7 @@ namespace aspect
           required_other_postprocessors() const override;
 
           std::string
-          get_physical_units () const override;
+          get_physical_units() const override;
       };
     }
   }

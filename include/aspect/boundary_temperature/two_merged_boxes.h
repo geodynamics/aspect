@@ -23,7 +23,6 @@
 #define _aspect_boundary_temperature_two_merged_boxes_h
 
 #include <aspect/boundary_temperature/interface.h>
-
 #include <aspect/simulator_access.h>
 
 
@@ -47,8 +46,8 @@ namespace aspect
          *
          * @copydoc aspect::BoundaryTemperature::Interface::boundary_temperature()
          */
-        double boundary_temperature (const types::boundary_id boundary_indicator,
-                                     const Point<dim> &position) const override;
+        double
+        boundary_temperature(const types::boundary_id boundary_indicator, const Point<dim> &position) const override;
 
         /**
          * Return the minimal the temperature on that part of the boundary on
@@ -57,7 +56,8 @@ namespace aspect
          * This value is used in computing dimensionless numbers such as the
          * Nusselt number indicating heat flux.
          */
-        double minimal_temperature (const std::set<types::boundary_id> &fixed_boundary_ids) const override;
+        double
+        minimal_temperature(const std::set<types::boundary_id> &fixed_boundary_ids) const override;
 
         /**
          * Return the maximal the temperature on that part of the boundary on
@@ -66,21 +66,21 @@ namespace aspect
          * This value is used in computing dimensionless numbers such as the
          * Nusselt number indicating heat flux.
          */
-        double maximal_temperature (const std::set<types::boundary_id> &fixed_boundary_ids) const override;
+        double
+        maximal_temperature(const std::set<types::boundary_id> &fixed_boundary_ids) const override;
 
         /**
          * Declare the parameters this class takes through input files. This
          * class declares the inner and outer boundary temperatures.
          */
-        static
-        void
-        declare_parameters (ParameterHandler &prm);
+        static void
+        declare_parameters(ParameterHandler &prm);
 
         /**
          * Read the parameters this class declares from the parameter file.
          */
         void
-        parse_parameters (ParameterHandler &prm) override;
+        parse_parameters(ParameterHandler &prm) override;
 
       private:
         /**
@@ -92,7 +92,7 @@ namespace aspect
          * 'Front composition', and 'Back composition', as well as 'Left composition lithosphere',
          * 'Right composition lithosphere', 'Front composition lithosphere', and 'Back composition lithosphere'.
          */
-        double temperature_values[2*dim+2*(dim-1)];
+        double temperature_values[2 * dim + 2 * (dim - 1)];
     };
   }
 }

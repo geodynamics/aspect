@@ -38,8 +38,7 @@ namespace aspect
        * graphical output.
        */
       template <int dim>
-      class ArtificialViscosityComposition : public CellDataVectorCreator<dim>,
-        public SimulatorAccess<dim>
+      class ArtificialViscosityComposition : public CellDataVectorCreator<dim>, public SimulatorAccess<dim>
       {
         public:
           /**
@@ -51,20 +50,19 @@ namespace aspect
            * @copydoc CellDataVectorCreator<dim>::execute()
            */
           std::pair<std::string, std::unique_ptr<Vector<float>>>
-          execute () const override;
+          execute() const override;
 
           /**
            * Declare the parameters this class takes through input files.
            */
-          static
-          void
-          declare_parameters (ParameterHandler &prm);
+          static void
+          declare_parameters(ParameterHandler &prm);
 
           /**
            * Read the parameters this class declares from the parameter file.
            */
           void
-          parse_parameters (ParameterHandler &prm) override;
+          parse_parameters(ParameterHandler &prm) override;
 
         private:
           /**

@@ -18,8 +18,8 @@
   <http://www.gnu.org/licenses/>.
 */
 
-#include <aspect/postprocess/visualization/boundary_velocity_residual.h>
 #include <aspect/postprocess/boundary_velocity_residual_statistics.h>
+#include <aspect/postprocess/visualization/boundary_velocity_residual.h>
 #include <aspect/simulator.h>
 
 namespace aspect
@@ -29,20 +29,16 @@ namespace aspect
     namespace VisualizationPostprocessors
     {
       template <int dim>
-      BoundaryVelocityResidual<dim>::
-      BoundaryVelocityResidual ()
-        :
-        DataPostprocessorVector<dim> ("boundary_velocity_residual",
-                                      update_values | update_quadrature_points | update_gradients),
-        Interface<dim>()  // unknown units at construction time, will be filled by a separate function
+      BoundaryVelocityResidual<dim>::BoundaryVelocityResidual()
+        : DataPostprocessorVector<dim>("boundary_velocity_residual", update_values | update_quadrature_points | update_gradients)
+        , Interface<dim>() // unknown units at construction time, will be filled by a separate function
       {}
 
 
 
       template <int dim>
       std::string
-      BoundaryVelocityResidual<dim>::
-      get_physical_units () const
+      BoundaryVelocityResidual<dim>::get_physical_units() const
       {
         if (this->convert_output_to_years())
           return "m/year";
@@ -54,18 +50,16 @@ namespace aspect
 
       template <int dim>
       void
-      BoundaryVelocityResidual<dim>::
-      evaluate_vector_field(const DataPostprocessorInputs::Vector<dim> &input_data,
-                            std::vector<Vector<double>> &computed_quantities) const
+      BoundaryVelocityResidual<dim>::evaluate_vector_field(const DataPostprocessorInputs::Vector<dim> &input_data,
+                                                           std::vector<Vector<double>>                &computed_quantities) const
       {
-        Assert ((computed_quantities[0].size() == dim), ExcInternalError());
+        Assert((computed_quantities[0].size() == dim), ExcInternalError());
         for (auto &quantity : computed_quantities)
           for (unsigned int d = 0; d < dim; ++d)
-            quantity(d)= 0.;
+            quantity(d) = 0.;
 
-        auto cell = input_data.template get_cell<dim>();
-        const double velocity_scaling_factor =
-          this->convert_output_to_years() ? year_in_seconds : 1.0;
+        auto         cell                    = input_data.template get_cell<dim>();
+        const double velocity_scaling_factor = this->convert_output_to_years() ? year_in_seconds : 1.0;
 
         const Postprocess::BoundaryVelocityResidualStatistics<dim> &boundary_velocity_residual_statistics =
           this->get_postprocess_manager().template get_matching_active_plugin<Postprocess::BoundaryVelocityResidualStatistics<dim>>();
@@ -74,18 +68,16 @@ namespace aspect
         // has a face at the top boundary.
         bool cell_at_top_boundary = false;
         for (const unsigned int f : cell->face_indices())
-          if (cell->at_boundary(f) &&
-              (this->get_geometry_model().translate_id_to_symbol_name (cell->face(f)->boundary_id()) == "top"))
+          if (cell->at_boundary(f) && (this->get_geometry_model().translate_id_to_symbol_name(cell->face(f)->boundary_id()) == "top"))
             cell_at_top_boundary = true;
 
         if (cell_at_top_boundary)
-          for (unsigned int q=0; q<computed_quantities.size(); ++q)
+          for (unsigned int q = 0; q < computed_quantities.size(); ++q)
             {
-              const Tensor<1,dim> data_velocity = boundary_velocity_residual_statistics.get_data_velocity(input_data.evaluation_points[q]);
+              const Tensor<1, dim> data_velocity = boundary_velocity_residual_statistics.get_data_velocity(input_data.evaluation_points[q]);
               for (unsigned int d = 0; d < dim; ++d)
                 computed_quantities[q](d) = data_velocity[d] - input_data.solution_values[q][d] * velocity_scaling_factor;
             }
-
       }
 
 

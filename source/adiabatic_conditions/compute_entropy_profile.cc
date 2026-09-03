@@ -31,8 +31,7 @@ namespace aspect
   {
     template <int dim>
     ComputeEntropyProfile<dim>::ComputeEntropyProfile()
-      :
-      initialized(false)
+      : initialized(false)
     {}
 
 
@@ -55,14 +54,14 @@ namespace aspect
       pressures.resize(n_points, numbers::signaling_nan<double>());
       densities.resize(n_points, numbers::signaling_nan<double>());
 
-      delta_z = this->get_geometry_model().maximal_depth() / (n_points-1);
+      delta_z = this->get_geometry_model().maximal_depth() / (n_points - 1);
 
-      MaterialModel::MaterialModelInputs<dim> in(1, this->n_compositional_fields());
+      MaterialModel::MaterialModelInputs<dim>  in(1, this->n_compositional_fields());
       MaterialModel::MaterialModelOutputs<dim> out(1, this->n_compositional_fields());
-      this->get_material_model().create_additional_named_outputs (out);
+      this->get_material_model().create_additional_named_outputs(out);
 
-      const std::shared_ptr<MaterialModel::PrescribedTemperatureOutputs<dim>> prescribed_temperature_out
-        = out.template get_additional_output_object<MaterialModel::PrescribedTemperatureOutputs<dim>>();
+      const std::shared_ptr<MaterialModel::PrescribedTemperatureOutputs<dim>> prescribed_temperature_out =
+        out.template get_additional_output_object<MaterialModel::PrescribedTemperatureOutputs<dim>>();
 
       // check if the material model computes prescribed temperature outputs
       AssertThrow(prescribed_temperature_out != nullptr,
@@ -70,7 +69,8 @@ namespace aspect
                              "PrescribedTemperatureOutputs, which is required "
                              "for this adiabatic conditions plugin."));
 
-      const std::vector<unsigned int> &entropy_indices = this->introspection().get_indices_for_fields_of_type(CompositionalFieldDescription::entropy);
+      const std::vector<unsigned int> &entropy_indices =
+        this->introspection().get_indices_for_fields_of_type(CompositionalFieldDescription::entropy);
 
       AssertThrow(entropy_indices.size() >= 1,
                   ExcMessage("The 'compute entropy' adiabatic conditions plugin "
@@ -82,8 +82,8 @@ namespace aspect
       in.requested_properties = MaterialModel::MaterialProperties::density | MaterialModel::MaterialProperties::additional_outputs;
 
       // No deformation on the reference profile
-      in.velocity[0] = Tensor <1,dim> ();
-      in.strain_rate[0] = SymmetricTensor<2,dim>();
+      in.velocity[0]    = Tensor<1, dim>();
+      in.strain_rate[0] = SymmetricTensor<2, dim>();
 
       // Strictly speaking the temperature on the adiabat should be defined by the pressure
       // and entropy alone. However, we only compute the temperature in the call to the material
@@ -101,20 +101,18 @@ namespace aspect
       // adiabatic pressures and temperatures with depth. In some cases it will point up / out
       // (e.g. for backward advection), in which case the pressures and temperatures should
       // decrease with depth and therefore gravity has to be negative in the following equations.
-      const Tensor <1,dim> g = this->get_gravity_model().gravity_vector(this->get_geometry_model().representative_point(0));
-      const Point<dim> point_surf = this->get_geometry_model().representative_point(0);
-      const Point<dim> point_bot = this->get_geometry_model().representative_point(this->get_geometry_model().maximal_depth());
-      const int gravity_direction =  (g * (point_bot - point_surf) >= 0) ?
-                                     1 :
-                                     -1;
+      const Tensor<1, dim> g                 = this->get_gravity_model().gravity_vector(this->get_geometry_model().representative_point(0));
+      const Point<dim>     point_surf        = this->get_geometry_model().representative_point(0);
+      const Point<dim>     point_bot         = this->get_geometry_model().representative_point(this->get_geometry_model().maximal_depth());
+      const int            gravity_direction = (g * (point_bot - point_surf) >= 0) ? 1 : -1;
 
       // now integrate downward using the explicit Euler method for simplicity
       //
       // note: p'(z) = rho(p,T) * |g|
       //       T(z) = look up for reference entropy and current p(z)
-      for (unsigned int i=0; i<n_points; ++i)
+      for (unsigned int i = 0; i < n_points; ++i)
         {
-          if (i==0)
+          if (i == 0)
             {
               pressures[0] = this->get_surface_pressure();
             }
@@ -128,18 +126,18 @@ namespace aspect
               // approximation here.
               const double gravity = gravity_direction * this->get_gravity_model().gravity_vector(in.position[0]).norm();
 
-              pressures[i] = pressures[i-1] + density * gravity * delta_z;
+              pressures[i] = pressures[i - 1] + density * gravity * delta_z;
             }
 
-          const double z = static_cast<double>(i)/static_cast<double>(n_points-1)*this->get_geometry_model().maximal_depth();
-          const Point<dim> representative_point = this->get_geometry_model().representative_point (z);
+          const double     z = static_cast<double>(i) / static_cast<double>(n_points - 1) * this->get_geometry_model().maximal_depth();
+          const Point<dim> representative_point = this->get_geometry_model().representative_point(z);
 
           in.position[0] = representative_point;
           in.pressure[0] = pressures[i];
 
 
 
-          for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
+          for (unsigned int c = 0; c < this->n_compositional_fields(); ++c)
             {
               // If the adiabatic profile is calculated using the initial composition.
               // We use one entropy value for the adiabat calculation, since entropy is constant along an adiabat.
@@ -160,41 +158,38 @@ namespace aspect
                 {
                   // The function is written in terms of depth.
                   // This is different from the initial composition function.
-                  const double depth = this->get_geometry_model().depth(representative_point);
+                  const double   depth = this->get_geometry_model().depth(representative_point);
                   const Point<1> p(depth);
 
-                  for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
+                  for (unsigned int c = 0; c < this->n_compositional_fields(); ++c)
                     in.composition[0][c] = composition_function->value(p, c);
                 }
               else
-                AssertThrow(false,ExcNotImplemented());
+                AssertThrow(false, ExcNotImplemented());
             }
 
           this->get_material_model().evaluate(in, out);
 
-          densities[i] = out.densities[0];
-          temperatures[i] = prescribed_temperature_out->prescribed_temperature_outputs[0];
+          densities[i]      = out.densities[0];
+          temperatures[i]   = prescribed_temperature_out->prescribed_temperature_outputs[0];
           in.temperature[0] = temperatures[i];
         }
 
       if (gravity_direction == 1 && this->get_surface_pressure() >= 0)
         {
-          Assert (*std::min_element (pressures.begin(), pressures.end()) >=
-                  -std::numeric_limits<double>::epsilon() * pressures.size(),
-                  ExcMessage("Adiabatic ComputeProfile encountered a negative pressure of "
-                             + dealii::Utilities::to_string(*std::min_element (pressures.begin(), pressures.end()))));
+          Assert(*std::min_element(pressures.begin(), pressures.end()) >= -std::numeric_limits<double>::epsilon() * pressures.size(),
+                 ExcMessage("Adiabatic ComputeProfile encountered a negative pressure of " +
+                            dealii::Utilities::to_string(*std::min_element(pressures.begin(), pressures.end()))));
         }
       else if (gravity_direction == -1 && this->get_surface_pressure() <= 0)
         {
-          Assert (*std::max_element (pressures.begin(), pressures.end()) <=
-                  std::numeric_limits<double>::epsilon() * pressures.size(),
-                  ExcMessage("Adiabatic ComputeProfile encountered a positive pressure of "
-                             + dealii::Utilities::to_string(*std::max_element (pressures.begin(), pressures.end()))));
+          Assert(*std::max_element(pressures.begin(), pressures.end()) <= std::numeric_limits<double>::epsilon() * pressures.size(),
+                 ExcMessage("Adiabatic ComputeProfile encountered a positive pressure of " +
+                            dealii::Utilities::to_string(*std::max_element(pressures.begin(), pressures.end()))));
         }
 
-      Assert (*std::min_element (temperatures.begin(), temperatures.end()) >=
-              -std::numeric_limits<double>::epsilon() * temperatures.size(),
-              ExcMessage("Adiabatic ComputeProfile encountered a negative temperature."));
+      Assert(*std::min_element(temperatures.begin(), temperatures.end()) >= -std::numeric_limits<double>::epsilon() * temperatures.size(),
+             ExcMessage("Adiabatic ComputeProfile encountered a negative temperature."));
 
       initialized = true;
     }
@@ -211,76 +206,78 @@ namespace aspect
 
 
     template <int dim>
-    double ComputeEntropyProfile<dim>::pressure (const Point<dim> &p) const
+    double
+    ComputeEntropyProfile<dim>::pressure(const Point<dim> &p) const
     {
-      return get_property(p,pressures);
+      return get_property(p, pressures);
     }
 
 
 
     template <int dim>
-    double ComputeEntropyProfile<dim>::temperature (const Point<dim> &p) const
+    double
+    ComputeEntropyProfile<dim>::temperature(const Point<dim> &p) const
     {
-      return get_property(p,temperatures);
+      return get_property(p, temperatures);
     }
 
 
 
     template <int dim>
-    double ComputeEntropyProfile<dim>::density (const Point<dim> &p) const
+    double
+    ComputeEntropyProfile<dim>::density(const Point<dim> &p) const
     {
-      return get_property(p,densities);
+      return get_property(p, densities);
     }
 
 
 
     template <int dim>
-    double ComputeEntropyProfile<dim>::density_derivative (const Point<dim> &p) const
+    double
+    ComputeEntropyProfile<dim>::density_derivative(const Point<dim> &p) const
     {
       const double z = this->get_geometry_model().depth(p);
 
       if (z >= this->get_geometry_model().maximal_depth())
         {
-          Assert (z <= this->get_geometry_model().maximal_depth() + delta_z,
-                  ExcInternalError());
-          return (densities.back() - densities[densities.size()-2]) / delta_z;
+          Assert(z <= this->get_geometry_model().maximal_depth() + delta_z, ExcInternalError());
+          return (densities.back() - densities[densities.size() - 2]) / delta_z;
         }
 
       if (z < 0)
         {
-          Assert (z >= -delta_z, ExcInternalError());
+          Assert(z >= -delta_z, ExcInternalError());
           return (densities[1] - densities.front()) / delta_z;
         }
 
       // if z/delta_z is within [k-eps, k+eps] of a whole number k, round it down to k-1
-      const unsigned int i = static_cast<unsigned int>((z/delta_z) * (1. - 2. * std::numeric_limits<double>::epsilon()));
-      Assert (i < densities.size() - 1, ExcInternalError());
+      const unsigned int i = static_cast<unsigned int>((z / delta_z) * (1. - 2. * std::numeric_limits<double>::epsilon()));
+      Assert(i < densities.size() - 1, ExcInternalError());
 
-      return (densities[i+1]-densities[i])/delta_z;
+      return (densities[i + 1] - densities[i]) / delta_z;
     }
 
 
 
     template <int dim>
-    double ComputeEntropyProfile<dim>::get_property (const Point<dim> &p,
-                                                     const std::vector<double> &property) const
+    double
+    ComputeEntropyProfile<dim>::get_property(const Point<dim> &p, const std::vector<double> &property) const
     {
       const double z = this->get_geometry_model().depth(p);
 
       if (z >= this->get_geometry_model().maximal_depth())
         {
-          Assert (z <= this->get_geometry_model().maximal_depth() + delta_z,
-                  ExcInternalError());
+          Assert(z <= this->get_geometry_model().maximal_depth() + delta_z, ExcInternalError());
           return property.back();
         }
 
       if (z <= 0)
         {
-          Assert (z >= -delta_z, ExcInternalError());
+          Assert(z >= -delta_z, ExcInternalError());
           return property.front();
         }
 
-      const double normalized_distance_from_surface = z/delta_z;
+      const double normalized_distance_from_surface = z / delta_z;
       // This value is index of the point immediately above the depth z
       // It is also the normalized distance from the surface to the point at index i.
       const unsigned int i = static_cast<unsigned int>(normalized_distance_from_surface);
@@ -292,56 +289,56 @@ namespace aspect
       // This value is negative if it is closer to i+1 than to i.
       // It is positive if it is closer to i than to i+1 or it is
       // larger than i+1.
-      const double normalized_distance_to_closest_profile_point = normalized_distance_from_surface-std::floor(normalized_distance_from_surface+0.5);
-      if (normalized_distance_to_closest_profile_point >=0.0 && normalized_distance_to_closest_profile_point < 1e-6)
+      const double normalized_distance_to_closest_profile_point =
+        normalized_distance_from_surface - std::floor(normalized_distance_from_surface + 0.5);
+      if (normalized_distance_to_closest_profile_point >= 0.0 && normalized_distance_to_closest_profile_point < 1e-6)
         return property[i];
 
-      Assert (i+1 < property.size(), ExcInternalError());
+      Assert(i + 1 < property.size(), ExcInternalError());
 
       // now do the linear interpolation
       const double d = normalized_distance_from_surface - i;
-      Assert ((d>=0) && (d<=1), ExcInternalError());
+      Assert((d >= 0) && (d <= 1), ExcInternalError());
 
-      return d*property[i+1] + (1.-d)*property[i];
+      return d * property[i + 1] + (1. - d) * property[i];
     }
 
 
 
     template <int dim>
     void
-    ComputeEntropyProfile<dim>::declare_parameters (ParameterHandler &prm)
+    ComputeEntropyProfile<dim>::declare_parameters(ParameterHandler &prm)
     {
       prm.enter_subsection("Adiabatic conditions model");
       {
         prm.enter_subsection("Compute entropy profile");
         {
-          prm.declare_entry ("Number of points", "1000",
-                             Patterns::Integer (5),
-                             "The number of points we use to compute the adiabatic "
-                             "profile. The higher the number of points, the more accurate "
-                             "the downward integration from the adiabatic surface "
-                             "conditions will be. Setting this value to "
-                             "n * (the number of cells in the vertical direction) + 1 "
-                             "can reduce interpolation errors."
-                            );
+          prm.declare_entry("Number of points",
+                            "1000",
+                            Patterns::Integer(5),
+                            "The number of points we use to compute the adiabatic "
+                            "profile. The higher the number of points, the more accurate "
+                            "the downward integration from the adiabatic surface "
+                            "conditions will be. Setting this value to "
+                            "n * (the number of cells in the vertical direction) + 1 "
+                            "can reduce interpolation errors.");
 
-          prm.declare_entry ("Surface entropy", "0",
-                             Patterns::Double(),
-                             "The entropy for the adiabat profile.");
+          prm.declare_entry("Surface entropy", "0", Patterns::Double(), "The entropy for the adiabat profile.");
 
-          Functions::ParsedFunction<1>::declare_parameters (prm, 1);
-          prm.declare_entry ("Composition profile", "initial composition",
-                             Patterns::Selection("initial composition|function"),
-                             "Select between two methods for calculating the adiabatic profile. "
-                             "The default, 'initial composition', computes the profile using the initial "
-                             "compositions of all chemical fields and the entropy value specified by "
-                             "'Surface entropy' for the entropy fields. "
-                             "You can also use 'function' to specify a depth-dependent compositional "
-                             "profile for computing the adiabatic profile. "
-                             "If you use 'function', you should also specify the corresponding function "
-                             "for the entropy field. Keep in mind that entropy should be constant along "
-                             "an adiabat. The function is defined in terms of depth, which may differ "
-                             "from the initial composition function.");
+          Functions::ParsedFunction<1>::declare_parameters(prm, 1);
+          prm.declare_entry("Composition profile",
+                            "initial composition",
+                            Patterns::Selection("initial composition|function"),
+                            "Select between two methods for calculating the adiabatic profile. "
+                            "The default, 'initial composition', computes the profile using the initial "
+                            "compositions of all chemical fields and the entropy value specified by "
+                            "'Surface entropy' for the entropy fields. "
+                            "You can also use 'function' to specify a depth-dependent compositional "
+                            "profile for computing the adiabatic profile. "
+                            "If you use 'function', you should also specify the corresponding function "
+                            "for the entropy field. Keep in mind that entropy should be constant along "
+                            "an adiabat. The function is defined in terms of depth, which may differ "
+                            "from the initial composition function.");
         }
         prm.leave_subsection();
       }
@@ -351,14 +348,14 @@ namespace aspect
 
     template <int dim>
     void
-    ComputeEntropyProfile<dim>::parse_parameters (ParameterHandler &prm)
+    ComputeEntropyProfile<dim>::parse_parameters(ParameterHandler &prm)
     {
       prm.enter_subsection("Adiabatic conditions model");
       {
         prm.enter_subsection("Compute entropy profile");
         {
-          n_points = prm.get_integer ("Number of points");
-          profile_entropy = prm.get_double ("Surface entropy");
+          n_points        = prm.get_integer("Number of points");
+          profile_entropy = prm.get_double("Surface entropy");
 
           const std::string composition_profile = prm.get("Composition profile");
 
@@ -371,11 +368,10 @@ namespace aspect
 
           if ((this->n_compositional_fields() > 0) && (reference_composition == reference_function))
             {
-              composition_function
-                = std::make_unique<Functions::ParsedFunction<1>>(this->n_compositional_fields());
+              composition_function = std::make_unique<Functions::ParsedFunction<1>>(this->n_compositional_fields());
               try
                 {
-                  composition_function->parse_parameters (prm);
+                  composition_function->parse_parameters(prm);
                 }
               catch (...)
                 {

@@ -22,8 +22,8 @@
 #define _aspect_material_model_rheology_drucker_prager_h
 
 #include <aspect/global.h>
-#include <aspect/material_model/interface.h>
 
+#include <aspect/material_model/interface.h>
 #include <aspect/material_model/utilities.h>
 #include <aspect/simulator_access.h>
 namespace aspect
@@ -38,35 +38,35 @@ namespace aspect
        */
       struct DruckerPragerParameters
       {
-        /**
-         * Internal friction angle (phi) for the current composition and phase
-         */
-        double angle_internal_friction;
+          /**
+           * Internal friction angle (phi) for the current composition and phase
+           */
+          double angle_internal_friction;
 
-        /**
-         * Dilation angle (psi) for the current composition and phase
-         */
-        double angle_dilation;
+          /**
+           * Dilation angle (psi) for the current composition and phase
+           */
+          double angle_dilation;
 
-        /**
-         * Cohesion for the current composition and phase
-         */
-        double cohesion;
+          /**
+           * Cohesion for the current composition and phase
+           */
+          double cohesion;
 
-        /**
-         * Prefactor for the yield stress for the current composition and phase
-         */
-        double yield_stress_prefactor;
+          /**
+           * Prefactor for the yield stress for the current composition and phase
+           */
+          double yield_stress_prefactor;
 
-        /**
-         * Limit maximum yield stress from drucker prager yield criterion.
-         */
-        double max_yield_stress;
+          /**
+           * Limit maximum yield stress from drucker prager yield criterion.
+           */
+          double max_yield_stress;
 
-        /**
-         * Constructor. Initializes all values to NaN.
-         */
-        DruckerPragerParameters();
+          /**
+           * Constructor. Initializes all values to NaN.
+           */
+          DruckerPragerParameters();
       };
 
       template <int dim>
@@ -77,9 +77,8 @@ namespace aspect
           /**
            * Declare the parameters this function takes through input files.
            */
-          static
-          void
-          declare_parameters (ParameterHandler &prm);
+          static void
+          declare_parameters(ParameterHandler &prm);
 
           /**
            * Read the parameters this class declares from the parameter file.
@@ -92,8 +91,8 @@ namespace aspect
            * @param expected_n_phases_per_composition Optional list of number of phases.
            */
           void
-          parse_parameters (ParameterHandler &prm,
-                            const std::unique_ptr<std::vector<unsigned int>> &expected_n_phases_per_composition = nullptr);
+          parse_parameters(ParameterHandler                                 &prm,
+                           const std::unique_ptr<std::vector<unsigned int>> &expected_n_phases_per_composition = nullptr);
 
           /**
            * Compute the parameters for the Drucker Prager plasticity.
@@ -103,9 +102,9 @@ namespace aspect
            * each phase and then averaged for each compositional field.
            */
           const DruckerPragerParameters
-          compute_drucker_prager_parameters (const unsigned int composition,
-                                             const std::vector<double> &phase_function_values = {},
-                                             const std::vector<unsigned int> &n_phase_transitions_per_composition = {}) const;
+          compute_drucker_prager_parameters(const unsigned int               composition,
+                                            const std::vector<double>       &phase_function_values               = {},
+                                            const std::vector<unsigned int> &n_phase_transitions_per_composition = {}) const;
 
           /**
            * Compute the plastic yield stress based on the Drucker Prager yield criterion.
@@ -115,10 +114,10 @@ namespace aspect
            */
           DEAL_II_DEPRECATED
           double
-          compute_yield_stress (const double cohesion,
-                                const double angle_internal_friction,
-                                const double pressure,
-                                const double max_yield_stress) const;
+          compute_yield_stress(const double cohesion,
+                               const double angle_internal_friction,
+                               const double pressure,
+                               const double max_yield_stress) const;
 
           /**
            * Compute the plastic yield stress based on the Drucker Prager yield criterion for
@@ -131,8 +130,7 @@ namespace aspect
            * @return The yield stress for the given conditions.
            */
           double
-          compute_yield_stress (const double pressure,
-                                const DruckerPragerParameters &p) const;
+          compute_yield_stress(const double pressure, const DruckerPragerParameters &p) const;
 
           /**
            * Compute the apparent viscosity using the yield stress and effective strain rate.
@@ -145,12 +143,12 @@ namespace aspect
            */
           DEAL_II_DEPRECATED
           double
-          compute_viscosity (const double cohesion,
-                             const double angle_internal_friction,
-                             const double pressure,
-                             const double effective_strain_rate,
-                             const double max_yield_stress,
-                             const double non_yielding_viscosity = std::numeric_limits<double>::infinity()) const;
+          compute_viscosity(const double cohesion,
+                            const double angle_internal_friction,
+                            const double pressure,
+                            const double effective_strain_rate,
+                            const double max_yield_stress,
+                            const double non_yielding_viscosity = std::numeric_limits<double>::infinity()) const;
 
           /**
            * Compute the apparent viscosity using the yield stress and effective strain rate.
@@ -159,26 +157,23 @@ namespace aspect
            * value is the effective composite viscosity, not the pure "plastic" viscosity.
            */
           double
-          compute_viscosity (const double pressure,
-                             const double effective_strain_rate,
-                             const DruckerPragerParameters &p,
-                             const double non_yielding_viscosity = std::numeric_limits<double>::infinity()) const;
+          compute_viscosity(const double                   pressure,
+                            const double                   effective_strain_rate,
+                            const DruckerPragerParameters &p,
+                            const double                   non_yielding_viscosity = std::numeric_limits<double>::infinity()) const;
 
           /**
            * Compute the strain rate and first stress derivative
            * as a function of stress based on the damped Drucker-Prager flow law.
            */
           std::pair<double, double>
-          compute_strain_rate_and_derivative (const double stress,
-                                              const double pressure,
-                                              const DruckerPragerParameters &p) const;
+          compute_strain_rate_and_derivative(const double stress, const double pressure, const DruckerPragerParameters &p) const;
 
           /**
            * Compute the derivative of the plastic viscosity with respect to pressure.
            */
           double
-          compute_derivative (const double angle_internal_friction,
-                              const double effective_strain_rate) const;
+          compute_derivative(const double angle_internal_friction, const double effective_strain_rate) const;
 
           /**
            * Compute the LHS and RHS dilation terms for the Stokes system.
@@ -189,13 +184,12 @@ namespace aspect
            * $\eta^{ve}$ is the non-yielding viscosity, and $\varepsilon^{eff}$
            * is the effective viscosity.
            */
-          std::pair<double,double>
+          std::pair<double, double>
           compute_dilation_terms_for_stokes_system(const DruckerPragerParameters &drucker_prager_parameters,
-                                                   const double non_yielding_viscosity,
-                                                   const double effective_strain_rate) const;
+                                                   const double                   non_yielding_viscosity,
+                                                   const double                   effective_strain_rate) const;
 
         private:
-
           /**
            * The Drucker-Prager rheology is a simple plastic model
            * that yields at a stress of

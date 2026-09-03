@@ -22,6 +22,7 @@
 #define _aspect_simulator_assemblers_interface_h
 
 #include <aspect/global.h>
+
 #include <aspect/heating_model/interface.h>
 #include <aspect/material_model/interface.h>
 
@@ -56,32 +57,30 @@ namespace aspect
         template <int dim>
         struct ScratchBase
         {
-          ScratchBase()
-            :
-            cell(),
-            face_number(numbers::invalid_unsigned_int)
-          {}
+            ScratchBase()
+              : cell()
+              , face_number(numbers::invalid_unsigned_int)
+            {}
 
-          ScratchBase(const ScratchBase &scratch)
-            :
-            cell(scratch.cell),
-            face_number(scratch.face_number)
-          {}
+            ScratchBase(const ScratchBase &scratch)
+              : cell(scratch.cell)
+              , face_number(scratch.face_number)
+            {}
 
-          virtual ~ScratchBase ()  = default;
+            virtual ~ScratchBase() = default;
 
-          /**
-           * Cell object on which we currently operate.
-           */
-          typename DoFHandler<dim>::active_cell_iterator cell;
+            /**
+             * Cell object on which we currently operate.
+             */
+            typename DoFHandler<dim>::active_cell_iterator cell;
 
-          /**
-           * The number of the face object with respect to the current
-           * cell on which we operate. If we currently
-           * operate on a cell, this member is set to
-           * numbers::invalid_unsigned_int.
-           */
-          unsigned face_number;
+            /**
+             * The number of the face object with respect to the current
+             * cell on which we operate. If we currently
+             * operate on a cell, this member is set to
+             * numbers::invalid_unsigned_int.
+             */
+            unsigned face_number;
         };
 
         /**
@@ -89,46 +88,47 @@ namespace aspect
          * the Stokes preconditioner terms.
          */
         template <int dim>
-        struct StokesPreconditioner: public ScratchBase<dim>
+        struct StokesPreconditioner : public ScratchBase<dim>
         {
-          StokesPreconditioner (const FiniteElement<dim> &finite_element,
-                                const Quadrature<dim>    &quadrature,
-                                const Mapping<dim>       &mapping,
-                                const UpdateFlags         update_flags,
-                                const unsigned int        n_compositional_fields,
-                                const unsigned int        stokes_dofs_per_cell,
-                                const bool                add_compaction_pressure,
-                                const bool                rebuild_matrix,
-                                const bool                use_bfbt);
-          StokesPreconditioner (const StokesPreconditioner &scratch);
+            StokesPreconditioner(const FiniteElement<dim> &finite_element,
+                                 const Quadrature<dim>    &quadrature,
+                                 const Mapping<dim>       &mapping,
+                                 const UpdateFlags         update_flags,
+                                 const unsigned int        n_compositional_fields,
+                                 const unsigned int        stokes_dofs_per_cell,
+                                 const bool                add_compaction_pressure,
+                                 const bool                rebuild_matrix,
+                                 const bool                use_bfbt);
+            StokesPreconditioner(const StokesPreconditioner &scratch);
 
-          ~StokesPreconditioner () override;
+            ~StokesPreconditioner() override;
 
-          FEValues<dim> finite_element_values;
+            FEValues<dim> finite_element_values;
 
-          void reinit (const typename DoFHandler<dim>::active_cell_iterator &cell_ref);
+            void
+            reinit(const typename DoFHandler<dim>::active_cell_iterator &cell_ref);
 
-          std::vector<types::global_dof_index> local_dof_indices;
-          std::vector<SymmetricTensor<2,dim>> grads_phi_u;
-          std::vector<double>                  div_phi_u;
-          std::vector<double>                  phi_p;
-          std::vector<Tensor<1,dim>>           phi_u;
-          std::vector<double>                  phi_p_c;
-          std::vector<Tensor<1,dim>>          grad_phi_p;
+            std::vector<types::global_dof_index> local_dof_indices;
+            std::vector<SymmetricTensor<2, dim>> grads_phi_u;
+            std::vector<double>                  div_phi_u;
+            std::vector<double>                  phi_p;
+            std::vector<Tensor<1, dim>>          phi_u;
+            std::vector<double>                  phi_p_c;
+            std::vector<Tensor<1, dim>>          grad_phi_p;
 
-          /**
-           * Material model inputs and outputs computed at the current
-           * linearization point.
-           */
-          MaterialModel::MaterialModelInputs<dim> material_model_inputs;
-          MaterialModel::MaterialModelOutputs<dim> material_model_outputs;
+            /**
+             * Material model inputs and outputs computed at the current
+             * linearization point.
+             */
+            MaterialModel::MaterialModelInputs<dim>  material_model_inputs;
+            MaterialModel::MaterialModelOutputs<dim> material_model_outputs;
 
-          /**
-           * Whether the Stokes matrix should be rebuild during this
-           * assembly. If the matrix does not change, assembling the right
-           * hand side is sufficient.
-           */
-          const bool rebuild_stokes_matrix;
+            /**
+             * Whether the Stokes matrix should be rebuild during this
+             * assembly. If the matrix does not change, assembling the right
+             * hand side is sufficient.
+             */
+            const bool rebuild_stokes_matrix;
         };
 
 
@@ -146,63 +146,63 @@ namespace aspect
         template <int dim>
         struct StokesSystem : public StokesPreconditioner<dim>
         {
-          StokesSystem (const FiniteElement<dim> &finite_element,
-                        const Mapping<dim>       &mapping,
-                        const Quadrature<dim>    &quadrature,
-                        const Quadrature<dim-1>  &face_quadrature,
-                        const UpdateFlags         update_flags,
-                        const UpdateFlags         face_update_flags,
-                        const unsigned int        n_compositional_fields,
-                        const unsigned int        stokes_dofs_per_cell,
-                        const bool                add_compaction_pressure,
-                        const bool                use_reference_density_profile,
-                        const bool                rebuild_stokes_matrix,
-                        const bool                rebuild_newton_stokes_matrix,
-                        const bool                use_bfbt);
+            StokesSystem(const FiniteElement<dim>  &finite_element,
+                         const Mapping<dim>        &mapping,
+                         const Quadrature<dim>     &quadrature,
+                         const Quadrature<dim - 1> &face_quadrature,
+                         const UpdateFlags          update_flags,
+                         const UpdateFlags          face_update_flags,
+                         const unsigned int         n_compositional_fields,
+                         const unsigned int         stokes_dofs_per_cell,
+                         const bool                 add_compaction_pressure,
+                         const bool                 use_reference_density_profile,
+                         const bool                 rebuild_stokes_matrix,
+                         const bool                 rebuild_newton_stokes_matrix,
+                         const bool                 use_bfbt);
 
-          StokesSystem (const StokesSystem<dim> &scratch);
+            StokesSystem(const StokesSystem<dim> &scratch);
 
-          FEFaceValues<dim> face_finite_element_values;
+            FEFaceValues<dim> face_finite_element_values;
 
-          using StokesPreconditioner<dim>::reinit;
+            using StokesPreconditioner<dim>::reinit;
 
-          void reinit (const typename DoFHandler<dim>::active_cell_iterator &cell_ref,
-                       const unsigned face_number_ref);
+            void
+            reinit(const typename DoFHandler<dim>::active_cell_iterator &cell_ref, const unsigned face_number_ref);
 
-          std::vector<Tensor<1,dim>>          phi_u;
-          std::vector<Tensor<1,dim>>          velocity_values;
-          std::vector<double>                  velocity_divergence;
-          std::vector<Tensor<1,dim>>          temperature_gradients;
+            std::vector<Tensor<1, dim>> phi_u;
+            std::vector<Tensor<1, dim>> velocity_values;
+            std::vector<double>         velocity_divergence;
+            std::vector<Tensor<1, dim>> temperature_gradients;
 
-          /**
-           * Material model inputs and outputs computed at the current
-           * linearization point.
-           *
-           * In contrast to the variables above, the following two
-           * variables are used in the assembly at quadrature points
-           * on faces, not on cells.
-           */
-          MaterialModel::MaterialModelInputs<dim> face_material_model_inputs;
-          MaterialModel::MaterialModelOutputs<dim> face_material_model_outputs;
+            /**
+             * Material model inputs and outputs computed at the current
+             * linearization point.
+             *
+             * In contrast to the variables above, the following two
+             * variables are used in the assembly at quadrature points
+             * on faces, not on cells.
+             */
+            MaterialModel::MaterialModelInputs<dim>  face_material_model_inputs;
+            MaterialModel::MaterialModelOutputs<dim> face_material_model_outputs;
 
-          /**
-           * In some approximations of the Stokes equations the density used
-           * for the mass conservation (/continuity) equation is some form
-           * of reference density, while the density used for calculating
-           * the buoyancy force is the full density. In case such a formulation
-           * is used the reference density (and its derivative in depth
-           * direction) is queried from the adiabatic conditions plugin
-           * and is stored in these variables.
-           */
-          std::vector<double> reference_densities;
-          std::vector<double> reference_densities_depth_derivative;
+            /**
+             * In some approximations of the Stokes equations the density used
+             * for the mass conservation (/continuity) equation is some form
+             * of reference density, while the density used for calculating
+             * the buoyancy force is the full density. In case such a formulation
+             * is used the reference density (and its derivative in depth
+             * direction) is queried from the adiabatic conditions plugin
+             * and is stored in these variables.
+             */
+            std::vector<double> reference_densities;
+            std::vector<double> reference_densities_depth_derivative;
 
-          /**
-           * Whether the Newton solver Stokes matrix should be rebuild during
-           * this assembly. If the matrix does not change, assembling the right
-           * hand side is sufficient.
-           */
-          const bool rebuild_newton_stokes_matrix;
+            /**
+             * Whether the Newton solver Stokes matrix should be rebuild during
+             * this assembly. If the matrix does not change, assembling the right
+             * hand side is sufficient.
+             */
+            const bool rebuild_newton_stokes_matrix;
         };
 
 
@@ -212,117 +212,118 @@ namespace aspect
          * the terms in the advection equations.
          */
         template <int dim>
-        struct AdvectionSystem: public ScratchBase<dim>
+        struct AdvectionSystem : public ScratchBase<dim>
         {
-          AdvectionSystem (const FiniteElement<dim> &finite_element,
-                           const FiniteElement<dim> &advection_element,
-                           const Mapping<dim>       &mapping,
-                           const Quadrature<dim>    &quadrature,
-                           const Quadrature<dim-1>  &face_quadrature,
-                           const UpdateFlags         update_flags,
-                           const UpdateFlags         face_update_flags,
-                           const unsigned int        n_compositional_fields,
-                           const AdvectionField     &field);
-          AdvectionSystem (const AdvectionSystem &scratch);
+            AdvectionSystem(const FiniteElement<dim>  &finite_element,
+                            const FiniteElement<dim>  &advection_element,
+                            const Mapping<dim>        &mapping,
+                            const Quadrature<dim>     &quadrature,
+                            const Quadrature<dim - 1> &face_quadrature,
+                            const UpdateFlags          update_flags,
+                            const UpdateFlags          face_update_flags,
+                            const unsigned int         n_compositional_fields,
+                            const AdvectionField      &field);
+            AdvectionSystem(const AdvectionSystem &scratch);
 
-          FEValues<dim> finite_element_values;
+            FEValues<dim> finite_element_values;
 
-          void reinit (const typename DoFHandler<dim>::active_cell_iterator &cell_ref);
+            void
+            reinit(const typename DoFHandler<dim>::active_cell_iterator &cell_ref);
 
-          std::unique_ptr<FEFaceValues<dim>>    face_finite_element_values;
-          std::unique_ptr<FEFaceValues<dim>>    neighbor_face_finite_element_values;
-          std::unique_ptr<FESubfaceValues<dim>> subface_finite_element_values;
+            std::unique_ptr<FEFaceValues<dim>>    face_finite_element_values;
+            std::unique_ptr<FEFaceValues<dim>>    neighbor_face_finite_element_values;
+            std::unique_ptr<FESubfaceValues<dim>> subface_finite_element_values;
 
-          std::vector<types::global_dof_index>   local_dof_indices;
+            std::vector<types::global_dof_index> local_dof_indices;
 
-          /**
-           * Variables describing the values and gradients of the
-           * shape functions at the quadrature points, as they are
-           * used in the advection assembly function. note that the sizes
-           * of these arrays are equal to the number of shape functions
-           * corresponding to the currently advected field (and not all of the
-           * existing fields), and that they are also correspondingly indexed.
-           */
-          std::vector<double>         phi_field;
-          std::vector<Tensor<1,dim>> grad_phi_field;
-          std::vector<double>         laplacian_phi_field;
-          std::vector<double>         face_phi_field;
-          std::vector<Tensor<1,dim>> face_grad_phi_field;
-          std::vector<double>         neighbor_face_phi_field;
-          std::vector<Tensor<1,dim>> neighbor_face_grad_phi_field;
+            /**
+             * Variables describing the values and gradients of the
+             * shape functions at the quadrature points, as they are
+             * used in the advection assembly function. note that the sizes
+             * of these arrays are equal to the number of shape functions
+             * corresponding to the currently advected field (and not all of the
+             * existing fields), and that they are also correspondingly indexed.
+             */
+            std::vector<double>         phi_field;
+            std::vector<Tensor<1, dim>> grad_phi_field;
+            std::vector<double>         laplacian_phi_field;
+            std::vector<double>         face_phi_field;
+            std::vector<Tensor<1, dim>> face_grad_phi_field;
+            std::vector<double>         neighbor_face_phi_field;
+            std::vector<Tensor<1, dim>> neighbor_face_grad_phi_field;
 
-          std::vector<Tensor<1,dim>> old_velocity_values;
-          std::vector<Tensor<1,dim>> old_old_velocity_values;
+            std::vector<Tensor<1, dim>> old_velocity_values;
+            std::vector<Tensor<1, dim>> old_old_velocity_values;
 
-          std::vector<double>         old_pressure;
-          std::vector<double>         old_old_pressure;
-          std::vector<Tensor<1,dim>> old_pressure_gradients;
-          std::vector<Tensor<1,dim>> old_old_pressure_gradients;
+            std::vector<double>         old_pressure;
+            std::vector<double>         old_old_pressure;
+            std::vector<Tensor<1, dim>> old_pressure_gradients;
+            std::vector<Tensor<1, dim>> old_old_pressure_gradients;
 
-          std::vector<SymmetricTensor<2,dim>> old_strain_rates;
-          std::vector<SymmetricTensor<2,dim>> old_old_strain_rates;
+            std::vector<SymmetricTensor<2, dim>> old_strain_rates;
+            std::vector<SymmetricTensor<2, dim>> old_old_strain_rates;
 
-          std::vector<double>         old_temperature_values;
-          std::vector<double>         old_old_temperature_values;
+            std::vector<double> old_temperature_values;
+            std::vector<double> old_old_temperature_values;
 
-          std::vector<double>         old_field_values;
-          std::vector<double>         old_old_field_values;
-          std::vector<Tensor<1,dim>> old_field_grads;
-          std::vector<Tensor<1,dim>> old_old_field_grads;
-          std::vector<double>         old_field_laplacians;
-          std::vector<double>         old_old_field_laplacians;
+            std::vector<double>         old_field_values;
+            std::vector<double>         old_old_field_values;
+            std::vector<Tensor<1, dim>> old_field_grads;
+            std::vector<Tensor<1, dim>> old_old_field_grads;
+            std::vector<double>         old_field_laplacians;
+            std::vector<double>         old_old_field_laplacians;
 
-          std::vector<std::vector<double>> old_composition_values;
-          std::vector<std::vector<double>> old_old_composition_values;
+            std::vector<std::vector<double>> old_composition_values;
+            std::vector<std::vector<double>> old_old_composition_values;
 
-          std::vector<double>         current_temperature_values;
-          std::vector<Tensor<1,dim>> current_velocity_values;
-          std::vector<Tensor<1,dim>> face_current_velocity_values;
-          std::vector<Tensor<1,dim>> mesh_velocity_values;
-          std::vector<Tensor<1,dim>> face_mesh_velocity_values;
+            std::vector<double>         current_temperature_values;
+            std::vector<Tensor<1, dim>> current_velocity_values;
+            std::vector<Tensor<1, dim>> face_current_velocity_values;
+            std::vector<Tensor<1, dim>> mesh_velocity_values;
+            std::vector<Tensor<1, dim>> face_mesh_velocity_values;
 
-          std::vector<SymmetricTensor<2,dim>> current_strain_rates;
-          std::vector<std::vector<double>> current_composition_values;
-          std::vector<double>         current_velocity_divergences;
+            std::vector<SymmetricTensor<2, dim>> current_strain_rates;
+            std::vector<std::vector<double>>     current_composition_values;
+            std::vector<double>                  current_velocity_divergences;
 
-          /**
-           * Material model inputs and outputs computed at the current
-           * linearization point.
-           */
-          MaterialModel::MaterialModelInputs<dim> material_model_inputs;
-          MaterialModel::MaterialModelOutputs<dim> material_model_outputs;
+            /**
+             * Material model inputs and outputs computed at the current
+             * linearization point.
+             */
+            MaterialModel::MaterialModelInputs<dim>  material_model_inputs;
+            MaterialModel::MaterialModelOutputs<dim> material_model_outputs;
 
-          MaterialModel::MaterialModelInputs<dim> face_material_model_inputs;
-          MaterialModel::MaterialModelOutputs<dim> face_material_model_outputs;
+            MaterialModel::MaterialModelInputs<dim>  face_material_model_inputs;
+            MaterialModel::MaterialModelOutputs<dim> face_material_model_outputs;
 
-          MaterialModel::MaterialModelInputs<dim> neighbor_face_material_model_inputs;
-          MaterialModel::MaterialModelOutputs<dim> neighbor_face_material_model_outputs;
+            MaterialModel::MaterialModelInputs<dim>  neighbor_face_material_model_inputs;
+            MaterialModel::MaterialModelOutputs<dim> neighbor_face_material_model_outputs;
 
-          /**
-           * Heating model outputs computed at the quadrature points of the
-           * current cell at the time of the current linearization point.
-           * As explained in the class documentation of
-           * HeatingModel::HeatingModelOutputs each term contains the sum of all
-           * enabled heating mechanism contributions.
-           */
-          HeatingModel::HeatingModelOutputs heating_model_outputs;
-          HeatingModel::HeatingModelOutputs face_heating_model_outputs;
-          HeatingModel::HeatingModelOutputs neighbor_face_heating_model_outputs;
+            /**
+             * Heating model outputs computed at the quadrature points of the
+             * current cell at the time of the current linearization point.
+             * As explained in the class documentation of
+             * HeatingModel::HeatingModelOutputs each term contains the sum of all
+             * enabled heating mechanism contributions.
+             */
+            HeatingModel::HeatingModelOutputs heating_model_outputs;
+            HeatingModel::HeatingModelOutputs face_heating_model_outputs;
+            HeatingModel::HeatingModelOutputs neighbor_face_heating_model_outputs;
 
-          /**
-           * This pointer contains a struct that can be used to identify the
-           * advection field that is currently assembled. It can be used to
-           * determine between temperature and the available compositional
-           * fields. See the documentation of the AdvectionField class for
-           * more details.
-           */
-          const AdvectionField *advection_field;
+            /**
+             * This pointer contains a struct that can be used to identify the
+             * advection field that is currently assembled. It can be used to
+             * determine between temperature and the available compositional
+             * fields. See the documentation of the AdvectionField class for
+             * more details.
+             */
+            const AdvectionField *advection_field;
 
-          /**
-           * The amount of entropy viscosity that should be applied to the
-           * current cell to stabilize the solution of the advection system.
-           */
-          double artificial_viscosity;
+            /**
+             * The amount of entropy viscosity that should be applied to the
+             * current cell to stabilize the solution of the advection system.
+             */
+            double artificial_viscosity;
         };
       }
 
@@ -350,7 +351,7 @@ namespace aspect
         template <int dim>
         struct CopyDataBase
         {
-          virtual ~CopyDataBase () = default;
+            virtual ~CopyDataBase() = default;
         };
 
         /**
@@ -359,26 +360,28 @@ namespace aspect
          * cell corresponds to.
          */
         template <int dim>
-        struct StokesPreconditioner: public CopyDataBase<dim>
+        struct StokesPreconditioner : public CopyDataBase<dim>
         {
-          StokesPreconditioner (const unsigned int stokes_dofs_per_cell);
+            StokesPreconditioner(const unsigned int stokes_dofs_per_cell);
 
-          StokesPreconditioner (const StokesPreconditioner &data);
+            StokesPreconditioner(const StokesPreconditioner &data);
 
-          ~StokesPreconditioner () override = default;
-          StokesPreconditioner<dim> &operator= (const StokesPreconditioner<dim> &data) = default;
+            ~StokesPreconditioner() override = default;
+            StokesPreconditioner<dim> &
+            operator=(const StokesPreconditioner<dim> &data) = default;
 
-          FullMatrix<double> local_matrix;
-          Vector<double> local_inverse_lumped_mass_matrix;
-          std::vector<types::global_dof_index> local_dof_indices;
+            FullMatrix<double>                   local_matrix;
+            Vector<double>                       local_inverse_lumped_mass_matrix;
+            std::vector<types::global_dof_index> local_dof_indices;
 
-          /**
-           * Extract the values listed in @p all_dof_indices only if
-           * it corresponds to the Stokes component and copy it to the variable
-           * local_dof_indices declared above in the same class as this function
-           */
-          void extract_stokes_dof_indices(const std::vector<types::global_dof_index> &all_dof_indices,
-                                          const Introspection<dim>                   &introspection);
+            /**
+             * Extract the values listed in @p all_dof_indices only if
+             * it corresponds to the Stokes component and copy it to the variable
+             * local_dof_indices declared above in the same class as this function
+             */
+            void
+            extract_stokes_dof_indices(const std::vector<types::global_dof_index> &all_dof_indices,
+                                       const Introspection<dim>                   &introspection);
         };
 
         /**
@@ -389,15 +392,15 @@ namespace aspect
         template <int dim>
         struct StokesSystem : public StokesPreconditioner<dim>
         {
-          StokesSystem (const unsigned int        stokes_dofs_per_cell,
-                        const bool                do_pressure_rhs_compatibility_modification);
-          StokesSystem (const StokesSystem<dim> &data);
+            StokesSystem(const unsigned int stokes_dofs_per_cell, const bool do_pressure_rhs_compatibility_modification);
+            StokesSystem(const StokesSystem<dim> &data);
 
-          ~StokesSystem () override = default;
-          StokesSystem<dim> &operator= (const StokesSystem<dim> &data) = default;
+            ~StokesSystem() override = default;
+            StokesSystem<dim> &
+            operator=(const StokesSystem<dim> &data) = default;
 
-          Vector<double> local_rhs;
-          Vector<double> local_pressure_shape_function_integrals;
+            Vector<double> local_rhs;
+            Vector<double> local_pressure_shape_function_integrals;
         };
 
         /**
@@ -406,74 +409,73 @@ namespace aspect
          * (mostly for discontinuous elements that contain DG terms).
          */
         template <int dim>
-        struct AdvectionSystem: public CopyDataBase<dim>
+        struct AdvectionSystem : public CopyDataBase<dim>
         {
-          /**
-           * Constructor.
-           *
-           * @param finite_element The element that describes the field for
-           *    which we are trying to assemble a linear system. <b>Not</b>
-           *    the global finite element.
-           * @param field_is_discontinuous If true, the field is a DG element.
-           */
-          AdvectionSystem (const FiniteElement<dim> &finite_element,
-                           const bool                field_is_discontinuous);
+            /**
+             * Constructor.
+             *
+             * @param finite_element The element that describes the field for
+             *    which we are trying to assemble a linear system. <b>Not</b>
+             *    the global finite element.
+             * @param field_is_discontinuous If true, the field is a DG element.
+             */
+            AdvectionSystem(const FiniteElement<dim> &finite_element, const bool field_is_discontinuous);
 
-          /**
-           * Local contributions to the global matrix
-           * that correspond only to the variables listed in local_dof_indices
-           */
-          FullMatrix<double>          local_matrix;
+            /**
+             * Local contributions to the global matrix
+             * that correspond only to the variables listed in local_dof_indices
+             */
+            FullMatrix<double> local_matrix;
 
-          /**
-           * Local contributions to the global matrix from the face terms in the
-           * discontinuous Galerkin method. These arrays are of a length sufficient
-           * to hold one matrix for each possible face or subface of the cell.
-           * The discontinuous Galerkin bilinear form contains terms arising from
-           * internal (to the cell) values and external (to the cell) values.
-           * `_int_ext` and `_ext_int` hold the terms arising from the pairing
-           * between a cell and its neighbor, while `_ext_ext` is the pairing
-           * of the neighbor's dofs with themselves. In the continuous
-           * Galerkin case, these are unused, and set to size zero.
-           */
-          std::vector<FullMatrix<double>>         local_matrices_int_ext;
-          std::vector<FullMatrix<double>>         local_matrices_ext_int;
-          std::vector<FullMatrix<double>>         local_matrices_ext_ext;
+            /**
+             * Local contributions to the global matrix from the face terms in the
+             * discontinuous Galerkin method. These arrays are of a length sufficient
+             * to hold one matrix for each possible face or subface of the cell.
+             * The discontinuous Galerkin bilinear form contains terms arising from
+             * internal (to the cell) values and external (to the cell) values.
+             * `_int_ext` and `_ext_int` hold the terms arising from the pairing
+             * between a cell and its neighbor, while `_ext_ext` is the pairing
+             * of the neighbor's dofs with themselves. In the continuous
+             * Galerkin case, these are unused, and set to size zero.
+             */
+            std::vector<FullMatrix<double>> local_matrices_int_ext;
+            std::vector<FullMatrix<double>> local_matrices_ext_int;
+            std::vector<FullMatrix<double>> local_matrices_ext_ext;
 
-          /**
-           * Local contributions to the right hand side
-           * that correspond only to the variables listed in local_dof_indices
-           */
-          Vector<double>              local_rhs;
+            /**
+             * Local contributions to the right hand side
+             * that correspond only to the variables listed in local_dof_indices
+             */
+            Vector<double> local_rhs;
 
-          /**
-           * Denotes which face matrices have actually been assembled in the DG field
-           * assembly. Entries for matrices not used (for example, those corresponding
-           * to non-existent subfaces; or faces being assembled by the neighboring cell)
-           * are set to false.
-           */
-          std::vector<bool>               assembled_matrices;
+            /**
+             * Denotes which face matrices have actually been assembled in the DG field
+             * assembly. Entries for matrices not used (for example, those corresponding
+             * to non-existent subfaces; or faces being assembled by the neighboring cell)
+             * are set to false.
+             */
+            std::vector<bool> assembled_matrices;
 
-          /**
-           * Indices of those degrees of freedom that actually correspond
-           * to the temperature or compositional field. since this structure
-           * is used to represent just contributions to the advection
-           * systems, there will be no contributions to other parts of the
-           * system and consequently, we do not need to list here indices
-           * that correspond to velocity or pressure degrees (or, in fact
-           * any other variable outside the block we are currently considering)
-           */
-          std::vector<types::global_dof_index>   local_dof_indices;
+            /**
+             * Indices of those degrees of freedom that actually correspond
+             * to the temperature or compositional field. since this structure
+             * is used to represent just contributions to the advection
+             * systems, there will be no contributions to other parts of the
+             * system and consequently, we do not need to list here indices
+             * that correspond to velocity or pressure degrees (or, in fact
+             * any other variable outside the block we are currently considering)
+             */
+            std::vector<types::global_dof_index> local_dof_indices;
 
-          /**
-           * Indices of the degrees of freedom corresponding to the temperature
-           * or composition field on all possible neighboring cells. This is used
-           * in the discontinuous Galerkin method. The outer array has a
-           * length sufficient to hold one element for each possible face
-           * and sub-face of the current cell. The object is not used
-           * and has size zero if in the continuous Galerkin case.
-           */
-          std::vector<std::vector<types::global_dof_index>>   neighbor_dof_indices;
+            /**
+             * Indices of the degrees of freedom corresponding to the temperature
+             * or composition field on all possible neighboring cells. This is used
+             * in the discontinuous Galerkin method. The outer array has a
+             * length sufficient to hold one element for each possible face
+             * and sub-face of the current cell. The object is not used
+             * and has size zero if in the continuous Galerkin case.
+             */
+            std::vector<std::vector<types::global_dof_index>> neighbor_dof_indices;
         };
       }
     }
@@ -496,7 +498,7 @@ namespace aspect
      */
     template <int dim>
     unsigned int
-    n_interface_matrices (const ReferenceCell<dim> &reference_cell);
+    n_interface_matrices(const ReferenceCell<dim> &reference_cell);
 
     /**
      * For a given reference cell, and a given face we are currently
@@ -505,8 +507,7 @@ namespace aspect
      */
     template <int dim>
     unsigned int
-    nth_interface_matrix (const ReferenceCell<dim> &reference_cell,
-                          const unsigned int face);
+    nth_interface_matrix(const ReferenceCell<dim> &reference_cell, const unsigned int face);
 
     /**
      * For a given reference cell, and a given face and sub-face we are
@@ -515,9 +516,7 @@ namespace aspect
      */
     template <int dim>
     unsigned int
-    nth_interface_matrix (const ReferenceCell<dim> &reference_cell,
-                          const unsigned int face,
-                          const unsigned int sub_face);
+    nth_interface_matrix(const ReferenceCell<dim> &reference_cell, const unsigned int face, const unsigned int sub_face);
 
     /**
      * A base class for objects that implement assembly
@@ -550,10 +549,8 @@ namespace aspect
          * have finished, the final content of @p data is distributed into the
          * global matrix and right hand side vector.
          */
-        virtual
-        void
-        execute(internal::Assembly::Scratch::ScratchBase<dim> &scratch,
-                internal::Assembly::CopyData::CopyDataBase<dim> &data) const = 0;
+        virtual void
+        execute(internal::Assembly::Scratch::ScratchBase<dim> &scratch, internal::Assembly::CopyData::CopyDataBase<dim> &data) const = 0;
 
         /**
          * This function gets called if a MaterialModelOutputs is created
@@ -589,8 +586,7 @@ namespace aspect
          * This ensures the additional material model output is available when
          * execute() is called.
          */
-        virtual
-        void
+        virtual void
         create_additional_material_model_outputs(MaterialModel::MaterialModelOutputs<dim> &) const;
 
         /**
@@ -606,8 +602,7 @@ namespace aspect
          * For assemblers for the Stokes system, an implementation of this
          * function is not necessary.
          */
-        virtual
-        std::vector<double>
+        virtual std::vector<double>
         compute_residual(internal::Assembly::Scratch::ScratchBase<dim> &) const;
     };
 
@@ -624,7 +619,7 @@ namespace aspect
     class AdvectionStabilizationInterface
     {
       public:
-        virtual ~AdvectionStabilizationInterface ();
+        virtual ~AdvectionStabilizationInterface();
 
         /**
          * This function returns a representative prefactor for the advection
@@ -635,8 +630,7 @@ namespace aspect
          * This information is useful for algorithms that depend on the
          * magnitude of individual terms, like stabilization methods.
          */
-        virtual
-        std::vector<double>
+        virtual std::vector<double>
         advection_prefactors(internal::Assembly::Scratch::ScratchBase<dim> &scratch_base) const;
 
         /**
@@ -648,8 +642,7 @@ namespace aspect
          * information is useful for algorithms depending on the magnitude of
          * individual terms, like stabilization methods.
          */
-        virtual
-        std::vector<double>
+        virtual std::vector<double>
         diffusion_prefactors(internal::Assembly::Scratch::ScratchBase<dim> &scratch_base) const;
     };
 
@@ -685,11 +678,11 @@ namespace aspect
     class Manager
     {
       public:
-
         /**
          * Reset the state of the manager and remove all Assemblers.
          */
-        void reset ();
+        void
+        reset();
 
         /**
          * A vector of pointers containing all assemblers for the Stokes preconditioner.
@@ -759,43 +752,43 @@ namespace aspect
          */
         struct Properties
         {
-          /**
-           * Constructor. Disable all properties as described in the
-           * class documentation.
-           */
-          Properties ();
+            /**
+             * Constructor. Disable all properties as described in the
+             * class documentation.
+             */
+            Properties();
 
-          /**
-           * Whether or not at least one of the active assembler objects for
-           * a certain equation requires the initialization and re-computation
-           * of a MaterialModelOutputs object for each face. This
-           * property is only relevant to assemblers that operate on
-           * faces.
-           */
-          bool need_face_material_model_data;
+            /**
+             * Whether or not at least one of the active assembler objects for
+             * a certain equation requires the initialization and re-computation
+             * of a MaterialModelOutputs object for each face. This
+             * property is only relevant to assemblers that operate on
+             * faces.
+             */
+            bool need_face_material_model_data;
 
-          /**
-           * Whether or not at least one of the active assembler objects for
-           * a certain equation requires the evaluation of the FEFaceValues
-           * object. This is different from need_face_material_model_data,
-           * because an assembler might assemble terms that do not require
-           * material model outputs.
-           */
-          bool need_face_finite_element_evaluation;
+            /**
+             * Whether or not at least one of the active assembler objects for
+             * a certain equation requires the evaluation of the FEFaceValues
+             * object. This is different from need_face_material_model_data,
+             * because an assembler might assemble terms that do not require
+             * material model outputs.
+             */
+            bool need_face_finite_element_evaluation;
 
-          /**
-           * Whether or not at least one of the active assembler objects for
-           * a certain equation requires the computation of the viscosity.
-           */
-          bool need_viscosity;
+            /**
+             * Whether or not at least one of the active assembler objects for
+             * a certain equation requires the computation of the viscosity.
+             */
+            bool need_viscosity;
 
-          /**
-           * A list of FEValues UpdateFlags that are necessary for
-           * a given operation. Assembler objects may add to this list
-           * as necessary; it will be initialized with a set of
-           * "default" flags that will always be set.
-           */
-          UpdateFlags needed_update_flags;
+            /**
+             * A list of FEValues UpdateFlags that are necessary for
+             * a given operation. Assembler objects may add to this list
+             * as necessary; it will be initialized with a set of
+             * "default" flags that will always be set.
+             */
+            UpdateFlags needed_update_flags;
         };
 
         /**
@@ -804,9 +797,9 @@ namespace aspect
          * where we add individual functions to the vectors of assembler
          * objects above.
          */
-        Properties stokes_preconditioner_assembler_properties;
-        Properties stokes_system_assembler_properties;
-        Properties stokes_system_assembler_on_boundary_face_properties;
+        Properties              stokes_preconditioner_assembler_properties;
+        Properties              stokes_system_assembler_properties;
+        Properties              stokes_system_assembler_on_boundary_face_properties;
         std::vector<Properties> advection_system_assembler_properties;
         std::vector<Properties> advection_system_assembler_on_face_properties;
     };

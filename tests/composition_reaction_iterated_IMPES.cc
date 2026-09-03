@@ -18,8 +18,8 @@
   <http://www.gnu.org/licenses/>.
 */
 
-#include <aspect/material_model/composition_reaction.h>
 #include <aspect/geometry_model/interface.h>
+#include <aspect/material_model/composition_reaction.h>
 
 /**
  * This material model assumes three compositional fields
@@ -36,18 +36,18 @@ namespace aspect
     class IteratedReaction : public MaterialModel::CompositionReaction<dim>
     {
       public:
-        virtual void evaluate(const MaterialModelInputs<dim> &in,
-                              MaterialModelOutputs<dim> &out) const
+        virtual void
+        evaluate(const MaterialModelInputs<dim> &in, MaterialModelOutputs<dim> &out) const
         {
           this->CompositionReaction<dim>::evaluate(in, out);
-          for (unsigned int i=0; i < in.n_evaluation_points(); ++i)
+          for (unsigned int i = 0; i < in.n_evaluation_points(); ++i)
             {
               const double depth = this->get_geometry_model().depth(in.position[i]);
-              for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
+              for (unsigned int c = 0; c < this->n_compositional_fields(); ++c)
                 {
                   Assert(in.composition[i].size() > 1,
-                         ExcMessage ("Material model iterated reaction can only be used with "
-                                     "at least two compositial fields."));
+                         ExcMessage("Material model iterated reaction can only be used with "
+                                    "at least two compositial fields."));
 
                   double delta_C = 0.0;
                   switch (c)
@@ -65,9 +65,7 @@ namespace aspect
                   out.reaction_terms[i][c] = delta_C;
                 }
             }
-
         }
-
     };
 
   }

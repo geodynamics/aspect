@@ -20,6 +20,7 @@
 
 
 #include <aspect/global.h>
+
 #include <aspect/initial_temperature/ascii_data_layered.h>
 
 namespace aspect
@@ -27,13 +28,12 @@ namespace aspect
   namespace InitialTemperature
   {
     template <int dim>
-    AsciiDataLayered<dim>::AsciiDataLayered ()
-      = default;
+    AsciiDataLayered<dim>::AsciiDataLayered() = default;
 
 
     template <int dim>
     void
-    AsciiDataLayered<dim>::initialize ()
+    AsciiDataLayered<dim>::initialize()
     {
       // The ascii data layered class has dim-1 spatial columns
       // (which provide the horizontal coordinates of the layer).
@@ -47,19 +47,18 @@ namespace aspect
 
     template <int dim>
     double
-    AsciiDataLayered<dim>::
-    initial_temperature (const Point<dim> &position) const
+    AsciiDataLayered<dim>::initial_temperature(const Point<dim> &position) const
     {
       // This is where we get the initial temperature
-      return Utilities::AsciiDataLayered<dim>::get_data_component(position,1);
+      return Utilities::AsciiDataLayered<dim>::get_data_component(position, 1);
     }
 
 
     template <int dim>
     void
-    AsciiDataLayered<dim>::declare_parameters (ParameterHandler &prm)
+    AsciiDataLayered<dim>::declare_parameters(ParameterHandler &prm)
     {
-      prm.enter_subsection ("Initial temperature model");
+      prm.enter_subsection("Initial temperature model");
       {
         Utilities::AsciiDataLayered<dim>::declare_parameters(prm,
                                                              "$ASPECT_SOURCE_DIR/data/initial-temperature/ascii-data/test/",
@@ -72,12 +71,11 @@ namespace aspect
 
     template <int dim>
     void
-    AsciiDataLayered<dim>::parse_parameters (ParameterHandler &prm)
+    AsciiDataLayered<dim>::parse_parameters(ParameterHandler &prm)
     {
-      prm.enter_subsection ("Initial temperature model");
+      prm.enter_subsection("Initial temperature model");
       {
-        Utilities::AsciiDataLayered<dim>::parse_parameters(prm,
-                                                           "Ascii data layered");
+        Utilities::AsciiDataLayered<dim>::parse_parameters(prm, "Ascii data layered");
       }
       prm.leave_subsection();
     }

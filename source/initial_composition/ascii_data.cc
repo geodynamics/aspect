@@ -20,6 +20,7 @@
 
 
 #include <aspect/global.h>
+
 #include <aspect/initial_composition/ascii_data.h>
 
 
@@ -28,13 +29,12 @@ namespace aspect
   namespace InitialComposition
   {
     template <int dim>
-    AsciiData<dim>::AsciiData ()
-      = default;
+    AsciiData<dim>::AsciiData() = default;
 
 
     template <int dim>
     void
-    AsciiData<dim>::initialize ()
+    AsciiData<dim>::initialize()
     {
       ascii_data_initial->initialize(this->n_compositional_fields());
     }
@@ -42,17 +42,15 @@ namespace aspect
 
     template <int dim>
     double
-    AsciiData<dim>::
-    initial_composition (const Point<dim> &position,
-                         const unsigned int n_comp) const
+    AsciiData<dim>::initial_composition(const Point<dim> &position, const unsigned int n_comp) const
     {
-      return ascii_data_initial->get_data_component(position,n_comp);
+      return ascii_data_initial->get_data_component(position, n_comp);
     }
 
 
     template <int dim>
     void
-    AsciiData<dim>::declare_parameters (ParameterHandler &prm)
+    AsciiData<dim>::declare_parameters(ParameterHandler &prm)
     {
       prm.enter_subsection("Initial composition model");
       {
@@ -66,7 +64,7 @@ namespace aspect
 
     template <int dim>
     void
-    AsciiData<dim>::parse_parameters (ParameterHandler &prm)
+    AsciiData<dim>::parse_parameters(ParameterHandler &prm)
     {
       prm.enter_subsection("Initial composition model");
       {

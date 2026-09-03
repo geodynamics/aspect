@@ -21,9 +21,10 @@
 #ifndef _aspect_material_model_modified_tait_h
 #define _aspect_material_model_modified_tait_h
 
-#include <deal.II/base/function_lib.h>
 #include <aspect/material_model/interface.h>
 #include <aspect/simulator_access.h>
+
+#include <deal.II/base/function_lib.h>
 #include <deal.II/base/parsed_function.h>
 
 namespace aspect
@@ -44,13 +45,12 @@ namespace aspect
     template <int dim>
     class ModifiedTait : public MaterialModel::Interface<dim>, public ::aspect::SimulatorAccess<dim>
     {
-
       public:
         /**
          * Evaluate material properties.
          */
-        void evaluate(const MaterialModelInputs<dim> &in,
-                      MaterialModelOutputs<dim> &out) const override;
+        void
+        evaluate(const MaterialModelInputs<dim> &in, MaterialModelOutputs<dim> &out) const override;
 
         /**
          * @name Qualitative properties one can ask a material model
@@ -66,7 +66,8 @@ namespace aspect
          * or as $\nabla \cdot \mathbf{u}=0$ (incompressible Stokes).
          * This model is compressible.
          */
-        bool is_compressible () const override;
+        bool
+        is_compressible() const override;
         /**
          * @}
          */
@@ -78,15 +79,14 @@ namespace aspect
         /**
          * Declare the parameters this class takes through input files.
          */
-        static
-        void
-        declare_parameters (ParameterHandler &prm);
+        static void
+        declare_parameters(ParameterHandler &prm);
 
         /**
          * Read the parameters this class declares from the parameter file.
          */
         void
-        parse_parameters (ParameterHandler &prm) override;
+        parse_parameters(ParameterHandler &prm) override;
 
         /**
          * @}
@@ -166,7 +166,6 @@ namespace aspect
          * This variable is read from the parameter file through a parameter called 'Thermal conductivity'.
          */
         double k_value;
-
     };
 
   }

@@ -22,9 +22,10 @@
 #ifndef _aspect_geometry_model_ellipsoidal_chunk_h
 #define _aspect_geometry_model_ellipsoidal_chunk_h
 
-#include <aspect/geometry_model/interface.h>
 #include <aspect/geometry_model/initial_topography_model/interface.h>
+#include <aspect/geometry_model/interface.h>
 #include <aspect/simulator_access.h>
+
 #include <deal.II/grid/manifold.h>
 
 
@@ -38,18 +39,18 @@ namespace aspect
        * A class which describes the manifold.
        */
       template <int dim>
-      class EllipsoidalChunkGeometry : public ChartManifold<dim,3,3>
+      class EllipsoidalChunkGeometry : public ChartManifold<dim, 3, 3>
       {
         public:
           /**
            * Constructor
            */
           EllipsoidalChunkGeometry(const std::shared_ptr<const InitialTopographyModel::Interface<dim>> &topography,
-                                   const double para_semi_major_axis_a,
-                                   const double para_eccentricity,
-                                   const double para_semi_minor_axis_b,
-                                   const double para_bottom_depth,
-                                   const std::vector<Point<2>> &para_corners);
+                                   const double                                                         para_semi_major_axis_a,
+                                   const double                                                         para_eccentricity,
+                                   const double                                                         para_semi_minor_axis_b,
+                                   const double                                                         para_bottom_depth,
+                                   const std::vector<Point<2>>                                         &para_corners);
 
           /**
            * Copy constructor
@@ -69,8 +70,7 @@ namespace aspect
            * The deal.ii pull back function in 2d. This function should
            * not be used, until the TODO in the cc file has been fixed.
            */
-          virtual
-          Point<2>
+          virtual Point<2>
           pull_back(const Point<2> &space_point) const;
 
           /**
@@ -86,18 +86,20 @@ namespace aspect
            * This function does the actual pull back from the ellipsoid.
            * For the equation details, please see deal.ii step 53.
            */
-          Point<3> pull_back_ellipsoid (const Point<3> &x, const double semi_major_axis_a, const double eccentricity) const;
+          Point<3>
+          pull_back_ellipsoid(const Point<3> &x, const double semi_major_axis_a, const double eccentricity) const;
 
           /**
            * This function does the actual push forward to the ellipsoid.
            * For the equation details, please see deal.ii step 53.
            */
-          Point<3> push_forward_ellipsoid (const Point<3> &phi_theta_d, const double semi_major_axis_a, const double eccentricity) const;
+          Point<3>
+          push_forward_ellipsoid(const Point<3> &phi_theta_d, const double semi_major_axis_a, const double eccentricity) const;
 
           /**
            * Return a copy of this manifold.
            */
-          std::unique_ptr<Manifold<dim,3>>
+          std::unique_ptr<Manifold<dim, 3>>
           clone() const override;
 
           /**
@@ -110,18 +112,20 @@ namespace aspect
            * This function adds topography to the cartesian coordinates.
            * For the equation details, please see deal.ii step 53.
            */
-          Point<3> push_forward_topography (const Point<3> &phi_theta_d_hat) const;
+          Point<3>
+          push_forward_topography(const Point<3> &phi_theta_d_hat) const;
 
           /**
            * This function removes topography from the cartesian coordinates.
            * For the equation details, please see deal.ii step 53.
            */
-          Point<3> pull_back_topography (const Point<3> &phi_theta_d) const;
+          Point<3>
+          pull_back_topography(const Point<3> &phi_theta_d) const;
 
-          const double semi_major_axis_a;
-          const double eccentricity;
-          const double semi_minor_axis_b;
-          const double bottom_depth;
+          const double                semi_major_axis_a;
+          const double                eccentricity;
+          const double                semi_minor_axis_b;
+          const double                bottom_depth;
           const std::vector<Point<2>> corners;
       };
     }
@@ -142,7 +146,7 @@ namespace aspect
          * Initialize function
          */
         void
-        initialize () override;
+        initialize() override;
 
 
         /**
@@ -217,14 +221,15 @@ namespace aspect
         /**
          * Set symbolic names for boundaries (mrtf)
          */
-        std::map<std::string,types::boundary_id>
+        std::map<std::string, types::boundary_id>
         get_symbolic_boundary_names_map() const override;
 
         /**
          * Returns what the natural coordinate system for this geometry model is,
          * which for a Ellipsoidal chunk is Ellipsoidal.
          */
-        aspect::Utilities::Coordinates::CoordinateSystem natural_coordinate_system() const override;
+        aspect::Utilities::Coordinates::CoordinateSystem
+        natural_coordinate_system() const override;
 
         /**
          * Takes the Cartesian points (x,z or x,y,z) and returns standardized
@@ -233,20 +238,21 @@ namespace aspect
          * longitude, latitude) in 3d. Note that internally the coordinates are
          * stored in longitude, latitude, depth.
          */
-        std::array<double,dim> cartesian_to_natural_coordinates(const Point<dim> &position) const override;
+        std::array<double, dim>
+        cartesian_to_natural_coordinates(const Point<dim> &position) const override;
 
         /**
          * Undoes the action of cartesian_to_natural_coordinates, and turns the
          * coordinate system which is most 'natural' to the geometry model into
          * Cartesian coordinates.
          */
-        Point<dim> natural_to_cartesian_coordinates(const std::array<double,dim> &position) const override;
+        Point<dim>
+        natural_to_cartesian_coordinates(const std::array<double, dim> &position) const override;
 
         /**
          * Declare the parameters this class takes through input files.
          */
-        static
-        void
+        static void
         declare_parameters(ParameterHandler &prm);
 
         /**
@@ -296,18 +302,18 @@ namespace aspect
       private:
         // Declare variables for reading in coordinates of the region of interest.
         std::vector<Point<2>> corners;
-        double semi_major_axis_a;
-        double eccentricity;
-        double semi_minor_axis_b;
-        double rot_para_to_para_angle;
-        double para_to_rect_angle;
-        double rotation_longitude;
-        double rotation_latitude;
-        double bottom_depth;
-        double westLongitude;
-        double eastLongitude;
-        double northLatitude;
-        double southLatitude;
+        double                semi_major_axis_a;
+        double                eccentricity;
+        double                semi_minor_axis_b;
+        double                rot_para_to_para_angle;
+        double                para_to_rect_angle;
+        double                rotation_longitude;
+        double                rotation_latitude;
+        double                bottom_depth;
+        double                westLongitude;
+        double                eastLongitude;
+        double                northLatitude;
+        double                southLatitude;
         // Declare variables for subdividing
         unsigned int EW_subdiv;
         unsigned int NS_subdiv;
@@ -326,7 +332,7 @@ namespace aspect
          * and modifying the current object will not have any impact on the
          * manifold used by the triangulation.
          */
-        std::unique_ptr<const internal::EllipsoidalChunkGeometry<dim>>   manifold;
+        std::unique_ptr<const internal::EllipsoidalChunkGeometry<dim>> manifold;
 
         void
         set_boundary_ids(parallel::distributed::Triangulation<dim> &coarse_grid) const;

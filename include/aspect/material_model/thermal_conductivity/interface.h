@@ -22,7 +22,9 @@
 #define _aspect_material_model_thermal_conductivity_interface_h
 
 #include <aspect/global.h>
+
 #include <aspect/plugins.h>
+
 #include <aspect/material_model/interface.h>
 
 
@@ -49,9 +51,8 @@ namespace aspect
            * Function to compute the thermal conductivities in @p out given the
            * inputs in @p in.
            */
-          virtual
-          void evaluate (const MaterialModel::MaterialModelInputs<dim> &in,
-                         MaterialModel::MaterialModelOutputs<dim> &out) const = 0;
+          virtual void
+          evaluate(const MaterialModel::MaterialModelInputs<dim> &in, MaterialModel::MaterialModelOutputs<dim> &out) const = 0;
       };
     }
   }

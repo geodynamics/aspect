@@ -25,37 +25,36 @@ namespace aspect
   namespace Plugins
   {
     void
-    InterfaceBase::initialize ()
+    InterfaceBase::initialize()
     {}
 
 
 
     void
-    InterfaceBase::update ()
+    InterfaceBase::update()
     {}
 
 
 
     void
-    InterfaceBase::
-    declare_parameters (dealii::ParameterHandler &)
+    InterfaceBase::declare_parameters(dealii::ParameterHandler &)
     {}
 
 
 
     void
-    InterfaceBase::parse_parameters (dealii::ParameterHandler &)
+    InterfaceBase::parse_parameters(dealii::ParameterHandler &)
     {}
 
 
     void
-    InterfaceBase::save (std::map<std::string,std::string> &) const
+    InterfaceBase::save(std::map<std::string, std::string> &) const
     {}
 
 
 
     void
-    InterfaceBase::load (const std::map<std::string,std::string> &)
+    InterfaceBase::load(const std::map<std::string, std::string> &)
     {}
   }
 }

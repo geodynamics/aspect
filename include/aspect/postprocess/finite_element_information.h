@@ -42,8 +42,8 @@ namespace aspect
         /**
          * Print the finite element spaces used by the solution variables.
          */
-        std::pair<std::string,std::string>
-        execute (TableHandler &statistics) override;
+        std::pair<std::string, std::string>
+        execute(TableHandler &statistics) override;
     };
   }
 }

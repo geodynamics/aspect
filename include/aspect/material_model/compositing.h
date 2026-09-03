@@ -67,40 +67,40 @@ namespace aspect
          * @copydoc MaterialModel::Interface::initialize()
          */
         void
-        initialize () override;
+        initialize() override;
 
         /**
          * @copydoc MaterialModel::Interface::evaluate()
          */
         void
-        evaluate (const typename Interface<dim>::MaterialModelInputs &in,
-                  typename Interface<dim>::MaterialModelOutputs &out) const override;
+        evaluate(const typename Interface<dim>::MaterialModelInputs &in, typename Interface<dim>::MaterialModelOutputs &out) const override;
 
         /**
          * If this material model can produce additional named outputs
          * that are derived from NamedAdditionalOutputs, create them in here.
          */
         void
-        create_additional_named_outputs (typename Interface<dim>::MaterialModelOutputs &outputs) const override;
+        create_additional_named_outputs(typename Interface<dim>::MaterialModelOutputs &outputs) const override;
 
         /**
          * @copydoc MaterialModel::Interface::declare_parameters()
          */
         static void
-        declare_parameters (ParameterHandler &prm);
+        declare_parameters(ParameterHandler &prm);
 
         /**
          * @copydoc MaterialModel::Interface::parse_parameters()
          */
         void
-        parse_parameters (ParameterHandler &prm) override;
+        parse_parameters(ParameterHandler &prm) override;
 
         /**
          * @copydoc MaterialModel::Interface::is_compressible()
          *
          * Returns value from material model providing compressibility.
          */
-        bool is_compressible () const override;
+        bool
+        is_compressible() const override;
 
         /**
          * Return the subordinary model used for a specific property
@@ -119,9 +119,9 @@ namespace aspect
          * @param out MaterialModelOutputs to be used.
          */
         void
-        copy_required_properties(const unsigned int model_index,
+        copy_required_properties(const unsigned int                                   model_index,
                                  const typename Interface<dim>::MaterialModelOutputs &base_output,
-                                 typename Interface<dim>::MaterialModelOutputs &out) const;
+                                 typename Interface<dim>::MaterialModelOutputs       &out) const;
 
         /**
          * Map specifying which material model is responsible for a
@@ -133,27 +133,24 @@ namespace aspect
          * Names of and pointers to the material models used for
          * compositing.
          */
-        std::vector<std::string>                             model_names;
+        std::vector<std::string>                     model_names;
         std::vector<std::unique_ptr<Interface<dim>>> models;
     };
 
 
     /**
      * Modify the Plugins::plugin_type_matches to account for the compositing material model
-    */
+     */
     template <typename TestType, int dim>
-    inline
-    bool
-    material_model_matches_or_uses (const MaterialModel::Interface<dim> &plugin,
-                                    const Property::MaterialProperty property)
+    inline bool
+    material_model_matches_or_uses(const MaterialModel::Interface<dim> &plugin, const Property::MaterialProperty property)
     {
       // Direct match
       if (Plugins::plugin_type_matches<TestType>(plugin))
         return true;
 
       // Search inside compositing material model
-      if (const auto *compositing =
-            dynamic_cast<const MaterialModel::Compositing<dim> *>(&plugin))
+      if (const auto *compositing = dynamic_cast<const MaterialModel::Compositing<dim> *>(&plugin))
         {
           const auto &submodel = compositing->get_model_for_property(property);
           if (Plugins::plugin_type_matches<TestType>(submodel))
@@ -163,8 +160,7 @@ namespace aspect
       // Search inside a reactive fluid transport wrapper, which holds a single
       // base model that provides all solid properties (the property argument
       // is irrelevant here).
-      if (const auto *reactive_fluid =
-            dynamic_cast<const MaterialModel::ReactiveFluidTransport<dim> *>(&plugin))
+      if (const auto *reactive_fluid = dynamic_cast<const MaterialModel::ReactiveFluidTransport<dim> *>(&plugin))
         {
           if (Plugins::plugin_type_matches<TestType>(reactive_fluid->get_base_model()))
             return true;
@@ -176,32 +172,27 @@ namespace aspect
 
     /**
      * Modify the Plugins::get_plugin_as_type to account for the compositing material model
-    */
+     */
     template <typename TestType, int dim>
-    inline
-    const TestType &
-    get_material_model_matches_or_uses (const MaterialModel::Interface<dim> &plugin,
-                                        const Property::MaterialProperty property)
+    inline const TestType &
+    get_material_model_matches_or_uses(const MaterialModel::Interface<dim> &plugin, const Property::MaterialProperty property)
     {
       // Direct match
       if (Plugins::plugin_type_matches<TestType>(plugin))
         return Plugins::get_plugin_as_type<TestType>(plugin);
 
       // Search inside compositing material model
-      if (const auto *compositing =
-            dynamic_cast<const MaterialModel::Compositing<dim> *>(&plugin))
+      if (const auto *compositing = dynamic_cast<const MaterialModel::Compositing<dim> *>(&plugin))
         {
           const auto &submodel = compositing->get_model_for_property(property);
           return Plugins::get_plugin_as_type<TestType>(submodel);
         }
 
       // Search inside a reactive fluid transport wrapper (single base model).
-      if (const auto *reactive_fluid =
-            dynamic_cast<const MaterialModel::ReactiveFluidTransport<dim> *>(&plugin))
+      if (const auto *reactive_fluid = dynamic_cast<const MaterialModel::ReactiveFluidTransport<dim> *>(&plugin))
         return Plugins::get_plugin_as_type<TestType>(reactive_fluid->get_base_model());
 
-      AssertThrow(false,
-                  ExcMessage("Could not find requested plugin type."));
+      AssertThrow(false, ExcMessage("Could not find requested plugin type."));
 
       return *static_cast<const TestType *>(nullptr);
     }

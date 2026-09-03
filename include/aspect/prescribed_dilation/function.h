@@ -22,8 +22,8 @@
 #ifndef _aspect_prescribed_dilation_function_h
 #define _aspect_prescribed_dilation_function_h
 
-#include <aspect/simulator_access.h>
 #include <aspect/prescribed_dilation/interface.h>
+#include <aspect/simulator_access.h>
 
 #include <deal.II/base/parsed_function.h>
 
@@ -44,13 +44,13 @@ namespace aspect
         /**
          * Constructor.
          */
-        Function ();
+        Function();
 
         /**
          * Compute dilation based on the function and store the result in the PrescribedDilationOutputs structure
          */
-        void evaluate ( const aspect::MaterialModel::MaterialModelInputs<dim> &in,
-                        PrescribedDilationOutputs<dim> &out) const override;
+        void
+        evaluate(const aspect::MaterialModel::MaterialModelInputs<dim> &in, PrescribedDilationOutputs<dim> &out) const override;
 
         /**
          * A function that is called at the beginning of each time step to
@@ -58,20 +58,19 @@ namespace aspect
          * the function object is updated.
          */
         void
-        update () override;
+        update() override;
 
         /**
          * Declare the parameters this class takes through input files.
          */
-        static
-        void
-        declare_parameters (ParameterHandler &prm);
+        static void
+        declare_parameters(ParameterHandler &prm);
 
         /**
          * Read the parameters this class declares from the parameter file.
          */
         void
-        parse_parameters (ParameterHandler &prm) override;
+        parse_parameters(ParameterHandler &prm) override;
 
       private:
         /**

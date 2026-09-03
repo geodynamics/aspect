@@ -28,7 +28,8 @@ namespace aspect
     class TestMeshDeformation : public Interface<dim>, public SimulatorAccess<dim>
     {
       public:
-        void save (std::map<std::string, std::string> &status_strings) const override
+        void
+        save(std::map<std::string, std::string> &status_strings) const override
         {
           this->get_pcout() << "checkpoint_id: " << this->get_checkpoint_id() << std::endl;
         }

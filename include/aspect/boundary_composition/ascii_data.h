@@ -23,7 +23,6 @@
 #define _aspect_boundary_composition_ascii_data_h
 
 #include <aspect/boundary_composition/interface.h>
-
 #include <aspect/simulator_access.h>
 #include <aspect/utilities.h>
 
@@ -45,14 +44,14 @@ namespace aspect
         /**
          * Empty Constructor.
          */
-        AsciiData ();
+        AsciiData();
 
         /**
          * Initialization function. This function is called once at the
          * beginning of the program. Checks preconditions.
          */
         void
-        initialize () override;
+        initialize() override;
 
         // avoid -Woverloaded-virtual:
         using Utilities::AsciiDataBoundary<dim>::initialize;
@@ -64,7 +63,7 @@ namespace aspect
          * is reached.
          */
         void
-        update () override;
+        update() override;
 
         /**
          * Return the boundary composition as a function of position. For the
@@ -73,22 +72,21 @@ namespace aspect
          * @copydoc aspect::BoundaryComposition::Interface::boundary_composition()
          */
         double
-        boundary_composition (const types::boundary_id boundary_indicator,
-                              const Point<dim> &position,
-                              const unsigned int compositional_field) const override;
+        boundary_composition(const types::boundary_id boundary_indicator,
+                             const Point<dim>        &position,
+                             const unsigned int       compositional_field) const override;
 
         /**
          * Declare the parameters this class takes through input files.
          */
-        static
-        void
-        declare_parameters (ParameterHandler &prm);
+        static void
+        declare_parameters(ParameterHandler &prm);
 
         /**
          * Read the parameters this class declares from the parameter file.
          */
         void
-        parse_parameters (ParameterHandler &prm) override;
+        parse_parameters(ParameterHandler &prm) override;
     };
   }
 }

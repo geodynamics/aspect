@@ -18,8 +18,8 @@
  <http://www.gnu.org/licenses/>.
  */
 
-#include <aspect/particle/property/strain_rate.h>
 #include <aspect/particle/property/interface.h>
+#include <aspect/particle/property/strain_rate.h>
 #include <aspect/simulator_access.h>
 
 namespace aspect
@@ -30,37 +30,34 @@ namespace aspect
     {
       template <int dim>
       void
-      StrainRate<dim>::initialize_one_particle_property(const Point<dim> &,
-                                                        std::vector<double> &data) const
+      StrainRate<dim>::initialize_one_particle_property(const Point<dim> &, std::vector<double> &data) const
       {
-        const static Tensor<2,dim> identity = unit_symmetric_tensor<dim>();
-        for (unsigned int i = 0; i < Tensor<2,dim>::n_independent_components ; ++i)
-          data.push_back(identity[Tensor<2,dim>::unrolled_to_component_indices(i)]);
-
+        const static Tensor<2, dim> identity = unit_symmetric_tensor<dim>();
+        for (unsigned int i = 0; i < Tensor<2, dim>::n_independent_components; ++i)
+          data.push_back(identity[Tensor<2, dim>::unrolled_to_component_indices(i)]);
       }
 
       template <int dim>
       void
-      StrainRate<dim>::update_particle_properties(const ParticleUpdateInputs<dim> &inputs,
+      StrainRate<dim>::update_particle_properties(const ParticleUpdateInputs<dim>                        &inputs,
                                                   typename ParticleHandler<dim>::particle_iterator_range &particles) const
       {
         unsigned int p = 0;
-        for (auto &particle: particles)
+        for (auto &particle : particles)
           {
             const auto data = particle.get_properties();
             // Velocity gradients
-            Tensor<2,dim> grad_u;
-            for (unsigned int d=0; d<dim; ++d)
+            Tensor<2, dim> grad_u;
+            for (unsigned int d = 0; d < dim; ++d)
               grad_u[d] = inputs.gradients[p][d];
 
             // Calculate strain rate from velocity gradients
-            const SymmetricTensor<2,dim> strain_rate = symmetrize (grad_u);
+            const SymmetricTensor<2, dim> strain_rate = symmetrize(grad_u);
 
-            for (unsigned int i = 0; i < Tensor<2,dim>::n_independent_components ; ++i)
-              data[this->data_position + i] = strain_rate[Tensor<2,dim>::unrolled_to_component_indices(i)];
+            for (unsigned int i = 0; i < Tensor<2, dim>::n_independent_components; ++i)
+              data[this->data_position + i] = strain_rate[Tensor<2, dim>::unrolled_to_component_indices(i)];
             ++p;
           }
-
       }
 
       template <int dim>
@@ -72,7 +69,7 @@ namespace aspect
 
       template <int dim>
       UpdateFlags
-      StrainRate<dim>::get_update_flags (const unsigned int component) const
+      StrainRate<dim>::get_update_flags(const unsigned int component) const
       {
         if (this->introspection().component_masks.velocities[component] == true)
           return update_gradients;
@@ -84,8 +81,8 @@ namespace aspect
       std::vector<std::pair<std::string, unsigned int>>
       StrainRate<dim>::get_property_information() const
       {
-        const unsigned int n_components = Tensor<2,dim>::n_independent_components;
-        const std::vector<std::pair<std::string,unsigned int>> property_information (1,std::make_pair("strainrate",n_components));
+        const unsigned int                                      n_components = Tensor<2, dim>::n_independent_components;
+        const std::vector<std::pair<std::string, unsigned int>> property_information(1, std::make_pair("strainrate", n_components));
         return property_information;
       }
     }

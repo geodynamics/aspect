@@ -21,9 +21,9 @@
 #ifndef _aspect_material_model_equation_of_state_multicomponent_compressible_h
 #define _aspect_material_model_equation_of_state_multicomponent_compressible_h
 
+#include <aspect/material_model/equation_of_state/interface.h>
 #include <aspect/material_model/interface.h>
 #include <aspect/simulator_access.h>
-#include <aspect/material_model/equation_of_state/interface.h>
 
 
 namespace aspect
@@ -66,7 +66,7 @@ namespace aspect
        * implementing equations 20, 21, 23 in Stixrude and Lithgow-Bertelloni, 2022 (https://doi.org/10.1093/gji/ggab394).
        */
       template <int dim>
-      class MulticomponentCompressible :  public ::aspect::SimulatorAccess<dim>
+      class MulticomponentCompressible : public ::aspect::SimulatorAccess<dim>
       {
         public:
           /**
@@ -74,9 +74,10 @@ namespace aspect
            * for all compositions and phases, given the inputs in @p in and an
            * index q that determines which entry of the vector of inputs is used.
            */
-          void evaluate(const MaterialModel::MaterialModelInputs<dim> &in,
-                        const unsigned int q,
-                        MaterialModel::EquationOfStateOutputs<dim> &eos_outputs) const;
+          void
+          evaluate(const MaterialModel::MaterialModelInputs<dim> &in,
+                   const unsigned int                             q,
+                   MaterialModel::EquationOfStateOutputs<dim>    &eos_outputs) const;
 
           /**
            * Return whether the model is compressible or not. Incompressibility
@@ -87,7 +88,8 @@ namespace aspect
            * or as $\nabla \cdot \mathbf{u}=0$ (incompressible Stokes).
            * This model is compressible.
            */
-          bool is_compressible () const;
+          bool
+          is_compressible() const;
 
           /**
            * Declare the parameters this class takes through input files.
@@ -96,9 +98,8 @@ namespace aspect
            * in other words, how many compositional fields influence the
            * density.
            */
-          static
-          void
-          declare_parameters (ParameterHandler &prm);
+          static void
+          declare_parameters(ParameterHandler &prm);
 
           /**
            * Read the parameters this class declares from the parameter file.
@@ -108,8 +109,8 @@ namespace aspect
            * parameters.
            */
           void
-          parse_parameters (ParameterHandler &prm,
-                            const std::unique_ptr<std::vector<unsigned int>> &expected_n_phases_per_composition = nullptr);
+          parse_parameters(ParameterHandler                                 &prm,
+                           const std::unique_ptr<std::vector<unsigned int>> &expected_n_phases_per_composition = nullptr);
 
           /**
            * Vector of reference densities $\rho_0$ with one entry per composition and phase plus one

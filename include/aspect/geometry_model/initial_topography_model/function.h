@@ -45,29 +45,28 @@ namespace aspect
         /**
          * Constructor.
          */
-        Function ();
+        Function();
 
         /**
          * Return the value of the initial topography as a function
          * of surface position.
          */
         double
-        value (const Point<dim-1> &p) const override;
+        value(const Point<dim - 1> &p) const override;
 
         /**
          * Return the maximum value of the elevation.
          */
-        double max_topography () const override;
+        double
+        max_topography() const override;
 
-        static
-        void
-        declare_parameters (ParameterHandler &prm);
+        static void
+        declare_parameters(ParameterHandler &prm);
 
         void
-        parse_parameters (ParameterHandler &prm) override;
+        parse_parameters(ParameterHandler &prm) override;
 
       private:
-
         /**
          * The maximum value the topography can take.
          *

@@ -54,26 +54,26 @@ namespace aspect
         /**
          * Connect the callback functions to the respective signals.
          */
-        void initialize() override;
+        void
+        initialize() override;
 
         /**
          * Write all global statistics columns into the statistics object.
          */
-        std::pair<std::string,std::string>
-        execute (TableHandler &statistics) override;
+        std::pair<std::string, std::string>
+        execute(TableHandler &statistics) override;
 
         /**
          * Declare the parameters this class takes through input files.
          */
-        static
-        void
-        declare_parameters (ParameterHandler &prm);
+        static void
+        declare_parameters(ParameterHandler &prm);
 
         /**
          * Read the parameters this class declares from the parameter file.
          */
         void
-        parse_parameters (ParameterHandler &prm) override;
+        parse_parameters(ParameterHandler &prm) override;
 
 
       private:
@@ -99,8 +99,8 @@ namespace aspect
          * signal to store the solver history.
          */
         void
-        store_stokes_solver_history(const unsigned int number_S_iterations,
-                                    const unsigned int number_A_iterations,
+        store_stokes_solver_history(const unsigned int   number_S_iterations,
+                                    const unsigned int   number_A_iterations,
                                     const SolverControl &solver_control_cheap,
                                     const SolverControl &solver_control_expensive);
 
@@ -109,8 +109,8 @@ namespace aspect
          * signal to store the solver history.
          */
         void
-        store_advection_solver_history(const bool solved_temperature_field,
-                                       const unsigned int compositional_index,
+        store_advection_solver_history(const bool           solved_temperature_field,
+                                       const unsigned int   compositional_index,
                                        const SolverControl &solver_control);
 
         /**

@@ -37,10 +37,7 @@ namespace aspect
        * computed seismic anomaly in $V_s$ for graphical output.
        */
       template <int dim>
-      class SeismicVsAnomaly
-        :
-        public CellDataVectorCreator<dim>,
-        public SimulatorAccess<dim>
+      class SeismicVsAnomaly : public CellDataVectorCreator<dim>, public SimulatorAccess<dim>
       {
         public:
           /**
@@ -52,23 +49,21 @@ namespace aspect
            * @copydoc CellDataVectorCreator<dim>::execute()
            */
           std::pair<std::string, std::unique_ptr<Vector<float>>>
-          execute () const override;
+          execute() const override;
 
           /**
            * Declare the parameters this class takes through input files.
            */
-          static
-          void
-          declare_parameters (ParameterHandler &prm);
+          static void
+          declare_parameters(ParameterHandler &prm);
 
           /**
            * Read the parameters this class declares from the parameter file.
            */
           void
-          parse_parameters (ParameterHandler &prm) override;
+          parse_parameters(ParameterHandler &prm) override;
 
         private:
-
           /**
            * Scheme chosen to define the average seismic velocity as a
            * function of depth. Reference profile evaluates the material model
@@ -99,10 +94,7 @@ namespace aspect
        * computed seismic anomaly in $V_p$ for graphical output.
        */
       template <int dim>
-      class SeismicVpAnomaly
-        :
-        public CellDataVectorCreator<dim>,
-        public SimulatorAccess<dim>
+      class SeismicVpAnomaly : public CellDataVectorCreator<dim>, public SimulatorAccess<dim>
       {
         public:
           /**
@@ -114,23 +106,21 @@ namespace aspect
            * @copydoc CellDataVectorCreator<dim>::execute()
            */
           std::pair<std::string, std::unique_ptr<Vector<float>>>
-          execute () const override;
+          execute() const override;
 
           /**
            * Declare the parameters this class takes through input files.
            */
-          static
-          void
-          declare_parameters (ParameterHandler &prm);
+          static void
+          declare_parameters(ParameterHandler &prm);
 
           /**
            * Read the parameters this class declares from the parameter file.
            */
           void
-          parse_parameters (ParameterHandler &prm) override;
+          parse_parameters(ParameterHandler &prm) override;
 
         private:
-
           /**
            * Scheme chosen to define the average seismic velocity as a
            * function of depth. Reference profile evaluates the material model

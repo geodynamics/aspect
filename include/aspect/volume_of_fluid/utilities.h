@@ -21,9 +21,9 @@
 #ifndef _aspect_volume_of_fluid_utilities_h
 #define _aspect_volume_of_fluid_utilities_h
 
-#include <deal.II/base/point.h>
-
 #include <aspect/global.h>
+
+#include <deal.II/base/point.h>
 
 namespace aspect
 {
@@ -53,10 +53,10 @@ namespace aspect
        *
        * Currently only works assuming constant Jacobian determinant.
        */
-      double compute_fluid_fraction (const Tensor<1, 2> normal,
-                                     const double d);
-      double compute_fluid_fraction (const Tensor<1, 3> normal,
-                                     const double d);
+      double
+      compute_fluid_fraction(const Tensor<1, 2> normal, const double d);
+      double
+      compute_fluid_fraction(const Tensor<1, 3> normal, const double d);
 
       /**
        * Function to calculate required value of d to obtain given volume
@@ -65,10 +65,10 @@ namespace aspect
        *
        * Currently only works assuming constant Jacobian determinant.
        */
-      double compute_interface_location (const Tensor<1, 2> normal,
-                                         const double volume_fraction);
-      double compute_interface_location (const Tensor<1, 3> normal,
-                                         const double volume_fraction);
+      double
+      compute_interface_location(const Tensor<1, 2> normal, const double volume_fraction);
+      double
+      compute_interface_location(const Tensor<1, 3> normal, const double volume_fraction);
 
       /**
        * Obtain values at points for a polynomial function that is equivalent to
@@ -83,16 +83,18 @@ namespace aspect
        * @param points Locations to evaluate the constructed polynomial
        * @param values Values of the constructed polynomial at the specified points
        */
-      void xFEM_Heaviside(const unsigned int degree,
-                          const Tensor<1, 2> normal,
-                          const double d,
-                          const std::vector<Point<2>> &points,
-                          std::vector<double> &values);
-      void xFEM_Heaviside(const unsigned int degree,
-                          const Tensor<1, 3> normal,
-                          const double d,
-                          const std::vector<Point<3>> &points,
-                          std::vector<double> &values);
+      void
+      xFEM_Heaviside(const unsigned int           degree,
+                     const Tensor<1, 2>           normal,
+                     const double                 d,
+                     const std::vector<Point<2>> &points,
+                     std::vector<double>         &values);
+      void
+      xFEM_Heaviside(const unsigned int           degree,
+                     const Tensor<1, 3>           normal,
+                     const double                 d,
+                     const std::vector<Point<3>> &points,
+                     std::vector<double>         &values);
 
       /**
        * Obtain values at points for a polynomial function that is equivalent to
@@ -107,16 +109,18 @@ namespace aspect
        * @param points Locations to evaluate the constructed polynomial
        * @param values Values of the constructed polynomial at the specified points
        */
-      void xFEM_Heaviside_derivative_d(const unsigned int degree,
-                                       const Tensor<1, 2> normal,
-                                       const double d,
-                                       const std::vector<Point<2>> &points,
-                                       std::vector<double> &values);
-      void xFEM_Heaviside_derivative_d(const unsigned int degree,
-                                       const Tensor<1, 3> normal,
-                                       const double d,
-                                       const std::vector<Point<3>> &points,
-                                       std::vector<double> &values);
+      void
+      xFEM_Heaviside_derivative_d(const unsigned int           degree,
+                                  const Tensor<1, 2>           normal,
+                                  const double                 d,
+                                  const std::vector<Point<2>> &points,
+                                  std::vector<double>         &values);
+      void
+      xFEM_Heaviside_derivative_d(const unsigned int           degree,
+                                  const Tensor<1, 3>           normal,
+                                  const double                 d,
+                                  const std::vector<Point<3>> &points,
+                                  std::vector<double>         &values);
 
 
       /**
@@ -133,13 +137,14 @@ namespace aspect
        * @param weights JxW values to use for quadrature
        */
       template <int dim>
-      double compute_interface_location_newton(const unsigned int degree,
-                                               const Tensor<1, dim, double> normal,
-                                               const double volume_fraction,
-                                               const double vol,
-                                               const double epsilon,
-                                               const std::vector<Point<dim>> &points,
-                                               const std::vector<double> &weights);
+      double
+      compute_interface_location_newton(const unsigned int             degree,
+                                        const Tensor<1, dim, double>   normal,
+                                        const double                   volume_fraction,
+                                        const double                   vol,
+                                        const double                   epsilon,
+                                        const std::vector<Point<dim>> &points,
+                                        const std::vector<double>     &weights);
 
       /**
        * Function to calculate volume contained by indicator function
@@ -154,11 +159,12 @@ namespace aspect
        * @param weights JxW values to use for quadrature
        */
       template <int dim>
-      double compute_fluid_volume(const unsigned int degree,
-                                  const Tensor<1, dim, double> normal,
-                                  const double d,
-                                  const std::vector<Point<dim>> &points,
-                                  const std::vector<double> &weights);
+      double
+      compute_fluid_volume(const unsigned int             degree,
+                           const Tensor<1, dim, double>   normal,
+                           const double                   d,
+                           const std::vector<Point<dim>> &points,
+                           const std::vector<double>     &weights);
 
       /**
        * Function to calculate flux volume fraction based on a method of
@@ -173,10 +179,11 @@ namespace aspect
        * @param d_at_face_center The correct d value to for the interface description on the face we are computing for.
        */
       template <int dim>
-      double calculate_volume_flux (const unsigned int compute_direction,
-                                    const double time_direction_derivative,
-                                    const Tensor<1, dim, double> interface_normal_in_cell,
-                                    const double d_at_face_center);
+      double
+      calculate_volume_flux(const unsigned int           compute_direction,
+                            const double                 time_direction_derivative,
+                            const Tensor<1, dim, double> interface_normal_in_cell,
+                            const double                 d_at_face_center);
     }
   }
 }

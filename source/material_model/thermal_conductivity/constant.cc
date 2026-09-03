@@ -28,10 +28,9 @@ namespace aspect
     {
       template <int dim>
       void
-      Constant<dim>::evaluate (const MaterialModel::MaterialModelInputs<dim> &/*in*/,
-                               MaterialModel::MaterialModelOutputs<dim> &out) const
+      Constant<dim>::evaluate(const MaterialModel::MaterialModelInputs<dim> & /*in*/, MaterialModel::MaterialModelOutputs<dim> &out) const
       {
-        for (auto &thermal_conductivity: out.thermal_conductivities)
+        for (auto &thermal_conductivity : out.thermal_conductivities)
           thermal_conductivity = k;
       }
 
@@ -39,21 +38,22 @@ namespace aspect
 
       template <int dim>
       void
-      Constant<dim>::declare_parameters (ParameterHandler &prm)
+      Constant<dim>::declare_parameters(ParameterHandler &prm)
       {
-        prm.declare_entry ("Thermal conductivity", "4.7",
-                           Patterns::Double (0.),
-                           "The value of the thermal conductivity $k$. "
-                           "Units: \\si{\\watt\\per\\meter\\per\\kelvin}.");
+        prm.declare_entry("Thermal conductivity",
+                          "4.7",
+                          Patterns::Double(0.),
+                          "The value of the thermal conductivity $k$. "
+                          "Units: \\si{\\watt\\per\\meter\\per\\kelvin}.");
       }
 
 
 
       template <int dim>
       void
-      Constant<dim>::parse_parameters (ParameterHandler &prm)
+      Constant<dim>::parse_parameters(ParameterHandler &prm)
       {
-        k = prm.get_double ("Thermal conductivity");
+        k = prm.get_double("Thermal conductivity");
       }
     }
   }
@@ -66,8 +66,7 @@ namespace aspect
   {
     namespace ThermalConductivity
     {
-#define INSTANTIATE(dim) \
-  template class Constant<dim>;
+#define INSTANTIATE(dim) template class Constant<dim>;
 
       ASPECT_INSTANTIATE(INSTANTIATE)
 

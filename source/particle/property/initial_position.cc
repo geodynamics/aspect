@@ -19,6 +19,7 @@
  */
 
 #include <aspect/global.h>
+
 #include <aspect/particle/property/initial_position.h>
 
 namespace aspect
@@ -29,8 +30,7 @@ namespace aspect
     {
       template <int dim>
       void
-      InitialPosition<dim>::initialize_one_particle_property(const Point<dim> &position,
-                                                             std::vector<double> &data) const
+      InitialPosition<dim>::initialize_one_particle_property(const Point<dim> &position, std::vector<double> &data) const
       {
         for (unsigned int i = 0; i < dim; ++i)
           data.push_back(position[i]);
@@ -40,7 +40,9 @@ namespace aspect
       std::vector<std::pair<std::string, unsigned int>>
       InitialPosition<dim>::get_property_information() const
       {
-        const std::vector<std::pair<std::string,unsigned int>> property_information (1,std::make_pair("initial position",static_cast<unsigned int> (dim)));
+        const std::vector<std::pair<std::string, unsigned int>> property_information(1,
+                                                                                     std::make_pair("initial position",
+                                                                                                    static_cast<unsigned int>(dim)));
         return property_information;
       }
     }

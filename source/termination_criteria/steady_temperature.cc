@@ -40,14 +40,14 @@ namespace aspect
        * Additionally it makes sure to always keep two entries in the list, if the list had
        * two or more entries. Otherwise the function does not change the list.
        */
-      void trim_time_temperature_list (const double necessary_time_in_steady_state,
-                                       std::list<std::pair<double, double>> &time_temperature_list)
+      void
+      trim_time_temperature_list(const double necessary_time_in_steady_state, std::list<std::pair<double, double>> &time_temperature_list)
       {
         // Remove old times until we're at the correct time period
         // but ensure at least two entries remain in the list (one old, one current timestep)
         auto it = time_temperature_list.begin();
         while (time_temperature_list.back().first - (*it).first > necessary_time_in_steady_state &&
-               std::distance(it,time_temperature_list.end()) > 2)
+               std::distance(it, time_temperature_list.end()) > 2)
           ++it;
 
         time_temperature_list.erase(time_temperature_list.begin(), it);
@@ -61,35 +61,29 @@ namespace aspect
     SteadyTemperature<dim>::execute()
     {
       const Quadrature<dim> &quadrature_formula = this->introspection().quadratures.temperature;
-      const unsigned int n_q_points = quadrature_formula.size();
+      const unsigned int     n_q_points         = quadrature_formula.size();
 
-      FEValues<dim> fe_values (this->get_mapping(),
-                               this->get_fe(),
-                               quadrature_formula,
-                               update_values   |
-                               update_quadrature_points |
-                               update_JxW_values);
+      FEValues<dim>       fe_values(this->get_mapping(),
+                              this->get_fe(),
+                              quadrature_formula,
+                              update_values | update_quadrature_points | update_JxW_values);
       std::vector<double> temperature_values(n_q_points);
 
       double local_temperature_integral = 0;
 
-      typename DoFHandler<dim>::active_cell_iterator
-      cell = this->get_dof_handler().begin_active(),
-      endc = this->get_dof_handler().end();
-      for (; cell!=endc; ++cell)
+      typename DoFHandler<dim>::active_cell_iterator cell = this->get_dof_handler().begin_active(), endc = this->get_dof_handler().end();
+      for (; cell != endc; ++cell)
         if (cell->is_locally_owned())
           {
-            fe_values.reinit (cell);
-            fe_values[this->introspection().extractors.temperature].get_function_values (this->get_solution(),
-                                                                                         temperature_values);
+            fe_values.reinit(cell);
+            fe_values[this->introspection().extractors.temperature].get_function_values(this->get_solution(), temperature_values);
             for (unsigned int q = 0; q < n_q_points; ++q)
               {
                 local_temperature_integral += (temperature_values[q] * fe_values.JxW(q));
               }
           }
 
-      const double global_temperature_integral
-        = Utilities::MPI::sum (local_temperature_integral, this->get_mpi_communicator());
+      const double global_temperature_integral = Utilities::MPI::sum(local_temperature_integral, this->get_mpi_communicator());
 
       // Calculate the average global temperature
       const double average_temperature = global_temperature_integral / this->get_volume();
@@ -99,29 +93,28 @@ namespace aspect
 
       // If the length of the simulation time covered in the list is shorter than the
       // specified parameter, we must continue the simulation
-      if ((time_temperature.size() <= 2)
-          ||
+      if ((time_temperature.size() <= 2) ||
           (time_temperature.back().first - time_temperature.front().first < necessary_time_in_steady_state))
         return false;
 
       // Remove old entries outside of current time window
-      trim_time_temperature_list(necessary_time_in_steady_state,time_temperature);
+      trim_time_temperature_list(necessary_time_in_steady_state, time_temperature);
 
       // Scan through the list and calculate the min, mean and max temperature
       // We assume a linear change of temperatures between times
-      double T_min, T_max, T_prev, time_prev, T_sum=0, T_mean, deviation_max;
+      double T_min, T_max, T_prev, time_prev, T_sum = 0, T_mean, deviation_max;
       T_min = T_max = T_prev = time_temperature.front().second;
-      time_prev = time_temperature.front().first;
+      time_prev              = time_temperature.front().first;
       for (const auto &it : time_temperature)
         {
           T_min = std::min(T_min, it.second);
           T_max = std::max(T_max, it.second);
-          T_sum += ((it.second + T_prev)/2.0)*(it.first-time_prev);
+          T_sum += ((it.second + T_prev) / 2.0) * (it.first - time_prev);
           time_prev = it.first;
-          T_prev = it.second;
+          T_prev    = it.second;
         }
 
-      T_mean = T_sum/(time_temperature.back().first-time_temperature.front().first);
+      T_mean = T_sum / (time_temperature.back().first - time_temperature.front().first);
 
       // If the min and max are within the acceptable deviation of the mean,
       // we are in steady state and return true, otherwise return false
@@ -132,7 +125,7 @@ namespace aspect
                              "'steady state temperature' plugin can not compute a "
                              "relative deviation of temperature in this case."));
 
-      if (deviation_max/T_mean > allowed_relative_deviation)
+      if (deviation_max / T_mean > allowed_relative_deviation)
         return false;
 
       return true;
@@ -141,62 +134,62 @@ namespace aspect
 
     template <int dim>
     void
-    SteadyTemperature<dim>::declare_parameters (ParameterHandler &prm)
+    SteadyTemperature<dim>::declare_parameters(ParameterHandler &prm)
     {
       prm.enter_subsection("Termination criteria");
       {
         prm.enter_subsection("Steady state temperature");
         {
-          prm.declare_entry ("Maximum relative deviation", "0.05",
-                             Patterns::Double (0.),
-                             "The maximum relative deviation of the temperature in recent "
-                             "simulation time for the system to be considered in "
-                             "steady state. If the actual deviation is smaller "
-                             "than this number, then the simulation will be terminated.");
-          prm.declare_entry ("Time in steady state", "1e7",
-                             Patterns::Double (0.),
-                             "The minimum length of simulation time that the system "
-                             "should be in steady state before termination."
-                             "Units: \\si{\\year} if the "
-                             "'Use years instead of seconds' parameter is set; "
-                             "\\si{\\second} otherwise.");
+          prm.declare_entry("Maximum relative deviation",
+                            "0.05",
+                            Patterns::Double(0.),
+                            "The maximum relative deviation of the temperature in recent "
+                            "simulation time for the system to be considered in "
+                            "steady state. If the actual deviation is smaller "
+                            "than this number, then the simulation will be terminated.");
+          prm.declare_entry("Time in steady state",
+                            "1e7",
+                            Patterns::Double(0.),
+                            "The minimum length of simulation time that the system "
+                            "should be in steady state before termination."
+                            "Units: \\si{\\year} if the "
+                            "'Use years instead of seconds' parameter is set; "
+                            "\\si{\\second} otherwise.");
         }
-        prm.leave_subsection ();
+        prm.leave_subsection();
       }
-      prm.leave_subsection ();
+      prm.leave_subsection();
     }
 
 
     template <int dim>
     void
-    SteadyTemperature<dim>::parse_parameters (ParameterHandler &prm)
+    SteadyTemperature<dim>::parse_parameters(ParameterHandler &prm)
     {
       prm.enter_subsection("Termination criteria");
       {
         prm.enter_subsection("Steady state temperature");
         {
-          allowed_relative_deviation = prm.get_double ("Maximum relative deviation");
-          necessary_time_in_steady_state = prm.get_double ("Time in steady state");
+          allowed_relative_deviation     = prm.get_double("Maximum relative deviation");
+          necessary_time_in_steady_state = prm.get_double("Time in steady state");
           necessary_time_in_steady_state *= this->convert_output_to_years() ? year_in_seconds : 1.0;
         }
-        prm.leave_subsection ();
+        prm.leave_subsection();
       }
-      prm.leave_subsection ();
-      AssertThrow (allowed_relative_deviation >= 0,
-                   ExcMessage("Relative deviation must be greater than or equal to 0."));
-      AssertThrow (necessary_time_in_steady_state > 0,
-                   ExcMessage("Steady state minimum time period must be greater than 0."));
+      prm.leave_subsection();
+      AssertThrow(allowed_relative_deviation >= 0, ExcMessage("Relative deviation must be greater than or equal to 0."));
+      AssertThrow(necessary_time_in_steady_state > 0, ExcMessage("Steady state minimum time period must be greater than 0."));
     }
 
 
 
     template <int dim>
     void
-    SteadyTemperature<dim>::save (std::map<std::string, std::string> &status_strings) const
+    SteadyTemperature<dim>::save(std::map<std::string, std::string> &status_strings) const
     {
       std::ostringstream os;
       {
-        aspect::oarchive oa (os);
+        aspect::oarchive oa(os);
         oa << time_temperature;
       }
       status_strings["SteadyTemperature"] = os.str();
@@ -206,13 +199,13 @@ namespace aspect
 
     template <int dim>
     void
-    SteadyTemperature<dim>::load (const std::map<std::string, std::string> &status_strings)
+    SteadyTemperature<dim>::load(const std::map<std::string, std::string> &status_strings)
     {
       const auto saved_state = status_strings.find("SteadyTemperature");
       if (saved_state != status_strings.end())
         {
-          std::istringstream is (saved_state->second);
-          aspect::iarchive ia (is);
+          std::istringstream is(saved_state->second);
+          aspect::iarchive   ia(is);
           ia >> time_temperature;
         }
     }

@@ -18,19 +18,20 @@
   <http://www.gnu.org/licenses/>.
 */
 
-#include <aspect/material_model/interface.h>
-#include <aspect/boundary_velocity/interface.h>
+#include <aspect/global.h>
+
 #include <aspect/boundary_fluid_pressure/interface.h>
+#include <aspect/boundary_velocity/interface.h>
 #include <aspect/gravity_model/interface.h>
+#include <aspect/material_model/interface.h>
+#include <aspect/melt.h>
 #include <aspect/postprocess/interface.h>
 #include <aspect/simulator_access.h>
-#include <aspect/global.h>
-#include <aspect/melt.h>
 
+#include <deal.II/base/function_lib.h>
+#include <deal.II/base/quadrature_lib.h>
 #include <deal.II/dofs/dof_tools.h>
 #include <deal.II/numerics/data_out.h>
-#include <deal.II/base/quadrature_lib.h>
-#include <deal.II/base/function_lib.h>
 #include <deal.II/numerics/error_estimator.h>
 #include <deal.II/numerics/vector_tools.h>
 
@@ -39,52 +40,54 @@ namespace aspect
 {
 
   /**
-    * A material model with constant material properties except for the
-    * compaction viscosity, and non-zero melt and solid compressibilities.
-    */
+   * A material model with constant material properties except for the
+   * compaction viscosity, and non-zero melt and solid compressibilities.
+   */
   template <int dim>
-  class CompressibleMeltMaterial:
-    public MaterialModel::MeltInterface<dim>, public ::aspect::SimulatorAccess<dim>
+  class CompressibleMeltMaterial : public MaterialModel::MeltInterface<dim>, public ::aspect::SimulatorAccess<dim>
   {
     public:
-      virtual bool is_compressible () const
+      virtual bool
+      is_compressible() const
       {
         return true;
       }
 
-      virtual double reference_darcy_coefficient () const
+      virtual double
+      reference_darcy_coefficient() const
       {
         return 1.0;
       }
 
-      virtual void evaluate(const typename MaterialModel::Interface<dim>::MaterialModelInputs &in,
-                            typename MaterialModel::Interface<dim>::MaterialModelOutputs &out) const
+      virtual void
+      evaluate(const typename MaterialModel::Interface<dim>::MaterialModelInputs &in,
+               typename MaterialModel::Interface<dim>::MaterialModelOutputs      &out) const
       {
-        for (unsigned int i=0; i<in.n_evaluation_points(); ++i)
+        for (unsigned int i = 0; i < in.n_evaluation_points(); ++i)
           {
-            out.viscosities[i] = 0.75;
+            out.viscosities[i]                    = 0.75;
             out.thermal_expansion_coefficients[i] = 0.0;
-            out.specific_heat[i] = 1.0;
-            out.thermal_conductivities[i] = 0.0;
-            out.compressibilities[i] = 1.0;
-            out.densities[i] = 1.0;
-            for (unsigned int c=0; c<in.composition[i].size(); ++c)
+            out.specific_heat[i]                  = 1.0;
+            out.thermal_conductivities[i]         = 0.0;
+            out.compressibilities[i]              = 1.0;
+            out.densities[i]                      = 1.0;
+            for (unsigned int c = 0; c < in.composition[i].size(); ++c)
               out.reaction_terms[i][c] = 0.0;
           }
 
         // fill melt outputs if they exist
-        const std::shared_ptr<aspect::MaterialModel::MeltOutputs<dim>> melt_out
-          = out.template get_additional_output_object<aspect::MaterialModel::MeltOutputs<dim>>();
+        const std::shared_ptr<aspect::MaterialModel::MeltOutputs<dim>> melt_out =
+          out.template get_additional_output_object<aspect::MaterialModel::MeltOutputs<dim>>();
 
         if (melt_out != nullptr)
           {
-            for (unsigned int i=0; i<in.n_evaluation_points(); ++i)
+            for (unsigned int i = 0; i < in.n_evaluation_points(); ++i)
               {
-                melt_out->compaction_viscosities[i] = 0.5 * (in.position[i][1]+0.1)*(in.position[i][1]+0.1);
-                melt_out->fluid_viscosities[i] = 1.0;
-                melt_out->permeabilities[i] = 1.0;
+                melt_out->compaction_viscosities[i]  = 0.5 * (in.position[i][1] + 0.1) * (in.position[i][1] + 0.1);
+                melt_out->fluid_viscosities[i]       = 1.0;
+                melt_out->permeabilities[i]          = 1.0;
                 melt_out->fluid_density_gradients[i] = this->get_gravity_model().gravity_vector(in.position[i]);
-                melt_out->fluid_densities[i] = 1.0;
+                melt_out->fluid_densities[i]         = 1.0;
               }
           }
       }
@@ -92,36 +95,37 @@ namespace aspect
 
 
 
-
   template <int dim>
   class RefFunction : public Function<dim>
   {
     public:
-      RefFunction () : Function<dim>(2*dim+5) {}
-      virtual void vector_value (const Point<dim>   &p,
-                                 Vector<double>   &values) const
+      RefFunction()
+        : Function<dim>(2 * dim + 5)
+      {}
+      virtual void
+      vector_value(const Point<dim> &p, Vector<double> &values) const
       {
-        double x = p(0);
-        double y = p(1);
-        double porosity = -0.1 * std::exp(-(y+0.1))/(y+0.1) + 1.0;
+        double x        = p(0);
+        double y        = p(1);
+        double porosity = -0.1 * std::exp(-(y + 0.1)) / (y + 0.1) + 1.0;
 
-        values[0]=0;       // x vel
-        values[1]=0;    // y vel
-        values[2]=0;  // p_f
-        values[3]=0;  // p_c
-        values[4]=0;       // x melt vel
-        values[5]=0;    // y melt vel
-        values[6]=0;  // p_s
-        values[7]=0; // T
-        values[8]=porosity; // porosity
+        values[0] = 0;        // x vel
+        values[1] = 0;        // y vel
+        values[2] = 0;        // p_f
+        values[3] = 0;        // p_c
+        values[4] = 0;        // x melt vel
+        values[5] = 0;        // y melt vel
+        values[6] = 0;        // p_s
+        values[7] = 0;        // T
+        values[8] = porosity; // porosity
       }
   };
 
 
   /**
-    * A postprocessor that evaluates the accuracy of the solution
-    * by using the L2 norm.
-    */
+   * A postprocessor that evaluates the accuracy of the solution
+   * by using the L2 norm.
+   */
   template <int dim>
   class CompressibleMeltPostprocessor : public Postprocess::Interface<dim>, public ::aspect::SimulatorAccess<dim>
   {
@@ -129,29 +133,29 @@ namespace aspect
       /**
        * Generate graphical output from the current solution.
        */
-      virtual
-      std::pair<std::string,std::string>
-      execute (TableHandler &statistics);
+      virtual std::pair<std::string, std::string>
+      execute(TableHandler &statistics);
   };
 
   template <int dim>
-  std::pair<std::string,std::string>
-  CompressibleMeltPostprocessor<dim>::execute (TableHandler &statistics)
+  std::pair<std::string, std::string>
+  CompressibleMeltPostprocessor<dim>::execute(TableHandler &statistics)
   {
-    RefFunction<dim> ref_func;
-    const QGauss<dim> quadrature_formula (this->introspection().polynomial_degree.velocities +2);
+    RefFunction<dim>  ref_func;
+    const QGauss<dim> quadrature_formula(this->introspection().polynomial_degree.velocities + 2);
 
-    const unsigned int n_total_comp = this->introspection().n_components;
-    Vector<float> cellwise_errors_porosity (this->get_triangulation().n_active_cells());
-    ComponentSelectFunction<dim> comp_porosity(dim+2+dim+2, n_total_comp);
+    const unsigned int           n_total_comp = this->introspection().n_components;
+    Vector<float>                cellwise_errors_porosity(this->get_triangulation().n_active_cells());
+    ComponentSelectFunction<dim> comp_porosity(dim + 2 + dim + 2, n_total_comp);
 
-    VectorTools::integrate_difference (this->get_mapping(),this->get_dof_handler(),
-                                       this->get_solution(),
-                                       ref_func,
-                                       cellwise_errors_porosity,
-                                       quadrature_formula,
-                                       VectorTools::L2_norm,
-                                       &comp_porosity);
+    VectorTools::integrate_difference(this->get_mapping(),
+                                      this->get_dof_handler(),
+                                      this->get_solution(),
+                                      ref_func,
+                                      cellwise_errors_porosity,
+                                      quadrature_formula,
+                                      VectorTools::L2_norm,
+                                      &comp_porosity);
 
     const double poro_l2 = VectorTools::compute_global_error(this->get_triangulation(), cellwise_errors_porosity, VectorTools::L2_norm);
 
@@ -161,31 +165,26 @@ namespace aspect
   }
 
   template <int dim>
-  class PressureBdry:
+  class PressureBdry :
 
     public BoundaryFluidPressure::Interface<dim>
   {
     public:
-      virtual
-      void fluid_pressure_gradient (
-        const types::boundary_id boundary_indicator,
-        const MaterialModel::MaterialModelInputs<dim> &material_model_inputs,
-        const MaterialModel::MaterialModelOutputs<dim> &material_model_outputs,
-        const std::vector<Tensor<1,dim>> &normal_vectors,
-        std::vector<double> &output
-      ) const
+      virtual void
+      fluid_pressure_gradient(const types::boundary_id                        boundary_indicator,
+                              const MaterialModel::MaterialModelInputs<dim>  &material_model_inputs,
+                              const MaterialModel::MaterialModelOutputs<dim> &material_model_outputs,
+                              const std::vector<Tensor<1, dim>>              &normal_vectors,
+                              std::vector<double>                            &output) const
       {
-        for (unsigned int q=0; q<output.size(); ++q)
+        for (unsigned int q = 0; q < output.size(); ++q)
           {
-            const double y = material_model_inputs.position[q][1];
-            Tensor<1,dim> direction;
-            direction[dim-1] = 1.0;
-            output[q] = (1.1 + y)*direction * normal_vectors[q];
+            const double   y = material_model_inputs.position[q][1];
+            Tensor<1, dim> direction;
+            direction[dim - 1] = 1.0;
+            output[q]          = (1.1 + y) * direction * normal_vectors[q];
           }
       }
-
-
-
   };
 
 }
@@ -194,9 +193,7 @@ namespace aspect
 namespace aspect
 {
 
-  ASPECT_REGISTER_MATERIAL_MODEL(CompressibleMeltMaterial,
-                                 "compressible melt material",
-                                 "")
+  ASPECT_REGISTER_MATERIAL_MODEL(CompressibleMeltMaterial, "compressible melt material", "")
 
 
   ASPECT_REGISTER_POSTPROCESSOR(CompressibleMeltPostprocessor,

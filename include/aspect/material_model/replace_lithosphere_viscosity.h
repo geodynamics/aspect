@@ -21,10 +21,10 @@
 #ifndef _aspect_material_model_replace_lithosphere_viscosity_h
 #define _aspect_material_model_replace_lithosphere_viscosity_h
 
+#include <aspect/initial_temperature/lithosphere_mask.h>
 #include <aspect/material_model/interface.h>
 #include <aspect/simulator_access.h>
 #include <aspect/utilities.h>
-#include <aspect/initial_temperature/lithosphere_mask.h>
 
 namespace aspect
 {
@@ -43,43 +43,42 @@ namespace aspect
     class ReplaceLithosphereViscosity : public MaterialModel::Interface<dim>, public ::aspect::SimulatorAccess<dim>
     {
       public:
-
         /**
          * Initialize the base model at the beginning of the run.
          */
-        void initialize() override;
+        void
+        initialize() override;
 
         /**
          * Function to compute the material properties in @p out given the
          * inputs in @p in.
          */
         void
-        evaluate (const typename Interface<dim>::MaterialModelInputs &in,
-                  typename Interface<dim>::MaterialModelOutputs &out) const override;
+        evaluate(const typename Interface<dim>::MaterialModelInputs &in, typename Interface<dim>::MaterialModelOutputs &out) const override;
 
         /**
          * Method to declare parameters related to replace lithosphere viscosity model
          */
         static void
-        declare_parameters (ParameterHandler &prm);
+        declare_parameters(ParameterHandler &prm);
 
         /**
          * Method to parse parameters related to replace lithosphere viscosity model
          */
         void
-        parse_parameters (ParameterHandler &prm) override;
+        parse_parameters(ParameterHandler &prm) override;
 
         /**
          * Method that indicates whether material is compressible. Replace lithosphere viscosity model is compressible
          * if and only if base model is compressible.
          */
-        bool is_compressible () const override;
+        bool
+        is_compressible() const override;
 
         void
-        create_additional_named_outputs (MaterialModel::MaterialModelOutputs<dim> &out) const override;
+        create_additional_named_outputs(MaterialModel::MaterialModelOutputs<dim> &out) const override;
 
       private:
-
         /**
          * This parameter gives the viscosity set within the lithosphere.
          *

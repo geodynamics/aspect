@@ -45,22 +45,18 @@ namespace aspect
       // (because quadrature points and temperature dofs are,
       // by design of the quadrature formula, numbered in the
       // same way)
-      LinearAlgebra::BlockVector vec_distributed (this->introspection().index_sets.system_partitioning,
-                                                  this->get_mpi_communicator());
+      LinearAlgebra::BlockVector vec_distributed(this->introspection().index_sets.system_partitioning, this->get_mpi_communicator());
 
-      const Quadrature<dim> quadrature(this->get_fe().base_element(this->introspection().base_elements.temperature).get_unit_support_points());
-      std::vector<types::global_dof_index> local_dof_indices (this->get_fe().dofs_per_cell);
-      FEValues<dim> fe_values (this->get_mapping(),
-                               this->get_fe(),
-                               quadrature,
-                               update_quadrature_points | update_values | update_gradients);
+      const Quadrature<dim> quadrature(
+        this->get_fe().base_element(this->introspection().base_elements.temperature).get_unit_support_points());
+      std::vector<types::global_dof_index> local_dof_indices(this->get_fe().dofs_per_cell);
+      FEValues<dim> fe_values(this->get_mapping(), this->get_fe(), quadrature, update_quadrature_points | update_values | update_gradients);
 
       // the values of the compositional fields are stored as block vectors for each field
       // we have to extract them in this structure
-      std::vector<std::vector<double>> prelim_composition_values (this->n_compositional_fields(),
-                                                                   std::vector<double> (quadrature.size()));
+      std::vector<std::vector<double>> prelim_composition_values(this->n_compositional_fields(), std::vector<double>(quadrature.size()));
 
-      MaterialModel::MaterialModelInputs<dim> in(quadrature.size(), this->n_compositional_fields());
+      MaterialModel::MaterialModelInputs<dim>  in(quadrature.size(), this->n_compositional_fields());
       MaterialModel::MaterialModelOutputs<dim> out(quadrature.size(), this->n_compositional_fields());
       in.requested_properties = MaterialModel::MaterialProperties::equation_of_state_properties;
 
@@ -72,21 +68,18 @@ namespace aspect
             in.reinit(fe_values, cell, this->introspection(), this->get_solution());
             this->get_material_model().evaluate(in, out);
 
-            cell->get_dof_indices (local_dof_indices);
+            cell->get_dof_indices(local_dof_indices);
 
             // for each temperature dof, write into the output
             // vector the density. note that quadrature points and
             // dofs are enumerated in the same order
-            for (unsigned int i=0; i<this->get_fe().base_element(this->introspection().base_elements.temperature).dofs_per_cell; ++i)
+            for (unsigned int i = 0; i < this->get_fe().base_element(this->introspection().base_elements.temperature).dofs_per_cell; ++i)
               {
-                const unsigned int system_local_dof
-                  = this->get_fe().component_to_system_index(this->introspection().component_indices.temperature,
-                                                             /*dof index within component=*/i);
+                const unsigned int system_local_dof =
+                  this->get_fe().component_to_system_index(this->introspection().component_indices.temperature,
+                                                           /*dof index within component=*/i);
 
-                vec_distributed(local_dof_indices[system_local_dof])
-                  = out.densities[i]
-                    * in.temperature[i]
-                    * out.specific_heat[i];
+                vec_distributed(local_dof_indices[system_local_dof]) = out.densities[i] * in.temperature[i] * out.specific_heat[i];
               }
           }
 
@@ -94,16 +87,13 @@ namespace aspect
 
       // now create a vector with the requisite ghost elements
       // and use it for estimating the gradients
-      LinearAlgebra::BlockVector vec (this->introspection().index_sets.system_partitioning,
-                                      this->introspection().index_sets.system_relevant_partitioning,
-                                      this->get_mpi_communicator());
+      LinearAlgebra::BlockVector vec(this->introspection().index_sets.system_partitioning,
+                                     this->introspection().index_sets.system_relevant_partitioning,
+                                     this->get_mpi_communicator());
       vec = vec_distributed;
 
-      DerivativeApproximation::approximate_gradient  (this->get_mapping(),
-                                                      this->get_dof_handler(),
-                                                      vec,
-                                                      indicators,
-                                                      this->introspection().component_indices.temperature);
+      DerivativeApproximation::approximate_gradient(
+        this->get_mapping(), this->get_dof_handler(), vec, indicators, this->introspection().component_indices.temperature);
 
       // Scale gradient in each cell with the correct power of h. Otherwise,
       // error indicators do not reduce when refined if there is a density

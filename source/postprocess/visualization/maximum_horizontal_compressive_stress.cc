@@ -19,9 +19,9 @@
 */
 
 
-#include <aspect/postprocess/visualization/maximum_horizontal_compressive_stress.h>
-#include <aspect/material_model/rheology/elasticity.h>
 #include <aspect/gravity_model/interface.h>
+#include <aspect/material_model/rheology/elasticity.h>
+#include <aspect/postprocess/visualization/maximum_horizontal_compressive_stress.h>
 #include <aspect/utilities.h>
 
 
@@ -32,34 +32,28 @@ namespace aspect
     namespace VisualizationPostprocessors
     {
       template <int dim>
-      MaximumHorizontalCompressiveStress<dim>::
-      MaximumHorizontalCompressiveStress ()
-        :
-        Interface<dim>("Pa")
+      MaximumHorizontalCompressiveStress<dim>::MaximumHorizontalCompressiveStress()
+        : Interface<dim>("Pa")
       {}
 
 
 
       template <int dim>
       void
-      MaximumHorizontalCompressiveStress<dim>::
-      evaluate_vector_field(const DataPostprocessorInputs::Vector<dim> &input_data,
-                            std::vector<Vector<double>> &computed_quantities) const
+      MaximumHorizontalCompressiveStress<dim>::evaluate_vector_field(const DataPostprocessorInputs::Vector<dim> &input_data,
+                                                                     std::vector<Vector<double>>                &computed_quantities) const
       {
         const unsigned int n_quadrature_points = input_data.solution_values.size();
-        Assert (computed_quantities.size() == n_quadrature_points, ExcInternalError());
-        Assert (computed_quantities[0].size() == dim, ExcInternalError());
-        Assert (input_data.solution_values[0].size() == this->introspection().n_components, ExcInternalError());
-        Assert (input_data.solution_gradients[0].size() == this->introspection().n_components, ExcInternalError());
+        Assert(computed_quantities.size() == n_quadrature_points, ExcInternalError());
+        Assert(computed_quantities[0].size() == dim, ExcInternalError());
+        Assert(input_data.solution_values[0].size() == this->introspection().n_components, ExcInternalError());
+        Assert(input_data.solution_gradients[0].size() == this->introspection().n_components, ExcInternalError());
 
-        MaterialModel::MaterialModelInputs<dim> in(input_data,
-                                                   this->introspection());
-        MaterialModel::MaterialModelOutputs<dim> out(n_quadrature_points,
-                                                     this->n_compositional_fields());
+        MaterialModel::MaterialModelInputs<dim>  in(input_data, this->introspection());
+        MaterialModel::MaterialModelOutputs<dim> out(n_quadrature_points, this->n_compositional_fields());
 
         if (this->get_parameters().enable_elasticity)
-          in.requested_properties = MaterialModel::MaterialProperties::viscosity
-                                    | MaterialModel::MaterialProperties::additional_outputs;
+          in.requested_properties = MaterialModel::MaterialProperties::viscosity | MaterialModel::MaterialProperties::additional_outputs;
         else
           in.requested_properties = MaterialModel::MaterialProperties::viscosity;
 
@@ -69,29 +63,29 @@ namespace aspect
         this->get_material_model().evaluate(in, out);
 
         // compute compressive stress components at quadrature points
-        const unsigned int n_tensor_components = SymmetricTensor<2,dim>::n_independent_components;
-        std::vector<Vector<double>> stress_components(n_quadrature_points,
-                                                       Vector<double>(n_tensor_components));
+        const unsigned int          n_tensor_components = SymmetricTensor<2, dim>::n_independent_components;
+        std::vector<Vector<double>> stress_components(n_quadrature_points, Vector<double>(n_tensor_components));
 
-        for (unsigned int q=0; q<n_quadrature_points; ++q)
+        for (unsigned int q = 0; q < n_quadrature_points; ++q)
           {
-            const SymmetricTensor<2,dim> strain_rate = in.strain_rate[q];
-            const SymmetricTensor<2,dim> deviatoric_strain_rate
-              = (this->get_material_model().is_compressible()
-                 ? strain_rate - 1./3 * trace(strain_rate) * unit_symmetric_tensor<dim>()
-                 : strain_rate);
+            const SymmetricTensor<2, dim> strain_rate = in.strain_rate[q];
+            const SymmetricTensor<2, dim> deviatoric_strain_rate =
+              (this->get_material_model().is_compressible() ? strain_rate - 1. / 3 * trace(strain_rate) * unit_symmetric_tensor<dim>() :
+                                                              strain_rate);
 
             const double eta = out.viscosities[q];
 
-            SymmetricTensor<2,dim> compressive_stress = in.pressure[q] * unit_symmetric_tensor<dim>();
+            SymmetricTensor<2, dim> compressive_stress = in.pressure[q] * unit_symmetric_tensor<dim>();
 
             if (this->get_parameters().enable_elasticity)
               {
                 const auto elastic_additional_out =
                   out.template get_additional_output_object<MaterialModel::ElasticAdditionalOutputs<dim>>();
 
-                Assert(elastic_additional_out != nullptr,
-                       ExcMessage("Elastic Additional Outputs are needed for the 'maximum horizontal compressive stress' postprocessor, but they have not been created."));
+                Assert(
+                  elastic_additional_out != nullptr,
+                  ExcMessage(
+                    "Elastic Additional Outputs are needed for the 'maximum horizontal compressive stress' postprocessor, but they have not been created."));
 
                 compressive_stress -= elastic_additional_out->deviatoric_stress[q];
               }
@@ -112,21 +106,19 @@ namespace aspect
           average_quantities(stress_components);
 
         // from averaged stress components compute final direction and magnitude
-        for (unsigned int q=0; q<n_quadrature_points; ++q)
+        for (unsigned int q = 0; q < n_quadrature_points; ++q)
           {
             // deserialize vector back into a symmetric tensor
-            SymmetricTensor<2,dim> avg_compressive_stress =
-              Utilities::Tensors::to_symmetric_tensor<dim>(stress_components[q].begin(),
-                                                           stress_components[q].end());
+            SymmetricTensor<2, dim> avg_compressive_stress =
+              Utilities::Tensors::to_symmetric_tensor<dim>(stress_components[q].begin(), stress_components[q].end());
 
-            const Tensor<1,dim> gravity = this->get_gravity_model().gravity_vector (in.position[q]);
-            const Tensor<1,dim> vertical_direction = gravity/gravity.norm();
-            std::array<Tensor<1,dim>,dim-1 > orthogonal_directions
-              = Utilities::orthogonal_vectors(vertical_direction);
-            for (unsigned int i=0; i<orthogonal_directions.size(); ++i)
+            const Tensor<1, dim>                gravity               = this->get_gravity_model().gravity_vector(in.position[q]);
+            const Tensor<1, dim>                vertical_direction    = gravity / gravity.norm();
+            std::array<Tensor<1, dim>, dim - 1> orthogonal_directions = Utilities::orthogonal_vectors(vertical_direction);
+            for (unsigned int i = 0; i < orthogonal_directions.size(); ++i)
               orthogonal_directions[i] /= orthogonal_directions[i].norm();
 
-            Tensor<1,dim> maximum_horizontal_compressive_stress;
+            Tensor<1, dim> maximum_horizontal_compressive_stress;
             switch (dim)
               {
                 // in 2d, there is only one horizontal direction, and
@@ -134,72 +126,61 @@ namespace aspect
                 // length of the compressive_stress (now taking into account the
                 // pressure) in this direction
                 case 2:
-                {
-                  maximum_horizontal_compressive_stress = orthogonal_directions[0] *
-                                                          (orthogonal_directions[0] *
-                                                           (avg_compressive_stress *
-                                                            orthogonal_directions[0]));
-                  break;
-                }
+                  {
+                    maximum_horizontal_compressive_stress =
+                      orthogonal_directions[0] * (orthogonal_directions[0] * (avg_compressive_stress * orthogonal_directions[0]));
+                    break;
+                  }
 
                 // in 3d, use the formulas discussed in the
                 // documentation of the plugin below
                 case 3:
-                {
-                  const double a = orthogonal_directions[0] *
-                                   (avg_compressive_stress *
-                                    orthogonal_directions[0]);
-                  const double b = orthogonal_directions[1] *
-                                   (avg_compressive_stress *
-                                    orthogonal_directions[1]);
-                  const double c = 2.0 * orthogonal_directions[0] *
-                                   (avg_compressive_stress *
-                                    orthogonal_directions[1]);
+                  {
+                    const double a = orthogonal_directions[0] * (avg_compressive_stress * orthogonal_directions[0]);
+                    const double b = orthogonal_directions[1] * (avg_compressive_stress * orthogonal_directions[1]);
+                    const double c = 2.0 * orthogonal_directions[0] * (avg_compressive_stress * orthogonal_directions[1]);
 
-                  // compute the two stationary points of f(alpha)
-                  const double alpha_1 = 1./2 * std::atan2 (c, a-b);
-                  const double alpha_2 = alpha_1 + numbers::PI/2;
+                    // compute the two stationary points of f(alpha)
+                    const double alpha_1 = 1. / 2 * std::atan2(c, a - b);
+                    const double alpha_2 = alpha_1 + numbers::PI / 2;
 
-                  // then check the sign of f''(alpha) to determine
-                  // which of the two stationary points is the maximum
-                  const double f_double_prime_1 = 2*(b-a)*std::cos(2*alpha_1)
-                                                  - 2*c*std::sin(2*alpha_1);
-                  double alpha;
-                  if (f_double_prime_1 < 0)
-                    alpha = alpha_1;
-                  else
-                    {
-                      Assert (/* f_double_prime_2 = */
-                        2*(b-a)*std::cos(2*alpha_2) - 2*c*std::sin(2*alpha_2) <= 0,
-                        ExcInternalError());
-                      alpha = alpha_2;
-                    }
+                    // then check the sign of f''(alpha) to determine
+                    // which of the two stationary points is the maximum
+                    const double f_double_prime_1 = 2 * (b - a) * std::cos(2 * alpha_1) - 2 * c * std::sin(2 * alpha_1);
+                    double       alpha;
+                    if (f_double_prime_1 < 0)
+                      alpha = alpha_1;
+                    else
+                      {
+                        Assert(/* f_double_prime_2 = */
+                               2 * (b - a) * std::cos(2 * alpha_2) - 2 * c * std::sin(2 * alpha_2) <= 0,
+                               ExcInternalError());
+                        alpha = alpha_2;
+                      }
 
-                  // then re-assemble the maximum horizontal compressive_stress
-                  // direction from alpha and the two horizontal
-                  // directions
-                  const Tensor<1,dim> n = std::cos(alpha) * orthogonal_directions[0] +
-                                          std::sin(alpha) * orthogonal_directions[1];
+                    // then re-assemble the maximum horizontal compressive_stress
+                    // direction from alpha and the two horizontal
+                    // directions
+                    const Tensor<1, dim> n = std::cos(alpha) * orthogonal_directions[0] + std::sin(alpha) * orthogonal_directions[1];
 
-                  // finally compute the actual direction * magnitude.
-                  // the magnitude is computed as discussed in the
-                  // description of the plugin below
-                  const Tensor<1,dim> n_perp = std::sin(alpha) * orthogonal_directions[0] -
-                                               std::cos(alpha) * orthogonal_directions[1];
+                    // finally compute the actual direction * magnitude.
+                    // the magnitude is computed as discussed in the
+                    // description of the plugin below
+                    const Tensor<1, dim> n_perp = std::sin(alpha) * orthogonal_directions[0] - std::cos(alpha) * orthogonal_directions[1];
 
-                  const double max_mag = (n * (avg_compressive_stress * n));
-                  const double min_mag = (n_perp * (avg_compressive_stress * n_perp));
+                    const double max_mag = (n * (avg_compressive_stress * n));
+                    const double min_mag = (n_perp * (avg_compressive_stress * n_perp));
 
-                  maximum_horizontal_compressive_stress = n * (max_mag - min_mag);
+                    maximum_horizontal_compressive_stress = n * (max_mag - min_mag);
 
-                  break;
-                }
+                    break;
+                  }
 
                 default:
-                  Assert (false, ExcNotImplemented());
+                  Assert(false, ExcNotImplemented());
               }
 
-            for (unsigned int i=0; i<dim; ++i)
+            for (unsigned int i = 0; i < dim; ++i)
               computed_quantities[q](i) = maximum_horizontal_compressive_stress[i];
           }
       }
@@ -207,27 +188,25 @@ namespace aspect
 
       template <int dim>
       std::vector<std::string>
-      MaximumHorizontalCompressiveStress<dim>::get_names () const
+      MaximumHorizontalCompressiveStress<dim>::get_names() const
       {
-        return std::vector<std::string> (dim, "maximum_horizontal_compressive_stress");
+        return std::vector<std::string>(dim, "maximum_horizontal_compressive_stress");
       }
 
 
       template <int dim>
       std::vector<DataComponentInterpretation::DataComponentInterpretation>
-      MaximumHorizontalCompressiveStress<dim>::get_data_component_interpretation () const
+      MaximumHorizontalCompressiveStress<dim>::get_data_component_interpretation() const
       {
-        return
-          std::vector<DataComponentInterpretation::DataComponentInterpretation>
-          (dim,
-           DataComponentInterpretation::component_is_part_of_vector);
+        return std::vector<DataComponentInterpretation::DataComponentInterpretation>(
+          dim, DataComponentInterpretation::component_is_part_of_vector);
       }
 
 
 
       template <int dim>
       UpdateFlags
-      MaximumHorizontalCompressiveStress<dim>::get_needed_update_flags () const
+      MaximumHorizontalCompressiveStress<dim>::get_needed_update_flags() const
       {
         return update_gradients | update_values | update_quadrature_points;
       }

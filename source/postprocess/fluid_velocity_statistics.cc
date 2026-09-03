@@ -19,9 +19,10 @@
 */
 
 
-#include <aspect/postprocess/fluid_velocity_statistics.h>
-#include <aspect/gravity_model/interface.h>
 #include <aspect/global.h>
+
+#include <aspect/gravity_model/interface.h>
+#include <aspect/postprocess/fluid_velocity_statistics.h>
 
 #include <deal.II/base/quadrature_lib.h>
 #include <deal.II/fe/fe_values.h>
@@ -32,8 +33,8 @@ namespace aspect
   namespace Postprocess
   {
     template <int dim>
-    std::pair<std::string,std::string>
-    FluidVelocityStatistics<dim>::execute (TableHandler &statistics)
+    std::pair<std::string, std::string>
+    FluidVelocityStatistics<dim>::execute(TableHandler &statistics)
     {
       AssertThrow(this->introspection().compositional_name_exists("porosity"),
                   ExcMessage("The 'fluid velocity statistics' postprocessor requires a "
@@ -41,8 +42,8 @@ namespace aspect
 
       const unsigned int porosity_idx = this->introspection().compositional_index_for_name("porosity");
 
-      AssertThrow(this->get_parameters().include_melt_transport ||
-                  this->get_parameters().compositional_field_methods[porosity_idx] == Parameters<dim>::AdvectionFieldMethod::fem_darcy_field,
+      AssertThrow(this->get_parameters().include_melt_transport || this->get_parameters().compositional_field_methods[porosity_idx] ==
+                                                                     Parameters<dim>::AdvectionFieldMethod::fem_darcy_field,
                   ExcMessage("The 'fluid velocity statistics' postprocessor requires advecting the 'porosity' compositional "
                              "field by either the darcy velocity or the melt velocity."));
 
@@ -50,31 +51,19 @@ namespace aspect
 
       // In this postprocessor, we only calculate the max fluid velocity. For this, we use a trapezoidal quadrature
       // which contains points on the borders of the cell.
-      const QIterated<dim> quadrature_formula (QTrapezoid<1>(),
-                                               this->get_parameters().stokes_velocity_degree);
-      const unsigned int n_q_points = quadrature_formula.size();
+      const QIterated<dim> quadrature_formula(QTrapezoid<1>(), this->get_parameters().stokes_velocity_degree);
+      const unsigned int   n_q_points = quadrature_formula.size();
 
-      const UpdateFlags update_flags
-        = UpdateFlags(
-            !output_melt_velocity
-            ?
-            update_values |
-            update_gradients |
-            update_quadrature_points |
-            update_JxW_values
-            :
-            update_values |
-            update_JxW_values);
+      const UpdateFlags update_flags =
+        UpdateFlags(!output_melt_velocity ? update_values | update_gradients | update_quadrature_points | update_JxW_values :
+                                            update_values | update_JxW_values);
 
-      FEValues<dim> fe_values (this->get_mapping(),
-                               this->get_fe(),
-                               quadrature_formula,
-                               update_flags);
+      FEValues<dim> fe_values(this->get_mapping(), this->get_fe(), quadrature_formula, update_flags);
 
-      std::vector<Tensor<1,dim>> solid_velocity_values(n_q_points);
-      std::vector<Tensor<1,dim>> fluid_velocity_values(n_q_points);
+      std::vector<Tensor<1, dim>> solid_velocity_values(n_q_points);
+      std::vector<Tensor<1, dim>> fluid_velocity_values(n_q_points);
 
-      MaterialModel::MaterialModelInputs<dim> in(fe_values.n_quadrature_points, this->n_compositional_fields());
+      MaterialModel::MaterialModelInputs<dim>  in(fe_values.n_quadrature_points, this->n_compositional_fields());
       MaterialModel::MaterialModelOutputs<dim> out(fe_values.n_quadrature_points, this->n_compositional_fields());
 
       MeltHandler<dim>::create_material_model_outputs(out);
@@ -84,71 +73,67 @@ namespace aspect
       for (const auto &cell : this->get_dof_handler().active_cell_iterators())
         if (cell->is_locally_owned())
           {
-            fe_values.reinit (cell);
+            fe_values.reinit(cell);
 
             // If the porosity is advected with the melt velocity, use the melt velocity...
             if (output_melt_velocity)
               {
                 const FEValuesExtractors::Vector ex_u_f = this->introspection().variable("fluid velocity").extractor_vector();
-                fe_values[ex_u_f].get_function_values (this->get_solution(), fluid_velocity_values);
+                fe_values[ex_u_f].get_function_values(this->get_solution(), fluid_velocity_values);
                 for (unsigned int q = 0; q < n_q_points; ++q)
-                  local_max_fluid_velocity = std::max (fluid_velocity_values[q].norm(),
-                                                       local_max_fluid_velocity);
+                  local_max_fluid_velocity = std::max(fluid_velocity_values[q].norm(), local_max_fluid_velocity);
               }
 
             // Otherwise, use the Darcy velocity
             else
               {
-                fe_values[this->introspection().extractors.velocities].get_function_values (this->get_solution(),
-                                                                                            solid_velocity_values);
+                fe_values[this->introspection().extractors.velocities].get_function_values(this->get_solution(), solid_velocity_values);
                 in.reinit(fe_values, cell, this->introspection(), this->get_solution());
 
                 this->get_material_model().evaluate(in, out);
 
-                const std::shared_ptr<const MaterialModel::MeltOutputs<dim>> fluid_out
-                  = out.template get_additional_output_object<MaterialModel::MeltOutputs<dim>>();
+                const std::shared_ptr<const MaterialModel::MeltOutputs<dim>> fluid_out =
+                  out.template get_additional_output_object<MaterialModel::MeltOutputs<dim>>();
 
                 for (unsigned int q = 0; q < n_q_points; ++q)
                   {
-                    const Tensor<1,dim> gravity = this->get_gravity_model().gravity_vector(fe_values.quadrature_point(q));
-                    Tensor<1,dim> darcy_velocity =
-                      aspect::Utilities::calculate_approximate_darcy_velocity(in, out,
-                                                                              fluid_out, solid_velocity_values[q],
-                                                                              gravity, porosity_idx, q,
+                    const Tensor<1, dim> gravity = this->get_gravity_model().gravity_vector(fe_values.quadrature_point(q));
+                    Tensor<1, dim>       darcy_velocity =
+                      aspect::Utilities::calculate_approximate_darcy_velocity(in,
+                                                                              out,
+                                                                              fluid_out,
+                                                                              solid_velocity_values[q],
+                                                                              gravity,
+                                                                              porosity_idx,
+                                                                              q,
                                                                               this->get_parameters().use_pressure_gradient_for_darcy_field);
-                    local_max_fluid_velocity = std::max (darcy_velocity.norm(),
-                                                         local_max_fluid_velocity);
+                    local_max_fluid_velocity = std::max(darcy_velocity.norm(), local_max_fluid_velocity);
                   }
               }
           }
 
-      const double global_max_fluid_velocity
-        = Utilities::MPI::max (local_max_fluid_velocity, this->get_mpi_communicator());
+      const double global_max_fluid_velocity = Utilities::MPI::max(local_max_fluid_velocity, this->get_mpi_communicator());
 
-      const std::string units = (this->convert_output_to_years() == true) ? "m/year" : "m/s";
-      const double unit_scale_factor = (this->convert_output_to_years() == true) ? year_in_seconds : 1.0;
-      const std::string advection_method = output_melt_velocity ? "melt" : "Darcy";
-      const std::vector<std::string> column_name = {"Max. " + advection_method + " velocity (" + units + ")"
-                                                   };
+      const std::string              units             = (this->convert_output_to_years() == true) ? "m/year" : "m/s";
+      const double                   unit_scale_factor = (this->convert_output_to_years() == true) ? year_in_seconds : 1.0;
+      const std::string              advection_method  = output_melt_velocity ? "melt" : "Darcy";
+      const std::vector<std::string> column_name       = {"Max. " + advection_method + " velocity (" + units + ")"};
 
-      statistics.add_value (column_name[0],
-                            global_max_fluid_velocity * unit_scale_factor);
+      statistics.add_value(column_name[0], global_max_fluid_velocity * unit_scale_factor);
 
       // also make sure that the other columns filled by this object
       // all show up with sufficient accuracy and in scientific notation
       for (auto &column : column_name)
         {
-          statistics.set_precision (column, 8);
-          statistics.set_scientific (column, true);
+          statistics.set_precision(column, 8);
+          statistics.set_scientific(column, true);
         }
 
       std::ostringstream output;
       output.precision(3);
-      output << global_max_fluid_velocity *unit_scale_factor
-             << ' ' << units;
+      output << global_max_fluid_velocity * unit_scale_factor << ' ' << units;
 
-      return std::pair<std::string, std::string> ("Max " + advection_method + " velocity:",
-                                                  output.str());
+      return std::pair<std::string, std::string>("Max " + advection_method + " velocity:", output.str());
     }
   }
 }

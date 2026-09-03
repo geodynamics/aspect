@@ -22,11 +22,12 @@
 #define _aspect_material_model_rheology_diffusion_dislocation_h
 
 #include <aspect/global.h>
+
 #include <aspect/material_model/interface.h>
-#include <aspect/material_model/utilities.h>
-#include <aspect/simulator_access.h>
 #include <aspect/material_model/rheology/diffusion_creep.h>
 #include <aspect/material_model/rheology/dislocation_creep.h>
+#include <aspect/material_model/utilities.h>
+#include <aspect/simulator_access.h>
 
 namespace aspect
 {
@@ -84,9 +85,9 @@ namespace aspect
            * assuming that each composition experiences the same strain rate.
            */
           std::vector<double>
-          calculate_isostrain_viscosities ( const double pressure,
-                                            const double temperature,
-                                            const SymmetricTensor<2,dim> &strain_rate) const;
+          calculate_isostrain_viscosities(const double                   pressure,
+                                          const double                   temperature,
+                                          const SymmetricTensor<2, dim> &strain_rate) const;
 
           /**
            * Compute the viscosity based on the composite viscous creep law,
@@ -94,23 +95,22 @@ namespace aspect
            * volume fractions.
            */
           double
-          compute_viscosity (const double pressure,
-                             const double temperature,
-                             const std::vector<double> &volume_fractions,
-                             const SymmetricTensor<2,dim> &strain_rate) const;
+          compute_viscosity(const double                   pressure,
+                            const double                   temperature,
+                            const std::vector<double>     &volume_fractions,
+                            const SymmetricTensor<2, dim> &strain_rate) const;
 
-          static
-          void
-          declare_parameters (ParameterHandler &prm);
+          static void
+          declare_parameters(ParameterHandler &prm);
 
           void
-          parse_parameters (ParameterHandler &prm);
+          parse_parameters(ParameterHandler &prm);
 
         private:
           /**
            * Objects for computing viscous creep viscosities.
            */
-          Rheology::DiffusionCreep<dim> diffusion_creep;
+          Rheology::DiffusionCreep<dim>   diffusion_creep;
           Rheology::DislocationCreep<dim> dislocation_creep;
 
           /**
@@ -141,14 +141,13 @@ namespace aspect
           /**
            *  This variable is read from the parameter file through a parameter called 'Grain size'.
            */
-          double grain_size;
+          double       grain_size;
           unsigned int n_chemical_composition_fields;
 
           /**
            *  This variable is read from the parameter file through a parameter called 'Viscosity averaging scheme'.
            */
           MaterialUtilities::CompositionalAveragingOperation viscosity_averaging;
-
       };
 
     }

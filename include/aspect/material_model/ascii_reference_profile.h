@@ -47,7 +47,7 @@ namespace aspect
         /**
          * Constructor. Initialize variables.
          */
-        AsciiReferenceProfile ();
+        AsciiReferenceProfile();
 
         /**
          * Initialization function. This function is called once at the
@@ -55,10 +55,10 @@ namespace aspect
          * the SimulatorAccess (if applicable) is initialized.
          */
         void
-        initialize () override;
+        initialize() override;
 
-        void evaluate(const MaterialModel::MaterialModelInputs<dim> &in,
-                      MaterialModel::MaterialModelOutputs<dim> &out) const override;
+        void
+        evaluate(const MaterialModel::MaterialModelInputs<dim> &in, MaterialModel::MaterialModelOutputs<dim> &out) const override;
 
         /**
          * @name Qualitative properties one can ask a material model
@@ -68,7 +68,8 @@ namespace aspect
         /**
          * Return whether the model is compressible or not.
          */
-        bool is_compressible () const override;
+        bool
+        is_compressible() const override;
         /**
          * @}
          */
@@ -80,15 +81,14 @@ namespace aspect
         /**
          * Declare the parameters this class takes through input files.
          */
-        static
-        void
-        declare_parameters (ParameterHandler &prm);
+        static void
+        declare_parameters(ParameterHandler &prm);
 
         /**
          * Read the parameters this class declares from the parameter file.
          */
         void
-        parse_parameters (ParameterHandler &prm) override;
+        parse_parameters(ParameterHandler &prm) override;
 
         /**
          * @}
@@ -98,7 +98,7 @@ namespace aspect
          * Add the named outputs for seismic velocities.
          */
         void
-        create_additional_named_outputs (MaterialModel::MaterialModelOutputs<dim> &out) const override;
+        create_additional_named_outputs(MaterialModel::MaterialModelOutputs<dim> &out) const override;
 
 
       private:

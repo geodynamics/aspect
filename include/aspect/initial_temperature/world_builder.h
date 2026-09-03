@@ -54,7 +54,7 @@ namespace aspect
         /**
          * Constructor.
          */
-        WorldBuilder ();
+        WorldBuilder();
 
         /**
          * Initialization function. This function is called once at the
@@ -62,12 +62,13 @@ namespace aspect
          * the SimulatorAccess (if applicable) is initialized.
          */
         void
-        initialize () override;
+        initialize() override;
 
         /**
          * Return the initial temperature as a function of position.
          */
-        double initial_temperature (const Point<dim> &position) const override;
+        double
+        initial_temperature(const Point<dim> &position) const override;
 
       private:
         /**

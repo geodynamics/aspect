@@ -18,16 +18,16 @@
   <http://www.gnu.org/licenses/>.
 */
 
-#include <algorithm>
-#include <aspect/geometry_model/spherical_shell.h>
 #include <aspect/geometry_model/initial_topography_model/zero_topography.h>
+#include <aspect/geometry_model/spherical_shell.h>
+#include <aspect/utilities.h>
 
-
+#include <deal.II/dofs/dof_tools.h>
 #include <deal.II/grid/grid_generator.h>
 #include <deal.II/grid/grid_tools.h>
 #include <deal.II/grid/manifold_lib.h>
-#include <aspect/utilities.h>
-#include <deal.II/dofs/dof_tools.h>
+
+#include <algorithm>
 
 namespace aspect
 {
@@ -35,14 +35,16 @@ namespace aspect
   {
     namespace
     {
-      void append_face_to_subcell_data(SubCellData &subcell_data, const CellData<1> &face)
+      void
+      append_face_to_subcell_data(SubCellData &subcell_data, const CellData<1> &face)
       {
         subcell_data.boundary_lines.push_back(face);
       }
 
 
 
-      void append_face_to_subcell_data(SubCellData &subcell_data, const CellData<2> &face)
+      void
+      append_face_to_subcell_data(SubCellData &subcell_data, const CellData<2> &face)
       {
         subcell_data.boundary_quads.push_back(face);
       }
@@ -83,11 +85,11 @@ namespace aspect
       FullMatrix<double>
       phi_periodicity_rotation_matrix(const double phi)
       {
-        FullMatrix<double> rotation_matrix(dim);
+        FullMatrix<double>   rotation_matrix(dim);
         const Tensor<2, dim> rotation_tensor = phi_periodicity_rotation_tensor<dim>(phi);
 
-        for (unsigned int i=0; i<dim; ++i)
-          for (unsigned int j=0; j<dim; ++j)
+        for (unsigned int i = 0; i < dim; ++i)
+          for (unsigned int j = 0; j < dim; ++j)
             rotation_matrix[i][j] = rotation_tensor[i][j];
 
         return rotation_matrix;
@@ -98,15 +100,14 @@ namespace aspect
     namespace internal
     {
       template <int dim>
-      SphericalManifoldWithTopography<dim>::
-      SphericalManifoldWithTopography(const std::shared_ptr<const InitialTopographyModel::Interface<dim>> topography,
-                                      const double inner_radius,
-                                      const double outer_radius)
-        :
-        SphericalManifold<dim>(Point<dim>()),
-        topo (topography),
-        R0 (inner_radius),
-        R1 (outer_radius)
+      SphericalManifoldWithTopography<dim>::SphericalManifoldWithTopography(
+        const std::shared_ptr<const InitialTopographyModel::Interface<dim>> topography,
+        const double                                                        inner_radius,
+        const double                                                        outer_radius)
+        : SphericalManifold<dim>(Point<dim>())
+        , topo(topography)
+        , R0(inner_radius)
+        , R1(outer_radius)
       {}
 
 
@@ -121,10 +122,9 @@ namespace aspect
 
       template <int dim>
       double
-      SphericalManifoldWithTopography<dim>::
-      topography_for_point(const Point<dim> &x_y_z) const
+      SphericalManifoldWithTopography<dim>::topography_for_point(const Point<dim> &x_y_z) const
       {
-        if (dynamic_cast<const InitialTopographyModel::ZeroTopography<dim>*>(topo.get()) != nullptr)
+        if (dynamic_cast<const InitialTopographyModel::ZeroTopography<dim> *>(topo.get()) != nullptr)
           return 0;
         else
           {
@@ -134,9 +134,9 @@ namespace aspect
             const std::array<double, dim> r_phi_theta = Utilities::Coordinates::cartesian_to_spherical_coordinates(x_y_z);
 
             // Grab lon,lat coordinates
-            Point<dim-1> surface_point;
-            for (unsigned int d=0; d<dim-1; ++d)
-              surface_point[d] = r_phi_theta[d+1];
+            Point<dim - 1> surface_point;
+            for (unsigned int d = 0; d < dim - 1; ++d)
+              surface_point[d] = r_phi_theta[d + 1];
             return topo->value(surface_point);
           }
       }
@@ -145,8 +145,7 @@ namespace aspect
 
       template <int dim>
       Point<dim>
-      SphericalManifoldWithTopography<dim>::
-      push_forward_from_sphere(const Point<dim> &p) const
+      SphericalManifoldWithTopography<dim>::push_forward_from_sphere(const Point<dim> &p) const
       {
         const double topography = topography_for_point(p);
 
@@ -163,8 +162,8 @@ namespace aspect
             // between R0 and R1. Check this, with a slight tolerance to account
             // for the fact that our mesh is not *completely* spherical.
             const double r = p.norm();
-            Assert (r>=R0*0.99, ExcInternalError());
-            Assert (r<=R1*1.01, ExcInternalError());
+            Assert(r >= R0 * 0.99, ExcInternalError());
+            Assert(r <= R1 * 1.01, ExcInternalError());
 
             // Then we need to stretch the point p outward by a factor that is
             // zero at the core-mantle boundary and results in the right topography
@@ -172,12 +171,12 @@ namespace aspect
             //
             // The stretching factor is relative to the distance from the core
             // mantle boundary.
-            const double cmb_stretching_factor = (R1+topography-R0)/(R1-R0);
+            const double cmb_stretching_factor = (R1 + topography - R0) / (R1 - R0);
 
             // From this we can compute what the desired radius is going to be, and
             // scale the given point accordingly:
-            const double new_radius = (r-R0)*cmb_stretching_factor + R0;
-            return p * (new_radius/r);
+            const double new_radius = (r - R0) * cmb_stretching_factor + R0;
+            return p * (new_radius / r);
           }
       }
 
@@ -185,8 +184,7 @@ namespace aspect
 
       template <int dim>
       Point<dim>
-      SphericalManifoldWithTopography<dim>::
-      pull_back_to_sphere(const Point<dim> &p) const
+      SphericalManifoldWithTopography<dim>::pull_back_to_sphere(const Point<dim> &p) const
       {
         const double topography = topography_for_point(p);
 
@@ -203,18 +201,18 @@ namespace aspect
             // between R0 and R1+topography. Check this, with a slight tolerance
             // to account for the fact that our mesh is not *completely* spherical.
             const double r = p.norm();
-            Assert (r>=R0*0.99, ExcInternalError());
-            Assert (r<=(R1+topography)*1.01, ExcInternalError());
+            Assert(r >= R0 * 0.99, ExcInternalError());
+            Assert(r <= (R1 + topography) * 1.01, ExcInternalError());
 
             // Then we need to stretch(=shrink) the point p outward by a factor that is
             // zero at the core-mantle boundary and results in the right topography
             // at the top.
-            const double cmb_stretching_factor = (R1-R0)/(R1+topography-R0);
+            const double cmb_stretching_factor = (R1 - R0) / (R1 + topography - R0);
 
             // From this we can compute what the desired radius is going to be, and
             // scale the given point accordingly:
-            const double new_radius = (r-R0)*cmb_stretching_factor + R0;
-            return p * (new_radius/r);
+            const double new_radius = (r - R0) * cmb_stretching_factor + R0;
+            return p * (new_radius / r);
           }
       }
 
@@ -222,36 +220,28 @@ namespace aspect
 
       template <int dim>
       Point<dim>
-      SphericalManifoldWithTopography<dim>::
-      get_intermediate_point(const Point<dim> &p1,
-                             const Point<dim> &p2,
-                             const double      w) const
+      SphericalManifoldWithTopography<dim>::get_intermediate_point(const Point<dim> &p1, const Point<dim> &p2, const double w) const
       {
-        return
-          push_forward_from_sphere
-          (SphericalManifold<dim>::get_intermediate_point (pull_back_to_sphere(p1),
-                                                           pull_back_to_sphere(p2), w));
+        return push_forward_from_sphere(
+          SphericalManifold<dim>::get_intermediate_point(pull_back_to_sphere(p1), pull_back_to_sphere(p2), w));
       }
 
 
 
       template <int dim>
       Tensor<1, dim>
-      SphericalManifoldWithTopography<dim>::
-      get_tangent_vector(const Point<dim> &x1,
-                         const Point<dim> &x2) const
+      SphericalManifoldWithTopography<dim>::get_tangent_vector(const Point<dim> &x1, const Point<dim> &x2) const
       {
         // TODO: Deal with pull back and push forward
-        return SphericalManifold<dim>::get_tangent_vector (x1, x2);
+        return SphericalManifold<dim>::get_tangent_vector(x1, x2);
       }
 
 
 
       template <int dim>
       Tensor<1, dim>
-      SphericalManifoldWithTopography<dim>::
-      normal_vector(const typename Triangulation<dim, dim>::face_iterator &face,
-                    const Point<dim> &p) const
+      SphericalManifoldWithTopography<dim>::normal_vector(const typename Triangulation<dim, dim>::face_iterator &face,
+                                                          const Point<dim>                                      &p) const
       {
         // We calculate radial, rather than *normal*, vectors here if a face is
         // at the boundary. This is as described in the documentation of this
@@ -259,17 +249,16 @@ namespace aspect
 
         // TODO: Add an input parameter that determines whether we use this
         //   or the "geometrically correct" behavior.
-        return SphericalManifold<dim>::normal_vector (face, p);
+        return SphericalManifold<dim>::normal_vector(face, p);
       }
 
 
 
       template <int dim>
       void
-      SphericalManifoldWithTopography<dim>::
-      get_normals_at_vertices(
+      SphericalManifoldWithTopography<dim>::get_normals_at_vertices(
         const typename Triangulation<dim, dim>::face_iterator &face,
-        typename Manifold<dim, dim>::FaceVertexNormals &face_vertex_normals) const
+        typename Manifold<dim, dim>::FaceVertexNormals        &face_vertex_normals) const
       {
         // TODO: Deal with pull back and push forward
         SphericalManifold<dim>::get_normals_at_vertices(face, face_vertex_normals);
@@ -279,17 +268,16 @@ namespace aspect
 
       template <int dim>
       void
-      SphericalManifoldWithTopography<dim>::
-      get_new_points(const ArrayView<const Point<dim>> &surrounding_points,
-                     const Table<2, double>            &weights,
-                     ArrayView<Point<dim>>              new_points) const
+      SphericalManifoldWithTopography<dim>::get_new_points(const ArrayView<const Point<dim>> &surrounding_points,
+                                                           const Table<2, double>            &weights,
+                                                           ArrayView<Point<dim>>              new_points) const
       {
         // First compute the points in the untransformed coordinate system
         // without surface topography:
         std::vector<Point<dim>> untransformed_points;
         untransformed_points.reserve(surrounding_points.size());
         for (const Point<dim> &p : surrounding_points)
-          untransformed_points.emplace_back (pull_back_to_sphere(p));
+          untransformed_points.emplace_back(pull_back_to_sphere(p));
 
         // Call the function in the base class:
         SphericalManifold<dim>::get_new_points(untransformed_points, weights, new_points);
@@ -305,21 +293,19 @@ namespace aspect
 
       template <int dim>
       Point<dim>
-      SphericalManifoldWithTopography<dim>::
-      get_new_point(const ArrayView<const Point<dim>> &surrounding_points,
-                    const ArrayView<const double>          &weights) const
+      SphericalManifoldWithTopography<dim>::get_new_point(const ArrayView<const Point<dim>> &surrounding_points,
+                                                          const ArrayView<const double>     &weights) const
       {
         // First compute the points in the untransformed coordinate system
         // without surface topography:
         std::vector<Point<dim>> untransformed_points;
         untransformed_points.reserve(surrounding_points.size());
         for (const Point<dim> &p : surrounding_points)
-          untransformed_points.emplace_back (pull_back_to_sphere(p));
+          untransformed_points.emplace_back(pull_back_to_sphere(p));
 
         // Call the function in the base class, and transform the
         // returned value:
-        return push_forward_from_sphere(SphericalManifold<dim>::get_new_point(untransformed_points,
-                                                                              weights));
+        return push_forward_from_sphere(SphericalManifold<dim>::get_new_point(untransformed_points, weights));
       }
     }
 
@@ -327,30 +313,28 @@ namespace aspect
 
     template <int dim>
     void
-    SphericalShell<dim>::initialize ()
+    SphericalShell<dim>::initialize()
     {
-      manifold = std::make_unique<internal::SphericalManifoldWithTopography<dim>>(this->get_initial_topography_model_pointer(),
-                                                                                   R0, R1);
+      manifold = std::make_unique<internal::SphericalManifoldWithTopography<dim>>(this->get_initial_topography_model_pointer(), R0, R1);
     }
 
 
 
     template <int dim>
     void
-    SphericalShell<dim>::
-    create_coarse_mesh (parallel::distributed::Triangulation<dim> &coarse_grid) const
+    SphericalShell<dim>::create_coarse_mesh(parallel::distributed::Triangulation<dim> &coarse_grid) const
     {
-      AssertThrow (phi == 360 || phi == 90 || ((phi == 180) && (dim == 2)),
-                   ExcMessage ("The only opening angles that are allowed for "
-                               "this geometry are 90, 180, and 360 in 2d; "
-                               "and 90 and 360 in 3d."));
+      AssertThrow(phi == 360 || phi == 90 || ((phi == 180) && (dim == 2)),
+                  ExcMessage("The only opening angles that are allowed for "
+                             "this geometry are 90, 180, and 360 in 2d; "
+                             "and 90 and 360 in 3d."));
 
       // Custom mesh extrusion is only implemented for full spherical shells
       // for now, so check that custom mesh schemes are only being used when
       // the opening angle is 360 degrees.
-      AssertThrow (phi == 360 || (custom_mesh == none),
-                   ExcMessage ("The only opening angle that is allowed for "
-                               "this geometry with a custom mesh is 360."));
+      AssertThrow(phi == 360 || (custom_mesh == none),
+                  ExcMessage("The only opening angle that is allowed for "
+                             "this geometry with a custom mesh is 360."));
 
       if (phi == 360)
         {
@@ -358,20 +342,18 @@ namespace aspect
             {
               // If we are not using a custom mesh scheme, the mesh is generated
               // as per the original code.
-              GridGenerator::hyper_shell (coarse_grid,
-                                          Point<dim>(),
-                                          R0,
-                                          R1,
-                                          (n_cells_along_circumference == 0
-                                           ?
-                                           // automatic choice that leads to reasonable
-                                           // meshes with the typical aspect ratio of
-                                           // the Earth
-                                           (dim==3 ? 96 : 12)
-                                           :
-                                           // user choice
-                                           n_cells_along_circumference),
-                                          true);
+              GridGenerator::hyper_shell(coarse_grid,
+                                         Point<dim>(),
+                                         R0,
+                                         R1,
+                                         (n_cells_along_circumference == 0 ?
+                                            // automatic choice that leads to reasonable
+                                            // meshes with the typical aspect ratio of
+                                            // the Earth
+                                            (dim == 3 ? 96 : 12) :
+                                            // user choice
+                                            n_cells_along_circumference),
+                                         true);
             }
           else
             {
@@ -379,44 +361,42 @@ namespace aspect
               // If we are using a custom mesh scheme, we need to create
               // a new triangulation to extrude (this will be a 1D line in
               // 2d space, or a 2d surface in 3d space).
-              Triangulation<dim-1,dim> sphere_mesh;
-              GridGenerator::hyper_sphere (sphere_mesh);
-              sphere_mesh.refine_global (initial_lateral_refinement);
+              Triangulation<dim - 1, dim> sphere_mesh;
+              GridGenerator::hyper_sphere(sphere_mesh);
+              sphere_mesh.refine_global(initial_lateral_refinement);
 
               // Calculate the number of R_values wrt custom mesh scheme
               unsigned int n_R_values;
               if (custom_mesh == slices)
-                n_R_values = n_slices+1;
+                n_R_values = n_slices + 1;
               else
-                n_R_values = R_values_list.size()+2;
+                n_R_values = R_values_list.size() + 2;
 
               // Allocate R_values wrt the number of slices
-              std::vector<double> R_values (n_R_values);
+              std::vector<double> R_values(n_R_values);
               if (custom_mesh == slices)
                 {
-                  for (unsigned int s=0; s<n_R_values; ++s)
-                    R_values[s] = R0 + (R1-R0)/n_slices * s;
+                  for (unsigned int s = 0; s < n_R_values; ++s)
+                    R_values[s] = R0 + (R1 - R0) / n_slices * s;
                 }
               if (custom_mesh == list)
                 {
-                  R_values[0] = R0;
-                  R_values[n_R_values-1] = R1;
-                  for (unsigned int s=1; s<(n_R_values-1); ++s)
-                    R_values[s] = R_values_list[s-1];
+                  R_values[0]              = R0;
+                  R_values[n_R_values - 1] = R1;
+                  for (unsigned int s = 1; s < (n_R_values - 1); ++s)
+                    R_values[s] = R_values_list[s - 1];
                 }
-              std::vector<Point<dim>>    points(R_values.size() * sphere_mesh.n_vertices());
+              std::vector<Point<dim>> points(R_values.size() * sphere_mesh.n_vertices());
 
 
               // Copy the array of points as many times as there will be slices,
               // one slice at a time. The z-axis value are defined in slices_coordinates
               for (unsigned int point_layer = 0; point_layer < R_values.size(); ++point_layer)
                 {
-                  for (unsigned int vertex_n = 0; vertex_n < sphere_mesh.n_vertices();
-                       ++vertex_n)
+                  for (unsigned int vertex_n = 0; vertex_n < sphere_mesh.n_vertices(); ++vertex_n)
                     {
-                      const Point<dim> vertex = sphere_mesh.get_vertices()[vertex_n];
-                      points[point_layer * sphere_mesh.n_vertices() + vertex_n] =
-                        vertex * R_values[point_layer];
+                      const Point<dim> vertex                                   = sphere_mesh.get_vertices()[vertex_n];
+                      points[point_layer * sphere_mesh.n_vertices() + vertex_n] = vertex * R_values[point_layer];
                     }
                 }
 
@@ -425,7 +405,7 @@ namespace aspect
               std::vector<CellData<dim>> cells;
               cells.reserve((R_values.size() - 1) * sphere_mesh.n_active_cells());
 
-              SubCellData               subcell_data;
+              SubCellData subcell_data;
 
               for (const auto &cell : sphere_mesh.active_cell_iterators())
                 {
@@ -434,17 +414,15 @@ namespace aspect
                       CellData<dim> this_cell;
                       for (const unsigned int vertex_n : cell->vertex_indices())
                         {
-                          this_cell.vertices[vertex_n] =
-                            cell->vertex_index(vertex_n) + cell_layer * sphere_mesh.n_vertices();
+                          this_cell.vertices[vertex_n] = cell->vertex_index(vertex_n) + cell_layer * sphere_mesh.n_vertices();
                           this_cell.vertices[vertex_n + cell->n_vertices()] =
-                            cell->vertex_index(vertex_n) +
-                            (cell_layer + 1) * sphere_mesh.n_vertices();
+                            cell->vertex_index(vertex_n) + (cell_layer + 1) * sphere_mesh.n_vertices();
                         }
 
                       this_cell.material_id = cell->material_id();
 
 
-                      Assert(GridTools::cell_measure (points, this_cell.vertices) > 0, ExcInternalError());
+                      Assert(GridTools::cell_measure(points, this_cell.vertices) > 0, ExcInternalError());
 
                       cells.push_back(this_cell);
 
@@ -452,10 +430,9 @@ namespace aspect
                       // the bottom layer of cells
                       if (cell_layer == 0)
                         {
-                          CellData<dim-1> face;
+                          CellData<dim - 1> face;
                           for (const unsigned int vertex_n : cell->vertex_indices())
-                            face.vertices[vertex_n] =
-                              cell->vertex_index(vertex_n) + cell_layer * sphere_mesh.n_vertices();
+                            face.vertices[vertex_n] = cell->vertex_index(vertex_n) + cell_layer * sphere_mesh.n_vertices();
                           face.boundary_id = 0;
 
                           append_face_to_subcell_data(subcell_data, face);
@@ -463,101 +440,86 @@ namespace aspect
 
                       // Mark the top face of the cell as boundary 1 if we are in
                       // the top layer of cells
-                      if (cell_layer == R_values.size()-2)
+                      if (cell_layer == R_values.size() - 2)
                         {
-                          CellData<dim-1> face;
+                          CellData<dim - 1> face;
                           for (const unsigned int vertex_n : cell->vertex_indices())
-                            face.vertices[vertex_n] =
-                              cell->vertex_index(vertex_n) +
-                              (cell_layer + 1) * sphere_mesh.n_vertices();
+                            face.vertices[vertex_n] = cell->vertex_index(vertex_n) + (cell_layer + 1) * sphere_mesh.n_vertices();
                           face.boundary_id = 1;
 
                           append_face_to_subcell_data(subcell_data, face);
                         }
-
                     }
                 }
 
               // Then create the actual mesh:
-              GridTools::consistently_order_cells (cells);
+              GridTools::consistently_order_cells(cells);
               coarse_grid.create_triangulation(points, cells, subcell_data);
             }
         }
       else if (phi == 90)
         {
-          GridGenerator::quarter_hyper_shell (coarse_grid,
-                                              Point<dim>(),
-                                              R0,
-                                              R1,
-                                              0,
-                                              true);
+          GridGenerator::quarter_hyper_shell(coarse_grid, Point<dim>(), R0, R1, 0, true);
 
           // there was a bug with boundary colorization of thin shells
           // before deal.II 9.7. Use a fixed version of that function,
           // for deal.II versions that need it.
-#if !DEAL_II_VERSION_GTE(9,7,0)
+#if !DEAL_II_VERSION_GTE(9, 7, 0)
           if (dim == 3)
-            colorize_quarter_hyper_shell(coarse_grid,
-                                         Point<dim>(),
-                                         R0,
-                                         R1);
+            colorize_quarter_hyper_shell(coarse_grid, Point<dim>(), R0, R1);
 #endif
 
           if (periodic)
             {
               // Tell p4est about the periodicity of the mesh.
-              std::vector<GridTools::PeriodicFacePair<typename parallel::distributed::Triangulation<dim>::cell_iterator>>
-              matched_pairs;
+              std::vector<GridTools::PeriodicFacePair<typename parallel::distributed::Triangulation<dim>::cell_iterator>> matched_pairs;
               const FullMatrix<double> rotation_matrix = phi_periodicity_rotation_matrix<dim>(phi);
 
-              GridTools::collect_periodic_faces(coarse_grid, /*b_id1*/ 2, /*b_id2*/ 3,
-                                                /*direction*/ 1, matched_pairs,
-                                                Tensor<1, dim>(), rotation_matrix);
+              GridTools::collect_periodic_faces(coarse_grid,
+                                                /*b_id1*/ 2,
+                                                /*b_id2*/ 3,
+                                                /*direction*/ 1,
+                                                matched_pairs,
+                                                Tensor<1, dim>(),
+                                                rotation_matrix);
 
               if (matched_pairs.size() > 0)
-                coarse_grid.add_periodicity (matched_pairs);
+                coarse_grid.add_periodicity(matched_pairs);
             }
         }
       else if (phi == 180)
         {
-          GridGenerator::half_hyper_shell (coarse_grid,
-                                           Point<dim>(),
-                                           R0,
-                                           R1,
-                                           0,
-                                           true);
+          GridGenerator::half_hyper_shell(coarse_grid, Point<dim>(), R0, R1, 0, true);
 
           if (periodic)
             {
-              std::vector<GridTools::PeriodicFacePair<typename parallel::distributed::Triangulation<dim>::cell_iterator>>
-              matched_pairs;
+              std::vector<GridTools::PeriodicFacePair<typename parallel::distributed::Triangulation<dim>::cell_iterator>> matched_pairs;
               const FullMatrix<double> rotation_matrix = phi_periodicity_rotation_matrix<dim>(phi);
 
-              GridTools::collect_periodic_faces(coarse_grid, /*b_id1*/ 2, /*b_id2*/ 3,
-                                                /*direction*/ 1, matched_pairs,
-                                                Tensor<1, dim>(), rotation_matrix);
+              GridTools::collect_periodic_faces(coarse_grid,
+                                                /*b_id1*/ 2,
+                                                /*b_id2*/ 3,
+                                                /*direction*/ 1,
+                                                matched_pairs,
+                                                Tensor<1, dim>(),
+                                                rotation_matrix);
 
               if (matched_pairs.size() > 0)
-                coarse_grid.add_periodicity (matched_pairs);
+                coarse_grid.add_periodicity(matched_pairs);
             }
         }
       else
         {
-          Assert (false, ExcInternalError());
+          Assert(false, ExcInternalError());
         }
 
       // Then add the topography to the mesh by moving all vertices from the
       // undeformed sphere to the sphere with topography:
-      GridTools::transform (
-        [&](const Point<dim> &p) -> Point<dim>
-      {
-        return manifold->push_forward_from_sphere(p);
-      },
-      coarse_grid);
+      GridTools::transform([&](const Point<dim> &p) -> Point<dim> { return manifold->push_forward_from_sphere(p); }, coarse_grid);
 
       // Use a manifold description for all cells. Use manifold_id 99 in order
       // not to step on the boundary indicators used below.
-      coarse_grid.set_manifold (my_manifold_id, *manifold);
+      coarse_grid.set_manifold(my_manifold_id, *manifold);
       set_manifold_ids(coarse_grid);
     }
 
@@ -565,18 +527,17 @@ namespace aspect
 
     template <int dim>
     void
-    SphericalShell<dim>::set_manifold_ids (parallel::distributed::Triangulation<dim> &triangulation) const
+    SphericalShell<dim>::set_manifold_ids(parallel::distributed::Triangulation<dim> &triangulation) const
     {
       for (const auto &cell : triangulation.active_cell_iterators())
-        cell->set_all_manifold_ids (my_manifold_id);
+        cell->set_all_manifold_ids(my_manifold_id);
     }
 
 
 
     template <int dim>
     std::set<types::boundary_id>
-    SphericalShell<dim>::
-    get_used_boundary_indicators () const
+    SphericalShell<dim>::get_used_boundary_indicators() const
     {
       // Follow what is described in the documentation of this class.
       // see the documentation of the various GridGenerator::*hyper_shell
@@ -584,17 +545,17 @@ namespace aspect
       // set and how they correlate to what's used below
       if (phi == 360)
         {
-          const types::boundary_id s[] = { 0, 1 };
+          const types::boundary_id s[] = {0, 1};
           return std::set<types::boundary_id>(std::begin(s), std::end(s));
         }
       else if (phi == 90 && dim == 3)
         {
-          const types::boundary_id s[] = { 0, 1, 2, 3, 4};
+          const types::boundary_id s[] = {0, 1, 2, 3, 4};
           return std::set<types::boundary_id>(std::begin(s), std::end(s));
         }
       else
         {
-          const types::boundary_id s[] = { 0, 1, 2, 3 };
+          const types::boundary_id s[] = {0, 1, 2, 3};
           return std::set<types::boundary_id>(std::begin(s), std::end(s));
         }
     }
@@ -602,56 +563,37 @@ namespace aspect
 
 
     template <int dim>
-    std::map<std::string,types::boundary_id>
-    SphericalShell<dim>::
-    get_symbolic_boundary_names_map () const
+    std::map<std::string, types::boundary_id>
+    SphericalShell<dim>::get_symbolic_boundary_names_map() const
     {
       switch (dim)
         {
           case 2:
-          {
-            static const std::pair<std::string,types::boundary_id> mapping[]
-            = { {"bottom", 0},
-              {"top", 1},
-              {"left",  2},
-              {"right", 3}
-            };
+            {
+              static const std::pair<std::string, types::boundary_id> mapping[] = {{"bottom", 0}, {"top", 1}, {"left", 2}, {"right", 3}};
 
-            if (phi == 360)
-              return std::map<std::string,types::boundary_id> (std::begin(mapping),
-                                                               std::begin(mapping)+2);
-            else
-              return std::map<std::string,types::boundary_id> (std::begin(mapping),
-                                                               std::begin(mapping)+4);
-          }
+              if (phi == 360)
+                return std::map<std::string, types::boundary_id>(std::begin(mapping), std::begin(mapping) + 2);
+              else
+                return std::map<std::string, types::boundary_id>(std::begin(mapping), std::begin(mapping) + 4);
+            }
 
           case 3:
-          {
-            if (phi == 360)
-              {
-                return
+            {
+              if (phi == 360)
                 {
-                  {"bottom", 0},
-                  {"top",    1}
-                };
-              }
-            else if (phi == 90)
-              {
-                return
+                  return {{"bottom", 0}, {"top", 1}};
+                }
+              else if (phi == 90)
                 {
-                  {"bottom", 0},
-                  {"top",    1},
-                  {"east",   2},
-                  {"west",   3},
-                  {"south",  4}
-                };
-              }
-            else
-              Assert (false, ExcNotImplemented());
-          }
+                  return {{"bottom", 0}, {"top", 1}, {"east", 2}, {"west", 3}, {"south", 4}};
+                }
+              else
+                Assert(false, ExcNotImplemented());
+            }
         }
 
-      Assert (false, ExcNotImplemented());
+      Assert(false, ExcNotImplemented());
       return {};
     }
 
@@ -659,13 +601,12 @@ namespace aspect
 
     template <int dim>
     std::set<std::pair<std::pair<types::boundary_id, types::boundary_id>, unsigned int>>
-    SphericalShell<dim>::
-    get_periodic_boundary_pairs () const
+    SphericalShell<dim>::get_periodic_boundary_pairs() const
     {
       std::set<std::pair<std::pair<types::boundary_id, types::boundary_id>, unsigned int>> periodic_boundaries;
       if (periodic)
         {
-          periodic_boundaries.insert( std::make_pair( std::pair<types::boundary_id, types::boundary_id>(2, 3), 1) );
+          periodic_boundaries.insert(std::make_pair(std::pair<types::boundary_id, types::boundary_id>(2, 3), 1));
         }
       return periodic_boundaries;
     }
@@ -674,9 +615,9 @@ namespace aspect
 
     template <int dim>
     void
-    SphericalShell<dim>::adjust_positions_for_periodicity (Point<dim> &position,
-                                                           const ArrayView<Point<dim>> &connected_positions,
-                                                           const ArrayView<Tensor<1, dim>> &connected_velocities) const
+    SphericalShell<dim>::adjust_positions_for_periodicity(Point<dim>                      &position,
+                                                          const ArrayView<Point<dim>>     &connected_positions,
+                                                          const ArrayView<Tensor<1, dim>> &connected_velocities) const
     {
       AssertThrow(dim == 2,
                   ExcMessage("Periodic boundaries currently only work with "
@@ -687,7 +628,7 @@ namespace aspect
 
       if (periodic)
         {
-          Tensor<2,dim> rotation_matrix;
+          Tensor<2, dim> rotation_matrix;
 
           // half_hyper_shell creates the 180 degree shell in the positive
           // x half-plane. Points that crossed a periodic boundary therefore
@@ -706,10 +647,10 @@ namespace aspect
 
           position = rotation_matrix * position;
 
-          for (auto &connected_position: connected_positions)
+          for (auto &connected_position : connected_positions)
             connected_position = rotation_matrix * connected_position;
 
-          for (auto &connected_velocity: connected_velocities)
+          for (auto &connected_velocity : connected_velocities)
             connected_velocity = rotation_matrix * connected_velocity;
         }
 
@@ -720,8 +661,7 @@ namespace aspect
 
     template <int dim>
     double
-    SphericalShell<dim>::
-    length_scale () const
+    SphericalShell<dim>::length_scale() const
     {
       // As described in the first ASPECT paper, a length scale of
       // 10km = 1e4m works well for the pressure scaling for earth
@@ -731,7 +671,7 @@ namespace aspect
       // maximal_depth(). In essence, the factor in front of the call
       // to maximal_depth() is just a magic number that has turned out
       // to work well.
-      return (1e4 / (6336000.-3481000.)) * maximal_depth();
+      return (1e4 / (6336000. - 3481000.)) * maximal_depth();
     }
 
 
@@ -753,7 +693,7 @@ namespace aspect
     double
     SphericalShell<dim>::height_above_reference_surface(const Point<dim> &position) const
     {
-      return position.norm()-R1;
+      return position.norm() - R1;
     }
 
 
@@ -762,16 +702,14 @@ namespace aspect
     Point<dim>
     SphericalShell<dim>::representative_point(const double depth) const
     {
-      Assert (depth >= 0,
-              ExcMessage ("Given depth must be positive or zero."));
-      Assert (depth <= maximal_depth(),
-              ExcMessage ("Given depth must be less than or equal to the maximal depth of this geometry."));
+      Assert(depth >= 0, ExcMessage("Given depth must be positive or zero."));
+      Assert(depth <= maximal_depth(), ExcMessage("Given depth must be less than or equal to the maximal depth of this geometry."));
 
       // Choose a point along the axes toward the north pole, at the
       // requested depth.
       Point<dim> p;
 
-      p[dim-1] = std::clamp(R1 + manifold->topography_for_point(p) - depth, R0, R1);
+      p[dim - 1] = std::clamp(R1 + manifold->topography_for_point(p) - depth, R0, R1);
 
       return p;
     }
@@ -788,7 +726,8 @@ namespace aspect
 
 
     template <int dim>
-    double SphericalShell<dim>::inner_radius () const
+    double
+    SphericalShell<dim>::inner_radius() const
     {
       return R0;
     }
@@ -796,7 +735,8 @@ namespace aspect
 
 
     template <int dim>
-    double SphericalShell<dim>::outer_radius () const
+    double
+    SphericalShell<dim>::outer_radius() const
     {
       return R1;
     }
@@ -804,7 +744,8 @@ namespace aspect
 
 
     template <int dim>
-    double SphericalShell<dim>::opening_angle () const
+    double
+    SphericalShell<dim>::opening_angle() const
     {
       return phi;
     }
@@ -813,7 +754,7 @@ namespace aspect
 
     template <int dim>
     bool
-    SphericalShell<dim>::has_curved_elements () const
+    SphericalShell<dim>::has_curved_elements() const
     {
       return true;
     }
@@ -824,9 +765,10 @@ namespace aspect
     bool
     SphericalShell<dim>::point_is_in_domain(const Point<dim> &point) const
     {
-      AssertThrow(!this->get_parameters().mesh_deformation_enabled ||
-                  this->simulator_is_past_initialization() == false,
-                  ExcMessage("After displacement of the free surface, this function can no longer be used to determine whether a point lies in the domain or not."));
+      AssertThrow(
+        !this->get_parameters().mesh_deformation_enabled || this->simulator_is_past_initialization() == false,
+        ExcMessage(
+          "After displacement of the free surface, this function can no longer be used to determine whether a point lies in the domain or not."));
 
       const std::array<double, dim> spherical_point = Utilities::Coordinates::cartesian_to_spherical_coordinates(point);
 
@@ -834,7 +776,7 @@ namespace aspect
       point1[0] = R0;
       if (this->simulator_is_past_initialization() &&
           !Plugins::plugin_type_matches<const InitialTopographyModel::ZeroTopography<dim>>(this->get_initial_topography_model()))
-        point2[0] =  R1 + manifold->topography_for_point(point);
+        point2[0] = R1 + manifold->topography_for_point(point);
       else
         point2[0] = R1;
       point1[1] = 0.0;
@@ -852,8 +794,8 @@ namespace aspect
         }
 
       for (unsigned int d = 0; d < dim; ++d)
-        if (spherical_point[d] > point2[d]+std::numeric_limits<double>::epsilon()*std::abs(point2[d]) ||
-            spherical_point[d] < point1[d]-std::numeric_limits<double>::epsilon()*std::abs(point2[d]))
+        if (spherical_point[d] > point2[d] + std::numeric_limits<double>::epsilon() * std::abs(point2[d]) ||
+            spherical_point[d] < point1[d] - std::numeric_limits<double>::epsilon() * std::abs(point2[d]))
           return false;
 
       return true;
@@ -862,7 +804,7 @@ namespace aspect
 
 
     template <int dim>
-    std::array<double,dim>
+    std::array<double, dim>
     SphericalShell<dim>::cartesian_to_natural_coordinates(const Point<dim> &position) const
     {
       return Utilities::Coordinates::cartesian_to_spherical_coordinates<dim>(position);
@@ -881,7 +823,7 @@ namespace aspect
 
     template <int dim>
     Point<dim>
-    SphericalShell<dim>::natural_to_cartesian_coordinates(const std::array<double,dim> &position) const
+    SphericalShell<dim>::natural_to_cartesian_coordinates(const std::array<double, dim> &position) const
     {
       return Utilities::Coordinates::spherical_to_cartesian_coordinates<dim>(position);
     }
@@ -890,18 +832,20 @@ namespace aspect
 
     template <int dim>
     void
-    SphericalShell<dim>::make_periodicity_constraints(const DoFHandler<dim> &dof_handler,
-                                                      AffineConstraints<double> &constraints) const
+    SphericalShell<dim>::make_periodicity_constraints(const DoFHandler<dim> &dof_handler, AffineConstraints<double> &constraints) const
     {
       if (periodic)
         {
-          std::vector<GridTools::PeriodicFacePair<typename DoFHandler<dim>::cell_iterator>>
-          matched_pairs;
+          std::vector<GridTools::PeriodicFacePair<typename DoFHandler<dim>::cell_iterator>> matched_pairs;
           const FullMatrix<double> rotation_matrix = phi_periodicity_rotation_matrix<dim>(phi);
 
-          GridTools::collect_periodic_faces(dof_handler, /*b_id1*/ 2, /*b_id2*/ 3,
-                                            /*direction*/ 1, matched_pairs,
-                                            Tensor<1, dim>(), rotation_matrix);
+          GridTools::collect_periodic_faces(dof_handler,
+                                            /*b_id1*/ 2,
+                                            /*b_id2*/ 3,
+                                            /*direction*/ 1,
+                                            matched_pairs,
+                                            Tensor<1, dim>(),
+                                            rotation_matrix);
 
           if (dof_handler.get_fe().n_components() == 1)
             {
@@ -918,19 +862,14 @@ namespace aspect
               for (auto &pair : matched_pairs)
                 pair.matrix = FullMatrix<double>();
 
-              DoFTools::make_periodicity_constraints<dim,dim,double>(matched_pairs,
-                                                                     constraints);
+              DoFTools::make_periodicity_constraints<dim, dim, double>(matched_pairs, constraints);
             }
           else
             {
               // Vector-valued case (velocity DoFHandler or the full coupled
               // finite element system): rotate the vector components starting
               // at component 0.
-              DoFTools::make_periodicity_constraints<dim,dim,double>(matched_pairs,
-                                                                     constraints,
-                                                                     ComponentMask(),
-              {0},
-              1.);
+              DoFTools::make_periodicity_constraints<dim, dim, double>(matched_pairs, constraints, ComponentMask(), {0}, 1.);
             }
         }
     }
@@ -939,99 +878,107 @@ namespace aspect
 
     template <int dim>
     void
-    SphericalShell<dim>::declare_parameters (ParameterHandler &prm)
+    SphericalShell<dim>::declare_parameters(ParameterHandler &prm)
     {
       prm.enter_subsection("Geometry model");
       {
         prm.enter_subsection("Spherical shell");
         {
-          prm.declare_entry ("Custom mesh subdivision", "none",
-                             Patterns::Selection ("none|list of radial values|number of slices"),
-                             "Choose how the spherical shell mesh is generated. "
-                             "By default, a coarse mesh is generated with respect to the "
-                             "inner and outer radius, and an initial number of cells along "
-                             "circumference. "
-                             "In the other cases, a surface mesh is first generated and "
-                             "refined as desired, before it is extruded radially following "
-                             "the specified subdivision scheme.");
-          prm.declare_entry ("List of radial values", "",
-                             Patterns::List(Patterns::Double ()),
-                             "List of radial values for the custom mesh scheme. Units: "
-                             "$\\si{m}$. "
-                             "A list of radial values subdivides the spherical shell at "
-                             "specified radii. The list must be strictly ascending, and "
-                             "the first value must be greater than the inner radius "
-                             "while the last must be less than the outer radius.");
-          prm.declare_entry ("Number of slices", "1",
-                             Patterns::Integer (1),
-                             "Number of slices for the custom mesh subdivision scheme. "
-                             "The number of slices subdivides the spherical shell into N "
-                             "slices of equal thickness. Must be greater than 0.");
-          prm.declare_entry ("Initial lateral refinement", "0",
-                             Patterns::Integer (0),
-                             "Initial lateral refinement for the custom mesh subdivision "
-                             "schemes."
-                             "The number of refinement steps performed on the initial "
-                             "coarse surface mesh, before the surface is extruded "
-                             "radially. This parameter allows the user more control "
-                             "over the ratio between radial and lateral refinement of "
-                             "the mesh.");
-          prm.declare_entry ("Inner radius", "3481000.",  // 6371-2890 in km
-                             Patterns::Double (0.),
-                             "Inner radius of the spherical shell. Units: \\si{\\meter}."
-                             "\n\n"
-                             ":::{note}\n"
-                             "The default value of 3,481,000 m equals the "
-                             "radius of a sphere with equal volume as Earth (i.e., "
-                             "6371 km) minus the average depth of the core-mantle "
-                             "boundary (i.e., 2890 km).\n"
-                             ":::");
-          prm.declare_entry ("Outer radius", "6336000.",  // 6371-35 in km
-                             Patterns::Double (0.),
-                             "Outer radius of the spherical shell. Units: \\si{\\meter}."
-                             "\n\n"
-                             ":::{note}\n"
-                             "The default value of 6,336,000 m equals the "
-                             "radius of a sphere with equal volume as Earth (i.e., "
-                             "6371 km) minus the average depth of the mantle-crust "
-                             "interface (i.e., 35 km).\n"
-                             ":::");
-          prm.declare_entry ("Opening angle", "360.",
-                             Patterns::Double (0., 360.),
-                             "Opening angle in degrees of the section of the shell "
-                             "that we want to build. "
-                             "The only opening angles that are allowed for "
-                             "this geometry are 90, 180, and 360 in 2d; "
-                             "and 90 and 360 in 3d. "
-                             "Units: \\si{\\degree}.");
-          prm.declare_entry ("Cells along circumference", "0",
-                             Patterns::Integer (0),
-                             "The number of cells in circumferential direction that are "
-                             "created in the coarse mesh in 2d. If zero, this number "
-                             "is chosen automatically in a way that produces meshes "
-                             "in which cells have a reasonable aspect ratio for models "
-                             "in which the depth of the mantle is roughly that of the "
-                             "Earth. For planets with much shallower mantles and larger "
-                             "cores, you may want to chose a larger number to avoid "
-                             "cells that are elongated in tangential and compressed in "
-                             "radial direction."
-                             "\n\n"
-                             "In 3d, the number of cells is computed differently and does "
-                             "not have an easy interpretation. Valid values for this parameter "
-                             "in 3d are 0 (let this class choose), 6, 12 and 96. "
-                             "Other possible values may be discussed in the documentation "
-                             "of the deal.II function GridGenerator::hyper_shell. "
-                             "The parameter is best left at its default in 3d."
-                             "\n\n"
-                             "In either case, this parameter is ignored unless the opening "
-                             "angle of the domain is 360 degrees. This parameter is also "
-                             "ignored when using a custom mesh subdivision scheme.");
-          prm.declare_entry ("Phi periodic", "false",
-                             Patterns::Bool (),
-                             "Whether the shell should be periodic in the phi direction. "
-                             "This is supported for 2d models with opening angles of "
-                             "90 or 180 degrees.");
-
+          prm.declare_entry("Custom mesh subdivision",
+                            "none",
+                            Patterns::Selection("none|list of radial values|number of slices"),
+                            "Choose how the spherical shell mesh is generated. "
+                            "By default, a coarse mesh is generated with respect to the "
+                            "inner and outer radius, and an initial number of cells along "
+                            "circumference. "
+                            "In the other cases, a surface mesh is first generated and "
+                            "refined as desired, before it is extruded radially following "
+                            "the specified subdivision scheme.");
+          prm.declare_entry("List of radial values",
+                            "",
+                            Patterns::List(Patterns::Double()),
+                            "List of radial values for the custom mesh scheme. Units: "
+                            "$\\si{m}$. "
+                            "A list of radial values subdivides the spherical shell at "
+                            "specified radii. The list must be strictly ascending, and "
+                            "the first value must be greater than the inner radius "
+                            "while the last must be less than the outer radius.");
+          prm.declare_entry("Number of slices",
+                            "1",
+                            Patterns::Integer(1),
+                            "Number of slices for the custom mesh subdivision scheme. "
+                            "The number of slices subdivides the spherical shell into N "
+                            "slices of equal thickness. Must be greater than 0.");
+          prm.declare_entry("Initial lateral refinement",
+                            "0",
+                            Patterns::Integer(0),
+                            "Initial lateral refinement for the custom mesh subdivision "
+                            "schemes."
+                            "The number of refinement steps performed on the initial "
+                            "coarse surface mesh, before the surface is extruded "
+                            "radially. This parameter allows the user more control "
+                            "over the ratio between radial and lateral refinement of "
+                            "the mesh.");
+          prm.declare_entry("Inner radius",
+                            "3481000.", // 6371-2890 in km
+                            Patterns::Double(0.),
+                            "Inner radius of the spherical shell. Units: \\si{\\meter}."
+                            "\n\n"
+                            ":::{note}\n"
+                            "The default value of 3,481,000 m equals the "
+                            "radius of a sphere with equal volume as Earth (i.e., "
+                            "6371 km) minus the average depth of the core-mantle "
+                            "boundary (i.e., 2890 km).\n"
+                            ":::");
+          prm.declare_entry("Outer radius",
+                            "6336000.", // 6371-35 in km
+                            Patterns::Double(0.),
+                            "Outer radius of the spherical shell. Units: \\si{\\meter}."
+                            "\n\n"
+                            ":::{note}\n"
+                            "The default value of 6,336,000 m equals the "
+                            "radius of a sphere with equal volume as Earth (i.e., "
+                            "6371 km) minus the average depth of the mantle-crust "
+                            "interface (i.e., 35 km).\n"
+                            ":::");
+          prm.declare_entry("Opening angle",
+                            "360.",
+                            Patterns::Double(0., 360.),
+                            "Opening angle in degrees of the section of the shell "
+                            "that we want to build. "
+                            "The only opening angles that are allowed for "
+                            "this geometry are 90, 180, and 360 in 2d; "
+                            "and 90 and 360 in 3d. "
+                            "Units: \\si{\\degree}.");
+          prm.declare_entry("Cells along circumference",
+                            "0",
+                            Patterns::Integer(0),
+                            "The number of cells in circumferential direction that are "
+                            "created in the coarse mesh in 2d. If zero, this number "
+                            "is chosen automatically in a way that produces meshes "
+                            "in which cells have a reasonable aspect ratio for models "
+                            "in which the depth of the mantle is roughly that of the "
+                            "Earth. For planets with much shallower mantles and larger "
+                            "cores, you may want to chose a larger number to avoid "
+                            "cells that are elongated in tangential and compressed in "
+                            "radial direction."
+                            "\n\n"
+                            "In 3d, the number of cells is computed differently and does "
+                            "not have an easy interpretation. Valid values for this parameter "
+                            "in 3d are 0 (let this class choose), 6, 12 and 96. "
+                            "Other possible values may be discussed in the documentation "
+                            "of the deal.II function GridGenerator::hyper_shell. "
+                            "The parameter is best left at its default in 3d."
+                            "\n\n"
+                            "In either case, this parameter is ignored unless the opening "
+                            "angle of the domain is 360 degrees. This parameter is also "
+                            "ignored when using a custom mesh subdivision scheme.");
+          prm.declare_entry("Phi periodic",
+                            "false",
+                            Patterns::Bool(),
+                            "Whether the shell should be periodic in the phi direction. "
+                            "This is supported for 2d models with opening angles of "
+                            "90 or 180 degrees.");
         }
         prm.leave_subsection();
       }
@@ -1042,67 +989,62 @@ namespace aspect
 
     template <int dim>
     void
-    SphericalShell<dim>::parse_parameters (ParameterHandler &prm)
+    SphericalShell<dim>::parse_parameters(ParameterHandler &prm)
     {
       prm.enter_subsection("Geometry model");
       {
         prm.enter_subsection("Spherical shell");
         {
-          R0  = prm.get_double ("Inner radius");
-          R1  = prm.get_double ("Outer radius");
-          phi = prm.get_double ("Opening angle");
-          n_cells_along_circumference = prm.get_integer ("Cells along circumference");
-          initial_lateral_refinement = prm.get_integer ("Initial lateral refinement");
-          R_values_list = Utilities::string_to_double(Utilities::split_string_list(prm.get("List of radial values")));
-          n_slices = prm.get_integer ("Number of slices");
+          R0                          = prm.get_double("Inner radius");
+          R1                          = prm.get_double("Outer radius");
+          phi                         = prm.get_double("Opening angle");
+          n_cells_along_circumference = prm.get_integer("Cells along circumference");
+          initial_lateral_refinement  = prm.get_integer("Initial lateral refinement");
+          R_values_list               = Utilities::string_to_double(Utilities::split_string_list(prm.get("List of radial values")));
+          n_slices                    = prm.get_integer("Number of slices");
 
-          if (prm.get ("Custom mesh subdivision") == "none")
+          if (prm.get("Custom mesh subdivision") == "none")
             custom_mesh = none;
-          else if (prm.get ("Custom mesh subdivision") == "list of radial values")
+          else if (prm.get("Custom mesh subdivision") == "list of radial values")
             custom_mesh = list;
-          else if (prm.get ("Custom mesh subdivision") == "number of slices")
+          else if (prm.get("Custom mesh subdivision") == "number of slices")
             custom_mesh = slices;
           else
-            AssertThrow (false, ExcMessage ("Not a valid custom mesh subdivision scheme."));
+            AssertThrow(false, ExcMessage("Not a valid custom mesh subdivision scheme."));
 
           // Check that inner radius is less than outer radius
-          AssertThrow (R0 < R1,
-                       ExcMessage ("Inner radius must be less than outer radius."));
+          AssertThrow(R0 < R1, ExcMessage("Inner radius must be less than outer radius."));
 
           // If we are using list of radial values for a custom mesh
           if (custom_mesh == list)
             {
               // Check that list is in ascending order
               for (unsigned int i = 1; i < R_values_list.size(); ++i)
-                AssertThrow(R_values_list[i] > R_values_list[i-1],
-                            ExcMessage("Radial values must be strictly ascending"));
+                AssertThrow(R_values_list[i] > R_values_list[i - 1], ExcMessage("Radial values must be strictly ascending"));
               // Check that first value is not smaller than the inner radius
-              AssertThrow(R_values_list[1] > R0,
-                          ExcMessage("First value in List of radial values must be greater than inner radius"));
+              AssertThrow(R_values_list[1] > R0, ExcMessage("First value in List of radial values must be greater than inner radius"));
               // Check that last layer is not larger than the outer radius
-              AssertThrow( *(R_values_list.end()-1) < R1,
-                           ExcMessage("Last value in List of radial values must be less than outer radius"));
+              AssertThrow(*(R_values_list.end() - 1) < R1,
+                          ExcMessage("Last value in List of radial values must be less than outer radius"));
             }
 
 
           // If we are extruding the mesh according to a number of slices
           if (custom_mesh == slices)
             {
-              AssertThrow (n_slices > 0, ExcMessage("You must set a positive number of slices for extrusion"));
+              AssertThrow(n_slices > 0, ExcMessage("You must set a positive number of slices for extrusion"));
             }
 
-          periodic = prm.get_bool ("Phi periodic");
+          periodic = prm.get_bool("Phi periodic");
           if (periodic)
             {
-              AssertThrow (dim == 2,
-                           ExcMessage("Periodic boundaries in the spherical shell are only supported for "
-                                      "2d models."));
-              AssertThrow (phi == 90 || phi == 180,
-                           ExcMessage("Periodic boundaries in the spherical shell are only supported for "
-                                      "an opening angle of 90 or 180 degrees."));
+              AssertThrow(dim == 2,
+                          ExcMessage("Periodic boundaries in the spherical shell are only supported for "
+                                     "2d models."));
+              AssertThrow(phi == 90 || phi == 180,
+                          ExcMessage("Periodic boundaries in the spherical shell are only supported for "
+                                     "an opening angle of 90 or 180 degrees."));
             }
-
-
         }
         prm.leave_subsection();
       }

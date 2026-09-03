@@ -20,6 +20,7 @@
 
 
 #include <aspect/global.h>
+
 #include <aspect/time_stepping/repeat_on_nonlinear_fail.h>
 
 namespace aspect
@@ -28,9 +29,9 @@ namespace aspect
   {
     template <int dim>
     RepeatOnNonlinearFail<dim>::RepeatOnNonlinearFail()
-      : nonlinear_solver_just_failed (false),
-        maximum_number_of_repeats (10),
-        current_number_of_repeats (0)
+      : nonlinear_solver_just_failed(false)
+      , maximum_number_of_repeats(10)
+      , current_number_of_repeats(0)
     {}
 
 
@@ -55,7 +56,7 @@ namespace aspect
 
     template <int dim>
     std::pair<Reaction, double>
-    RepeatOnNonlinearFail<dim>::determine_reaction (const TimeStepInfo &/*info*/)
+    RepeatOnNonlinearFail<dim>::determine_reaction(const TimeStepInfo & /*info*/)
     {
       if (nonlinear_solver_just_failed)
         {
@@ -66,16 +67,12 @@ namespace aspect
                       ExcMessage("The nonlinear solver did not converge even after cutting the timestep "
                                  "size several times."));
 
-          return
-            std::make_pair<Reaction, double>(Reaction::repeat_step,
-                                             this->get_timestep()*this->cut_back_factor);
+          return std::make_pair<Reaction, double>(Reaction::repeat_step, this->get_timestep() * this->cut_back_factor);
         }
       else
         {
           current_number_of_repeats = 0;
-          return
-            std::make_pair<Reaction, double>(Reaction::advance,
-                                             std::numeric_limits<double>::max());
+          return std::make_pair<Reaction, double>(Reaction::advance, std::numeric_limits<double>::max());
         }
     }
 
@@ -83,14 +80,15 @@ namespace aspect
 
     template <int dim>
     void
-    RepeatOnNonlinearFail<dim>::declare_parameters (ParameterHandler &prm)
+    RepeatOnNonlinearFail<dim>::declare_parameters(ParameterHandler &prm)
     {
       prm.enter_subsection("Time stepping");
       {
         prm.enter_subsection("Repeat on nonlinear solver failure");
 
-        prm.declare_entry("Cut back factor", "0.5",
-                          Patterns::Double (0.),
+        prm.declare_entry("Cut back factor",
+                          "0.5",
+                          Patterns::Double(0.),
                           "A factor that controls the size of the time step when repeating. The "
                           "default of 0.5 corresponds to 50\\% of the original step taken.");
 
@@ -103,7 +101,7 @@ namespace aspect
 
     template <int dim>
     void
-    RepeatOnNonlinearFail<dim>::parse_parameters (ParameterHandler &prm)
+    RepeatOnNonlinearFail<dim>::parse_parameters(ParameterHandler &prm)
     {
       prm.enter_subsection("Time stepping");
       {

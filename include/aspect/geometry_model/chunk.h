@@ -25,9 +25,9 @@
 #include <aspect/geometry_model/interface.h>
 #include <aspect/simulator_access.h>
 
-#include <deal.II/grid/manifold.h>
 #include <deal.II/base/function_lib.h>
 #include <deal.II/grid/grid_out.h>
+#include <deal.II/grid/manifold.h>
 
 namespace aspect
 {
@@ -48,16 +48,16 @@ namespace aspect
        * to the initially radially symmetric mesh.
        */
       template <int dim>
-      class ChunkGeometry : public ChartManifold<dim,dim>
+      class ChunkGeometry : public ChartManifold<dim, dim>
       {
         public:
           /**
            * Constructor
            */
           ChunkGeometry(const std::shared_ptr<const InitialTopographyModel::Interface<dim>> &topography,
-                        const double min_longitude,
-                        const double min_radius,
-                        const double max_depth);
+                        const double                                                         min_longitude,
+                        const double                                                         min_radius,
+                        const double                                                         max_depth);
 
           /**
            * Copy constructor
@@ -108,20 +108,19 @@ namespace aspect
            * Return the (normalized) normal vector at the point @p p.
            */
           virtual Tensor<1, dim>
-          normal_vector(
-            const typename Triangulation<dim>::face_iterator &face,
-            const Point<dim> &p) const override;
+          normal_vector(const typename Triangulation<dim>::face_iterator &face, const Point<dim> &p) const override;
 
           /**
            * Return a copy of this manifold.
            */
-          std::unique_ptr<Manifold<dim,dim>>
+          std::unique_ptr<Manifold<dim, dim>>
           clone() const override;
 
           /**
            * Return the topography at a given point
            */
-          double topography_for_point(const Point<dim> &x_y_z) const;
+          double
+          topography_for_point(const Point<dim> &x_y_z) const;
 
         private:
           /**
@@ -150,8 +149,7 @@ namespace aspect
            * given point in spherical coordinates R+topo, lon, lat.
            * I.e. it returns R, lon, lat.
            */
-          virtual
-          Point<dim>
+          virtual Point<dim>
           pull_back_topo(const Point<dim> &space_point) const;
 
           /**
@@ -159,8 +157,7 @@ namespace aspect
            * given point in spherical coordinates R, lon, lat.
            * I.e. it returns R+topo, lon, lat.
            */
-          virtual
-          Point<dim>
+          virtual Point<dim>
           push_forward_topo(const Point<dim> &chart_point) const;
       };
     }
@@ -186,7 +183,6 @@ namespace aspect
     class Chunk : public Interface<dim>, public SimulatorAccess<dim>
     {
       public:
-
         /**
          * Initialization function. This function is called once at the
          * beginning of the program after parse_parameters is run and after
@@ -195,12 +191,14 @@ namespace aspect
          * with a pointer to the initial topography model obtained
          * from SimulatorAccess.
          */
-        void initialize () override;
+        void
+        initialize() override;
 
         /**
          * Generate a coarse mesh for the geometry described by this class.
          */
-        void create_coarse_mesh (parallel::distributed::Triangulation<dim> &coarse_grid) const override;
+        void
+        create_coarse_mesh(parallel::distributed::Triangulation<dim> &coarse_grid) const override;
 
 
         /**
@@ -214,7 +212,7 @@ namespace aspect
          * along lines of latitude.
          */
         std::set<types::boundary_id>
-        get_used_boundary_indicators () const override;
+        get_used_boundary_indicators() const override;
 
         /**
          * Return a mapping from symbolic names of each part of the boundary
@@ -228,8 +226,8 @@ namespace aspect
          * {"top"->1}, {"west"->2}, {"east"->3}, {"south"->4},
          * {"north"->5}}</code> in 3d.
          */
-        std::map<std::string,types::boundary_id>
-        get_symbolic_boundary_names_map () const override;
+        std::map<std::string, types::boundary_id>
+        get_symbolic_boundary_names_map() const override;
 
 
         /**
@@ -242,7 +240,8 @@ namespace aspect
          * yields this value for the R0,R1 corresponding to earth
          * but otherwise scales like (R1-R0)
          */
-        double length_scale () const override;
+        double
+        length_scale() const override;
 
         /**
          * Return the depth that corresponds to the given
@@ -257,76 +256,80 @@ namespace aspect
          * all cases one will use a gravity model that also matches
          * these definitions.
          */
-        double depth(const Point<dim> &position) const override;
+        double
+        depth(const Point<dim> &position) const override;
 
         /**
          * Return the height of the given position relative to the outer
          * radius.
          */
-        double height_above_reference_surface(const Point<dim> &position) const override;
+        double
+        height_above_reference_surface(const Point<dim> &position) const override;
 
         /**
          * @copydoc Interface::representative_point()
          */
-        Point<dim> representative_point(const double depth) const override;
+        Point<dim>
+        representative_point(const double depth) const override;
 
         /**
          * Return the longitude at the western edge of the chunk measured in
          * radians.
          */
-        virtual
-        double west_longitude() const;
+        virtual double
+        west_longitude() const;
 
         /**
          * Return the longitude at the eastern edge of the chunk measured in
          * radians.
          */
-        virtual
-        double east_longitude() const;
+        virtual double
+        east_longitude() const;
 
         /**
          * Return the longitude range of the chunk measured in radians.
          */
-        virtual
-        double longitude_range() const;
+        virtual double
+        longitude_range() const;
 
         /**
          * Return the latitude at the southern edge of the chunk measured in
          * radians from the equator.
          */
-        virtual
-        double south_latitude() const;
+        virtual double
+        south_latitude() const;
 
         /**
          * Return the latitude at the northern edge of the chunk measured in
          * radians from the equator.
          */
-        virtual
-        double north_latitude() const;
+        virtual double
+        north_latitude() const;
 
         /**
          * Return the latitude range of the chunk measured in radians
          */
-        virtual
-        double latitude_range() const;
+        virtual double
+        latitude_range() const;
 
         /**
          * Return the maximum depth from the surface of the model measured in
          * meters.
          */
-        double maximal_depth() const override;
+        double
+        maximal_depth() const override;
 
         /**
          * Return the inner radius of the chunk measured in meters.
          */
-        virtual
-        double inner_radius() const;
+        virtual double
+        inner_radius() const;
 
         /**
          * Return the outer radius of the chunk measured in meters.
          */
-        virtual
-        double outer_radius() const;
+        virtual double
+        outer_radius() const;
 
 
         /**
@@ -349,34 +352,36 @@ namespace aspect
          * Returns what the natural coordinate system for this geometry model is,
          * which for a chunk is Spherical.
          */
-        aspect::Utilities::Coordinates::CoordinateSystem natural_coordinate_system() const override;
+        aspect::Utilities::Coordinates::CoordinateSystem
+        natural_coordinate_system() const override;
 
         /**
          * Takes the Cartesian points (x,z or x,y,z) and returns standardized
          * coordinates which are most 'natural' to the geometry model. For a chunk
          * this is (radius, longitude) in 2d and (radius, longitude, latitude) in 3d.
          */
-        std::array<double,dim> cartesian_to_natural_coordinates(const Point<dim> &position) const override;
+        std::array<double, dim>
+        cartesian_to_natural_coordinates(const Point<dim> &position) const override;
 
         /**
          * Undoes the action of cartesian_to_natural_coordinates, and turns the
          * coordinate system which is most 'natural' to the geometry model into
          * Cartesian coordinates.
          */
-        Point<dim> natural_to_cartesian_coordinates(const std::array<double,dim> &position) const override;
+        Point<dim>
+        natural_to_cartesian_coordinates(const std::array<double, dim> &position) const override;
 
         /**
          * Declare the parameters this class takes through input files.
          */
-        static
-        void
-        declare_parameters (ParameterHandler &prm);
+        static void
+        declare_parameters(ParameterHandler &prm);
 
         /**
          * Read the parameters this class declares from the parameter file.
          */
         void
-        parse_parameters (ParameterHandler &prm) override;
+        parse_parameters(ParameterHandler &prm) override;
 
       private:
         /**

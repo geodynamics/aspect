@@ -20,6 +20,7 @@
 
 
 #include <aspect/global.h>
+
 #include <aspect/adiabatic_conditions/function.h>
 
 namespace aspect
@@ -28,14 +29,13 @@ namespace aspect
   {
     template <int dim>
     Function<dim>::Function()
-      : function (3)
+      : function(3)
     {}
 
     template <int dim>
     void
     Function<dim>::initialize()
-    {
-    }
+    {}
 
     template <int dim>
     bool
@@ -47,7 +47,8 @@ namespace aspect
 
 
     template <int dim>
-    double Function<dim>::pressure (const Point<dim> &p) const
+    double
+    Function<dim>::pressure(const Point<dim> &p) const
     {
       const double z = this->get_geometry_model().depth(p);
       return function.value(Point<1>(z), 1);
@@ -56,14 +57,16 @@ namespace aspect
 
 
     template <int dim>
-    double Function<dim>::temperature (const Point<dim> &p) const
+    double
+    Function<dim>::temperature(const Point<dim> &p) const
     {
       const double z = this->get_geometry_model().depth(p);
       return function.value(Point<1>(z), 0);
     }
 
     template <int dim>
-    double Function<dim>::density (const Point<dim> &p) const
+    double
+    Function<dim>::density(const Point<dim> &p) const
     {
       const double z = this->get_geometry_model().depth(p);
       return function.value(Point<1>(z), 2);
@@ -72,30 +75,30 @@ namespace aspect
 
 
     template <int dim>
-    double Function<dim>::density_derivative (const Point<dim> &p) const
+    double
+    Function<dim>::density_derivative(const Point<dim> &p) const
     {
       // TODO: better eps or make it a user input
-      const double z = this->get_geometry_model().depth(p);
-      const double z2 = z + (1.e6 * std::numeric_limits<double>::epsilon())
-                        * this->get_geometry_model().maximal_depth();
-      return (function.value(Point<1>(z), 2)
-              - function.value(Point<1>(z2), 2))/(z-z2);
+      const double z  = this->get_geometry_model().depth(p);
+      const double z2 = z + (1.e6 * std::numeric_limits<double>::epsilon()) * this->get_geometry_model().maximal_depth();
+      return (function.value(Point<1>(z), 2) - function.value(Point<1>(z2), 2)) / (z - z2);
     }
 
     template <int dim>
     void
-    Function<dim>::declare_parameters (ParameterHandler &prm)
+    Function<dim>::declare_parameters(ParameterHandler &prm)
     {
       prm.enter_subsection("Adiabatic conditions model");
       {
         prm.enter_subsection("Function");
-        Functions::ParsedFunction<1>::declare_parameters (prm, 3);
-        prm.declare_entry("Function expression","0.0; 0.0; 1.0",
+        Functions::ParsedFunction<1>::declare_parameters(prm, 3);
+        prm.declare_entry("Function expression",
+                          "0.0; 0.0; 1.0",
                           Patterns::Anything(),
                           "Expression for the adiabatic temperature, "
                           "pressure, and density separated by "
                           "semicolons as a function of `depth'.");
-        prm.declare_entry("Variable names","depth");
+        prm.declare_entry("Variable names", "depth");
         prm.leave_subsection();
       }
       prm.leave_subsection();
@@ -104,14 +107,14 @@ namespace aspect
 
     template <int dim>
     void
-    Function<dim>::parse_parameters (ParameterHandler &prm)
+    Function<dim>::parse_parameters(ParameterHandler &prm)
     {
       prm.enter_subsection("Adiabatic conditions model");
       {
         prm.enter_subsection("Function");
         try
           {
-            function.parse_parameters (prm);
+            function.parse_parameters(prm);
           }
         catch (...)
           {

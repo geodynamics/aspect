@@ -27,8 +27,6 @@
 
 
 
-
-
 namespace aspect
 {
   namespace Postprocess
@@ -50,7 +48,7 @@ namespace aspect
        * grain lag angle postprocessor.
        */
       template <int dim>
-      class ISARotationTimescale: public CellDataVectorCreator<dim>, public SimulatorAccess<dim>
+      class ISARotationTimescale : public CellDataVectorCreator<dim>, public SimulatorAccess<dim>
       {
         public:
           /**
@@ -63,7 +61,6 @@ namespace aspect
            */
           std::pair<std::string, std::unique_ptr<Vector<float>>>
           execute() const override;
-
       };
     }
   }

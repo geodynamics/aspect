@@ -29,12 +29,11 @@ namespace aspect
 
       template <int dim>
       void
-      VelocityGradient<dim>::initialize_one_particle_property(const Point<dim> &,
-                                                              std::vector<double> &data) const
+      VelocityGradient<dim>::initialize_one_particle_property(const Point<dim> &, std::vector<double> &data) const
       {
-        const static Tensor<2,dim> identity = unit_symmetric_tensor<dim>();
-        for (unsigned int i = 0; i < Tensor<2,dim>::n_independent_components ; ++i)
-          data.push_back(identity[Tensor<2,dim>::unrolled_to_component_indices(i)]);
+        const static Tensor<2, dim> identity = unit_symmetric_tensor<dim>();
+        for (unsigned int i = 0; i < Tensor<2, dim>::n_independent_components; ++i)
+          data.push_back(identity[Tensor<2, dim>::unrolled_to_component_indices(i)]);
       }
 
 
@@ -42,17 +41,17 @@ namespace aspect
       template <int dim>
       void
       VelocityGradient<dim>::update_particle_property(const unsigned int data_position,
-                                                      const Vector<double> &/*solution*/,
-                                                      const std::vector<Tensor<1,dim>> &gradients,
+                                                      const Vector<double> & /*solution*/,
+                                                      const std::vector<Tensor<1, dim>>                &gradients,
                                                       typename ParticleHandler<dim>::particle_iterator &particle) const
       {
         ArrayView<double> data = particle->get_properties();
         // Velocity gradients
-        Tensor<2,dim> grad_u;
-        for (unsigned int d=0; d<dim; ++d)
+        Tensor<2, dim> grad_u;
+        for (unsigned int d = 0; d < dim; ++d)
           grad_u[d] = gradients[d];
-        for (unsigned int i = 0; i < Tensor<2,dim>::n_independent_components ; ++i)
-          data[data_position + i] = grad_u[Tensor<2,dim>::unrolled_to_component_indices(i)];
+        for (unsigned int i = 0; i < Tensor<2, dim>::n_independent_components; ++i)
+          data[data_position + i] = grad_u[Tensor<2, dim>::unrolled_to_component_indices(i)];
       }
 
 
@@ -68,7 +67,7 @@ namespace aspect
 
       template <int dim>
       UpdateFlags
-      VelocityGradient<dim>::get_needed_update_flags () const
+      VelocityGradient<dim>::get_needed_update_flags() const
       {
         return update_gradients;
       }
@@ -79,8 +78,8 @@ namespace aspect
       std::vector<std::pair<std::string, unsigned int>>
       VelocityGradient<dim>::get_property_information() const
       {
-        const unsigned int n_components = Tensor<2,dim>::n_independent_components;
-        const std::vector<std::pair<std::string,unsigned int>> property_information (1,std::make_pair("velocity gradient",n_components));
+        const unsigned int                                      n_components = Tensor<2, dim>::n_independent_components;
+        const std::vector<std::pair<std::string, unsigned int>> property_information(1, std::make_pair("velocity gradient", n_components));
         return property_information;
       }
     }

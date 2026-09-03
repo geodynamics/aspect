@@ -31,10 +31,11 @@ namespace aspect
     {
       namespace internal
       {
-        double weight (const double distance, const double interpolation_range)
+        double
+        weight(const double distance, const double interpolation_range)
         {
           // linear weight function (hat function)
-          return std::max(1.0 - (distance/interpolation_range),0.0);
+          return std::max(1.0 - (distance / interpolation_range), 0.0);
         }
       }
 
@@ -51,18 +52,18 @@ namespace aspect
 
       template <int dim>
       std::vector<std::vector<double>>
-      DistanceWeightedAverage<dim>::properties_at_points(const ParticleHandler<dim> &particle_handler,
-                                                         const std::vector<Point<dim>> &positions,
-                                                         const ComponentMask &selected_properties,
-                                                         const typename parallel::distributed::Triangulation<dim>::active_cell_iterator &cell) const
+      DistanceWeightedAverage<dim>::properties_at_points(
+        const ParticleHandler<dim>                                                     &particle_handler,
+        const std::vector<Point<dim>>                                                  &positions,
+        const ComponentMask                                                            &selected_properties,
+        const typename parallel::distributed::Triangulation<dim>::active_cell_iterator &cell) const
       {
         const unsigned int n_interpolate_positions = positions.size();
-        const unsigned int n_particle_properties = particle_handler.n_properties_per_particle();
+        const unsigned int n_particle_properties   = particle_handler.n_properties_per_particle();
 
         // Create with signaling NaNs
         std::vector<std::vector<double>> cell_properties(n_interpolate_positions,
-                                                          std::vector<double>(n_particle_properties,
-                                                                              numbers::signaling_nan<double>()));
+                                                         std::vector<double>(n_particle_properties, numbers::signaling_nan<double>()));
 
         // Set requested properties to 0.0
         for (unsigned int index_positions = 0; index_positions < n_interpolate_positions; ++index_positions)
@@ -77,8 +78,7 @@ namespace aspect
         for (const auto v : cell->vertex_indices())
           {
             const unsigned int vertex_index = cell->vertex_index(v);
-            cell_and_neighbors.insert(vertex_to_cell_map[vertex_index].begin(),
-                                      vertex_to_cell_map[vertex_index].end());
+            cell_and_neighbors.insert(vertex_to_cell_map[vertex_index].begin(), vertex_to_cell_map[vertex_index].end());
           }
 
         // Average over all particles that are within half a cell diameter.
@@ -92,22 +92,21 @@ namespace aspect
         // particles, the smaller the interpolation range to increase accuracy.
         const double interpolation_range = 0.5 * cell->diameter();
 
-        std::vector<double> integrated_weight(n_interpolate_positions,0.0);
+        std::vector<double> integrated_weight(n_interpolate_positions, 0.0);
 
-        for (const auto &current_cell: cell_and_neighbors)
+        for (const auto &current_cell : cell_and_neighbors)
           {
-            const typename ParticleHandler<dim>::particle_iterator_range particle_range =
-              particle_handler.particles_in_cell(current_cell);
+            const typename ParticleHandler<dim>::particle_iterator_range particle_range = particle_handler.particles_in_cell(current_cell);
 
-            for (const auto &particle: particle_range)
+            for (const auto &particle : particle_range)
               {
                 const ArrayView<const double> particle_properties = particle.get_properties();
-                unsigned int index_positions = 0;
+                unsigned int                  index_positions     = 0;
 
-                for (const auto &interpolation_point: positions)
+                for (const auto &interpolation_point : positions)
                   {
                     const double distance = particle.get_location().distance(interpolation_point);
-                    const double weight = internal::weight(distance, interpolation_range);
+                    const double weight   = internal::weight(distance, interpolation_range);
 
                     for (unsigned int index_properties = 0; index_properties < particle_properties.size(); ++index_properties)
                       if (selected_properties[index_properties])

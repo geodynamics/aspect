@@ -19,9 +19,9 @@
 */
 
 
-#include <aspect/postprocess/visualization/depth_including_mesh_deformation.h>
 #include <aspect/geometry_model/interface.h>
 #include <aspect/postprocess/current_surface.h>
+#include <aspect/postprocess/visualization/depth_including_mesh_deformation.h>
 
 
 
@@ -32,33 +32,29 @@ namespace aspect
     namespace VisualizationPostprocessors
     {
       template <int dim>
-      DepthIncludingMeshDeformation<dim>::
-      DepthIncludingMeshDeformation ()
-        :
-        DataPostprocessorScalar<dim> ("depth_including_mesh_deformation",
-                                      update_quadrature_points),
-        Interface<dim>("m")
+      DepthIncludingMeshDeformation<dim>::DepthIncludingMeshDeformation()
+        : DataPostprocessorScalar<dim>("depth_including_mesh_deformation", update_quadrature_points)
+        , Interface<dim>("m")
       {}
 
 
 
       template <int dim>
       void
-      DepthIncludingMeshDeformation<dim>::
-      evaluate_vector_field(const DataPostprocessorInputs::Vector<dim> &input_data,
-                            std::vector<Vector<double>> &computed_quantities) const
+      DepthIncludingMeshDeformation<dim>::evaluate_vector_field(const DataPostprocessorInputs::Vector<dim> &input_data,
+                                                                std::vector<Vector<double>>                &computed_quantities) const
       {
         const unsigned int n_quadrature_points = input_data.solution_values.size();
 
-        Assert (computed_quantities.size() == n_quadrature_points,    ExcInternalError());
-        Assert (computed_quantities[0].size() == 1,                   ExcInternalError());
-        Assert (input_data.solution_values[0].size() == this->introspection().n_components,           ExcInternalError());
+        Assert(computed_quantities.size() == n_quadrature_points, ExcInternalError());
+        Assert(computed_quantities[0].size() == 1, ExcInternalError());
+        Assert(input_data.solution_values[0].size() == this->introspection().n_components, ExcInternalError());
 
         const Postprocess::CurrentSurface<dim> &surface =
           this->get_postprocess_manager().template get_matching_active_plugin<Postprocess::CurrentSurface<dim>>();
 
-        for (unsigned int q=0; q<n_quadrature_points; ++q)
-          computed_quantities[q](0) = surface.depth_including_mesh_deformation (input_data.evaluation_points[q]);
+        for (unsigned int q = 0; q < n_quadrature_points; ++q)
+          computed_quantities[q](0) = surface.depth_including_mesh_deformation(input_data.evaluation_points[q]);
       }
 
 

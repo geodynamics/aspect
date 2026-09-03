@@ -21,15 +21,13 @@
 #ifndef _aspect_material_model_reactive_fluid_transport_h
 #define _aspect_material_model_reactive_fluid_transport_h
 
-#include <aspect/material_model/interface.h>
-#include <aspect/simulator_access.h>
-#include <aspect/melt.h>
-#include <aspect/utilities.h>
 #include <aspect/geometry_model/interface.h>
-
-#include <aspect/melt.h>
+#include <aspect/material_model/interface.h>
 #include <aspect/material_model/reaction_model/katz2003_mantle_melting.h>
 #include <aspect/material_model/reaction_model/tian2019_solubility.h>
+#include <aspect/melt.h>
+#include <aspect/simulator_access.h>
+#include <aspect/utilities.h>
 
 namespace aspect
 {
@@ -43,19 +41,23 @@ namespace aspect
      */
 
     template <int dim>
-    class ReactiveFluidTransport : public MaterialModel::MeltInterface<dim>, public MaterialModel::MeltFractionModel<dim>, public ::aspect::SimulatorAccess<dim>
+    class ReactiveFluidTransport : public MaterialModel::MeltInterface<dim>,
+                                   public MaterialModel::MeltFractionModel<dim>,
+                                   public ::aspect::SimulatorAccess<dim>
     {
       public:
         /**
          * @copydoc MaterialModel::Interface::is_compressible()
          */
-        bool is_compressible () const override;
+        bool
+        is_compressible() const override;
 
         /**
          * @name Reference quantities
          * @{
          */
-        double reference_darcy_coefficient () const override;
+        double
+        reference_darcy_coefficient() const override;
         /**
          * @}
          */
@@ -68,9 +70,8 @@ namespace aspect
          * @param solid_density The density of the solid material.
          * @param fluid_density The density of the fluid material.
          **/
-        double compute_bulk_density (const double porosity,
-                                     const double solid_density,
-                                     const double fluid_density) const;
+        double
+        compute_bulk_density(const double porosity, const double solid_density, const double fluid_density) const;
 
         /**
          * Compute the mass fraction on the volume fraction of a given material in relation to
@@ -80,9 +81,8 @@ namespace aspect
          * @param material_density The density of the material (corresponding to the volume fraction).
          * @param bulk_density The density of the bulk composition.
          **/
-        double compute_mass_fraction (const double volume_fraction,
-                                      const double material_density,
-                                      const double bulk_density) const;
+        double
+        compute_mass_fraction(const double volume_fraction, const double material_density, const double bulk_density) const;
 
         /**
          * Compute the free fluid fraction that can be present in the material based on the
@@ -97,47 +97,48 @@ namespace aspect
          * fractions depend on material model properties, then this parameter
          * must be set to a valid pointer to a MaterialModelOutputs object.
          */
-        void melt_fractions (const MaterialModel::MaterialModelInputs<dim> &in,
-                             std::vector<double> &melt_fractions,
-                             const MaterialModel::MaterialModelOutputs<dim> *out = nullptr) const override;
+        void
+        melt_fractions(const MaterialModel::MaterialModelInputs<dim>  &in,
+                       std::vector<double>                            &melt_fractions,
+                       const MaterialModel::MaterialModelOutputs<dim> *out = nullptr) const override;
 
         /**
          * Initialize the base model at the beginning of the model run
          * @copydoc MaterialModel::Interface::initialize()
          */
         void
-        initialize () override;
+        initialize() override;
 
         /**
          * Update the base model at the beginning of each timestep.
          */
-        void update() override;
+        void
+        update() override;
 
         /**
          * @copydoc MaterialModel::Interface::evaluate()
          */
         void
-        evaluate (const typename Interface<dim>::MaterialModelInputs &in,
-                  typename Interface<dim>::MaterialModelOutputs &out) const override;
+        evaluate(const typename Interface<dim>::MaterialModelInputs &in, typename Interface<dim>::MaterialModelOutputs &out) const override;
 
         /**
          * @copydoc MaterialModel::Interface::declare_parameters()
          */
         static void
-        declare_parameters (ParameterHandler &prm);
+        declare_parameters(ParameterHandler &prm);
 
         /**
          * @copydoc MaterialModel::Interface::parse_parameters()
          */
         void
-        parse_parameters (ParameterHandler &prm) override;
+        parse_parameters(ParameterHandler &prm) override;
 
         /**
          * If this material model can produce additional named outputs
          * that are derived from NamedAdditionalOutputs, create them in here.
          */
         void
-        create_additional_named_outputs (MaterialModel::MaterialModelOutputs<dim> &out) const override;
+        create_additional_named_outputs(MaterialModel::MaterialModelOutputs<dim> &out) const override;
 
         /**
          * Return the base material model, so callers can query solid
@@ -147,7 +148,6 @@ namespace aspect
         get_base_model() const;
 
       private:
-
         /**
          * Pointer to the material model used as the base model
          */
@@ -207,13 +207,13 @@ namespace aspect
         double fluid_reaction_time_scale;
 
         /*
-        * Object for computing Katz 2003 melt parameters
-        */
+         * Object for computing Katz 2003 melt parameters
+         */
         ReactionModel::Katz2003MantleMelting<dim> katz2003_model;
 
         /*
-        * Object for computing Tian 2019 parameterized solubility parameters
-        */
+         * Object for computing Tian 2019 parameterized solubility parameters
+         */
         ReactionModel::Tian2019Solubility<dim> tian2019_model;
 
         /**

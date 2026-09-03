@@ -27,14 +27,16 @@ namespace aspect
     namespace
     {
       template <int dim>
-      std::vector<std::string> make_anisotropic_viscosity_additional_outputs_names()
+      std::vector<std::string>
+      make_anisotropic_viscosity_additional_outputs_names()
       {
         std::vector<std::string> names;
 
-        for (unsigned int i = 0; i < Tensor<4,dim>::n_independent_components ; ++i)
+        for (unsigned int i = 0; i < Tensor<4, dim>::n_independent_components; ++i)
           {
-            TableIndices<4> indices(Tensor<4,dim>::unrolled_to_component_indices(i));
-            names.push_back("anisotropic_viscosity"+std::to_string(indices[0])+std::to_string(indices[1])+std::to_string(indices[2])+std::to_string(indices[3]));
+            TableIndices<4> indices(Tensor<4, dim>::unrolled_to_component_indices(i));
+            names.push_back("anisotropic_viscosity" + std::to_string(indices[0]) + std::to_string(indices[1]) + std::to_string(indices[2]) +
+                            std::to_string(indices[3]));
           }
         return names;
       }
@@ -43,10 +45,9 @@ namespace aspect
 
 
     template <int dim>
-    AnisotropicViscosity<dim>::AnisotropicViscosity (const unsigned int n_points)
-      :
-      NamedAdditionalMaterialOutputs<dim>(make_anisotropic_viscosity_additional_outputs_names<dim>()),
-      stress_strain_directors(n_points, dealii::identity_tensor<dim> ())
+    AnisotropicViscosity<dim>::AnisotropicViscosity(const unsigned int n_points)
+      : NamedAdditionalMaterialOutputs<dim>(make_anisotropic_viscosity_additional_outputs_names<dim>())
+      , stress_strain_directors(n_points, dealii::identity_tensor<dim>())
     {}
 
 
@@ -56,9 +57,9 @@ namespace aspect
     AnisotropicViscosity<dim>::get_nth_output(const unsigned int idx) const
     {
       std::vector<double> output(stress_strain_directors.size());
-      for (unsigned int i = 0; i < stress_strain_directors.size() ; ++i)
+      for (unsigned int i = 0; i < stress_strain_directors.size(); ++i)
         {
-          output[i]= stress_strain_directors[i][Tensor<4,dim>::unrolled_to_component_indices(idx)];
+          output[i] = stress_strain_directors[i][Tensor<4, dim>::unrolled_to_component_indices(idx)];
         }
       return output;
     }
@@ -70,8 +71,7 @@ namespace aspect
 {
   namespace MaterialModel
   {
-#define INSTANTIATE(dim) \
-  template class AnisotropicViscosity<dim>;
+#define INSTANTIATE(dim) template class AnisotropicViscosity<dim>;
 
     ASPECT_INSTANTIATE(INSTANTIATE)
 

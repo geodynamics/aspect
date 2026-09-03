@@ -32,20 +32,20 @@ namespace aspect
     void
     CompositionApproximateGradient<dim>::execute(Vector<float> &indicators) const
     {
-      AssertThrow (this->n_compositional_fields() >= 1,
-                   ExcMessage ("This refinement criterion can not be used when no "
-                               "compositional fields are active!"));
+      AssertThrow(this->n_compositional_fields() >= 1,
+                  ExcMessage("This refinement criterion can not be used when no "
+                             "compositional fields are active!"));
       indicators = 0;
       // create a vector with the requisite ghost elements
       // and use it for estimating the gradients of compositional field
       LinearAlgebra::BlockVector vec(this->introspection().index_sets.system_partitioning,
                                      this->introspection().index_sets.system_relevant_partitioning,
                                      this->get_mpi_communicator());
-      Vector<float> indicators_tmp(this->get_triangulation().n_active_cells());
-      for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
+      Vector<float>              indicators_tmp(this->get_triangulation().n_active_cells());
+      for (unsigned int c = 0; c < this->n_compositional_fields(); ++c)
         {
           const unsigned int block_idx = this->introspection().block_indices.compositional_fields[c];
-          vec.block(block_idx) = this->get_solution().block(block_idx);
+          vec.block(block_idx)         = this->get_solution().block(block_idx);
           vec.compress(VectorOperation::insert);
           indicators_tmp = 0;
           DerivativeApproximation::approximate_gradient(this->get_mapping(),
@@ -74,8 +74,7 @@ namespace aspect
 
     template <int dim>
     void
-    CompositionApproximateGradient<dim>::
-    declare_parameters (ParameterHandler &prm)
+    CompositionApproximateGradient<dim>::declare_parameters(ParameterHandler &prm)
     {
       prm.enter_subsection("Mesh refinement");
       {
@@ -83,7 +82,7 @@ namespace aspect
         {
           prm.declare_entry("Compositional field scaling factors",
                             "",
-                            Patterns::List (Patterns::Double (0.)),
+                            Patterns::List(Patterns::Double(0.)),
                             "A list of scaling factors by which every individual compositional "
                             "field gradient will be multiplied. If only a single compositional "
                             "field exists, then this parameter has no particular meaning. "
@@ -103,24 +102,21 @@ namespace aspect
 
     template <int dim>
     void
-    CompositionApproximateGradient<dim>::parse_parameters (ParameterHandler &prm)
+    CompositionApproximateGradient<dim>::parse_parameters(ParameterHandler &prm)
     {
       prm.enter_subsection("Mesh refinement");
       {
         prm.enter_subsection("Composition approximate gradient");
         {
-          composition_scaling_factors
-            = Utilities::string_to_double(
-                Utilities::split_string_list(prm.get("Compositional field scaling factors")));
+          composition_scaling_factors =
+            Utilities::string_to_double(Utilities::split_string_list(prm.get("Compositional field scaling factors")));
 
-          AssertThrow (composition_scaling_factors.size() == this->n_compositional_fields()
-                       ||
-                       composition_scaling_factors.size() == 0,
-                       ExcMessage ("The number of scaling factors given here must either be "
-                                   "zero or equal to the number of chosen refinement criteria."));
+          AssertThrow(composition_scaling_factors.size() == this->n_compositional_fields() || composition_scaling_factors.size() == 0,
+                      ExcMessage("The number of scaling factors given here must either be "
+                                 "zero or equal to the number of chosen refinement criteria."));
 
           if (composition_scaling_factors.size() == 0)
-            composition_scaling_factors.resize (this->n_compositional_fields(), 1.0);
+            composition_scaling_factors.resize(this->n_compositional_fields(), 1.0);
         }
         prm.leave_subsection();
       }

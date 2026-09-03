@@ -20,9 +20,10 @@
 
 
 #include <aspect/global.h>
+
+#include <aspect/geometry_model/interface.h>
 #include <aspect/initial_composition/slab_model.h>
 #include <aspect/utilities.h>
-#include <aspect/geometry_model/interface.h>
 
 
 namespace aspect
@@ -31,7 +32,7 @@ namespace aspect
   {
     template <int dim>
     void
-    SlabModel<dim>::initialize ()
+    SlabModel<dim>::initialize()
     {
       AssertThrow(this->introspection().compositional_name_exists("slabs"),
                   ExcMessage("The initial composition plugin `slab model' did not find a "
@@ -50,9 +51,7 @@ namespace aspect
 
     template <int dim>
     double
-    SlabModel<dim>::
-    initial_composition (const Point<dim> &position,
-                         const unsigned int compositional_index) const
+    SlabModel<dim>::initial_composition(const Point<dim> &position, const unsigned int compositional_index) const
     {
       if (compositional_index != slab_index)
         return 0.0;
@@ -66,8 +65,7 @@ namespace aspect
       // Return 0.0 if there is no slab in this location in the data. No slab is encoded in
       // the data file as a slab thickness of 0.0 and/or a depth larger than the depth of
       // the domain.
-      if (slab_thickness == 0.0 ||
-          slab_depth > this->get_geometry_model().maximal_depth())
+      if (slab_thickness == 0.0 || slab_depth > this->get_geometry_model().maximal_depth())
         return 0.0;
 
       // Return 1.0 if we are inside the depth range of the slab.
@@ -83,7 +81,7 @@ namespace aspect
 
     template <int dim>
     const Utilities::AsciiDataBoundary<dim> &
-    SlabModel<dim>::get_slab_boundary () const
+    SlabModel<dim>::get_slab_boundary() const
     {
       return slab_boundary;
     }
@@ -91,7 +89,7 @@ namespace aspect
 
     template <int dim>
     void
-    SlabModel<dim>::declare_parameters (ParameterHandler &prm)
+    SlabModel<dim>::declare_parameters(ParameterHandler &prm)
     {
       prm.enter_subsection("Initial composition model");
       {
@@ -107,11 +105,11 @@ namespace aspect
 
     template <int dim>
     void
-    SlabModel<dim>::parse_parameters (ParameterHandler &prm)
+    SlabModel<dim>::parse_parameters(ParameterHandler &prm)
     {
       prm.enter_subsection("Initial composition model");
       {
-        slab_boundary.initialize_simulator (this->get_simulator());
+        slab_boundary.initialize_simulator(this->get_simulator());
         slab_boundary.parse_parameters(prm, "Slab model", /*time dependent = */ false);
       }
       prm.leave_subsection();

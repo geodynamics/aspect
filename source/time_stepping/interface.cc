@@ -19,8 +19,8 @@
  */
 
 
-#include <aspect/time_stepping/interface.h>
 #include <aspect/simulator.h>
+#include <aspect/time_stepping/interface.h>
 
 namespace aspect
 {
@@ -28,19 +28,18 @@ namespace aspect
   {
     namespace
     {
-      std::tuple
-      <aspect::internal::Plugins::UnusablePluginList,
-      aspect::internal::Plugins::UnusablePluginList,
-      aspect::internal::Plugins::PluginList<Interface<2>>,
-      aspect::internal::Plugins::PluginList<Interface<3>>> registered_plugins;
+      std::tuple<aspect::internal::Plugins::UnusablePluginList,
+                 aspect::internal::Plugins::UnusablePluginList,
+                 aspect::internal::Plugins::PluginList<Interface<2>>,
+                 aspect::internal::Plugins::PluginList<Interface<3>>>
+        registered_plugins;
     }
 
 
 
     template <int dim>
     std::pair<Reaction, double>
-    Interface<dim>::
-    determine_reaction (const TimeStepInfo & /*info*/)
+    Interface<dim>::determine_reaction(const TimeStepInfo & /*info*/)
     {
       return std::make_pair<Reaction, double>(Reaction::advance, std::numeric_limits<double>::max());
     }
@@ -49,15 +48,14 @@ namespace aspect
 
     template <int dim>
     void
-    Manager<dim>::
-    update()
+    Manager<dim>::update()
     {
       double new_time_step = std::numeric_limits<double>::max();
 
       for (const auto &plugin : this->plugin_objects)
         {
           const double this_time_step = plugin->execute();
-          new_time_step = std::min(new_time_step, this_time_step);
+          new_time_step               = std::min(new_time_step, this_time_step);
         }
 
       new_time_step = Utilities::MPI::min(new_time_step, this->get_mpi_communicator());
@@ -75,7 +73,8 @@ namespace aspect
 
       // Make sure that the time step doesn't increase too fast
       if (this->get_timestep() != 0)
-        new_time_step = std::min(new_time_step, this->get_timestep() + this->get_timestep() * this->get_parameters().maximum_relative_increase_time_step);
+        new_time_step =
+          std::min(new_time_step, this->get_timestep() + this->get_timestep() * this->get_parameters().maximum_relative_increase_time_step);
 
       // Make sure we do not exceed the maximum length for the first time step
       if (this->get_timestep_number() == 0)
@@ -88,28 +87,30 @@ namespace aspect
         const double reduced_time_step = termination_manager.check_for_last_time_step(new_time_step);
         if (reduced_time_step < new_time_step)
           {
-            new_time_step = reduced_time_step;
+            new_time_step                      = reduced_time_step;
             info.reduced_by_termination_plugin = true;
           }
       }
       info.next_time_step_size = new_time_step;
 
-      AssertThrow (new_time_step > 0,
-                   ExcMessage("The time step length for the each time step needs to be positive, "
-                              "but the computed step length was: " + std::to_string(new_time_step) + ". "
-                              "Please check the time stepping plugins in use."));
+      AssertThrow(new_time_step > 0,
+                  ExcMessage("The time step length for the each time step needs to be positive, "
+                             "but the computed step length was: " +
+                             std::to_string(new_time_step) +
+                             ". "
+                             "Please check the time stepping plugins in use."));
 
-      Reaction reaction = Reaction::advance;
-      double repeat_step_size = std::numeric_limits<double>::max();
+      Reaction reaction         = Reaction::advance;
+      double   repeat_step_size = std::numeric_limits<double>::max();
 
       for (const auto &plugin : this->plugin_objects)
         {
           const std::pair<Reaction, double> answer = plugin->determine_reaction(info);
-          reaction = static_cast<Reaction>(std::min(reaction, answer.first));
-          repeat_step_size = std::min(repeat_step_size, answer.second);
+          reaction                                 = static_cast<Reaction>(std::min(reaction, answer.first));
+          repeat_step_size                         = std::min(repeat_step_size, answer.second);
         }
 
-      reaction = static_cast<Reaction>(Utilities::MPI::min(static_cast<int>(reaction), this->get_mpi_communicator()));
+      reaction         = static_cast<Reaction>(Utilities::MPI::min(static_cast<int>(reaction), this->get_mpi_communicator()));
       repeat_step_size = Utilities::MPI::min(repeat_step_size, this->get_mpi_communicator());
 
       current_reaction = reaction;
@@ -178,8 +179,7 @@ namespace aspect
 
     template <int dim>
     bool
-    Manager<dim>::
-    need_checkpoint_on_terminate() const
+    Manager<dim>::need_checkpoint_on_terminate() const
     {
       return do_checkpoint_on_terminate;
     }
@@ -197,7 +197,7 @@ namespace aspect
 
     template <int dim>
     void
-    Manager<dim>::initialize_simulator (const Simulator<dim> &simulator_object)
+    Manager<dim>::initialize_simulator(const Simulator<dim> &simulator_object)
     {
       SimulatorAccess<dim>::initialize_simulator(simulator_object);
       termination_manager.initialize_simulator(simulator_object);
@@ -209,26 +209,24 @@ namespace aspect
     void
     Manager<dim>::register_time_stepping_model(const std::string &name,
                                                const std::string &description,
-                                               void (*declare_parameters_function) (ParameterHandler &),
-                                               std::unique_ptr<Interface<dim>> (*factory_function) ())
+                                               void (*declare_parameters_function)(ParameterHandler &),
+                                               std::unique_ptr<Interface<dim>> (*factory_function)())
     {
-      std::get<dim>(registered_plugins).register_plugin (name,
-                                                         description,
-                                                         declare_parameters_function,
-                                                         factory_function);
+      std::get<dim>(registered_plugins).register_plugin(name, description, declare_parameters_function, factory_function);
     }
 
 
 
     template <int dim>
     void
-    Manager<dim>:: declare_parameters (ParameterHandler &prm)
+    Manager<dim>::declare_parameters(ParameterHandler &prm)
     {
       TerminationCriteria::Manager<dim>::declare_parameters(prm);
       prm.enter_subsection("Termination criteria");
       {
-        prm.declare_entry("Checkpoint on termination", "false",
-                          Patterns::Bool (),
+        prm.declare_entry("Checkpoint on termination",
+                          "false",
+                          Patterns::Bool(),
                           "Whether to checkpoint the simulation right before termination.");
       }
       prm.leave_subsection();
@@ -236,12 +234,9 @@ namespace aspect
 
       prm.enter_subsection("Time stepping");
       {
-        prm.declare_entry("Minimum time step size", "0.",
-                          Patterns::Double (0.),
-                          "Specify a minimum time step size (or 0 to disable).");
+        prm.declare_entry("Minimum time step size", "0.", Patterns::Double(0.), "Specify a minimum time step size (or 0 to disable).");
 
-        const std::string pattern_of_names
-          = std::get<dim>(registered_plugins).get_pattern_of_names ();
+        const std::string pattern_of_names = std::get<dim>(registered_plugins).get_pattern_of_names();
 
         prm.declare_entry("List of model names",
                           "",
@@ -249,21 +244,19 @@ namespace aspect
                           "A comma separated list of time stepping plugins that "
                           "will be used to calculate the time step size. The minimum of the "
                           " result of each plugin will be used.\n\n"
-                          "The following plugins are available:\n\n"
-                          +
-                          std::get<dim>(registered_plugins).get_description_string());
-
+                          "The following plugins are available:\n\n" +
+                            std::get<dim>(registered_plugins).get_description_string());
       }
       prm.leave_subsection();
 
-      std::get<dim>(registered_plugins).declare_parameters (prm);
+      std::get<dim>(registered_plugins).declare_parameters(prm);
     }
 
 
 
     template <int dim>
     void
-    Manager<dim>::parse_parameters (ParameterHandler &prm)
+    Manager<dim>::parse_parameters(ParameterHandler &prm)
     {
       termination_manager.parse_parameters(prm);
       prm.enter_subsection("Termination criteria");
@@ -275,18 +268,16 @@ namespace aspect
       {
         prm.enter_subsection("Time stepping");
 
-        minimum_time_step_size = prm.get_double("Minimum time step size")
-                                 * (this->convert_output_to_years() ? year_in_seconds : 1.0);
+        minimum_time_step_size = prm.get_double("Minimum time step size") * (this->convert_output_to_years() ? year_in_seconds : 1.0);
 
-        this->plugin_names
-          = Utilities::split_string_list(prm.get("List of model names"));
+        this->plugin_names = Utilities::split_string_list(prm.get("List of model names"));
 
         AssertThrow(Utilities::has_unique_entries(this->plugin_names),
                     ExcMessage("The list of strings for the parameter "
                                "'Time stepping/List of model names' contains entries more than once. "
                                "This is not allowed. Please check your parameter file."));
 
-        if (this->plugin_names.size()==0)
+        if (this->plugin_names.size() == 0)
           {
             // handle the default case, where the user has not chosen any time stepping scheme explicitly:
 
@@ -303,23 +294,20 @@ namespace aspect
                                    "instead"));
           }
 
-        if (this->get_parameters().nonlinear_solver_failure_strategy
-            == Parameters<dim>::NonlinearSolverFailureStrategy::cut_timestep_size)
+        if (this->get_parameters().nonlinear_solver_failure_strategy == Parameters<dim>::NonlinearSolverFailureStrategy::cut_timestep_size)
           this->plugin_names.insert(this->plugin_names.begin(), "repeat on nonlinear solver failure");
 
         prm.leave_subsection();
 
         for (const auto &model_name : this->plugin_names)
           {
-            this->plugin_objects.emplace_back (std::get<dim>(registered_plugins)
-                                               .create_plugin (model_name,
-                                                               "Time stepping::Model names"));
+            this->plugin_objects.emplace_back(std::get<dim>(registered_plugins).create_plugin(model_name, "Time stepping::Model names"));
 
-            if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(&*this->plugin_objects.back()))
-              sim->initialize_simulator (this->get_simulator());
+            if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim> *>(&*this->plugin_objects.back()))
+              sim->initialize_simulator(this->get_simulator());
 
-            this->plugin_objects.back()->parse_parameters (prm);
-            this->plugin_objects.back()->initialize ();
+            this->plugin_objects.back()->parse_parameters(prm);
+            this->plugin_objects.back()->initialize();
           }
       }
     }
@@ -328,23 +316,21 @@ namespace aspect
 
     template <int dim>
     void
-    Manager<dim>::write_plugin_graph (std::ostream &out)
+    Manager<dim>::write_plugin_graph(std::ostream &out)
     {
-      std::get<dim>(registered_plugins).write_plugin_graph ("Time stepping interface",
-                                                            out);
+      std::get<dim>(registered_plugins).write_plugin_graph("Time stepping interface", out);
     }
 
 
     template <int dim>
     std::string
-    get_valid_model_names_pattern ()
+    get_valid_model_names_pattern()
     {
-      return std::get<dim>(registered_plugins).get_pattern_of_names ();
+      return std::get<dim>(registered_plugins).get_pattern_of_names();
     }
 
   }
 }
-
 
 
 
@@ -354,12 +340,10 @@ namespace aspect
   namespace TimeStepping
   {
 #define INSTANTIATE(dim) \
-  \
+\
   template class Interface<dim>; \
   template class Manager<dim>; \
-  template \
-  std::string \
-  get_valid_model_names_pattern<dim> ();
+  template std::string get_valid_model_names_pattern<dim>();
 
     ASPECT_INSTANTIATE(INSTANTIATE)
 

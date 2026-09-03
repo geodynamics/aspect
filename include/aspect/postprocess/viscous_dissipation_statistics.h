@@ -44,8 +44,8 @@ namespace aspect
          * Evaluate the solution to compute the viscous dissipation
          * per compositional field and over the whole domain.
          */
-        std::pair<std::string,std::string>
-        execute (TableHandler &statistics) override;
+        std::pair<std::string, std::string>
+        execute(TableHandler &statistics) override;
     };
   }
 }

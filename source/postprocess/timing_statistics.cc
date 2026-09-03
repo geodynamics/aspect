@@ -27,8 +27,8 @@ namespace aspect
   namespace Postprocess
   {
     template <int dim>
-    std::pair<std::string,std::string>
-    TimingStatistics<dim>::execute (TableHandler &statistics)
+    std::pair<std::string, std::string>
+    TimingStatistics<dim>::execute(TableHandler &statistics)
     {
       // The timer only allows access to its data outside of
       // subsections, so we can't just ask for its summary data and
@@ -41,18 +41,16 @@ namespace aspect
       // object:
       TimerOutput copy_of_timer = this->get_computing_timer();
       copy_of_timer.leave_subsection("Postprocessing");
-      const std::map<std::string, double> &timing_map
-        = copy_of_timer.get_summary_data(TimerOutput::total_wall_time);
+      const std::map<std::string, double> &timing_map = copy_of_timer.get_summary_data(TimerOutput::total_wall_time);
 
       for (const auto &section : timing_map)
         {
           const std::string section_name = "Total wall time: " + section.first;
-          statistics.add_value(section_name,
-                               section.second);
+          statistics.add_value(section_name, section.second);
           statistics.set_scientific(section_name, true);
         }
 
-      return std::make_pair (std::string(),std::string());
+      return std::make_pair(std::string(), std::string());
     }
   }
 }

@@ -46,29 +46,30 @@ namespace aspect
          *
          * @copydoc aspect::BoundaryComposition::Interface::boundary_composition()
          */
-        double boundary_composition (const types::boundary_id boundary_indicator,
-                                     const Point<dim> &position,
-                                     const unsigned int compositional_field) const override;
+        double
+        boundary_composition(const types::boundary_id boundary_indicator,
+                             const Point<dim>        &position,
+                             const unsigned int       compositional_field) const override;
 
         /**
          * This function performs some basic sanity checks on the parameter
          * values previously read from the input file.
          */
-        void initialize () override;
+        void
+        initialize() override;
 
         /**
          * Declare the parameters this class takes through input files. This
          * class declares the inner and outer boundary compositions.
          */
-        static
-        void
-        declare_parameters (ParameterHandler &prm);
+        static void
+        declare_parameters(ParameterHandler &prm);
 
         /**
          * Read the parameters this class declares from the parameter file.
          */
         void
-        parse_parameters (ParameterHandler &prm) override;
+        parse_parameters(ParameterHandler &prm) override;
 
       private:
         /**
@@ -79,7 +80,7 @@ namespace aspect
          * 'Right composition', 'Bottom composition', 'Top composition',
          * 'Front composition', and 'Back composition'.
          */
-        std::vector<double> composition_values[2*dim];
+        std::vector<double> composition_values[2 * dim];
     };
   }
 }

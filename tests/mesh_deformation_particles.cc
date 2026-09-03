@@ -18,9 +18,10 @@
   <http://www.gnu.org/licenses/>.
 */
 
-#include <aspect/simulator_signals.h>
-#include <aspect/simulator_access.h>
 #include <aspect/particle/manager.h>
+#include <aspect/simulator_access.h>
+#include <aspect/simulator_signals.h>
+
 #include <deal.II/particles/particle_handler.h>
 
 #include <iostream>
@@ -29,7 +30,8 @@ using namespace aspect;
 
 
 template <int dim>
-void post_mesh_deformation (const SimulatorAccess<dim> &simulator_access)
+void
+post_mesh_deformation(const SimulatorAccess<dim> &simulator_access)
 {
   // Get the reference location of the one particle,
   // and check that it has the correct value.
@@ -49,9 +51,9 @@ void post_mesh_deformation (const SimulatorAccess<dim> &simulator_access)
   Point<dim> correct_particle_reference_location;
   correct_particle_reference_location[0] = 0.5;
   if (simulator_access.get_timestep_number() == 0)
-    correct_particle_reference_location[dim-1] = 0.5;
+    correct_particle_reference_location[dim - 1] = 0.5;
   else if (simulator_access.get_timestep_number() == 1)
-    correct_particle_reference_location[dim-1] = 1./3.;
+    correct_particle_reference_location[dim - 1] = 1. / 3.;
   else
     Assert(false, ExcNotImplemented());
 
@@ -61,11 +63,11 @@ void post_mesh_deformation (const SimulatorAccess<dim> &simulator_access)
 
 
 template <int dim>
-void signal_connector (SimulatorSignals<dim> &signals)
+void
+signal_connector(SimulatorSignals<dim> &signals)
 {
-  signals.post_mesh_deformation.connect (&post_mesh_deformation<dim>);
+  signals.post_mesh_deformation.connect(&post_mesh_deformation<dim>);
 }
 
 
-ASPECT_REGISTER_SIGNALS_CONNECTOR(signal_connector<2>,
-                                  signal_connector<3>)
+ASPECT_REGISTER_SIGNALS_CONNECTOR(signal_connector<2>, signal_connector<3>)

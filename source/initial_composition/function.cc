@@ -19,10 +19,10 @@
 */
 
 
+#include <aspect/geometry_model/interface.h>
 #include <aspect/initial_composition/function.h>
 #include <aspect/postprocess/interface.h>
 #include <aspect/utilities.h>
-#include <aspect/geometry_model/interface.h>
 
 namespace aspect
 {
@@ -31,20 +31,19 @@ namespace aspect
 
     template <int dim>
     double
-    Function<dim>::
-    initial_composition (const Point<dim> &position, const unsigned int n_comp) const
+    Function<dim>::initial_composition(const Point<dim> &position, const unsigned int n_comp) const
     {
       const Utilities::NaturalCoordinate<dim> point =
         this->get_geometry_model().cartesian_to_other_coordinates(position, coordinate_system);
 
-      return function->value(Utilities::convert_array_to_point<dim>(point.get_coordinates()),n_comp);
+      return function->value(Utilities::convert_array_to_point<dim>(point.get_coordinates()), n_comp);
     }
 
 
 
     template <int dim>
     void
-    Function<dim>::declare_parameters (ParameterHandler &prm)
+    Function<dim>::declare_parameters(ParameterHandler &prm)
     {
       prm.enter_subsection("Initial composition model");
       {
@@ -57,18 +56,19 @@ namespace aspect
            * of spherical coordinates is r,phi,theta and not r,theta,phi, since
            * this allows for dimension independent expressions.
            */
-          prm.declare_entry ("Coordinate system", "cartesian",
-                             Patterns::Selection ("cartesian|spherical|depth"),
-                             "A selection that determines the assumed coordinate "
-                             "system for the function variables. Allowed values "
-                             "are `cartesian', `spherical', and `depth'. `spherical' coordinates "
-                             "are interpreted as r,phi or r,phi,theta in 2d/3d "
-                             "respectively with theta being the polar angle. `depth' "
-                             "will create a function, in which only the first "
-                             "parameter is non-zero, which is interpreted to "
-                             "be the depth of the point.");
+          prm.declare_entry("Coordinate system",
+                            "cartesian",
+                            Patterns::Selection("cartesian|spherical|depth"),
+                            "A selection that determines the assumed coordinate "
+                            "system for the function variables. Allowed values "
+                            "are `cartesian', `spherical', and `depth'. `spherical' coordinates "
+                            "are interpreted as r,phi or r,phi,theta in 2d/3d "
+                            "respectively with theta being the polar angle. `depth' "
+                            "will create a function, in which only the first "
+                            "parameter is non-zero, which is interpreted to "
+                            "be the depth of the point.");
 
-          Functions::ParsedFunction<dim>::declare_parameters (prm, 1);
+          Functions::ParsedFunction<dim>::declare_parameters(prm, 1);
         }
         prm.leave_subsection();
       }
@@ -79,7 +79,7 @@ namespace aspect
 
     template <int dim>
     void
-    Function<dim>::parse_parameters (ParameterHandler &prm)
+    Function<dim>::parse_parameters(ParameterHandler &prm)
     {
       prm.enter_subsection("Initial composition model");
       {
@@ -90,9 +90,8 @@ namespace aspect
 
         try
           {
-            function
-              = std::make_unique<Functions::ParsedFunction<dim>>(this->n_compositional_fields());
-            function->parse_parameters (prm);
+            function = std::make_unique<Functions::ParsedFunction<dim>>(this->n_compositional_fields());
+            function->parse_parameters(prm);
           }
         catch (...)
           {

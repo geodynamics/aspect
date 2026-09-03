@@ -54,28 +54,27 @@ namespace aspect
            * properties.
            */
           void
-          initialize_one_particle_property (const Point<dim> &position,
-                                            std::vector<double> &particle_properties) const override;
+          initialize_one_particle_property(const Point<dim> &position, std::vector<double> &particle_properties) const override;
 
           /**
            * @copydoc aspect::Particle::Property::Interface::update_particle_properties()
            */
           void
-          update_particle_properties (const ParticleUpdateInputs<dim> &inputs,
-                                      typename ParticleHandler<dim>::particle_iterator_range &particles) const override;
+          update_particle_properties(const ParticleUpdateInputs<dim>                        &inputs,
+                                     typename ParticleHandler<dim>::particle_iterator_range &particles) const override;
 
           /**
            * This implementation tells the particle manager that
            * we need to update particle properties every time step.
            */
           UpdateTimeFlags
-          need_update () const override;
+          need_update() const override;
 
           /**
            * @copydoc aspect::Particle::Property::Interface::get_update_flags()
            */
           UpdateFlags
-          get_update_flags (const unsigned int component) const override;
+          get_update_flags(const unsigned int component) const override;
 
           /**
            * Set up the information about the names and number of components

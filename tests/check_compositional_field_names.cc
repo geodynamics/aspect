@@ -18,12 +18,12 @@
   <http://www.gnu.org/licenses/>.
 */
 
-#include <aspect/simulator.h>
 #include <aspect/parameters.h>
+#include <aspect/simulator.h>
 
 template <int dim>
-void f(const aspect::SimulatorAccess<dim> &simulator_access,
-       aspect::Assemblers::Manager<dim> &)
+void
+f(const aspect::SimulatorAccess<dim> &simulator_access, aspect::Assemblers::Manager<dim> &)
 {
   // This function tests whether the compositional field types are correctly
   // processed.
@@ -32,10 +32,11 @@ void f(const aspect::SimulatorAccess<dim> &simulator_access,
 
   aspect::ParameterHandler prm;
 
-  const std::vector<std::string> c_names = simulator_access.introspection().get_composition_names();
-  const std::vector<typename aspect::CompositionalFieldDescription> descriptions = simulator_access.introspection().get_composition_descriptions();
+  const std::vector<std::string>                                    c_names = simulator_access.introspection().get_composition_names();
+  const std::vector<typename aspect::CompositionalFieldDescription> descriptions =
+    simulator_access.introspection().get_composition_descriptions();
 
-  for (unsigned int i=0; i<simulator_access.introspection().n_compositional_fields; ++i)
+  for (unsigned int i = 0; i < simulator_access.introspection().n_compositional_fields; ++i)
     {
       if (descriptions[i].type == aspect::CompositionalFieldDescription::chemical_composition)
         std::cout << c_names[i] << " is of type chemical composition" << std::endl;
@@ -54,24 +55,21 @@ void f(const aspect::SimulatorAccess<dim> &simulator_access,
     }
 
   exit(0);
-
 }
 
 template <>
-void f(const aspect::SimulatorAccess<2> &,
-       aspect::Assemblers::Manager<2> &)
+void
+f(const aspect::SimulatorAccess<2> &, aspect::Assemblers::Manager<2> &)
 {
-  AssertThrow(false,dealii::ExcInternalError());
+  AssertThrow(false, dealii::ExcInternalError());
 }
 
 template <int dim>
-void signal_connector (aspect::SimulatorSignals<dim> &signals)
+void
+signal_connector(aspect::SimulatorSignals<dim> &signals)
 {
   std::cout << "* Connecting signals" << std::endl;
-  signals.set_assemblers.connect (std::bind(&f<dim>,
-                                            std::placeholders::_1,
-                                            std::placeholders::_2));
+  signals.set_assemblers.connect(std::bind(&f<dim>, std::placeholders::_1, std::placeholders::_2));
 }
 
-ASPECT_REGISTER_SIGNALS_CONNECTOR(signal_connector<2>,
-                                  signal_connector<3>)
+ASPECT_REGISTER_SIGNALS_CONNECTOR(signal_connector<2>, signal_connector<3>)

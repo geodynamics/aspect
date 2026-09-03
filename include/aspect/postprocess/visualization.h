@@ -22,14 +22,15 @@
 #ifndef _aspect_postprocess_visualization_h
 #define _aspect_postprocess_visualization_h
 
-#include <aspect/postprocess/interface.h>
-#include <aspect/simulator_access.h>
 #include <aspect/plugins.h>
 
-#include <deal.II/base/thread_management.h>
-#include <deal.II/numerics/data_postprocessor.h>
+#include <aspect/postprocess/interface.h>
+#include <aspect/simulator_access.h>
+
 #include <deal.II/base/data_out_base.h>
+#include <deal.II/base/thread_management.h>
 #include <deal.II/numerics/data_out.h>
+#include <deal.II/numerics/data_postprocessor.h>
 
 #include <thread>
 
@@ -42,18 +43,19 @@ namespace aspect
       /**
        * Compute the arithmetic average over q for each m of the variable quantities[q](m).
        */
-      inline void average_quantities(std::vector<Vector<double>> &quantities)
+      inline void
+      average_quantities(std::vector<Vector<double>> &quantities)
       {
         const unsigned int N = quantities.size();
         const unsigned int M = quantities[0].size();
-        for (unsigned int m=0; m<M; ++m)
+        for (unsigned int m = 0; m < M; ++m)
           {
             double sum = 0;
-            for (unsigned int q=0; q<N; ++q)
+            for (unsigned int q = 0; q < N; ++q)
               sum += quantities[q](m);
 
-            const double average = sum/N;
-            for (unsigned int q=0; q<N; ++q)
+            const double average = sum / N;
+            for (unsigned int q = 0; q < N; ++q)
               quantities[q](m) = average;
           }
       }
@@ -143,7 +145,7 @@ namespace aspect
            * classes should simply pass in an empty string to this constructor
            * and instead overload the get_physical_units() function.
            */
-          explicit Interface (const std::string &physical_units = "");
+          explicit Interface(const std::string &physical_units = "");
 
           /**
            * Return the string representation of the physical units that a
@@ -156,9 +158,8 @@ namespace aspect
            * overload this function and return the correct units when the
            * visualization postprocessor is executed.
            */
-          virtual
-          std::string
-          get_physical_units () const;
+          virtual std::string
+          get_physical_units() const;
 
           /**
            * A function that is used to indicate to the postprocessor manager which
@@ -174,9 +175,8 @@ namespace aspect
            *
            * The default implementation of this function returns an empty list.
            */
-          virtual
-          std::list<std::string>
-          required_other_postprocessors () const;
+          virtual std::list<std::string>
+          required_other_postprocessors() const;
 
         private:
           /**
@@ -208,12 +208,12 @@ namespace aspect
            * units of the quantity (scalar or vector-valued) computed by
            * derived classes.
            */
-          explicit CellDataVectorCreator (const std::string &physical_units = "");
+          explicit CellDataVectorCreator(const std::string &physical_units = "");
 
           /**
            * Destructor.
            */
-          ~CellDataVectorCreator ()  override = default;
+          ~CellDataVectorCreator() override = default;
 
           /**
            * The function classes have to implement that want to output
@@ -233,9 +233,8 @@ namespace aspect
            * and the caller will take care of destroying the vector pointed
            * to.
            */
-          virtual
-          std::pair<std::string, std::unique_ptr<Vector<float>>>
-          execute () const = 0;
+          virtual std::pair<std::string, std::unique_ptr<Vector<float>>>
+          execute() const = 0;
       };
 
 
@@ -254,8 +253,7 @@ namespace aspect
            * test whether a derived class is derived from this class via
            * a `dynamic_cast`.
            */
-          virtual
-          ~SurfaceOnlyVisualization () = default;
+          virtual ~SurfaceOnlyVisualization() = default;
       };
     }
 
@@ -282,19 +280,19 @@ namespace aspect
         /**
          * Constructor.
          */
-        Visualization ();
+        Visualization();
 
         /**
          * Generate graphical output from the current solution.
          */
-        std::pair<std::string,std::string>
-        execute (TableHandler &statistics) override;
+        std::pair<std::string, std::string>
+        execute(TableHandler &statistics) override;
 
         /**
          * Update any temporary information needed by the visualization postprocessor.
          */
         void
-        update () override;
+        update() override;
 
         /**
          * A function that is used to register visualization postprocessor
@@ -314,12 +312,11 @@ namespace aspect
          * @param factory_function A pointer to a function that creates such a
          * postprocessor object and returns a pointer to it.
          */
-        static
-        void
-        register_visualization_postprocessor (const std::string &name,
-                                              const std::string &description,
-                                              void (*declare_parameters_function) (ParameterHandler &),
-                                              std::unique_ptr<VisualizationPostprocessors::Interface<dim>>(*factory_function) ());
+        static void
+        register_visualization_postprocessor(const std::string &name,
+                                             const std::string &description,
+                                             void (*declare_parameters_function)(ParameterHandler &),
+                                             std::unique_ptr<VisualizationPostprocessors::Interface<dim>> (*factory_function)());
 
         /**
          * A function that is used to indicate to the postprocessor manager which
@@ -329,37 +326,39 @@ namespace aspect
          * postprocessors and collect what they want.
          */
         std::list<std::string>
-        required_other_postprocessors () const override;
+        required_other_postprocessors() const override;
 
         /**
          * Declare the parameters this class takes through input files.
          */
-        static
-        void
-        declare_parameters (ParameterHandler &prm);
+        static void
+        declare_parameters(ParameterHandler &prm);
 
         /**
          * Read the parameters this class declares from the parameter file.
          */
         void
-        parse_parameters (ParameterHandler &prm) override;
+        parse_parameters(ParameterHandler &prm) override;
 
         /**
          * Save the state of this object.
          */
-        void save (std::map<std::string, std::string> &status_strings) const override;
+        void
+        save(std::map<std::string, std::string> &status_strings) const override;
 
         /**
          * Restore the state of the object.
          */
-        void load (const std::map<std::string, std::string> &status_strings) override;
+        void
+        load(const std::map<std::string, std::string> &status_strings) override;
 
         /**
          * Serialize the contents of this class as far as they are not read
          * from input parameter files.
          */
         template <class Archive>
-        void serialize (Archive &ar, const unsigned int version);
+        void
+        serialize(Archive &ar, const unsigned int version);
 
         /**
          * For the current plugin subsystem, write a connection graph of all of the
@@ -370,24 +369,22 @@ namespace aspect
          *
          * @param output_stream The stream to write the output to.
          */
-        static
-        void
-        write_plugin_graph (std::ostream &output_stream);
+        static void
+        write_plugin_graph(std::ostream &output_stream);
 
         /**
          * Return the value of the parameter @p pointwise_stress_and_strain
          * that is controlled by the parameter "Point-wise stress and strain".
          */
-        bool output_pointwise_stress_and_strain() const;
+        bool
+        output_pointwise_stress_and_strain() const;
 
         /**
          * Exception.
          */
-        DeclException1 (ExcPostprocessorNameNotFound,
-                        std::string,
-                        << "Could not find entry <"
-                        << arg1
-                        << "> among the names of registered postprocessors.");
+        DeclException1(ExcPostprocessorNameNotFound,
+                       std::string,
+                       << "Could not find entry <" << arg1 << "> among the names of registered postprocessors.");
 
       private:
         /**
@@ -551,13 +548,15 @@ namespace aspect
          * falling behind with last_output_time and having to catch up once
          * the time step becomes larger. This is done after every output.
          */
-        void set_last_output_time (const double current_time);
+        void
+        set_last_output_time(const double current_time);
 
         /**
          * Record that the mesh changed. This helps some output writers avoid
          * writing the same mesh multiple times.
          */
-        void mesh_changed_signal ();
+        void
+        mesh_changed_signal();
 
         /**
          * A function that writes the text in the second argument to a file
@@ -565,10 +564,8 @@ namespace aspect
          * separate thread to allow computations to continue even though
          * writing data is still continuing.
          */
-        static
-        void writer (const std::string &filename,
-                     const std::string &temporary_filename,
-                     const std::string &file_contents);
+        static void
+        writer(const std::string &filename, const std::string &temporary_filename, const std::string &file_contents);
 
         /**
          * A list of postprocessor objects that have been requested in the
@@ -584,68 +581,69 @@ namespace aspect
          */
         struct OutputHistory
         {
-          /**
-           * Constructor
-           */
-          OutputHistory ();
+            /**
+             * Constructor
+             */
+            OutputHistory();
 
-          /**
-           * Destructor. Makes sure that any background thread that may still be
-           * running writing data to disk finishes before the current object is
-           * fully destroyed.
-           */
-          ~OutputHistory ();
+            /**
+             * Destructor. Makes sure that any background thread that may still be
+             * running writing data to disk finishes before the current object is
+             * fully destroyed.
+             */
+            ~OutputHistory();
 
-          /**
-           * Serialize the contents of this class as far as they are not read
-           * from input parameter files.
-           */
-          template <class Archive>
-          void serialize (Archive &ar, const unsigned int version);
+            /**
+             * Serialize the contents of this class as far as they are not read
+             * from input parameter files.
+             */
+            template <class Archive>
+            void
+            serialize(Archive &ar, const unsigned int version);
 
-          /**
-           * Whether the mesh changed since the last time we produced cell-based
-           * output.
-           */
-          bool mesh_changed;
+            /**
+             * Whether the mesh changed since the last time we produced cell-based
+             * output.
+             */
+            bool mesh_changed;
 
-          /**
-           * The most recent name of the mesh file, used to avoid redundant mesh
-           * output.
-           */
-          std::string last_mesh_file_name;
+            /**
+             * The most recent name of the mesh file, used to avoid redundant mesh
+             * output.
+             */
+            std::string last_mesh_file_name;
 
-          /**
-           * A list of pairs (time, pvtu_filename) that have so far been written
-           * and that we will pass to DataOutInterface::write_pvd_record to
-           * create a description file that can make the association between
-           * simulation time and corresponding file name (this is done because
-           * there is no way to store the simulation time inside the .pvtu or
-           * .vtu files).
-           */
-          std::vector<std::pair<double,std::string>> times_and_pvtu_names;
+            /**
+             * A list of pairs (time, pvtu_filename) that have so far been written
+             * and that we will pass to DataOutInterface::write_pvd_record to
+             * create a description file that can make the association between
+             * simulation time and corresponding file name (this is done because
+             * there is no way to store the simulation time inside the .pvtu or
+             * .vtu files).
+             */
+            std::vector<std::pair<double, std::string>> times_and_pvtu_names;
 
-          /**
-           * A list of list of filenames, sorted by timestep, that correspond to
-           * what has been created as output. This is used to create a descriptive
-           * .visit file for the entire simulation.
-           */
-          std::vector<std::vector<std::string>> output_file_names_by_timestep;
+            /**
+             * A list of list of filenames, sorted by timestep, that correspond to
+             * what has been created as output. This is used to create a descriptive
+             * .visit file for the entire simulation.
+             */
+            std::vector<std::vector<std::string>> output_file_names_by_timestep;
 
-          /**
-           * A set of data related to XDMF file sections describing the HDF5
-           * heavy data files created. These contain things such as the
-           * dimensions and names of data written at all steps during the
-           * simulation.
-           */
-          std::vector<XDMFEntry>  xdmf_entries;
+            /**
+             * A set of data related to XDMF file sections describing the HDF5
+             * heavy data files created. These contain things such as the
+             * dimensions and names of data written at all steps during the
+             * simulation.
+             */
+            std::vector<XDMFEntry> xdmf_entries;
 
-          /**
-           * Handle to a thread that is used to write data in the background.
-           * The writer() function runs on this background thread when outputting
-           * data for the `data_out` object.
-           */
-          std::thread background_thread;
+            /**
+             * Handle to a thread that is used to write data in the background.
+             * The writer() function runs on this background thread when outputting
+             * data for the `data_out` object.
+             */
+            std::thread background_thread;
         };
 
         /**
@@ -678,10 +676,11 @@ namespace aspect
          * @param output_history The OutputHistory object to fill.
          */
         template <typename DataOutType>
-        void write_description_files (const DataOutType &data_out,
-                                      const std::string &solution_file_prefix,
-                                      const std::vector<std::string> &filenames,
-                                      OutputHistory                  &output_history) const;
+        void
+        write_description_files(const DataOutType              &data_out,
+                                const std::string              &solution_file_prefix,
+                                const std::vector<std::string> &filenames,
+                                OutputHistory                  &output_history) const;
 
 
         /**
@@ -694,9 +693,10 @@ namespace aspect
          * which can then be used for the statistics file and screen output.
          */
         template <typename DataOutType>
-        std::string write_data_out_data(DataOutType   &data_out,
-                                        OutputHistory &output_history,
-                                        const std::map<std::string,std::string> &visualization_field_names_and_units) const;
+        std::string
+        write_data_out_data(DataOutType                              &data_out,
+                            OutputHistory                            &output_history,
+                            const std::map<std::string, std::string> &visualization_field_names_and_units) const;
     };
   }
 
@@ -707,17 +707,15 @@ namespace aspect
    *
    * @ingroup Postprocessing
    */
-#define ASPECT_REGISTER_VISUALIZATION_POSTPROCESSOR(classname,name,description) \
+#define ASPECT_REGISTER_VISUALIZATION_POSTPROCESSOR(classname, name, description) \
   template class classname<2>; \
   template class classname<3>; \
-  namespace ASPECT_REGISTER_VISUALIZATION_POSTPROCESSOR_ ## classname \
+  namespace ASPECT_REGISTER_VISUALIZATION_POSTPROCESSOR_##classname \
   { \
-    aspect::internal::Plugins::RegisterHelper<aspect::Postprocess::VisualizationPostprocessors::Interface<2>,classname<2>> \
-    dummy_ ## classname ## _2d (&aspect::Postprocess::Visualization<2>::register_visualization_postprocessor, \
-                                name, description); \
-    aspect::internal::Plugins::RegisterHelper<aspect::Postprocess::VisualizationPostprocessors::Interface<3>,classname<3>> \
-    dummy_ ## classname ## _3d (&aspect::Postprocess::Visualization<3>::register_visualization_postprocessor, \
-                                name, description); \
+    aspect::internal::Plugins::RegisterHelper<aspect::Postprocess::VisualizationPostprocessors::Interface<2>, classname<2>> \
+      dummy_##classname##_2d(&aspect::Postprocess::Visualization<2>::register_visualization_postprocessor, name, description); \
+    aspect::internal::Plugins::RegisterHelper<aspect::Postprocess::VisualizationPostprocessors::Interface<3>, classname<3>> \
+      dummy_##classname##_3d(&aspect::Postprocess::Visualization<3>::register_visualization_postprocessor, name, description); \
   }
 }
 

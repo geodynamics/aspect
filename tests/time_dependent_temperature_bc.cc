@@ -20,10 +20,10 @@
 
 
 #ifndef _aspect_boundary_temperature_time_dep_box_h
-#define _aspect_boundary_temperature_time_dep_box_h
+#  define _aspect_boundary_temperature_time_dep_box_h
 
-#include <aspect/boundary_temperature/interface.h>
-#include <aspect/simulator_access.h>
+#  include <aspect/boundary_temperature/interface.h>
+#  include <aspect/simulator_access.h>
 
 
 namespace aspect
@@ -45,9 +45,8 @@ namespace aspect
          *
          * @copydoc aspect::BoundaryTemperature::Interface::boundary_temperature()
          */
-        virtual
-        double boundary_temperature (const types::boundary_id boundary_indicator,
-                                     const Point<dim> &position) const;
+        virtual double
+        boundary_temperature(const types::boundary_id boundary_indicator, const Point<dim> &position) const;
 
         /**
          * Return the minimal the temperature on that part of the boundary on
@@ -56,8 +55,8 @@ namespace aspect
          * This value is used in computing dimensionless numbers such as the
          * Nusselt number indicating heat flux.
          */
-        virtual
-        double minimal_temperature (const std::set<types::boundary_id> &fixed_boundary_ids) const;
+        virtual double
+        minimal_temperature(const std::set<types::boundary_id> &fixed_boundary_ids) const;
 
         /**
          * Return the maximal the temperature on that part of the boundary on
@@ -66,26 +65,24 @@ namespace aspect
          * This value is used in computing dimensionless numbers such as the
          * Nusselt number indicating heat flux.
          */
-        virtual
-        double maximal_temperature (const std::set<types::boundary_id> &fixed_boundary_ids) const;
+        virtual double
+        maximal_temperature(const std::set<types::boundary_id> &fixed_boundary_ids) const;
 
         /**
          * Declare the parameters this class takes through input files. This
          * class declares the inner and outer boundary temperatures.
          */
-        static
-        void
-        declare_parameters (ParameterHandler &prm);
+        static void
+        declare_parameters(ParameterHandler &prm);
 
         /**
          * Read the parameters this class declares from the parameter file.
          */
-        virtual
-        void
-        parse_parameters (ParameterHandler &prm);
+        virtual void
+        parse_parameters(ParameterHandler &prm);
 
       private:
-        double temperature_[2*dim];
+        double temperature_[2 * dim];
     };
   }
 }
@@ -93,51 +90,46 @@ namespace aspect
 
 #endif
 
-#include <utility>
-#include <limits>
 #include <aspect/geometry_model/box.h>
+
+#include <limits>
+#include <utility>
 
 
 namespace aspect
 {
   namespace BoundaryTemperature
   {
-// ------------------------------ Time_Dep_Box -------------------
+    // ------------------------------ Time_Dep_Box -------------------
 
     template <int dim>
     double
-    Time_Dep_Box<dim>::
-    boundary_temperature (const types::boundary_id boundary_indicator,
-                          const Point<dim> &position) const
+    Time_Dep_Box<dim>::boundary_temperature(const types::boundary_id boundary_indicator, const Point<dim> &position) const
     {
       // verify that the geometry is a time_dep_box since only
       // for this geometry do we know for sure what boundary indicators it
       // uses and what they mean
-      Assert (dynamic_cast<const GeometryModel::Box<dim>*>(&this->get_geometry_model())
-              != 0,
-              ExcMessage ("This boundary model is only implemented if the geometry is "
-                          "a time_dep_box."));
+      Assert(dynamic_cast<const GeometryModel::Box<dim> *>(&this->get_geometry_model()) != 0,
+             ExcMessage("This boundary model is only implemented if the geometry is "
+                        "a time_dep_box."));
 
-      Assert (boundary_indicator<2*dim, ExcMessage ("Unknown boundary indicator."));
+      Assert(boundary_indicator < 2 * dim, ExcMessage("Unknown boundary indicator."));
       return temperature_[boundary_indicator] * this->get_time();
     }
 
 
     template <int dim>
     double
-    Time_Dep_Box<dim>::
-    minimal_temperature (const std::set<types::boundary_id> &fixed_boundary_ids) const
+    Time_Dep_Box<dim>::minimal_temperature(const std::set<types::boundary_id> &fixed_boundary_ids) const
     {
       if (fixed_boundary_ids.empty())
-        return *std::min_element(temperature_, temperature_+2*dim);
+        return *std::min_element(temperature_, temperature_ + 2 * dim);
       else
         {
           double min = maximal_temperature(fixed_boundary_ids);
-          for (typename std::set<types::boundary_id>::const_iterator
-               p = fixed_boundary_ids.begin();
-               p != fixed_boundary_ids.end(); ++p)
+          for (typename std::set<types::boundary_id>::const_iterator p = fixed_boundary_ids.begin(); p != fixed_boundary_ids.end(); ++p)
             if (p != fixed_boundary_ids.end())
-              min = std::min(min,temperature_[*p]);
+              min = std::min(min, temperature_[*p]);
           return min;
         }
     }
@@ -146,62 +138,65 @@ namespace aspect
 
     template <int dim>
     double
-    Time_Dep_Box<dim>::
-    maximal_temperature (const std::set<types::boundary_id> &fixed_boundary_ids) const
+    Time_Dep_Box<dim>::maximal_temperature(const std::set<types::boundary_id> &fixed_boundary_ids) const
     {
       if (fixed_boundary_ids.empty())
-        return *std::max_element(temperature_, temperature_+2*dim);
+        return *std::max_element(temperature_, temperature_ + 2 * dim);
       else
         {
           double max = -std::numeric_limits<double>::max();
-          for (typename std::set<types::boundary_id>::const_iterator
-               p = fixed_boundary_ids.begin();
-               p != fixed_boundary_ids.end(); ++p)
+          for (typename std::set<types::boundary_id>::const_iterator p = fixed_boundary_ids.begin(); p != fixed_boundary_ids.end(); ++p)
             if (p != fixed_boundary_ids.end())
-              max = std::max(max,temperature_[*p]);
+              max = std::max(max, temperature_[*p]);
           return max;
         }
     }
 
     template <int dim>
     void
-    Time_Dep_Box<dim>::declare_parameters (ParameterHandler &prm)
+    Time_Dep_Box<dim>::declare_parameters(ParameterHandler &prm)
     {
       prm.enter_subsection("Boundary temperature model");
       {
         prm.enter_subsection("Time_Dep_Box");
         {
-          prm.declare_entry ("Left temperature", "1",
-                             Patterns::Double (),
-                             "Temperature at the left boundary (at minimal x-value). Units: $\\text{K}$.");
-          prm.declare_entry ("Right temperature", "0",
-                             Patterns::Double (),
-                             "Temperature at the right boundary (at maximal x-value). Units: $\\text{K}$.");
-          prm.declare_entry ("Bottom temperature", "0",
-                             Patterns::Double (),
-                             "Temperature at the bottom boundary (at minimal z-value). Units: $\\text{K}$.");
-          prm.declare_entry ("Top temperature", "0",
-                             Patterns::Double (),
-                             "Temperature at the top boundary (at maximal x-value). Units: $\\text{K}$.");
-          if (dim==3)
+          prm.declare_entry("Left temperature",
+                            "1",
+                            Patterns::Double(),
+                            "Temperature at the left boundary (at minimal x-value). Units: $\\text{K}$.");
+          prm.declare_entry("Right temperature",
+                            "0",
+                            Patterns::Double(),
+                            "Temperature at the right boundary (at maximal x-value). Units: $\\text{K}$.");
+          prm.declare_entry("Bottom temperature",
+                            "0",
+                            Patterns::Double(),
+                            "Temperature at the bottom boundary (at minimal z-value). Units: $\\text{K}$.");
+          prm.declare_entry("Top temperature",
+                            "0",
+                            Patterns::Double(),
+                            "Temperature at the top boundary (at maximal x-value). Units: $\\text{K}$.");
+          if (dim == 3)
             {
-              prm.declare_entry ("Front temperature", "0",
-                                 Patterns::Double (),
-                                 "Temperature at the front boundary (at minimal y-value). Units: $\\text{K}$.");
-              prm.declare_entry ("Back temperature", "0",
-                                 Patterns::Double (),
-                                 "Temperature at the back boundary (at maximal y-value). Units: $\\text{K}$.");
+              prm.declare_entry("Front temperature",
+                                "0",
+                                Patterns::Double(),
+                                "Temperature at the front boundary (at minimal y-value). Units: $\\text{K}$.");
+              prm.declare_entry("Back temperature",
+                                "0",
+                                Patterns::Double(),
+                                "Temperature at the back boundary (at maximal y-value). Units: $\\text{K}$.");
             }
         }
-        prm.leave_subsection ();
+        prm.leave_subsection();
       }
-      prm.leave_subsection ();
+      prm.leave_subsection();
     }
 
 
     template <int dim>
     void
-    Time_Dep_Box<dim>::parse_parameters (ParameterHandler &prm)
+    Time_Dep_Box<dim>::parse_parameters(ParameterHandler &prm)
     {
       prm.enter_subsection("Boundary temperature model");
       {
@@ -210,28 +205,28 @@ namespace aspect
           switch (dim)
             {
               case 2:
-                temperature_[0] = prm.get_double ("Left temperature");
-                temperature_[1] = prm.get_double ("Right temperature");
-                temperature_[2] = prm.get_double ("Bottom temperature");
-                temperature_[3] = prm.get_double ("Top temperature");
+                temperature_[0] = prm.get_double("Left temperature");
+                temperature_[1] = prm.get_double("Right temperature");
+                temperature_[2] = prm.get_double("Bottom temperature");
+                temperature_[3] = prm.get_double("Top temperature");
                 break;
 
               case 3:
-                temperature_[0] = prm.get_double ("Left temperature");
-                temperature_[1] = prm.get_double ("Right temperature");
-                temperature_[2] = prm.get_double ("Front temperature");
-                temperature_[3] = prm.get_double ("Back temperature");
-                temperature_[4] = prm.get_double ("Bottom temperature");
-                temperature_[5] = prm.get_double ("Top temperature");
+                temperature_[0] = prm.get_double("Left temperature");
+                temperature_[1] = prm.get_double("Right temperature");
+                temperature_[2] = prm.get_double("Front temperature");
+                temperature_[3] = prm.get_double("Back temperature");
+                temperature_[4] = prm.get_double("Bottom temperature");
+                temperature_[5] = prm.get_double("Top temperature");
                 break;
 
               default:
-                Assert (false, ExcNotImplemented());
+                Assert(false, ExcNotImplemented());
             }
         }
-        prm.leave_subsection ();
+        prm.leave_subsection();
       }
-      prm.leave_subsection ();
+      prm.leave_subsection();
     }
 
 

@@ -18,9 +18,9 @@
   <http://www.gnu.org/licenses/>.
 */
 
+#include <aspect/geometry_model/interface.h>
 #include <aspect/material_model/depth_dependent.h>
 #include <aspect/utilities.h>
-#include <aspect/geometry_model/interface.h>
 
 #include <boost/lexical_cast.hpp>
 
@@ -49,17 +49,16 @@ namespace aspect
       // we get time passed as seconds (always) but may want
       // to reinterpret it in years
       if (this->convert_output_to_years())
-        viscosity_function.set_time (this->get_time() / year_in_seconds);
+        viscosity_function.set_time(this->get_time() / year_in_seconds);
       else
-        viscosity_function.set_time (this->get_time());
+        viscosity_function.set_time(this->get_time());
     }
 
 
 
     template <int dim>
     bool
-    DepthDependent<dim>::
-    is_compressible () const
+    DepthDependent<dim>::is_compressible() const
     {
       return base_model->is_compressible();
     }
@@ -77,16 +76,16 @@ namespace aspect
       else if (viscosity_source == function)
         {
           const Point<1> dpoint(depth);
-          const double viscosity = viscosity_function.value(dpoint);
-          Assert (viscosity > 0.0, ExcMessage("Viscosity depth function should be larger than zero"));
+          const double   viscosity = viscosity_function.value(dpoint);
+          Assert(viscosity > 0.0, ExcMessage("Viscosity depth function should be larger than zero"));
           return viscosity / reference_viscosity;
         }
       else if (viscosity_source == list)
         {
-          const unsigned int nlayers = depth_values.size()-1;
-          unsigned int i=0;
+          const unsigned int nlayers = depth_values.size() - 1;
+          unsigned int       i       = 0;
           /* find the layer containing the specified depth and return the corresponding viscosity */
-          while (depth > depth_values[i] && i<nlayers)
+          while (depth > depth_values[i] && i < nlayers)
             {
               /* increment i until depth is above base of layer i */
               ++i;
@@ -110,13 +109,13 @@ namespace aspect
     template <int dim>
     void
     DepthDependent<dim>::evaluate(const typename Interface<dim>::MaterialModelInputs &in,
-                                  typename Interface<dim>::MaterialModelOutputs &out) const
+                                  typename Interface<dim>::MaterialModelOutputs      &out) const
     {
-      base_model->evaluate(in,out);
+      base_model->evaluate(in, out);
       if (in.requests_property(MaterialProperties::viscosity))
         {
           // Scale the base model viscosity value by the depth dependent prefactor
-          for (unsigned int i=0; i < out.n_evaluation_points(); ++i)
+          for (unsigned int i = 0; i < out.n_evaluation_points(); ++i)
             {
               const double depth = this->get_geometry_model().depth(in.position[i]);
               out.viscosities[i] *= calculate_depth_dependent_prefactor(depth);
@@ -128,51 +127,56 @@ namespace aspect
 
     template <int dim>
     void
-    DepthDependent<dim>::declare_parameters (ParameterHandler &prm)
+    DepthDependent<dim>::declare_parameters(ParameterHandler &prm)
     {
       prm.enter_subsection("Material model");
       {
         // Depth-dependent parameters from the rheology plugin
-        Rheology::AsciiDepthProfile<dim>::declare_parameters(prm,
-                                                             "Depth dependent model");
+        Rheology::AsciiDepthProfile<dim>::declare_parameters(prm, "Depth dependent model");
 
         prm.enter_subsection("Depth dependent model");
         {
-          prm.declare_entry("Base model","simple",
+          prm.declare_entry("Base model",
+                            "simple",
                             Patterns::Selection(MaterialModel::get_valid_model_names_pattern<dim>()),
                             "The name of a material model that will be modified by a depth "
                             "dependent viscosity. Valid values for this parameter "
                             "are the names of models that are also valid for the "
                             "``Material models/Model name'' parameter. See the documentation for "
                             "that for more information.");
-          prm.declare_entry ("Depth dependence method", "None",
-                             Patterns::Selection("Function|File|List|None"),
-                             "Method that is used to specify how the viscosity should vary with depth.");
-          prm.declare_entry("Depth list", "", Patterns::List(Patterns::Double ()),
+          prm.declare_entry("Depth dependence method",
+                            "None",
+                            Patterns::Selection("Function|File|List|None"),
+                            "Method that is used to specify how the viscosity should vary with depth.");
+          prm.declare_entry("Depth list",
+                            "",
+                            Patterns::List(Patterns::Double()),
                             "A comma-separated list of depth values for use with the ``List'' "
                             "``Depth dependence method''. The list must be provided in order of "
                             "increasing depth, and the last value must be greater than or equal to "
                             "the maximal depth of the model. The depth list is interpreted as a layered "
                             "viscosity structure and the depth values specify the maximum depths of each "
                             "layer.");
-          prm.declare_entry("Viscosity list", "", Patterns::List(Patterns::Double ()),
+          prm.declare_entry("Viscosity list",
+                            "",
+                            Patterns::List(Patterns::Double()),
                             "A comma-separated list of viscosity values, corresponding to the depth values "
                             "provided in ``Depth list''. The number of viscosity values specified here must "
                             "be the same as the number of depths provided in ``Depth list''.");
 
-          prm.declare_entry ("Reference viscosity",
-                             boost::lexical_cast<std::string>(std::numeric_limits<double>::max()),
-                             Patterns::Double (0.),
-                             "The value of the constant reference viscosity $\\eta_r$ that is used to scale "
-                             "the non-dimensional depth-dependent viscosity prefactor. "
-                             "Units: \\si{\\pascal\\second}.");
+          prm.declare_entry("Reference viscosity",
+                            boost::lexical_cast<std::string>(std::numeric_limits<double>::max()),
+                            Patterns::Double(0.),
+                            "The value of the constant reference viscosity $\\eta_r$ that is used to scale "
+                            "the non-dimensional depth-dependent viscosity prefactor. "
+                            "Units: \\si{\\pascal\\second}.");
 
-          prm.declare_alias ("Data file name","Viscosity depth file");
+          prm.declare_alias("Data file name", "Viscosity depth file");
 
           prm.enter_subsection("Viscosity depth function");
           {
-            Functions::ParsedFunction<1>::declare_parameters(prm,1);
-            prm.declare_entry("Function expression","1.0e21");
+            Functions::ParsedFunction<1>::declare_parameters(prm, 1);
+            prm.declare_entry("Function expression", "1.0e21");
           }
           prm.leave_subsection();
         }
@@ -185,22 +189,22 @@ namespace aspect
 
     template <int dim>
     void
-    DepthDependent<dim>::parse_parameters (ParameterHandler &prm)
+    DepthDependent<dim>::parse_parameters(ParameterHandler &prm)
     {
       prm.enter_subsection("Material model");
       {
         prm.enter_subsection("Depth dependent model");
         {
-          AssertThrow( prm.get("Base model") != "depth dependent",
-                       ExcMessage("You may not use ``depth dependent'' as the base model for "
-                                  "a depth-dependent model.") );
+          AssertThrow(prm.get("Base model") != "depth dependent",
+                      ExcMessage("You may not use ``depth dependent'' as the base model for "
+                                 "a depth-dependent model."));
 
           // create the base model and initialize its SimulatorAccess base
           // class; it will get a chance to read its parameters below after we
           // leave the current section
           base_model = create_material_model<dim>(prm.get("Base model"));
-          if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(base_model.get()))
-            sim->initialize_simulator (this->get_simulator());
+          if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim> *>(base_model.get()))
+            sim->initialize_simulator(this->get_simulator());
 
           if (prm.get("Depth dependence method") == "Function")
             viscosity_source = function;
@@ -223,15 +227,13 @@ namespace aspect
           if (viscosity_source == list)
             {
               /* check that length of depth values and viscosity values are compatible */
-              AssertThrow( depth_values.size() == viscosity_values.size() ,
-                           ExcMessage("Depth list must be same size as Viscosity list"));
+              AssertThrow(depth_values.size() == viscosity_values.size(), ExcMessage("Depth list must be same size as Viscosity list"));
               /* check that list is in ascending order */
-              for (unsigned int i=1; i<depth_values.size(); ++i)
-                AssertThrow(depth_values[i] > depth_values[i-1],
-                            ExcMessage("Viscosity depth values must be strictly ascending"));
+              for (unsigned int i = 1; i < depth_values.size(); ++i)
+                AssertThrow(depth_values[i] > depth_values[i - 1], ExcMessage("Viscosity depth values must be strictly ascending"));
               /* check that last layer includes base of model */
-              AssertThrow( *(depth_values.end()-1) >= this->get_geometry_model().maximal_depth(),
-                           ExcMessage("Last value in Depth list must be greater than or equal to maximal depth of domain"));
+              AssertThrow(*(depth_values.end() - 1) >= this->get_geometry_model().maximal_depth(),
+                          ExcMessage("Last value in Depth list must be greater than or equal to maximal depth of domain"));
             }
 
           prm.enter_subsection("Viscosity depth function");
@@ -261,7 +263,7 @@ namespace aspect
         if (viscosity_source == file)
           {
             depth_dependent_rheology = std::make_unique<Rheology::AsciiDepthProfile<dim>>();
-            depth_dependent_rheology->initialize_simulator (this->get_simulator());
+            depth_dependent_rheology->initialize_simulator(this->get_simulator());
             depth_dependent_rheology->parse_parameters(prm, "Depth dependent model");
             depth_dependent_rheology->initialize();
           }
@@ -278,7 +280,7 @@ namespace aspect
 
     template <int dim>
     void
-    DepthDependent<dim>::create_additional_named_outputs (MaterialModel::MaterialModelOutputs<dim> &out) const
+    DepthDependent<dim>::create_additional_named_outputs(MaterialModel::MaterialModelOutputs<dim> &out) const
     {
       base_model->create_additional_named_outputs(out);
     }
@@ -344,7 +346,6 @@ namespace aspect
                                    "greater than or equal to the maximal depth of the model. The list of layer depths is "
                                    "specified as ``Material model/Depth dependent model/Depth list'' and the corresponding "
                                    "list of layer viscosities is specified as "
-                                   "``Material model/Depth dependent model/Viscosity list''"
-                                  )
+                                   "``Material model/Depth dependent model/Viscosity list''")
   }
 }

@@ -24,9 +24,8 @@
 
 #include <aspect/mesh_deformation/interface.h>
 #include <aspect/mesh_deformation/parallel_unstructured_interface.h>
-#include <aspect/simulator_access.h>
-
 #include <aspect/python_helper.h>
+#include <aspect/simulator_access.h>
 
 namespace aspect
 {
@@ -48,21 +47,22 @@ namespace aspect
          * Initialize function, this creates the Python interpreter and
          * and loads the Landlab Python module.
          */
-        void initialize() override;
+        void
+        initialize() override;
 
         /**
          * Update function. This sets the evaluation points and creates the
          * communication data structures.
          */
-        void update() override;
+        void
+        update() override;
 
         /**
          * Call into the Landlab Python module to compute the updated velocities
          * at the evaluation points.
          */
-        virtual
-        std::vector<Tensor<1,dim>>
-        compute_updated_velocities_at_points (const std::vector<std::vector<double>> &current_solution_at_points) const override;
+        virtual std::vector<Tensor<1, dim>>
+        compute_updated_velocities_at_points(const std::vector<std::vector<double>> &current_solution_at_points) const override;
 
         /**
          * Compute the initial deformation by querying the Landlab Python module for the
@@ -70,21 +70,22 @@ namespace aspect
          * creating corresponding constraints.
          */
         void
-        compute_initial_deformation_as_constraints(const Mapping<dim> &mapping,
-                                                   const DoFHandler<dim> &mesh_deformation_dof_handler,
-                                                   const types::boundary_id boundary_indicator,
+        compute_initial_deformation_as_constraints(const Mapping<dim>        &mapping,
+                                                   const DoFHandler<dim>     &mesh_deformation_dof_handler,
+                                                   const types::boundary_id   boundary_indicator,
                                                    AffineConstraints<double> &constraints) const override;
 
         /**
          * Declare parameters.
          */
-        static
-        void declare_parameters (ParameterHandler &prm);
+        static void
+        declare_parameters(ParameterHandler &prm);
 
         /**
          * Parse parameters.
          */
-        void parse_parameters (ParameterHandler &prm) override;
+        void
+        parse_parameters(ParameterHandler &prm) override;
 
 #if defined(ASPECT_WITH_LANDLAB)
       private:

@@ -33,15 +33,15 @@ namespace aspect
      * A class containing the functions to assemble the Stokes preconditioner.
      */
     template <int dim>
-    class StokesPreconditioner : public Assemblers::Interface<dim>,
-      public SimulatorAccess<dim>
+    class StokesPreconditioner : public Assemblers::Interface<dim>, public SimulatorAccess<dim>
     {
       public:
         void
         execute(internal::Assembly::Scratch::ScratchBase<dim>   &scratch_base,
                 internal::Assembly::CopyData::CopyDataBase<dim> &data_base) const override;
 
-        void create_additional_material_model_outputs(MaterialModel::MaterialModelOutputs<dim> &outputs) const override;
+        void
+        create_additional_material_model_outputs(MaterialModel::MaterialModelOutputs<dim> &outputs) const override;
     };
 
     /**
@@ -49,8 +49,7 @@ namespace aspect
      * to the Stokes preconditioner.
      */
     template <int dim>
-    class StokesCompressiblePreconditioner : public Assemblers::Interface<dim>,
-      public SimulatorAccess<dim>
+    class StokesCompressiblePreconditioner : public Assemblers::Interface<dim>, public SimulatorAccess<dim>
     {
       public:
         void
@@ -63,8 +62,7 @@ namespace aspect
      * Stokes equation for the current cell.
      */
     template <int dim>
-    class StokesIncompressibleTerms : public Assemblers::Interface<dim>,
-      public SimulatorAccess<dim>
+    class StokesIncompressibleTerms : public Assemblers::Interface<dim>, public SimulatorAccess<dim>
     {
       public:
         void
@@ -74,7 +72,8 @@ namespace aspect
         /**
          * Create AdditionalMaterialOutputsStokesRHS if we need to do so.
          */
-        void create_additional_material_model_outputs(MaterialModel::MaterialModelOutputs<dim> &outputs) const override;
+        void
+        create_additional_material_model_outputs(MaterialModel::MaterialModelOutputs<dim> &outputs) const override;
     };
 
     /**
@@ -82,8 +81,7 @@ namespace aspect
      * compressible models, because the divergence of the velocity is not longer zero.
      */
     template <int dim>
-    class StokesCompressibleStrainRateViscosityTerm : public Assemblers::Interface<dim>,
-      public SimulatorAccess<dim>
+    class StokesCompressibleStrainRateViscosityTerm : public Assemblers::Interface<dim>, public SimulatorAccess<dim>
     {
       public:
         void
@@ -98,11 +96,11 @@ namespace aspect
      * includes this term explicitly in the right-hand side vector to preserve
      * the symmetry of the matrix.
      * This class approximates this term as
-     * $- \nabla \cdot \mathbf{u} = \frac{1}{\rho^{\ast}} \frac{\partial rho}{\partial z} \frac{\mathbf{g}}{||\mathbf{g}||} \cdot \mathbf{u}$
+     * $- \nabla \cdot \mathbf{u} = \frac{1}{\rho^{\ast}} \frac{\partial rho}{\partial z} \frac{\mathbf{g}}{||\mathbf{g}||} \cdot
+     * \mathbf{u}$
      */
     template <int dim>
-    class StokesReferenceDensityCompressibilityTerm : public Assemblers::Interface<dim>,
-      public SimulatorAccess<dim>
+    class StokesReferenceDensityCompressibilityTerm : public Assemblers::Interface<dim>, public SimulatorAccess<dim>
     {
       public:
         void
@@ -117,11 +115,11 @@ namespace aspect
      * includes this term implicitly in the matrix,
      * which is therefore not longer symmetric.
      * This class approximates this term as
-     * $ - \nabla \cdot \mathbf{u} - \frac{1}{\rho^{\ast}} \frac{\partial rho{^\ast}}{\partial z} \frac{\mathbf{g}}{||\mathbf{g}||} \cdot \mathbf{u} = 0$
+     * $ - \nabla \cdot \mathbf{u} - \frac{1}{\rho^{\ast}} \frac{\partial rho{^\ast}}{\partial z} \frac{\mathbf{g}}{||\mathbf{g}||} \cdot
+     * \mathbf{u} = 0$
      */
     template <int dim>
-    class StokesImplicitReferenceDensityCompressibilityTerm : public Assemblers::Interface<dim>,
-      public SimulatorAccess<dim>
+    class StokesImplicitReferenceDensityCompressibilityTerm : public Assemblers::Interface<dim>, public SimulatorAccess<dim>
     {
       public:
         void
@@ -139,8 +137,7 @@ namespace aspect
      * $\kappa = \frac{1}{\rho} \frac{\partial rho}{\partial p}$.
      */
     template <int dim>
-    class StokesIsentropicCompressionTerm : public Assemblers::Interface<dim>,
-      public SimulatorAccess<dim>
+    class StokesIsentropicCompressionTerm : public Assemblers::Interface<dim>, public SimulatorAccess<dim>
     {
       public:
         void
@@ -157,8 +154,7 @@ namespace aspect
      * and the density is taken from a compositional field of the type 'density'.
      */
     template <int dim>
-    class StokesProjectedDensityFieldTerm : public Assemblers::Interface<dim>,
-      public SimulatorAccess<dim>
+    class StokesProjectedDensityFieldTerm : public Assemblers::Interface<dim>, public SimulatorAccess<dim>
     {
       public:
         void
@@ -180,8 +176,7 @@ namespace aspect
      * and both are defined in the material model.
      */
     template <int dim>
-    class StokesHydrostaticCompressionTerm : public Assemblers::Interface<dim>,
-      public SimulatorAccess<dim>
+    class StokesHydrostaticCompressionTerm : public Assemblers::Interface<dim>, public SimulatorAccess<dim>
     {
       public:
         void
@@ -194,8 +189,7 @@ namespace aspect
      * prescribe the boundary tractions.
      */
     template <int dim>
-    class StokesBoundaryTraction : public Assemblers::Interface<dim>,
-      public SimulatorAccess<dim>
+    class StokesBoundaryTraction : public Assemblers::Interface<dim>, public SimulatorAccess<dim>
     {
       public:
         void
@@ -211,8 +205,7 @@ namespace aspect
      * through Modern Numerical Methods. II: Realistic Models and Problems."
      */
     template <int dim>
-    class StokesPressureRHSCompatibilityModification : public Assemblers::Interface<dim>,
-      public SimulatorAccess<dim>
+    class StokesPressureRHSCompatibilityModification : public Assemblers::Interface<dim>, public SimulatorAccess<dim>
     {
       public:
         void
@@ -226,8 +219,7 @@ namespace aspect
      * PrescribedDilation plugin.
      */
     template <int dim>
-    class StokesPrescribedDilation : public Assemblers::Interface<dim>,
-      public SimulatorAccess<dim>
+    class StokesPrescribedDilation : public Assemblers::Interface<dim>, public SimulatorAccess<dim>
     {
       public:
         void

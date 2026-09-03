@@ -19,9 +19,11 @@
 */
 
 
+#include <aspect/global.h>
+
 #include <aspect/boundary_velocity/function.h>
 #include <aspect/utilities.h>
-#include <aspect/global.h>
+
 #include <deal.II/base/signaling_nan.h>
 
 namespace aspect
@@ -29,25 +31,22 @@ namespace aspect
   namespace BoundaryVelocity
   {
     template <int dim>
-    Function<dim>::Function ()
-      :
-      boundary_velocity_function (dim)
+    Function<dim>::Function()
+      : boundary_velocity_function(dim)
     {}
 
 
 
     template <int dim>
-    Tensor<1,dim>
-    Function<dim>::
-    boundary_velocity (const types::boundary_id ,
-                       const Point<dim> &position) const
+    Tensor<1, dim>
+    Function<dim>::boundary_velocity(const types::boundary_id, const Point<dim> &position) const
     {
-      Tensor<1,dim> velocity;
+      Tensor<1, dim> velocity;
 
       const Utilities::NaturalCoordinate<dim> point =
         this->get_geometry_model().cartesian_to_other_coordinates(position, coordinate_system);
 
-      for (unsigned int d=0; d<dim; ++d)
+      for (unsigned int d = 0; d < dim; ++d)
         velocity[d] = boundary_velocity_function.value(Utilities::convert_array_to_point<dim>(point.get_coordinates()), d);
 
       if (use_spherical_unit_vectors)
@@ -76,39 +75,41 @@ namespace aspect
       // we get time passed as seconds (always) but may want
       // to reinterpret it in years
       if (this->convert_output_to_years())
-        boundary_velocity_function.set_time (this->get_time() / year_in_seconds);
+        boundary_velocity_function.set_time(this->get_time() / year_in_seconds);
       else
-        boundary_velocity_function.set_time (this->get_time());
+        boundary_velocity_function.set_time(this->get_time());
     }
 
 
 
     template <int dim>
     void
-    Function<dim>::declare_parameters (ParameterHandler &prm)
+    Function<dim>::declare_parameters(ParameterHandler &prm)
     {
       prm.enter_subsection("Boundary velocity model");
       {
         prm.enter_subsection("Function");
         {
-          prm.declare_entry ("Coordinate system", "cartesian",
-                             Patterns::Selection ("cartesian|spherical|depth"),
-                             "A selection that determines the assumed coordinate "
-                             "system for the function variables. Allowed values "
-                             "are `cartesian', `spherical', and `depth'. `spherical' coordinates "
-                             "are interpreted as r,phi or r,phi,theta in 2d/3d "
-                             "respectively with theta being the polar angle. `depth' "
-                             "will create a function, in which only the first "
-                             "parameter is non-zero, which is interpreted to "
-                             "be the depth of the point.");
-          prm.declare_entry ("Use spherical unit vectors", "false",
-                             Patterns::Bool (),
-                             "Specify velocity as $r$, $\\phi$, and $\\theta$ components "
-                             "instead of $x$, $y$, and $z$. Positive velocities point up, east, "
-                             "and north (in 3d) or out and clockwise (in 2d). "
-                             "This setting only makes sense for spherical geometries.");
+          prm.declare_entry("Coordinate system",
+                            "cartesian",
+                            Patterns::Selection("cartesian|spherical|depth"),
+                            "A selection that determines the assumed coordinate "
+                            "system for the function variables. Allowed values "
+                            "are `cartesian', `spherical', and `depth'. `spherical' coordinates "
+                            "are interpreted as r,phi or r,phi,theta in 2d/3d "
+                            "respectively with theta being the polar angle. `depth' "
+                            "will create a function, in which only the first "
+                            "parameter is non-zero, which is interpreted to "
+                            "be the depth of the point.");
+          prm.declare_entry("Use spherical unit vectors",
+                            "false",
+                            Patterns::Bool(),
+                            "Specify velocity as $r$, $\\phi$, and $\\theta$ components "
+                            "instead of $x$, $y$, and $z$. Positive velocities point up, east, "
+                            "and north (in 3d) or out and clockwise (in 2d). "
+                            "This setting only makes sense for spherical geometries.");
 
-          Functions::ParsedFunction<dim>::declare_parameters (prm, dim);
+          Functions::ParsedFunction<dim>::declare_parameters(prm, dim);
         }
         prm.leave_subsection();
       }
@@ -119,22 +120,22 @@ namespace aspect
 
     template <int dim>
     void
-    Function<dim>::parse_parameters (ParameterHandler &prm)
+    Function<dim>::parse_parameters(ParameterHandler &prm)
     {
       prm.enter_subsection("Boundary velocity model");
       {
         prm.enter_subsection("Function");
         {
-          coordinate_system = Utilities::Coordinates::string_to_coordinate_system(prm.get("Coordinate system"));
+          coordinate_system          = Utilities::Coordinates::string_to_coordinate_system(prm.get("Coordinate system"));
           use_spherical_unit_vectors = prm.get_bool("Use spherical unit vectors");
           if (use_spherical_unit_vectors)
-            AssertThrow (this->get_geometry_model().natural_coordinate_system() == Utilities::Coordinates::spherical,
-                         ExcMessage ("Spherical unit vectors should not be used "
-                                     "when geometry model is not spherical."));
+            AssertThrow(this->get_geometry_model().natural_coordinate_system() == Utilities::Coordinates::spherical,
+                        ExcMessage("Spherical unit vectors should not be used "
+                                   "when geometry model is not spherical."));
         }
         try
           {
-            boundary_velocity_function.parse_parameters (prm);
+            boundary_velocity_function.parse_parameters(prm);
           }
         catch (...)
           {

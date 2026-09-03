@@ -20,6 +20,7 @@
 
 
 #include <aspect/global.h>
+
 #include <aspect/time_stepping/function.h>
 
 namespace aspect
@@ -33,10 +34,10 @@ namespace aspect
       const double time_scale    = this->convert_output_to_years() ? constants::year_in_seconds : 1.0;
       const double new_time_step = function.value(Point<1>(this->get_time()) / time_scale) * time_scale;
 
-      AssertThrow (new_time_step > 0,
-                   ExcMessage("The time step length for the each time step needs to be positive, "
-                              "but the computed step length of the \"function\" plugin was: " +
-                              std::to_string(new_time_step) + "."));
+      AssertThrow(new_time_step > 0,
+                  ExcMessage("The time step length for the each time step needs to be positive, "
+                             "but the computed step length of the \"function\" plugin was: " +
+                             std::to_string(new_time_step) + "."));
 
       return new_time_step;
     }
@@ -45,21 +46,20 @@ namespace aspect
 
     template <int dim>
     void
-    Function<dim>::declare_parameters (ParameterHandler &prm)
+    Function<dim>::declare_parameters(ParameterHandler &prm)
     {
       prm.enter_subsection("Time stepping");
       {
         prm.enter_subsection("Function");
-        Functions::ParsedFunction<1>::declare_parameters (prm, 1);
-        prm.declare_entry("Function expression", "1.0",
+        Functions::ParsedFunction<1>::declare_parameters(prm, 1);
+        prm.declare_entry("Function expression",
+                          "1.0",
                           Patterns::Anything(),
                           "Expression for the time step size as a function of 'time'."
                           "Units: \\si{\\year} if the "
                           "'Use years instead of seconds' parameter is set; "
                           "\\si{\\second} otherwise.");
-        prm.declare_entry("Variable names", "time",
-                          Patterns::Anything(),
-                          "Name for the variable representing the current time.");
+        prm.declare_entry("Variable names", "time", Patterns::Anything(), "Name for the variable representing the current time.");
         prm.leave_subsection();
       }
       prm.leave_subsection();
@@ -68,14 +68,14 @@ namespace aspect
 
     template <int dim>
     void
-    Function<dim>::parse_parameters (ParameterHandler &prm)
+    Function<dim>::parse_parameters(ParameterHandler &prm)
     {
       prm.enter_subsection("Time stepping");
       {
         prm.enter_subsection("Function");
         try
           {
-            function.parse_parameters (prm);
+            function.parse_parameters(prm);
           }
         catch (...)
           {

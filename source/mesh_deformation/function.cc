@@ -19,8 +19,8 @@
  */
 
 
-#include <aspect/mesh_deformation/function.h>
 #include <aspect/geometry_model/interface.h>
+#include <aspect/mesh_deformation/function.h>
 
 #include <deal.II/numerics/vector_tools.h>
 
@@ -30,22 +30,21 @@ namespace aspect
   {
     template <int dim>
     BoundaryFunction<dim>::BoundaryFunction()
-      :
-      function(dim)
+      : function(dim)
     {}
 
 
 
     template <int dim>
     void
-    BoundaryFunction<dim>::update ()
+    BoundaryFunction<dim>::update()
     {
       // we get time passed as seconds (always) but may want
       // to reinterpret it in years
       if (this->convert_output_to_years())
-        function.set_time (this->get_time() / year_in_seconds);
+        function.set_time(this->get_time() / year_in_seconds);
       else
-        function.set_time (this->get_time());
+        function.set_time(this->get_time());
     }
 
 
@@ -58,23 +57,20 @@ namespace aspect
      */
     template <int dim>
     void
-    BoundaryFunction<dim>::compute_velocity_constraints_on_boundary(const DoFHandler<dim> &mesh_deformation_dof_handler,
-                                                                    AffineConstraints<double> &mesh_velocity_constraints,
+    BoundaryFunction<dim>::compute_velocity_constraints_on_boundary(const DoFHandler<dim>              &mesh_deformation_dof_handler,
+                                                                    AffineConstraints<double>          &mesh_velocity_constraints,
                                                                     const std::set<types::boundary_id> &boundary_ids) const
     {
       // Loop over all boundary indicators to set the velocity constraints
       for (const auto boundary_id : boundary_ids)
         {
-          Utilities::VectorFunctionFromVelocityFunctionObject<dim> vel
-          (dim,
-           [&] (const dealii::Point<dim> &x) -> Tensor<1,dim>
-          {
-            Tensor<1,dim> velocity;
+          Utilities::VectorFunctionFromVelocityFunctionObject<dim> vel(dim, [&](const dealii::Point<dim> &x) -> Tensor<1, dim> {
+            Tensor<1, dim> velocity;
 
             // convert the position into the selected coordinate system
             const Utilities::NaturalCoordinate<dim> point = this->get_geometry_model().cartesian_to_other_coordinates(x, coordinate_system);
 
-            for (unsigned int d=0; d<dim; ++d)
+            for (unsigned int d = 0; d < dim; ++d)
               velocity[d] = function.value(Utilities::convert_array_to_point<dim>(point.get_coordinates()), d);
 
             if (this->convert_output_to_years())
@@ -83,11 +79,8 @@ namespace aspect
             return velocity;
           });
 
-          VectorTools::interpolate_boundary_values (this->get_mapping(),
-                                                    mesh_deformation_dof_handler,
-                                                    boundary_id,
-                                                    vel,
-                                                    mesh_velocity_constraints);
+          VectorTools::interpolate_boundary_values(
+            this->get_mapping(), mesh_deformation_dof_handler, boundary_id, vel, mesh_velocity_constraints);
         }
     }
 
@@ -95,8 +88,7 @@ namespace aspect
 
     template <int dim>
     bool
-    BoundaryFunction<dim>::
-    needs_surface_stabilization () const
+    BoundaryFunction<dim>::needs_surface_stabilization() const
     {
       return false;
     }
@@ -104,39 +96,42 @@ namespace aspect
 
 
     template <int dim>
-    void BoundaryFunction<dim>::declare_parameters(ParameterHandler &prm)
+    void
+    BoundaryFunction<dim>::declare_parameters(ParameterHandler &prm)
     {
-      prm.enter_subsection ("Mesh deformation");
+      prm.enter_subsection("Mesh deformation");
       {
-        prm.enter_subsection ("Boundary function");
+        prm.enter_subsection("Boundary function");
         {
-          prm.declare_entry ("Coordinate system", "cartesian",
-                             Patterns::Selection ("cartesian|spherical|depth"),
-                             "A selection that determines the assumed coordinate "
-                             "system for the function variables. Allowed values "
-                             "are `cartesian', `spherical', and `depth'. `spherical' coordinates "
-                             "are interpreted as r,phi or r,phi,theta in 2d/3d "
-                             "respectively with theta being the polar angle. `depth' "
-                             "will create a function, in which only the first "
-                             "parameter is non-zero, which is interpreted to "
-                             "be the depth of the point.");
-          Functions::ParsedFunction<dim>::declare_parameters (prm, dim);
+          prm.declare_entry("Coordinate system",
+                            "cartesian",
+                            Patterns::Selection("cartesian|spherical|depth"),
+                            "A selection that determines the assumed coordinate "
+                            "system for the function variables. Allowed values "
+                            "are `cartesian', `spherical', and `depth'. `spherical' coordinates "
+                            "are interpreted as r,phi or r,phi,theta in 2d/3d "
+                            "respectively with theta being the polar angle. `depth' "
+                            "will create a function, in which only the first "
+                            "parameter is non-zero, which is interpreted to "
+                            "be the depth of the point.");
+          Functions::ParsedFunction<dim>::declare_parameters(prm, dim);
         }
         prm.leave_subsection();
       }
-      prm.leave_subsection ();
+      prm.leave_subsection();
     }
 
     template <int dim>
-    void BoundaryFunction<dim>::parse_parameters(ParameterHandler &prm)
+    void
+    BoundaryFunction<dim>::parse_parameters(ParameterHandler &prm)
     {
-      prm.enter_subsection ("Mesh deformation");
+      prm.enter_subsection("Mesh deformation");
       {
         prm.enter_subsection("Boundary function");
         {
           try
             {
-              function.parse_parameters (prm);
+              function.parse_parameters(prm);
             }
           catch (...)
             {
@@ -153,7 +148,7 @@ namespace aspect
         }
         prm.leave_subsection();
       }
-      prm.leave_subsection ();
+      prm.leave_subsection();
     }
   }
 }

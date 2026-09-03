@@ -39,15 +39,15 @@ namespace aspect
      * @ingroup InitialCompositionModels
      */
     template <int dim>
-    class AdiabaticDensity : public Interface<dim>,
-      public SimulatorAccess<dim>
+    class AdiabaticDensity : public Interface<dim>, public SimulatorAccess<dim>
     {
       public:
         /**
          * Return the initial composition as the adiabatic density at this
          * point.
          */
-        double initial_composition (const Point<dim> &position, const unsigned int n_comp) const override;
+        double
+        initial_composition(const Point<dim> &position, const unsigned int n_comp) const override;
     };
   }
 }

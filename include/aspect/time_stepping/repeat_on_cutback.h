@@ -41,7 +41,7 @@ namespace aspect
         /**
          * Constructor.
          */
-        RepeatOnCutback () = default;
+        RepeatOnCutback() = default;
 
         /**
          * @copydoc aspect::TimeStepping::Interface<dim>::execute()
@@ -55,12 +55,11 @@ namespace aspect
         std::pair<Reaction, double>
         determine_reaction(const TimeStepInfo &info) override;
 
-        static
-        void
-        declare_parameters (ParameterHandler &prm);
+        static void
+        declare_parameters(ParameterHandler &prm);
 
         void
-        parse_parameters (ParameterHandler &prm) override;
+        parse_parameters(ParameterHandler &prm) override;
 
       private:
         /**

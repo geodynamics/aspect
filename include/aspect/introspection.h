@@ -22,14 +22,14 @@
 #ifndef _aspect_introspection_h
 #define _aspect_introspection_h
 
+#include <aspect/fe_variable_collection.h>
+#include <aspect/parameters.h>
+
 #include <deal.II/base/index_set.h>
 #include <deal.II/base/quadrature.h>
 #include <deal.II/fe/component_mask.h>
-#include <deal.II/fe/fe_values_extractors.h>
 #include <deal.II/fe/fe.h>
-
-#include <aspect/fe_variable_collection.h>
-#include <aspect/parameters.h>
+#include <deal.II/fe/fe_values_extractors.h>
 
 #include <map>
 
@@ -41,7 +41,7 @@ namespace aspect
    */
   template <int dim>
   std::vector<VariableDeclaration<dim>>
-  construct_default_variables (const Parameters<dim> &parameters);
+  construct_default_variables(const Parameters<dim> &parameters);
 
 
   /**
@@ -51,96 +51,94 @@ namespace aspect
    */
   struct CompositionalFieldDescription
   {
-    /**
-     * This enum lists available compositional field types.
-     */
-    enum Type
-    {
-      chemical_composition = 0,
-      stress = 1,
-      strain = 2,
-      grain_size = 3,
-      porosity = 4,
-      density = 5,
-      entropy = 6,
-      reaction_progress = 7,
-      generic = 8,
-      unspecified = 9
-    } type;
+      /**
+       * This enum lists available compositional field types.
+       */
+      enum Type
+      {
+        chemical_composition = 0,
+        stress               = 1,
+        strain               = 2,
+        grain_size           = 3,
+        porosity             = 4,
+        density              = 5,
+        entropy              = 6,
+        reaction_progress    = 7,
+        generic              = 8,
+        unspecified          = 9
+      } type;
 
-    /**
-     * The number of different types defined in Type.
-     */
-    constexpr static unsigned int n_types = 9;
+      /**
+       * The number of different types defined in Type.
+       */
+      constexpr static unsigned int n_types = 9;
 
-    /**
-     * This function translates an input string into the
-     * available enum options for the type of compositional field.
-     */
-    static
-    Type
-    parse_type(const std::string &input)
-    {
-      if (input == "chemical composition")
-        return CompositionalFieldDescription::chemical_composition;
-      else if (input == "stress")
-        return CompositionalFieldDescription::stress;
-      else if (input == "strain")
-        return CompositionalFieldDescription::strain;
-      else if (input == "grain size")
-        return CompositionalFieldDescription::grain_size;
-      else if (input == "porosity")
-        return CompositionalFieldDescription::porosity;
-      else if (input == "density")
-        return CompositionalFieldDescription::density;
-      else if (input == "entropy")
-        return CompositionalFieldDescription::entropy;
-      else if (input == "reaction progress")
-        return CompositionalFieldDescription::reaction_progress;
-      else if (input == "generic")
-        return CompositionalFieldDescription::generic;
-      else if (input == "unspecified")
-        return CompositionalFieldDescription::unspecified;
-      else
-        AssertThrow(false, ExcMessage("Unknown compositional field type."));
+      /**
+       * This function translates an input string into the
+       * available enum options for the type of compositional field.
+       */
+      static Type
+      parse_type(const std::string &input)
+      {
+        if (input == "chemical composition")
+          return CompositionalFieldDescription::chemical_composition;
+        else if (input == "stress")
+          return CompositionalFieldDescription::stress;
+        else if (input == "strain")
+          return CompositionalFieldDescription::strain;
+        else if (input == "grain size")
+          return CompositionalFieldDescription::grain_size;
+        else if (input == "porosity")
+          return CompositionalFieldDescription::porosity;
+        else if (input == "density")
+          return CompositionalFieldDescription::density;
+        else if (input == "entropy")
+          return CompositionalFieldDescription::entropy;
+        else if (input == "reaction progress")
+          return CompositionalFieldDescription::reaction_progress;
+        else if (input == "generic")
+          return CompositionalFieldDescription::generic;
+        else if (input == "unspecified")
+          return CompositionalFieldDescription::unspecified;
+        else
+          AssertThrow(false, ExcMessage("Unknown compositional field type."));
 
-      return CompositionalFieldDescription::Type();
-    }
+        return CompositionalFieldDescription::Type();
+      }
 
-    /**
-     * This function translates a compositional field type into the string
-     * used in the input file and diagnostic output.
-     */
-    static
-    std::string
-    type_to_string(const Type type)
-    {
-      switch (type)
-        {
-          case chemical_composition:
-            return "chemical composition";
-          case stress:
-            return "stress";
-          case strain:
-            return "strain";
-          case grain_size:
-            return "grain size";
-          case porosity:
-            return "porosity";
-          case density:
-            return "density";
-          case entropy:
-            return "entropy";
-          case generic:
-            return "generic";
-          case unspecified:
-            return "unspecified";
-          default:
-            AssertThrow(false, ExcInternalError());
-        }
+      /**
+       * This function translates a compositional field type into the string
+       * used in the input file and diagnostic output.
+       */
+      static std::string
+      type_to_string(const Type type)
+      {
+        switch (type)
+          {
+            case chemical_composition:
+              return "chemical composition";
+            case stress:
+              return "stress";
+            case strain:
+              return "strain";
+            case grain_size:
+              return "grain size";
+            case porosity:
+              return "porosity";
+            case density:
+              return "density";
+            case entropy:
+              return "entropy";
+            case generic:
+              return "generic";
+            case unspecified:
+              return "unspecified";
+            default:
+              AssertThrow(false, ExcInternalError());
+          }
 
-      return "";
-    }
+        return "";
+      }
   };
 
   /**
@@ -161,14 +159,13 @@ namespace aspect
    * @ingroup Simulator
    */
   template <int dim>
-  struct Introspection: public FEVariableCollection<dim>
+  struct Introspection : public FEVariableCollection<dim>
   {
     public:
       /**
        * Constructor.
        */
-      Introspection (const std::vector<VariableDeclaration<dim>> &variables,
-                     const Parameters<dim> &parameters);
+      Introspection(const std::vector<VariableDeclaration<dim>> &variables, const Parameters<dim> &parameters);
 
 
       /**
@@ -208,10 +205,10 @@ namespace aspect
        */
       struct ComponentIndices
       {
-        std::array<unsigned int, dim> velocities;
-        unsigned int                  pressure;
-        unsigned int                  temperature;
-        std::vector<unsigned int>     compositional_fields;
+          std::array<unsigned int, dim> velocities;
+          unsigned int                  pressure;
+          unsigned int                  temperature;
+          std::vector<unsigned int>     compositional_fields;
       };
       /**
        * A variable that enumerates the vector components of the finite
@@ -232,19 +229,19 @@ namespace aspect
        */
       struct BlockIndices
       {
-        unsigned int       velocities;
-        unsigned int       pressure;
-        unsigned int       temperature;
-        std::vector<unsigned int> compositional_fields;
+          unsigned int              velocities;
+          unsigned int              pressure;
+          unsigned int              temperature;
+          std::vector<unsigned int> compositional_fields;
 
-        /**
-         * This variable contains the block for each compositional field
-         * where the matrix/sparsity pattern is copied from when we need to
-         * (temporarily) create a matrix. This way, we only need to store a
-         * single sparsity pattern and reuse it for all compositional fields
-         * (assuming they have an identical FiniteElement).
-         */
-        std::vector<unsigned int> compositional_field_sparsity_pattern;
+          /**
+           * This variable contains the block for each compositional field
+           * where the matrix/sparsity pattern is copied from when we need to
+           * (temporarily) create a matrix. This way, we only need to store a
+           * single sparsity pattern and reuse it for all compositional fields
+           * (assuming they have an identical FiniteElement).
+           */
+          std::vector<unsigned int> compositional_field_sparsity_pattern;
       };
 
       /**
@@ -259,12 +256,12 @@ namespace aspect
        */
       struct Extractors
       {
-        Extractors (const ComponentIndices &component_indices);
+          Extractors(const ComponentIndices &component_indices);
 
-        const FEValuesExtractors::Vector              velocities;
-        const FEValuesExtractors::Scalar              pressure;
-        const FEValuesExtractors::Scalar              temperature;
-        const std::vector<FEValuesExtractors::Scalar> compositional_fields;
+          const FEValuesExtractors::Vector              velocities;
+          const FEValuesExtractors::Scalar              pressure;
+          const FEValuesExtractors::Scalar              temperature;
+          const std::vector<FEValuesExtractors::Scalar> compositional_fields;
       };
 
       /**
@@ -284,10 +281,10 @@ namespace aspect
        */
       struct BaseElements
       {
-        unsigned int              velocities;
-        unsigned int              pressure;
-        unsigned int              temperature;
-        std::vector<unsigned int> compositional_fields;
+          unsigned int              velocities;
+          unsigned int              pressure;
+          unsigned int              temperature;
+          std::vector<unsigned int> compositional_fields;
       };
 
       /**
@@ -305,11 +302,11 @@ namespace aspect
        */
       struct PolynomialDegree
       {
-        unsigned int              max_degree;
-        unsigned int              velocities;
-        unsigned int              temperature;
-        std::vector<unsigned int> compositional_fields;
-        unsigned int              max_compositional_field;
+          unsigned int              max_degree;
+          unsigned int              velocities;
+          unsigned int              temperature;
+          std::vector<unsigned int> compositional_fields;
+          unsigned int              max_compositional_field;
       };
 
       /**
@@ -339,12 +336,12 @@ namespace aspect
        */
       struct Quadratures
       {
-        Quadrature<dim>       velocities;
-        Quadrature<dim>       pressure;
-        Quadrature<dim>       temperature;
-        Quadrature<dim>       compositional_field_max;
-        std::vector<Quadrature<dim>> compositional_fields;
-        Quadrature<dim>       system;
+          Quadrature<dim>              velocities;
+          Quadrature<dim>              pressure;
+          Quadrature<dim>              temperature;
+          Quadrature<dim>              compositional_field_max;
+          std::vector<Quadrature<dim>> compositional_fields;
+          Quadrature<dim>              system;
       };
 
       /**
@@ -363,11 +360,11 @@ namespace aspect
        */
       struct FaceQuadratures
       {
-        Quadrature<dim-1>       velocities;
-        Quadrature<dim-1>       pressure;
-        Quadrature<dim-1>       temperature;
-        Quadrature<dim-1>       compositional_fields;
-        Quadrature<dim-1>       system;
+          Quadrature<dim - 1> velocities;
+          Quadrature<dim - 1> pressure;
+          Quadrature<dim - 1> temperature;
+          Quadrature<dim - 1> compositional_fields;
+          Quadrature<dim - 1> system;
       };
 
       /**
@@ -383,36 +380,36 @@ namespace aspect
        */
       struct ComponentMasks
       {
-        ComponentMasks (const FEVariableCollection<dim> &fevs, const Introspection<dim>::ComponentIndices &indices);
+          ComponentMasks(const FEVariableCollection<dim> &fevs, const Introspection<dim>::ComponentIndices &indices);
 
-        /**
-         * The component mask for all velocity components.
-         */
-        ComponentMask              velocities;
+          /**
+           * The component mask for all velocity components.
+           */
+          ComponentMask velocities;
 
-        /**
-         * The component mask for the pressure component.
-         */
-        ComponentMask              pressure;
+          /**
+           * The component mask for the pressure component.
+           */
+          ComponentMask pressure;
 
-        /**
-         * The component mask for the temperature component.
-         */
-        ComponentMask              temperature;
+          /**
+           * The component mask for the temperature component.
+           */
+          ComponentMask temperature;
 
-        /**
-         * The component mask for each individual compositional field.
-         * The size of this vector is equal to the number of compositional fields.
-         * Each entry is a component mask that selects the component
-         * that corresponds to the respective compositional field.
-         */
-        std::vector<ComponentMask> compositional_fields;
+          /**
+           * The component mask for each individual compositional field.
+           * The size of this vector is equal to the number of compositional fields.
+           * Each entry is a component mask that selects the component
+           * that corresponds to the respective compositional field.
+           */
+          std::vector<ComponentMask> compositional_fields;
 
-        /**
-         * The component mask for all composition components.
-         * This mask selects all compositional fields.
-         */
-        ComponentMask              compositions;
+          /**
+           * The component mask for all composition components.
+           * This mask selects all compositional fields.
+           */
+          ComponentMask compositions;
       };
 
       /**
@@ -442,8 +439,8 @@ namespace aspect
        */
       struct StokesDoFInfo
       {
-        unsigned int local_dof_index;
-        unsigned int component_index;
+          unsigned int local_dof_index;
+          unsigned int component_index;
       };
 
       /**
@@ -464,59 +461,59 @@ namespace aspect
        */
       struct IndexSets
       {
-        /**
-         * An index set that indicates which (among all) degrees of freedom
-         * are relevant to the current processor. See the deal.II
-         * documentation for the definition of the term "locally relevant
-         * degrees of freedom".
-         */
-        IndexSet system_relevant_set;
+          /**
+           * An index set that indicates which (among all) degrees of freedom
+           * are relevant to the current processor. See the deal.II
+           * documentation for the definition of the term "locally relevant
+           * degrees of freedom".
+           */
+          IndexSet system_relevant_set;
 
-        /**
-         * A collection of index sets that for each of the vector blocks of
-         * this finite element represents the global indices of the degrees of
-         * freedom owned by this processor. The n_blocks elements of this
-         * array form a mutually exclusive decomposition of the index set
-         * containing all locally owned degrees of freedom.
-         */
-        std::vector<IndexSet> system_partitioning;
+          /**
+           * A collection of index sets that for each of the vector blocks of
+           * this finite element represents the global indices of the degrees of
+           * freedom owned by this processor. The n_blocks elements of this
+           * array form a mutually exclusive decomposition of the index set
+           * containing all locally owned degrees of freedom.
+           */
+          std::vector<IndexSet> system_partitioning;
 
-        /**
-         * A collection of index sets that for each of the vector blocks of
-         * this finite element represents the global indices of the degrees of
-         * freedom are relevant to this processor. The n_blocks elements of
-         * this array form a mutually exclusive decomposition of the index set
-         * containing all locally relevant degrees of freedom, i.e., of the
-         * system_relevant_set index set.
-         */
-        std::vector<IndexSet> system_relevant_partitioning;
+          /**
+           * A collection of index sets that for each of the vector blocks of
+           * this finite element represents the global indices of the degrees of
+           * freedom are relevant to this processor. The n_blocks elements of
+           * this array form a mutually exclusive decomposition of the index set
+           * containing all locally relevant degrees of freedom, i.e., of the
+           * system_relevant_set index set.
+           */
+          std::vector<IndexSet> system_relevant_partitioning;
 
-        /**
-         * A collection of index sets for each vector block of the Stokes
-         * system (velocity and pressure). This variable contains the first
-         * two elements of system_partitioning.
-         */
-        std::vector<IndexSet> stokes_partitioning;
+          /**
+           * A collection of index sets for each vector block of the Stokes
+           * system (velocity and pressure). This variable contains the first
+           * two elements of system_partitioning.
+           */
+          std::vector<IndexSet> stokes_partitioning;
 
-        /**
-         * Pressure unknowns that are locally owned. This IndexSet is needed
-         * if velocity and pressure end up in the same block and is used for
-         * pressure scaling and in make_pressure_rhs_compatible(). If melt
-         * transport is enabled, this field is unused and not filled.
-         */
-        IndexSet locally_owned_pressure_dofs;
+          /**
+           * Pressure unknowns that are locally owned. This IndexSet is needed
+           * if velocity and pressure end up in the same block and is used for
+           * pressure scaling and in make_pressure_rhs_compatible(). If melt
+           * transport is enabled, this field is unused and not filled.
+           */
+          IndexSet locally_owned_pressure_dofs;
 
-        /**
-         * Fluid and compaction pressure unknowns that are locally owned. Only
-         * valid if melt transport is enabled.
-         */
-        IndexSet locally_owned_melt_pressure_dofs;
+          /**
+           * Fluid and compaction pressure unknowns that are locally owned. Only
+           * valid if melt transport is enabled.
+           */
+          IndexSet locally_owned_melt_pressure_dofs;
 
-        /**
-         * Fluid pressure unknowns that are locally owned. Only valid if melt
-         * transport is enabled.
-         */
-        IndexSet locally_owned_fluid_pressure_dofs;
+          /**
+           * Fluid pressure unknowns that are locally owned. Only valid if melt
+           * transport is enabled.
+           */
+          IndexSet locally_owned_fluid_pressure_dofs;
       };
 
       /**
@@ -577,7 +574,7 @@ namespace aspect
        * input file)
        */
       unsigned int
-      compositional_index_for_name (const std::string &name) const;
+      compositional_index_for_name(const std::string &name) const;
 
       /**
        * A function that gets the index of a compositional field as an input
@@ -586,20 +583,20 @@ namespace aspect
        * @param index The index of compositional field
        */
       std::string
-      name_for_compositional_index (const unsigned int index) const;
+      name_for_compositional_index(const unsigned int index) const;
 
       /**
        * A function that returns the full list of compositional field names.
        */
       const std::vector<std::string> &
-      get_composition_names () const;
+      get_composition_names() const;
 
       /**
        * A function that returns the full vector of compositional
        * field descriptions.
        */
       const std::vector<CompositionalFieldDescription> &
-      get_composition_descriptions () const;
+      get_composition_descriptions() const;
 
       /**
        * A function that returns the names of
@@ -609,7 +606,7 @@ namespace aspect
        * get_names_for_fields_of_type(CompositionalFieldDescription::chemical_composition).
        */
       const std::vector<std::string> &
-      chemical_composition_field_names () const;
+      chemical_composition_field_names() const;
 
       /**
        * A function that returns the indices of
@@ -619,7 +616,7 @@ namespace aspect
        * get_indices_for_fields_of_type(CompositionalFieldDescription::chemical_composition).
        */
       const std::vector<unsigned int> &
-      chemical_composition_field_indices () const;
+      chemical_composition_field_indices() const;
 
       /**
        * A function that returns the number of
@@ -629,7 +626,7 @@ namespace aspect
        * get_number_of_fields_of_type(CompositionalFieldDescription::chemical_composition).
        */
       unsigned int
-      n_chemical_composition_fields () const;
+      n_chemical_composition_fields() const;
 
       /**
        * A function that gets the type of a compositional field as an input
@@ -640,7 +637,7 @@ namespace aspect
        * input file)
        */
       bool
-      composition_type_exists (const CompositionalFieldDescription::Type &type) const;
+      composition_type_exists(const CompositionalFieldDescription::Type &type) const;
 
       /**
        * A function that gets the type of a compositional field as an input
@@ -652,7 +649,7 @@ namespace aspect
        * input file)
        */
       unsigned int
-      find_composition_type (const CompositionalFieldDescription::Type &type) const;
+      find_composition_type(const CompositionalFieldDescription::Type &type) const;
 
       /**
        * A function that gets the name of a compositional field as an input
@@ -663,28 +660,28 @@ namespace aspect
        * input file)
        */
       bool
-      compositional_name_exists (const std::string &name) const;
+      compositional_name_exists(const std::string &name) const;
 
       /**
        * Get the indices of the compositional fields which are of a
        * particular type (chemical composition, porosity, etc.).
        */
       const std::vector<unsigned int> &
-      get_indices_for_fields_of_type (const CompositionalFieldDescription::Type &type) const;
+      get_indices_for_fields_of_type(const CompositionalFieldDescription::Type &type) const;
 
       /**
        * Get the names of the compositional fields which are of a
        * particular type (chemical composition, porosity, etc.).
        */
       const std::vector<std::string> &
-      get_names_for_fields_of_type (const CompositionalFieldDescription::Type &type) const;
+      get_names_for_fields_of_type(const CompositionalFieldDescription::Type &type) const;
 
       /**
        * Get the number of compositional fields which are of a
        * particular type (chemical composition, porosity, etc.).
        */
       unsigned int
-      get_number_of_fields_of_type (const CompositionalFieldDescription::Type &type) const;
+      get_number_of_fields_of_type(const CompositionalFieldDescription::Type &type) const;
 
       /**
        * A function that gets a component index as an input
@@ -694,7 +691,7 @@ namespace aspect
        * @param component_index The component index to check.
        */
       bool
-      is_stokes_component (const unsigned int component_index) const;
+      is_stokes_component(const unsigned int component_index) const;
 
       /**
        * Initialize the local finite-element DoF indices and component indices
@@ -706,7 +703,7 @@ namespace aspect
        * contents for the melt Stokes system.
        */
       void
-      initialize_stokes_dof_info (const FiniteElement<dim> &finite_element);
+      initialize_stokes_dof_info(const FiniteElement<dim> &finite_element);
 
       /**
        * A function that gets a component index as an input
@@ -716,7 +713,7 @@ namespace aspect
        * @param component_index The component index to check.
        */
       bool
-      is_composition_component (const unsigned int component_index) const;
+      is_composition_component(const unsigned int component_index) const;
 
     private:
       /**

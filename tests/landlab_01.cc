@@ -21,14 +21,15 @@
 #include <aspect/simulator.h>
 #include <aspect/utilities.h>
 
-#include <iostream>
 #include <cfenv>
+#include <iostream>
 
 #define ASPECT_NUMPY_DEFINE_API
 #include <aspect/python_helper.h>
 
 // create a function that is run upon loading the plugin
-int f()
+int
+f()
 {
   if (_import_array() < 0)
     {
@@ -40,7 +41,7 @@ int f()
 
   // avoid floating point exceptions in Landlab Python code:
 #ifdef ASPECT_USE_FP_EXCEPTIONS
-  fedisableexcept(FE_DIVBYZERO|FE_INVALID);
+  fedisableexcept(FE_DIVBYZERO | FE_INVALID);
 #endif
   PyObject *pModule = PyImport_ImportModule("landlab_01");
   if (pModule == nullptr)
@@ -53,12 +54,12 @@ int f()
 }
 
 template <int dim>
-void signal_connector (aspect::SimulatorSignals<dim> &/*signals*/)
+void
+signal_connector(aspect::SimulatorSignals<dim> & /*signals*/)
 {
   f();
   std::cout << "exiting..." << std::endl;
   std::exit(0); // let's exit and not actually run ASPECT...
 }
 
-ASPECT_REGISTER_SIGNALS_CONNECTOR(signal_connector<2>,
-                                  signal_connector<3>)
+ASPECT_REGISTER_SIGNALS_CONNECTOR(signal_connector<2>, signal_connector<3>)

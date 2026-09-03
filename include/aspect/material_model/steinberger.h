@@ -21,13 +21,13 @@
 #ifndef _aspect_material_model_steinberger_h
 #define _aspect_material_model_steinberger_h
 
-#include <aspect/material_model/interface.h>
 #include <aspect/material_model/equation_of_state/thermodynamic_table_lookup.h>
-#include <aspect/material_model/thermal_conductivity/interface.h>
+#include <aspect/material_model/interface.h>
 #include <aspect/material_model/rheology/drucker_prager.h>
+#include <aspect/material_model/thermal_conductivity/interface.h>
 #include <aspect/material_model/utilities.h>
-
 #include <aspect/simulator_access.h>
+
 #include <deal.II/fe/component_mask.h>
 
 namespace aspect
@@ -50,18 +50,20 @@ namespace aspect
           /**
            * Read in a file.
            */
-          LateralViscosityLookup(const std::string &filename,
-                                 const MPI_Comm comm);
+          LateralViscosityLookup(const std::string &filename, const MPI_Comm comm);
 
           /**
            * Returns a temperature-dependency for a given depth.
            */
-          double lateral_viscosity(double depth) const;
+          double
+          lateral_viscosity(double depth) const;
 
           /**
            * Number of depth slices of the read file.
            */
-          int get_nslices() const;
+          int
+          get_nslices() const;
+
         private:
           /**
            * Stored values
@@ -89,13 +91,13 @@ namespace aspect
           /**
            * Constructor. Reads in the given file.
            */
-          RadialViscosityLookup(const std::string &filename,
-                                const MPI_Comm comm);
+          RadialViscosityLookup(const std::string &filename, const MPI_Comm comm);
 
           /**
            * Return the viscosity for a given depth.
            */
-          double radial_viscosity(double depth) const;
+          double
+          radial_viscosity(double depth) const;
 
         private:
           /**
@@ -126,7 +128,7 @@ namespace aspect
      * @ingroup MaterialModels
      */
     template <int dim>
-    class Steinberger: public MaterialModel::Interface<dim>, public ::aspect::SimulatorAccess<dim>
+    class Steinberger : public MaterialModel::Interface<dim>, public ::aspect::SimulatorAccess<dim>
     {
       public:
         /**
@@ -134,13 +136,14 @@ namespace aspect
          * pointers.
          */
         void
-        initialize () override;
+        initialize() override;
 
         /**
          * Called at the beginning of each time step and allows the material
          * model to update internal data structures.
          */
-        void update() override;
+        void
+        update() override;
 
         /**
          * @name Qualitative properties one can ask a material model
@@ -155,7 +158,8 @@ namespace aspect
          * equation as $\nabla \cdot (\rho \mathbf u)=0$ (compressible Stokes)
          * or as $\nabla \cdot \mathbf{u}=0$ (incompressible Stokes).
          */
-        bool is_compressible () const override;
+        bool
+        is_compressible() const override;
         /**
          * @}
          */
@@ -165,8 +169,7 @@ namespace aspect
          * inputs in @p in.
          */
         void
-        evaluate(const MaterialModel::MaterialModelInputs<dim> &in,
-                 MaterialModel::MaterialModelOutputs<dim> &out) const override;
+        evaluate(const MaterialModel::MaterialModelInputs<dim> &in, MaterialModel::MaterialModelOutputs<dim> &out) const override;
 
         /**
          * @name Functions used in dealing with run-time parameters
@@ -175,21 +178,20 @@ namespace aspect
         /**
          * Declare the parameters this class takes through input files.
          */
-        static
-        void
-        declare_parameters (ParameterHandler &prm);
+        static void
+        declare_parameters(ParameterHandler &prm);
 
         /**
          * Read the parameters this class declares from the parameter file.
          */
         void
-        parse_parameters (ParameterHandler &prm) override;
+        parse_parameters(ParameterHandler &prm) override;
         /**
          * @}
          */
 
         void
-        create_additional_named_outputs (MaterialModel::MaterialModelOutputs<dim> &out) const override;
+        create_additional_named_outputs(MaterialModel::MaterialModelOutputs<dim> &out) const override;
 
 
       private:
@@ -200,10 +202,11 @@ namespace aspect
          * in @p out that have to do with the viscosity (the plastic additional
          * outputs) for evaluation point @p q.
          */
-        double viscosity (const unsigned int q,
-                          const std::vector<double> &volume_fractions,
-                          const MaterialModel::MaterialModelInputs<dim> &in,
-                          MaterialModel::MaterialModelOutputs<dim> &out) const;
+        double
+        viscosity(const unsigned int                             q,
+                  const std::vector<double>                     &volume_fractions,
+                  const MaterialModel::MaterialModelInputs<dim> &in,
+                  MaterialModel::MaterialModelOutputs<dim>      &out) const;
 
         /**
          * Whether the compositional fields representing mass fractions
@@ -315,10 +318,11 @@ namespace aspect
          * in this case, densities for the projected density approximation.
          * Does nothing otherwise.
          */
-        void fill_prescribed_outputs (const unsigned int i,
-                                      const std::vector<double> &volume_fractions,
-                                      const MaterialModel::MaterialModelInputs<dim> &in,
-                                      MaterialModel::MaterialModelOutputs<dim> &out) const;
+        void
+        fill_prescribed_outputs(const unsigned int                             i,
+                                const std::vector<double>                     &volume_fractions,
+                                const MaterialModel::MaterialModelInputs<dim> &in,
+                                MaterialModel::MaterialModelOutputs<dim>      &out) const;
 
         /**
          * Drucker-Prager rheology related
@@ -328,9 +332,8 @@ namespace aspect
         /**
          *  This variable is read from the parameter file through a parameter called 'Use Drucker-Prager rheology'.
          */
-        bool enable_drucker_prager_rheology;
+        bool                              enable_drucker_prager_rheology;
         Rheology::DruckerPragerParameters drucker_prager_parameters;
-
     };
   }
 }

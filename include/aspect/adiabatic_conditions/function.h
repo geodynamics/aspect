@@ -24,8 +24,9 @@
 
 
 #include <aspect/adiabatic_conditions/interface.h>
-#include <deal.II/base/point.h>
+
 #include <deal.II/base/parsed_function.h>
+#include <deal.II/base/point.h>
 
 
 namespace aspect
@@ -43,56 +44,60 @@ namespace aspect
         /**
          * Constructor. Initialize variables.
          */
-        Function ();
+        Function();
 
         /**
          * Initialization function.
          */
-        void initialize () override;
+        void
+        initialize() override;
 
         /**
          * Some plugins need to know whether the adiabatic conditions are
          * already calculated, this is always true for the Function class.
          */
-        bool is_initialized() const override;
+        bool
+        is_initialized() const override;
 
         /**
          * Return the adiabatic temperature at a given point of the domain.
          */
-        double temperature (const Point<dim> &p) const override;
+        double
+        temperature(const Point<dim> &p) const override;
 
 
         /**
          * Return the adiabatic pressure at a given point of the domain.
          */
-        double pressure (const Point<dim> &p) const override;
+        double
+        pressure(const Point<dim> &p) const override;
 
         /**
          * Return the reference_density at a given point of the domain.
          */
-        double density (const Point<dim> &p) const override;
+        double
+        density(const Point<dim> &p) const override;
 
         /**
          * Return the derivative of the density with respect to depth
          * at the given point @p p.
          */
-        double density_derivative (const Point<dim> &p) const override;
+        double
+        density_derivative(const Point<dim> &p) const override;
 
         /**
          * Declare the parameters for the input files.
          */
-        static
-        void
-        declare_parameters (ParameterHandler &prm);
+        static void
+        declare_parameters(ParameterHandler &prm);
 
         /**
          * Read the parameters from the parameter file.
          */
         void
-        parse_parameters (ParameterHandler &prm) override;
+        parse_parameters(ParameterHandler &prm) override;
 
       private:
-
         /**
          * ParsedFunction: depth->(temperature, pressure, density)
          */

@@ -47,8 +47,8 @@ namespace aspect
         /**
          * Write all timing statistics columns into the statistics object.
          */
-        std::pair<std::string,std::string>
-        execute (TableHandler &statistics) override;
+        std::pair<std::string, std::string>
+        execute(TableHandler &statistics) override;
     };
   }
 }

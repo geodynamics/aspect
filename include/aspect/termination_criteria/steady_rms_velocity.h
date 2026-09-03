@@ -22,8 +22,8 @@
 #ifndef _aspect_termination_criteria_steady_rms_velocity_h
 #define _aspect_termination_criteria_steady_rms_velocity_h
 
-#include <aspect/termination_criteria/interface.h>
 #include <aspect/simulator_access.h>
+#include <aspect/termination_criteria/interface.h>
 
 namespace aspect
 {
@@ -47,46 +47,45 @@ namespace aspect
          * (false).
          */
         bool
-        execute () override;
+        execute() override;
 
         /**
          * Declare the parameters this class takes through input files.
          */
-        static
-        void
-        declare_parameters (ParameterHandler &prm);
+        static void
+        declare_parameters(ParameterHandler &prm);
 
         /**
          * Read the parameters this class declares from the parameter file.
          */
         void
-        parse_parameters (ParameterHandler &prm) override;
+        parse_parameters(ParameterHandler &prm) override;
 
         void
-        save (std::map<std::string, std::string> &status_strings) const override;
+        save(std::map<std::string, std::string> &status_strings) const override;
 
         void
-        load (const std::map<std::string, std::string> &status_strings) override;
+        load(const std::map<std::string, std::string> &status_strings) override;
 
       private:
         /**
          * This variable is read from the parameter file through a parameter
          * called 'Time in steady state'.
          */
-        double                                  time_length;
+        double time_length;
 
         /**
          * This variable is read from the parameter file through a parameter
          * called 'Maximum relative deviation'.
          */
-        double                                  relative_deviation;
+        double relative_deviation;
 
         /**
          * A list of pairs (time, rms_velocity) that we have computed at
          * previous time steps. This is used to determine when we have reached
          * steady state.
          */
-        std::list<std::pair<double, double>>   time_rmsvel;
+        std::list<std::pair<double, double>> time_rmsvel;
     };
   }
 }

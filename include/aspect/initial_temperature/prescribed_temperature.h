@@ -48,12 +48,13 @@ namespace aspect
          * program.
          */
         void
-        initialize () override;
+        initialize() override;
 
         /**
          * Return the initial temperature as a function of position.
          */
-        double initial_temperature (const Point<dim> &position) const override;
+        double
+        initial_temperature(const Point<dim> &position) const override;
 
       private:
         /**

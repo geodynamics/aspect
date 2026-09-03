@@ -28,52 +28,52 @@ namespace aspect
     {
       template <int dim>
       void
-      IntegratedStrain<dim>::initialize_one_particle_property(const Point<dim> &,
-                                                              std::vector<double> &data) const
+      IntegratedStrain<dim>::initialize_one_particle_property(const Point<dim> &, std::vector<double> &data) const
       {
-        const static Tensor<2,dim> identity = unit_symmetric_tensor<dim>();
-        for (unsigned int i = 0; i < Tensor<2,dim>::n_independent_components ; ++i)
-          data.push_back(identity[Tensor<2,dim>::unrolled_to_component_indices(i)]);
+        const static Tensor<2, dim> identity = unit_symmetric_tensor<dim>();
+        for (unsigned int i = 0; i < Tensor<2, dim>::n_independent_components; ++i)
+          data.push_back(identity[Tensor<2, dim>::unrolled_to_component_indices(i)]);
       }
 
       template <int dim>
       void
-      IntegratedStrain<dim>::update_particle_properties(const ParticleUpdateInputs<dim> &inputs,
+      IntegratedStrain<dim>::update_particle_properties(const ParticleUpdateInputs<dim>                        &inputs,
                                                         typename ParticleHandler<dim>::particle_iterator_range &particles) const
       {
         const double dt = this->get_timestep();
 
         unsigned int p = 0;
-        for (auto &particle: particles)
+        for (auto &particle : particles)
           {
-            const Tensor<2,dim> old_strain(make_array_view(&particle.get_properties()[this->data_position],
-                                                           &particle.get_properties()[this->data_position] + Tensor<2,dim>::n_independent_components));
+            const Tensor<2, dim> old_strain(
+              make_array_view(&particle.get_properties()[this->data_position],
+                              &particle.get_properties()[this->data_position] + Tensor<2, dim>::n_independent_components));
 
-            Tensor<2,dim> grad_u;
-            for (unsigned int d=0; d<dim; ++d)
+            Tensor<2, dim> grad_u;
+            for (unsigned int d = 0; d < dim; ++d)
               grad_u[d] = inputs.gradients[p][this->introspection().component_indices.velocities[d]];
 
             // here we integrate the equation
             // new_deformation_gradient = velocity_gradient * old_deformation_gradient
             // using a RK4 integration scheme.
-            const Tensor<2,dim> k1 = grad_u * old_strain * dt;
-            Tensor<2,dim> new_strain = old_strain + 0.5*k1;
+            const Tensor<2, dim> k1         = grad_u * old_strain * dt;
+            Tensor<2, dim>       new_strain = old_strain + 0.5 * k1;
 
-            const Tensor<2,dim> k2 = grad_u * new_strain * dt;
-            new_strain = old_strain + 0.5*k2;
+            const Tensor<2, dim> k2 = grad_u * new_strain * dt;
+            new_strain              = old_strain + 0.5 * k2;
 
-            const Tensor<2,dim> k3 = grad_u * new_strain * dt;
-            new_strain = old_strain + k3;
+            const Tensor<2, dim> k3 = grad_u * new_strain * dt;
+            new_strain              = old_strain + k3;
 
-            const Tensor<2,dim> k4 = grad_u * new_strain * dt;
+            const Tensor<2, dim> k4 = grad_u * new_strain * dt;
 
             // the new strain is the rotated old strain plus the
             // strain of the current time step
-            new_strain = old_strain + (k1 + 2.0*k2 + 2.0*k3 + k4)/6.0;
+            new_strain = old_strain + (k1 + 2.0 * k2 + 2.0 * k3 + k4) / 6.0;
 
             // unroll and store the new strain
             new_strain.unroll(&particle.get_properties()[this->data_position],
-                              &particle.get_properties()[this->data_position] + Tensor<2,dim>::n_independent_components);
+                              &particle.get_properties()[this->data_position] + Tensor<2, dim>::n_independent_components);
 
             ++p;
           }
@@ -88,7 +88,7 @@ namespace aspect
 
       template <int dim>
       UpdateFlags
-      IntegratedStrain<dim>::get_update_flags (const unsigned int component) const
+      IntegratedStrain<dim>::get_update_flags(const unsigned int component) const
       {
         if (this->introspection().component_masks.velocities[component] == true)
           return update_gradients;
@@ -100,8 +100,8 @@ namespace aspect
       std::vector<std::pair<std::string, unsigned int>>
       IntegratedStrain<dim>::get_property_information() const
       {
-        const unsigned int n_components = Tensor<2,dim>::n_independent_components;
-        const std::vector<std::pair<std::string,unsigned int>> property_information (1,std::make_pair("integrated strain",n_components));
+        const unsigned int                                      n_components = Tensor<2, dim>::n_independent_components;
+        const std::vector<std::pair<std::string, unsigned int>> property_information(1, std::make_pair("integrated strain", n_components));
         return property_information;
       }
     }

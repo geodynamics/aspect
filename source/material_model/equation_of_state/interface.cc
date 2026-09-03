@@ -29,32 +29,52 @@ namespace aspect
   {
     template <int dim>
     EquationOfStateOutputs<dim>::EquationOfStateOutputs(const unsigned int n_individual_compositions_and_phases)
-      :
-      densities(n_individual_compositions_and_phases, numbers::signaling_nan<double>()),
-      thermal_expansion_coefficients(n_individual_compositions_and_phases, numbers::signaling_nan<double>()),
-      specific_heat_capacities(n_individual_compositions_and_phases, numbers::signaling_nan<double>()),
-      compressibilities(n_individual_compositions_and_phases, numbers::signaling_nan<double>()),
-      entropy_derivative_pressure(n_individual_compositions_and_phases, numbers::signaling_nan<double>()),
-      entropy_derivative_temperature(n_individual_compositions_and_phases, numbers::signaling_nan<double>())
+      : densities(n_individual_compositions_and_phases, numbers::signaling_nan<double>())
+      , thermal_expansion_coefficients(n_individual_compositions_and_phases, numbers::signaling_nan<double>())
+      , specific_heat_capacities(n_individual_compositions_and_phases, numbers::signaling_nan<double>())
+      , compressibilities(n_individual_compositions_and_phases, numbers::signaling_nan<double>())
+      , entropy_derivative_pressure(n_individual_compositions_and_phases, numbers::signaling_nan<double>())
+      , entropy_derivative_temperature(n_individual_compositions_and_phases, numbers::signaling_nan<double>())
     {}
 
 
 
     template <int dim>
     void
-    reaction_progress_modify_equation_of_state_outputs(const std::vector<double> &reaction_progress_values,
+    reaction_progress_modify_equation_of_state_outputs(const std::vector<double>       &reaction_progress_values,
                                                        const std::vector<unsigned int> &reaction_progress_mapping,
                                                        const std::vector<unsigned int> &n_phase_transitions_per_composition,
-                                                       EquationOfStateOutputs<dim> &eos_outputs_all_phases)
+                                                       EquationOfStateOutputs<dim>     &eos_outputs_all_phases)
     {
-      for (unsigned int c=0; c<n_phase_transitions_per_composition.size(); ++c)
+      for (unsigned int c = 0; c < n_phase_transitions_per_composition.size(); ++c)
         {
-          MaterialModel::MaterialUtilities::reaction_progress_modify_values(reaction_progress_values, reaction_progress_mapping, n_phase_transitions_per_composition, eos_outputs_all_phases.densities, c);
-          MaterialModel::MaterialUtilities::reaction_progress_modify_values(reaction_progress_values, reaction_progress_mapping, n_phase_transitions_per_composition, eos_outputs_all_phases.thermal_expansion_coefficients, c);
-          MaterialModel::MaterialUtilities::reaction_progress_modify_values(reaction_progress_values, reaction_progress_mapping, n_phase_transitions_per_composition, eos_outputs_all_phases.specific_heat_capacities, c);
-          MaterialModel::MaterialUtilities::reaction_progress_modify_values(reaction_progress_values, reaction_progress_mapping, n_phase_transitions_per_composition, eos_outputs_all_phases.compressibilities, c);
-          MaterialModel::MaterialUtilities::reaction_progress_modify_values(reaction_progress_values, reaction_progress_mapping, n_phase_transitions_per_composition, eos_outputs_all_phases.entropy_derivative_pressure, c);
-          MaterialModel::MaterialUtilities::reaction_progress_modify_values(reaction_progress_values, reaction_progress_mapping, n_phase_transitions_per_composition, eos_outputs_all_phases.entropy_derivative_temperature, c);
+          MaterialModel::MaterialUtilities::reaction_progress_modify_values(
+            reaction_progress_values, reaction_progress_mapping, n_phase_transitions_per_composition, eos_outputs_all_phases.densities, c);
+          MaterialModel::MaterialUtilities::reaction_progress_modify_values(reaction_progress_values,
+                                                                            reaction_progress_mapping,
+                                                                            n_phase_transitions_per_composition,
+                                                                            eos_outputs_all_phases.thermal_expansion_coefficients,
+                                                                            c);
+          MaterialModel::MaterialUtilities::reaction_progress_modify_values(reaction_progress_values,
+                                                                            reaction_progress_mapping,
+                                                                            n_phase_transitions_per_composition,
+                                                                            eos_outputs_all_phases.specific_heat_capacities,
+                                                                            c);
+          MaterialModel::MaterialUtilities::reaction_progress_modify_values(reaction_progress_values,
+                                                                            reaction_progress_mapping,
+                                                                            n_phase_transitions_per_composition,
+                                                                            eos_outputs_all_phases.compressibilities,
+                                                                            c);
+          MaterialModel::MaterialUtilities::reaction_progress_modify_values(reaction_progress_values,
+                                                                            reaction_progress_mapping,
+                                                                            n_phase_transitions_per_composition,
+                                                                            eos_outputs_all_phases.entropy_derivative_pressure,
+                                                                            c);
+          MaterialModel::MaterialUtilities::reaction_progress_modify_values(reaction_progress_values,
+                                                                            reaction_progress_mapping,
+                                                                            n_phase_transitions_per_composition,
+                                                                            eos_outputs_all_phases.entropy_derivative_temperature,
+                                                                            c);
         }
     }
 
@@ -63,24 +83,28 @@ namespace aspect
     template <int dim>
     void
     phase_average_equation_of_state_outputs(const EquationOfStateOutputs<dim> &eos_outputs_all_phases,
-                                            const std::vector<double> &phase_function_values,
-                                            const std::vector<unsigned int> &n_phase_transitions_per_composition,
-                                            EquationOfStateOutputs<dim> &eos_outputs)
+                                            const std::vector<double>         &phase_function_values,
+                                            const std::vector<unsigned int>   &n_phase_transitions_per_composition,
+                                            EquationOfStateOutputs<dim>       &eos_outputs)
     {
-      for (unsigned int c=0; c<eos_outputs.densities.size(); ++c)
+      for (unsigned int c = 0; c < eos_outputs.densities.size(); ++c)
         {
-          eos_outputs.densities[c] =
-            MaterialModel::MaterialUtilities::phase_average_value(phase_function_values, n_phase_transitions_per_composition, eos_outputs_all_phases.densities, c);
-          eos_outputs.thermal_expansion_coefficients[c] =
-            MaterialModel::MaterialUtilities::phase_average_value(phase_function_values, n_phase_transitions_per_composition, eos_outputs_all_phases.thermal_expansion_coefficients, c);
-          eos_outputs.specific_heat_capacities[c] =
-            MaterialModel::MaterialUtilities::phase_average_value(phase_function_values, n_phase_transitions_per_composition, eos_outputs_all_phases.specific_heat_capacities, c);
-          eos_outputs.compressibilities[c] =
-            MaterialModel::MaterialUtilities::phase_average_value(phase_function_values, n_phase_transitions_per_composition, eos_outputs_all_phases.compressibilities, c);
-          eos_outputs.entropy_derivative_pressure[c] =
-            MaterialModel::MaterialUtilities::phase_average_value(phase_function_values, n_phase_transitions_per_composition, eos_outputs_all_phases.entropy_derivative_pressure, c);
-          eos_outputs.entropy_derivative_temperature[c] =
-            MaterialModel::MaterialUtilities::phase_average_value(phase_function_values, n_phase_transitions_per_composition, eos_outputs_all_phases.entropy_derivative_temperature, c);
+          eos_outputs.densities[c]                      = MaterialModel::MaterialUtilities::phase_average_value(phase_function_values,
+                                                                                           n_phase_transitions_per_composition,
+                                                                                           eos_outputs_all_phases.densities,
+                                                                                           c);
+          eos_outputs.thermal_expansion_coefficients[c] = MaterialModel::MaterialUtilities::phase_average_value(
+            phase_function_values, n_phase_transitions_per_composition, eos_outputs_all_phases.thermal_expansion_coefficients, c);
+          eos_outputs.specific_heat_capacities[c] = MaterialModel::MaterialUtilities::phase_average_value(
+            phase_function_values, n_phase_transitions_per_composition, eos_outputs_all_phases.specific_heat_capacities, c);
+          eos_outputs.compressibilities[c]           = MaterialModel::MaterialUtilities::phase_average_value(phase_function_values,
+                                                                                                   n_phase_transitions_per_composition,
+                                                                                                   eos_outputs_all_phases.compressibilities,
+                                                                                                   c);
+          eos_outputs.entropy_derivative_pressure[c] = MaterialModel::MaterialUtilities::phase_average_value(
+            phase_function_values, n_phase_transitions_per_composition, eos_outputs_all_phases.entropy_derivative_pressure, c);
+          eos_outputs.entropy_derivative_temperature[c] = MaterialModel::MaterialUtilities::phase_average_value(
+            phase_function_values, n_phase_transitions_per_composition, eos_outputs_all_phases.entropy_derivative_temperature, c);
         }
     }
   }
@@ -93,14 +117,15 @@ namespace aspect
   {
 #define INSTANTIATE(dim) \
   template struct EquationOfStateOutputs<dim>; \
-  template void reaction_progress_modify_equation_of_state_outputs<dim>(const std::vector<double> &reaction_progress_values, \
-                                                                        const std::vector<unsigned int> &reaction_progress_mapping, \
-                                                                        const std::vector<unsigned int> &n_phase_transitions_per_composition, \
-                                                                        EquationOfStateOutputs<dim> &); \
-  template void phase_average_equation_of_state_outputs<dim> (const EquationOfStateOutputs<dim> &, \
-                                                              const std::vector<double> &phase_function_values, \
-                                                              const std::vector<unsigned int> &n_phase_transitions_per_composition, \
-                                                              EquationOfStateOutputs<dim> &);
+  template void reaction_progress_modify_equation_of_state_outputs<dim>( \
+    const std::vector<double>       &reaction_progress_values, \
+    const std::vector<unsigned int> &reaction_progress_mapping, \
+    const std::vector<unsigned int> &n_phase_transitions_per_composition, \
+    EquationOfStateOutputs<dim> &); \
+  template void phase_average_equation_of_state_outputs<dim>(const EquationOfStateOutputs<dim> &, \
+                                                             const std::vector<double>       &phase_function_values, \
+                                                             const std::vector<unsigned int> &n_phase_transitions_per_composition, \
+                                                             EquationOfStateOutputs<dim> &);
 
     ASPECT_INSTANTIATE(INSTANTIATE)
 

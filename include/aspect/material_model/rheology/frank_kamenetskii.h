@@ -22,6 +22,7 @@
 #define _aspect_material_model_rheology_frank_kamenetskii_h
 
 #include <aspect/global.h>
+
 #include <aspect/material_model/interface.h>
 #include <aspect/simulator_access.h>
 
@@ -54,25 +55,24 @@ namespace aspect
           /**
            * Declare the parameters this function takes through input files.
            */
-          static
-          void
-          declare_parameters (ParameterHandler &prm);
+          static void
+          declare_parameters(ParameterHandler &prm);
 
           /**
            * Read the parameters from the parameter file.
            */
           void
-          parse_parameters (ParameterHandler &prm);
+          parse_parameters(ParameterHandler &prm);
 
           /**
            * Compute the viscosity based on the Frank-Kamenetskii approximation.
            */
           double
-          compute_viscosity (const double temperature,
-                             const unsigned int composition,
-                             const double pressure = std::numeric_limits<double>::infinity(),
-                             const double density = std::numeric_limits<double>::infinity(),
-                             const double gravity = std::numeric_limits<double>::infinity()) const;
+          compute_viscosity(const double       temperature,
+                            const unsigned int composition,
+                            const double       pressure = std::numeric_limits<double>::infinity(),
+                            const double       density  = std::numeric_limits<double>::infinity(),
+                            const double       gravity  = std::numeric_limits<double>::infinity()) const;
 
         private:
           /**

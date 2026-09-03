@@ -13,6 +13,7 @@
 #define _aspect_geometry_model_initial_topography_model_world_builder_h
 
 #include <aspect/global.h>
+
 #include <aspect/geometry_model/initial_topography_model/interface.h>
 #include <aspect/simulator_access.h>
 
@@ -29,7 +30,7 @@ namespace WorldBuilder
 namespace aspect
 {
 #ifdef ASPECT_WITH_WORLD_BUILDER
-#  if WORLD_BUILDER_VERSION_GTE(1,1,1)
+#  if WORLD_BUILDER_VERSION_GTE(1, 1, 1)
   namespace InitialTopographyModel
   {
     /**
@@ -47,23 +48,23 @@ namespace aspect
          * Initialize the shared World Builder object.
          */
         void
-        initialize () override;
+        initialize() override;
 
         /**
          * Return the World Builder topography at the given surface point.
          */
         double
-        value (const Point<dim-1> &surface_point) const override;
+        value(const Point<dim - 1> &surface_point) const override;
 
         /**
          * Return World Builder's upper bound for the topography.
          */
         double
-        max_topography () const override;
+        max_topography() const override;
 
       private:
         std::shared_ptr<const ::WorldBuilder::World> world_builder;
-        double maximum_topography;
+        double                                       maximum_topography;
     };
   }
 #  endif

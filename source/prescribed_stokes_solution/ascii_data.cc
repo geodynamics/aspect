@@ -20,6 +20,7 @@
 
 
 #include <aspect/global.h>
+
 #include <aspect/prescribed_stokes_solution/ascii_data.h>
 
 
@@ -29,13 +30,12 @@ namespace aspect
   namespace PrescribedStokesSolution
   {
     template <int dim>
-    AsciiData<dim>::AsciiData ()
-      = default;
+    AsciiData<dim>::AsciiData() = default;
 
 
     template <int dim>
     void
-    AsciiData<dim>::initialize ()
+    AsciiData<dim>::initialize()
     {
       Utilities::AsciiDataInitial<dim>::initialize(dim);
 
@@ -47,26 +47,23 @@ namespace aspect
 
     template <int dim>
     void
-    AsciiData<dim>::
-    stokes_solution (const Point<dim> &position, Vector<double> &value) const
+    AsciiData<dim>::stokes_solution(const Point<dim> &position, Vector<double> &value) const
     {
-      value(0) = Utilities::AsciiDataInitial<dim>::get_data_component(position,0);
-      value(1) = Utilities::AsciiDataInitial<dim>::get_data_component(position,1);
+      value(0) = Utilities::AsciiDataInitial<dim>::get_data_component(position, 0);
+      value(1) = Utilities::AsciiDataInitial<dim>::get_data_component(position, 1);
       if (dim == 3)
-        value(2) = Utilities::AsciiDataInitial<dim>::get_data_component(position,2);
-      value(dim) = 0;  // makes pressure 0, must set pressure
+        value(2) = Utilities::AsciiDataInitial<dim>::get_data_component(position, 2);
+      value(dim) = 0; // makes pressure 0, must set pressure
     }
 
 
     template <int dim>
     void
-    AsciiData<dim>::declare_parameters (ParameterHandler &prm)
+    AsciiData<dim>::declare_parameters(ParameterHandler &prm)
     {
       prm.enter_subsection("Prescribed Stokes solution");
       {
-        Utilities::AsciiDataInitial<dim>::declare_parameters(prm,
-                                                             "$ASPECT_SOURCE_DIR/data/prescribed-stokes-solution/",
-                                                             "box_2d.txt");
+        Utilities::AsciiDataInitial<dim>::declare_parameters(prm, "$ASPECT_SOURCE_DIR/data/prescribed-stokes-solution/", "box_2d.txt");
       }
       prm.leave_subsection();
     }
@@ -74,7 +71,7 @@ namespace aspect
 
     template <int dim>
     void
-    AsciiData<dim>::parse_parameters (ParameterHandler &prm)
+    AsciiData<dim>::parse_parameters(ParameterHandler &prm)
     {
       prm.enter_subsection("Prescribed Stokes solution");
       {

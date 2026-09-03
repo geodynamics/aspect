@@ -74,21 +74,20 @@ namespace aspect
            * Function to compute the thermal conductivities in @p out given the
            * inputs in @p in.
            */
-          void evaluate (const MaterialModel::MaterialModelInputs<dim> &in,
-                         MaterialModel::MaterialModelOutputs<dim> &out) const override;
+          void
+          evaluate(const MaterialModel::MaterialModelInputs<dim> &in, MaterialModel::MaterialModelOutputs<dim> &out) const override;
 
           /**
            * Declare the parameters this plugin takes through input files.
            */
-          static
-          void
-          declare_parameters (ParameterHandler &prm);
+          static void
+          declare_parameters(ParameterHandler &prm);
 
           /**
            * Read the parameters from the parameter file.
            */
           void
-          parse_parameters (ParameterHandler &prm) override;
+          parse_parameters(ParameterHandler &prm) override;
 
         private:
           /**

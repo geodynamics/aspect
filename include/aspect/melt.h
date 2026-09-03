@@ -22,11 +22,12 @@
 #ifndef _aspect_melt_h
 #define _aspect_melt_h
 
-#include <aspect/simulator_access.h>
 #include <aspect/global.h>
-#include <aspect/simulator/assemblers/interface.h>
-#include <aspect/material_model/interface.h>
+
 #include <aspect/boundary_fluid_pressure/interface.h>
+#include <aspect/material_model/interface.h>
+#include <aspect/simulator/assemblers/interface.h>
+#include <aspect/simulator_access.h>
 
 namespace aspect
 {
@@ -49,7 +50,7 @@ namespace aspect
          * step they will all be filled together (using the fill
          * function).
          */
-        MeltInputs (const unsigned int n_points);
+        MeltInputs(const unsigned int n_points);
 
         /**
          * Compaction pressure values $p_c$ at the given positions.
@@ -60,14 +61,15 @@ namespace aspect
          * An approximation for the fluid (melt) velocities
          * at the given positions.
          */
-        std::vector<Tensor<1,dim>> fluid_velocities;
+        std::vector<Tensor<1, dim>> fluid_velocities;
 
         /**
          * Fill the compaction pressures and fluid velocities.
          */
-        void fill (const LinearAlgebra::BlockVector &solution,
-                   const FEValuesBase<dim>          &fe_values,
-                   const Introspection<dim>         &introspection) override;
+        void
+        fill(const LinearAlgebra::BlockVector &solution,
+             const FEValuesBase<dim>          &fe_values,
+             const Introspection<dim>         &introspection) override;
     };
 
     template <int dim>
@@ -82,8 +84,7 @@ namespace aspect
          * computed the values, by checking if the individual
          * values are finite (using std::isfinite).
          */
-        MeltOutputs (const unsigned int n_points,
-                     const unsigned int n_comp);
+        MeltOutputs(const unsigned int n_points, const unsigned int n_comp);
 
         /**
          * Compaction viscosity values $\xi$ at the given positions.
@@ -113,16 +114,17 @@ namespace aspect
          * required for compressible models to describe volume changes
          * of melt in dependence of pressure, temperature etc.
          */
-        std::vector<Tensor<1,dim>> fluid_density_gradients;
+        std::vector<Tensor<1, dim>> fluid_density_gradients;
 
         /**
          * Do the requested averaging operation for the melt outputs.
          * The projection matrix argument is only used if the operation
          * chosen is project_to_Q1.
          */
-        void average (const MaterialAveraging::AveragingOperation operation,
-                      const FullMatrix<double>  &projection_matrix,
-                      const FullMatrix<double>  &expansion_matrix) override;
+        void
+        average(const MaterialAveraging::AveragingOperation operation,
+                const FullMatrix<double>                   &projection_matrix,
+                const FullMatrix<double>                   &expansion_matrix) override;
     };
 
     /**
@@ -144,7 +146,7 @@ namespace aspect
          * Destructor. Does nothing but is virtual so that derived classes
          * destructors are also virtual.
          */
-        virtual ~MeltFractionModel () = default;
+        virtual ~MeltFractionModel() = default;
 
         /**
          * Compute the equilibrium melt fractions for the given input conditions.
@@ -158,9 +160,10 @@ namespace aspect
          * fractions depend on material model properties, then this parameter
          * must be set to a valid pointer to a MaterialModelOutputs object.
          */
-        virtual void melt_fractions (const MaterialModel::MaterialModelInputs<dim> &in,
-                                     std::vector<double> &melt_fractions,
-                                     const MaterialModel::MaterialModelOutputs<dim> *out = nullptr) const = 0;
+        virtual void
+        melt_fractions(const MaterialModel::MaterialModelInputs<dim>  &in,
+                       std::vector<double>                            &melt_fractions,
+                       const MaterialModel::MaterialModelOutputs<dim> *out = nullptr) const = 0;
 
         /**
          * Return whether an object provided as argument is of a class that is
@@ -170,8 +173,8 @@ namespace aspect
          * this function.
          */
         template <typename ModelType>
-        static
-        bool is_melt_fraction_model (const ModelType &model_object);
+        static bool
+        is_melt_fraction_model(const ModelType &model_object);
 
         /**
          * Return a reference to the MeltFractionModel base class of
@@ -179,35 +182,31 @@ namespace aspect
          * is_melt_fraction_model() returns `true` for the given argument.
          */
         template <typename ModelType>
-        static
-        const MeltFractionModel<dim> &
-        as_melt_fraction_model (const ModelType &model_object);
+        static const MeltFractionModel<dim> &
+        as_melt_fraction_model(const ModelType &model_object);
     };
 
 
 
     template <int dim>
     template <typename ModelType>
-    inline
-    bool
-    MeltFractionModel<dim>::is_melt_fraction_model (const ModelType &model_object)
+    inline bool
+    MeltFractionModel<dim>::is_melt_fraction_model(const ModelType &model_object)
     {
-      return (dynamic_cast<const MeltFractionModel<dim>*>(&model_object)
-              != nullptr);
+      return (dynamic_cast<const MeltFractionModel<dim> *>(&model_object) != nullptr);
     }
 
 
     template <int dim>
     template <typename ModelType>
-    inline
-    const MeltFractionModel<dim> &
-    MeltFractionModel<dim>::as_melt_fraction_model (const ModelType &model_object)
+    inline const MeltFractionModel<dim> &
+    MeltFractionModel<dim>::as_melt_fraction_model(const ModelType &model_object)
     {
-      Assert (is_melt_fraction_model(model_object) == true,
-              ExcMessage ("This function can only be called for model objects "
-                          "whose types are derived from MeltFractionModel."));
+      Assert(is_melt_fraction_model(model_object) == true,
+             ExcMessage("This function can only be called for model objects "
+                        "whose types are derived from MeltFractionModel."));
 
-      return dynamic_cast<const MeltFractionModel<dim>&>(model_object);
+      return dynamic_cast<const MeltFractionModel<dim> &>(model_object);
     }
 
 
@@ -216,14 +215,15 @@ namespace aspect
      * Base class for material models to be used with melt transport enabled.
      */
     template <int dim>
-    class MeltInterface: public MaterialModel::Interface<dim>
+    class MeltInterface : public MaterialModel::Interface<dim>
     {
       public:
         /**
          * Reference value for the Darcy coefficient, which is defined as
          * permeability divided by fluid viscosity. Units: m^2/Pa/s.
          */
-        virtual double reference_darcy_coefficient () const = 0;
+        virtual double
+        reference_darcy_coefficient() const = 0;
 
         /**
          * Returns the cell-averaged and cut-off value of p_c_scale,
@@ -242,10 +242,11 @@ namespace aspect
          * the is_melt_cell vector and need to find out which cells should be
          * marked as melt cells.
          */
-        double p_c_scale (const MaterialModel::MaterialModelInputs<dim> &inputs,
-                          const MaterialModel::MaterialModelOutputs<dim> &outputs,
-                          const MeltHandler<dim> &melt_handler,
-                          const bool consider_is_melt_cell) const;
+        double
+        p_c_scale(const MaterialModel::MaterialModelInputs<dim>  &inputs,
+                  const MaterialModel::MaterialModelOutputs<dim> &outputs,
+                  const MeltHandler<dim>                         &melt_handler,
+                  const bool                                      consider_is_melt_cell) const;
     };
 
 
@@ -261,8 +262,7 @@ namespace aspect
      * equations.
      */
     template <int dim>
-    class MeltInterface : public aspect::Assemblers::Interface<dim>,
-      public SimulatorAccess<dim>
+    class MeltInterface : public aspect::Assemblers::Interface<dim>, public SimulatorAccess<dim>
     {
       public:
         /**
@@ -371,59 +371,61 @@ namespace aspect
     template <int dim>
     struct Parameters
     {
-      /**
-       * Declare additional parameters that are needed in models with
-       * melt transport.
-       */
-      static void declare_parameters (ParameterHandler &prm);
+        /**
+         * Declare additional parameters that are needed in models with
+         * melt transport.
+         */
+        static void
+        declare_parameters(ParameterHandler &prm);
 
-      /**
-       * Parse additional parameters that are needed in models with
-       * melt transport.
-       *
-       * This has to be called before edit_finite_element_variables,
-       * so that the finite elements that are used for the additional melt
-       * variables can be specified in the input file and are parsed before
-       * the introspection object is created.
-       */
-      void parse_parameters (ParameterHandler &prm);
+        /**
+         * Parse additional parameters that are needed in models with
+         * melt transport.
+         *
+         * This has to be called before edit_finite_element_variables,
+         * so that the finite elements that are used for the additional melt
+         * variables can be specified in the input file and are parsed before
+         * the introspection object is created.
+         */
+        void
+        parse_parameters(ParameterHandler &prm);
 
-      /**
-       * The factor by how much the Darcy coefficient K_D in a cell can be smaller than
-       * the reference Darcy coefficient for this cell still to be considered a melt cell
-       * (for which the melt transport equations are solved). If the Darcy coefficient
-       * is smaller than the product of this value and the reference Dracy coefficient,
-       * the cell is not considered a melt cell and the Stokes system without melt
-       * transport is solved instead. In practice, this means that all terms in the
-       * assembly related to the migration of melt are set to zero, and the compaction
-       * pressure degrees of freedom are constrained to be zero.
-       */
-      double melt_scaling_factor_threshold;
+        /**
+         * The factor by how much the Darcy coefficient K_D in a cell can be smaller than
+         * the reference Darcy coefficient for this cell still to be considered a melt cell
+         * (for which the melt transport equations are solved). If the Darcy coefficient
+         * is smaller than the product of this value and the reference Dracy coefficient,
+         * the cell is not considered a melt cell and the Stokes system without melt
+         * transport is solved instead. In practice, this means that all terms in the
+         * assembly related to the migration of melt are set to zero, and the compaction
+         * pressure degrees of freedom are constrained to be zero.
+         */
+        double melt_scaling_factor_threshold;
 
-      /**
-       * Whether to use a porosity weighted average of the melt and solid velocity
-       * to advect heat in the temperature equation or not. If this is set to true,
-       * additional terms are assembled on the left-hand side of the temperature
-       * advection equation in models with melt migration.
-       * If this is set to false, only the solid velocity is used (as in models
-       * without melt migration).
-       */
-      bool heat_advection_by_melt;
+        /**
+         * Whether to use a porosity weighted average of the melt and solid velocity
+         * to advect heat in the temperature equation or not. If this is set to true,
+         * additional terms are assembled on the left-hand side of the temperature
+         * advection equation in models with melt migration.
+         * If this is set to false, only the solid velocity is used (as in models
+         * without melt migration).
+         */
+        bool heat_advection_by_melt;
 
-      /**
-       * Whether to use a discontinuous element for the compaction pressure or not.
-       */
-      bool use_discontinuous_p_c;
+        /**
+         * Whether to use a discontinuous element for the compaction pressure or not.
+         */
+        bool use_discontinuous_p_c;
 
-      /**
-       * Whether to cell-wise average the material properties that are used to
-       * compute the melt velocity or not. Note that the melt velocity is computed
-       * as the sum of the solid velocity and the phase separation flux (difference
-       * between melt and solid velocity). If this parameter is set to true,
-       * material properties in the computation of the phase separation flux will
-       * be averaged cell-wise.
-       */
-      bool average_melt_velocity;
+        /**
+         * Whether to cell-wise average the material properties that are used to
+         * compute the melt velocity or not. Note that the melt velocity is computed
+         * as the sum of the solid velocity and the phase separation flux (difference
+         * between melt and solid velocity). If this parameter is set to true,
+         * material properties in the computation of the phase separation flux will
+         * be averaged cell-wise.
+         */
+        bool average_melt_velocity;
     };
   }
 
@@ -435,7 +437,7 @@ namespace aspect
    * exists if parameters.include_melt_transport is true.
    */
   template <int dim>
-  class MeltHandler: public SimulatorAccess<dim>
+  class MeltHandler : public SimulatorAccess<dim>
   {
     public:
       MeltHandler(ParameterHandler &prm);
@@ -446,15 +448,16 @@ namespace aspect
        * and attaches a pointer to it to the corresponding vector in the
        * MaterialModel::MaterialModelOutputs structure.
        */
-      static void create_material_model_outputs(MaterialModel::MaterialModelOutputs<dim> &output);
+      static void
+      create_material_model_outputs(MaterialModel::MaterialModelOutputs<dim> &output);
 
       /**
        * Add the additional variables we need in simulations with melt
        * migration to the list of variables, which will be used later
        * to set up the introspection object.
        */
-      void edit_finite_element_variables(const Parameters<dim> &parameters,
-                                         std::vector<VariableDeclaration<dim>> &variables);
+      void
+      edit_finite_element_variables(const Parameters<dim> &parameters, std::vector<VariableDeclaration<dim>> &variables);
 
       /**
        * Replace introspection.stokes_dof_info with the local DoFs of the melt
@@ -462,15 +465,16 @@ namespace aspect
        * Called from Simulator::setup_introspection() after the default
        * (non-melt) Stokes DoF cache has been built.
        */
-      void initialize_stokes_dof_info(Introspection<dim> &introspection,
-                                      const FiniteElement<dim> &finite_element) const;
+      void
+      initialize_stokes_dof_info(Introspection<dim> &introspection, const FiniteElement<dim> &finite_element) const;
 
       /**
        * Determine, based on the run-time parameters of the current simulation,
        * which functions need to be called in order to assemble linear systems,
        * matrices, and right hand side vectors.
        */
-      void set_assemblers (Assemblers::Manager<dim> &assemblers) const;
+      void
+      set_assemblers(Assemblers::Manager<dim> &assemblers) const;
 
 
       /**
@@ -479,12 +483,14 @@ namespace aspect
        * the options. We can not do this in the parse_parameters function,
        * as we do not have simulator access at that point.
        */
-      void initialize() const;
+      void
+      initialize() const;
 
       /**
        * Setup SimulatorAccess for the plugins related to melt transport.
        */
-      void initialize_simulator (const Simulator<dim> &simulator_object) override;
+      void
+      initialize_simulator(const Simulator<dim> &simulator_object) override;
 
       /**
        * Compute fluid velocity and solid pressure in this ghosted solution vector.
@@ -500,23 +506,26 @@ namespace aspect
        * @param system_rhs The right-hand side vector that will be used by
        * this function to compute the melt variables.
        */
-      void compute_melt_variables(LinearAlgebra::BlockSparseMatrix &system_matrix,
-                                  LinearAlgebra::BlockVector &solution,
-                                  LinearAlgebra::BlockVector &system_rhs) const;
+      void
+      compute_melt_variables(LinearAlgebra::BlockSparseMatrix &system_matrix,
+                             LinearAlgebra::BlockVector       &solution,
+                             LinearAlgebra::BlockVector       &system_rhs) const;
 
       /**
        * Return whether this object refers to the porosity field.
        */
-      bool is_porosity (const AdvectionField &advection_field) const;
+      bool
+      is_porosity(const AdvectionField &advection_field) const;
 
       /**
        * Apply free surface stabilization to a cell of the system matrix when melt
        * transport is used in the computation. Called during assembly of the system matrix.
        */
-      void apply_free_surface_stabilization_with_melt (const double free_surface_theta,
-                                                       const typename DoFHandler<dim>::active_cell_iterator &cell,
-                                                       internal::Assembly::Scratch::StokesSystem<dim>       &scratch,
-                                                       internal::Assembly::CopyData::StokesSystem<dim>      &data) const;
+      void
+      apply_free_surface_stabilization_with_melt(const double                                          free_surface_theta,
+                                                 const typename DoFHandler<dim>::active_cell_iterator &cell,
+                                                 internal::Assembly::Scratch::StokesSystem<dim>       &scratch,
+                                                 internal::Assembly::CopyData::StokesSystem<dim>      &data) const;
 
       /**
        * Constrain the compaction pressure to zero in all cells that are not
@@ -524,14 +533,16 @@ namespace aspect
        * This reverts the system of equations we solve back to the Stokes
        * system without melt transport for these cells.
        */
-      void add_current_constraints(AffineConstraints<double> &constraints);
+      void
+      add_current_constraints(AffineConstraints<double> &constraints);
 
       /**
        * Returns the entry of the private variable is_melt_cell_vector for the
        * cell given in the input, describing if we have melt transport in this
        * cell or not.
        */
-      bool is_melt_cell(const typename DoFHandler<dim>::active_cell_iterator &cell) const;
+      bool
+      is_melt_cell(const typename DoFHandler<dim>::active_cell_iterator &cell) const;
 
       /**
        * Given the Darcy coefficient @p K_D as computed by the material model,
@@ -540,14 +551,14 @@ namespace aspect
        * coefficient) in melt cells and return this value. If @p is_melt_cell
        * is false, return zero.
        */
-      double limited_darcy_coefficient(const double K_D,
-                                       const bool is_melt_cell) const;
+      double
+      limited_darcy_coefficient(const double K_D, const bool is_melt_cell) const;
 
       /**
        * Return a pointer to the boundary fluid pressure.
        */
       const BoundaryFluidPressure::Interface<dim> &
-      get_boundary_fluid_pressure () const;
+      get_boundary_fluid_pressure() const;
 
       /**
        * The object that stores the run-time parameters that control the how the
@@ -579,7 +590,6 @@ namespace aspect
        * we have computed this solution.
        */
       AffineConstraints<double> current_constraints;
-
   };
 
 }

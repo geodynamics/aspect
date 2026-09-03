@@ -19,9 +19,9 @@
 */
 
 
+#include <aspect/melt.h>
 #include <aspect/postprocess/visualization/material_properties.h>
 #include <aspect/utilities.h>
-#include <aspect/melt.h>
 
 #include <algorithm>
 
@@ -33,10 +33,9 @@ namespace aspect
     namespace VisualizationPostprocessors
     {
       template <int dim>
-      MaterialProperties<dim>::
-      MaterialProperties ()
-        :
-        DataPostprocessor<dim> (),
+      MaterialProperties<dim>::MaterialProperties()
+        : DataPostprocessor<dim>()
+        ,
         // What quantities are output depends on parameters, and so do the physical units.
         // There is nothing useful we can provide here at this point.
         Interface<dim>("")
@@ -46,21 +45,20 @@ namespace aspect
 
       template <int dim>
       std::vector<std::string>
-      MaterialProperties<dim>::
-      get_names () const
+      MaterialProperties<dim>::get_names() const
       {
         std::vector<std::string> solution_names;
 
         for (const auto &property_name : property_names)
           if (property_name == "reaction terms")
             {
-              for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
-                solution_names.push_back (this->introspection().name_for_compositional_index(c) + "_change");
+              for (unsigned int c = 0; c < this->n_compositional_fields(); ++c)
+                solution_names.push_back(this->introspection().name_for_compositional_index(c) + "_change");
             }
           else
             {
               solution_names.push_back(property_name);
-              std::replace(solution_names.back().begin(),solution_names.back().end(),' ', '_');
+              std::replace(solution_names.back().begin(), solution_names.back().end(), ' ', '_');
             }
 
         return solution_names;
@@ -70,19 +68,18 @@ namespace aspect
 
       template <int dim>
       std::vector<DataComponentInterpretation::DataComponentInterpretation>
-      MaterialProperties<dim>::
-      get_data_component_interpretation () const
+      MaterialProperties<dim>::get_data_component_interpretation() const
       {
         std::vector<DataComponentInterpretation::DataComponentInterpretation> interpretation;
         for (const auto &property_name : property_names)
           {
             if (property_name == "reaction terms")
               {
-                for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
-                  interpretation.push_back (DataComponentInterpretation::component_is_scalar);
+                for (unsigned int c = 0; c < this->n_compositional_fields(); ++c)
+                  interpretation.push_back(DataComponentInterpretation::component_is_scalar);
               }
             else
-              interpretation.push_back (DataComponentInterpretation::component_is_scalar);
+              interpretation.push_back(DataComponentInterpretation::component_is_scalar);
           }
 
         return interpretation;
@@ -92,34 +89,27 @@ namespace aspect
 
       template <int dim>
       UpdateFlags
-      MaterialProperties<dim>::
-      get_needed_update_flags () const
+      MaterialProperties<dim>::get_needed_update_flags() const
       {
-        return update_gradients | update_values  | update_quadrature_points;
+        return update_gradients | update_values | update_quadrature_points;
       }
 
 
 
       template <int dim>
       void
-      MaterialProperties<dim>::
-      evaluate_vector_field(const DataPostprocessorInputs::Vector<dim> &input_data,
-                            std::vector<Vector<double>> &computed_quantities) const
+      MaterialProperties<dim>::evaluate_vector_field(const DataPostprocessorInputs::Vector<dim> &input_data,
+                                                     std::vector<Vector<double>>                &computed_quantities) const
       {
         const unsigned int n_quadrature_points = input_data.solution_values.size();
-        Assert (computed_quantities.size() == n_quadrature_points,
-                ExcInternalError());
-        Assert (input_data.solution_values[0].size() == this->introspection().n_components,
-                ExcInternalError());
+        Assert(computed_quantities.size() == n_quadrature_points, ExcInternalError());
+        Assert(input_data.solution_values[0].size() == this->introspection().n_components, ExcInternalError());
 
-        MaterialModel::MaterialModelInputs<dim> in(input_data,
-                                                   this->introspection());
-        MaterialModel::MaterialModelOutputs<dim> out(n_quadrature_points,
-                                                     this->n_compositional_fields());
+        MaterialModel::MaterialModelInputs<dim>  in(input_data, this->introspection());
+        MaterialModel::MaterialModelOutputs<dim> out(n_quadrature_points, this->n_compositional_fields());
         MeltHandler<dim>::create_material_model_outputs(out);
 
-        in.requested_properties
-          = MaterialModel::MaterialProperties::uninitialized;
+        in.requested_properties = MaterialModel::MaterialProperties::uninitialized;
 
         for (const auto &property_name : property_names)
           {
@@ -139,9 +129,9 @@ namespace aspect
               in.requested_properties = in.requested_properties | MaterialModel::MaterialProperties::thermal_conductivity;
 
             else if (property_name == "thermal diffusivity")
-              in.requested_properties = in.requested_properties | MaterialModel::MaterialProperties::density
-                                        | MaterialModel::MaterialProperties::specific_heat
-                                        | MaterialModel::MaterialProperties::thermal_conductivity;
+              in.requested_properties = in.requested_properties | MaterialModel::MaterialProperties::density |
+                                        MaterialModel::MaterialProperties::specific_heat |
+                                        MaterialModel::MaterialProperties::thermal_conductivity;
 
             else if (property_name == "compressibility")
               in.requested_properties = in.requested_properties | MaterialModel::MaterialProperties::compressibility;
@@ -178,15 +168,14 @@ namespace aspect
         // averaging modes that require a quadrature object expands:
         // Every time we generate graphical output for a model that
         // uses this kind of averaging, we will trigger an exception.
-        if (this->get_parameters().material_averaging != MaterialModel::MaterialAveraging::AveragingOperation::project_to_Q1
-            &&
+        if (this->get_parameters().material_averaging != MaterialModel::MaterialAveraging::AveragingOperation::project_to_Q1 &&
             this->get_parameters().material_averaging != MaterialModel::MaterialAveraging::AveragingOperation::project_to_Q1_only_viscosity)
-          MaterialModel::MaterialAveraging::average (this->get_parameters().material_averaging,
-                                                     input_data.template get_cell<dim>(),
-                                                     Quadrature<dim>(),
-                                                     this->get_mapping(),
-                                                     in.requested_properties,
-                                                     out);
+          MaterialModel::MaterialAveraging::average(this->get_parameters().material_averaging,
+                                                    input_data.template get_cell<dim>(),
+                                                    Quadrature<dim>(),
+                                                    this->get_mapping(),
+                                                    in.requested_properties,
+                                                    out);
 
         std::vector<double> melt_fractions(n_quadrature_points);
         if (std::find(property_names.begin(), property_names.end(), "melt fraction") != property_names.end())
@@ -194,11 +183,10 @@ namespace aspect
             AssertThrow(MaterialModel::MeltFractionModel<dim>::is_melt_fraction_model(this->get_material_model()),
                         ExcMessage("You are trying to visualize the melt fraction, but the material"
                                    "model you use does not actually compute a melt fraction."));
-            MaterialModel::MeltFractionModel<dim>::as_melt_fraction_model(this->get_material_model())
-            .melt_fractions(in, melt_fractions);
+            MaterialModel::MeltFractionModel<dim>::as_melt_fraction_model(this->get_material_model()).melt_fractions(in, melt_fractions);
           }
 
-        for (unsigned int q=0; q<n_quadrature_points; ++q)
+        for (unsigned int q = 0; q < n_quadrature_points; ++q)
           {
             unsigned output_index = 0;
             for (const auto &property_name : property_names)
@@ -219,7 +207,7 @@ namespace aspect
                   computed_quantities[q][output_index] = out.thermal_conductivities[q];
 
                 else if (property_name == "thermal diffusivity")
-                  computed_quantities[q][output_index] = out.thermal_conductivities[q]/(out.densities[q]*out.specific_heat[q]);
+                  computed_quantities[q][output_index] = out.thermal_conductivities[q] / (out.densities[q] * out.specific_heat[q]);
 
                 else if (property_name == "compressibility")
                   computed_quantities[q][output_index] = out.compressibilities[q];
@@ -232,7 +220,7 @@ namespace aspect
 
                 else if (property_name == "reaction terms")
                   {
-                    for (unsigned int k=0; k<this->n_compositional_fields(); ++k, ++output_index)
+                    for (unsigned int k = 0; k < this->n_compositional_fields(); ++k, ++output_index)
                       {
                         computed_quantities[q][output_index] = out.reaction_terms[q][k];
                       }
@@ -241,8 +229,7 @@ namespace aspect
                 else if (property_name == "melt fraction")
                   computed_quantities[q][output_index] = melt_fractions[q];
                 else
-                  AssertThrow(false,
-                              ExcMessage("Material property not implemented for this postprocessor."));
+                  AssertThrow(false, ExcMessage("Material property not implemented for this postprocessor."));
 
                 ++output_index;
               }
@@ -253,7 +240,7 @@ namespace aspect
 
       template <int dim>
       void
-      MaterialProperties<dim>::declare_parameters (ParameterHandler &prm)
+      MaterialProperties<dim>::declare_parameters(ParameterHandler &prm)
       {
         prm.enter_subsection("Postprocess");
         {
@@ -261,11 +248,10 @@ namespace aspect
           {
             prm.enter_subsection("Material properties");
             {
-              const std::string pattern_of_names
-                = "viscosity|density|thermal expansivity|specific heat|"
-                  "thermal conductivity|thermal diffusivity|compressibility|"
-                  "entropy derivative temperature|entropy derivative pressure|reaction terms|"
-                  "melt fraction";
+              const std::string pattern_of_names = "viscosity|density|thermal expansivity|specific heat|"
+                                                   "thermal conductivity|thermal diffusivity|compressibility|"
+                                                   "entropy derivative temperature|entropy derivative pressure|reaction terms|"
+                                                   "melt fraction";
 
               prm.declare_entry("List of material properties",
                                 "density,thermal expansivity,specific heat,viscosity",
@@ -274,9 +260,8 @@ namespace aspect
                                 "written whenever writing graphical output. By default, the "
                                 "material properties will always contain the density, thermal "
                                 "expansivity, specific heat and viscosity. "
-                                "The following material properties are available:\n\n"
-                                +
-                                pattern_of_names);
+                                "The following material properties are available:\n\n" +
+                                  pattern_of_names);
             }
             prm.leave_subsection();
           }
@@ -289,7 +274,7 @@ namespace aspect
 
       template <int dim>
       void
-      MaterialProperties<dim>::parse_parameters (ParameterHandler &prm)
+      MaterialProperties<dim>::parse_parameters(ParameterHandler &prm)
       {
         prm.enter_subsection("Postprocess");
         {
@@ -298,7 +283,7 @@ namespace aspect
             prm.enter_subsection("Material properties");
             {
               // Get property names and compare against variable names
-              property_names = Utilities::split_string_list(prm.get ("List of material properties"));
+              property_names = Utilities::split_string_list(prm.get("List of material properties"));
               AssertThrow(Utilities::has_unique_entries(property_names),
                           ExcMessage("The list of strings for the parameter "
                                      "'Postprocess/Visualization/Material properties/List of material properties' "

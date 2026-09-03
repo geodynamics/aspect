@@ -55,8 +55,7 @@ namespace aspect
        * enum that corresponds to this operation.
        */
       BoundaryLayerAgeModel::Kind
-      parse (const std::string &parameter_name,
-             const ParameterHandler &prm);
+      parse(const std::string &parameter_name, const ParameterHandler &prm);
     }
 
     /**
@@ -74,9 +73,10 @@ namespace aspect
         /**
          * Constructor.
          */
-        Adiabatic ();
+        Adiabatic();
 
-        void initialize () override;
+        void
+        initialize() override;
 
         // avoid -Woverloaded-virtual:
         using Utilities::AsciiDataBoundary<dim>::initialize;
@@ -84,20 +84,20 @@ namespace aspect
         /**
          * Return the initial temperature as a function of position.
          */
-        double initial_temperature (const Point<dim> &position) const override;
+        double
+        initial_temperature(const Point<dim> &position) const override;
 
         /**
          * Declare the parameters this class takes through input files.
          */
-        static
-        void
-        declare_parameters (ParameterHandler &prm);
+        static void
+        declare_parameters(ParameterHandler &prm);
 
         /**
          * Read the parameters this class declares from the parameter file.
          */
         void
-        parse_parameters (ParameterHandler &prm) override;
+        parse_parameters(ParameterHandler &prm) override;
 
       private:
         /**
@@ -196,7 +196,8 @@ namespace aspect
         /**
          * Compute the top boundary layer age at the given position.
          */
-        double top_boundary_layer_age(const Point<dim> &position) const;
+        double
+        top_boundary_layer_age(const Point<dim> &position) const;
     };
   }
 }

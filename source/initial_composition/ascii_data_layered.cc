@@ -20,6 +20,7 @@
 
 
 #include <aspect/global.h>
+
 #include <aspect/initial_composition/ascii_data_layered.h>
 
 
@@ -28,13 +29,12 @@ namespace aspect
   namespace InitialComposition
   {
     template <int dim>
-    AsciiDataLayered<dim>::AsciiDataLayered ()
-      = default;
+    AsciiDataLayered<dim>::AsciiDataLayered() = default;
 
 
     template <int dim>
     void
-    AsciiDataLayered<dim>::initialize ()
+    AsciiDataLayered<dim>::initialize()
     {
       // First additional field is the layer depth, so we need one additional non-compositional field
       Utilities::AsciiDataLayered<dim>::initialize(this->n_compositional_fields() + 1);
@@ -43,19 +43,16 @@ namespace aspect
 
     template <int dim>
     double
-    AsciiDataLayered<dim>::
-    initial_composition (const Point<dim> &position,
-                         const unsigned int n_comp) const
+    AsciiDataLayered<dim>::initial_composition(const Point<dim> &position, const unsigned int n_comp) const
     {
-
       // First additional field is the layer depth, so we need the data component from the n_comp+1th column
-      return Utilities::AsciiDataLayered<dim>::get_data_component(position,n_comp + 1);
+      return Utilities::AsciiDataLayered<dim>::get_data_component(position, n_comp + 1);
     }
 
 
     template <int dim>
     void
-    AsciiDataLayered<dim>::declare_parameters (ParameterHandler &prm)
+    AsciiDataLayered<dim>::declare_parameters(ParameterHandler &prm)
     {
       prm.enter_subsection("Initial composition model");
       {
@@ -70,12 +67,11 @@ namespace aspect
 
     template <int dim>
     void
-    AsciiDataLayered<dim>::parse_parameters (ParameterHandler &prm)
+    AsciiDataLayered<dim>::parse_parameters(ParameterHandler &prm)
     {
       prm.enter_subsection("Initial composition model");
       {
-        Utilities::AsciiDataLayered<dim>::parse_parameters(prm,
-                                                           "Ascii data layered");
+        Utilities::AsciiDataLayered<dim>::parse_parameters(prm, "Ascii data layered");
       }
       prm.leave_subsection();
     }

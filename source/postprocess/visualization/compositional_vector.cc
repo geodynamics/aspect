@@ -27,23 +27,20 @@ namespace aspect
     namespace VisualizationPostprocessors
     {
       template <int dim>
-      CompositionalVector<dim>::
-      CompositionalVector ()
-        :
-        DataPostprocessor<dim> (),
-        Interface<dim>("")  // we don't associate these objects with physical units
+      CompositionalVector<dim>::CompositionalVector()
+        : DataPostprocessor<dim>()
+        , Interface<dim>("") // we don't associate these objects with physical units
       {}
 
 
 
       template <int dim>
       std::vector<std::string>
-      CompositionalVector<dim>::
-      get_names () const
+      CompositionalVector<dim>::get_names() const
       {
         std::vector<std::string> solution_names;
         for (const auto &vector_name : vector_names)
-          for (unsigned int j=0; j<dim; ++j)
+          for (unsigned int j = 0; j < dim; ++j)
             solution_names.push_back(vector_name);
         return solution_names;
       }
@@ -51,19 +48,16 @@ namespace aspect
 
       template <int dim>
       std::vector<DataComponentInterpretation::DataComponentInterpretation>
-      CompositionalVector<dim>::
-      get_data_component_interpretation () const
+      CompositionalVector<dim>::get_data_component_interpretation() const
       {
-        return std::vector<DataComponentInterpretation::DataComponentInterpretation>
-               (vector_names.size()*dim,
-                DataComponentInterpretation::component_is_part_of_vector);
+        return std::vector<DataComponentInterpretation::DataComponentInterpretation>(
+          vector_names.size() * dim, DataComponentInterpretation::component_is_part_of_vector);
       }
 
 
       template <int dim>
       UpdateFlags
-      CompositionalVector<dim>::
-      get_needed_update_flags () const
+      CompositionalVector<dim>::get_needed_update_flags() const
       {
         return update_values;
       }
@@ -71,19 +65,18 @@ namespace aspect
 
       template <int dim>
       void
-      CompositionalVector<dim>::
-      evaluate_vector_field(const DataPostprocessorInputs::Vector<dim> &input_data,
-                            std::vector<Vector<double>> &computed_quantities) const
+      CompositionalVector<dim>::evaluate_vector_field(const DataPostprocessorInputs::Vector<dim> &input_data,
+                                                      std::vector<Vector<double>>                &computed_quantities) const
       {
         const unsigned int n_quadrature_points = input_data.solution_values.size();
-        Assert (computed_quantities.size() == n_quadrature_points, ExcInternalError ());
-        Assert (input_data.solution_values[0].size() == this->introspection().n_components, ExcInternalError ());
+        Assert(computed_quantities.size() == n_quadrature_points, ExcInternalError());
+        Assert(input_data.solution_values[0].size() == this->introspection().n_components, ExcInternalError());
 
-        for (unsigned int q=0; q<n_quadrature_points; ++q)
+        for (unsigned int q = 0; q < n_quadrature_points; ++q)
           {
-            for (unsigned int i=0; i<vector_names.size(); ++i)
-              for (unsigned int j=0; j<dim; ++j)
-                computed_quantities[q][i*dim+j] =
+            for (unsigned int i = 0; i < vector_names.size(); ++i)
+              for (unsigned int j = 0; j < dim; ++j)
+                computed_quantities[q][i * dim + j] =
                   input_data.solution_values[q][this->introspection().component_indices.compositional_fields[sets[i][j]]];
           }
       }
@@ -91,7 +84,7 @@ namespace aspect
 
       template <int dim>
       void
-      CompositionalVector<dim>::declare_parameters (ParameterHandler &prm)
+      CompositionalVector<dim>::declare_parameters(ParameterHandler &prm)
       {
         prm.enter_subsection("Postprocess");
         {
@@ -99,12 +92,14 @@ namespace aspect
           {
             prm.enter_subsection("Compositional fields as vectors");
             {
-              prm.declare_entry("Names of vectors", "",
-                                Patterns::List (Patterns::Anything()),
+              prm.declare_entry("Names of vectors",
+                                "",
+                                Patterns::List(Patterns::Anything()),
                                 "Names of vectors as they will appear in the output.");
 
-              prm.declare_entry("Names of fields", "",
-                                Patterns::Anything (),
+              prm.declare_entry("Names of fields",
+                                "",
+                                Patterns::Anything(),
                                 "A list of sets of compositional fields which should be output "
                                 "as vectors. Sets are separated from each other by semicolons "
                                 "and vector components within each set are separated by commas "
@@ -124,7 +119,7 @@ namespace aspect
 
       template <int dim>
       void
-      CompositionalVector<dim>::parse_parameters (ParameterHandler &prm)
+      CompositionalVector<dim>::parse_parameters(ParameterHandler &prm)
       {
         prm.enter_subsection("Postprocess");
         {
@@ -145,7 +140,7 @@ namespace aspect
                   std::vector<unsigned int> set_idx;
                   for (const auto &name : set)
                     {
-                      AssertThrow(this->introspection().compositional_name_exists (name),
+                      AssertThrow(this->introspection().compositional_name_exists(name),
                                   ExcMessage("All fields in compositional vector sets must match names of compositional "
                                              "fields as assigned in the \"Compositional fields/Names of fields\" parameter."));
                       set_idx.push_back(this->introspection().compositional_index_for_name(name));
@@ -153,10 +148,10 @@ namespace aspect
 
                   while (set_idx.size() < dim)
                     {
-                      AssertThrow(set_idx[0]+set_idx.size() < this->n_compositional_fields(),
+                      AssertThrow(set_idx[0] + set_idx.size() < this->n_compositional_fields(),
                                   ExcMessage(set[0] + " must be the first in a sequence of dim compositional fields to be "
-                                             "interpreted as a vector. You have too few compositional fields."));
-                      set_idx.push_back(set_idx[0]+set_idx.size());
+                                                      "interpreted as a vector. You have too few compositional fields."));
+                      set_idx.push_back(set_idx[0] + set_idx.size());
                     }
                   sets.push_back(set_idx);
                 }

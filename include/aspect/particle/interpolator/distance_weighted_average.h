@@ -45,15 +45,16 @@ namespace aspect
           /**
            * Initialize function. Called once at the beginning of the model.
            */
-          void initialize() override;
+          void
+          initialize() override;
 
           /**
            * Return the cell-wise evaluated particle properties at the given @p positions.
            */
           std::vector<std::vector<double>>
-          properties_at_points(const ParticleHandler<dim> &particle_handler,
-                               const std::vector<Point<dim>> &positions,
-                               const ComponentMask &selected_properties,
+          properties_at_points(const ParticleHandler<dim>                                                     &particle_handler,
+                               const std::vector<Point<dim>>                                                  &positions,
+                               const ComponentMask                                                            &selected_properties,
                                const typename parallel::distributed::Triangulation<dim>::active_cell_iterator &cell) const override;
 
         private:

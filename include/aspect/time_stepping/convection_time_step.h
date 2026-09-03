@@ -42,7 +42,7 @@ namespace aspect
         /**
          * Constructor.
          */
-        ConvectionTimeStep () = default;
+        ConvectionTimeStep() = default;
 
 
         /**

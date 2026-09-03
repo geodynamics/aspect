@@ -23,16 +23,20 @@
 #define _aspect_termination_criteria_interface_h
 
 #include <aspect/global.h>
+
 #include <aspect/plugins.h>
 
-#include <memory>
-#include <deal.II/base/parameter_handler.h>
 #include <aspect/simulator_access.h>
+
+#include <deal.II/base/parameter_handler.h>
+
+#include <memory>
 
 
 namespace aspect
 {
-  template <int dim> class Simulator;
+  template <int dim>
+  class Simulator;
 
 
   /**
@@ -79,9 +83,8 @@ namespace aspect
          * wants to terminate the simulation, even if the other processors
          * return false.
          */
-        virtual
-        bool
-        execute () = 0;
+        virtual bool
+        execute() = 0;
 
         /**
          * Check for last time step and if so reduce the time step to user
@@ -95,11 +98,9 @@ namespace aspect
          * size will be greater than zero, and less than or equal to the given
          * argument put into this function.
          */
-        virtual double check_for_last_time_step (const double time_step) const;
+        virtual double
+        check_for_last_time_step(const double time_step) const;
     };
-
-
-
 
 
 
@@ -126,9 +127,8 @@ namespace aspect
          * processors need to return the same value: if only one of the says
          * that the simulation should be terminated, then this is enough.
          */
-        virtual
-        bool
-        execute () const;
+        virtual bool
+        execute() const;
 
         /**
          * Check all of the termination criteria objects that have been
@@ -143,15 +143,15 @@ namespace aspect
          * size will be greater than zero, and less than or equal to the given
          * argument put into this function.
          */
-        double check_for_last_time_step (const double time_step) const;
+        double
+        check_for_last_time_step(const double time_step) const;
 
         /**
          * Declare the parameters of all known termination criteria plugins,
          * as well as of ones this class has itself.
          */
-        static
-        void
-        declare_parameters (ParameterHandler &prm);
+        static void
+        declare_parameters(ParameterHandler &prm);
 
         /**
          * Read the parameters this class declares from the parameter file.
@@ -159,7 +159,7 @@ namespace aspect
          * then let these objects read their parameters as well.
          */
         void
-        parse_parameters (ParameterHandler &prm) override;
+        parse_parameters(ParameterHandler &prm) override;
 
         /**
          * A function that is used to register termination criteria objects in
@@ -178,12 +178,11 @@ namespace aspect
          * @param factory_function A pointer to a function that creates such a
          * termination criterion object and returns a pointer to it.
          */
-        static
-        void
-        register_termination_criterion (const std::string &name,
-                                        const std::string &description,
-                                        void (*declare_parameters_function) (ParameterHandler &),
-                                        std::unique_ptr<Interface<dim>> (*factory_function) ());
+        static void
+        register_termination_criterion(const std::string &name,
+                                       const std::string &description,
+                                       void (*declare_parameters_function)(ParameterHandler &),
+                                       std::unique_ptr<Interface<dim>> (*factory_function)());
 
         /**
          * For the current plugin subsystem, write a connection graph of all of the
@@ -194,18 +193,15 @@ namespace aspect
          *
          * @param output_stream The stream to write the output to.
          */
-        static
-        void
-        write_plugin_graph (std::ostream &output_stream);
+        static void
+        write_plugin_graph(std::ostream &output_stream);
 
         /**
          * Exception.
          */
-        DeclException1 (ExcTerminationCriteriaNameNotFound,
-                        std::string,
-                        << "Could not find entry <"
-                        << arg1
-                        << "> among the names of registered termination criteria objects.");
+        DeclException1(ExcTerminationCriteriaNameNotFound,
+                       std::string,
+                       << "Could not find entry <" << arg1 << "> among the names of registered termination criteria objects.");
     };
 
 
@@ -217,17 +213,15 @@ namespace aspect
      *
      * @ingroup TerminationCriteria
      */
-#define ASPECT_REGISTER_TERMINATION_CRITERION(classname,name,description) \
+#define ASPECT_REGISTER_TERMINATION_CRITERION(classname, name, description) \
   template class classname<2>; \
   template class classname<3>; \
-  namespace ASPECT_REGISTER_TERMINATION_CRITERION_ ## classname \
+  namespace ASPECT_REGISTER_TERMINATION_CRITERION_##classname \
   { \
-    aspect::internal::Plugins::RegisterHelper<aspect::TerminationCriteria::Interface<2>,classname<2>> \
-    dummy_ ## classname ## _2d (&aspect::TerminationCriteria::Manager<2>::register_termination_criterion, \
-                                name, description); \
-    aspect::internal::Plugins::RegisterHelper<aspect::TerminationCriteria::Interface<3>,classname<3>> \
-    dummy_ ## classname ## _3d (&aspect::TerminationCriteria::Manager<3>::register_termination_criterion, \
-                                name, description); \
+    aspect::internal::Plugins::RegisterHelper<aspect::TerminationCriteria::Interface<2>, classname<2>> dummy_##classname##_2d( \
+      &aspect::TerminationCriteria::Manager<2>::register_termination_criterion, name, description); \
+    aspect::internal::Plugins::RegisterHelper<aspect::TerminationCriteria::Interface<3>, classname<3>> dummy_##classname##_3d( \
+      &aspect::TerminationCriteria::Manager<3>::register_termination_criterion, name, description); \
   }
   }
 }

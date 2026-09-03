@@ -19,10 +19,9 @@
 */
 
 
-#include <aspect/gravity_model/radial_constant.h>
-
-#include <aspect/geometry_model/interface.h>
 #include <aspect/coordinate_systems.h>
+#include <aspect/geometry_model/interface.h>
+#include <aspect/gravity_model/radial_constant.h>
 
 #include <deal.II/base/tensor.h>
 
@@ -31,57 +30,58 @@ namespace aspect
   namespace GravityModel
   {
     template <int dim>
-    Tensor<1,dim>
-    RadialConstant<dim>::gravity_vector (const Point<dim> &p) const
+    Tensor<1, dim>
+    RadialConstant<dim>::gravity_vector(const Point<dim> &p) const
     {
       if (p.norm() == 0.0)
-        return Tensor<1,dim>();
+        return Tensor<1, dim>();
 
       const double r = p.norm();
-      return -magnitude * p/r;
+      return -magnitude * p / r;
     }
 
 
 
     template <int dim>
     void
-    RadialConstant<dim>::declare_parameters (ParameterHandler &prm)
+    RadialConstant<dim>::declare_parameters(ParameterHandler &prm)
     {
       prm.enter_subsection("Gravity model");
       {
         prm.enter_subsection("Radial constant");
         {
-          prm.declare_entry ("Magnitude", "9.81",
-                             Patterns::Double (),
-                             "Magnitude of the gravity vector in $\\si{\\meter\\per\\second\\squared}$. "
-                             "For positive values "
-                             "the direction is radially inward towards the center of the earth.");
+          prm.declare_entry("Magnitude",
+                            "9.81",
+                            Patterns::Double(),
+                            "Magnitude of the gravity vector in $\\si{\\meter\\per\\second\\squared}$. "
+                            "For positive values "
+                            "the direction is radially inward towards the center of the earth.");
         }
-        prm.leave_subsection ();
+        prm.leave_subsection();
       }
-      prm.leave_subsection ();
+      prm.leave_subsection();
     }
 
 
 
     template <int dim>
     void
-    RadialConstant<dim>::parse_parameters (ParameterHandler &prm)
+    RadialConstant<dim>::parse_parameters(ParameterHandler &prm)
     {
       prm.enter_subsection("Gravity model");
       {
         prm.enter_subsection("Radial constant");
         {
-          magnitude = prm.get_double ("Magnitude");
+          magnitude = prm.get_double("Magnitude");
         }
-        prm.leave_subsection ();
+        prm.leave_subsection();
       }
-      prm.leave_subsection ();
+      prm.leave_subsection();
 
-      AssertThrow (this->get_geometry_model().natural_coordinate_system() == Utilities::Coordinates::spherical ||
-                   this->get_geometry_model().natural_coordinate_system() == Utilities::Coordinates::ellipsoidal,
-                   ExcMessage ("Gravity model 'radial constant' should not be used with geometry models that "
-                               "do not have either a spherical or ellipsoidal natural coordinate system."));
+      AssertThrow(this->get_geometry_model().natural_coordinate_system() == Utilities::Coordinates::spherical ||
+                    this->get_geometry_model().natural_coordinate_system() == Utilities::Coordinates::ellipsoidal,
+                  ExcMessage("Gravity model 'radial constant' should not be used with geometry models that "
+                             "do not have either a spherical or ellipsoidal natural coordinate system."));
     }
   }
 }

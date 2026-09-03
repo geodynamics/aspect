@@ -23,23 +23,27 @@
 #define _aspect_postprocess_interface_h
 
 #include <aspect/global.h>
+
 #include <aspect/plugins.h>
+
 #include <aspect/simulator_access.h>
 
-#include <memory>
-#include <deal.II/base/table_handler.h>
 #include <deal.II/base/parameter_handler.h>
+#include <deal.II/base/table_handler.h>
 
-#include <boost/serialization/split_member.hpp>
 #include <boost/core/demangle.hpp>
+#include <boost/serialization/split_member.hpp>
 
+#include <memory>
 #include <typeinfo>
 
 
 namespace aspect
 {
-  template <int dim> class Simulator;
-  template <int dim> class SimulatorAccess;
+  template <int dim>
+  class Simulator;
+  template <int dim>
+  class SimulatorAccess;
 
 
   /**
@@ -89,9 +93,8 @@ namespace aspect
          * left blank. If there is nothing to print, simply return two empty
          * strings.
          */
-        virtual
-        std::pair<std::string,std::string>
-        execute (TableHandler &statistics) = 0;
+        virtual std::pair<std::string, std::string>
+        execute(TableHandler &statistics) = 0;
 
         /**
          * A function that is used to indicate to the postprocessor manager which
@@ -115,9 +118,8 @@ namespace aspect
          * by asking the resulting object via get_matching_active_plugin()
          * for a specific postprocessor object.
          */
-        virtual
-        std::list<std::string>
-        required_other_postprocessors () const;
+        virtual std::list<std::string>
+        required_other_postprocessors() const;
     };
 
 
@@ -143,8 +145,8 @@ namespace aspect
          * The function returns a concatenation of the text returned by the
          * individual postprocessors.
          */
-        std::list<std::pair<std::string,std::string>>
-        execute (TableHandler &statistics);
+        std::list<std::pair<std::string, std::string>>
+        execute(TableHandler &statistics);
 
         /**
          * Go through the list of all postprocessors that have been selected
@@ -161,10 +163,9 @@ namespace aspect
          *   class of the current class.
          */
         template <typename PostprocessorType,
-                  typename = typename std::enable_if_t<std::is_base_of<Interface<dim>,PostprocessorType>::value>>
-        DEAL_II_DEPRECATED
-        bool
-        has_matching_postprocessor () const;
+                  typename = typename std::enable_if_t<std::is_base_of<Interface<dim>, PostprocessorType>::value>>
+        DEAL_II_DEPRECATED bool
+        has_matching_postprocessor() const;
 
         /**
          * Go through the list of all postprocessors that have been selected
@@ -183,18 +184,16 @@ namespace aspect
          *   class of the current class.
          */
         template <typename PostprocessorType,
-                  typename = typename std::enable_if_t<std::is_base_of<Interface<dim>,PostprocessorType>::value>>
-        DEAL_II_DEPRECATED
-        const PostprocessorType &
-        get_matching_postprocessor () const;
+                  typename = typename std::enable_if_t<std::is_base_of<Interface<dim>, PostprocessorType>::value>>
+        DEAL_II_DEPRECATED const PostprocessorType &
+        get_matching_postprocessor() const;
 
         /**
          * Declare the parameters of all known postprocessors, as well as of
          * ones this class has itself.
          */
-        static
-        void
-        declare_parameters (ParameterHandler &prm);
+        static void
+        declare_parameters(ParameterHandler &prm);
 
         /**
          * Read the parameters this class declares from the parameter file.
@@ -202,7 +201,7 @@ namespace aspect
          * let these objects read their parameters as well.
          */
         void
-        parse_parameters (ParameterHandler &prm) override;
+        parse_parameters(ParameterHandler &prm) override;
 
         /**
          * A function that is used to register postprocessor objects in such a
@@ -221,12 +220,11 @@ namespace aspect
          * @param factory_function A pointer to a function that creates such a
          * postprocessor object and returns a pointer to it.
          */
-        static
-        void
-        register_postprocessor (const std::string &name,
-                                const std::string &description,
-                                void (*declare_parameters_function) (ParameterHandler &),
-                                std::unique_ptr<Interface<dim>> (*factory_function) ());
+        static void
+        register_postprocessor(const std::string &name,
+                               const std::string &description,
+                               void (*declare_parameters_function)(ParameterHandler &),
+                               std::unique_ptr<Interface<dim>> (*factory_function)());
 
         /**
          * For the current plugin subsystem, write a connection graph of all of the
@@ -237,18 +235,15 @@ namespace aspect
          *
          * @param output_stream The stream to write the output to.
          */
-        static
-        void
-        write_plugin_graph (std::ostream &output_stream);
+        static void
+        write_plugin_graph(std::ostream &output_stream);
 
         /**
          * Exception.
          */
-        DeclException1 (ExcPostprocessorNameNotFound,
-                        std::string,
-                        << "Could not find entry <"
-                        << arg1
-                        << "> among the names of registered postprocessors.");
+        DeclException1(ExcPostprocessorNameNotFound,
+                       std::string,
+                       << "Could not find entry <" << arg1 << "> among the names of registered postprocessors.");
     };
 
 
@@ -256,9 +251,8 @@ namespace aspect
 
     template <int dim>
     template <typename PostprocessorType, typename>
-    inline
-    bool
-    Manager<dim>::has_matching_postprocessor () const
+    inline bool
+    Manager<dim>::has_matching_postprocessor() const
     {
       return this->template has_matching_active_plugin<PostprocessorType>();
     }
@@ -267,9 +261,8 @@ namespace aspect
 
     template <int dim>
     template <typename PostprocessorType, typename>
-    inline
-    const PostprocessorType &
-    Manager<dim>::get_matching_postprocessor () const
+    inline const PostprocessorType &
+    Manager<dim>::get_matching_postprocessor() const
     {
       return this->template get_matching_active_plugin<PostprocessorType>();
     }
@@ -282,17 +275,15 @@ namespace aspect
      *
      * @ingroup Postprocessing
      */
-#define ASPECT_REGISTER_POSTPROCESSOR(classname,name,description) \
+#define ASPECT_REGISTER_POSTPROCESSOR(classname, name, description) \
   template class classname<2>; \
   template class classname<3>; \
-  namespace ASPECT_REGISTER_POSTPROCESSOR_ ## classname \
+  namespace ASPECT_REGISTER_POSTPROCESSOR_##classname \
   { \
-    aspect::internal::Plugins::RegisterHelper<aspect::Postprocess::Interface<2>,classname<2>> \
-    dummy_ ## classname ## _2d (&aspect::Postprocess::Manager<2>::register_postprocessor, \
-                                name, description); \
-    aspect::internal::Plugins::RegisterHelper<aspect::Postprocess::Interface<3>,classname<3>> \
-    dummy_ ## classname ## _3d (&aspect::Postprocess::Manager<3>::register_postprocessor, \
-                                name, description); \
+    aspect::internal::Plugins::RegisterHelper<aspect::Postprocess::Interface<2>, classname<2>> dummy_##classname##_2d( \
+      &aspect::Postprocess::Manager<2>::register_postprocessor, name, description); \
+    aspect::internal::Plugins::RegisterHelper<aspect::Postprocess::Interface<3>, classname<3>> dummy_##classname##_3d( \
+      &aspect::Postprocess::Manager<3>::register_postprocessor, name, description); \
   }
   }
 }

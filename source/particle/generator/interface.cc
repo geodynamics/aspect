@@ -20,10 +20,11 @@
 
 #include <aspect/particle/generator/interface.h>
 
-#include <tuple>
 #include <deal.II/grid/grid_tools.h>
 
 #include <boost/lexical_cast.hpp>
+
+#include <tuple>
 
 namespace aspect
 {
@@ -33,17 +34,17 @@ namespace aspect
     {
       template <int dim>
       void
-      Interface<dim>::initialize ()
+      Interface<dim>::initialize()
       {
         const unsigned int my_rank = Utilities::MPI::this_mpi_process(this->get_mpi_communicator());
-        random_number_generator.seed(5432+my_rank);
+        random_number_generator.seed(5432 + my_rank);
       }
 
 
 
       template <int dim>
       void
-      Interface<dim>::update ()
+      Interface<dim>::update()
       {
         // Give the random number generator a deterministic state at
         // the beginning of each time step so that we don't have to serialize
@@ -63,32 +64,28 @@ namespace aspect
         // is already initialized in the initialize() function, and we don't
         // want to overwrite that initialization.
         if (this->get_timestep_number() > 0)
-          random_number_generator.seed(this->get_timestep_number() * 1000000  +
-                                       this->get_particle_manager_index() * 100000 +
+          random_number_generator.seed(this->get_timestep_number() * 1000000 + this->get_particle_manager_index() * 100000 +
                                        Utilities::MPI::this_mpi_process(this->get_mpi_communicator()));
       }
 
 
 
       template <int dim>
-      std::pair<Particles::internal::LevelInd,Particle<dim>>
-      Interface<dim>::generate_particle(const Point<dim> &position,
-                                        const types::particle_index id) const
+      std::pair<Particles::internal::LevelInd, Particle<dim>>
+      Interface<dim>::generate_particle(const Point<dim> &position, const types::particle_index id) const
       {
         // Try to find the cell of the given position. If the position is not
         // in the domain on the local process, throw a ExcParticlePointNotInDomain
         // exception.
-        std::pair<const typename parallel::distributed::Triangulation<dim>::active_cell_iterator,
-            Point<dim>> it =
-              GridTools::find_active_cell_around_point<> (this->get_mapping(), this->get_triangulation(), position);
+        std::pair<const typename parallel::distributed::Triangulation<dim>::active_cell_iterator, Point<dim>> it =
+          GridTools::find_active_cell_around_point<>(this->get_mapping(), this->get_triangulation(), position);
 
         // Only try to add the point if the cell it is in, is on this processor
-        AssertThrow(it.first.state() == IteratorState::valid && it.first->is_locally_owned(),
-                    ExcParticlePointNotInDomain());
+        AssertThrow(it.first.state() == IteratorState::valid && it.first->is_locally_owned(), ExcParticlePointNotInDomain());
 
-        const Particle<dim> particle(position, it.second, id);
+        const Particle<dim>                 particle(position, it.second, id);
         const Particles::internal::LevelInd cell(it.first->level(), it.first->index());
-        return std::make_pair(cell,particle);
+        return std::make_pair(cell, particle);
 
         // Avoid warnings about missing return
         return {};
@@ -98,14 +95,13 @@ namespace aspect
 
       template <int dim>
       Particles::ParticleIterator<dim>
-      Interface<dim>::insert_particle_at_position(const Point<dim> &position,
-                                                  const types::particle_index id,
+      Interface<dim>::insert_particle_at_position(const Point<dim>                &position,
+                                                  const types::particle_index      id,
                                                   Particles::ParticleHandler<dim> &particle_handler) const
       {
         // Try to find the cell of the given position.
-        const std::pair<const typename parallel::distributed::Triangulation<dim>::active_cell_iterator,
-              Point<dim>> it =
-                GridTools::find_active_cell_around_point<> (this->get_mapping(), this->get_triangulation(), position);
+        const std::pair<const typename parallel::distributed::Triangulation<dim>::active_cell_iterator, Point<dim>> it =
+          GridTools::find_active_cell_around_point<>(this->get_mapping(), this->get_triangulation(), position);
 
         if (it.first.state() != IteratorState::valid || it.first->is_locally_owned() == false)
           return particle_handler.end();
@@ -116,24 +112,23 @@ namespace aspect
 
 
       template <int dim>
-      std::pair<Particles::internal::LevelInd,Particle<dim>>
-      Interface<dim>::generate_particle (const typename parallel::distributed::Triangulation<dim>::active_cell_iterator &cell,
-                                         const types::particle_index id,
-                                         const Point<dim> &reference_position)
+      std::pair<Particles::internal::LevelInd, Particle<dim>>
+      Interface<dim>::generate_particle(const typename parallel::distributed::Triangulation<dim>::active_cell_iterator &cell,
+                                        const types::particle_index                                                     id,
+                                        const Point<dim>                                                               &reference_position)
       {
-
         // Check that the reference position is actually within the given cell
         if (cell->reference_cell().contains_point(reference_position) == false)
           {
             std::stringstream error_stream;
-            error_stream << "The given reference position p=" << reference_position << " is not within the specified cell. All reference coordinates should be between 0.0 and 1.0.";
-            AssertThrow(cell->reference_cell().contains_point(reference_position),
-                        ExcMessage(error_stream.str()));
+            error_stream << "The given reference position p=" << reference_position
+                         << " is not within the specified cell. All reference coordinates should be between 0.0 and 1.0.";
+            AssertThrow(cell->reference_cell().contains_point(reference_position), ExcMessage(error_stream.str()));
           }
 
         // This version of generate_particle only needs to generate a particle within the given cell at the reference position
-        const Point<dim> position_real = this->get_mapping().transform_unit_to_real_cell(cell, reference_position);
-        const Particle<dim> new_particle(position_real, reference_position, id);
+        const Point<dim>                    position_real = this->get_mapping().transform_unit_to_real_cell(cell, reference_position);
+        const Particle<dim>                 new_particle(position_real, reference_position, id);
         const Particles::internal::LevelInd cellid(cell->level(), cell->index());
 
         return std::make_pair(cellid, new_particle);
@@ -142,9 +137,9 @@ namespace aspect
 
 
       template <int dim>
-      std::pair<Particles::internal::LevelInd,Particle<dim>>
-      Interface<dim>::generate_particle (const typename parallel::distributed::Triangulation<dim>::active_cell_iterator &cell,
-                                         const types::particle_index id)
+      std::pair<Particles::internal::LevelInd, Particle<dim>>
+      Interface<dim>::generate_particle(const typename parallel::distributed::Triangulation<dim>::active_cell_iterator &cell,
+                                        const types::particle_index                                                     id)
       {
         // Uniform distribution on the interval [0,1]. This
         // will be used to generate random particle locations.
@@ -153,29 +148,26 @@ namespace aspect
         const BoundingBox<dim> cell_bounding_box = cell->bounding_box();
 
         // Generate random points in these bounds until one is within the cell
-        unsigned int iteration = 0;
+        unsigned int       iteration          = 0;
         const unsigned int maximum_iterations = 100;
-        Point<dim> particle_position;
+        Point<dim>         particle_position;
         while (iteration < maximum_iterations)
           {
             // First generate a random point in the bounding box...
-            for (unsigned int d=0; d<dim; ++d)
-              particle_position[d] = cell_bounding_box.lower_bound(d)
-                                     + (uniform_distribution_01(random_number_generator) *
-                                        cell_bounding_box.side_length(d));
+            for (unsigned int d = 0; d < dim; ++d)
+              particle_position[d] =
+                cell_bounding_box.lower_bound(d) + (uniform_distribution_01(random_number_generator) * cell_bounding_box.side_length(d));
 
             // ...then check whether it is actually in the cell:
             try
               {
                 const Point<dim> p_unit = this->get_mapping().transform_real_to_unit_cell(cell, particle_position);
-                if (
-                  cell->reference_cell().contains_point(p_unit)
-                )
+                if (cell->reference_cell().contains_point(p_unit))
                   {
                     // Add the generated particle to the set
-                    const Particle<dim> new_particle(particle_position, p_unit, id);
+                    const Particle<dim>                 new_particle(particle_position, p_unit, id);
                     const Particles::internal::LevelInd cellid(cell->level(), cell->index());
-                    return std::make_pair(cellid,new_particle);
+                    return std::make_pair(cellid, new_particle);
                   }
               }
             catch (typename Mapping<dim>::ExcTransformationFailed &)
@@ -189,86 +181,79 @@ namespace aspect
         // deformed cells), retry generating particles
         // randomly within the reference cell. This is not generating a
         // uniform distribution in real space, but will always succeed.
-        for (unsigned int d=0; d<dim; ++d)
+        for (unsigned int d = 0; d < dim; ++d)
           particle_position[d] = uniform_distribution_01(random_number_generator);
 
-        const Point<dim> p_real = this->get_mapping().transform_unit_to_real_cell(cell,particle_position);
+        const Point<dim> p_real = this->get_mapping().transform_unit_to_real_cell(cell, particle_position);
 
         // Add the generated particle to the set
-        const Particle<dim> new_particle(p_real, particle_position, id);
+        const Particle<dim>                 new_particle(p_real, particle_position, id);
         const Particles::internal::LevelInd cellid(cell->level(), cell->index());
 
         return std::make_pair(cellid, new_particle);
       }
 
 
-// -------------------------------- Deal with registering models and automating
-// -------------------------------- their setup and selection at run time
+      // -------------------------------- Deal with registering models and automating
+      // -------------------------------- their setup and selection at run time
 
       namespace
       {
-        std::tuple
-        <aspect::internal::Plugins::UnusablePluginList,
-        aspect::internal::Plugins::UnusablePluginList,
-        aspect::internal::Plugins::PluginList<Interface<2>>,
-        aspect::internal::Plugins::PluginList<Interface<3>>> registered_plugins;
+        std::tuple<aspect::internal::Plugins::UnusablePluginList,
+                   aspect::internal::Plugins::UnusablePluginList,
+                   aspect::internal::Plugins::PluginList<Interface<2>>,
+                   aspect::internal::Plugins::PluginList<Interface<3>>>
+          registered_plugins;
       }
 
 
 
       template <int dim>
       void
-      register_particle_generator (const std::string &name,
-                                   const std::string &description,
-                                   void (*declare_parameters_function) (ParameterHandler &),
-                                   std::unique_ptr<Interface<dim>> (*factory_function) ())
+      register_particle_generator(const std::string &name,
+                                  const std::string &description,
+                                  void (*declare_parameters_function)(ParameterHandler &),
+                                  std::unique_ptr<Interface<dim>> (*factory_function)())
       {
-        std::get<dim>(registered_plugins).register_plugin (name,
-                                                           description,
-                                                           declare_parameters_function,
-                                                           factory_function);
+        std::get<dim>(registered_plugins).register_plugin(name, description, declare_parameters_function, factory_function);
       }
 
 
 
       template <int dim>
       std::unique_ptr<Interface<dim>>
-      create_particle_generator (ParameterHandler &prm)
+      create_particle_generator(ParameterHandler &prm)
       {
         std::string name;
-        name = prm.get ("Particle generator name");
+        name = prm.get("Particle generator name");
 
-        return std::get<dim>(registered_plugins).create_plugin (name,
-                                                                "Particle::Generator name");
+        return std::get<dim>(registered_plugins).create_plugin(name, "Particle::Generator name");
       }
 
 
 
       template <int dim>
       void
-      declare_parameters (ParameterHandler &prm)
+      declare_parameters(ParameterHandler &prm)
       {
         // declare the entry in the parameter file
-        const std::string pattern_of_names
-          = std::get<dim>(registered_plugins).get_pattern_of_names ();
+        const std::string pattern_of_names = std::get<dim>(registered_plugins).get_pattern_of_names();
 
-        prm.declare_entry ("Particle generator name", "random uniform",
-                           Patterns::Selection (pattern_of_names),
-                           "Select one of the following models:\n\n"
-                           +
-                           std::get<dim>(registered_plugins).get_description_string());
+        prm.declare_entry("Particle generator name",
+                          "random uniform",
+                          Patterns::Selection(pattern_of_names),
+                          "Select one of the following models:\n\n" + std::get<dim>(registered_plugins).get_description_string());
 
-        std::get<dim>(registered_plugins).declare_parameters (prm);
+        std::get<dim>(registered_plugins).declare_parameters(prm);
       }
 
 
 
       template <int dim>
       void
-      write_plugin_graph (std::ostream &out)
+      write_plugin_graph(std::ostream &out)
       {
-        std::get<dim>(registered_plugins).write_plugin_graph ("Particle generator interface",
-                                                              out);
+        std::get<dim>(registered_plugins).write_plugin_graph("Particle generator interface", out);
       }
     }
   }
@@ -283,25 +268,17 @@ namespace aspect
     {
 #define INSTANTIATE(dim) \
   template class Interface<dim>; \
-  \
-  template \
-  void \
-  register_particle_generator<dim> (const std::string &, \
-                                    const std::string &, \
-                                    void ( *) (ParameterHandler &), \
-                                    std::unique_ptr<Interface<dim>>( *) ()); \
-  \
-  template  \
-  void \
-  declare_parameters<dim> (ParameterHandler &); \
-  \
-  template \
-  void \
-  write_plugin_graph<dim> (std::ostream &); \
-  \
-  template \
-  std::unique_ptr<Interface<dim>> \
-  create_particle_generator<dim> (ParameterHandler &prm);
+\
+  template void register_particle_generator<dim>(const std::string &, \
+                                                 const std::string &, \
+                                                 void (*)(ParameterHandler &), \
+                                                 std::unique_ptr<Interface<dim>> (*)()); \
+\
+  template void declare_parameters<dim>(ParameterHandler &); \
+\
+  template void write_plugin_graph<dim>(std::ostream &); \
+\
+  template std::unique_ptr<Interface<dim>> create_particle_generator<dim>(ParameterHandler & prm);
 
       ASPECT_INSTANTIATE(INSTANTIATE)
 

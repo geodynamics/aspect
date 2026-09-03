@@ -22,21 +22,21 @@
 #define _aspect_simulator_solver_stokes_matrix_free_global_coarsening_h
 
 #include <aspect/global.h>
-#include <aspect/simulator/solver/stokes_matrix_free.h>
-#include <aspect/simulator/solver/matrix_free_operators.h>
 
+#include <aspect/simulator/solver/matrix_free_operators.h>
+#include <aspect/simulator/solver/stokes_matrix_free.h>
+
+#include <deal.II/matrix_free/fe_evaluation.h>
 #include <deal.II/matrix_free/matrix_free.h>
 #include <deal.II/matrix_free/operators.h>
-#include <deal.II/matrix_free/fe_evaluation.h>
-
-#include <deal.II/multigrid/mg_constrained_dofs.h>
-#include <deal.II/multigrid/multigrid.h>
-#include <deal.II/multigrid/mg_transfer_matrix_free.h>
-#include <deal.II/multigrid/mg_transfer_global_coarsening.templates.h>
-#include <deal.II/multigrid/mg_tools.h>
 #include <deal.II/multigrid/mg_coarse.h>
-#include <deal.II/multigrid/mg_smoother.h>
+#include <deal.II/multigrid/mg_constrained_dofs.h>
 #include <deal.II/multigrid/mg_matrix.h>
+#include <deal.II/multigrid/mg_smoother.h>
+#include <deal.II/multigrid/mg_tools.h>
+#include <deal.II/multigrid/mg_transfer_global_coarsening.templates.h>
+#include <deal.II/multigrid/mg_transfer_matrix_free.h>
+#include <deal.II/multigrid/multigrid.h>
 
 namespace aspect
 {
@@ -51,7 +51,7 @@ namespace aspect
    * velocity degree at runtime.
    */
   template <int dim, int velocity_degree>
-  class StokesMatrixFreeHandlerGlobalCoarseningImplementation: public StokesMatrixFreeHandler<dim>
+  class StokesMatrixFreeHandlerGlobalCoarseningImplementation : public StokesMatrixFreeHandler<dim>
   {
     public:
       /**
@@ -59,8 +59,7 @@ namespace aspect
        * Simulator that owns it, since it needs to make fairly extensive
        * changes to the internals of the simulator.
        */
-      StokesMatrixFreeHandlerGlobalCoarseningImplementation(Simulator<dim> &simulator,
-                                                            const Parameters<dim> &parameters);
+      StokesMatrixFreeHandlerGlobalCoarseningImplementation(Simulator<dim> &simulator, const Parameters<dim> &parameters);
 
       /**
        * Destructor.
@@ -70,12 +69,14 @@ namespace aspect
       /**
        * Initialize the matrix-free solver.
        */
-      void initialize() override;
+      void
+      initialize() override;
 
       /**
        * Return the name of the solver for screen output.
        */
-      std::string name() const override;
+      std::string
+      name() const override;
 
       /**
        * Solves the Stokes linear system using the matrix-free
@@ -101,16 +102,17 @@ namespace aspect
        */
       StokesSolver::SolverOutputs
       solve(const LinearAlgebra::BlockSparseMatrix &system_matrix,
-            const LinearAlgebra::BlockVector &system_rhs,
-            const bool solve_newton_system,
-            const double last_pressure_normalization_adjustment,
-            LinearAlgebra::BlockVector &solution_vector) override;
+            const LinearAlgebra::BlockVector       &system_rhs,
+            const bool                              solve_newton_system,
+            const double                            last_pressure_normalization_adjustment,
+            LinearAlgebra::BlockVector             &solution_vector) override;
 
       /**
        * Allocates and sets up the members of the StokesMatrixFreeHandler. This
        * is called by Simulator<dim>::setup_dofs()
        */
-      void setup_dofs() override;
+      void
+      setup_dofs() override;
 
       /**
        * Perform various tasks to update the linear system to solve
@@ -119,45 +121,52 @@ namespace aspect
        * model and storing the information necessary for a later call
        * to solve().
        */
-      void assemble() override;
+      void
+      assemble() override;
 
       /**
        * Computes and sets the diagonal for both the mass matrix operator and the A-block
        * operators on each level for the purpose of smoothing inside the multigrid v-cycle.
        */
-      void build_preconditioner() override;
+      void
+      build_preconditioner() override;
 
       /**
        * Declare parameters.
        */
-      static
-      void declare_parameters (ParameterHandler &prm);
+      static void
+      declare_parameters(ParameterHandler &prm);
 
       /**
        * Parse parameters.
        */
-      void parse_parameters (ParameterHandler &prm) override;
+      void
+      parse_parameters(ParameterHandler &prm) override;
 
       /**
        * Return memory consumption in bytes for all DoFHandler objects.
        */
-      std::size_t get_dof_handler_memory_consumption() const override;
+      std::size_t
+      get_dof_handler_memory_consumption() const override;
 
       /**
        * Return memory consumption in bytes for all transfer objects.
        */
-      std::size_t get_mg_transfer_memory_consumption() const override;
+      std::size_t
+      get_mg_transfer_memory_consumption() const override;
 
       /**
        * Return memory consumption in bytes for all transfer objects.
        */
-      std::size_t get_constraint_memory_consumption() const override;
+      std::size_t
+      get_constraint_memory_consumption() const override;
 
       /**
        * Return the memory consumption in bytes that are used to store
        * equation data like viscosity to be able to apply the operators.
        */
-      std::size_t get_cell_data_memory_consumption() const override;
+      std::size_t
+      get_cell_data_memory_consumption() const override;
 
     private:
       /**
@@ -165,13 +174,15 @@ namespace aspect
        * project this viscosity to the multigrid hierarchy. Also queries
        * other parameters like pressure scaling.
        */
-      void evaluate_material_model();
+      void
+      evaluate_material_model();
 
       /**
        * Add correction to system RHS for non-zero boundary condition. See description in
        * StokesMatrixFreeHandler::correct_stokes_rhs() for more information.
        */
-      void correct_stokes_rhs();
+      void
+      correct_stokes_rhs();
 
 
       Simulator<dim> &sim;
@@ -204,19 +215,19 @@ namespace aspect
        */
       MGLevelObject<MatrixFreeStokesOperators::OperatorCellData<dim, GMGNumberType>> level_cell_data;
 
-      using StokesMatrixType = MatrixFreeStokesOperators::StokesOperator<dim,velocity_degree,double>;
-      using SchurComplementMatrixType = MatrixFreeStokesOperators::MassMatrixOperator<dim,velocity_degree-1,double>;
-      using ABlockMatrixType = MatrixFreeStokesOperators::ABlockOperator<dim,velocity_degree,double>;
-      using BTBlockOperatorType = MatrixFreeStokesOperators::BTBlockOperator<dim,velocity_degree,double>;
-      using GMGSchurComplementMatrixType = MatrixFreeStokesOperators::MassMatrixOperator<dim,velocity_degree-1,GMGNumberType>;
-      using GMGABlockMatrixType = MatrixFreeStokesOperators::ABlockOperator<dim,velocity_degree,GMGNumberType>;
+      using StokesMatrixType             = MatrixFreeStokesOperators::StokesOperator<dim, velocity_degree, double>;
+      using SchurComplementMatrixType    = MatrixFreeStokesOperators::MassMatrixOperator<dim, velocity_degree - 1, double>;
+      using ABlockMatrixType             = MatrixFreeStokesOperators::ABlockOperator<dim, velocity_degree, double>;
+      using BTBlockOperatorType          = MatrixFreeStokesOperators::BTBlockOperator<dim, velocity_degree, double>;
+      using GMGSchurComplementMatrixType = MatrixFreeStokesOperators::MassMatrixOperator<dim, velocity_degree - 1, GMGNumberType>;
+      using GMGABlockMatrixType          = MatrixFreeStokesOperators::ABlockOperator<dim, velocity_degree, GMGNumberType>;
 
-      StokesMatrixType stokes_matrix;
-      ABlockMatrixType A_block_matrix;
-      BTBlockOperatorType BT_block;
+      StokesMatrixType          stokes_matrix;
+      ABlockMatrixType          A_block_matrix;
+      BTBlockOperatorType       BT_block;
       SchurComplementMatrixType Schur_complement_block_matrix;
 
-      MGLevelObject<GMGABlockMatrixType> mg_matrices_A_block;
+      MGLevelObject<GMGABlockMatrixType>          mg_matrices_A_block;
       MGLevelObject<GMGSchurComplementMatrixType> mg_matrices_Schur_complement;
 
       MGConstrainedDoFs mg_constrained_dofs_A_block;
@@ -226,7 +237,7 @@ namespace aspect
       unsigned int min_level;
       unsigned int max_level;
 
-      std::vector<std::shared_ptr<MatrixFree<dim,double>>> matrix_free_objects;
+      std::vector<std::shared_ptr<MatrixFree<dim, double>>> matrix_free_objects;
 
       std::vector<std::shared_ptr<const Triangulation<dim, dim>>> trias;
 
@@ -240,7 +251,8 @@ namespace aspect
        * #level_triangulation_mapping); otherwise the simulator mapping is
        * returned.
        */
-      const Mapping<dim> &get_level_triangulation_mapping();
+      const Mapping<dim> &
+      get_level_triangulation_mapping();
 
       /**
        * Storage for the mapping returned by
@@ -257,8 +269,8 @@ namespace aspect
 
       MGLevelObject<MGTwoLevelTransfer<dim, dealii::LinearAlgebra::distributed::Vector<GMGNumberType>>> transfers_v;
       MGLevelObject<MGTwoLevelTransfer<dim, dealii::LinearAlgebra::distributed::Vector<GMGNumberType>>> transfers_p;
-      std::unique_ptr<GCMGTransferType<dim,GMGNumberType>> mg_transfer_A_block;
-      std::unique_ptr<GCMGTransferType<dim,GMGNumberType>> mg_transfer_Schur_complement;
+      std::unique_ptr<GCMGTransferType<dim, GMGNumberType>>                                             mg_transfer_A_block;
+      std::unique_ptr<GCMGTransferType<dim, GMGNumberType>>                                             mg_transfer_Schur_complement;
   };
 }
 

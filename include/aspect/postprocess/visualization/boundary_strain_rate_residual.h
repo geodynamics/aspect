@@ -50,14 +50,13 @@ namespace aspect
        * base class. See there for their meaning.
        */
       template <int dim>
-      class BoundaryStrainRateResidual
-        : public DataPostprocessorScalar<dim>,
-          public SurfaceOnlyVisualization<dim>,
-          public SimulatorAccess<dim>,
-          public Interface<dim>
+      class BoundaryStrainRateResidual : public DataPostprocessorScalar<dim>,
+                                         public SurfaceOnlyVisualization<dim>,
+                                         public SimulatorAccess<dim>,
+                                         public Interface<dim>
       {
         public:
-          BoundaryStrainRateResidual ();
+          BoundaryStrainRateResidual();
 
           /**
            * Evaluate the strain rate residual for each component at the top face of the current cell
@@ -67,7 +66,7 @@ namespace aspect
            */
           void
           evaluate_vector_field(const DataPostprocessorInputs::Vector<dim> &input_data,
-                                std::vector<Vector<double>> &computed_quantities) const override;
+                                std::vector<Vector<double>>                &computed_quantities) const override;
 
           /**
            * Let the postprocessor manager know about the other postprocessors
@@ -77,7 +76,7 @@ namespace aspect
           required_other_postprocessors() const override;
 
           std::string
-          get_physical_units () const override;
+          get_physical_units() const override;
       };
     }
   }

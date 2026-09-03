@@ -39,17 +39,14 @@ namespace aspect
        * according to the geometry model.
        */
       template <int dim>
-      class Depth
-        : public DataPostprocessorScalar<dim>,
-          public SimulatorAccess<dim>,
-          public Interface<dim>
+      class Depth : public DataPostprocessorScalar<dim>, public SimulatorAccess<dim>, public Interface<dim>
       {
         public:
-          Depth ();
+          Depth();
 
           void
           evaluate_vector_field(const DataPostprocessorInputs::Vector<dim> &input_data,
-                                std::vector<Vector<double>> &computed_quantities) const override;
+                                std::vector<Vector<double>>                &computed_quantities) const override;
       };
     }
   }

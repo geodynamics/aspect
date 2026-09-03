@@ -22,7 +22,6 @@
 #define _aspect_particle_integrator_rk_2_h
 
 #include <aspect/particle/integrator/interface.h>
-
 #include <aspect/simulator_access.h>
 
 
@@ -49,7 +48,7 @@ namespace aspect
            * avoid repeated lookups.
            */
           void
-          initialize () override;
+          initialize() override;
 
           /**
            * Perform an integration step of moving the particles of one cell
@@ -71,9 +70,9 @@ namespace aspect
           void
           local_integrate_step(const typename ParticleHandler<dim>::particle_iterator &begin_particle,
                                const typename ParticleHandler<dim>::particle_iterator &end_particle,
-                               const std::vector<Tensor<1,dim>> &old_velocities,
-                               const std::vector<Tensor<1,dim>> &velocities,
-                               const double dt) override;
+                               const std::vector<Tensor<1, dim>>                      &old_velocities,
+                               const std::vector<Tensor<1, dim>>                      &velocities,
+                               const double                                            dt) override;
 
           /**
            * This function is called at the end of every integration step.
@@ -85,7 +84,8 @@ namespace aspect
            * another integration step. The particle integration will continue
            * to start new integration steps until this function returns false.
            */
-          bool new_integration_step() override;
+          bool
+          new_integration_step() override;
 
           /**
            * Return a list of boolean values indicating which solution vectors
@@ -101,20 +101,20 @@ namespace aspect
            * vector at both the old and new time for the second integration step
            * (if higher_order_in_time is set to true).
            */
-          std::array<bool, 3> required_solution_vectors() const override;
+          std::array<bool, 3>
+          required_solution_vectors() const override;
 
           /**
            * Declare the parameters this class takes through input files.
            */
-          static
-          void
-          declare_parameters (ParameterHandler &prm);
+          static void
+          declare_parameters(ParameterHandler &prm);
 
           /**
            * Read the parameters this class declares from the parameter file.
            */
           void
-          parse_parameters (ParameterHandler &prm) override;
+          parse_parameters(ParameterHandler &prm) override;
 
           /**
            * We need to tell the property manager how many intermediate properties this integrator requires,

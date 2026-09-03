@@ -22,9 +22,9 @@
 #ifndef _aspect_postprocess_visualization_geoid_h
 #define _aspect_postprocess_visualization_geoid_h
 
-#include <aspect/simulator_access.h>
-#include <aspect/postprocess/visualization.h>
 #include <aspect/postprocess/geoid.h>
+#include <aspect/postprocess/visualization.h>
+#include <aspect/simulator_access.h>
 
 
 namespace aspect
@@ -43,10 +43,7 @@ namespace aspect
        * base class. See there for their meaning.
        */
       template <int dim>
-      class Geoid
-        : public DataPostprocessorScalar<dim>,
-          public SimulatorAccess<dim>,
-          public Interface<dim>
+      class Geoid : public DataPostprocessorScalar<dim>, public SimulatorAccess<dim>, public Interface<dim>
       {
         public:
           Geoid();
@@ -57,14 +54,14 @@ namespace aspect
            * the SimulatorAccess (if applicable) is initialized.
            */
           void
-          initialize () override;
+          initialize() override;
 
           /**
            * @copydoc dealii::DataPostprocessor<dim>::evaluate_vector_field()
            */
           void
           evaluate_vector_field(const DataPostprocessorInputs::Vector<dim> &input_data,
-                                std::vector<Vector<double>> &computed_quantities) const override;
+                                std::vector<Vector<double>>                &computed_quantities) const override;
 
 
           /**

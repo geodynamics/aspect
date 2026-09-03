@@ -19,8 +19,8 @@
 */
 
 
-#include <aspect/postprocess/visualization/adiabat.h>
 #include <aspect/adiabatic_conditions/interface.h>
+#include <aspect/postprocess/visualization/adiabat.h>
 
 
 namespace aspect
@@ -30,19 +30,16 @@ namespace aspect
     namespace VisualizationPostprocessors
     {
       template <int dim>
-      Adiabat<dim>::
-      Adiabat ()
-        :
-        DataPostprocessor<dim> (),
-        Interface<dim>("K,Pa,kg/m/m/m,kg/m/m/m/m")
+      Adiabat<dim>::Adiabat()
+        : DataPostprocessor<dim>()
+        , Interface<dim>("K,Pa,kg/m/m/m,kg/m/m/m/m")
       {}
 
 
 
       template <int dim>
       std::vector<std::string>
-      Adiabat<dim>::
-      get_names () const
+      Adiabat<dim>::get_names() const
       {
         std::vector<std::string> solution_names;
         solution_names.emplace_back("adiabatic_temperature");
@@ -55,11 +52,10 @@ namespace aspect
 
       template <int dim>
       std::vector<DataComponentInterpretation::DataComponentInterpretation>
-      Adiabat<dim>::
-      get_data_component_interpretation () const
+      Adiabat<dim>::get_data_component_interpretation() const
       {
-        std::vector<DataComponentInterpretation::DataComponentInterpretation> interpretation(4,
-            DataComponentInterpretation::component_is_scalar);
+        std::vector<DataComponentInterpretation::DataComponentInterpretation> interpretation(
+          4, DataComponentInterpretation::component_is_scalar);
 
         return interpretation;
       }
@@ -67,8 +63,7 @@ namespace aspect
 
       template <int dim>
       UpdateFlags
-      Adiabat<dim>::
-      get_needed_update_flags () const
+      Adiabat<dim>::get_needed_update_flags() const
       {
         return update_quadrature_points;
       }
@@ -76,15 +71,14 @@ namespace aspect
 
       template <int dim>
       void
-      Adiabat<dim>::
-      evaluate_vector_field(const DataPostprocessorInputs::Vector<dim> &input_data,
-                            std::vector<Vector<double>> &computed_quantities) const
+      Adiabat<dim>::evaluate_vector_field(const DataPostprocessorInputs::Vector<dim> &input_data,
+                                          std::vector<Vector<double>>                &computed_quantities) const
       {
         const unsigned int n_quadrature_points = input_data.solution_values.size();
-        Assert (computed_quantities.size() == n_quadrature_points,    ExcInternalError());
-        Assert (computed_quantities[0].size() == 4,                   ExcInternalError());
+        Assert(computed_quantities.size() == n_quadrature_points, ExcInternalError());
+        Assert(computed_quantities[0].size() == 4, ExcInternalError());
 
-        for (unsigned int q=0; q<n_quadrature_points; ++q)
+        for (unsigned int q = 0; q < n_quadrature_points; ++q)
           {
             computed_quantities[q](0) = this->get_adiabatic_conditions().temperature(input_data.evaluation_points[q]);
             computed_quantities[q](1) = this->get_adiabatic_conditions().pressure(input_data.evaluation_points[q]);

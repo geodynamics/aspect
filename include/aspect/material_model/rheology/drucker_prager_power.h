@@ -22,10 +22,10 @@
 #define _aspect_material_model_rheology_drucker_prager_power_h
 
 #include <aspect/global.h>
-#include <aspect/material_model/interface.h>
 
-#include <aspect/material_model/utilities.h>
+#include <aspect/material_model/interface.h>
 #include <aspect/material_model/rheology/drucker_prager.h>
+#include <aspect/material_model/utilities.h>
 #include <aspect/simulator_access.h>
 
 namespace aspect
@@ -57,9 +57,8 @@ namespace aspect
           /**
            * Declare the parameters this function takes through input files.
            */
-          static
-          void
-          declare_parameters (ParameterHandler &prm);
+          static void
+          declare_parameters(ParameterHandler &prm);
 
           /**
            * Read the parameters this class declares from the parameter file.
@@ -72,8 +71,8 @@ namespace aspect
            * @param expected_n_phases_per_composition Optional list of number of phases.
            */
           void
-          parse_parameters (ParameterHandler &prm,
-                            const std::unique_ptr<std::vector<unsigned int>> &expected_n_phases_per_composition = nullptr);
+          parse_parameters(ParameterHandler                                 &prm,
+                           const std::unique_ptr<std::vector<unsigned int>> &expected_n_phases_per_composition = nullptr);
 
           /**
            * Compute the parameters for the Drucker Prager plasticity.
@@ -83,46 +82,42 @@ namespace aspect
            * each phase and then averaged for each compositional field.
            */
           const DruckerPragerParameters
-          compute_drucker_prager_parameters (const unsigned int composition,
-                                             const std::vector<double> &phase_function_values = {},
-                                             const std::vector<unsigned int> &n_phase_transitions_per_composition = {}) const;
+          compute_drucker_prager_parameters(const unsigned int               composition,
+                                            const std::vector<double>       &phase_function_values               = {},
+                                            const std::vector<unsigned int> &n_phase_transitions_per_composition = {}) const;
 
           /**
            * Compute the plastic yield stress based on the Drucker Prager yield criterion.
            */
           double
-          compute_yield_stress (const double cohesion,
-                                const double angle_internal_friction,
-                                const double pressure,
-                                const double max_yield_stress) const;
+          compute_yield_stress(const double cohesion,
+                               const double angle_internal_friction,
+                               const double pressure,
+                               const double max_yield_stress) const;
 
           /**
            * Compute the apparent viscosity using the yield stress and effective strain rate.
            */
           double
-          compute_viscosity (const double cohesion,
-                             const double angle_internal_friction,
-                             const double pressure,
-                             const double effective_strain_rate,
-                             const double max_yield_stress) const;
+          compute_viscosity(const double cohesion,
+                            const double angle_internal_friction,
+                            const double pressure,
+                            const double effective_strain_rate,
+                            const double max_yield_stress) const;
 
           /**
            * Compute the strain rate and first derivative as a function of
            * stress according to the damped Drucker-Prager power-law flow law.
            */
           std::pair<double, double>
-          compute_strain_rate_and_derivative (const double stress,
-                                              const double pressure,
-                                              const DruckerPragerParameters &p) const;
+          compute_strain_rate_and_derivative(const double stress, const double pressure, const DruckerPragerParameters &p) const;
 
           /**
            * Compute the natural logarithm of the strain rate and first log stress derivative
            * as a function of log stress according to the damped Drucker-Prager power-law flow law.
            */
           std::pair<double, double>
-          compute_log_strain_rate_and_derivative (const double log_stress,
-                                                  const double pressure,
-                                                  const DruckerPragerParameters &p) const;
+          compute_log_strain_rate_and_derivative(const double log_stress, const double pressure, const DruckerPragerParameters &p) const;
 
         private:
           /**
@@ -164,7 +159,6 @@ namespace aspect
            * This variable is read from the parameter file through a parameter called 'Plastic stress exponent'.
            */
           double drucker_prager_stress_exponent;
-
       };
     }
   }

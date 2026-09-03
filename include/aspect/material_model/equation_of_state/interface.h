@@ -22,8 +22,9 @@
 #define _aspect_material_model_equation_of_state_interface_h
 
 #include <aspect/global.h>
-#include <aspect/material_model/utilities.h>
+
 #include <aspect/material_model/interface.h>
+#include <aspect/material_model/utilities.h>
 
 
 
@@ -44,87 +45,87 @@ namespace aspect
     template <int dim>
     struct EquationOfStateOutputs
     {
-      /**
-       * Constructor. Initialize the various arrays of this structure with the
-       * given number of compositions and phases.
-       *
-       * @param n_individual_compositions_and_phases The number of vector quantities
-       * for which input will be provided, and outputs should be filled. Note that this
-       * number does not have to be the number of compositions, it can be smaller (if
-       * some compositional fields do not represent volumetric compositions, but tracked
-       * quantities like strain) or larger (if there is a background field, or some
-       * compositions have several high-pressure phases). It is the responsibility
-       * of the material model and equation of state object to interpret the
-       * entries consistently.
-       */
-      EquationOfStateOutputs (const unsigned int n_individual_compositions_and_phases);
+        /**
+         * Constructor. Initialize the various arrays of this structure with the
+         * given number of compositions and phases.
+         *
+         * @param n_individual_compositions_and_phases The number of vector quantities
+         * for which input will be provided, and outputs should be filled. Note that this
+         * number does not have to be the number of compositions, it can be smaller (if
+         * some compositional fields do not represent volumetric compositions, but tracked
+         * quantities like strain) or larger (if there is a background field, or some
+         * compositions have several high-pressure phases). It is the responsibility
+         * of the material model and equation of state object to interpret the
+         * entries consistently.
+         */
+        EquationOfStateOutputs(const unsigned int n_individual_compositions_and_phases);
 
-      /**
-       * Density values for each composition and phase.
-       */
-      std::vector<double> densities;
+        /**
+         * Density values for each composition and phase.
+         */
+        std::vector<double> densities;
 
-      /**
-       * Thermal expansion coefficients for each composition and phase. It is defined
-       * as $\alpha = - \frac{1}{\rho} \frac{\partial\rho}{\partial T}$
-       */
-      std::vector<double> thermal_expansion_coefficients;
+        /**
+         * Thermal expansion coefficients for each composition and phase. It is defined
+         * as $\alpha = - \frac{1}{\rho} \frac{\partial\rho}{\partial T}$
+         */
+        std::vector<double> thermal_expansion_coefficients;
 
-      /**
-       * Specific heat for each composition and phase.
-       */
-      std::vector<double> specific_heat_capacities;
+        /**
+         * Specific heat for each composition and phase.
+         */
+        std::vector<double> specific_heat_capacities;
 
-      /**
-       * Compressibility for each composition and phase. The compressibility is defined
-       * as $\kappa = \frac{1}{\rho} \frac{\partial\rho}{\partial p}$.
-       */
-      std::vector<double> compressibilities;
+        /**
+         * Compressibility for each composition and phase. The compressibility is defined
+         * as $\kappa = \frac{1}{\rho} \frac{\partial\rho}{\partial p}$.
+         */
+        std::vector<double> compressibilities;
 
-      /**
-       * The product of the change of entropy $\Delta S$ at a phase transition
-       * and the derivative of the phase function $X=X(p,T,\mathfrak c,\mathbf
-       * x)$ with regard to pressure for each composition and phase.
-       */
-      std::vector<double> entropy_derivative_pressure;
+        /**
+         * The product of the change of entropy $\Delta S$ at a phase transition
+         * and the derivative of the phase function $X=X(p,T,\mathfrak c,\mathbf
+         * x)$ with regard to pressure for each composition and phase.
+         */
+        std::vector<double> entropy_derivative_pressure;
 
-      /**
-       * The product of (minus) the change of entropy $-\Delta S$ at a phase
-       * transition and the derivative of the phase function
-       * $X=X(p,T,\mathfrak c,\mathbf x)$ with regard to temperature for
-       * each composition and phase.
-       */
-      std::vector<double> entropy_derivative_temperature;
+        /**
+         * The product of (minus) the change of entropy $-\Delta S$ at a phase
+         * transition and the derivative of the phase function
+         * $X=X(p,T,\mathfrak c,\mathbf x)$ with regard to temperature for
+         * each composition and phase.
+         */
+        std::vector<double> entropy_derivative_temperature;
     };
 
 
 
     /**
-    * Modify the equation of state outputs for all compositions and phases
-    * according to the supplied reaction progress.
-    *
-    * The input @p eos_outputs_all_phases contains equation of state properties
-    * for every phase of every composition at the current conditions. For each
-    * composition, this function uses the corresponding entries in
-    * @p reaction_progress_values and @p reaction_progress_mapping to modify the
-    * equation of state properties of phases affected by kinetic reactions.
-    *
-    * The vector @p reaction_progress_values contains one value for each kinetic
-    * reaction, while @p reaction_progress_mapping specifies the associated phase
-    * transition index for each reaction. The vector
-    * @p n_phase_transitions_per_composition is used to determine which phase
-    * transitions belong to each composition.
-    *
-    * The modified equation of state properties are written back into
-    * @p eos_outputs_all_phases, preserving the data layout for all phases and
-    * compositions so they can subsequently be used during phase averaging.
-    */
+     * Modify the equation of state outputs for all compositions and phases
+     * according to the supplied reaction progress.
+     *
+     * The input @p eos_outputs_all_phases contains equation of state properties
+     * for every phase of every composition at the current conditions. For each
+     * composition, this function uses the corresponding entries in
+     * @p reaction_progress_values and @p reaction_progress_mapping to modify the
+     * equation of state properties of phases affected by kinetic reactions.
+     *
+     * The vector @p reaction_progress_values contains one value for each kinetic
+     * reaction, while @p reaction_progress_mapping specifies the associated phase
+     * transition index for each reaction. The vector
+     * @p n_phase_transitions_per_composition is used to determine which phase
+     * transitions belong to each composition.
+     *
+     * The modified equation of state properties are written back into
+     * @p eos_outputs_all_phases, preserving the data layout for all phases and
+     * compositions so they can subsequently be used during phase averaging.
+     */
     template <int dim>
     void
-    reaction_progress_modify_equation_of_state_outputs(const std::vector<double> &reaction_progress_values,
+    reaction_progress_modify_equation_of_state_outputs(const std::vector<double>       &reaction_progress_values,
                                                        const std::vector<unsigned int> &reaction_progress_mapping,
                                                        const std::vector<unsigned int> &n_phase_transitions_per_composition,
-                                                       EquationOfStateOutputs<dim> &eos_outputs_all_phases);
+                                                       EquationOfStateOutputs<dim>     &eos_outputs_all_phases);
 
 
 
@@ -143,9 +144,9 @@ namespace aspect
     template <int dim>
     void
     phase_average_equation_of_state_outputs(const EquationOfStateOutputs<dim> &eos_outputs_all_phases,
-                                            const std::vector<double> &phase_function_values,
-                                            const std::vector<unsigned int> &n_phase_transitions_per_composition,
-                                            EquationOfStateOutputs<dim> &eos_outputs);
+                                            const std::vector<double>         &phase_function_values,
+                                            const std::vector<unsigned int>   &n_phase_transitions_per_composition,
+                                            EquationOfStateOutputs<dim>       &eos_outputs);
   }
 }
 

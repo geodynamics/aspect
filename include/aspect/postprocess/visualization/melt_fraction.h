@@ -43,42 +43,36 @@ namespace aspect
        * base class. See there for their meaning.
        */
       template <int dim>
-      class MeltFraction
-        : public DataPostprocessorScalar<dim>,
-          public SimulatorAccess<dim>,
-          public Interface<dim>
+      class MeltFraction : public DataPostprocessorScalar<dim>, public SimulatorAccess<dim>, public Interface<dim>
       {
         public:
-          MeltFraction ();
+          MeltFraction();
 
           /**
            * Percentage of material that is molten for a given @p temperature and
            * @p pressure (assuming equilibrium conditions) for a given melting model.
            */
           double
-          melt_fraction (const double temperature,
-                         const double pressure,
-                         const std::string &melting_model) const;
+          melt_fraction(const double temperature, const double pressure, const std::string &melting_model) const;
 
           /**
            * Evaluate the melt fraction for a given set of input data.
            */
           void
           evaluate_vector_field(const DataPostprocessorInputs::Vector<dim> &input_data,
-                                std::vector<Vector<double>> &computed_quantities) const override;
+                                std::vector<Vector<double>>                &computed_quantities) const override;
 
           /**
            * Declare the parameters this class takes through input files.
            */
-          static
-          void
-          declare_parameters (ParameterHandler &prm);
+          static void
+          declare_parameters(ParameterHandler &prm);
 
           /**
            * Read the parameters this class declares from the parameter file.
            */
           void
-          parse_parameters (ParameterHandler &prm) override;
+          parse_parameters(ParameterHandler &prm) override;
 
         private:
           /**
@@ -89,7 +83,7 @@ namespace aspect
           /**
            * This variable is read from the parameter file through a parameter called 'A1'.
            */
-          double A1;   // °C
+          double A1; // °C
           /**
            * This variable is read from the parameter file through a parameter called 'A2'.
            */
@@ -103,11 +97,11 @@ namespace aspect
           /**
            * This variable is read from the parameter file through a parameter called 'B1'.
            */
-          double B1;   // °C
+          double B1; // °C
           /**
            * This variable is read from the parameter file through a parameter called 'B2'.
            */
-          double B2;   // °C/Pa
+          double B2; // °C/Pa
           /**
            * This variable is read from the parameter file through a parameter called 'B3'.
            */
@@ -117,11 +111,11 @@ namespace aspect
           /**
            * This variable is read from the parameter file through a parameter called 'C1'.
            */
-          double C1;   // °C
+          double C1; // °C
           /**
            * This variable is read from the parameter file through a parameter called 'C2'.
            */
-          double C2;  // °C/Pa
+          double C2; // °C/Pa
           /**
            * This variable is read from the parameter file through a parameter called 'C3'.
            */
@@ -131,15 +125,15 @@ namespace aspect
           /**
            * This variable is read from the parameter file through a parameter called 'r1'.
            */
-          double r1;     // cpx/melt
+          double r1; // cpx/melt
           /**
            * This variable is read from the parameter file through a parameter called 'r2'.
            */
-          double r2;     // cpx/melt/GPa
+          double r2; // cpx/melt/GPa
           /**
            * This variable is read from the parameter file through a parameter called 'Mass fraction cpx'.
            */
-          double M_cpx;  // mass fraction of pyroxenite
+          double M_cpx; // mass fraction of pyroxenite
 
           // melt fraction exponent
           /**
@@ -155,11 +149,11 @@ namespace aspect
           /**
            * This variable is read from the parameter file through a parameter called 'D1'.
            */
-          double D1;    // °C
+          double D1; // °C
           /**
            * This variable is read from the parameter file through a parameter called 'D2'.
            */
-          double D2;  // °C/Pa
+          double D2; // °C/Pa
           /**
            * This variable is read from the parameter file through a parameter called 'D3'.
            */

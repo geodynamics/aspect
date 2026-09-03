@@ -30,16 +30,15 @@ namespace aspect
     class CompressibilityIteratedStokes : public MaterialModel::Simple<dim>
     {
       public:
-
-        void evaluate(const MaterialModel::MaterialModelInputs<dim> &in,
-                      MaterialModel::MaterialModelOutputs<dim> &out) const override;
+        void
+        evaluate(const MaterialModel::MaterialModelInputs<dim> &in, MaterialModel::MaterialModelOutputs<dim> &out) const override;
 
         /**
-          * Return true if the compressibility() function returns something that
-          * is not zero.
-          */
+         * Return true if the compressibility() function returns something that
+         * is not zero.
+         */
         bool
-        is_compressible () const override;
+        is_compressible() const override;
     };
 
   }
@@ -52,22 +51,20 @@ namespace aspect
 
     template <int dim>
     void
-    CompressibilityIteratedStokes<dim>::
-    evaluate(const MaterialModel::MaterialModelInputs<dim> &in,
-             MaterialModel::MaterialModelOutputs<dim> &out) const
+    CompressibilityIteratedStokes<dim>::evaluate(const MaterialModel::MaterialModelInputs<dim> &in,
+                                                 MaterialModel::MaterialModelOutputs<dim>      &out) const
     {
       Simple<dim>::evaluate(in, out);
-      for (unsigned int i=0; i < in.n_evaluation_points(); ++i)
+      for (unsigned int i = 0; i < in.n_evaluation_points(); ++i)
         {
-          out.densities[i] = 10.0/11.0*std::exp(in.pressure[i]/100.0);
+          out.densities[i]         = 10.0 / 11.0 * std::exp(in.pressure[i] / 100.0);
           out.compressibilities[i] = 0.01;
         }
     }
 
     template <int dim>
     bool
-    CompressibilityIteratedStokes<dim>::
-    is_compressible () const
+    CompressibilityIteratedStokes<dim>::is_compressible() const
     {
       return true;
     }

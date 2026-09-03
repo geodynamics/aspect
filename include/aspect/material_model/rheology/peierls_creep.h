@@ -22,6 +22,7 @@
 #define _aspect_material_model_rheology_peierls_creep_h
 
 #include <aspect/global.h>
+
 #include <aspect/simulator_access.h>
 
 namespace aspect
@@ -35,25 +36,25 @@ namespace aspect
        */
       struct PeierlsCreepParameters
       {
-        /**
-         * The Peierls creep prefactor, stress exponent, activation energy,
-         * activation volume, Peierls stress, glide parameters p and q
-         * and fitting parameter,
-         */
-        double prefactor;
-        double stress_exponent;
-        double activation_energy;
-        double activation_volume;
-        double peierls_stress;
-        double glide_parameter_p;
-        double glide_parameter_q;
-        double fitting_parameter;
-        double stress_cutoff;
+          /**
+           * The Peierls creep prefactor, stress exponent, activation energy,
+           * activation volume, Peierls stress, glide parameters p and q
+           * and fitting parameter,
+           */
+          double prefactor;
+          double stress_exponent;
+          double activation_energy;
+          double activation_volume;
+          double peierls_stress;
+          double glide_parameter_p;
+          double glide_parameter_q;
+          double fitting_parameter;
+          double stress_cutoff;
 
-        /**
-         * Constructor. Initializes all values to NaN.
-         */
-        PeierlsCreepParameters();
+          /**
+           * Constructor. Initializes all values to NaN.
+           */
+          PeierlsCreepParameters();
       };
 
       /**
@@ -77,16 +78,15 @@ namespace aspect
            * Compute the creep parameters for the Peierls creep law.
            */
           const PeierlsCreepParameters
-          compute_creep_parameters (const unsigned int composition,
-                                    const std::vector<double> &phase_function_values = {},
-                                    const std::vector<unsigned int> &n_phases_per_composition = {}) const;
+          compute_creep_parameters(const unsigned int               composition,
+                                   const std::vector<double>       &phase_function_values    = {},
+                                   const std::vector<unsigned int> &n_phases_per_composition = {}) const;
 
           /**
            * Declare the parameters this function takes through input files.
            */
-          static
-          void
-          declare_parameters (ParameterHandler &prm);
+          static void
+          declare_parameters(ParameterHandler &prm);
 
           /**
            * Read the parameters from the parameter file.
@@ -96,8 +96,8 @@ namespace aspect
            * parameters.
            */
           void
-          parse_parameters (ParameterHandler &prm,
-                            const std::unique_ptr<std::vector<unsigned int>> &expected_n_phases_per_composition = nullptr);
+          parse_parameters(ParameterHandler                                 &prm,
+                           const std::unique_ptr<std::vector<unsigned int>> &expected_n_phases_per_composition = nullptr);
 
           /**
            * Compute the viscosity based on the approximate Peierls creep flow law.
@@ -107,12 +107,12 @@ namespace aspect
            * each phase and then averaged for each compositional field.
            */
           double
-          compute_approximate_viscosity (const double strain_rate,
-                                         const double pressure,
-                                         const double temperature,
-                                         const unsigned int composition,
-                                         const std::vector<double> &phase_function_values = {},
-                                         const std::vector<unsigned int> &n_phase_transitions_per_composition = {}) const;
+          compute_approximate_viscosity(const double                     strain_rate,
+                                        const double                     pressure,
+                                        const double                     temperature,
+                                        const unsigned int               composition,
+                                        const std::vector<double>       &phase_function_values               = {},
+                                        const std::vector<unsigned int> &n_phase_transitions_per_composition = {}) const;
 
           /**
            * Compute the viscosity based on the exact Peierls creep flow law.
@@ -122,12 +122,12 @@ namespace aspect
            * each phase and then averaged for each compositional field.
            */
           double
-          compute_exact_viscosity (const double strain_rate,
-                                   const double pressure,
-                                   const double temperature,
-                                   const unsigned int composition,
-                                   const std::vector<double> &phase_function_values = {},
-                                   const std::vector<unsigned int> &n_phase_transitions_per_composition = {}) const;
+          compute_exact_viscosity(const double                     strain_rate,
+                                  const double                     pressure,
+                                  const double                     temperature,
+                                  const unsigned int               composition,
+                                  const std::vector<double>       &phase_function_values               = {},
+                                  const std::vector<unsigned int> &n_phase_transitions_per_composition = {}) const;
 
           /**
            * Compute the viscosity based on the selected Peierls creep flow law.
@@ -139,32 +139,32 @@ namespace aspect
            * each phase and then averaged for each compositional field.
            */
           double
-          compute_viscosity (const double strain_rate,
-                             const double pressure,
-                             const double temperature,
-                             const unsigned int composition,
-                             const std::vector<double> &phase_function_values = {},
-                             const std::vector<unsigned int> &n_phase_transitions_per_composition = {}) const;
+          compute_viscosity(const double                     strain_rate,
+                            const double                     pressure,
+                            const double                     temperature,
+                            const unsigned int               composition,
+                            const std::vector<double>       &phase_function_values               = {},
+                            const std::vector<unsigned int> &n_phase_transitions_per_composition = {}) const;
 
           /**
            * Compute the strain rate and first stress derivative
            * as a function of stress based on the approximate Peierls creep law.
            */
           std::pair<double, double>
-          compute_approximate_strain_rate_and_derivative (const double stress,
-                                                          const double pressure,
-                                                          const double temperature,
-                                                          const PeierlsCreepParameters creep_parameters) const;
+          compute_approximate_strain_rate_and_derivative(const double                 stress,
+                                                         const double                 pressure,
+                                                         const double                 temperature,
+                                                         const PeierlsCreepParameters creep_parameters) const;
 
           /**
            * Compute the strain rate and first stress derivative
            * as a function of stress based on the exact Peierls creep law.
            */
           std::pair<double, double>
-          compute_exact_strain_rate_and_derivative (const double stress,
-                                                    const double pressure,
-                                                    const double temperature,
-                                                    const PeierlsCreepParameters creep_parameters) const;
+          compute_exact_strain_rate_and_derivative(const double                 stress,
+                                                   const double                 pressure,
+                                                   const double                 temperature,
+                                                   const PeierlsCreepParameters creep_parameters) const;
 
           /**
            * Compute the natural logarithm of the strain rate norm and its first
@@ -172,10 +172,10 @@ namespace aspect
            * based on the exact Peierls creep law.
            */
           std::pair<double, double>
-          compute_exact_log_strain_rate_and_derivative (const double log_stress,
-                                                        const double pressure,
-                                                        const double temperature,
-                                                        const PeierlsCreepParameters creep_parameters) const;
+          compute_exact_log_strain_rate_and_derivative(const double                 log_stress,
+                                                       const double                 pressure,
+                                                       const double                 temperature,
+                                                       const PeierlsCreepParameters creep_parameters) const;
 
           /**
            * Compute the natural logarithm of the strain rate norm and its first
@@ -183,10 +183,10 @@ namespace aspect
            * based on the approximate Peierls creep law.
            */
           std::pair<double, double>
-          compute_approximate_log_strain_rate_and_derivative (const double log_stress,
-                                                              const double pressure,
-                                                              const double temperature,
-                                                              const PeierlsCreepParameters creep_parameters) const;
+          compute_approximate_log_strain_rate_and_derivative(const double                 log_stress,
+                                                             const double                 pressure,
+                                                             const double                 temperature,
+                                                             const PeierlsCreepParameters creep_parameters) const;
 
           /**
            * Compute the strain rate and first stress derivative
@@ -196,10 +196,10 @@ namespace aspect
            * or the compute_exact_strain_rate_and_derivative function.
            */
           std::pair<double, double>
-          compute_strain_rate_and_derivative (const double stress,
-                                              const double pressure,
-                                              const double temperature,
-                                              const PeierlsCreepParameters creep_parameters) const;
+          compute_strain_rate_and_derivative(const double                 stress,
+                                             const double                 pressure,
+                                             const double                 temperature,
+                                             const PeierlsCreepParameters creep_parameters) const;
 
         private:
           /**
@@ -298,7 +298,6 @@ namespace aspect
            *  This variable is read from the parameter file through a parameter called 'Maximum Peierls strain rate iterations'.
            */
           unsigned int stress_max_iteration_number;
-
       };
     }
   }

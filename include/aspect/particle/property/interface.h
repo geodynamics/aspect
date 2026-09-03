@@ -21,17 +21,17 @@
 #ifndef _aspect_particle_property_interface_h
 #define _aspect_particle_property_interface_h
 
-#include <aspect/particle/interface.h>
 #include <aspect/global.h>
 
+#include <aspect/advection_field.h>
+#include <aspect/particle/interface.h>
 #include <aspect/particle/interpolator/interface.h>
 #include <aspect/simulator_access.h>
-#include <aspect/advection_field.h>
 
+#include <deal.II/fe/fe_update_flags.h>
 #include <deal.II/particles/particle.h>
 #include <deal.II/particles/particle_handler.h>
 #include <deal.II/particles/property_pool.h>
-#include <deal.II/fe/fe_update_flags.h>
 
 #include <memory>
 
@@ -55,14 +55,14 @@ namespace aspect
            * The solution vector at each particle position. This vector is
            * only filled if the update function requires the solution values.
            */
-          std::vector<small_vector<double,50>> solution;
+          std::vector<small_vector<double, 50>> solution;
 
           /**
            * The solution gradients at each particle position.
            * This vector is only filled if the update function requires the
            * gradients of the solution values.
            */
-          std::vector<small_vector<Tensor<1,dim>,50>> gradients;
+          std::vector<small_vector<Tensor<1, dim>, 50>> gradients;
 
           /**
            * Cell iterator of the cell that is currently being updated.
@@ -127,7 +127,7 @@ namespace aspect
            * Particle::Property::Interface<dim>::get_property_information()
            * functions of all property plugins.
            */
-          ParticlePropertyInformation(const std::vector<std::vector<std::pair<std::string,unsigned int>>> &property_information);
+          ParticlePropertyInformation(const std::vector<std::vector<std::pair<std::string, unsigned int>>> &property_information);
 
           /**
            * Checks if the particle property specified by @p name exists
@@ -356,10 +356,8 @@ namespace aspect
            * of this function should be to extend this vector by a number of
            * properties.
            */
-          virtual
-          void
-          initialize_one_particle_property (const Point<dim> &position,
-                                            std::vector<double> &particle_properties) const;
+          virtual void
+          initialize_one_particle_property(const Point<dim> &position, std::vector<double> &particle_properties) const;
 
           /**
            * Update function. This function is called every time an update is
@@ -381,10 +379,9 @@ namespace aspect
            * @param [in,out] particles The particles that are to be updated
            * within this function.
            */
-          virtual
-          void
-          update_particle_properties (const ParticleUpdateInputs<dim> &inputs,
-                                      typename ParticleHandler<dim>::particle_iterator_range &particles) const;
+          virtual void
+          update_particle_properties(const ParticleUpdateInputs<dim>                        &inputs,
+                                     typename ParticleHandler<dim>::particle_iterator_range &particles) const;
 
           /**
            * Update function. This function is called every time an update is
@@ -417,12 +414,11 @@ namespace aspect
            * update all particles of a cell in one function call.
            */
           DEAL_II_DEPRECATED
-          virtual
-          void
-          update_particle_property (const unsigned int data_position,
-                                    const Vector<double> &solution,
-                                    const std::vector<Tensor<1,dim>> &gradients,
-                                    typename ParticleHandler<dim>::particle_iterator &particle) const;
+          virtual void
+          update_particle_property(const unsigned int                                data_position,
+                                   const Vector<double>                             &solution,
+                                   const std::vector<Tensor<1, dim>>                &gradients,
+                                   typename ParticleHandler<dim>::particle_iterator &particle) const;
 
 
           /**
@@ -437,9 +433,8 @@ namespace aspect
            * time in cases, when no plugin needs to update particle properties
            * over time.
            */
-          virtual
-          UpdateTimeFlags
-          need_update () const;
+          virtual UpdateTimeFlags
+          need_update() const;
 
           /**
            * Return which data of the solution component @p component
@@ -461,9 +456,8 @@ namespace aspect
            * @return The necessary update flags for the solution component
            * @p component that is required for this particle property.
            */
-          virtual
-          UpdateFlags
-          get_update_flags (const unsigned int component) const;
+          virtual UpdateFlags
+          get_update_flags(const unsigned int component) const;
 
           /**
            * Return which data has to be provided to update all properties.
@@ -477,9 +471,8 @@ namespace aspect
            * get_update_flags() instead.
            */
           DEAL_II_DEPRECATED
-          virtual
-          UpdateFlags
-          get_needed_update_flags () const;
+          virtual UpdateFlags
+          get_needed_update_flags() const;
 
           /**
            * Returns an enum, which determines how this particle property is
@@ -495,9 +488,8 @@ namespace aspect
            * appropriate for its purpose, unless it wants to use the default
            * value.
            */
-          virtual
-          InitializationModeForLateParticles
-          late_initialization_mode () const;
+          virtual InitializationModeForLateParticles
+          late_initialization_mode() const;
 
           /**
            * A function that returns the advection field to be used
@@ -506,8 +498,7 @@ namespace aspect
            * InitializationModeForLateParticles::interpolate_respect_boundary. This
            * function will not be called otherwise.
            */
-          virtual
-          AdvectionField
+          virtual AdvectionField
           advection_field_for_boundary_initialization(const unsigned int property_component) const;
 
           /**
@@ -523,23 +514,20 @@ namespace aspect
            * @return A vector that contains pairs of the property names and the
            * number of components this property plugin defines.
            */
-          virtual
-          std::vector<std::pair<std::string, unsigned int>>
+          virtual std::vector<std::pair<std::string, unsigned int>>
           get_property_information() const = 0;
 
           /**
            * Set the position of this property in the particle property vector.
            */
-          virtual
-          void
-          set_data_position (const unsigned int data_position);
+          virtual void
+          set_data_position(const unsigned int data_position);
 
           /**
            * Get the position of this property in the particle property vector.
            */
-          virtual
-          unsigned int
-          get_data_position () const;
+          virtual unsigned int
+          get_data_position() const;
 
         protected:
           /**
@@ -569,8 +557,7 @@ namespace aspect
            * size, but does not need to do any initialization.
            */
           void
-          initialize_one_particle_property (const Point<dim> &position,
-                                            std::vector<double> &particle_properties) const override;
+          initialize_one_particle_property(const Point<dim> &position, std::vector<double> &particle_properties) const override;
 
           /**
            * Set up the information about the names and number of components
@@ -587,7 +574,7 @@ namespace aspect
            * and therefore how many properties to reserve.
            */
           void
-          parse_parameters (ParameterHandler &prm) override;
+          parse_parameters(ParameterHandler &prm) override;
 
         private:
           /**
@@ -613,7 +600,7 @@ namespace aspect
            * beginning of the program after parse_parameters is run.
            */
           void
-          initialize () override;
+          initialize() override;
 
           /**
            * Initialization function for particle properties. This function is
@@ -621,7 +608,7 @@ namespace aspect
            * collection after it was created.
            */
           void
-          initialize_one_particle (typename ParticleHandler<dim>::particle_iterator &particle) const;
+          initialize_one_particle(typename ParticleHandler<dim>::particle_iterator &particle) const;
 
           /**
            * Initialization function for particle properties. This function is
@@ -630,10 +617,11 @@ namespace aspect
            * generation.
            */
           std::vector<double>
-          initialize_late_particle (const Point<dim> &particle_location,
-                                    const ParticleHandler<dim> &particle_handler,
-                                    const Interpolator::Interface<dim> &interpolator,
-                                    const typename parallel::distributed::Triangulation<dim>::active_cell_iterator &cell = typename parallel::distributed::Triangulation<dim>::active_cell_iterator()) const;
+          initialize_late_particle(const Point<dim>                                                               &particle_location,
+                                   const ParticleHandler<dim>                                                     &particle_handler,
+                                   const Interpolator::Interface<dim>                                             &interpolator,
+                                   const typename parallel::distributed::Triangulation<dim>::active_cell_iterator &cell =
+                                     typename parallel::distributed::Triangulation<dim>::active_cell_iterator()) const;
 
           /**
            * Update function for particle properties. This function is
@@ -648,8 +636,7 @@ namespace aspect
            * this function.
            */
           void
-          update_particles (ParticleUpdateInputs<dim> &inputs,
-                            typename ParticleHandler<dim>::particle_iterator_range &particles) const;
+          update_particles(ParticleUpdateInputs<dim> &inputs, typename ParticleHandler<dim>::particle_iterator_range &particles) const;
 
           /**
            * Returns an enum, which denotes at what time this class needs to
@@ -663,7 +650,7 @@ namespace aspect
            * evaluated in this case.
            */
           UpdateTimeFlags
-          need_update () const;
+          need_update() const;
 
           /**
            * Return which data has to be provided to update all properties.
@@ -679,7 +666,7 @@ namespace aspect
            * as there solution components.
            */
           std::vector<UpdateFlags>
-          get_update_flags () const;
+          get_update_flags() const;
 
           /**
            * Checks if the particle plugin specified by @p name exists
@@ -703,7 +690,8 @@ namespace aspect
           /**
            * Get the plugin index of the particle plugin specified by @p name.
            */
-          unsigned int get_plugin_index_by_name(const std::string &name) const;
+          unsigned int
+          get_plugin_index_by_name(const std::string &name) const;
 
           /**
            * Go through the list of all particle properties that have been selected
@@ -720,10 +708,9 @@ namespace aspect
            *   class of the current class.
            */
           template <typename ParticlePropertyType,
-                    typename = typename std::enable_if_t<std::is_base_of<Interface<dim>,ParticlePropertyType>::value>>
-          DEAL_II_DEPRECATED
-          bool
-          has_matching_property () const;
+                    typename = typename std::enable_if_t<std::is_base_of<Interface<dim>, ParticlePropertyType>::value>>
+          DEAL_II_DEPRECATED bool
+          has_matching_property() const;
 
           /**
            * Go through the list of all particle properties that have been selected
@@ -742,10 +729,9 @@ namespace aspect
            *   class of the current class.
            */
           template <typename ParticlePropertyType,
-                    typename = typename std::enable_if_t<std::is_base_of<Interface<dim>,ParticlePropertyType>::value>>
-          DEAL_II_DEPRECATED
-          const ParticlePropertyType &
-          get_matching_property () const;
+                    typename = typename std::enable_if_t<std::is_base_of<Interface<dim>, ParticlePropertyType>::value>>
+          DEAL_II_DEPRECATED const ParticlePropertyType &
+          get_matching_property() const;
 
           /**
            * Get the number of components required to represent this particle's
@@ -755,7 +741,7 @@ namespace aspect
            * additional properties.
            */
           unsigned int
-          get_n_property_components () const;
+          get_n_property_components() const;
 
           /**
            * Get the size in number of bytes required to represent this
@@ -766,7 +752,7 @@ namespace aspect
            * @return Number of bytes required to represent this particle.
            */
           std::size_t
-          get_particle_size () const;
+          get_particle_size() const;
 
           /**
            * Get the names and number of components of particle properties.
@@ -795,33 +781,32 @@ namespace aspect
            * @param factory_function A pointer to a function that creates such a
            * property object and returns a pointer to it.
            */
-          static
-          void
-          register_particle_property (const std::string &name,
-                                      const std::string &description,
-                                      void (*declare_parameters_function) (ParameterHandler &),
-                                      std::unique_ptr<Property::Interface<dim>> (*factory_function) ());
+          static void
+          register_particle_property(const std::string &name,
+                                     const std::string &description,
+                                     void (*declare_parameters_function)(ParameterHandler &),
+                                     std::unique_ptr<Property::Interface<dim>> (*factory_function)());
 
 
           /**
            * Declare the parameters this class takes through input files.
            */
-          static
-          void
-          declare_parameters (ParameterHandler &prm);
+          static void
+          declare_parameters(ParameterHandler &prm);
 
           /**
            * Read the parameters this class declares from the parameter file.
            */
           void
-          parse_parameters (ParameterHandler &prm) override;
+          parse_parameters(ParameterHandler &prm) override;
 
           /**
            * @brief Set the particle manager index for all particle properties
            *
            * @param particle_manager_index The index of the particle manager.
            */
-          void set_particle_manager_index(unsigned int particle_manager_index);
+          void
+          set_particle_manager_index(unsigned int particle_manager_index);
 
           /**
            * For the current plugin subsystem, write a connection graph of all of the
@@ -832,9 +817,8 @@ namespace aspect
            *
            * @param output_stream The stream to write the output to.
            */
-          static
-          void
-          write_plugin_graph (std::ostream &output_stream);
+          static void
+          write_plugin_graph(std::ostream &output_stream);
 
         private:
           /**
@@ -854,9 +838,8 @@ namespace aspect
 
       template <int dim>
       template <typename ParticlePropertyType, typename>
-      inline
-      bool
-      Manager<dim>::has_matching_property () const
+      inline bool
+      Manager<dim>::has_matching_property() const
       {
         return this->template has_matching_active_plugin<ParticlePropertyType>();
       }
@@ -864,9 +847,8 @@ namespace aspect
 
       template <int dim>
       template <typename ParticlePropertyType, typename>
-      inline
-      const ParticlePropertyType &
-      Manager<dim>::get_matching_property () const
+      inline const ParticlePropertyType &
+      Manager<dim>::get_matching_property() const
       {
         return this->template get_matching_active_plugin<ParticlePropertyType>();
       }
@@ -878,17 +860,15 @@ namespace aspect
        *
        * @ingroup Particle
        */
-#define ASPECT_REGISTER_PARTICLE_PROPERTY(classname,name,description) \
+#define ASPECT_REGISTER_PARTICLE_PROPERTY(classname, name, description) \
   template class classname<2>; \
   template class classname<3>; \
-  namespace ASPECT_REGISTER_PARTICLE_PROPERTY_ ## classname \
+  namespace ASPECT_REGISTER_PARTICLE_PROPERTY_##classname \
   { \
-    aspect::internal::Plugins::RegisterHelper<aspect::Particle::Property::Interface<2>,classname<2>> \
-    dummy_ ## classname ## _2d (&aspect::Particle::Property::Manager<2>::register_particle_property, \
-                                name, description); \
-    aspect::internal::Plugins::RegisterHelper<aspect::Particle::Property::Interface<3>,classname<3>> \
-    dummy_ ## classname ## _3d (&aspect::Particle::Property::Manager<3>::register_particle_property, \
-                                name, description); \
+    aspect::internal::Plugins::RegisterHelper<aspect::Particle::Property::Interface<2>, classname<2>> dummy_##classname##_2d( \
+      &aspect::Particle::Property::Manager<2>::register_particle_property, name, description); \
+    aspect::internal::Plugins::RegisterHelper<aspect::Particle::Property::Interface<3>, classname<3>> dummy_##classname##_3d( \
+      &aspect::Particle::Property::Manager<3>::register_particle_property, name, description); \
   }
 
     }

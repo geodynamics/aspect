@@ -42,21 +42,21 @@ namespace aspect
      * @ingroup InitialCompositionModels
      */
     template <int dim>
-    class Porosity : public Interface<dim>,
-      public SimulatorAccess<dim>
+    class Porosity : public Interface<dim>, public SimulatorAccess<dim>
     {
       public:
         /**
          * Initialize the plugin.
          */
-        void initialize () override;
+        void
+        initialize() override;
 
         /**
          * Return the initial composition as a function of position and number
          * of compositional field.
          */
-        double initial_composition (const Point<dim> &position,
-                                    const unsigned int compositional_index) const override;
+        double
+        initial_composition(const Point<dim> &position, const unsigned int compositional_index) const override;
 
       private:
         /**

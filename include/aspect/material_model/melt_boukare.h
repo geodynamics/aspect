@@ -22,8 +22,8 @@
 #define _aspect_material_model_melt_boukare_h
 
 #include <aspect/material_model/interface.h>
-#include <aspect/simulator_access.h>
 #include <aspect/melt.h>
+#include <aspect/simulator_access.h>
 
 namespace aspect
 {
@@ -38,7 +38,8 @@ namespace aspect
       public:
         BoukareOutputs(const unsigned int n_points);
 
-        std::vector<double> get_nth_output(const unsigned int idx) const override;
+        std::vector<double>
+        get_nth_output(const unsigned int idx) const override;
 
         /**
          * Bulk composition of the material.
@@ -64,24 +65,25 @@ namespace aspect
      */
     template <int dim>
     class MeltBoukare : public MaterialModel::MeltInterface<dim>,
-      public MaterialModel::MeltFractionModel<dim>,
-      public ::aspect::SimulatorAccess<dim>
+                        public MaterialModel::MeltFractionModel<dim>,
+                        public ::aspect::SimulatorAccess<dim>
     {
       public:
         /**
          * Initialization function. Computes endmember properties.
          */
         void
-        initialize () override;
+        initialize() override;
 
         /**
          * Return whether the model is compressible or not. In this model,
          * both the melt and solid are compressible.
          */
-        bool is_compressible () const override;
+        bool
+        is_compressible() const override;
 
-        void evaluate(const typename Interface<dim>::MaterialModelInputs &in,
-                      typename Interface<dim>::MaterialModelOutputs &out) const override;
+        void
+        evaluate(const typename Interface<dim>::MaterialModelInputs &in, typename Interface<dim>::MaterialModelOutputs &out) const override;
 
         /**
          * Compute the equilibrium melt fractions for the given input conditions.
@@ -95,15 +97,17 @@ namespace aspect
          * fractions depend on material model properties, then this parameter
          * must be set to a valid pointer to a MaterialModelOutputs object.
          */
-        void melt_fractions (const MaterialModel::MaterialModelInputs<dim> &in,
-                             std::vector<double> &melt_fractions,
-                             const MaterialModel::MaterialModelOutputs<dim> *out = nullptr) const override;
+        void
+        melt_fractions(const MaterialModel::MaterialModelInputs<dim>  &in,
+                       std::vector<double>                            &melt_fractions,
+                       const MaterialModel::MaterialModelOutputs<dim> *out = nullptr) const override;
 
         /**
          * @name Reference quantities
          * @{
          */
-        double reference_darcy_coefficient () const override;
+        double
+        reference_darcy_coefficient() const override;
 
         /**
          * @}
@@ -116,22 +120,21 @@ namespace aspect
         /**
          * Declare the parameters this class takes through input files.
          */
-        static
-        void
-        declare_parameters (ParameterHandler &prm);
+        static void
+        declare_parameters(ParameterHandler &prm);
 
         /**
          * Read the parameters this class declares from the parameter file.
          */
         void
-        parse_parameters (ParameterHandler &prm) override;
+        parse_parameters(ParameterHandler &prm) override;
 
         /**
          * @}
          */
 
         void
-        create_additional_named_outputs (MaterialModel::MaterialModelOutputs<dim> &out) const override;
+        create_additional_named_outputs(MaterialModel::MaterialModelOutputs<dim> &out) const override;
 
 
       private:
@@ -257,9 +260,9 @@ namespace aspect
 
         // Parameters defining the molar composition of the two endmember compositions we use
         // in the melting model.
-        const double molar_MgO_in_Mg_mantle_endmember = 0.581;
+        const double molar_MgO_in_Mg_mantle_endmember  = 0.581;
         const double molar_SiO2_in_Mg_mantle_endmember = 0.419;
-        const double molar_FeO_in_Fe_mantle_endmember = 0.908;
+        const double molar_FeO_in_Fe_mantle_endmember  = 0.908;
         const double molar_SiO2_in_Fe_mantle_endmember = 0.092;
 
         // Parameters describing the melting properties of the two endmembers of the melting model.
@@ -305,11 +308,11 @@ namespace aspect
         // Parameter describing if an endmember in the equation of state is solid or molten.
         struct EndmemberState
         {
-          enum Kind
-          {
-            solid,
-            melt
-          };
+            enum Kind
+            {
+              solid,
+              melt
+            };
         };
 
         std::vector<typename EndmemberState::Kind> endmember_states;
@@ -318,73 +321,62 @@ namespace aspect
         // Material properties of the different endmembers of the equation of state.
         struct EndmemberProperties
         {
-          /**
-           * Constructor. Initialize the various arrays of this structure with the
-           * given number of endmembers.
-           */
-          EndmemberProperties(const unsigned int n_endmembers);
+            /**
+             * Constructor. Initialize the various arrays of this structure with the
+             * given number of endmembers.
+             */
+            EndmemberProperties(const unsigned int n_endmembers);
 
-          std::vector<double> volumes;
-          std::vector<double> gibbs_energies;
-          std::vector<double> entropies;
-          std::vector<double> thermal_expansivities;
-          std::vector<double> bulk_moduli;
-          std::vector<double> heat_capacities;
+            std::vector<double> volumes;
+            std::vector<double> gibbs_energies;
+            std::vector<double> entropies;
+            std::vector<double> thermal_expansivities;
+            std::vector<double> bulk_moduli;
+            std::vector<double> heat_capacities;
         };
 
 
         /**
          * Fill the endmember properties at a single point.
          */
-        virtual
-        void
-        fill_endmember_properties (const typename Interface<dim>::MaterialModelInputs &in,
-                                   const unsigned int q,
-                                   EndmemberProperties &properties) const;
+        virtual void
+        fill_endmember_properties(const typename Interface<dim>::MaterialModelInputs &in,
+                                  const unsigned int                                  q,
+                                  EndmemberProperties                                &properties) const;
 
 
         /**
          * Calculate the Einstein thermal energy of an endmember component.
          */
-        virtual
-        double
-        endmember_thermal_energy (const double temperature,
-                                  const unsigned int endmember_index) const;
+        virtual double
+        endmember_thermal_energy(const double temperature, const unsigned int endmember_index) const;
 
 
         /**
          * Calculate the heat capacity of an endmember component.
          */
-        virtual
-        double
-        endmember_molar_heat_capacity (const double temperature,
-                                       const unsigned int endmember_index) const;
+        virtual double
+        endmember_molar_heat_capacity(const double temperature, const unsigned int endmember_index) const;
 
         /**
          * Calculate the thermal pressure of an endmember component.
          */
-        virtual
-        double
-        endmember_thermal_pressure (const double temperature,
-                                    const unsigned int endmember_index) const;
+        virtual double
+        endmember_thermal_pressure(const double temperature, const unsigned int endmember_index) const;
 
         /**
          * Calculate the thermal addition to the standard state enthalpy of an endmember component
          * at the reference pressure.
          */
-        virtual
-        double
-        endmember_enthalpy_thermal_addition (const double temperature,
-                                             const unsigned int endmember_index) const;
+        virtual double
+        endmember_enthalpy_thermal_addition(const double temperature, const unsigned int endmember_index) const;
 
         /**
          * Calculate the thermal addition to the standard state enttropy of an endmember component
          * at the reference pressure.
          */
-        virtual
-        double
-        endmember_entropy_thermal_addition (const double temperature,
-                                            const unsigned int endmember_index) const;
+        virtual double
+        endmember_entropy_thermal_addition(const double temperature, const unsigned int endmember_index) const;
 
 
         /**
@@ -392,14 +384,13 @@ namespace aspect
          * and magnesium in each of the two solid phases, bridgmanite and ferropericlase, and the melt
          * phase. In addition, compute the molar fraction of bridgmanite in the solid.
          */
-        virtual
-        void
-        convert_composition_to_fraction_of_endmembers (const double temperature,
-                                                       const double molar_Fe_in_solid,
-                                                       const double molar_Fe_in_melt,
-                                                       const std::vector<double> &endmember_gibbs_energies,
-                                                       std::vector<double> &endmember_mole_fractions_per_phase,
-                                                       double &molar_bridgmanite_in_solid) const;
+        virtual void
+        convert_composition_to_fraction_of_endmembers(const double               temperature,
+                                                      const double               molar_Fe_in_solid,
+                                                      const double               molar_Fe_in_melt,
+                                                      const std::vector<double> &endmember_gibbs_energies,
+                                                      std::vector<double>       &endmember_mole_fractions_per_phase,
+                                                      double                    &molar_bridgmanite_in_solid) const;
 
 
         /**
@@ -407,22 +398,19 @@ namespace aspect
          * This requires knowing the densities of both solid and melt, which can be computed
          * from the fractions and material properties of the component endmembers.
          */
-        virtual
-        double
-        compute_melt_molar_fraction (const double porosity,
-                                     const double bridgmanite_molar_fraction_in_solid,
-                                     EndmemberProperties &properties,
-                                     const std::vector<double> &endmember_mole_fractions_per_phase) const;
+        virtual double
+        compute_melt_molar_fraction(const double               porosity,
+                                    const double               bridgmanite_molar_fraction_in_solid,
+                                    EndmemberProperties       &properties,
+                                    const std::vector<double> &endmember_mole_fractions_per_phase) const;
 
 
         /**
          * Make sure that when the property @p value is updated by adding @p change_of_value,
          * the new value is between zero and one. Otherwise, throw an error message.
          */
-        virtual
-        double
-        assert_update_is_within_0_and_1 (const double value,
-                                         const double change_of_value) const;
+        virtual double
+        assert_update_is_within_0_and_1(const double value, const double change_of_value) const;
 
 
         /**
@@ -432,14 +420,13 @@ namespace aspect
          * melting of a veined plum pudding mantle." Geochemistry, Geophysics, Geosystems 2.4
          * (2001), and additionally includes volatiles.
          */
-        virtual
-        double
-        melt_fraction (const double temperature,
-                       const double pressure,
-                       const double bulk_composition,
-                       double &molar_volatiles_in_melt,
-                       double &solid_composition,
-                       double &melt_composition) const;
+        virtual double
+        melt_fraction(const double temperature,
+                      const double pressure,
+                      const double bulk_composition,
+                      double      &molar_volatiles_in_melt,
+                      double      &solid_composition,
+                      double      &melt_composition) const;
     };
 
   }

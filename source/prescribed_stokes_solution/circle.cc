@@ -20,6 +20,7 @@
 
 
 #include <aspect/global.h>
+
 #include <aspect/prescribed_stokes_solution/circle.h>
 
 namespace aspect
@@ -27,7 +28,8 @@ namespace aspect
   namespace PrescribedStokesSolution
   {
     template <int dim>
-    void Circle<dim>::stokes_solution (const Point<dim> &p, Vector<double> &value) const
+    void
+    Circle<dim>::stokes_solution(const Point<dim> &p, Vector<double> &value) const
     {
       value(0) = -p(1);
       value(1) = p(0);
@@ -36,19 +38,19 @@ namespace aspect
 
       if (this->get_parameters().include_melt_transport)
         {
-          value(dim) = 0;       // fluid pressure
-          value(dim+1) = 0;     // compaction pressure
+          value(dim)     = 0; // fluid pressure
+          value(dim + 1) = 0; // compaction pressure
 
-          value(dim+2) = -p(1); // fluid velocity x
-          value(dim+3) = p(0);  // fluid velocity y
+          value(dim + 2) = -p(1); // fluid velocity x
+          value(dim + 3) = p(0);  // fluid velocity y
           if (dim == 3)
-            value(dim+4) = 0;
+            value(dim + 4) = 0;
 
-          value(2*dim+2) = 0;   // pressure
+          value(2 * dim + 2) = 0; // pressure
         }
       else
         {
-          value(dim) = 0;       // pressure
+          value(dim) = 0; // pressure
         }
     }
   }

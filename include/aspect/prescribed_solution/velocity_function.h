@@ -42,11 +42,10 @@ namespace aspect
     class VelocityFunction : public Interface<dim>, public SimulatorAccess<dim>
     {
       public:
-
         /**
          * Constructor.
          */
-        VelocityFunction ();
+        VelocityFunction();
 
         /**
          * A function that is called at the beginning of each time step to
@@ -54,20 +53,20 @@ namespace aspect
          * next be prescribed. For the current class, the function passes to
          * the parsed function what the current time is.
          */
-        void update () override;
+        void
+        update() override;
 
         /**
          * Declare the parameters this class takes through input files.
          */
-        static
-        void
-        declare_parameters (ParameterHandler &prm);
+        static void
+        declare_parameters(ParameterHandler &prm);
 
         /**
          * Read the parameters this class declares from the parameter file.
          */
         void
-        parse_parameters (ParameterHandler &prm) override;
+        parse_parameters(ParameterHandler &prm) override;
 
 
         /**
@@ -77,11 +76,12 @@ namespace aspect
          * to decide whether new constraints need to be added. If so, values of
          * new constraints are computed and stored in the solution.
          */
-        void constrain_solution (const typename DoFHandler<dim>::active_cell_iterator &cell,
-                                 const std::vector<Point<dim>> &positions,
-                                 const std::vector<unsigned int> &component_indices,
-                                 std::vector<bool> &should_be_constrained,
-                                 std::vector<double> &solution) override;
+        void
+        constrain_solution(const typename DoFHandler<dim>::active_cell_iterator &cell,
+                           const std::vector<Point<dim>>                        &positions,
+                           const std::vector<unsigned int>                      &component_indices,
+                           std::vector<bool>                                    &should_be_constrained,
+                           std::vector<double>                                  &solution) override;
 
       private:
         /**

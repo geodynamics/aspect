@@ -20,26 +20,25 @@
 
 
 
-#include <aspect/heating_model/radioactive_decay.h>
-#include <aspect/geometry_model/interface.h>
 #include <aspect/global.h>
+
+#include <aspect/geometry_model/interface.h>
+#include <aspect/heating_model/radioactive_decay.h>
 
 namespace aspect
 {
   namespace HeatingModel
   {
     template <int dim>
-    RadioactiveDecay<dim>::RadioactiveDecay ()
-      = default;
+    RadioactiveDecay<dim>::RadioactiveDecay() = default;
 
 
 
     template <int dim>
     void
-    RadioactiveDecay<dim>::
-    evaluate (const MaterialModel::MaterialModelInputs<dim> &material_model_inputs,
-              const MaterialModel::MaterialModelOutputs<dim> &material_model_outputs,
-              HeatingModel::HeatingModelOutputs &heating_model_outputs) const
+    RadioactiveDecay<dim>::evaluate(const MaterialModel::MaterialModelInputs<dim>  &material_model_inputs,
+                                    const MaterialModel::MaterialModelOutputs<dim> &material_model_outputs,
+                                    HeatingModel::HeatingModelOutputs              &heating_model_outputs) const
     {
       if (is_crust_defined_by_composition)
         {
@@ -69,15 +68,14 @@ namespace aspect
 
               for (unsigned element = 0; element < n_radio_heating_elements; ++element)
                 {
-                  timedependent_radioactive_heating_rates += radioactive_heating_rates[element]
-                                                             * (radioactive_initial_concentrations_mantle[element] * (1-crust_fraction)
-                                                                + radioactive_initial_concentrations_crust[element] * crust_fraction)
-                                                             * std::pow(0.5,this->get_time()/half_decay_times[element]);
+                  timedependent_radioactive_heating_rates += radioactive_heating_rates[element] *
+                                                             (radioactive_initial_concentrations_mantle[element] * (1 - crust_fraction) +
+                                                              radioactive_initial_concentrations_crust[element] * crust_fraction) *
+                                                             std::pow(0.5, this->get_time() / half_decay_times[element]);
                 }
             }
 
-          heating_model_outputs.heating_source_terms[q] = timedependent_radioactive_heating_rates
-                                                          * material_model_outputs.densities[q];
+          heating_model_outputs.heating_source_terms[q] = timedependent_radioactive_heating_rates * material_model_outputs.densities[q];
 
           heating_model_outputs.lhs_latent_heat_terms[q] = 0.0;
         }
@@ -87,7 +85,7 @@ namespace aspect
 
     template <int dim>
     MaterialModel::MaterialProperties::Property
-    RadioactiveDecay<dim>::get_required_properties () const
+    RadioactiveDecay<dim>::get_required_properties() const
     {
       return MaterialModel::MaterialProperties::density;
     }
@@ -96,38 +94,34 @@ namespace aspect
 
     template <int dim>
     void
-    RadioactiveDecay<dim>::declare_parameters (ParameterHandler &prm)
+    RadioactiveDecay<dim>::declare_parameters(ParameterHandler &prm)
     {
       prm.enter_subsection("Heating model");
       {
         prm.enter_subsection("Radioactive decay");
         {
-          prm.declare_entry("Number of elements","0",
-                            Patterns::Integer(0),
-                            "Number of radioactive elements");
-          prm.declare_entry("Heating rates","",
-                            Patterns::List (Patterns::Double ()),
-                            "Heating rates of different elements (W/kg)");
-          prm.declare_entry("Half decay times","",
-                            Patterns::List (Patterns::Double (0.)),
+          prm.declare_entry("Number of elements", "0", Patterns::Integer(0), "Number of radioactive elements");
+          prm.declare_entry("Heating rates", "", Patterns::List(Patterns::Double()), "Heating rates of different elements (W/kg)");
+          prm.declare_entry("Half decay times",
+                            "",
+                            Patterns::List(Patterns::Double(0.)),
                             "Half decay times. Units: (Seconds), or "
                             "(Years) if set `use years instead of seconds'.");
-          prm.declare_entry("Initial concentrations crust","",
-                            Patterns::List (Patterns::Double (0.)),
+          prm.declare_entry("Initial concentrations crust",
+                            "",
+                            Patterns::List(Patterns::Double(0.)),
                             "Initial concentrations of different elements (ppm)");
-          prm.declare_entry("Initial concentrations mantle","",
-                            Patterns::List (Patterns::Double (0.)),
+          prm.declare_entry("Initial concentrations mantle",
+                            "",
+                            Patterns::List(Patterns::Double(0.)),
                             "Initial concentrations of different elements (ppm)");
-          prm.declare_entry("Crust defined by composition","false",
-                            Patterns::Bool(),
-                            "Whether crust defined by composition or depth");
-          prm.declare_entry("Crust depth","0.",
+          prm.declare_entry("Crust defined by composition", "false", Patterns::Bool(), "Whether crust defined by composition or depth");
+          prm.declare_entry("Crust depth",
+                            "0.",
                             Patterns::Double(),
                             "Depth of the crust when crust if defined by depth. "
                             "Units: \\si{\\meter}.");
-          prm.declare_entry("Crust composition number","0",
-                            Patterns::Integer(0),
-                            "Which composition field should be treated as crust");
+          prm.declare_entry("Crust composition number", "0", Patterns::Integer(0), "Which composition field should be treated as crust");
         }
         prm.leave_subsection();
       }
@@ -138,34 +132,27 @@ namespace aspect
 
     template <int dim>
     void
-    RadioactiveDecay<dim>::parse_parameters (ParameterHandler &prm)
+    RadioactiveDecay<dim>::parse_parameters(ParameterHandler &prm)
     {
       prm.enter_subsection("Heating model");
       {
         prm.enter_subsection("Radioactive decay");
         {
+          n_radio_heating_elements = prm.get_integer("Number of elements");
 
-          n_radio_heating_elements  = prm.get_integer ("Number of elements");
+          radioactive_heating_rates = Utilities::string_to_double(Utilities::split_string_list(prm.get("Heating rates")));
 
-          radioactive_heating_rates = Utilities::string_to_double
-                                      (Utilities::split_string_list
-                                       (prm.get("Heating rates")));
+          half_decay_times = Utilities::string_to_double(Utilities::split_string_list(prm.get("Half decay times")));
 
-          half_decay_times          = Utilities::string_to_double
-                                      (Utilities::split_string_list
-                                       (prm.get("Half decay times")));
+          radioactive_initial_concentrations_crust =
+            Utilities::string_to_double(Utilities::split_string_list(prm.get("Initial concentrations crust")));
 
-          radioactive_initial_concentrations_crust  = Utilities::string_to_double
-                                                      (Utilities::split_string_list
-                                                       (prm.get("Initial concentrations crust")));
+          radioactive_initial_concentrations_mantle =
+            Utilities::string_to_double(Utilities::split_string_list(prm.get("Initial concentrations mantle")));
 
-          radioactive_initial_concentrations_mantle = Utilities::string_to_double
-                                                      (Utilities::split_string_list
-                                                       (prm.get("Initial concentrations mantle")));
-
-          is_crust_defined_by_composition = prm.get_bool    ("Crust defined by composition");
-          crust_depth                     = prm.get_double  ("Crust depth");
-          crust_composition_num           = prm.get_integer ("Crust composition number");
+          is_crust_defined_by_composition = prm.get_bool("Crust defined by composition");
+          crust_depth                     = prm.get_double("Crust depth");
+          crust_composition_num           = prm.get_integer("Crust composition number");
 
 
           AssertThrow(radioactive_heating_rates.size() == n_radio_heating_elements,

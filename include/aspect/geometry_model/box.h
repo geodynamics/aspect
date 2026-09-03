@@ -43,33 +43,35 @@ namespace aspect
          * beginning of the program after parse_parameters is run and after
          * the SimulatorAccess (if applicable) is initialized.
          */
-        void initialize () override;
+        void
+        initialize() override;
 
         /**
          * Generate a coarse mesh for the geometry described by this class.
          */
-        void create_coarse_mesh (parallel::distributed::Triangulation<dim> &coarse_grid) const override;
+        void
+        create_coarse_mesh(parallel::distributed::Triangulation<dim> &coarse_grid) const override;
 
         /**
          * Return a point that denotes the size of the box in each dimension
          * of the domain.
          */
-        virtual
-        Point<dim> get_extents () const;
+        virtual Point<dim>
+        get_extents() const;
 
         /**
          * Return an integer array that denotes the number of repetitions of
          * the box's coarse mesh.
          */
         const std::array<unsigned int, dim> &
-        get_repetitions () const;
+        get_repetitions() const;
 
         /**
          * Return a point that denotes the lower left corner of the box
          * domain.
          */
-        virtual
-        Point<dim> get_origin () const;
+        virtual Point<dim>
+        get_origin() const;
 
         /**
          * Return the typical length scale one would expect of features in
@@ -77,7 +79,8 @@ namespace aspect
          *
          * We return 1/100th of the diameter of the box.
          */
-        double length_scale () const override;
+        double
+        length_scale() const override;
 
         /**
          * Return the depth that corresponds to the given
@@ -95,23 +98,27 @@ namespace aspect
          * Note that the depth is calculated with respect to the
          * surface without initial topography.
          */
-        double depth(const Point<dim> &position) const override;
+        double
+        depth(const Point<dim> &position) const override;
 
         /**
          * Return the height of the given position relative to
          * the initial box height.
          */
-        double height_above_reference_surface(const Point<dim> &position) const override;
+        double
+        height_above_reference_surface(const Point<dim> &position) const override;
 
         /**
          * @copydoc Interface::representative_point()
          */
-        Point<dim> representative_point(const double depth) const override;
+        Point<dim>
+        representative_point(const double depth) const override;
 
         /**
          * @copydoc Interface::maximal_depth()
          */
-        double maximal_depth() const override;
+        double
+        maximal_depth() const override;
 
         /**
          * Return the set of boundary indicators that are used by this model.
@@ -123,7 +130,7 @@ namespace aspect
          * two perpendicular to the y-axis, etc.
          */
         std::set<types::boundary_id>
-        get_used_boundary_indicators () const override;
+        get_used_boundary_indicators() const override;
 
         /**
          * Return a mapping from symbolic names of each part of the boundary
@@ -137,15 +144,15 @@ namespace aspect
          * {"right"->1}, {"front"->2}, {"back"->3}, {"bottom"->4},
          * {"top"->5}}</code> in 3d.
          */
-        std::map<std::string,types::boundary_id>
-        get_symbolic_boundary_names_map () const override;
+        std::map<std::string, types::boundary_id>
+        get_symbolic_boundary_names_map() const override;
 
         /**
          * Return the set of periodic boundaries as described in the input
          * file.
          */
         std::set<std::pair<std::pair<types::boundary_id, types::boundary_id>, unsigned int>>
-        get_periodic_boundary_pairs () const override;
+        get_periodic_boundary_pairs() const override;
 
         /**
          * @copydoc Interface::adjust_positions_for_periodicity
@@ -154,9 +161,9 @@ namespace aspect
          * to account for periodicity.
          */
         void
-        adjust_positions_for_periodicity (Point<dim> &position,
-                                          const ArrayView<Point<dim>> &connected_positions = {},
-                                          const ArrayView<Tensor<1, dim>> &connected_velocities = {}) const override;
+        adjust_positions_for_periodicity(Point<dim>                      &position,
+                                         const ArrayView<Point<dim>>     &connected_positions  = {},
+                                         const ArrayView<Tensor<1, dim>> &connected_velocities = {}) const override;
 
         /**
          * @copydoc Interface::has_curved_elements()
@@ -178,48 +185,51 @@ namespace aspect
          * Returns what the natural coordinate system for this geometry model is,
          * which for a box is Cartesian.
          */
-        aspect::Utilities::Coordinates::CoordinateSystem natural_coordinate_system() const override;
+        aspect::Utilities::Coordinates::CoordinateSystem
+        natural_coordinate_system() const override;
 
         /**
          * Takes the Cartesian points (x,z or x,y,z) and returns standardized
          * coordinates which are most 'natural' to the geometry model. For a box
          * the results is unchanged and is (x,z) in 2d or (x,y,z) in 3d.
          */
-        std::array<double,dim> cartesian_to_natural_coordinates(const Point<dim> &position) const override;
+        std::array<double, dim>
+        cartesian_to_natural_coordinates(const Point<dim> &position) const override;
 
         /**
          * Undoes the action of cartesian_to_natural_coordinates, and turns the
          * coordinate system which is most 'natural' to the geometry model into
          * Cartesian coordinates.
          */
-        Point<dim> natural_to_cartesian_coordinates(const std::array<double,dim> &position) const override;
+        Point<dim>
+        natural_to_cartesian_coordinates(const std::array<double, dim> &position) const override;
 
         /**
          * Declare the parameters this class takes through input files.
          */
-        static
-        void
-        declare_parameters (ParameterHandler &prm);
+        static void
+        declare_parameters(ParameterHandler &prm);
 
         /**
          * Read the parameters this class declares from the parameter file.
          */
         void
-        parse_parameters (ParameterHandler &prm) override;
+        parse_parameters(ParameterHandler &prm) override;
 
       private:
-
         /**
          * Add initial topography to the mesh.
          */
-        void add_topography_to_mesh (typename parallel::distributed::Triangulation<dim> &grid) const;
+        void
+        add_topography_to_mesh(typename parallel::distributed::Triangulation<dim> &grid) const;
 
         /**
          * Relocate the vertical coordinate of the given point based on
          * the topography at the surface specified by the initial topography
          * model.
          */
-        Point<dim> add_topography_to_point (const Point<dim> &x_y_z) const;
+        Point<dim>
+        add_topography_to_point(const Point<dim> &x_y_z) const;
 
         /**
          * Extent of the box in x-, y-, and z-direction (in 3d).

@@ -19,8 +19,8 @@
  */
 
 
-#include <aspect/particle/property/composition.h>
 #include <aspect/initial_composition/interface.h>
+#include <aspect/particle/property/composition.h>
 
 namespace aspect
 {
@@ -30,27 +30,26 @@ namespace aspect
     {
       template <int dim>
       void
-      Composition<dim>::initialize_one_particle_property(const Point<dim> &position,
-                                                         std::vector<double> &data) const
+      Composition<dim>::initialize_one_particle_property(const Point<dim> &position, std::vector<double> &data) const
       {
         for (unsigned int i = 0; i < this->n_compositional_fields(); ++i)
-          data.push_back(this->get_initial_composition_manager().initial_composition(position,i));
+          data.push_back(this->get_initial_composition_manager().initial_composition(position, i));
       }
 
 
 
       template <int dim>
       void
-      Composition<dim>::update_particle_properties(const ParticleUpdateInputs<dim> &inputs,
+      Composition<dim>::update_particle_properties(const ParticleUpdateInputs<dim>                        &inputs,
                                                    typename ParticleHandler<dim>::particle_iterator_range &particles) const
       {
-        unsigned int p = 0;
-        const auto &composition_components = this->introspection().component_indices.compositional_fields;
-        for (auto &particle: particles)
+        unsigned int p                      = 0;
+        const auto  &composition_components = this->introspection().component_indices.compositional_fields;
+        for (auto &particle : particles)
           {
             for (unsigned int j = 0; j < this->n_compositional_fields(); ++j)
               {
-                particle.get_properties()[this->data_position+j] = inputs.solution[p][composition_components[j]];
+                particle.get_properties()[this->data_position + j] = inputs.solution[p][composition_components[j]];
               }
             ++p;
           }
@@ -69,7 +68,7 @@ namespace aspect
 
       template <int dim>
       UpdateFlags
-      Composition<dim>::get_update_flags (const unsigned int component) const
+      Composition<dim>::get_update_flags(const unsigned int component) const
       {
         if (this->introspection().component_masks.compositions[component] == true)
           return update_values;
@@ -83,21 +82,20 @@ namespace aspect
       std::vector<std::pair<std::string, unsigned int>>
       Composition<dim>::get_property_information() const
       {
-
         AssertThrow(this->n_compositional_fields() > 0,
                     ExcMessage("You have requested the particle property <composition>, "
                                "but the number of compositional fields is 0. "
                                "Please add compositional fields to your model, or remove "
                                "this particle property."));
 
-        std::vector<std::pair<std::string,unsigned int>> property_information;
+        std::vector<std::pair<std::string, unsigned int>> property_information;
 
 
 
         for (unsigned int i = 0; i < this->n_compositional_fields(); ++i)
           {
             const std::string field_name = this->introspection().name_for_compositional_index(i);
-            property_information.emplace_back(field_name,1);
+            property_information.emplace_back(field_name, 1);
           }
         return property_information;
       }

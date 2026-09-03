@@ -20,6 +20,7 @@
 
 
 #include <aspect/global.h>
+
 #include <aspect/boundary_composition/ascii_data.h>
 
 #include <deal.II/base/parameter_handler.h>
@@ -30,23 +31,21 @@ namespace aspect
   namespace BoundaryComposition
   {
     template <int dim>
-    AsciiData<dim>::AsciiData ()
-      = default;
+    AsciiData<dim>::AsciiData() = default;
 
     template <int dim>
     void
-    AsciiData<dim>::initialize ()
+    AsciiData<dim>::initialize()
     {
-      Utilities::AsciiDataBoundary<dim>::initialize(this->get_fixed_composition_boundary_indicators(),
-                                                    this->n_compositional_fields());
+      Utilities::AsciiDataBoundary<dim>::initialize(this->get_fixed_composition_boundary_indicators(), this->n_compositional_fields());
     }
 
 
     template <int dim>
     void
-    AsciiData<dim>::update ()
+    AsciiData<dim>::update()
     {
-      Interface<dim>::update ();
+      Interface<dim>::update();
 
       Utilities::AsciiDataBoundary<dim>::update();
     }
@@ -54,19 +53,16 @@ namespace aspect
 
     template <int dim>
     double
-    AsciiData<dim>::
-    boundary_composition (const types::boundary_id boundary_indicator,
-                          const Point<dim> &position,
-                          const unsigned int compositional_field) const
+    AsciiData<dim>::boundary_composition(const types::boundary_id boundary_indicator,
+                                         const Point<dim>        &position,
+                                         const unsigned int       compositional_field) const
     {
-      return Utilities::AsciiDataBoundary<dim>::get_data_component(boundary_indicator,
-                                                                   position,
-                                                                   compositional_field);
+      return Utilities::AsciiDataBoundary<dim>::get_data_component(boundary_indicator, position, compositional_field);
     }
 
     template <int dim>
     void
-    AsciiData<dim>::declare_parameters (ParameterHandler &prm)
+    AsciiData<dim>::declare_parameters(ParameterHandler &prm)
     {
       prm.enter_subsection("Boundary composition model");
       {
@@ -80,7 +76,7 @@ namespace aspect
 
     template <int dim>
     void
-    AsciiData<dim>::parse_parameters (ParameterHandler &prm)
+    AsciiData<dim>::parse_parameters(ParameterHandler &prm)
     {
       prm.enter_subsection("Boundary composition model");
       {

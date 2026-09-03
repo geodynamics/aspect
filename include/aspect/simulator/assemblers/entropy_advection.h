@@ -36,16 +36,17 @@ namespace aspect
      * details on the entropy method see \cite dannberg:etal:2022 (https://doi.org/10.1093/gji/ggac293).
      */
     template <int dim>
-    class EntropyAdvectionSystem : public Assemblers::Interface<dim>, public Assemblers::AdvectionStabilizationInterface<dim>,
-      public SimulatorAccess<dim>
+    class EntropyAdvectionSystem : public Assemblers::Interface<dim>,
+                                   public Assemblers::AdvectionStabilizationInterface<dim>,
+                                   public SimulatorAccess<dim>
     {
       public:
         void
-        execute(internal::Assembly::Scratch::ScratchBase<dim>  &scratch,
+        execute(internal::Assembly::Scratch::ScratchBase<dim>   &scratch,
                 internal::Assembly::CopyData::CopyDataBase<dim> &data) const override;
 
         std::vector<double>
-        compute_residual(internal::Assembly::Scratch::ScratchBase<dim>  &scratch) const override;
+        compute_residual(internal::Assembly::Scratch::ScratchBase<dim> &scratch) const override;
 
         std::vector<double>
         advection_prefactors(internal::Assembly::Scratch::ScratchBase<dim> &scratch_base) const override;
@@ -60,8 +61,8 @@ namespace aspect
      * for the entropy method.
      */
     template <int dim>
-    void set_assemblers_entropy_advection(const SimulatorAccess<dim> &simulator_access,
-                                          Assemblers::Manager<dim> &assemblers);
+    void
+    set_assemblers_entropy_advection(const SimulatorAccess<dim> &simulator_access, Assemblers::Manager<dim> &assemblers);
   }
 }
 

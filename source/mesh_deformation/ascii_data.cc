@@ -20,9 +20,10 @@
 
 
 #include <aspect/global.h>
+
+#include <aspect/geometry_model/interface.h>
 #include <aspect/gravity_model/interface.h>
 #include <aspect/mesh_deformation/ascii_data.h>
-#include <aspect/geometry_model/interface.h>
 
 #include <deal.II/base/parameter_handler.h>
 
@@ -32,37 +33,32 @@ namespace aspect
   namespace MeshDeformation
   {
     template <int dim>
-    AsciiData<dim>::AsciiData ()
-      :
-      surface_boundary_id(1)
+    AsciiData<dim>::AsciiData()
+      : surface_boundary_id(1)
     {}
 
 
 
     template <int dim>
     void
-    AsciiData<dim>::initialize ()
+    AsciiData<dim>::initialize()
     {
       surface_boundary_id = this->get_geometry_model().translate_symbolic_boundary_name_to_id("top");
 
-      Utilities::AsciiDataBoundary<dim>::initialize({surface_boundary_id},
-                                                    1);
+      Utilities::AsciiDataBoundary<dim>::initialize({surface_boundary_id}, 1);
     }
 
 
 
     template <int dim>
-    Tensor<1,dim>
-    AsciiData<dim>::compute_initial_deformation_on_boundary(const types::boundary_id boundary_indicator,
-                                                            const Point<dim> &position) const
+    Tensor<1, dim>
+    AsciiData<dim>::compute_initial_deformation_on_boundary(const types::boundary_id boundary_indicator, const Point<dim> &position) const
     {
-      const double topo = Utilities::AsciiDataBoundary<dim>::get_data_component(boundary_indicator,
-                                                                                position,
-                                                                                0);
+      const double topo = Utilities::AsciiDataBoundary<dim>::get_data_component(boundary_indicator, position, 0);
 
-      const Tensor<1,dim> gravity = this->get_gravity_model().gravity_vector(position);
+      const Tensor<1, dim> gravity = this->get_gravity_model().gravity_vector(position);
 
-      Tensor<1,dim> topography_direction;
+      Tensor<1, dim> topography_direction;
       if (gravity.norm() > 0.0)
         topography_direction = -gravity / gravity.norm();
 
@@ -73,8 +69,7 @@ namespace aspect
 
     template <int dim>
     bool
-    AsciiData<dim>::
-    needs_surface_stabilization () const
+    AsciiData<dim>::needs_surface_stabilization() const
     {
       return false;
     }
@@ -83,13 +78,12 @@ namespace aspect
 
     template <int dim>
     void
-    AsciiData<dim>::declare_parameters (ParameterHandler &prm)
+    AsciiData<dim>::declare_parameters(ParameterHandler &prm)
     {
       prm.enter_subsection("Mesh deformation");
       {
-        Utilities::AsciiDataBase<dim>::declare_parameters(prm,
-                                                          "$ASPECT_SOURCE_DIR/data/geometry-model/initial-topography-model/ascii-data/test/",
-                                                          "box_3d_%s.0.txt");
+        Utilities::AsciiDataBase<dim>::declare_parameters(
+          prm, "$ASPECT_SOURCE_DIR/data/geometry-model/initial-topography-model/ascii-data/test/", "box_3d_%s.0.txt");
       }
       prm.leave_subsection();
     }
@@ -98,7 +92,7 @@ namespace aspect
 
     template <int dim>
     void
-    AsciiData<dim>::parse_parameters (ParameterHandler &prm)
+    AsciiData<dim>::parse_parameters(ParameterHandler &prm)
     {
       prm.enter_subsection("Mesh deformation");
       {

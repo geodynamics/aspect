@@ -40,17 +40,17 @@ namespace aspect
     class Nondimensional : public MaterialModel::Interface<dim>, public ::aspect::SimulatorAccess<dim>
     {
       public:
-
         /**
          * Initialize.
          */
-        void initialize () override;
+        void
+        initialize() override;
 
         /**
          * Evaluate the material model.
          */
-        void evaluate(const MaterialModel::MaterialModelInputs<dim> &in,
-                      MaterialModel::MaterialModelOutputs<dim> &out) const override;
+        void
+        evaluate(const MaterialModel::MaterialModelInputs<dim> &in, MaterialModel::MaterialModelOutputs<dim> &out) const override;
 
         /**
          * @name Qualitative properties one can ask a material model
@@ -60,7 +60,8 @@ namespace aspect
         /**
          * Return whether the model is compressible or not.
          */
-        bool is_compressible () const override;
+        bool
+        is_compressible() const override;
         /**
          * @}
          */
@@ -72,15 +73,14 @@ namespace aspect
         /**
          * Declare the parameters this class takes through input files.
          */
-        static
-        void
-        declare_parameters (ParameterHandler &prm);
+        static void
+        declare_parameters(ParameterHandler &prm);
 
         /**
          * Read the parameters this class declares from the parameter file.
          */
         void
-        parse_parameters (ParameterHandler &prm) override;
+        parse_parameters(ParameterHandler &prm) override;
         /**
          * @}
          */
@@ -130,7 +130,6 @@ namespace aspect
          * This variable is read from the parameter file through a parameter called 'Reference specific heat'.
          */
         double reference_specific_heat;
-
     };
 
   }

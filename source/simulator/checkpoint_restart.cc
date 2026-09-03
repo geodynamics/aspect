@@ -19,19 +19,19 @@
 */
 
 
+#include <aspect/melt.h>
+#include <aspect/mesh_deformation/interface.h>
 #include <aspect/simulator.h>
 #include <aspect/utilities.h>
-#include <aspect/mesh_deformation/interface.h>
-#include <aspect/melt.h>
 
 #include <deal.II/base/mpi.h>
 #include <deal.II/base/utilities.h>
 #include <deal.II/grid/grid_tools.h>
 
-#if DEAL_II_VERSION_GTE(9,7,0)
-#include <deal.II/numerics/solution_transfer.h>
+#if DEAL_II_VERSION_GTE(9, 7, 0)
+#  include <deal.II/numerics/solution_transfer.h>
 #else
-#include <deal.II/distributed/solution_transfer.h>
+#  include <deal.II/distributed/solution_transfer.h>
 #endif
 
 #include <deal.II/fe/mapping_q_cache.h>
@@ -52,57 +52,51 @@ namespace aspect
   {
     struct CheckpointMetadata
     {
-      double time = numbers::signaling_nan<double>();
-      unsigned int timestep_number = numbers::invalid_unsigned_int;
+        double       time            = numbers::signaling_nan<double>();
+        unsigned int timestep_number = numbers::invalid_unsigned_int;
     };
 
     template <int dim>
-    unsigned int checkpoint_id_width(const Parameters<dim> &parameters)
+    unsigned int
+    checkpoint_id_width(const Parameters<dim> &parameters)
     {
-      return std::max(2U, static_cast<unsigned int>(std::to_string(parameters.n_checkpoints_to_keep+parameters.n_additional_checkpoints_to_keep).size()));
+      return std::max(2U,
+                      static_cast<unsigned int>(
+                        std::to_string(parameters.n_checkpoints_to_keep + parameters.n_additional_checkpoints_to_keep).size()));
     }
 
     template <int dim>
-    std::string checkpoint_path_from_id(const Parameters<dim> &parameters,
-                                        const unsigned int checkpoint_id)
+    std::string
+    checkpoint_path_from_id(const Parameters<dim> &parameters, const unsigned int checkpoint_id)
     {
-      return parameters.output_directory
-             + "restart/"
-             + Utilities::int_to_string(checkpoint_id, checkpoint_id_width(parameters))
-             + "/";
+      return parameters.output_directory + "restart/" + Utilities::int_to_string(checkpoint_id, checkpoint_id_width(parameters)) + "/";
     }
 
-    void write_checkpoint_metadata(const std::string &checkpoint_path,
-                                   const double time,
-                                   const unsigned int timestep_number)
+    void
+    write_checkpoint_metadata(const std::string &checkpoint_path, const double time, const unsigned int timestep_number)
     {
       std::ofstream metadata_out(checkpoint_path + "metadata.txt");
       metadata_out.precision(17);
-      metadata_out << "time " << time << '\n'
-                   << "timestep_number " << timestep_number << '\n';
+      metadata_out << "time " << time << '\n' << "timestep_number " << timestep_number << '\n';
       metadata_out.close();
 
       AssertThrow(static_cast<bool>(metadata_out),
-                  ExcMessage("Writing of the checkpoint metadata file <"
-                             + checkpoint_path + "metadata.txt> failed."));
+                  ExcMessage("Writing of the checkpoint metadata file <" + checkpoint_path + "metadata.txt> failed."));
     }
 
-    CheckpointMetadata read_checkpoint_metadata(const std::string &checkpoint_path)
+    CheckpointMetadata
+    read_checkpoint_metadata(const std::string &checkpoint_path)
     {
       std::ifstream metadata_in(checkpoint_path + "metadata.txt");
       AssertThrow(static_cast<bool>(metadata_in),
-                  ExcMessage("Could not open checkpoint metadata file <"
-                             + checkpoint_path + "metadata.txt>."));
+                  ExcMessage("Could not open checkpoint metadata file <" + checkpoint_path + "metadata.txt>."));
 
       CheckpointMetadata metadata;
-      std::string time_label;
-      std::string timestep_label;
+      std::string        time_label;
+      std::string        timestep_label;
       metadata_in >> time_label >> metadata.time >> timestep_label >> metadata.timestep_number;
-      AssertThrow(static_cast<bool>(metadata_in)
-                  && time_label == "time"
-                  && timestep_label == "timestep_number",
-                  ExcMessage("Could not parse checkpoint metadata file <"
-                             + checkpoint_path + "metadata.txt>."));
+      AssertThrow(static_cast<bool>(metadata_in) && time_label == "time" && timestep_label == "timestep_number",
+                  ExcMessage("Could not parse checkpoint metadata file <" + checkpoint_path + "metadata.txt>."));
 
       return metadata;
     }
@@ -114,8 +108,8 @@ namespace aspect
      * in the input file active during restart.
      */
     template <int dim>
-    void save_critical_parameters (const Parameters<dim> &parameters,
-                                   aspect::oarchive &oa)
+    void
+    save_critical_parameters(const Parameters<dim> &parameters, aspect::oarchive &oa)
     {
       oa << parameters.convert_to_years;
       oa << parameters.surface_pressure;
@@ -143,54 +137,54 @@ namespace aspect
      * in the input file active during restart.
      */
     template <int dim>
-    void load_and_check_critical_parameters (const Parameters<dim> &parameters,
-                                             aspect::iarchive &ia)
+    void
+    load_and_check_critical_parameters(const Parameters<dim> &parameters, aspect::iarchive &ia)
     {
       bool convert_to_years;
       ia >> convert_to_years;
-      AssertThrow (convert_to_years == parameters.convert_to_years,
-                   ExcMessage ("The value provided for `Use years instead of seconds' that was stored "
-                               "in the checkpoint file is not the same as the one "
-                               "you currently set in your input file. "
-                               "These need to be the same during restarting "
-                               "from a checkpoint."));
+      AssertThrow(convert_to_years == parameters.convert_to_years,
+                  ExcMessage("The value provided for `Use years instead of seconds' that was stored "
+                             "in the checkpoint file is not the same as the one "
+                             "you currently set in your input file. "
+                             "These need to be the same during restarting "
+                             "from a checkpoint."));
 
       double surface_pressure;
       ia >> surface_pressure;
-      AssertThrow (surface_pressure == parameters.surface_pressure,
-                   ExcMessage ("The value of surface pressure that was stored "
-                               "in the checkpoint file is not the same as the one "
-                               "you currently set in your input file. "
-                               "These need to be the same during restarting "
-                               "from a checkpoint."));
+      AssertThrow(surface_pressure == parameters.surface_pressure,
+                  ExcMessage("The value of surface pressure that was stored "
+                             "in the checkpoint file is not the same as the one "
+                             "you currently set in your input file. "
+                             "These need to be the same during restarting "
+                             "from a checkpoint."));
 
       bool use_operator_splitting;
       ia >> use_operator_splitting;
-      AssertThrow (use_operator_splitting == parameters.use_operator_splitting,
-                   ExcMessage ("The operator splitting mode that was stored "
-                               "in the checkpoint file is not the same as the one "
-                               "you currently set in your input file. "
-                               "These need to be the same during restarting "
-                               "from a checkpoint."));
+      AssertThrow(use_operator_splitting == parameters.use_operator_splitting,
+                  ExcMessage("The operator splitting mode that was stored "
+                             "in the checkpoint file is not the same as the one "
+                             "you currently set in your input file. "
+                             "These need to be the same during restarting "
+                             "from a checkpoint."));
 
       bool include_melt_transport;
       ia >> include_melt_transport;
-      AssertThrow (include_melt_transport == parameters.include_melt_transport,
-                   ExcMessage ("The melt transport mode that was stored "
-                               "in the checkpoint file is not the same as the one "
-                               "you currently set in your input file. "
-                               "These need to be the same during restarting "
-                               "from a checkpoint."));
+      AssertThrow(include_melt_transport == parameters.include_melt_transport,
+                  ExcMessage("The melt transport mode that was stored "
+                             "in the checkpoint file is not the same as the one "
+                             "you currently set in your input file. "
+                             "These need to be the same during restarting "
+                             "from a checkpoint."));
 
       unsigned int stokes_velocity_degree;
       ia >> stokes_velocity_degree;
-      AssertThrow (stokes_velocity_degree == parameters.stokes_velocity_degree,
-                   ExcMessage ("The polynomial degree used for the Stokes "
-                               "finite element that was stored "
-                               "in the checkpoint file is not the same as the one "
-                               "you currently set in your input file. "
-                               "These need to be the same during restarting "
-                               "from a checkpoint."));
+      AssertThrow(stokes_velocity_degree == parameters.stokes_velocity_degree,
+                  ExcMessage("The polynomial degree used for the Stokes "
+                             "finite element that was stored "
+                             "in the checkpoint file is not the same as the one "
+                             "you currently set in your input file. "
+                             "These need to be the same during restarting "
+                             "from a checkpoint."));
 
 
       // It is conceivable that one could change this setting from one time
@@ -198,48 +192,48 @@ namespace aspect
       // now, until someone tests it.
       bool use_locally_conservative_discretization;
       ia >> use_locally_conservative_discretization;
-      AssertThrow (use_locally_conservative_discretization == parameters.use_locally_conservative_discretization,
-                   ExcMessage ("The value provided for `Use locally conservative discretization' that was stored "
-                               "in the checkpoint file is not the same as the one "
-                               "you currently set in your input file. "
-                               "These need to be the same during restarting "
-                               "from a checkpoint."));
+      AssertThrow(use_locally_conservative_discretization == parameters.use_locally_conservative_discretization,
+                  ExcMessage("The value provided for `Use locally conservative discretization' that was stored "
+                             "in the checkpoint file is not the same as the one "
+                             "you currently set in your input file. "
+                             "These need to be the same during restarting "
+                             "from a checkpoint."));
 
       bool use_discontinuous_temperature_discretization;
       ia >> use_discontinuous_temperature_discretization;
-      AssertThrow (use_discontinuous_temperature_discretization == parameters.use_discontinuous_temperature_discretization,
-                   ExcMessage ("The value provided for `Use discontinuous temperature discretization' that was stored "
-                               "in the checkpoint file is not the same as the one "
-                               "you currently set in your input file. "
-                               "These need to be the same during restarting "
-                               "from a checkpoint."));
+      AssertThrow(use_discontinuous_temperature_discretization == parameters.use_discontinuous_temperature_discretization,
+                  ExcMessage("The value provided for `Use discontinuous temperature discretization' that was stored "
+                             "in the checkpoint file is not the same as the one "
+                             "you currently set in your input file. "
+                             "These need to be the same during restarting "
+                             "from a checkpoint."));
 
       std::vector<bool> use_discontinuous_composition_discretization;
       ia >> use_discontinuous_composition_discretization;
-      AssertThrow (use_discontinuous_composition_discretization == parameters.use_discontinuous_composition_discretization,
-                   ExcMessage ("The value provided for `Use discontinuous composition discretization' that was stored "
-                               "in the checkpoint file is not the same as the one "
-                               "you currently set in your input file. "
-                               "These need to be the same during restarting "
-                               "from a checkpoint."));
+      AssertThrow(use_discontinuous_composition_discretization == parameters.use_discontinuous_composition_discretization,
+                  ExcMessage("The value provided for `Use discontinuous composition discretization' that was stored "
+                             "in the checkpoint file is not the same as the one "
+                             "you currently set in your input file. "
+                             "These need to be the same during restarting "
+                             "from a checkpoint."));
 
       unsigned int temperature_degree;
       ia >> temperature_degree;
-      AssertThrow (temperature_degree == parameters.temperature_degree,
-                   ExcMessage ("The temperature polynomial degree that was stored "
-                               "in the checkpoint file is not the same as the one "
-                               "you currently set in your input file. "
-                               "These need to be the same during restarting "
-                               "from a checkpoint."));
+      AssertThrow(temperature_degree == parameters.temperature_degree,
+                  ExcMessage("The temperature polynomial degree that was stored "
+                             "in the checkpoint file is not the same as the one "
+                             "you currently set in your input file. "
+                             "These need to be the same during restarting "
+                             "from a checkpoint."));
 
       std::vector<unsigned int> composition_degrees;
       ia >> composition_degrees;
-      AssertThrow (composition_degrees == parameters.composition_degrees,
-                   ExcMessage ("The composition polynomial degree that was stored "
-                               "in the checkpoint file is not the same as the one "
-                               "you currently set in your input file. "
-                               "These need to be the same during restarting "
-                               "from a checkpoint."));
+      AssertThrow(composition_degrees == parameters.composition_degrees,
+                  ExcMessage("The composition polynomial degree that was stored "
+                             "in the checkpoint file is not the same as the one "
+                             "you currently set in your input file. "
+                             "These need to be the same during restarting "
+                             "from a checkpoint."));
 
       // One could allow changing the pressure normalization between runs, but
       // the change would then lead to a jump in pressure from one time step
@@ -250,60 +244,59 @@ namespace aspect
       // a free surface boundary.
       std::string pressure_normalization;
       ia >> pressure_normalization;
-      AssertThrow (pressure_normalization == parameters.pressure_normalization ||
-                   parameters.pressure_normalization == "no",
-                   ExcMessage ("The pressure normalization method that was stored "
-                               "in the checkpoint file is not the same as the one "
-                               "you currently set in your input file and your new "
-                               "pressure normalization method is not 'no'. "
-                               "The only allowed change for the pressure "
-                               "normalization method during a restart is to "
-                               "disable normalization."));
+      AssertThrow(pressure_normalization == parameters.pressure_normalization || parameters.pressure_normalization == "no",
+                  ExcMessage("The pressure normalization method that was stored "
+                             "in the checkpoint file is not the same as the one "
+                             "you currently set in your input file and your new "
+                             "pressure normalization method is not 'no'. "
+                             "The only allowed change for the pressure "
+                             "normalization method during a restart is to "
+                             "disable normalization."));
 
       unsigned int n_compositional_fields;
       ia >> n_compositional_fields;
-      AssertThrow (n_compositional_fields == parameters.n_compositional_fields,
-                   ExcMessage ("The number of compositional fields that was stored "
-                               "in the checkpoint file is not the same as the one "
-                               "you currently set in your input file. "
-                               "These need to be the same during restarting "
-                               "from a checkpoint."));
+      AssertThrow(n_compositional_fields == parameters.n_compositional_fields,
+                  ExcMessage("The number of compositional fields that was stored "
+                             "in the checkpoint file is not the same as the one "
+                             "you currently set in your input file. "
+                             "These need to be the same during restarting "
+                             "from a checkpoint."));
 
       std::vector<std::string> names_of_compositional_fields;
       ia >> names_of_compositional_fields;
-      AssertThrow (names_of_compositional_fields == parameters.names_of_compositional_fields,
-                   ExcMessage ("The names of compositional fields that were stored "
-                               "in the checkpoint file are not the same as the one "
-                               "you currently set in your input file. "
-                               "These need to be the same during restarting "
-                               "from a checkpoint."));
+      AssertThrow(names_of_compositional_fields == parameters.names_of_compositional_fields,
+                  ExcMessage("The names of compositional fields that were stored "
+                             "in the checkpoint file are not the same as the one "
+                             "you currently set in your input file. "
+                             "These need to be the same during restarting "
+                             "from a checkpoint."));
 
       std::vector<unsigned int> normalized_fields;
       ia >> normalized_fields;
-      AssertThrow (normalized_fields == parameters.normalized_fields,
-                   ExcMessage ("The list of normalized fields that was stored "
-                               "in the checkpoint file is not the same as the one "
-                               "you currently set in your input file. "
-                               "These need to be the same during restarting "
-                               "from a checkpoint."));
+      AssertThrow(normalized_fields == parameters.normalized_fields,
+                  ExcMessage("The list of normalized fields that was stored "
+                             "in the checkpoint file is not the same as the one "
+                             "you currently set in your input file. "
+                             "These need to be the same during restarting "
+                             "from a checkpoint."));
 
       bool mesh_deformation_enabled;
       ia >> mesh_deformation_enabled;
-      AssertThrow (mesh_deformation_enabled == parameters.mesh_deformation_enabled,
-                   ExcMessage ("The enable mesh deformation settings that were stored "
-                               "in the checkpoint file is not the same as the one "
-                               "you currently set in your input file. "
-                               "These need to be the same during restarting "
-                               "from a checkpoint."));
+      AssertThrow(mesh_deformation_enabled == parameters.mesh_deformation_enabled,
+                  ExcMessage("The enable mesh deformation settings that were stored "
+                             "in the checkpoint file is not the same as the one "
+                             "you currently set in your input file. "
+                             "These need to be the same during restarting "
+                             "from a checkpoint."));
 
       unsigned int n_particle_managers;
       ia >> n_particle_managers;
-      AssertThrow (n_particle_managers == parameters.n_particle_managers,
-                   ExcMessage ("The number of particle systems that were stored "
-                               "in the checkpoint file is not the same as the one "
-                               "you currently set in your input file. "
-                               "These need to be the same during restarting "
-                               "from a checkpoint."));
+      AssertThrow(n_particle_managers == parameters.n_particle_managers,
+                  ExcMessage("The number of particle systems that were stored "
+                             "in the checkpoint file is not the same as the one "
+                             "you currently set in your input file. "
+                             "These need to be the same during restarting "
+                             "from a checkpoint."));
     }
 
 
@@ -312,7 +305,8 @@ namespace aspect
 
 
   template <int dim>
-  void Simulator<dim>::create_snapshot(const bool is_additional_checkpoint)
+  void
+  Simulator<dim>::create_snapshot(const bool is_additional_checkpoint)
   {
     computing_timer.enter_subsection("Create snapshot");
 
@@ -336,46 +330,43 @@ namespace aspect
     const std::string checkpoint_path = checkpoint_path_from_id(parameters, checkpoint_id);
     Utilities::create_directory(checkpoint_path, mpi_communicator, true);
 
-    const unsigned int my_id = Utilities::MPI::this_mpi_process (mpi_communicator);
+    const unsigned int my_id = Utilities::MPI::this_mpi_process(mpi_communicator);
 
     // save Triangulation and Solution vectors:
     {
-      std::vector<const LinearAlgebra::BlockVector *> x_system
-        = { &solution, &old_solution, &old_old_solution };
+      std::vector<const LinearAlgebra::BlockVector *> x_system = {&solution, &old_solution, &old_old_solution};
 
       // If we are using a deforming mesh, include the mesh velocity, which uses the system dof handler
       if (parameters.mesh_deformation_enabled)
-        x_system.push_back( &mesh_deformation->mesh_velocity );
+        x_system.push_back(&mesh_deformation->mesh_velocity);
 
-#if !DEAL_II_VERSION_GTE(9,7,0)
+#if !DEAL_II_VERSION_GTE(9, 7, 0)
       using namespace dealii::parallel::distributed;
 #endif
 
-      SolutionTransfer<dim, LinearAlgebra::BlockVector>
-      system_trans (dof_handler);
+      SolutionTransfer<dim, LinearAlgebra::BlockVector> system_trans(dof_handler);
 
-      system_trans.prepare_for_serialization (x_system);
+      system_trans.prepare_for_serialization(x_system);
 
 
       // If we are deforming the mesh, also serialize the mesh vertices vector, which
       // uses its own dof handler
-      std::vector<const LinearAlgebra::Vector *> x_fs_system;
-      std::unique_ptr<SolutionTransfer<dim,LinearAlgebra::Vector>> mesh_deformation_trans;
+      std::vector<const LinearAlgebra::Vector *>                    x_fs_system;
+      std::unique_ptr<SolutionTransfer<dim, LinearAlgebra::Vector>> mesh_deformation_trans;
       if (parameters.mesh_deformation_enabled)
         {
-          x_fs_system.push_back (&mesh_deformation->mesh_displacements);
-          x_fs_system.push_back (&mesh_deformation->initial_topography);
+          x_fs_system.push_back(&mesh_deformation->mesh_displacements);
+          x_fs_system.push_back(&mesh_deformation->initial_topography);
 
-          mesh_deformation_trans
-            = std::make_unique<SolutionTransfer<dim,LinearAlgebra::Vector>>
-              (mesh_deformation->mesh_deformation_dof_handler);
+          mesh_deformation_trans =
+            std::make_unique<SolutionTransfer<dim, LinearAlgebra::Vector>>(mesh_deformation->mesh_deformation_dof_handler);
 
           mesh_deformation_trans->prepare_for_serialization(x_fs_system);
         }
 
       signals.pre_checkpoint_store_user_data(triangulation);
 
-      triangulation.save (checkpoint_path + "mesh");
+      triangulation.save(checkpoint_path + "mesh");
     }
 
     // Save general information. This calls the serialization functions on all
@@ -396,8 +387,8 @@ namespace aspect
       // archive triggers a flush() on the stringstream so we can
       // query its properties below.
       {
-        aspect::oarchive oa (oss);
-        save_critical_parameters (this->parameters, oa);
+        aspect::oarchive oa(oss);
+        save_critical_parameters(this->parameters, oa);
         oa << (*this);
       }
 
@@ -405,31 +396,29 @@ namespace aspect
 #ifdef DEAL_II_WITH_ZLIB
       if (my_id == 0)
         {
-          const std::string serialized_data = oss.str();
-          const uLong serialized_data_length = serialized_data.size();
+          const std::string serialized_data        = oss.str();
+          const uLong       serialized_data_length = serialized_data.size();
 
-          uLongf compressed_data_length = compressBound(serialized_data_length);
+          uLongf             compressed_data_length = compressBound(serialized_data_length);
           std::vector<Bytef> compressed_data(compressed_data_length);
-          int err = compress2 (compressed_data.data(),
-                               &compressed_data_length,
-                               reinterpret_cast<const Bytef *>(serialized_data.data()),
-                               serialized_data_length,
-                               Z_BEST_COMPRESSION);
+          int                err = compress2(compressed_data.data(),
+                              &compressed_data_length,
+                              reinterpret_cast<const Bytef *>(serialized_data.data()),
+                              serialized_data_length,
+                              Z_BEST_COMPRESSION);
           (void)err;
-          Assert (err == Z_OK, ExcInternalError());
+          Assert(err == Z_OK, ExcInternalError());
 
           // build compression header
-          const std::uint32_t compression_header[4]
-            = { 1,                                   /* number of blocks */
-                static_cast<std::uint32_t>(serialized_data_length), /* size of block */
-                static_cast<std::uint32_t>(serialized_data_length), /* size of last block */
-                static_cast<std::uint32_t>(compressed_data_length)
-              }; /* list of compressed sizes of blocks */
+          const std::uint32_t compression_header[4] = {1,                                                  /* number of blocks */
+                                                       static_cast<std::uint32_t>(serialized_data_length), /* size of block */
+                                                       static_cast<std::uint32_t>(serialized_data_length), /* size of last block */
+                                                       static_cast<std::uint32_t>(
+                                                         compressed_data_length)}; /* list of compressed sizes of blocks */
 
-          std::ofstream f (checkpoint_path + "/resume.z");
+          std::ofstream f(checkpoint_path + "/resume.z");
           f.write(reinterpret_cast<const char *>(compression_header), 4 * sizeof(compression_header[0]));
-          f.write(reinterpret_cast<const char *>(compressed_data.data()),
-                  compressed_data_length);
+          f.write(reinterpret_cast<const char *>(compressed_data.data()), compressed_data_length);
           f.close();
 
           // We check the fail state of the stream _after_ closing the file to
@@ -438,18 +427,17 @@ namespace aspect
           // or one of the write() commands fails, as the fail state is
           // "sticky".
           if (!f)
-            AssertThrow(false, ExcMessage ("Writing of the checkpoint file '" + checkpoint_path
-                                           + "/resume.z' with size "
-                                           + Utilities::to_string(4 * sizeof(compression_header[0])+compressed_data_length)
-                                           + " failed on processor 0."));
+            AssertThrow(false,
+                        ExcMessage("Writing of the checkpoint file '" + checkpoint_path + "/resume.z' with size " +
+                                   Utilities::to_string(4 * sizeof(compression_header[0]) + compressed_data_length) +
+                                   " failed on processor 0."));
         }
 #else
-      AssertThrow (false,
-                   ExcMessage ("You need to have deal.II configured with the `libz' "
-                               "option to support checkpoint/restart, but deal.II "
-                               "did not detect its presence when you called `cmake'."));
+      AssertThrow(false,
+                  ExcMessage("You need to have deal.II configured with the `libz' "
+                             "option to support checkpoint/restart, but deal.II "
+                             "did not detect its presence when you called `cmake'."));
 #endif
-
     }
 
     // Wait for everyone to finish writing
@@ -465,7 +453,7 @@ namespace aspect
       {
         write_checkpoint_metadata(checkpoint_path, time, timestep_number);
 
-        std::ofstream f (parameters.output_directory + "restart/last_good_checkpoint.txt");
+        std::ofstream f(parameters.output_directory + "restart/last_good_checkpoint.txt");
         f << last_checkpoint_id;
         f.close();
       }
@@ -478,18 +466,18 @@ namespace aspect
 
 
   template <int dim>
-  unsigned int Simulator<dim>::determine_last_good_snapshot() const
+  unsigned int
+  Simulator<dim>::determine_last_good_snapshot() const
   {
     unsigned int last_checkpoint_id = numbers::invalid_unsigned_int;
 
     if (Utilities::MPI::this_mpi_process(mpi_communicator) == 0)
       {
-        std::ifstream f (parameters.output_directory + "restart/last_good_checkpoint.txt");
+        std::ifstream f(parameters.output_directory + "restart/last_good_checkpoint.txt");
         if (f)
           {
             f >> last_checkpoint_id;
-            AssertThrow(last_checkpoint_id > 0,
-                        ExcMessage("Could not parse the last good checkpoint from last_good_checkpoint.txt"));
+            AssertThrow(last_checkpoint_id > 0, ExcMessage("Could not parse the last good checkpoint from last_good_checkpoint.txt"));
           }
       }
 
@@ -499,7 +487,8 @@ namespace aspect
 
 
   template <int dim>
-  unsigned int Simulator<dim>::determine_resume_snapshot() const
+  unsigned int
+  Simulator<dim>::determine_resume_snapshot() const
   {
     if (parameters.resume_checkpoint_id != 0)
       {
@@ -507,10 +496,10 @@ namespace aspect
                     ExcMessage("The requested value for 'Resume checkpoint' is larger than the configured "
                                "'Number of checkpoints to keep' plus the number of additional checkpoint times."));
 
-        const unsigned int checkpoint_id = parameters.resume_checkpoint_id;
-        const std::string checkpoint_path = checkpoint_path_from_id(parameters, checkpoint_id);
-        if (Utilities::fexists(checkpoint_path + "mesh", mpi_communicator)
-            && Utilities::fexists(checkpoint_path + "resume.z", mpi_communicator))
+        const unsigned int checkpoint_id   = parameters.resume_checkpoint_id;
+        const std::string  checkpoint_path = checkpoint_path_from_id(parameters, checkpoint_id);
+        if (Utilities::fexists(checkpoint_path + "mesh", mpi_communicator) &&
+            Utilities::fexists(checkpoint_path + "resume.z", mpi_communicator))
           return checkpoint_id;
 
         return numbers::invalid_unsigned_int;
@@ -519,30 +508,30 @@ namespace aspect
     if (parameters.resume_time >= 0.)
       {
         const unsigned int last_good_checkpoint_id = determine_last_good_snapshot();
-        unsigned int best_checkpoint_id = numbers::invalid_unsigned_int;
-        double best_time_distance = std::numeric_limits<double>::max();
+        unsigned int       best_checkpoint_id      = numbers::invalid_unsigned_int;
+        double             best_time_distance      = std::numeric_limits<double>::max();
 
-        for (unsigned int checkpoint_id = 1; checkpoint_id <= parameters.n_checkpoints_to_keep + parameters.n_additional_checkpoints_to_keep; ++checkpoint_id)
+        for (unsigned int checkpoint_id = 1;
+             checkpoint_id <= parameters.n_checkpoints_to_keep + parameters.n_additional_checkpoints_to_keep;
+             ++checkpoint_id)
           {
             const std::string checkpoint_path = checkpoint_path_from_id(parameters, checkpoint_id);
             if (!Utilities::fexists(checkpoint_path + "metadata.txt", mpi_communicator))
               continue;
 
-            if (!Utilities::fexists(checkpoint_path + "mesh", mpi_communicator)
-                || !Utilities::fexists(checkpoint_path + "resume.z", mpi_communicator))
+            if (!Utilities::fexists(checkpoint_path + "mesh", mpi_communicator) ||
+                !Utilities::fexists(checkpoint_path + "resume.z", mpi_communicator))
               continue;
 
-            const CheckpointMetadata metadata = read_checkpoint_metadata(checkpoint_path);
-            const double time_distance = std::abs(metadata.time - parameters.resume_time);
+            const CheckpointMetadata metadata      = read_checkpoint_metadata(checkpoint_path);
+            const double             time_distance = std::abs(metadata.time - parameters.resume_time);
 
             const bool is_better_time_distance = (time_distance < best_time_distance);
-            const bool is_equal_time_distance = (time_distance == best_time_distance);
+            const bool is_equal_time_distance  = (time_distance == best_time_distance);
             const bool should_prefer_this_checkpoint_on_tie =
-              (best_checkpoint_id == numbers::invalid_unsigned_int
-               || checkpoint_id == last_good_checkpoint_id);
+              (best_checkpoint_id == numbers::invalid_unsigned_int || checkpoint_id == last_good_checkpoint_id);
 
-            if (is_better_time_distance
-                || (is_equal_time_distance && should_prefer_this_checkpoint_on_tie))
+            if (is_better_time_distance || (is_equal_time_distance && should_prefer_this_checkpoint_on_tie))
               {
                 best_checkpoint_id = checkpoint_id;
                 best_time_distance = time_distance;
@@ -558,7 +547,8 @@ namespace aspect
 
 
   template <int dim>
-  void Simulator<dim>::resume_from_snapshot()
+  void
+  Simulator<dim>::resume_from_snapshot()
   {
     // By definition, a checkpoint is past the first time step. As a consequence,
     // the Simulator object will not need the initial conditions objects, and
@@ -578,21 +568,15 @@ namespace aspect
     const std::string checkpoint_path = checkpoint_path_from_id(parameters, last_checkpoint_id);
 
     // First check existence of the two restart files
-    AssertThrow (Utilities::fexists(checkpoint_path + "mesh", mpi_communicator),
-                 ExcMessage ("You are trying to restart a previous computation, "
-                             "but the restart file <"
-                             +
-                             checkpoint_path + "mesh"
-                             +
-                             "> does not appear to exist!"));
+    AssertThrow(Utilities::fexists(checkpoint_path + "mesh", mpi_communicator),
+                ExcMessage("You are trying to restart a previous computation, "
+                           "but the restart file <" +
+                           checkpoint_path + "mesh" + "> does not appear to exist!"));
 
-    AssertThrow (Utilities::fexists(checkpoint_path + "resume.z", mpi_communicator),
-                 ExcMessage ("You are trying to restart a previous computation, "
-                             "but the restart file <"
-                             +
-                             checkpoint_path + ".resume.z"
-                             +
-                             "> does not appear to exist!"));
+    AssertThrow(Utilities::fexists(checkpoint_path + "resume.z", mpi_communicator),
+                ExcMessage("You are trying to restart a previous computation, "
+                           "but the restart file <" +
+                           checkpoint_path + ".resume.z" + "> does not appear to exist!"));
 
     pcout << "*** Resuming from snapshot " << checkpoint_path << std::endl << std::endl;
 
@@ -600,74 +584,76 @@ namespace aspect
     try
       {
 #ifdef DEAL_II_WITH_ZLIB
-        const std::string restart_data
-          = Utilities::read_and_distribute_file_content (checkpoint_path + "resume.z",
-                                                         mpi_communicator);
+        const std::string restart_data = Utilities::read_and_distribute_file_content(checkpoint_path + "resume.z", mpi_communicator);
 
-        std::istringstream ifs (restart_data);
+        std::istringstream ifs(restart_data);
 
         std::uint32_t compression_header[4];
         ifs.read(reinterpret_cast<char *>(compression_header), 4 * sizeof(compression_header[0]));
         AssertThrow(ifs,
-                    ExcMessage("Checkpoint file <" + checkpoint_path + "resume.z> ended before "
+                    ExcMessage("Checkpoint file <" + checkpoint_path +
+                               "resume.z> ended before "
                                "the compression header could be read."));
         AssertThrow(compression_header[0] == 1,
-                    ExcMessage("Checkpoint file <" + checkpoint_path + "resume.z> has an "
+                    ExcMessage("Checkpoint file <" + checkpoint_path +
+                               "resume.z> has an "
                                "unsupported compression header."));
         AssertThrow(compression_header[1] > 0,
-                    ExcMessage("Checkpoint file <" + checkpoint_path + "resume.z> contains "
+                    ExcMessage("Checkpoint file <" + checkpoint_path +
+                               "resume.z> contains "
                                "an empty uncompressed payload."));
         AssertThrow(compression_header[3] > 0,
-                    ExcMessage("Checkpoint file <" + checkpoint_path + "resume.z> contains "
+                    ExcMessage("Checkpoint file <" + checkpoint_path +
+                               "resume.z> contains "
                                "an empty compressed payload."));
 
         std::vector<char> compressed(compression_header[3]);
         std::vector<char> uncompressed(compression_header[1]);
         ifs.read(compressed.data(), compression_header[3]);
         AssertThrow(ifs,
-                    ExcMessage("Checkpoint file <" + checkpoint_path + "resume.z> ended before "
+                    ExcMessage("Checkpoint file <" + checkpoint_path +
+                               "resume.z> ended before "
                                "the compressed restart payload could be read."));
         uLongf uncompressed_size = compression_header[1];
 
-        const int err = uncompress(reinterpret_cast<Bytef *>(uncompressed.data()), &uncompressed_size,
-                                   reinterpret_cast<const Bytef *>(compressed.data()), compression_header[3]);
-        AssertThrow (err == Z_OK,
-                     ExcMessage (std::string("Uncompressing the data buffer resulted in an error with code <")
-                                 +
-                                 Utilities::int_to_string(err)));
+        const int err = uncompress(reinterpret_cast<Bytef *>(uncompressed.data()),
+                                   &uncompressed_size,
+                                   reinterpret_cast<const Bytef *>(compressed.data()),
+                                   compression_header[3]);
+        AssertThrow(err == Z_OK,
+                    ExcMessage(std::string("Uncompressing the data buffer resulted in an error with code <") +
+                               Utilities::int_to_string(err)));
         AssertThrow(uncompressed_size == compression_header[1],
-                    ExcMessage("Checkpoint file <" + checkpoint_path + "resume.z> decompressed "
+                    ExcMessage("Checkpoint file <" + checkpoint_path +
+                               "resume.z> decompressed "
                                "to an unexpected size."));
 
         {
           std::istringstream ss;
-          ss.str(std::string (uncompressed.data(), uncompressed_size));
+          ss.str(std::string(uncompressed.data(), uncompressed_size));
 
-          aspect::iarchive ia (ss);
+          aspect::iarchive ia(ss);
           load_and_check_critical_parameters(this->parameters, ia);
           ia >> (*this);
         }
 #else
-        AssertThrow (false,
-                     ExcMessage ("You need to have deal.II configured with the `libz' "
-                                 "option to support checkpoint/restart, but deal.II "
-                                 "did not detect its presence when you called `cmake'."));
+        AssertThrow(false,
+                    ExcMessage("You need to have deal.II configured with the `libz' "
+                               "option to support checkpoint/restart, but deal.II "
+                               "did not detect its presence when you called `cmake'."));
 #endif
       }
     catch (std::exception &e)
       {
-        AssertThrow (false,
-                     ExcMessage (std::string("Cannot seem to deserialize the data previously stored!\n")
-                                 +
-                                 "Some part of the machinery generated an exception that says:\n"
-                                 +
-                                 e.what()));
+        AssertThrow(false,
+                    ExcMessage(std::string("Cannot seem to deserialize the data previously stored!\n") +
+                               "Some part of the machinery generated an exception that says:\n" + e.what()));
       }
 
     // now that we have resumed from the snapshot load the mesh and solution vectors
     try
       {
-        triangulation.load (checkpoint_path + "mesh");
+        triangulation.load(checkpoint_path + "mesh");
       }
     catch (...)
       {
@@ -675,35 +661,33 @@ namespace aspect
       }
 
     // if using a cached mapping, update the cache with the new triangulation
-    if (MappingQCache<dim> *map = dynamic_cast<MappingQCache<dim>*>(&(*mapping)))
+    if (MappingQCache<dim> *map = dynamic_cast<MappingQCache<dim> *>(&(*mapping)))
       map->initialize(MappingQGeneric<dim>(4), triangulation);
 
     setup_dofs();
-    global_volume = GridTools::volume (triangulation, *mapping);
+    global_volume = GridTools::volume(triangulation, *mapping);
 
-    LinearAlgebra::BlockVector distributed_system (system_rhs);
-    LinearAlgebra::BlockVector old_distributed_system (system_rhs);
-    LinearAlgebra::BlockVector old_old_distributed_system (system_rhs);
-    LinearAlgebra::BlockVector distributed_mesh_velocity (system_rhs);
+    LinearAlgebra::BlockVector distributed_system(system_rhs);
+    LinearAlgebra::BlockVector old_distributed_system(system_rhs);
+    LinearAlgebra::BlockVector old_old_distributed_system(system_rhs);
+    LinearAlgebra::BlockVector distributed_mesh_velocity(system_rhs);
 
-    std::vector<LinearAlgebra::BlockVector *> x_system
-      = { &distributed_system, &old_distributed_system, &old_old_distributed_system };
+    std::vector<LinearAlgebra::BlockVector *> x_system = {&distributed_system, &old_distributed_system, &old_old_distributed_system};
 
     // If necessary, also include the mesh velocity for deserialization
     // with the system dof handler
     if (parameters.mesh_deformation_enabled)
       x_system.push_back(&distributed_mesh_velocity);
 
-#if !DEAL_II_VERSION_GTE(9,7,0)
+#if !DEAL_II_VERSION_GTE(9, 7, 0)
     using namespace dealii::parallel::distributed;
 #endif
-    SolutionTransfer<dim, LinearAlgebra::BlockVector>
-    system_trans (dof_handler);
+    SolutionTransfer<dim, LinearAlgebra::BlockVector> system_trans(dof_handler);
 
-    system_trans.deserialize (x_system);
+    system_trans.deserialize(x_system);
 
-    solution = distributed_system;
-    old_solution = old_distributed_system;
+    solution         = distributed_system;
+    old_solution     = old_distributed_system;
     old_old_solution = old_old_distributed_system;
 
     if (parameters.mesh_deformation_enabled)
@@ -712,17 +696,12 @@ namespace aspect
         mesh_deformation->mesh_velocity = distributed_mesh_velocity;
 
         // deserialize and copy the vectors using the mesh deformation dof handler
-        SolutionTransfer<dim, LinearAlgebra::Vector> mesh_deformation_trans( mesh_deformation->mesh_deformation_dof_handler );
-        LinearAlgebra::Vector distributed_mesh_displacements( mesh_deformation->mesh_locally_owned,
-                                                              mpi_communicator );
-        LinearAlgebra::Vector distributed_initial_topography( mesh_deformation->mesh_locally_owned,
-                                                              mpi_communicator );
-        std::vector<LinearAlgebra::Vector *> fs_system
-        = { &distributed_mesh_displacements,
-            &distributed_initial_topography
-          };
+        SolutionTransfer<dim, LinearAlgebra::Vector> mesh_deformation_trans(mesh_deformation->mesh_deformation_dof_handler);
+        LinearAlgebra::Vector                        distributed_mesh_displacements(mesh_deformation->mesh_locally_owned, mpi_communicator);
+        LinearAlgebra::Vector                        distributed_initial_topography(mesh_deformation->mesh_locally_owned, mpi_communicator);
+        std::vector<LinearAlgebra::Vector *>         fs_system = {&distributed_mesh_displacements, &distributed_initial_topography};
 
-        mesh_deformation_trans.deserialize (fs_system);
+        mesh_deformation_trans.deserialize(fs_system);
         mesh_deformation->mesh_displacements = distributed_mesh_displacements;
         mesh_deformation->initial_topography = distributed_initial_topography;
       }
@@ -742,15 +721,15 @@ namespace aspect
     if (parameters.include_melt_transport)
       {
         initialize_current_linearization_point();
-        compute_current_constraints ();
+        compute_current_constraints();
       }
   }
 
 }
 
-//why do we need this?!
-BOOST_CLASS_TRACKING (aspect::Simulator<2>, boost::serialization::track_never)
-BOOST_CLASS_TRACKING (aspect::Simulator<3>, boost::serialization::track_never)
+// why do we need this?!
+BOOST_CLASS_TRACKING(aspect::Simulator<2>, boost::serialization::track_never)
+BOOST_CLASS_TRACKING(aspect::Simulator<3>, boost::serialization::track_never)
 
 
 namespace aspect
@@ -758,7 +737,8 @@ namespace aspect
 
   template <int dim>
   template <class Archive>
-  void Simulator<dim>::serialize (Archive &ar, const unsigned int)
+  void
+  Simulator<dim>::serialize(Archive &ar, const unsigned int)
   {
     ar &time;
     ar &time_step;
@@ -777,14 +757,14 @@ namespace aspect
     // Serialize various plugin systems. In many cases, plugins are stateless and
     // serialization will not do anything. But some are stateful (for example the
     // dynamic core boundary temperature plugin) and need to be serialized.
-    ar &mesh_refinement_manager;
-    ar &heating_model_manager;
+    ar        &mesh_refinement_manager;
+    ar        &heating_model_manager;
     const auto n_particle_managers = particle_managers.size();
-    ar &particle_managers;
-    AssertThrow (particle_managers.size() == n_particle_managers,
-                 ExcMessage ("The number of particle managers stored in the checkpoint "
-                             "does not match the particle managers initialized from "
-                             "the current input file."));
+    ar        &particle_managers;
+    AssertThrow(particle_managers.size() == n_particle_managers,
+                ExcMessage("The number of particle managers stored in the checkpoint "
+                           "does not match the particle managers initialized from "
+                           "the current input file."));
     ar &postprocess_manager;
     ar &boundary_temperature_manager;
     ar &boundary_convective_heating_manager;
@@ -793,22 +773,22 @@ namespace aspect
     ar &boundary_velocity_manager;
     ar &boundary_traction_manager;
 
-// The following are not manager classes but straight up plugins and so don't
-// currently have the ability to serialize themselves. We should add those later.
-//    ar &prescribed_stokes_solution;
-//    ar &boundary_heat_flux;
-//    ar &(*adiabatic_conditions);
-//    ar &(*initial_topography_model);
+    // The following are not manager classes but straight up plugins and so don't
+    // currently have the ability to serialize themselves. We should add those later.
+    //    ar &prescribed_stokes_solution;
+    //    ar &boundary_heat_flux;
+    //    ar &(*adiabatic_conditions);
+    //    ar &(*initial_topography_model);
 
-// Also, the following two are objects that are documented to be destroyed
-// after the first time step. One can argue that consequently they are
-// not needed any more anyway after we read a checkpoint (which is always
-// *after* a time step, i.e., not during the initial time step). But,
-// the documentation also says that *other* objects may keep a pointer
-// to them around -- we wouldn't know that here, and so we can't serialize
-// these objects here:
-//    ar &(*initial_temperature_manager);
-//    ar &(*initial_composition_manager);
+    // Also, the following two are objects that are documented to be destroyed
+    // after the first time step. One can argue that consequently they are
+    // not needed any more anyway after we read a checkpoint (which is always
+    // *after* a time step, i.e., not during the initial time step). But,
+    // the documentation also says that *other* objects may keep a pointer
+    // to them around -- we wouldn't know that here, and so we can't serialize
+    // these objects here:
+    //    ar &(*initial_temperature_manager);
+    //    ar &(*initial_composition_manager);
 
     if (parameters.mesh_deformation_enabled)
       ar &(*mesh_deformation);
@@ -833,8 +813,8 @@ namespace aspect
 #define INSTANTIATE(dim) \
   template unsigned int Simulator<dim>::determine_last_good_snapshot() const; \
   template unsigned int Simulator<dim>::determine_resume_snapshot() const; \
-  template void Simulator<dim>::create_snapshot(const bool is_additional_checkpoint); \
-  template void Simulator<dim>::resume_from_snapshot();
+  template void         Simulator<dim>::create_snapshot(const bool is_additional_checkpoint); \
+  template void         Simulator<dim>::resume_from_snapshot();
 
   ASPECT_INSTANTIATE(INSTANTIATE)
 

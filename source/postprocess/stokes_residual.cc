@@ -19,16 +19,16 @@
 */
 
 
-#include <aspect/postprocess/stokes_residual.h>
-#include <aspect/simulator.h>
 #include <aspect/global.h>
 
+#include <aspect/postprocess/stokes_residual.h>
+#include <aspect/simulator.h>
+
+#include <deal.II/dofs/dof_handler.h>
+#include <deal.II/fe/fe_dgq.h>
 #include <deal.II/grid/grid_generator.h>
 #include <deal.II/grid/tria.h>
-#include <deal.II/fe/fe_dgq.h>
-#include <deal.II/dofs/dof_handler.h>
 #include <deal.II/numerics/data_out_stack.h>
-
 
 #include <cmath>
 #include <vector>
@@ -39,57 +39,50 @@ namespace aspect
   {
     template <int dim>
     template <class Archive>
-    void StokesResidual<dim>::DataPoint::serialize (Archive &ar,
-                                                    const unsigned int)
+    void
+    StokesResidual<dim>::DataPoint::serialize(Archive &ar, const unsigned int)
     {
       ar &time &solve_index &values;
     }
 
 
     template <int dim>
-    StokesResidual<dim>::StokesResidual ()
-      = default;
-
+    StokesResidual<dim>::StokesResidual() = default;
 
 
 
     template <int dim>
-    std::pair<std::string,std::string>
-    StokesResidual<dim>::execute (TableHandler &)
+    std::pair<std::string, std::string>
+    StokesResidual<dim>::execute(TableHandler &)
     {
       // On the root process, write out the file.
       if (Utilities::MPI::this_mpi_process(this->get_mpi_communicator()) == 0)
         {
-          std::ofstream f(this->get_output_directory() +
-                          "stokes_residuals.txt");
+          std::ofstream f(this->get_output_directory() + "stokes_residuals.txt");
           f << "# time solveidx residual\n";
-          for (unsigned int i=0; i<entries.size(); ++i)
+          for (unsigned int i = 0; i < entries.size(); ++i)
             {
-              for (unsigned int j=0; j<entries[i].values.size(); ++j)
-                f << entries[i].time << ' '
-                  << entries[i].solve_index << ' '
-                  << entries[i].values[j] << '\n';
+              for (unsigned int j = 0; j < entries[i].values.size(); ++j)
+                f << entries[i].time << ' ' << entries[i].solve_index << ' ' << entries[i].values[j] << '\n';
 
               f << '\n';
             }
           f.close();
         }
 
-      return std::make_pair (std::string ("Writing stokes residuals"),
-                             this->get_output_directory() +
-                             "stokes_residuals.txt");
+      return std::make_pair(std::string("Writing stokes residuals"), this->get_output_directory() + "stokes_residuals.txt");
     }
 
     template <int dim>
-    void StokesResidual<dim>::stokes_solver_callback (const SolverControl &solver_control_cheap,
-                                                      const SolverControl &solver_control_expensive)
+    void
+    StokesResidual<dim>::stokes_solver_callback(const SolverControl &solver_control_cheap, const SolverControl &solver_control_expensive)
     {
       unsigned int current_solve_index = 0;
-      if (entries.size()>0 && entries.back().time == this->get_time())
-        current_solve_index = entries.back().solve_index+1;
+      if (entries.size() > 0 && entries.back().time == this->get_time())
+        current_solve_index = entries.back().solve_index + 1;
 
       DataPoint data_point;
-      data_point.time = this->get_time();
+      data_point.time        = this->get_time();
       data_point.solve_index = current_solve_index;
 
       // If there were cheap iterations add them.
@@ -116,22 +109,21 @@ namespace aspect
 
     template <int dim>
     void
-    StokesResidual<dim>::initialize ()
+    StokesResidual<dim>::initialize()
     {
-      this->get_signals().post_stokes_solver.connect(
-        [&](const SimulatorAccess<dim> &,
-            const unsigned int /*number_S_iterations*/,
-            const unsigned int /*number_A_iterations*/,
-            const SolverControl &solver_control_cheap,
-            const SolverControl &solver_control_expensive)
-      {
-        this->stokes_solver_callback(solver_control_cheap,solver_control_expensive);
+      this->get_signals().post_stokes_solver.connect([&](const SimulatorAccess<dim> &,
+                                                         const unsigned int /*number_S_iterations*/,
+                                                         const unsigned int /*number_A_iterations*/,
+                                                         const SolverControl &solver_control_cheap,
+                                                         const SolverControl &solver_control_expensive) {
+        this->stokes_solver_callback(solver_control_cheap, solver_control_expensive);
       });
     }
 
     template <int dim>
     template <class Archive>
-    void StokesResidual<dim>::serialize (Archive &ar, const unsigned int)
+    void
+    StokesResidual<dim>::serialize(Archive &ar, const unsigned int)
     {
       ar &entries;
     }
@@ -139,7 +131,7 @@ namespace aspect
 
     template <int dim>
     void
-    StokesResidual<dim>::save (std::map<std::string, std::string> &status_strings) const
+    StokesResidual<dim>::save(std::map<std::string, std::string> &status_strings) const
     {
       // Serialize into a stringstream. Put the following into a code
       // block of its own to ensure the destruction of the 'oa'
@@ -147,7 +139,7 @@ namespace aspect
       // query the completed string below.
       std::ostringstream os;
       {
-        aspect::oarchive oa (os);
+        aspect::oarchive oa(os);
         oa << (*this);
       }
 
@@ -157,13 +149,13 @@ namespace aspect
 
     template <int dim>
     void
-    StokesResidual<dim>::load (const std::map<std::string, std::string> &status_strings)
+    StokesResidual<dim>::load(const std::map<std::string, std::string> &status_strings)
     {
       // see if something was saved
       if (status_strings.find("StokesResidual") != status_strings.end())
         {
-          std::istringstream is (status_strings.find("StokesResidual")->second);
-          aspect::iarchive ia (is);
+          std::istringstream is(status_strings.find("StokesResidual")->second);
+          aspect::iarchive   ia(is);
           ia >> (*this);
         }
     }
@@ -178,8 +170,9 @@ namespace aspect
 {
   namespace Postprocess
   {
-    ASPECT_REGISTER_POSTPROCESSOR(StokesResidual,
-                                  "Stokes residual",
-                                  "A postprocessor that outputs the Stokes residuals during the iterative solver algorithm into a file stokes_residuals.txt in the output directory.")
+    ASPECT_REGISTER_POSTPROCESSOR(
+      StokesResidual,
+      "Stokes residual",
+      "A postprocessor that outputs the Stokes residuals during the iterative solver algorithm into a file stokes_residuals.txt in the output directory.")
   }
 }

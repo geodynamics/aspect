@@ -19,8 +19,9 @@
 */
 
 
-#include <aspect/postprocess/viscous_dissipation_statistics.h>
 #include <aspect/global.h>
+
+#include <aspect/postprocess/viscous_dissipation_statistics.h>
 
 #include <deal.II/base/quadrature_lib.h>
 #include <deal.II/fe/fe_values.h>
@@ -31,49 +32,38 @@ namespace aspect
   namespace Postprocess
   {
     template <int dim>
-    std::pair<std::string,std::string>
-    ViscousDissipationStatistics<dim>::execute (TableHandler &statistics)
+    std::pair<std::string, std::string>
+    ViscousDissipationStatistics<dim>::execute(TableHandler &statistics)
     {
       // Create a quadrature formula based on the velocity element.
       const Quadrature<dim> &quadrature_formula = this->introspection().quadratures.velocities;
 
       const unsigned int n_q_points = quadrature_formula.size();
 
-      FEValues<dim> fe_values (this->get_mapping(),
-                               this->get_fe(),
-                               quadrature_formula,
-                               update_values   |
-                               update_quadrature_points |
-                               update_gradients |
-                               update_JxW_values);
+      FEValues<dim> fe_values(this->get_mapping(),
+                              this->get_fe(),
+                              quadrature_formula,
+                              update_values | update_quadrature_points | update_gradients | update_JxW_values);
 
       // Vector to store the local dissipation for all the fields and
       // for the whole domain.
       const unsigned int n_compositional_fields = this->n_compositional_fields();
 
-      std::vector<double> local_dissipation_integral (n_compositional_fields+1);
+      std::vector<double> local_dissipation_integral(n_compositional_fields + 1);
       std::vector<double> compositional_values(n_q_points);
 
-      typename MaterialModel::Interface<dim>::MaterialModelInputs in(n_q_points,
-                                                                     n_compositional_fields);
-      typename MaterialModel::Interface<dim>::MaterialModelOutputs out(n_q_points,
-                                                                       n_compositional_fields);
+      typename MaterialModel::Interface<dim>::MaterialModelInputs  in(n_q_points, n_compositional_fields);
+      typename MaterialModel::Interface<dim>::MaterialModelOutputs out(n_q_points, n_compositional_fields);
       in.requested_properties = MaterialModel::MaterialProperties::viscosity;
 
       for (const auto &cell : this->get_dof_handler().active_cell_iterators())
         if (cell->is_locally_owned())
           {
-            fe_values.reinit (cell);
+            fe_values.reinit(cell);
 
-            in.reinit(fe_values,
-                      cell,
-                      this->introspection(),
-                      this->get_solution());
+            in.reinit(fe_values, cell, this->introspection(), this->get_solution());
 
-            this->get_material_model().fill_additional_material_model_inputs(in,
-                                                                             this->get_solution(),
-                                                                             fe_values,
-                                                                             this->introspection());
+            this->get_material_model().fill_additional_material_model_inputs(in, this->get_solution(), fe_values, this->introspection());
 
             this->get_material_model().evaluate(in, out);
 
@@ -83,48 +73,48 @@ namespace aspect
                 // D = volume_integral(deviatoric_stress*grad_velocity)
                 //   = volume_integral(2*eta*deviatoric_strain_rate*deviatoric_strain_rate)
                 const SymmetricTensor<2, dim> deviatoric_strain_rate =
-                  (this->get_material_model().is_compressible()
-                   ? in.strain_rate[q] - 1. / 3. * trace(in.strain_rate[q]) * unit_symmetric_tensor<dim>()
-                   : in.strain_rate[q]);
-                const double local_dissipation = 2. * out.viscosities[q] * (deviatoric_strain_rate *
-                                                                            deviatoric_strain_rate) * fe_values.JxW(q);
+                  (this->get_material_model().is_compressible() ?
+                     in.strain_rate[q] - 1. / 3. * trace(in.strain_rate[q]) * unit_symmetric_tensor<dim>() :
+                     in.strain_rate[q]);
+                const double local_dissipation =
+                  2. * out.viscosities[q] * (deviatoric_strain_rate * deviatoric_strain_rate) * fe_values.JxW(q);
 
                 // Dissipation over the whole domain
                 local_dissipation_integral[n_compositional_fields] += local_dissipation;
 
                 // Dissipation over each compositional field
-                for (unsigned int c = 0; c<n_compositional_fields; ++c)
+                for (unsigned int c = 0; c < n_compositional_fields; ++c)
                   if (in.composition[q][c] >= 0.5)
                     local_dissipation_integral[c] += local_dissipation;
               }
           }
 
-      std::vector<double> viscous_dissipation (local_dissipation_integral.size());
-      Utilities::MPI::sum (local_dissipation_integral, this->get_mpi_communicator(), viscous_dissipation);
+      std::vector<double> viscous_dissipation(local_dissipation_integral.size());
+      Utilities::MPI::sum(local_dissipation_integral, this->get_mpi_communicator(), viscous_dissipation);
 
       const std::string unit = (dim == 3) ? "(W)" : "(W/m)";
 
       // Add the dissipation per compositional fields to the statistics output
       for (unsigned int c = 0; c < n_compositional_fields; ++c)
         {
-          statistics.add_value ("Viscous dissipation " + unit + " for composition " + this->introspection().name_for_compositional_index(c),
-                                viscous_dissipation[c]);
+          statistics.add_value("Viscous dissipation " + unit + " for composition " + this->introspection().name_for_compositional_index(c),
+                               viscous_dissipation[c]);
 
           // also make sure that the other columns filled by this object
           // all show up with sufficient accuracy and in scientific notation
-          const std::string column = "Viscous dissipation " + unit + " for composition " + this->introspection().name_for_compositional_index(c);
+          const std::string column =
+            "Viscous dissipation " + unit + " for composition " + this->introspection().name_for_compositional_index(c);
 
-          statistics.set_precision (column, 8);
-          statistics.set_scientific (column, true);
+          statistics.set_precision(column, 8);
+          statistics.set_scientific(column, true);
         }
 
       // Add the dissipation over the whole domain to the statistics output
-      statistics.add_value ("Viscous dissipation " + unit,
-                            viscous_dissipation[n_compositional_fields]);
+      statistics.add_value("Viscous dissipation " + unit, viscous_dissipation[n_compositional_fields]);
 
       const std::string column = "Viscous dissipation " + unit;
-      statistics.set_precision (column, 8);
-      statistics.set_scientific (column, true);
+      statistics.set_precision(column, 8);
+      statistics.set_scientific(column, true);
 
       std::ostringstream output;
       output.precision(4);
@@ -133,12 +123,11 @@ namespace aspect
         {
           output << viscous_dissipation[n];
 
-          if (n + 1 != n_compositional_fields+1)
+          if (n + 1 != n_compositional_fields + 1)
             output << " // ";
         }
 
-      return std::pair<std::string, std::string> ("Viscous dissipation per field and for whole domain " + unit + ":",
-                                                  output.str());
+      return std::pair<std::string, std::string>("Viscous dissipation per field and for whole domain " + unit + ":", output.str());
     }
   }
 }

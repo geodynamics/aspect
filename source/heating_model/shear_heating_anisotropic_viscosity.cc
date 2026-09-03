@@ -18,14 +18,13 @@
  <http://www.gnu.org/licenses/>.
  */
 
-#include <aspect/heating_model/shear_heating_anisotropic_viscosity.h>
-
-#include <aspect/material_model/interface.h>
-#include <aspect/material_model/additional_outputs/anisotropic_viscosity.h>
 #include <aspect/heating_model/shear_heating.h>
+#include <aspect/heating_model/shear_heating_anisotropic_viscosity.h>
+#include <aspect/material_model/additional_outputs/anisotropic_viscosity.h>
+#include <aspect/material_model/interface.h>
 
-#include <deal.II/base/symmetric_tensor.h>
 #include <deal.II/base/signaling_nan.h>
+#include <deal.II/base/symmetric_tensor.h>
 
 namespace aspect
 {
@@ -33,13 +32,12 @@ namespace aspect
   {
     template <int dim>
     void
-    ShearHeatingAnisotropicViscosity<dim>::
-    evaluate (const MaterialModel::MaterialModelInputs<dim> &material_model_inputs,
-              const MaterialModel::MaterialModelOutputs<dim> &material_model_outputs,
-              HeatingModel::HeatingModelOutputs &heating_model_outputs) const
+    ShearHeatingAnisotropicViscosity<dim>::evaluate(const MaterialModel::MaterialModelInputs<dim>  &material_model_inputs,
+                                                    const MaterialModel::MaterialModelOutputs<dim> &material_model_outputs,
+                                                    HeatingModel::HeatingModelOutputs              &heating_model_outputs) const
     {
       Assert(heating_model_outputs.heating_source_terms.size() == material_model_inputs.position.size(),
-             ExcMessage ("Heating outputs need to have the same number of entries as the material model inputs."));
+             ExcMessage("Heating outputs need to have the same number of entries as the material model inputs."));
 
       // Some material models provide dislocation viscosities and boundary area work fractions
       // as additional material outputs. If they are attached, use them.
@@ -53,27 +51,22 @@ namespace aspect
              ExcMessage("This heating plugin should only be used with material models that provide "
                         "an anisotropic viscosity tensor, but none was provided."));
 
-      for (unsigned int q=0; q<heating_model_outputs.heating_source_terms.size(); ++q)
+      for (unsigned int q = 0; q < heating_model_outputs.heating_source_terms.size(); ++q)
         {
           // If there is an anisotropic viscosity, use it to compute the correct stress
-          const SymmetricTensor<2,dim> &directed_strain_rate = anisotropic_viscosity->stress_strain_directors[q]
-                                                               * material_model_inputs.strain_rate[q];
+          const SymmetricTensor<2, dim> &directed_strain_rate =
+            anisotropic_viscosity->stress_strain_directors[q] * material_model_inputs.strain_rate[q];
 
-          const SymmetricTensor<2,dim> stress =
+          const SymmetricTensor<2, dim> stress =
             2 * material_model_outputs.viscosities[q] *
-            (this->get_material_model().is_compressible()
-             ?
-             directed_strain_rate - 1./3. * trace(directed_strain_rate) * unit_symmetric_tensor<dim>()
-             :
-             directed_strain_rate);
+            (this->get_material_model().is_compressible() ?
+               directed_strain_rate - 1. / 3. * trace(directed_strain_rate) * unit_symmetric_tensor<dim>() :
+               directed_strain_rate);
 
-          const SymmetricTensor<2,dim> deviatoric_strain_rate =
-            (this->get_material_model().is_compressible()
-             ?
-             material_model_inputs.strain_rate[q]
-             - 1./3. * trace(material_model_inputs.strain_rate[q]) * unit_symmetric_tensor<dim>()
-             :
-             material_model_inputs.strain_rate[q]);
+          const SymmetricTensor<2, dim> deviatoric_strain_rate =
+            (this->get_material_model().is_compressible() ?
+               material_model_inputs.strain_rate[q] - 1. / 3. * trace(material_model_inputs.strain_rate[q]) * unit_symmetric_tensor<dim>() :
+               material_model_inputs.strain_rate[q]);
 
           heating_model_outputs.heating_source_terms[q] = stress * deviatoric_strain_rate;
 
@@ -90,15 +83,14 @@ namespace aspect
 
     template <int dim>
     void
-    ShearHeatingAnisotropicViscosity<dim>::
-    create_additional_material_model_outputs(MaterialModel::MaterialModelOutputs<dim> &material_model_outputs) const
+    ShearHeatingAnisotropicViscosity<dim>::create_additional_material_model_outputs(
+      MaterialModel::MaterialModelOutputs<dim> &material_model_outputs) const
     {
       const unsigned int n_points = material_model_outputs.viscosities.size();
 
       if (material_model_outputs.template has_additional_output_object<MaterialModel::AnisotropicViscosity<dim>>() == false)
         {
-          material_model_outputs.additional_outputs.push_back(
-            std::make_unique<MaterialModel::AnisotropicViscosity<dim>> (n_points));
+          material_model_outputs.additional_outputs.push_back(std::make_unique<MaterialModel::AnisotropicViscosity<dim>>(n_points));
         }
 
       this->get_material_model().create_additional_named_outputs(material_model_outputs);

@@ -45,35 +45,39 @@ namespace aspect
         /**
          * Constructor.
          */
-        StokesResidual ();
+        StokesResidual();
 
         /**
          * This attaches to the Stokes solver signal.
          */
-        void initialize() override;
+        void
+        initialize() override;
 
         /**
          * Generate the output file.
          */
-        std::pair<std::string,std::string>
-        execute (TableHandler &statistics) override;
+        std::pair<std::string, std::string>
+        execute(TableHandler &statistics) override;
 
         /**
          * Save the state of this object.
          */
-        void save (std::map<std::string, std::string> &status_strings) const override;
+        void
+        save(std::map<std::string, std::string> &status_strings) const override;
 
         /**
          * Restore the state of the object.
          */
-        void load (const std::map<std::string, std::string> &status_strings) override;
+        void
+        load(const std::map<std::string, std::string> &status_strings) override;
 
         /**
          * Serialize the contents of this class as far as they are not read
          * from input parameter files.
          */
         template <class Archive>
-        void serialize (Archive &ar, const unsigned int version);
+        void
+        serialize(Archive &ar, const unsigned int version);
 
       private:
         /**
@@ -81,25 +85,25 @@ namespace aspect
          */
         struct DataPoint
         {
-          double time;
-          unsigned int solve_index;
-          std::vector<double> values;
+            double              time;
+            unsigned int        solve_index;
+            std::vector<double> values;
 
-          template <class Archive>
-          void serialize (Archive &ar, const unsigned int version);
+            template <class Archive>
+            void
+            serialize(Archive &ar, const unsigned int version);
         };
 
         /**
          * Callback function to collect the data.
          */
-        void stokes_solver_callback (const SolverControl &solver_control_cheap,
-                                     const SolverControl &solver_control_expensive);
+        void
+        stokes_solver_callback(const SolverControl &solver_control_cheap, const SolverControl &solver_control_expensive);
 
         /**
          * An array of all the past values
          */
         std::vector<DataPoint> entries;
-
     };
   }
 }

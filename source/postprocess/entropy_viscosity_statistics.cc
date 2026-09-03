@@ -19,8 +19,9 @@
 */
 
 
-#include <aspect/postprocess/entropy_viscosity_statistics.h>
 #include <aspect/global.h>
+
+#include <aspect/postprocess/entropy_viscosity_statistics.h>
 
 #include <deal.II/base/quadrature_lib.h>
 #include <deal.II/fe/fe_values.h>
@@ -31,8 +32,8 @@ namespace aspect
   namespace Postprocess
   {
     template <int dim>
-    std::pair<std::string,std::string>
-    EntropyViscosityStatistics<dim>::execute (TableHandler &statistics)
+    std::pair<std::string, std::string>
+    EntropyViscosityStatistics<dim>::execute(TableHandler &statistics)
     {
       Vector<float> entropy_viscosity(this->get_triangulation().n_active_cells());
       this->get_artificial_viscosity(entropy_viscosity);
@@ -40,66 +41,52 @@ namespace aspect
       // The entropy viscosity is cell-wise constant, so a simple midpoint quadrature
       // will be sufficient to integrate the value over cells.
       const QMidpoint<dim> quadrature_formula;
-      const unsigned int n_q_points = quadrature_formula.size();
+      const unsigned int   n_q_points = quadrature_formula.size();
 
-      FEValues<dim> fe_values (this->get_mapping(),
-                               this->get_fe(),
-                               quadrature_formula,
-                               update_JxW_values);
+      FEValues<dim> fe_values(this->get_mapping(), this->get_fe(), quadrature_formula, update_JxW_values);
 
-      double local_maximum_viscosity = 0.0;
+      double local_maximum_viscosity    = 0.0;
       double local_integrated_viscosity = 0.0;
-      double local_volume = 0.0;
+      double local_volume               = 0.0;
 
       for (const auto &cell : this->get_dof_handler().active_cell_iterators())
         if (cell->is_locally_owned())
           {
-            fe_values.reinit (cell);
+            fe_values.reinit(cell);
 
             for (unsigned int q = 0; q < n_q_points; ++q)
               {
                 const double entropy_viscosity_cell = entropy_viscosity[cell->active_cell_index()];
-                local_maximum_viscosity = std::max(local_maximum_viscosity,entropy_viscosity_cell);
+                local_maximum_viscosity             = std::max(local_maximum_viscosity, entropy_viscosity_cell);
                 local_volume += fe_values.JxW(q);
                 local_integrated_viscosity += entropy_viscosity_cell * fe_values.JxW(q);
               }
           }
 
-      const double global_integrated_viscosity
-        = Utilities::MPI::sum (local_integrated_viscosity, this->get_mpi_communicator());
-      const double global_integrated_volume
-        = Utilities::MPI::sum (local_volume, this->get_mpi_communicator());
-      const double global_maximum_viscosity
-        = Utilities::MPI::max (local_maximum_viscosity, this->get_mpi_communicator());
+      const double global_integrated_viscosity = Utilities::MPI::sum(local_integrated_viscosity, this->get_mpi_communicator());
+      const double global_integrated_volume    = Utilities::MPI::sum(local_volume, this->get_mpi_communicator());
+      const double global_maximum_viscosity    = Utilities::MPI::max(local_maximum_viscosity, this->get_mpi_communicator());
 
       const double average_viscosity = global_integrated_viscosity / global_integrated_volume;
 
-      statistics.add_value ("Max entropy viscosity (W/(m*K))",
-                            global_maximum_viscosity);
-      statistics.add_value ("Average entropy viscosity (W/(m*K))",
-                            average_viscosity);
+      statistics.add_value("Max entropy viscosity (W/(m*K))", global_maximum_viscosity);
+      statistics.add_value("Average entropy viscosity (W/(m*K))", average_viscosity);
 
       // also make sure that the columns filled by this plugin
       // show up with sufficient accuracy and in scientific notation
-      const char *columns[] = { "Max entropy viscosity (W/(m*K))",
-                                "Average entropy viscosity (W/(m*K))"
-                              };
+      const char *columns[] = {"Max entropy viscosity (W/(m*K))", "Average entropy viscosity (W/(m*K))"};
       for (auto &column : columns)
         {
-          statistics.set_precision (column, 8);
-          statistics.set_scientific (column, true);
+          statistics.set_precision(column, 8);
+          statistics.set_scientific(column, true);
         }
 
       std::ostringstream output;
       output.precision(3);
-      output << global_maximum_viscosity
-             << " W/(m*K), "
-             << average_viscosity
-             << " W/(m*K)";
+      output << global_maximum_viscosity << " W/(m*K), " << average_viscosity << " W/(m*K)";
 
 
-      return std::pair<std::string, std::string> ("Max / average entropy viscosity:",
-                                                  output.str());
+      return std::pair<std::string, std::string>("Max / average entropy viscosity:", output.str());
     }
   }
 }

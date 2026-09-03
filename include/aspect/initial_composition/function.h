@@ -39,28 +39,27 @@ namespace aspect
      * @ingroup InitialCompositionModels
      */
     template <int dim>
-    class Function : public Interface<dim>,
-      public SimulatorAccess<dim>
+    class Function : public Interface<dim>, public SimulatorAccess<dim>
     {
       public:
         /**
          * Return the initial composition as a function of position and number
          * of compositional field.
          */
-        double initial_composition (const Point<dim> &position, const unsigned int n_comp) const override;
+        double
+        initial_composition(const Point<dim> &position, const unsigned int n_comp) const override;
 
         /**
          * Declare the parameters this class takes through input files.
          */
-        static
-        void
-        declare_parameters (ParameterHandler &prm);
+        static void
+        declare_parameters(ParameterHandler &prm);
 
         /**
          * Read the parameters this class declares from the parameter file.
          */
         void
-        parse_parameters (ParameterHandler &prm) override;
+        parse_parameters(ParameterHandler &prm) override;
 
       private:
         /**

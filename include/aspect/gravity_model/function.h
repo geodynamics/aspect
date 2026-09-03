@@ -45,7 +45,7 @@ namespace aspect
         /**
          * Constructor.
          */
-        Function ();
+        Function();
 
         /**
          * A function that is called at the beginning of each time step to
@@ -53,25 +53,26 @@ namespace aspect
          * next be evaluated. For the current class, the function passes to
          * the parsed function what the current time is.
          */
-        void update () override;
+        void
+        update() override;
 
         /**
          * Return the gravity vector as a function of position.
          */
-        Tensor<1,dim> gravity_vector (const Point<dim> &position) const override;
+        Tensor<1, dim>
+        gravity_vector(const Point<dim> &position) const override;
 
         /**
          * Declare the parameters this class takes through input files.
          */
-        static
-        void
-        declare_parameters (ParameterHandler &prm);
+        static void
+        declare_parameters(ParameterHandler &prm);
 
         /**
          * Read the parameters this class declares from the parameter file.
          */
         void
-        parse_parameters (ParameterHandler &prm) override;
+        parse_parameters(ParameterHandler &prm) override;
 
       private:
         /**

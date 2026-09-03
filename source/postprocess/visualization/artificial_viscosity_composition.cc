@@ -29,23 +29,20 @@ namespace aspect
     namespace VisualizationPostprocessors
     {
       template <int dim>
-      ArtificialViscosityComposition<dim>::
-      ArtificialViscosityComposition ()
-        :
-        CellDataVectorCreator<dim>("m/s/s")
+      ArtificialViscosityComposition<dim>::ArtificialViscosityComposition()
+        : CellDataVectorCreator<dim>("m/s/s")
       {}
 
       template <int dim>
       std::pair<std::string, std::unique_ptr<Vector<float>>>
       ArtificialViscosityComposition<dim>::execute() const
       {
-        Assert(this->n_compositional_fields()>0,
-               ExcMessage ("The artificial viscosity for compositional fields can "
-                           "only be calculated if compositional fields are used in the simulation."));
+        Assert(this->n_compositional_fields() > 0,
+               ExcMessage("The artificial viscosity for compositional fields can "
+                          "only be calculated if compositional fields are used in the simulation."));
 
-        std::pair<std::string, std::unique_ptr<Vector<float>>>
-        return_value ("artificial_viscosity_composition",
-                      std::make_unique<Vector<float>>(this->get_triangulation().n_active_cells()));
+        std::pair<std::string, std::unique_ptr<Vector<float>>> return_value(
+          "artificial_viscosity_composition", std::make_unique<Vector<float>>(this->get_triangulation().n_active_cells()));
         this->get_artificial_viscosity_composition(*return_value.second, compositional_field);
 
         // The function we call above sets the artificial viscosity to
@@ -65,8 +62,7 @@ namespace aspect
 
       template <int dim>
       void
-      ArtificialViscosityComposition<dim>::
-      declare_parameters (ParameterHandler &prm)
+      ArtificialViscosityComposition<dim>::declare_parameters(ParameterHandler &prm)
       {
         prm.enter_subsection("Postprocess");
         {
@@ -74,10 +70,11 @@ namespace aspect
           {
             prm.enter_subsection("Artificial viscosity composition");
             {
-              prm.declare_entry ("Name of compositional field", "",
-                                 Patterns::Anything(),
-                                 "The name of the compositional field whose output "
-                                 "should be visualized. ");
+              prm.declare_entry("Name of compositional field",
+                                "",
+                                Patterns::Anything(),
+                                "The name of the compositional field whose output "
+                                "should be visualized. ");
             }
             prm.leave_subsection();
           }
@@ -88,7 +85,7 @@ namespace aspect
 
       template <int dim>
       void
-      ArtificialViscosityComposition<dim>::parse_parameters (ParameterHandler &prm)
+      ArtificialViscosityComposition<dim>::parse_parameters(ParameterHandler &prm)
       {
         prm.enter_subsection("Postprocess");
         {
@@ -99,8 +96,7 @@ namespace aspect
               const std::string field_name = prm.get("Name of compositional field");
 
               AssertThrow(this->introspection().compositional_name_exists(field_name),
-                          ExcMessage("No compositional field with name <" +
-                                     field_name +
+                          ExcMessage("No compositional field with name <" + field_name +
                                      "> exists for which you want to visualize the artificial viscosity."));
 
               compositional_field = this->introspection().compositional_index_for_name(field_name);

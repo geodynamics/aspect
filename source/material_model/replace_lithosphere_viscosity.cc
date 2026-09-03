@@ -18,13 +18,12 @@
   <http://www.gnu.org/licenses/>.
 */
 
-#include <aspect/material_model/replace_lithosphere_viscosity.h>
-#include <aspect/initial_temperature/lithosphere_mask.h>
-#include <aspect/utilities.h>
 #include <aspect/geometry_model/interface.h>
+#include <aspect/initial_temperature/lithosphere_mask.h>
+#include <aspect/material_model/replace_lithosphere_viscosity.h>
+#include <aspect/utilities.h>
 
 #include <limits>
-
 #include <utility>
 
 
@@ -46,41 +45,42 @@ namespace aspect
     template <int dim>
     void
     ReplaceLithosphereViscosity<dim>::evaluate(const typename Interface<dim>::MaterialModelInputs &in,
-                                               typename Interface<dim>::MaterialModelOutputs &out) const
+                                               typename Interface<dim>::MaterialModelOutputs      &out) const
     {
-      base_model->evaluate(in,out);
+      base_model->evaluate(in, out);
 
-      for (unsigned int i=0; i < in.n_evaluation_points(); ++i)
+      for (unsigned int i = 0; i < in.n_evaluation_points(); ++i)
         {
-          const double depth = this->SimulatorAccess<dim>::get_geometry_model().depth(in.position[i]);
+          const double depth     = this->SimulatorAccess<dim>::get_geometry_model().depth(in.position[i]);
           const double lab_depth = lab_depth_lookup.get_lab_depth(in.position[i]);
 
           if (depth <= lab_depth)
             out.viscosities[i] = lithosphere_viscosity;
         }
-
     }
 
 
     template <int dim>
     void
-    ReplaceLithosphereViscosity<dim>::declare_parameters (ParameterHandler &prm)
+    ReplaceLithosphereViscosity<dim>::declare_parameters(ParameterHandler &prm)
     {
       prm.enter_subsection("Material model");
       {
         prm.enter_subsection("Replace lithosphere viscosity");
         {
-          prm.declare_entry("Base model","simple",
+          prm.declare_entry("Base model",
+                            "simple",
                             Patterns::Selection(MaterialModel::get_valid_model_names_pattern<dim>()),
                             "The name of a material model that will be modified by a replacing "
                             "the viscosity in the lithosphere by a constant value. Valid values for this parameter "
                             "are the names of models that are also valid for the "
                             "``Material models/Model name'' parameter. See the documentation for "
                             "more information.");
-          prm.declare_entry ("Lithosphere viscosity", "1e23",
-                             Patterns::Double (0.),
-                             "The viscosity within lithosphere, applied above"
-                             "the maximum lithosphere depth.");
+          prm.declare_entry("Lithosphere viscosity",
+                            "1e23",
+                            Patterns::Double(0.),
+                            "The viscosity within lithosphere, applied above"
+                            "the maximum lithosphere depth.");
 
           InitialTemperature::LABDepth::LABDepthLookup<dim>::declare_parameters(prm);
         }
@@ -91,30 +91,30 @@ namespace aspect
 
     template <int dim>
     void
-    ReplaceLithosphereViscosity<dim>::parse_parameters (ParameterHandler &prm)
+    ReplaceLithosphereViscosity<dim>::parse_parameters(ParameterHandler &prm)
     {
-      AssertThrow (dim == 3,
-                   ExcMessage ("The 'Replace lithosphere viscosity' material model "
-                               "is only available for 3d computations."));
+      AssertThrow(dim == 3,
+                  ExcMessage("The 'Replace lithosphere viscosity' material model "
+                             "is only available for 3d computations."));
 
       prm.enter_subsection("Material model");
       {
         prm.enter_subsection("Replace lithosphere viscosity");
         {
-          AssertThrow( prm.get("Base model") != "replace lithosphere viscosity",
-                       ExcMessage("You may not use ``replace lithosphere viscosity'' as the base model for "
-                                  "a replace lithosphere viscosity model.") );
+          AssertThrow(prm.get("Base model") != "replace lithosphere viscosity",
+                      ExcMessage("You may not use ``replace lithosphere viscosity'' as the base model for "
+                                 "a replace lithosphere viscosity model."));
 
           // create the base model and initialize its SimulatorAccess base
           // class; it will get a chance to read its parameters below after we
           // leave the current section
           base_model = create_material_model<dim>(prm.get("Base model"));
-          if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(base_model.get()))
-            sim->initialize_simulator (this->get_simulator());
+          if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim> *>(base_model.get()))
+            sim->initialize_simulator(this->get_simulator());
 
           lab_depth_lookup.initialize_simulator(this->get_simulator());
           lab_depth_lookup.parse_parameters(prm);
-          lithosphere_viscosity   = prm.get_double ("Lithosphere viscosity");
+          lithosphere_viscosity = prm.get_double("Lithosphere viscosity");
         }
         prm.leave_subsection();
       }
@@ -128,15 +128,14 @@ namespace aspect
 
     template <int dim>
     bool
-    ReplaceLithosphereViscosity<dim>::
-    is_compressible () const
+    ReplaceLithosphereViscosity<dim>::is_compressible() const
     {
       return base_model->is_compressible();
     }
 
     template <int dim>
     void
-    ReplaceLithosphereViscosity<dim>::create_additional_named_outputs (MaterialModel::MaterialModelOutputs<dim> &out) const
+    ReplaceLithosphereViscosity<dim>::create_additional_named_outputs(MaterialModel::MaterialModelOutputs<dim> &out) const
     {
       base_model->create_additional_named_outputs(out);
     }

@@ -19,6 +19,7 @@
 */
 
 #include <aspect/simulator.h>
+
 #include <iostream>
 
 /*
@@ -30,9 +31,10 @@
  * input file (otherwise the new instance would call this library again, and so
  * on). After finishing the new instance we exit to not continue the old one.
  */
-int f()
+int
+f()
 {
-  int ret;
+  int         ret;
   std::string command;
 
   command = ("cp update_script.x.prm output-update_script/updated.prm &&"
@@ -40,23 +42,19 @@ int f()
              "bash " ASPECT_SOURCE_DIR "/contrib/utilities/update_prm_files.sh output-update_script/updated.prm &&"
              "rm output-update_script/updated.prm.bak");
 
-  std::cout << "Executing the update script:\n"
-            << command
-            << std::endl;
-  ret = system (command.c_str());
-  if (ret!=0)
+  std::cout << "Executing the update script:\n" << command << std::endl;
+  ret = system(command.c_str());
+  if (ret != 0)
     std::cout << "system() returned error " << ret << std::endl;
 
   command = ("../aspect output-update_script/updated.prm");
-  std::cout << "Running ASPECT with updated parameter file:\n"
-            << command
-            << std::endl;
-  ret = system (command.c_str());
-  if (ret!=0)
+  std::cout << "Running ASPECT with updated parameter file:\n" << command << std::endl;
+  ret = system(command.c_str());
+  if (ret != 0)
     std::cout << "system() returned error " << ret << std::endl;
 
   // abort current process:
-  exit (0);
+  exit(0);
   return 42;
 }
 

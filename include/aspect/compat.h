@@ -25,17 +25,17 @@
 #include <deal.II/base/mpi.h>
 
 // C++11 related includes.
+#include <deal.II/grid/manifold_lib.h>
+
 #include <functional>
 #include <memory>
 
-#include <deal.II/grid/manifold_lib.h>
-
-#if !DEAL_II_VERSION_GTE(9,7,0)
+#if !DEAL_II_VERSION_GTE(9, 7, 0)
 #  include <deal.II/grid/grid_generator.h>
 #endif
 
-#include <deal.II/multigrid/mg_transfer_matrix_free.h>
 #include <deal.II/multigrid/mg_transfer_global_coarsening.h>
+#include <deal.II/multigrid/mg_transfer_matrix_free.h>
 
 namespace aspect
 {
@@ -48,7 +48,7 @@ namespace aspect
 
   // deal.II 9.6 introduced MGTransferMF as a replacement for
   // MGTransferMatrixFree; deal.II 9.9 renamed it back.
-#if DEAL_II_VERSION_GTE(9,9,0)
+#if DEAL_II_VERSION_GTE(9, 9, 0)
   template <int dim, typename NumberType>
   using MGTransferType = dealii::MGTransferMatrixFree<dim, NumberType>;
 #else
@@ -58,7 +58,7 @@ namespace aspect
 
   // Global-coarsening transfers share the same class as local smoothing
   // from deal.II 9.7 onward; 9.6 still needs MGTransferGlobalCoarsening.
-#if DEAL_II_VERSION_GTE(9,7,0)
+#if DEAL_II_VERSION_GTE(9, 7, 0)
   template <int dim, typename NumberType>
   using GCMGTransferType = MGTransferType<dim, NumberType>;
 #else
@@ -67,7 +67,7 @@ namespace aspect
 #endif
 
 
-#if !DEAL_II_VERSION_GTE(9,7,0)
+#if !DEAL_II_VERSION_GTE(9, 7, 0)
   /**
    * A type alias for the SmartPointer class that makes sure the new
    * name of the class, ObserverPointer, can be used in all versions of
@@ -90,7 +90,7 @@ namespace aspect
 
 // deal.II version 9.7 introduces a new class VectorFunctionFromTensorFunctionObject
 // that we would like to use also for earlier versions
-#if !DEAL_II_VERSION_GTE(9,7,0)
+#if !DEAL_II_VERSION_GTE(9, 7, 0)
 
   using namespace dealii;
 
@@ -129,8 +129,7 @@ namespace aspect
    * @ingroup functions
    */
   template <int dim, typename RangeNumberType = double>
-  class VectorFunctionFromTensorFunctionObject
-    : public Function<dim, RangeNumberType>
+  class VectorFunctionFromTensorFunctionObject : public Function<dim, RangeNumberType>
   {
     public:
       /**
@@ -150,10 +149,9 @@ namespace aspect
        * fits inside the <tt>n_component</tt> length return vector.
        */
       explicit VectorFunctionFromTensorFunctionObject(
-        const std::function<Tensor<1, dim, RangeNumberType>(const Point<dim> &)>
-        &tensor_function_object,
-        const unsigned int selected_component = 0,
-        const unsigned int n_components       = dim);
+        const std::function<Tensor<1, dim, RangeNumberType>(const Point<dim> &)> &tensor_function_object,
+        const unsigned int                                                        selected_component = 0,
+        const unsigned int                                                        n_components       = dim);
 
       /**
        * This destructor is defined as virtual so as to coincide with all other
@@ -173,8 +171,7 @@ namespace aspect
        * <tt>values</tt> shall have the right size beforehand, i.e. #n_components.
        */
       virtual void
-      vector_value(const Point<dim>        &p,
-                   Vector<RangeNumberType> &values) const override;
+      vector_value(const Point<dim> &p, Vector<RangeNumberType> &values) const override;
 
       /**
        * Return all components of a vector-valued function at a list of points.
@@ -184,17 +181,14 @@ namespace aspect
        * function
        */
       virtual void
-      vector_value_list(
-        const std::vector<Point<dim>>        &points,
-        std::vector<Vector<RangeNumberType>> &value_list) const override;
+      vector_value_list(const std::vector<Point<dim>> &points, std::vector<Vector<RangeNumberType>> &value_list) const override;
 
     private:
       /**
        * The TensorFunction object which we call when this class's vector_value()
        * or vector_value_list() functions are called.
        */
-      const std::function<Tensor<1, dim, RangeNumberType>(const Point<dim> &)>
-      tensor_function_object;
+      const std::function<Tensor<1, dim, RangeNumberType>(const Point<dim> &)> tensor_function_object;
 
       /**
        * The first vector component whose value is to be filled by the given
@@ -207,12 +201,10 @@ namespace aspect
 
 
   template <int dim, typename RangeNumberType>
-  VectorFunctionFromTensorFunctionObject<dim, RangeNumberType>::
-  VectorFunctionFromTensorFunctionObject(
-    const std::function<Tensor<1, dim, RangeNumberType>(const Point<dim> &)>
-    &tensor_function_object,
-    const unsigned int selected_component,
-    const unsigned int n_components)
+  VectorFunctionFromTensorFunctionObject<dim, RangeNumberType>::VectorFunctionFromTensorFunctionObject(
+    const std::function<Tensor<1, dim, RangeNumberType>(const Point<dim> &)> &tensor_function_object,
+    const unsigned int                                                        selected_component,
+    const unsigned int                                                        n_components)
     : Function<dim, RangeNumberType>(n_components)
     , tensor_function_object(tensor_function_object)
     , selected_component(selected_component)
@@ -226,24 +218,20 @@ namespace aspect
 
   template <int dim, typename RangeNumberType>
   inline RangeNumberType
-  VectorFunctionFromTensorFunctionObject<dim, RangeNumberType>::value(
-    const Point<dim>  &p,
-    const unsigned int component) const
+  VectorFunctionFromTensorFunctionObject<dim, RangeNumberType>::value(const Point<dim> &p, const unsigned int component) const
   {
     AssertIndexRange(component, this->n_components);
 
     // if the requested component is out of the range selected, then we can
     // return early
-    if ((component < selected_component) ||
-        (component >= selected_component + dim))
+    if ((component < selected_component) || (component >= selected_component + dim))
       return 0;
 
     // otherwise retrieve the values from the <tt>tensor_function</tt> to be
     // placed at the <tt>selected_component</tt> to
     // <tt>selected_component + dim - 1</tt> elements of the <tt>Vector</tt>
     // values and pick the correct one
-    const Tensor<1, dim, RangeNumberType> tensor_value =
-      tensor_function_object(p);
+    const Tensor<1, dim, RangeNumberType> tensor_value = tensor_function_object(p);
 
     return tensor_value[component - selected_component];
   }
@@ -251,19 +239,15 @@ namespace aspect
 
   template <int dim, typename RangeNumberType>
   inline void
-  VectorFunctionFromTensorFunctionObject<dim, RangeNumberType>::vector_value(
-    const Point<dim>        &p,
-    Vector<RangeNumberType> &values) const
+  VectorFunctionFromTensorFunctionObject<dim, RangeNumberType>::vector_value(const Point<dim> &p, Vector<RangeNumberType> &values) const
   {
-    Assert(values.size() == this->n_components,
-           ExcDimensionMismatch(values.size(), this->n_components));
+    Assert(values.size() == this->n_components, ExcDimensionMismatch(values.size(), this->n_components));
 
     // Retrieve the values from the <tt>tensor_function</tt> to be placed at
     // the <tt>selected_component</tt> to
     // <tt>selected_component + dim - 1</tt> elements of the <tt>Vector</tt>
     // values.
-    const Tensor<1, dim, RangeNumberType> tensor_value =
-      tensor_function_object(p);
+    const Tensor<1, dim, RangeNumberType> tensor_value = tensor_function_object(p);
 
     // First we make all elements of values = 0
     values = 0;
@@ -284,32 +268,26 @@ namespace aspect
    */
   template <int dim, typename RangeNumberType>
   void
-  VectorFunctionFromTensorFunctionObject<dim, RangeNumberType>::vector_value_list(
-    const std::vector<Point<dim>>        &points,
-    std::vector<Vector<RangeNumberType>> &value_list) const
+  VectorFunctionFromTensorFunctionObject<dim, RangeNumberType>::vector_value_list(const std::vector<Point<dim>>        &points,
+                                                                                  std::vector<Vector<RangeNumberType>> &value_list) const
   {
-    Assert(value_list.size() == points.size(),
-           ExcDimensionMismatch(value_list.size(), points.size()));
+    Assert(value_list.size() == points.size(), ExcDimensionMismatch(value_list.size(), points.size()));
 
     const unsigned int n_points = points.size();
 
     for (unsigned int p = 0; p < n_points; ++p)
-      VectorFunctionFromTensorFunctionObject<dim, RangeNumberType>::vector_value(
-        points[p], value_list[p]);
+      VectorFunctionFromTensorFunctionObject<dim, RangeNumberType>::vector_value(points[p], value_list[p]);
   }
 
 #endif
 
 // deal.II versions up to 9.6 had a bug for very thin shell geometries.
 // This function contains a fixed version.
-#if !DEAL_II_VERSION_GTE(9,7,0)
+#if !DEAL_II_VERSION_GTE(9, 7, 0)
 
   template <int dim>
   void
-  colorize_quarter_hyper_shell(Triangulation<dim>  &tria,
-                               const Point<dim>   &center,
-                               const double      inner_radius,
-                               const double      outer_radius);
+  colorize_quarter_hyper_shell(Triangulation<dim> &tria, const Point<dim> &center, const double inner_radius, const double outer_radius);
 #endif
 
   // deal.II 9.8 made ReferenceCell a template class, whereas older versions
@@ -317,8 +295,9 @@ namespace aspect
   // Rather than litter our own code base with #ifdefs, we can just define the
   // templated class variant here for older deal.II versions, and then we can
   // use the same code in all versions.
-#if !DEAL_II_VERSION_GTE(9,8,0)
-  template <int dim> using ReferenceCell = dealii::ReferenceCell;
+#if !DEAL_II_VERSION_GTE(9, 8, 0)
+  template <int dim>
+  using ReferenceCell = dealii::ReferenceCell;
 #endif
 
 }

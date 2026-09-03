@@ -22,6 +22,7 @@
 #define _aspect_material_model_rheology_constant_viscosity_h
 
 #include <aspect/global.h>
+
 #include <deal.II/base/parameter_handler.h>
 
 namespace aspect
@@ -41,22 +42,20 @@ namespace aspect
           /**
            * Declare the parameters this function takes through input files.
            */
-          static
-          void
-          declare_parameters (ParameterHandler &prm,
-                              const double default_viscosity = 1e21);
+          static void
+          declare_parameters(ParameterHandler &prm, const double default_viscosity = 1e21);
 
           /**
            * Read the parameters from the parameter file.
            */
           void
-          parse_parameters (ParameterHandler &prm);
+          parse_parameters(ParameterHandler &prm);
 
           /**
            * Compute the viscosity, in this case just a constant.
            */
           double
-          compute_viscosity () const;
+          compute_viscosity() const;
 
         private:
           /**

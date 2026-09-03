@@ -38,8 +38,7 @@ namespace aspect
        * graphical output.
        */
       template <int dim>
-      class ArtificialViscosity : public CellDataVectorCreator<dim>,
-        public SimulatorAccess<dim>
+      class ArtificialViscosity : public CellDataVectorCreator<dim>, public SimulatorAccess<dim>
       {
         public:
           /**
@@ -51,7 +50,7 @@ namespace aspect
            * @copydoc CellDataVectorCreator<dim>::execute()
            */
           std::pair<std::string, std::unique_ptr<Vector<float>>>
-          execute () const override;
+          execute() const override;
       };
     }
   }

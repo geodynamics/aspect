@@ -19,8 +19,8 @@
 */
 
 
-#include <aspect/postprocess/particle_distribution_score.h>
 #include <aspect/particle/manager.h>
+#include <aspect/postprocess/particle_distribution_score.h>
 
 
 namespace aspect
@@ -28,15 +28,15 @@ namespace aspect
   namespace Postprocess
   {
     template <int dim>
-    std::pair<std::string,std::string>
-    ParticleDistributionScore<dim>::execute (TableHandler &statistics)
+    std::pair<std::string, std::string>
+    ParticleDistributionScore<dim>::execute(TableHandler &statistics)
     {
       // These need to be vectors to account for multiple particle managers.
-      std::vector<double> local_min_scores(this->n_particle_managers(),std::numeric_limits<double>::max());
-      std::vector<double> local_max_scores(this->n_particle_managers(),0);
+      std::vector<double>              local_min_scores(this->n_particle_managers(), std::numeric_limits<double>::max());
+      std::vector<double>              local_max_scores(this->n_particle_managers(), 0);
       std::vector<std::vector<double>> cell_scores(this->n_particle_managers());
 
-      for (auto &scores: cell_scores)
+      for (auto &scores : cell_scores)
         scores.reserve(this->get_triangulation().n_active_cells());
 
       // We need the granularity as a double because we are using it to divide "bucket_width," another double
@@ -50,40 +50,42 @@ namespace aspect
                 These are the steps taken to compute the density score:
                 Create a table with perfect distribution containing an even number of particles in each bucket.
                 Create a table with the "worst case" distribution in which all particles are in one bucket.
-                Take the distance squared between the "perfect" table and the worst case table, treating both tables as vectors with granularity^dim elements.
-                Create a table with the actual distribution.
-                Take distance between "perfect" table and the actual table.
-                Return the ratio between the observed distance and the worst case distance.
-                A value of 1 represents the worst possible distribution, a value of 0 represents a completely even distribution.
+                Take the distance squared between the "perfect" table and the worst case table, treating both tables as vectors with
+                granularity^dim elements. Create a table with the actual distribution. Take distance between "perfect" table and the actual
+                table. Return the ratio between the observed distance and the worst case distance. A value of 1 represents the worst
+                possible distribution, a value of 0 represents a completely even distribution.
               */
 
               for (unsigned int particle_manager_index = 0; particle_manager_index < this->n_particle_managers(); ++particle_manager_index)
                 {
-                  const unsigned int particles_in_cell = this->get_particle_manager(particle_manager_index).get_particle_handler().n_particles_in_cell(cell);
+                  const unsigned int particles_in_cell =
+                    this->get_particle_manager(particle_manager_index).get_particle_handler().n_particles_in_cell(cell);
 
                   if (particles_in_cell > 0)
                     {
                       const double particles_in_cell_double = static_cast<double>(particles_in_cell);
-                      const double ideal_n_particles_per_bucket = particles_in_cell_double/(Utilities::fixed_power<dim>(granularity_double));
-                      const double bucket_width = 1.0/granularity_double;
+                      const double ideal_n_particles_per_bucket =
+                        particles_in_cell_double / (Utilities::fixed_power<dim>(granularity_double));
+                      const double bucket_width = 1.0 / granularity_double;
 
-                      const Table<dim,unsigned int> buckets_actual
-                        = sort_particles_into_buckets(cell,particle_manager_index,bucket_width);
+                      const Table<dim, unsigned int> buckets_actual =
+                        sort_particles_into_buckets(cell, particle_manager_index, bucket_width);
 
                       /*
                       In the worst case, all particles are in one bucket.
                       (granularity^dim)-1 is equal to the number of buckets
                       in the table minus 1 (the bucket all the particles are in).
                       */
-                      const double worst_case_empty_buckets = static_cast<double>(Utilities::fixed_power<dim>(granularity_double))-1.0;
+                      const double worst_case_empty_buckets = static_cast<double>(Utilities::fixed_power<dim>(granularity_double)) - 1.0;
                       const double worst_case_error_squared =
-                        ((particles_in_cell_double-ideal_n_particles_per_bucket)*(particles_in_cell_double-ideal_n_particles_per_bucket))+
-                        ((ideal_n_particles_per_bucket*ideal_n_particles_per_bucket)*(worst_case_empty_buckets));
+                        ((particles_in_cell_double - ideal_n_particles_per_bucket) *
+                         (particles_in_cell_double - ideal_n_particles_per_bucket)) +
+                        ((ideal_n_particles_per_bucket * ideal_n_particles_per_bucket) * (worst_case_empty_buckets));
 
                       double actual_error_squared = 0;
-                      for (unsigned int x=0; x<granularity; ++x)
+                      for (unsigned int x = 0; x < granularity; ++x)
                         {
-                          for (unsigned int y=0; y<granularity; ++y)
+                          for (unsigned int y = 0; y < granularity; ++y)
                             {
                               TableIndices<dim> entry_index;
                               entry_index[0] = x;
@@ -91,36 +93,42 @@ namespace aspect
                               // do another loop if in 3d
                               if (dim == 3)
                                 {
-                                  for (unsigned int z=0; z<granularity; ++z)
+                                  for (unsigned int z = 0; z < granularity; ++z)
                                     {
-                                      entry_index[2] = z;
+                                      entry_index[2]            = z;
                                       const double value_actual = static_cast<double>(buckets_actual(entry_index));
-                                      actual_error_squared += (ideal_n_particles_per_bucket - value_actual)*(ideal_n_particles_per_bucket - value_actual);
+                                      actual_error_squared +=
+                                        (ideal_n_particles_per_bucket - value_actual) * (ideal_n_particles_per_bucket - value_actual);
                                     }
                                 }
                               else
                                 {
                                   const double value_actual = static_cast<double>(buckets_actual(entry_index));
-                                  actual_error_squared += (ideal_n_particles_per_bucket - value_actual)*(ideal_n_particles_per_bucket - value_actual);
+                                  actual_error_squared +=
+                                    (ideal_n_particles_per_bucket - value_actual) * (ideal_n_particles_per_bucket - value_actual);
                                 }
                             }
                         }
 
                       // Take the ratio between the actual error and the worst case
                       // error, resulting in a score from 0 to 1 for the cell.
-                      const double distribution_score_current_cell = actual_error_squared/worst_case_error_squared;
+                      const double distribution_score_current_cell = actual_error_squared / worst_case_error_squared;
 
                       cell_scores[particle_manager_index].push_back(distribution_score_current_cell);
-                      local_max_scores[particle_manager_index] = std::max(local_max_scores[particle_manager_index], distribution_score_current_cell);
-                      local_min_scores[particle_manager_index] = std::min(local_min_scores[particle_manager_index], distribution_score_current_cell);
+                      local_max_scores[particle_manager_index] =
+                        std::max(local_max_scores[particle_manager_index], distribution_score_current_cell);
+                      local_min_scores[particle_manager_index] =
+                        std::min(local_min_scores[particle_manager_index], distribution_score_current_cell);
                     }
                   else if (particles_in_cell == 0)
                     {
                       // The score should be bad if there are no particles in a cell
                       const double distribution_score_current_cell = 1.0;
                       cell_scores[particle_manager_index].push_back(distribution_score_current_cell);
-                      local_max_scores[particle_manager_index] = std::max(local_max_scores[particle_manager_index], distribution_score_current_cell);
-                      local_min_scores[particle_manager_index] = std::min(local_min_scores[particle_manager_index], distribution_score_current_cell);
+                      local_max_scores[particle_manager_index] =
+                        std::max(local_max_scores[particle_manager_index], distribution_score_current_cell);
+                      local_min_scores[particle_manager_index] =
+                        std::min(local_min_scores[particle_manager_index], distribution_score_current_cell);
                     }
                 }
             }
@@ -135,21 +143,22 @@ namespace aspect
                                                         cell_scores[particle_manager_index].end(),
                                                         this->get_mpi_communicator());
           // get final values for min and max score from all processors
-          const double global_max_score = Utilities::MPI::max (local_max_scores[particle_manager_index], this->get_mpi_communicator());
-          const double global_min_score = Utilities::MPI::min (local_min_scores[particle_manager_index], this->get_mpi_communicator());
+          const double global_max_score = Utilities::MPI::max(local_max_scores[particle_manager_index], this->get_mpi_communicator());
+          const double global_min_score = Utilities::MPI::min(local_min_scores[particle_manager_index], this->get_mpi_communicator());
           // write to statistics file for all particle managers
-          const std::string particle_manager_index_prefix = (particle_manager_index == 0) ? "" : "Particles " + std::to_string(particle_manager_index+1) + ": ";
-          statistics.add_value (particle_manager_index_prefix+"Minimal particle distribution score: ", global_min_score);
-          statistics.add_value (particle_manager_index_prefix+"Average particle distribution score: ", mean_and_standard_deviation.first);
-          statistics.add_value (particle_manager_index_prefix+"Maximal particle distribution score: ", global_max_score);
-          statistics.add_value (particle_manager_index_prefix+"Cell Score Standard Deviation: ", mean_and_standard_deviation.second);
+          const std::string particle_manager_index_prefix =
+            (particle_manager_index == 0) ? "" : "Particles " + std::to_string(particle_manager_index + 1) + ": ";
+          statistics.add_value(particle_manager_index_prefix + "Minimal particle distribution score: ", global_min_score);
+          statistics.add_value(particle_manager_index_prefix + "Average particle distribution score: ", mean_and_standard_deviation.first);
+          statistics.add_value(particle_manager_index_prefix + "Maximal particle distribution score: ", global_max_score);
+          statistics.add_value(particle_manager_index_prefix + "Cell Score Standard Deviation: ", mean_and_standard_deviation.second);
 
           // write screen output for the first particle manager
           if (particle_manager_index == 0)
-            output << global_min_score << '/' << mean_and_standard_deviation.first << '/' << global_max_score << '/' << mean_and_standard_deviation.second;
+            output << global_min_score << '/' << mean_and_standard_deviation.first << '/' << global_max_score << '/'
+                   << mean_and_standard_deviation.second;
         }
-      return std::pair<std::string, std::string> ("Particle distribution score min/avg/max/stdev: ",
-                                                  output.str());
+      return std::pair<std::string, std::string>("Particle distribution score min/avg/max/stdev: ", output.str());
     }
 
 
@@ -164,23 +173,22 @@ namespace aspect
 
 
     template <int dim>
-    Table<dim,unsigned int>
-    ParticleDistributionScore<dim>::sort_particles_into_buckets(
-      const typename Triangulation<dim>::active_cell_iterator &cell,
-      const unsigned int particle_manager_index,
-      const double bucket_width) const
+    Table<dim, unsigned int>
+    ParticleDistributionScore<dim>::sort_particles_into_buckets(const typename Triangulation<dim>::active_cell_iterator &cell,
+                                                                const unsigned int particle_manager_index,
+                                                                const double       bucket_width) const
     {
       TableIndices<dim> bucket_sizes;
-      for (unsigned int i=0; i<dim; ++i)
+      for (unsigned int i = 0; i < dim; ++i)
         bucket_sizes[i] = granularity;
-      Table<dim,unsigned int> buckets;
+      Table<dim, unsigned int> buckets;
       buckets.reinit(bucket_sizes);
 
       // sort the particles within the current cell
       const typename Particle::ParticleHandler<dim>::particle_iterator_range particle_range =
         this->get_particle_manager(particle_manager_index).get_particle_handler().particles_in_cell(cell);
 
-      for (const auto &particle: particle_range)
+      for (const auto &particle : particle_range)
         {
           const double particle_x = particle.get_reference_location()[0];
           const double particle_y = particle.get_reference_location()[1];
@@ -200,9 +208,9 @@ namespace aspect
           will be out of range.
           */
           if (x_index == granularity)
-            x_index = granularity-1;
+            x_index = granularity - 1;
           if (y_index == granularity)
-            y_index = granularity-1;
+            y_index = granularity - 1;
 
           TableIndices<dim> entry_index;
           entry_index[0] = x_index;
@@ -210,10 +218,10 @@ namespace aspect
           if (dim == 3)
             {
               const double particle_z = particle.get_reference_location()[2];
-              const double z_ratio = (particle_z) / (bucket_width);
-              unsigned int z_index = static_cast<unsigned int>(std::floor(z_ratio));
+              const double z_ratio    = (particle_z) / (bucket_width);
+              unsigned int z_index    = static_cast<unsigned int>(std::floor(z_ratio));
               if (z_index == granularity)
-                z_index = granularity-1;
+                z_index = granularity - 1;
               entry_index[2] = z_index;
             }
 
@@ -234,33 +242,33 @@ namespace aspect
       {
         prm.enter_subsection("Particle distribution score");
         {
-          prm.declare_entry("Granularity","2",
-                            Patterns::Integer (2),
+          prm.declare_entry("Granularity",
+                            "2",
+                            Patterns::Integer(2),
                             "This parameter determines how many bins this postprocessor sorts particles "
                             "into. The ideal value for granularity depends on the maximum number of particles "
-                            "in the cell. Generally higher values lead to more accuracy."
-                           );
+                            "in the cell. Generally higher values lead to more accuracy.");
         }
-        prm.leave_subsection ();
+        prm.leave_subsection();
       }
-      prm.leave_subsection ();
+      prm.leave_subsection();
     }
 
 
 
     template <int dim>
     void
-    ParticleDistributionScore<dim>::parse_parameters (ParameterHandler &prm)
+    ParticleDistributionScore<dim>::parse_parameters(ParameterHandler &prm)
     {
       prm.enter_subsection("Postprocess");
       {
         prm.enter_subsection("Particle distribution score");
         {
-          granularity = prm.get_integer ("Granularity");
+          granularity = prm.get_integer("Granularity");
         }
-        prm.leave_subsection ();
+        prm.leave_subsection();
       }
-      prm.leave_subsection ();
+      prm.leave_subsection();
     }
   }
 }

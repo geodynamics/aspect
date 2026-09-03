@@ -23,12 +23,14 @@
 #define _aspect_geometry_model_interface_h
 
 #include <aspect/plugins.h>
+
+#include <aspect/coordinate_systems.h>
+#include <aspect/utilities.h>
+
 #include <deal.II/base/parameter_handler.h>
 #include <deal.II/distributed/tria.h>
-#include <array>
-#include <aspect/utilities.h>
-#include <aspect/coordinate_systems.h>
 
+#include <array>
 #include <set>
 
 
@@ -60,8 +62,8 @@ namespace aspect
         /**
          * Generate a coarse mesh for the geometry described by this class.
          */
-        virtual
-        void create_coarse_mesh (parallel::distributed::Triangulation<dim> &coarse_grid) const = 0;
+        virtual void
+        create_coarse_mesh(parallel::distributed::Triangulation<dim> &coarse_grid) const = 0;
 
         /**
          * Return the typical length scale one would expect of features in
@@ -76,8 +78,8 @@ namespace aspect
          * matches the order of magnitude for the diameter of plumes in the
          * earth.
          */
-        virtual
-        double length_scale () const = 0;
+        virtual double
+        length_scale() const = 0;
 
         /**
          * Return the depth that corresponds to the given position. The
@@ -116,8 +118,8 @@ namespace aspect
          * in the known and fixed reference geometry, to the reference
          * surface that defines what zero depth is.
          */
-        virtual
-        double depth(const Point<dim> &position) const = 0;
+        virtual double
+        depth(const Point<dim> &position) const = 0;
 
         /**
          * Return the height of the given position relative to the reference
@@ -128,8 +130,8 @@ namespace aspect
          *
          * Same limitations as for the depth function, apply here.
          */
-        virtual
-        double height_above_reference_surface(const Point<dim> &position) const = 0;
+        virtual double
+        height_above_reference_surface(const Point<dim> &position) const = 0;
 
         /**
          * Converts a Cartesian Point into another coordinate system and returns it
@@ -137,14 +139,13 @@ namespace aspect
          */
 
         Utilities::NaturalCoordinate<dim>
-        cartesian_to_other_coordinates(const Point<dim> &position,
-                                       const Utilities::Coordinates::CoordinateSystem &coordinate_system) const;
+        cartesian_to_other_coordinates(const Point<dim> &position, const Utilities::Coordinates::CoordinateSystem &coordinate_system) const;
 
         /**
          * Returns what the natural coordinate system for this geometry model is.
          */
-        virtual
-        aspect::Utilities::Coordinates::CoordinateSystem natural_coordinate_system() const = 0;
+        virtual aspect::Utilities::Coordinates::CoordinateSystem
+        natural_coordinate_system() const = 0;
 
         /**
          * Takes the Cartesian points (`(x,z)` or `(x,y,z)`) and returns standardized
@@ -153,16 +154,16 @@ namespace aspect
          * model it will be `(radius, longitude)` in 2d, and `(radius, longitude,
          * latitude)` in 3d.
          */
-        virtual
-        std::array<double,dim> cartesian_to_natural_coordinates(const Point<dim> &position) const;
+        virtual std::array<double, dim>
+        cartesian_to_natural_coordinates(const Point<dim> &position) const;
 
         /**
          * Undoes the action of cartesian_to_natural_coordinates(), and turns the
          * coordinate system which is most "natural" to the geometry model into
          * Cartesian coordinates.
          */
-        virtual
-        Point<dim> natural_to_cartesian_coordinates(const std::array<double,dim> &position) const;
+        virtual Point<dim>
+        natural_to_cartesian_coordinates(const std::array<double, dim> &position) const;
 
         /**
          * Returns a representative point for a given depth. Such a point must
@@ -181,8 +182,8 @@ namespace aspect
          * where exactly that is -- but at points that we know for sure are
          * inside the domain.
          */
-        virtual
-        Point<dim> representative_point(const double depth) const = 0;
+        virtual Point<dim>
+        representative_point(const double depth) const = 0;
 
         /**
          * Returns the maximal depth of this geometry. For a definition of
@@ -192,8 +193,8 @@ namespace aspect
          * to some reference configuration, ignoring any dynamic or initial
          * topography.
          */
-        virtual
-        double maximal_depth() const = 0;
+        virtual double
+        maximal_depth() const = 0;
 
 
         /**
@@ -201,9 +202,8 @@ namespace aspect
          * This information is used to determine what boundary indicators can
          * be used in the input file.
          */
-        virtual
-        std::set<types::boundary_id>
-        get_used_boundary_indicators () const = 0;
+        virtual std::set<types::boundary_id>
+        get_used_boundary_indicators() const = 0;
 
         /**
          * Return a mapping from symbolic names of each part of the boundary
@@ -240,9 +240,8 @@ namespace aspect
          * geometry model may define multiple symbolic names for the same
          * boundary or not define any.
          */
-        virtual
-        std::map<std::string,types::boundary_id>
-        get_symbolic_boundary_names_map () const;
+        virtual std::map<std::string, types::boundary_id>
+        get_symbolic_boundary_names_map() const;
 
         /**
          * For a given name of a boundary component, translate it to its
@@ -259,7 +258,7 @@ namespace aspect
          * that explains the error.
          */
         types::boundary_id
-        translate_symbolic_boundary_name_to_id (const std::string &name) const;
+        translate_symbolic_boundary_name_to_id(const std::string &name) const;
 
         /**
          * For each one of the given names of boundary components, translate
@@ -276,7 +275,7 @@ namespace aspect
          * exception of type std::string that explains the error.
          */
         std::vector<types::boundary_id>
-        translate_symbolic_boundary_names_to_ids (const std::vector<std::string> &names) const;
+        translate_symbolic_boundary_names_to_ids(const std::vector<std::string> &names) const;
 
         /**
          * Given a boundary indicator, try and see whether this geometry model
@@ -288,7 +287,7 @@ namespace aspect
          * is available.
          */
         std::string
-        translate_id_to_symbol_name (const types::boundary_id boundary_id) const;
+        translate_id_to_symbol_name(const types::boundary_id boundary_id) const;
 
         /**
          * Returns a set of periodic boundary pairs.  The elements of the set
@@ -296,9 +295,8 @@ namespace aspect
          * base class returns an empty set, so this does nothing unless you
          * specifically use a geometry model with periodic boundary conditions
          */
-        virtual
-        std::set<std::pair<std::pair<types::boundary_id, types::boundary_id>, unsigned int>>
-        get_periodic_boundary_pairs () const;
+        virtual std::set<std::pair<std::pair<types::boundary_id, types::boundary_id>, unsigned int>>
+        get_periodic_boundary_pairs() const;
 
         /**
          * Adjust positions to be inside the domain considering periodic boundary conditions.
@@ -321,11 +319,10 @@ namespace aspect
          * domain; to check this is the responsibility of the calling function.
          * A common application of this function are particles that crossed a periodic boundary.
          */
-        virtual
-        void
-        adjust_positions_for_periodicity (Point<dim> &position,
-                                          const ArrayView<Point<dim>> &connected_positions = {},
-                                          const ArrayView<Tensor<1,dim>> &connected_velocities = {}) const;
+        virtual void
+        adjust_positions_for_periodicity(Point<dim>                      &position,
+                                         const ArrayView<Point<dim>>     &connected_positions  = {},
+                                         const ArrayView<Tensor<1, dim>> &connected_velocities = {}) const;
 
         /**
          * If true, the geometry contains cells with boundaries that are not
@@ -333,16 +330,14 @@ namespace aspect
          * return value is @p false, certain operation can be optimized.The
          * default implementation of this function will return @p true.
          */
-        virtual
-        bool
+        virtual bool
         has_curved_elements() const;
 
         /**
          * If true, the queried point (in Cartesian coordinates)
          * lies in the domain specified by the geometry.
          */
-        virtual
-        bool
+        virtual bool
         point_is_in_domain(const Point<dim> &p) const = 0;
 
         /**
@@ -351,10 +346,8 @@ namespace aspect
          * The default implementation creates cartesian periodic boundary conditions
          * for all periodic boundary indicators.
          */
-        virtual
-        void
-        make_periodicity_constraints(const DoFHandler<dim> &dof_handler,
-                                     AffineConstraints<double> &constraints) const;
+        virtual void
+        make_periodicity_constraints(const DoFHandler<dim> &dof_handler, AffineConstraints<double> &constraints) const;
     };
 
 
@@ -376,10 +369,10 @@ namespace aspect
      */
     template <int dim>
     void
-    register_geometry_model (const std::string &name,
-                             const std::string &description,
-                             void (*declare_parameters_function) (ParameterHandler &),
-                             std::unique_ptr<Interface<dim>> (*factory_function) ());
+    register_geometry_model(const std::string &name,
+                            const std::string &description,
+                            void (*declare_parameters_function)(ParameterHandler &),
+                            std::unique_ptr<Interface<dim>> (*factory_function)());
 
     /**
      * A function that given the name of a model returns a pointer to an
@@ -393,7 +386,7 @@ namespace aspect
      */
     template <int dim>
     std::unique_ptr<Interface<dim>>
-    create_geometry_model (ParameterHandler &prm);
+    create_geometry_model(ParameterHandler &prm);
 
     /**
      * Declare the runtime parameters of the registered geometry models.
@@ -402,7 +395,7 @@ namespace aspect
      */
     template <int dim>
     void
-    declare_parameters (ParameterHandler &prm);
+    declare_parameters(ParameterHandler &prm);
 
     /**
      * For the current plugin subsystem, write a connection graph of all of the
@@ -415,7 +408,7 @@ namespace aspect
      */
     template <int dim>
     void
-    write_plugin_graph (std::ostream &output_stream);
+    write_plugin_graph(std::ostream &output_stream);
 
 
 
@@ -426,17 +419,15 @@ namespace aspect
      *
      * @ingroup GeometryModels
      */
-#define ASPECT_REGISTER_GEOMETRY_MODEL(classname,name,description) \
+#define ASPECT_REGISTER_GEOMETRY_MODEL(classname, name, description) \
   template class classname<2>; \
   template class classname<3>; \
-  namespace ASPECT_REGISTER_GEOMETRY_MODEL_ ## classname \
+  namespace ASPECT_REGISTER_GEOMETRY_MODEL_##classname \
   { \
-    aspect::internal::Plugins::RegisterHelper<aspect::GeometryModel::Interface<2>,classname<2>> \
-    dummy_ ## classname ## _2d (&aspect::GeometryModel::register_geometry_model<2>, \
-                                name, description); \
-    aspect::internal::Plugins::RegisterHelper<aspect::GeometryModel::Interface<3>,classname<3>> \
-    dummy_ ## classname ## _3d (&aspect::GeometryModel::register_geometry_model<3>, \
-                                name, description); \
+    aspect::internal::Plugins::RegisterHelper<aspect::GeometryModel::Interface<2>, classname<2>> dummy_##classname##_2d( \
+      &aspect::GeometryModel::register_geometry_model<2>, name, description); \
+    aspect::internal::Plugins::RegisterHelper<aspect::GeometryModel::Interface<3>, classname<3>> dummy_##classname##_3d( \
+      &aspect::GeometryModel::register_geometry_model<3>, name, description); \
   }
   }
 }

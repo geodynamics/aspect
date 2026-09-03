@@ -22,29 +22,29 @@
 #ifndef _aspect_global_h
 #define _aspect_global_h
 
-#include <aspect/config.h>
 #include <aspect/citation_info.h>
+#include <aspect/config.h>
 
-#include <deal.II/base/mpi.h>
 #include <deal.II/base/exceptions.h>
+#include <deal.II/base/mpi.h>
 
 DEAL_II_DISABLE_EXTRA_DIAGNOSTICS
 
-#include <boost/archive/binary_oarchive.hpp>
 #include <boost/archive/binary_iarchive.hpp>
+#include <boost/archive/binary_oarchive.hpp>
 
 DEAL_II_ENABLE_EXTRA_DIAGNOSTICS
 
 #include <boost/container/small_vector.hpp>
 
 #ifdef ASPECT_USE_TPETRA
-#include <deal.II/lac/trilinos_tpetra_vector.h>
-#include <deal.II/lac/trilinos_tpetra_block_vector.h>
-#include <deal.II/lac/trilinos_tpetra_sparse_matrix.h>
-#include <deal.II/lac/trilinos_tpetra_block_sparse_matrix.h>
+#  include <deal.II/lac/trilinos_tpetra_block_sparse_matrix.h>
+#  include <deal.II/lac/trilinos_tpetra_block_vector.h>
+#  include <deal.II/lac/trilinos_tpetra_sparse_matrix.h>
+#  include <deal.II/lac/trilinos_tpetra_vector.h>
 #else
-#include <deal.II/lac/trilinos_sparse_matrix.h>
-#include <deal.II/lac/trilinos_block_sparse_matrix.h>
+#  include <deal.II/lac/trilinos_block_sparse_matrix.h>
+#  include <deal.II/lac/trilinos_sparse_matrix.h>
 #endif
 
 
@@ -67,7 +67,7 @@ namespace aspect
     /**
      * Number of seconds in a year [s]
      */
-    constexpr double year_in_seconds = 60*60*24*365.2425;
+    constexpr double year_in_seconds = 60 * 60 * 24 * 365.2425;
 
     /**
      * Zero degrees Celsius to Kelvin [K]
@@ -236,7 +236,8 @@ namespace aspect
    * -- which is caught in main() but doesn't produce any output (because
    * processor 0 will already produce the output).
    */
-  class QuietException {};
+  class QuietException
+  {};
 
   /**
    * A type that we use for small vectors, whose approximate size is known at
@@ -290,8 +291,8 @@ namespace aspect
     using BlockSparseMatrix = dealii::LinearAlgebra::TpetraWrappers::BlockSparseMatrix<double>;
 #else
     /**
-    * Typedef for the vector type used.
-    */
+     * Typedef for the vector type used.
+     */
     using Vector = dealii::TrilinosWrappers::MPI::Vector;
 
     /**
@@ -319,7 +320,8 @@ namespace aspect
    * running, with how many processes, and using which linear algebra library.
    */
   template <class Stream>
-  void print_aspect_header(Stream &stream);
+  void
+  print_aspect_header(Stream &stream);
 }
 
 

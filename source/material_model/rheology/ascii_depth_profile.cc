@@ -20,6 +20,7 @@
 
 
 #include <aspect/global.h>
+
 #include <aspect/material_model/rheology/ascii_depth_profile.h>
 #include <aspect/utilities.h>
 
@@ -32,14 +33,13 @@ namespace aspect
     {
 
       template <int dim>
-      AsciiDepthProfile<dim>::AsciiDepthProfile ()
-        = default;
+      AsciiDepthProfile<dim>::AsciiDepthProfile() = default;
 
 
 
       template <int dim>
       void
-      AsciiDepthProfile<dim>::initialize ()
+      AsciiDepthProfile<dim>::initialize()
       {
         this->initialize(this->get_mpi_communicator());
         viscosity_index = this->get_column_index_from_name("viscosity");
@@ -49,17 +49,16 @@ namespace aspect
 
       template <int dim>
       double
-      AsciiDepthProfile<dim>::compute_viscosity (const double depth) const
+      AsciiDepthProfile<dim>::compute_viscosity(const double depth) const
       {
-        return this->get_data_component (Point<1>(depth), viscosity_index);
+        return this->get_data_component(Point<1>(depth), viscosity_index);
       }
 
 
 
       template <int dim>
       void
-      AsciiDepthProfile<dim>::declare_parameters (ParameterHandler &prm,
-                                                  const std::string &subsection_name)
+      AsciiDepthProfile<dim>::declare_parameters(ParameterHandler &prm, const std::string &subsection_name)
       {
         Utilities::AsciiDataBase<dim>::declare_parameters(prm,
                                                           "$ASPECT_SOURCE_DIR/data/material-model/rheology/",
@@ -71,11 +70,9 @@ namespace aspect
 
       template <int dim>
       void
-      AsciiDepthProfile<dim>::parse_parameters (ParameterHandler &prm,
-                                                const std::string &subsection_name)
+      AsciiDepthProfile<dim>::parse_parameters(ParameterHandler &prm, const std::string &subsection_name)
       {
-        Utilities::AsciiDataBase<dim>::parse_parameters(prm,
-                                                        subsection_name);
+        Utilities::AsciiDataBase<dim>::parse_parameters(prm, subsection_name);
       }
     }
   }
@@ -88,8 +85,7 @@ namespace aspect
   {
     namespace Rheology
     {
-#define INSTANTIATE(dim) \
-  template class AsciiDepthProfile<dim>;
+#define INSTANTIATE(dim) template class AsciiDepthProfile<dim>;
 
       ASPECT_INSTANTIATE(INSTANTIATE)
 

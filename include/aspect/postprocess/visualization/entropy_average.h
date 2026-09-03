@@ -40,18 +40,14 @@ namespace aspect
        * at every point.
        */
       template <int dim>
-      class EntropyAverage
-        : public DataPostprocessorScalar<dim>,
-          public SimulatorAccess<dim>,
-          public Interface<dim>
+      class EntropyAverage : public DataPostprocessorScalar<dim>, public SimulatorAccess<dim>, public Interface<dim>
       {
         public:
-          EntropyAverage ();
+          EntropyAverage();
 
           void
           evaluate_vector_field(const DataPostprocessorInputs::Vector<dim> &input_data,
-                                std::vector<Vector<double>> &computed_quantities) const override;
-
+                                std::vector<Vector<double>>                &computed_quantities) const override;
       };
     }
   }

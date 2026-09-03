@@ -29,52 +29,42 @@ namespace aspect
     namespace VisualizationPostprocessors
     {
       template <int dim>
-      StrainRateTensor<dim>::
-      StrainRateTensor ()
-        :
-        DataPostprocessorTensor<dim> ("strain_rate_tensor",
-                                      update_gradients | update_quadrature_points),
-        Interface<dim>("1/s")
+      StrainRateTensor<dim>::StrainRateTensor()
+        : DataPostprocessorTensor<dim>("strain_rate_tensor", update_gradients | update_quadrature_points)
+        , Interface<dim>("1/s")
       {}
 
 
 
       template <int dim>
       void
-      StrainRateTensor<dim>::
-      evaluate_vector_field(const DataPostprocessorInputs::Vector<dim> &input_data,
-                            std::vector<Vector<double>> &computed_quantities) const
+      StrainRateTensor<dim>::evaluate_vector_field(const DataPostprocessorInputs::Vector<dim> &input_data,
+                                                   std::vector<Vector<double>>                &computed_quantities) const
       {
         const unsigned int n_quadrature_points = input_data.solution_values.size();
-        Assert (computed_quantities.size() == n_quadrature_points, ExcInternalError());
-        Assert ((computed_quantities[0].size() == Tensor<2,dim>::n_independent_components),
-                ExcInternalError());
-        Assert (input_data.solution_gradients[0].size() == this->introspection().n_components, ExcInternalError());
+        Assert(computed_quantities.size() == n_quadrature_points, ExcInternalError());
+        Assert((computed_quantities[0].size() == Tensor<2, dim>::n_independent_components), ExcInternalError());
+        Assert(input_data.solution_gradients[0].size() == this->introspection().n_components, ExcInternalError());
 
-        for (unsigned int q=0; q<n_quadrature_points; ++q)
+        for (unsigned int q = 0; q < n_quadrature_points; ++q)
           {
-            Tensor<2,dim> grad_u;
-            for (unsigned int d=0; d<dim; ++d)
+            Tensor<2, dim> grad_u;
+            for (unsigned int d = 0; d < dim; ++d)
               grad_u[d] = input_data.solution_gradients[q][d];
 
-            const SymmetricTensor<2,dim> strain_rate = symmetrize(grad_u);
-            const Tensor<2,dim> deviatoric_strain_rate
-              = (this->get_material_model().is_compressible()
-                 ?
-                 strain_rate - 1./3 * trace(strain_rate) * unit_symmetric_tensor<dim>()
-                 :
-                 strain_rate);
+            const SymmetricTensor<2, dim> strain_rate = symmetrize(grad_u);
+            const Tensor<2, dim>          deviatoric_strain_rate =
+              (this->get_material_model().is_compressible() ? strain_rate - 1. / 3 * trace(strain_rate) * unit_symmetric_tensor<dim>() :
+                                                              strain_rate);
 
-            for (unsigned int d=0; d<dim; ++d)
-              for (unsigned int e=0; e<dim; ++e)
-                computed_quantities[q][Tensor<2,dim>::component_to_unrolled_index(TableIndices<2>(d,e))]
-                  = deviatoric_strain_rate[d][e];
+            for (unsigned int d = 0; d < dim; ++d)
+              for (unsigned int e = 0; e < dim; ++e)
+                computed_quantities[q][Tensor<2, dim>::component_to_unrolled_index(TableIndices<2>(d, e))] = deviatoric_strain_rate[d][e];
           }
 
         const auto &viz = this->get_postprocess_manager().template get_matching_active_plugin<Postprocess::Visualization<dim>>();
         if (!viz.output_pointwise_stress_and_strain())
           average_quantities(computed_quantities);
-
       }
     }
   }

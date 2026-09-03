@@ -23,20 +23,23 @@
 #define _aspect_prescribed_dilation_interface_h
 
 #include <aspect/plugins.h>
+
+#include <aspect/material_model/interface.h>
 #include <aspect/simulator_access.h>
 #include <aspect/utilities.h>
-#include <aspect/material_model/interface.h>
 
-#include <deal.II/base/point.h>
 #include <deal.II/base/parameter_handler.h>
+#include <deal.II/base/point.h>
 
 #include <boost/core/demangle.hpp>
+
 #include <typeinfo>
 
 
 namespace aspect
 {
-  template <int dim> class SimulatorAccess;
+  template <int dim>
+  class SimulatorAccess;
   /**
    * A namespace in which we define everything that has to do with defining
    * the Prescribed dilation.
@@ -57,40 +60,44 @@ namespace aspect
          * @param n_points The number of quadrature points for which output
          * quantities will be provided.
          */
-        PrescribedDilationOutputs (const unsigned int n_points);
+        PrescribedDilationOutputs(const unsigned int n_points);
 
         /**
          * Copy constructor. This constructor copies all data members of the
          * source object.
          */
-        PrescribedDilationOutputs (const PrescribedDilationOutputs &source) = default;
+        PrescribedDilationOutputs(const PrescribedDilationOutputs &source) = default;
 
         /**
          * Move constructor. This constructor simply moves all members.
          */
-        PrescribedDilationOutputs (PrescribedDilationOutputs &&)  noexcept = default;
+        PrescribedDilationOutputs(PrescribedDilationOutputs &&) noexcept = default;
 
         /**
          * Copy operator. Copying these objects is expensive, and consequently
          * prohibited.
          */
-        PrescribedDilationOutputs &operator= (const PrescribedDilationOutputs &source) = delete;
+        PrescribedDilationOutputs &
+        operator=(const PrescribedDilationOutputs &source) = delete;
 
         /**
          * Move operator.
          */
-        PrescribedDilationOutputs &operator= (PrescribedDilationOutputs &&)  noexcept = default;
+        PrescribedDilationOutputs &
+        operator=(PrescribedDilationOutputs &&) noexcept = default;
 
         /**
          * Function that returns the number of points at which
          * the dilation is to be evaluated.
          */
-        unsigned int n_evaluation_points() const;
+        unsigned int
+        n_evaluation_points() const;
 
         /**
          * Function that set zeroes to all values in this object
          */
-        void reset();
+        void
+        reset();
 
         /**
          * Vector containing the dilation at each evaluation point.
@@ -125,8 +132,7 @@ namespace aspect
          * Compute the dilation and store in PrescribedDilationOutputs structure
          */
         virtual void
-        evaluate ( const aspect::MaterialModel::MaterialModelInputs<dim> &in,
-                   PrescribedDilationOutputs<dim> &out) const = 0;
+        evaluate(const aspect::MaterialModel::MaterialModelInputs<dim> &in, PrescribedDilationOutputs<dim> &out) const = 0;
     };
 
 
@@ -144,9 +150,8 @@ namespace aspect
          * Declare the parameters of all known dilation plugins, as
          * well as of ones this class has itself.
          */
-        static
-        void
-        declare_parameters (ParameterHandler &prm);
+        static void
+        declare_parameters(ParameterHandler &prm);
 
 
         /**
@@ -155,15 +160,14 @@ namespace aspect
          * let these objects read their parameters as well.
          */
         void
-        parse_parameters (ParameterHandler &prm) override;
+        parse_parameters(ParameterHandler &prm) override;
 
 
         /**
          * Compute the dilation and store in PrescribedDilationOutputs structure
          */
         void
-        evaluate ( const aspect::MaterialModel::MaterialModelInputs<dim> &in,
-                   PrescribedDilationOutputs<dim> &out) const;
+        evaluate(const aspect::MaterialModel::MaterialModelInputs<dim> &in, PrescribedDilationOutputs<dim> &out) const;
 
 
         /**
@@ -185,12 +189,11 @@ namespace aspect
          *
          * @ingroup PrescribedDilation
          */
-        static
-        void
-        register_dilation_model (const std::string &name,
-                                 const std::string &description,
-                                 void (*declare_parameters_function) (ParameterHandler &),
-                                 std::unique_ptr<Interface<dim>> (*factory_function) ());
+        static void
+        register_dilation_model(const std::string &name,
+                                const std::string &description,
+                                void (*declare_parameters_function)(ParameterHandler &),
+                                std::unique_ptr<Interface<dim>> (*factory_function)());
 
 
         /**
@@ -202,19 +205,16 @@ namespace aspect
          *
          * @param output_stream The stream to write the output to.
          */
-        static
-        void
-        write_plugin_graph (std::ostream &output_stream);
+        static void
+        write_plugin_graph(std::ostream &output_stream);
 
 
         /**
          * Exception.
          */
-        DeclException1 (ExcDilationModelNameNotFound,
-                        std::string,
-                        << "Could not find entry <"
-                        << arg1
-                        << "> among the names of registered dilation model objects.");
+        DeclException1(ExcDilationModelNameNotFound,
+                       std::string,
+                       << "Could not find entry <" << arg1 << "> among the names of registered dilation model objects.");
     };
 
 
@@ -226,7 +226,7 @@ namespace aspect
      */
     template <int dim>
     std::string
-    get_valid_model_names_pattern ();
+    get_valid_model_names_pattern();
 
 
     /**
@@ -236,17 +236,15 @@ namespace aspect
      *
      * @ingroup PrescribedDilation
      */
-#define ASPECT_REGISTER_DILATION_MODEL(classname,name,description) \
+#define ASPECT_REGISTER_DILATION_MODEL(classname, name, description) \
   template class classname<2>; \
   template class classname<3>; \
-  namespace ASPECT_REGISTER_DILATION_MODEL_ ## classname \
+  namespace ASPECT_REGISTER_DILATION_MODEL_##classname \
   { \
-    aspect::internal::Plugins::RegisterHelper<aspect::PrescribedDilation::Interface<2>,classname<2>> \
-    dummy_ ## classname ## _2d (&aspect::PrescribedDilation::Manager<2>::register_dilation_model, \
-                                name, description); \
-    aspect::internal::Plugins::RegisterHelper<aspect::PrescribedDilation::Interface<3>,classname<3>> \
-    dummy_ ## classname ## _3d (&aspect::PrescribedDilation::Manager<3>::register_dilation_model, \
-                                name, description); \
+    aspect::internal::Plugins::RegisterHelper<aspect::PrescribedDilation::Interface<2>, classname<2>> dummy_##classname##_2d( \
+      &aspect::PrescribedDilation::Manager<2>::register_dilation_model, name, description); \
+    aspect::internal::Plugins::RegisterHelper<aspect::PrescribedDilation::Interface<3>, classname<3>> dummy_##classname##_3d( \
+      &aspect::PrescribedDilation::Manager<3>::register_dilation_model, name, description); \
   }
   }
 }

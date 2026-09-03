@@ -40,33 +40,29 @@ namespace aspect
        * of the stress tensor (or optionally of the deviatoric stress tensor).
        */
       template <int dim>
-      class PrincipalStress
-        : public DataPostprocessor<dim>,
-          public SimulatorAccess<dim>,
-          public Interface<dim>
+      class PrincipalStress : public DataPostprocessor<dim>, public SimulatorAccess<dim>, public Interface<dim>
       {
         public:
-          PrincipalStress ();
+          PrincipalStress();
 
           std::vector<std::string>
-          get_names () const override;
+          get_names() const override;
 
           std::vector<DataComponentInterpretation::DataComponentInterpretation>
-          get_data_component_interpretation () const override;
+          get_data_component_interpretation() const override;
 
           UpdateFlags
-          get_needed_update_flags () const override;
+          get_needed_update_flags() const override;
 
           void
           evaluate_vector_field(const DataPostprocessorInputs::Vector<dim> &input_data,
-                                std::vector<Vector<double>> &computed_quantities) const override;
+                                std::vector<Vector<double>>                &computed_quantities) const override;
 
-          static
-          void
-          declare_parameters (ParameterHandler &prm);
+          static void
+          declare_parameters(ParameterHandler &prm);
 
           void
-          parse_parameters (ParameterHandler &prm) override;
+          parse_parameters(ParameterHandler &prm) override;
 
         private:
           /**

@@ -23,9 +23,9 @@
 #ifndef _aspect_postprocess_boundary_velocity_residual_statistics_h
 #define _aspect_postprocess_boundary_velocity_residual_statistics_h
 
+#include <aspect/boundary_velocity/gplates.h>
 #include <aspect/postprocess/interface.h>
 #include <aspect/simulator_access.h>
-#include <aspect/boundary_velocity/gplates.h>
 
 
 namespace aspect
@@ -48,33 +48,33 @@ namespace aspect
          * This function reads the specified input velocity data files, i.e., either an ascii data file or
          * a file from the GPlates model.
          */
-        void initialize () override;
+        void
+        initialize() override;
 
         /**
          * This function returns the input data velocity, (GPlates model or ascii data)
          * value at a point.  This function is called from execute() function.
          */
-        Tensor<1,dim>
-        get_data_velocity (const Point<dim> &p) const;
+        Tensor<1, dim>
+        get_data_velocity(const Point<dim> &p) const;
 
         /**
          * Evaluate the solution statistics for some velocity residual at the top boundary.
          */
-        std::pair<std::string,std::string>
-        execute (TableHandler &statistics) override;
+        std::pair<std::string, std::string>
+        execute(TableHandler &statistics) override;
 
         /**
          * Declare the parameters this class takes through input files.
          */
-        static
-        void
-        declare_parameters (ParameterHandler &prm);
+        static void
+        declare_parameters(ParameterHandler &prm);
 
         /**
          * Read the parameters this class declares from the parameter file.
          */
         void
-        parse_parameters (ParameterHandler &prm) override;
+        parse_parameters(ParameterHandler &prm) override;
 
       private:
         /**

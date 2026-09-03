@@ -22,22 +22,23 @@
 #define _aspect_material_model_rheology_visco_plastic_h
 
 #include <aspect/global.h>
+
 #include <aspect/material_model/interface.h>
-#include <aspect/material_model/utilities.h>
-#include <aspect/material_model/rheology/strain_dependent.h>
-#include <aspect/material_model/rheology/friction_models.h>
+#include <aspect/material_model/rheology/compositional_viscosity_prefactors.h>
+#include <aspect/material_model/rheology/constant_viscosity_prefactors.h>
 #include <aspect/material_model/rheology/diffusion_creep.h>
 #include <aspect/material_model/rheology/dislocation_creep.h>
-#include <aspect/material_model/rheology/frank_kamenetskii.h>
-#include <aspect/material_model/rheology/peierls_creep.h>
-#include <aspect/material_model/rheology/constant_viscosity_prefactors.h>
-#include <aspect/material_model/rheology/compositional_viscosity_prefactors.h>
 #include <aspect/material_model/rheology/drucker_prager.h>
 #include <aspect/material_model/rheology/elasticity.h>
+#include <aspect/material_model/rheology/frank_kamenetskii.h>
+#include <aspect/material_model/rheology/friction_models.h>
 #include <aspect/material_model/rheology/grain_boundary_sliding.h>
+#include <aspect/material_model/rheology/peierls_creep.h>
+#include <aspect/material_model/rheology/strain_dependent.h>
+#include <aspect/material_model/utilities.h>
 #include <aspect/simulator_access.h>
 
-#include<deal.II/fe/component_mask.h>
+#include <deal.II/fe/component_mask.h>
 
 namespace aspect
 {
@@ -54,7 +55,8 @@ namespace aspect
       public:
         PlasticAdditionalOutputs(const unsigned int n_points);
 
-        std::vector<double> get_nth_output(const unsigned int idx) const override;
+        std::vector<double>
+        get_nth_output(const unsigned int idx) const override;
 
         /**
          * Cohesions at the evaluation points passed to
@@ -81,20 +83,19 @@ namespace aspect
          * and viscosity is rescaled back to the yield envelope.
          */
         std::vector<double> yielding;
-
     };
 
     /**
-    * Additional output fields for diffusion and dislocation viscosities.
-    */
+     * Additional output fields for diffusion and dislocation viscosities.
+     */
     template <int dim>
     class ViscosityAdditionalOutputs : public NamedAdditionalMaterialOutputs<dim>
     {
       public:
         /**
-        * Enumeration of viscosity properties that can be exposed through
-        * additional material model outputs.
-        */
+         * Enumeration of viscosity properties that can be exposed through
+         * additional material model outputs.
+         */
         enum class Property
         {
           diffusion_viscosity,
@@ -104,8 +105,7 @@ namespace aspect
         /**
          * Constructor.
          */
-        ViscosityAdditionalOutputs(const unsigned int n_points,
-                                   const std::vector<Property> &active_properties);
+        ViscosityAdditionalOutputs(const unsigned int n_points, const std::vector<Property> &active_properties);
 
         std::vector<double>
         get_nth_output(const unsigned int idx) const override;
@@ -133,7 +133,6 @@ namespace aspect
          * i.e., viscous flow law is either dislocation or composite.
          */
         std::vector<double> dislocation_viscosities;
-
     };
 
     /**
@@ -141,44 +140,44 @@ namespace aspect
      */
     struct IsostrainViscosities
     {
-      /**
-       * The composition viscosity.
-       */
-      std::vector<double> composition_viscosities;
+        /**
+         * The composition viscosity.
+         */
+        std::vector<double> composition_viscosities;
 
-      /**
-       * The composition yielding.
-       */
-      std::vector<bool> composition_yielding;
+        /**
+         * The composition yielding.
+         */
+        std::vector<bool> composition_yielding;
 
-      /**
-       * All the drucker prager plasticity parameters.
-       */
-      std::vector<Rheology::DruckerPragerParameters> drucker_prager_parameters;
+        /**
+         * All the drucker prager plasticity parameters.
+         */
+        std::vector<Rheology::DruckerPragerParameters> drucker_prager_parameters;
 
-      /**
-       * The LHS term corresponding to plastic dilation in the
-       * Stokes system. For details, see the comments of
-       * MaterialModel::PrescribedDilation::dilation_lhs_term.
-       */
-      std::vector<double> dilation_lhs_terms;
+        /**
+         * The LHS term corresponding to plastic dilation in the
+         * Stokes system. For details, see the comments of
+         * MaterialModel::PrescribedDilation::dilation_lhs_term.
+         */
+        std::vector<double> dilation_lhs_terms;
 
-      /**
-       * The RHS term corresponding to plastic dilation in the
-       * Stokes system. For details, see the comments of
-       * MaterialModel::PrescribedDilation::dilation_rhs_term.
-       */
-      std::vector<double> dilation_rhs_terms;
+        /**
+         * The RHS term corresponding to plastic dilation in the
+         * Stokes system. For details, see the comments of
+         * MaterialModel::PrescribedDilation::dilation_rhs_term.
+         */
+        std::vector<double> dilation_rhs_terms;
 
-      /**
-      * Diffusion viscosities for each composition.
-      */
-      std::vector<double> diffusion_viscosities;
+        /**
+         * Diffusion viscosities for each composition.
+         */
+        std::vector<double> diffusion_viscosities;
 
-      /**
-       * Dislocation viscosities for each composition.
-       */
-      std::vector<double> dislocation_viscosities;
+        /**
+         * Dislocation viscosities for each composition.
+         */
+        std::vector<double> dislocation_viscosities;
     };
 
     namespace Rheology
@@ -202,12 +201,12 @@ namespace aspect
            * each phase and then averaged for each compositional field.
            */
           IsostrainViscosities
-          calculate_isostrain_viscosities ( const MaterialModel::MaterialModelInputs<dim> &in,
-                                            const unsigned int i,
-                                            const std::vector<double> &volume_fractions,
-                                            const std::vector<double> &phase_function_values = {},
-                                            const std::vector<unsigned int> &n_phase_transitions_per_composition =
-                                              std::vector<unsigned int>()) const;
+          calculate_isostrain_viscosities(
+            const MaterialModel::MaterialModelInputs<dim> &in,
+            const unsigned int                             i,
+            const std::vector<double>                     &volume_fractions,
+            const std::vector<double>                     &phase_function_values               = {},
+            const std::vector<unsigned int>               &n_phase_transitions_per_composition = std::vector<unsigned int>()) const;
 
           /**
            * A function that fills the viscosity derivatives in the
@@ -218,14 +217,15 @@ namespace aspect
            * for each compositional field and viscosity will be first computed on
            * each phase and then averaged for each compositional field.
            */
-          void compute_viscosity_derivatives(const unsigned int point_index,
-                                             const std::vector<double> &volume_fractions,
-                                             const IsostrainViscosities &isostrain_values,
-                                             const MaterialModel::MaterialModelInputs<dim> &in,
-                                             MaterialModel::MaterialModelOutputs<dim> &out,
-                                             const std::vector<double> &phase_function_values = {},
-                                             const std::vector<unsigned int> &n_phase_transitions_per_composition =
-                                               std::vector<unsigned int>()) const;
+          void
+          compute_viscosity_derivatives(
+            const unsigned int                             point_index,
+            const std::vector<double>                     &volume_fractions,
+            const IsostrainViscosities                    &isostrain_values,
+            const MaterialModel::MaterialModelInputs<dim> &in,
+            MaterialModel::MaterialModelOutputs<dim>      &out,
+            const std::vector<double>                     &phase_function_values               = {},
+            const std::vector<unsigned int>               &n_phase_transitions_per_composition = std::vector<unsigned int>()) const;
 
           /**
            * A function that returns a ComponentMask that represents all compositional
@@ -233,14 +233,14 @@ namespace aspect
            * physical proportion of the material, e.g. volume fraction of peridotite
            * (as opposed to non-volumetric quantities like the amount of finite-strain).
            */
-          ComponentMask get_volumetric_composition_mask() const;
+          ComponentMask
+          get_volumetric_composition_mask() const;
 
           /**
            * Declare the parameters this function takes through input files.
            */
-          static
-          void
-          declare_parameters (ParameterHandler &prm);
+          static void
+          declare_parameters(ParameterHandler &prm);
 
           /**
            * Read the parameters this class declares from the parameter file.
@@ -250,30 +250,31 @@ namespace aspect
            * parameters.
            */
           void
-          parse_parameters (ParameterHandler &prm,
-                            const std::unique_ptr<std::vector<unsigned int>> &expected_n_phases_per_composition = nullptr);
+          parse_parameters(ParameterHandler                                 &prm,
+                           const std::unique_ptr<std::vector<unsigned int>> &expected_n_phases_per_composition = nullptr);
 
           /**
            * Create the additional material model outputs object that contains the
            * plastic outputs.
            */
           void
-          create_plastic_outputs (MaterialModel::MaterialModelOutputs<dim> &out) const;
+          create_plastic_outputs(MaterialModel::MaterialModelOutputs<dim> &out) const;
 
           /**
            * A function that fills the plastic additional output in the
            * MaterialModelOutputs object that is handed over, if it exists.
            * Does nothing otherwise.
            */
-          void fill_plastic_outputs(const unsigned int point_index,
-                                    const std::vector<double> &volume_fractions,
-                                    const bool plastic_yielding,
-                                    const MaterialModel::MaterialModelInputs<dim> &in,
-                                    MaterialModel::MaterialModelOutputs<dim> &out,
-                                    const IsostrainViscosities &isostrain_viscosities) const;
+          void
+          fill_plastic_outputs(const unsigned int                             point_index,
+                               const std::vector<double>                     &volume_fractions,
+                               const bool                                     plastic_yielding,
+                               const MaterialModel::MaterialModelInputs<dim> &in,
+                               MaterialModel::MaterialModelOutputs<dim>      &out,
+                               const IsostrainViscosities                    &isostrain_viscosities) const;
           /**
-          * Create additional outputs for diffusion and dislocation viscosities.
-          */
+           * Create additional outputs for diffusion and dislocation viscosities.
+           */
           void
           create_viscosity_outputs(MaterialModel::MaterialModelOutputs<dim> &out) const;
 
@@ -281,10 +282,11 @@ namespace aspect
            * Fill additional outputs for diffusion and dislocation viscosities,
            * if viscosity additional output object is created.
            */
-          void fill_viscosity_outputs(const unsigned int point_index,
-                                      const std::vector<double> &volume_fractions,
-                                      MaterialModel::MaterialModelOutputs<dim> &out,
-                                      const IsostrainViscosities &isostrain_viscosities) const;
+          void
+          fill_viscosity_outputs(const unsigned int                        point_index,
+                                 const std::vector<double>                &volume_fractions,
+                                 MaterialModel::MaterialModelOutputs<dim> &out,
+                                 const IsostrainViscosities               &isostrain_viscosities) const;
 
           /**
            * Minimum strain rate used to stabilize the strain rate dependent rheology.
@@ -316,7 +318,6 @@ namespace aspect
 
 
         private:
-
           /**
            * Reference strain rate for the first non-linear iteration
            * in the first time step.
@@ -413,8 +414,8 @@ namespace aspect
           /**
            * Objects for computing viscous creep viscosities.
            */
-          Rheology::DiffusionCreep<dim> diffusion_creep;
-          Rheology::DislocationCreep<dim> dislocation_creep;
+          Rheology::DiffusionCreep<dim>                    diffusion_creep;
+          Rheology::DislocationCreep<dim>                  dislocation_creep;
           std::unique_ptr<Rheology::FrankKamenetskii<dim>> frank_kamenetskii_rheology;
 
           /**
@@ -456,7 +457,6 @@ namespace aspect
            * Object for computing plastic stresses, viscosities, and additional outputs
            */
           Rheology::DruckerPrager<dim> drucker_prager_plasticity;
-
       };
     }
   }

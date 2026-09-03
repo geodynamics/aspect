@@ -45,27 +45,27 @@ namespace aspect
           /**
            * Constructor.
            */
-          GrainSize ();
+          GrainSize();
 
           /**
            * Initialize variables that stay constant
            * during a model.
            */
-          void initialize () override;
+          void
+          initialize() override;
 
           /**
            * @copydoc aspect::Particle::Property::Interface::initialize_one_particle_property()
            */
           void
-          initialize_one_particle_property (const Point<dim> &position,
-                                            std::vector<double> &particle_properties) const override;
+          initialize_one_particle_property(const Point<dim> &position, std::vector<double> &particle_properties) const override;
 
           /**
            * @copydoc aspect::Particle::Property::Interface::update_particle_properties()
            */
           void
-          update_particle_properties (const ParticleUpdateInputs<dim> &inputs,
-                                      typename ParticleHandler<dim>::particle_iterator_range &particles) const override;
+          update_particle_properties(const ParticleUpdateInputs<dim>                        &inputs,
+                                     typename ParticleHandler<dim>::particle_iterator_range &particles) const override;
 
           /**
            * Returns an enum, which determines how this particle property is
@@ -76,7 +76,7 @@ namespace aspect
            * condition, in which case it uses the boundary condition value.
            */
           InitializationModeForLateParticles
-          late_initialization_mode () const override;
+          late_initialization_mode() const override;
 
           /**
            * A function that returns the advection field to be used
@@ -92,13 +92,13 @@ namespace aspect
            * @copydoc aspect::Particle::Property::Interface::need_update()
            */
           UpdateTimeFlags
-          need_update () const override;
+          need_update() const override;
 
           /**
            * @copydoc aspect::Particle::Property::Interface::get_update_flags()
            */
           UpdateFlags
-          get_update_flags (const unsigned int component) const override;
+          get_update_flags(const unsigned int component) const override;
 
           /**
            * @copydoc aspect::Particle::Property::Interface::get_property_information()
@@ -116,7 +116,7 @@ namespace aspect
            * that is not a problem. This implementation is not thread safe,
            * but it is currently not used in a threaded context.
            */
-          mutable MaterialModel::MaterialModelInputs<dim> material_inputs;
+          mutable MaterialModel::MaterialModelInputs<dim>  material_inputs;
           mutable MaterialModel::MaterialModelOutputs<dim> material_outputs;
 
           /**

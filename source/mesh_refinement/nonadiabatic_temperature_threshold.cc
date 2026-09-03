@@ -19,8 +19,8 @@
 */
 
 
-#include <aspect/mesh_refinement/nonadiabatic_temperature_threshold.h>
 #include <aspect/adiabatic_conditions/interface.h>
+#include <aspect/mesh_refinement/nonadiabatic_temperature_threshold.h>
 
 #include <deal.II/base/quadrature_lib.h>
 #include <deal.II/fe/fe_values.h>
@@ -31,7 +31,7 @@ namespace aspect
   {
     template <int dim>
     void
-    NonadiabaticTemperatureThreshold<dim>::tag_additional_cells () const
+    NonadiabaticTemperatureThreshold<dim>::tag_additional_cells() const
     {
       // tag_additional_cells is executed before the equations are solved
       // for the very first time. If we do not have the finite element, we
@@ -39,14 +39,12 @@ namespace aspect
       if (this->get_dof_handler().n_locally_owned_dofs() == 0)
         return;
 
-      const Quadrature<dim> quadrature(this->get_fe().base_element(this->introspection().base_elements.temperature).get_unit_support_points());
-      FEValues<dim> fe_values (this->get_mapping(),
-                               this->get_fe(),
-                               quadrature,
-                               update_quadrature_points | update_values);
+      const Quadrature<dim> quadrature(
+        this->get_fe().base_element(this->introspection().base_elements.temperature).get_unit_support_points());
+      FEValues<dim> fe_values(this->get_mapping(), this->get_fe(), quadrature, update_quadrature_points | update_values);
 
-      std::vector<double> temperature_values (quadrature.size());
-      const unsigned int n_dofs_per_cell = this->get_fe().base_element(this->introspection().base_elements.temperature).dofs_per_cell;
+      std::vector<double> temperature_values(quadrature.size());
+      const unsigned int  n_dofs_per_cell = this->get_fe().base_element(this->introspection().base_elements.temperature).dofs_per_cell;
 
       for (const auto &cell : this->get_dof_handler().active_cell_iterators())
         if (cell->is_locally_owned())
@@ -54,11 +52,10 @@ namespace aspect
             bool refine = false;
 
             fe_values.reinit(cell);
-            fe_values[this->introspection().extractors.temperature].get_function_values (this->get_solution(),
-                                                                                         temperature_values);
+            fe_values[this->introspection().extractors.temperature].get_function_values(this->get_solution(), temperature_values);
 
             // if the nonadiabatic temperature exceeds the threshold, cell is marked for refinement
-            for (unsigned int j=0; j<n_dofs_per_cell; ++j)
+            for (unsigned int j = 0; j < n_dofs_per_cell; ++j)
               {
                 const double adiabatic_temperature = this->get_adiabatic_conditions().temperature(fe_values.quadrature_point(j));
 
@@ -70,7 +67,7 @@ namespace aspect
                 else if (temperature_anomaly_type == negative_only)
                   nonadiabatic_temperature = adiabatic_temperature - temperature_values[j];
                 else
-                  AssertThrow (false, ExcNotImplemented());
+                  AssertThrow(false, ExcNotImplemented());
 
                 if (nonadiabatic_temperature > threshold)
                   {
@@ -81,34 +78,33 @@ namespace aspect
 
             if (refine)
               {
-                cell->clear_coarsen_flag ();
-                cell->set_refine_flag ();
+                cell->clear_coarsen_flag();
+                cell->set_refine_flag();
               }
           }
     }
 
     template <int dim>
     void
-    NonadiabaticTemperatureThreshold<dim>::
-    declare_parameters (ParameterHandler &prm)
+    NonadiabaticTemperatureThreshold<dim>::declare_parameters(ParameterHandler &prm)
     {
       prm.enter_subsection("Mesh refinement");
       {
         prm.enter_subsection("Nonadiabatic temperature threshold");
         {
-          prm.declare_entry ("Threshold",
-                             "100",
-                             Patterns::Double (0.),
-                             "A threshold that the nonadiabatic temperature "
-                             "will be evaluated against. "
-                             "Units: $\\text{K}$");
-          prm.declare_entry ("Temperature anomaly type",
-                             "absolute value",
-                             Patterns::Selection ("negative only|positive only|absolute value"),
-                             "What type of temperature anomaly should be considered when "
-                             "evaluating against the threshold: Only negative anomalies "
-                             "(negative only), only positive anomalies (positive only) "
-                             "or the absolute value of the nonadiabatic temperature.");
+          prm.declare_entry("Threshold",
+                            "100",
+                            Patterns::Double(0.),
+                            "A threshold that the nonadiabatic temperature "
+                            "will be evaluated against. "
+                            "Units: $\\text{K}$");
+          prm.declare_entry("Temperature anomaly type",
+                            "absolute value",
+                            Patterns::Selection("negative only|positive only|absolute value"),
+                            "What type of temperature anomaly should be considered when "
+                            "evaluating against the threshold: Only negative anomalies "
+                            "(negative only), only positive anomalies (positive only) "
+                            "or the absolute value of the nonadiabatic temperature.");
         }
         prm.leave_subsection();
       }
@@ -117,7 +113,7 @@ namespace aspect
 
     template <int dim>
     void
-    NonadiabaticTemperatureThreshold<dim>::parse_parameters (ParameterHandler &prm)
+    NonadiabaticTemperatureThreshold<dim>::parse_parameters(ParameterHandler &prm)
     {
       prm.enter_subsection("Mesh refinement");
       {
@@ -125,14 +121,14 @@ namespace aspect
         {
           threshold = prm.get_double("Threshold");
 
-          if (prm.get ("Temperature anomaly type") == "negative only")
+          if (prm.get("Temperature anomaly type") == "negative only")
             temperature_anomaly_type = negative_only;
-          else if (prm.get ("Temperature anomaly type") == "positive only")
+          else if (prm.get("Temperature anomaly type") == "positive only")
             temperature_anomaly_type = positive_only;
-          else if (prm.get ("Temperature anomaly type") == "absolute value")
+          else if (prm.get("Temperature anomaly type") == "absolute value")
             temperature_anomaly_type = absolute_value;
           else
-            AssertThrow (false, ExcNotImplemented());
+            AssertThrow(false, ExcNotImplemented());
         }
         prm.leave_subsection();
       }

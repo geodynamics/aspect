@@ -30,12 +30,11 @@ namespace aspect
   namespace Assemblers
   {
     /**
-    * A class containing the functions to assemble the Stokes preconditioner for the
-    * case of anisotropic viscosities.
-    */
+     * A class containing the functions to assemble the Stokes preconditioner for the
+     * case of anisotropic viscosities.
+     */
     template <int dim>
-    class StokesPreconditionerAnisotropicViscosity : public Assemblers::Interface<dim>,
-      public SimulatorAccess<dim>
+    class StokesPreconditionerAnisotropicViscosity : public Assemblers::Interface<dim>, public SimulatorAccess<dim>
     {
       public:
         void
@@ -54,8 +53,7 @@ namespace aspect
      * to the Stokes preconditioner for the case of anisotropic viscosities.
      */
     template <int dim>
-    class StokesCompressiblePreconditionerAnisotropicViscosity : public Assemblers::Interface<dim>,
-      public SimulatorAccess<dim>
+    class StokesCompressiblePreconditionerAnisotropicViscosity : public Assemblers::Interface<dim>, public SimulatorAccess<dim>
     {
       public:
         void
@@ -68,8 +66,7 @@ namespace aspect
      * Stokes equation for the case of anisotropic viscosities.
      */
     template <int dim>
-    class StokesIncompressibleTermsAnisotropicViscosity : public Assemblers::Interface<dim>,
-      public SimulatorAccess<dim>
+    class StokesIncompressibleTermsAnisotropicViscosity : public Assemblers::Interface<dim>, public SimulatorAccess<dim>
     {
       public:
         void
@@ -89,8 +86,7 @@ namespace aspect
      * of the velocity is not longer zero.
      */
     template <int dim>
-    class StokesCompressibleStrainRateViscosityTermAnisotropicViscosity : public Assemblers::Interface<dim>,
-      public SimulatorAccess<dim>
+    class StokesCompressibleStrainRateViscosityTermAnisotropicViscosity : public Assemblers::Interface<dim>, public SimulatorAccess<dim>
     {
       public:
         void

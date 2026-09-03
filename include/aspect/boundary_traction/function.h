@@ -45,17 +45,17 @@ namespace aspect
         /**
          * Constructor.
          */
-        Function ();
+        Function();
 
         /**
          * Return the boundary traction as a function of position. The
          * (outward) normal vector to the domain is also provided as
          * a second argument.
          */
-        Tensor<1,dim>
-        boundary_traction (const types::boundary_id boundary_indicator,
-                           const Point<dim> &position,
-                           const Tensor<1,dim> &normal_vector) const override;
+        Tensor<1, dim>
+        boundary_traction(const types::boundary_id boundary_indicator,
+                          const Point<dim>        &position,
+                          const Tensor<1, dim>    &normal_vector) const override;
 
         /**
          * A function that is called at the beginning of each time step to
@@ -64,20 +64,19 @@ namespace aspect
          * the parsed function what the current time is.
          */
         void
-        update () override;
+        update() override;
 
         /**
          * Declare the parameters this class takes through input files.
          */
-        static
-        void
-        declare_parameters (ParameterHandler &prm);
+        static void
+        declare_parameters(ParameterHandler &prm);
 
         /**
          * Read the parameters this class declares from the parameter file.
          */
         void
-        parse_parameters (ParameterHandler &prm) override;
+        parse_parameters(ParameterHandler &prm) override;
 
       private:
         /**

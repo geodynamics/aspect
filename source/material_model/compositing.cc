@@ -28,9 +28,7 @@ namespace aspect
     {
       namespace
       {
-        const std::pair<std::string, MaterialProperty> property_map_pairs[]
-        =
-        {
+        const std::pair<std::string, MaterialProperty> property_map_pairs[] = {
           {"Viscosity", viscosity},
           {"Density", density},
           {"Thermal expansion coefficient", thermal_expansion_coefficient},
@@ -39,22 +37,19 @@ namespace aspect
           {"Compressibility", compressibility},
           {"Entropy derivative pressure", entropy_derivative_pressure},
           {"Entropy derivative temperature", entropy_derivative_temperature},
-          {"Reaction terms", reaction_terms}
-        };
+          {"Reaction terms", reaction_terms}};
 
 
-        const std::map<std::string, MaterialProperty>
-        property_map (std::begin(property_map_pairs),
-                      std::end(property_map_pairs));
+        const std::map<std::string, MaterialProperty> property_map(std::begin(property_map_pairs), std::end(property_map_pairs));
       }
     }
 
 
     template <int dim>
     void
-    Compositing<dim>::copy_required_properties(const unsigned int model_index,
+    Compositing<dim>::copy_required_properties(const unsigned int                                   model_index,
                                                const typename Interface<dim>::MaterialModelOutputs &base_output,
-                                               typename Interface<dim>::MaterialModelOutputs &out) const
+                                               typename Interface<dim>::MaterialModelOutputs       &out) const
     {
       if (model_property_map.find(Property::viscosity)->second == model_index)
         out.viscosities = base_output.viscosities;
@@ -80,7 +75,7 @@ namespace aspect
 
     template <int dim>
     void
-    Compositing<dim>::initialize ()
+    Compositing<dim>::initialize()
     {
       // initialize all models
       for (auto &model : models)
@@ -91,15 +86,14 @@ namespace aspect
     template <int dim>
     void
     Compositing<dim>::evaluate(const typename Interface<dim>::MaterialModelInputs &in,
-                               typename Interface<dim>::MaterialModelOutputs &out) const
+                               typename Interface<dim>::MaterialModelOutputs      &out) const
     {
-      typename Interface<dim>::MaterialModelOutputs base_output(out.n_evaluation_points(),
-                                                                this->introspection().n_compositional_fields);
+      typename Interface<dim>::MaterialModelOutputs base_output(out.n_evaluation_points(), this->introspection().n_compositional_fields);
 
       // Move the additional outputs to base_output so that our models can fill them if desired:
       base_output.move_additional_outputs_from(out);
 
-      for (unsigned int i=0; i<models.size(); ++i)
+      for (unsigned int i = 0; i < models.size(); ++i)
         {
           models[i]->evaluate(in, base_output);
           copy_required_properties(i, base_output, out);
@@ -113,10 +107,9 @@ namespace aspect
 
     template <int dim>
     void
-    Compositing<dim>::
-    create_additional_named_outputs (typename Interface<dim>::MaterialModelOutputs &outputs) const
+    Compositing<dim>::create_additional_named_outputs(typename Interface<dim>::MaterialModelOutputs &outputs) const
     {
-      for (unsigned int i=0; i<models.size(); ++i)
+      for (unsigned int i = 0; i < models.size(); ++i)
         {
           models[i]->create_additional_named_outputs(outputs);
         }
@@ -126,7 +119,7 @@ namespace aspect
 
     template <int dim>
     void
-    Compositing<dim>::declare_parameters (ParameterHandler &prm)
+    Compositing<dim>::declare_parameters(ParameterHandler &prm)
     {
       prm.enter_subsection("Material model");
       {
@@ -135,14 +128,14 @@ namespace aspect
           std::map<std::string, Property::MaterialProperty>::const_iterator prop_it = Property::property_map.begin();
           for (; prop_it != Property::property_map.end(); ++prop_it)
             {
-              prm.declare_entry(prop_it->first, "unspecified",
-                                Patterns::Selection(
-                                  MaterialModel::get_valid_model_names_pattern<dim>()+"|unspecified"
-                                ),
-                                "Material model to use for " + prop_it->first +". Valid values for this "
-                                "parameter are the names of models that are also valid for the "
-                                "``Material models/Model name'' parameter. See the documentation for "
-                                "that for more information.");
+              prm.declare_entry(prop_it->first,
+                                "unspecified",
+                                Patterns::Selection(MaterialModel::get_valid_model_names_pattern<dim>() + "|unspecified"),
+                                "Material model to use for " + prop_it->first +
+                                  ". Valid values for this "
+                                  "parameter are the names of models that are also valid for the "
+                                  "``Material models/Model name'' parameter. See the documentation for "
+                                  "that for more information.");
             }
         }
         prm.leave_subsection();
@@ -154,7 +147,7 @@ namespace aspect
 
     template <int dim>
     void
-    Compositing<dim>::parse_parameters (ParameterHandler &prm)
+    Compositing<dim>::parse_parameters(ParameterHandler &prm)
     {
       prm.enter_subsection("Material model");
       {
@@ -164,22 +157,21 @@ namespace aspect
           std::map<std::string, Property::MaterialProperty>::const_iterator prop_it = Property::property_map.begin();
           for (; prop_it != Property::property_map.end(); ++prop_it)
             {
-              const Property::MaterialProperty prop = prop_it->second;
-              const std::string model_name = prm.get(prop_it->first);
+              const Property::MaterialProperty prop       = prop_it->second;
+              const std::string                model_name = prm.get(prop_it->first);
 
               AssertThrow(model_name != "averaging",
-                          ExcMessage("You may not use ``averaging'' as the base model for the "
-                                     + prop_it->first +" property of a compositing material model."));
+                          ExcMessage("You may not use ``averaging'' as the base model for the " + prop_it->first +
+                                     " property of a compositing material model."));
               AssertThrow(model_name != "compositing",
-                          ExcMessage("You may not use ``compositing'' as the base model for the "
-                                     + prop_it->first +" property of a compositing material model."));
+                          ExcMessage("You may not use ``compositing'' as the base model for the " + prop_it->first +
+                                     " property of a compositing material model."));
 
               // see if we've encountered this base model before. If not,
               // otherwise put it into a new slot. otherwise
               // record its number for the current coefficient.
-              std::vector<std::string>::iterator model_position
-                = std::find(model_names.begin(), model_names.end(), model_name);
-              if ( model_position == model_names.end() )
+              std::vector<std::string>::iterator model_position = std::find(model_names.begin(), model_names.end(), model_name);
+              if (model_position == model_names.end())
                 {
                   model_property_map[prop] = model_names.size();
                   model_names.push_back(model_name);
@@ -187,7 +179,6 @@ namespace aspect
               else
                 model_property_map[prop] = std::distance(model_names.begin(), model_position);
             }
-
         }
         prm.leave_subsection();
       }
@@ -197,11 +188,11 @@ namespace aspect
       // After parsing the parameters for averaging, it is essential to parse
       // parameters related to the base models
       models.resize(model_names.size());
-      for (unsigned int i=0; i<model_names.size(); ++i)
+      for (unsigned int i = 0; i < model_names.size(); ++i)
         {
           models[i] = create_material_model<dim>(model_names[i]);
-          if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(models[i].get()))
-            sim->initialize_simulator (this->get_simulator());
+          if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim> *>(models[i].get()))
+            sim->initialize_simulator(this->get_simulator());
           models[i]->parse_parameters(prm);
           // All models will need to compute all quantities, so do so
           this->model_dependence.viscosity |= models[i]->get_model_dependence().viscosity;
@@ -216,8 +207,7 @@ namespace aspect
 
     template <int dim>
     bool
-    Compositing<dim>::
-    is_compressible () const
+    Compositing<dim>::is_compressible() const
     {
       const unsigned int ind = model_property_map.find(Property::compressibility)->second;
       return models[ind]->is_compressible();
@@ -227,12 +217,10 @@ namespace aspect
 
     template <int dim>
     const Interface<dim> &
-    Compositing<dim>::
-    get_model_for_property(const Property::MaterialProperty property) const
+    Compositing<dim>::get_model_for_property(const Property::MaterialProperty property) const
     {
       auto it = model_property_map.find(property);
-      Assert(it != model_property_map.end(),
-             ExcMessage("Property not found in model_property_map"));
+      Assert(it != model_property_map.end(), ExcMessage("Property not found in model_property_map"));
 
       return *models[it->second];
     }
@@ -267,7 +255,6 @@ namespace aspect
                                    "because it has to evaluate all material coefficients of all underlying "
                                    "material models. Consequently, if performance of assembly and postprocessing "
                                    "is important, then implementing a separate material model is "
-                                   "a better choice than using this material model."
-                                  )
+                                   "a better choice than using this material model.")
   }
 }

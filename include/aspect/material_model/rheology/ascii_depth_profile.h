@@ -23,8 +23,8 @@
 #define _aspect_material_model_rheology_ascii_depth_profile_h
 
 #include <aspect/material_model/interface.h>
-#include <aspect/utilities.h>
 #include <aspect/simulator_access.h>
+#include <aspect/utilities.h>
 
 #include <deal.II/base/point.h>
 
@@ -43,18 +43,19 @@ namespace aspect
        * @ingroup Rheology
        */
       template <int dim>
-      class AsciiDepthProfile : public Utilities::AsciiDataProfile<dim> , public SimulatorAccess<dim>
+      class AsciiDepthProfile : public Utilities::AsciiDataProfile<dim>, public SimulatorAccess<dim>
       {
         public:
           /**
            * Constructor. Initialize variables.
            */
-          AsciiDepthProfile ();
+          AsciiDepthProfile();
 
           /**
            * Initialization function.
            */
-          void initialize ();
+          void
+          initialize();
 
           // avoid -Woverloaded-virtual:
           using Utilities::AsciiDataProfile<dim>::initialize;
@@ -62,25 +63,22 @@ namespace aspect
           /**
            * Return the viscosity at a given point of the domain.
            */
-          double compute_viscosity (const double depth) const;
+          double
+          compute_viscosity(const double depth) const;
 
           /**
            * Declare the parameters for the input files.
            */
-          static
-          void
-          declare_parameters (ParameterHandler  &prm,
-                              const std::string &subsection_name = "Ascii data model");
+          static void
+          declare_parameters(ParameterHandler &prm, const std::string &subsection_name = "Ascii data model");
 
           /**
            * Read the parameters from the parameter file.
            */
           void
-          parse_parameters (ParameterHandler &prm,
-                            const std::string &subsection_name = "Ascii data model");
+          parse_parameters(ParameterHandler &prm, const std::string &subsection_name = "Ascii data model");
 
         private:
-
           /**
            * The column index of the viscosity in the data file.
            */

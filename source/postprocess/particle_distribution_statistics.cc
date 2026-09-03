@@ -34,18 +34,18 @@ namespace aspect
 
 
     template <int dim>
-    std::pair<std::string,std::string>
-    ParticleDistributionStatistics<dim>::execute (TableHandler &statistics)
+    std::pair<std::string, std::string>
+    ParticleDistributionStatistics<dim>::execute(TableHandler &statistics)
     {
       // These need to be vectors to account for multiple particle managers.
-      std::vector<unsigned int> cells_with_particles(this->n_particle_managers(),0);
-      std::vector<double> standard_deviation_sums(this->n_particle_managers(),0);
-      std::vector<double> standard_deviation_mins(this->n_particle_managers(),std::numeric_limits<double>::max());
-      std::vector<double> standard_deviation_maxs(this->n_particle_managers(),0);
-      std::vector<double> function_min_sums(this->n_particle_managers(),0);
-      std::vector<double> function_max_sums(this->n_particle_managers(),0);
-      std::vector<double> function_min_mins(this->n_particle_managers(),std::numeric_limits<double>::max());
-      std::vector<double> function_max_maxs(this->n_particle_managers(),std::numeric_limits<double>::min());
+      std::vector<unsigned int> cells_with_particles(this->n_particle_managers(), 0);
+      std::vector<double>       standard_deviation_sums(this->n_particle_managers(), 0);
+      std::vector<double>       standard_deviation_mins(this->n_particle_managers(), std::numeric_limits<double>::max());
+      std::vector<double>       standard_deviation_maxs(this->n_particle_managers(), 0);
+      std::vector<double>       function_min_sums(this->n_particle_managers(), 0);
+      std::vector<double>       function_max_sums(this->n_particle_managers(), 0);
+      std::vector<double>       function_min_mins(this->n_particle_managers(), std::numeric_limits<double>::max());
+      std::vector<double>       function_max_maxs(this->n_particle_managers(), std::numeric_limits<double>::min());
 
 
       for (const auto &cell : this->get_dof_handler().active_cell_iterators())
@@ -54,17 +54,18 @@ namespace aspect
             {
               for (unsigned int particle_manager_index = 0; particle_manager_index < this->n_particle_managers(); ++particle_manager_index)
                 {
-                  unsigned int particles_in_cell = this->get_particle_manager(particle_manager_index).get_particle_handler().n_particles_in_cell(cell);
+                  unsigned int particles_in_cell =
+                    this->get_particle_manager(particle_manager_index).get_particle_handler().n_particles_in_cell(cell);
 
                   if (particles_in_cell > 0)
                     {
                       ++cells_with_particles[particle_manager_index];
                       if (KDE_per_particle == false)
                         {
-
                           const auto &particle_handler = this->get_particle_manager(particle_manager_index).get_particle_handler();
-                          Particle::ParticlePDF<dim> pdf(granularity,bandwidth,kernel_function);
-                          const std::vector<typename Particles::ParticleHandler<dim>::particle_iterator_range> particle_ranges_to_sum_over = get_neighboring_particle_ranges(cell,particle_handler);
+                          Particle::ParticlePDF<dim> pdf(granularity, bandwidth, kernel_function);
+                          const std::vector<typename Particles::ParticleHandler<dim>::particle_iterator_range> particle_ranges_to_sum_over =
+                            get_neighboring_particle_ranges(cell, particle_handler);
 
                           pdf.fill_from_particle_range(particle_handler.particles_in_cell(cell),
                                                        particle_ranges_to_sum_over,
@@ -73,8 +74,10 @@ namespace aspect
                                                        cell);
                           pdf.compute_statistical_values();
 
-                          standard_deviation_mins[particle_manager_index] = std::min(standard_deviation_mins[particle_manager_index], pdf.get_standard_deviation());
-                          standard_deviation_maxs[particle_manager_index] = std::max(standard_deviation_maxs[particle_manager_index], pdf.get_standard_deviation());
+                          standard_deviation_mins[particle_manager_index] =
+                            std::min(standard_deviation_mins[particle_manager_index], pdf.get_standard_deviation());
+                          standard_deviation_maxs[particle_manager_index] =
+                            std::max(standard_deviation_maxs[particle_manager_index], pdf.get_standard_deviation());
                           standard_deviation_sums[particle_manager_index] += pdf.get_standard_deviation();
 
                           function_min_sums[particle_manager_index] += pdf.get_min();
@@ -85,8 +88,9 @@ namespace aspect
                       else
                         {
                           const auto &particle_handler = this->get_particle_manager(particle_manager_index).get_particle_handler();
-                          Particle::ParticlePDF<dim> pdf(bandwidth,kernel_function);
-                          const std::vector<typename Particles::ParticleHandler<dim>::particle_iterator_range> particle_ranges_to_sum_over = get_neighboring_particle_ranges(cell,particle_handler);
+                          Particle::ParticlePDF<dim> pdf(bandwidth, kernel_function);
+                          const std::vector<typename Particles::ParticleHandler<dim>::particle_iterator_range> particle_ranges_to_sum_over =
+                            get_neighboring_particle_ranges(cell, particle_handler);
 
                           pdf.fill_from_particle_range(particle_handler.particles_in_cell(cell),
                                                        particle_ranges_to_sum_over,
@@ -95,8 +99,10 @@ namespace aspect
                                                        cell);
                           pdf.compute_statistical_values();
 
-                          standard_deviation_mins[particle_manager_index] = std::min(standard_deviation_mins[particle_manager_index], pdf.get_standard_deviation());
-                          standard_deviation_maxs[particle_manager_index] = std::max(standard_deviation_maxs[particle_manager_index], pdf.get_standard_deviation());
+                          standard_deviation_mins[particle_manager_index] =
+                            std::min(standard_deviation_mins[particle_manager_index], pdf.get_standard_deviation());
+                          standard_deviation_maxs[particle_manager_index] =
+                            std::max(standard_deviation_maxs[particle_manager_index], pdf.get_standard_deviation());
                           standard_deviation_sums[particle_manager_index] += pdf.get_standard_deviation();
 
                           function_min_sums[particle_manager_index] += pdf.get_min();
@@ -115,40 +121,49 @@ namespace aspect
       for (unsigned int particle_manager_index = 0; particle_manager_index < this->n_particle_managers(); ++particle_manager_index)
         {
           // Get final values from all processors
-          const double global_standard_deviation_max = Utilities::MPI::max (standard_deviation_maxs[particle_manager_index], this->get_mpi_communicator());
-          const double global_standard_deviation_min = Utilities::MPI::min (standard_deviation_mins[particle_manager_index], this->get_mpi_communicator());
-          const double global_cells_with_particles = Utilities::MPI::sum (cells_with_particles[particle_manager_index], this->get_mpi_communicator());
-          const double global_standard_deviation_sum = Utilities::MPI::sum (standard_deviation_sums[particle_manager_index], this->get_mpi_communicator());
-          const double global_standard_deviation_mean = global_standard_deviation_sum/global_cells_with_particles;
-          const double global_function_min_min = Utilities::MPI::min(function_min_mins[particle_manager_index],this->get_mpi_communicator());
-          const double global_function_max_max = Utilities::MPI::min(function_max_maxs[particle_manager_index],this->get_mpi_communicator());
+          const double global_standard_deviation_max =
+            Utilities::MPI::max(standard_deviation_maxs[particle_manager_index], this->get_mpi_communicator());
+          const double global_standard_deviation_min =
+            Utilities::MPI::min(standard_deviation_mins[particle_manager_index], this->get_mpi_communicator());
+          const double global_cells_with_particles =
+            Utilities::MPI::sum(cells_with_particles[particle_manager_index], this->get_mpi_communicator());
+          const double global_standard_deviation_sum =
+            Utilities::MPI::sum(standard_deviation_sums[particle_manager_index], this->get_mpi_communicator());
+          const double global_standard_deviation_mean = global_standard_deviation_sum / global_cells_with_particles;
+          const double global_function_min_min =
+            Utilities::MPI::min(function_min_mins[particle_manager_index], this->get_mpi_communicator());
+          const double global_function_max_max =
+            Utilities::MPI::min(function_max_maxs[particle_manager_index], this->get_mpi_communicator());
 
           // Get the average of the functions max and min values
-          const double global_function_min_sum = Utilities::MPI::sum (function_min_sums[particle_manager_index], this->get_mpi_communicator());
-          const double global_function_max_sum = Utilities::MPI::sum (function_max_sums[particle_manager_index], this->get_mpi_communicator());
-          const double global_function_min_mean = global_function_min_sum/global_cells_with_particles;
-          const double global_function_max_mean = global_function_max_sum/global_cells_with_particles;
+          const double global_function_min_sum =
+            Utilities::MPI::sum(function_min_sums[particle_manager_index], this->get_mpi_communicator());
+          const double global_function_max_sum =
+            Utilities::MPI::sum(function_max_sums[particle_manager_index], this->get_mpi_communicator());
+          const double global_function_min_mean = global_function_min_sum / global_cells_with_particles;
+          const double global_function_max_mean = global_function_max_sum / global_cells_with_particles;
 
           // Write to statistics file
-          std::string particle_manager_index_prefix = (particle_manager_index==0) ? "" : "Particles " + std::to_string(particle_manager_index+1) + ": ";
+          std::string particle_manager_index_prefix =
+            (particle_manager_index == 0) ? "" : "Particles " + std::to_string(particle_manager_index + 1) + ": ";
 
-          statistics.add_value (particle_manager_index_prefix+"Minimum PDF standard deviation: ", global_standard_deviation_min);
-          statistics.add_value (particle_manager_index_prefix+"Mean of PDF standard deviation: ", global_standard_deviation_mean);
-          statistics.add_value (particle_manager_index_prefix+"Maximum PDF standard deviation: ", global_standard_deviation_max);
-          statistics.add_value (particle_manager_index_prefix+"Mean of PDF minimum values: ", global_function_min_mean);
-          statistics.add_value (particle_manager_index_prefix+"Mean PDF maximum values: ", global_function_max_mean);
-          statistics.add_value (particle_manager_index_prefix+"Minimum of PDF minimum values: ", global_function_min_min);
-          statistics.add_value (particle_manager_index_prefix+"Maximum of PDF maximum values: ", global_function_max_max);
+          statistics.add_value(particle_manager_index_prefix + "Minimum PDF standard deviation: ", global_standard_deviation_min);
+          statistics.add_value(particle_manager_index_prefix + "Mean of PDF standard deviation: ", global_standard_deviation_mean);
+          statistics.add_value(particle_manager_index_prefix + "Maximum PDF standard deviation: ", global_standard_deviation_max);
+          statistics.add_value(particle_manager_index_prefix + "Mean of PDF minimum values: ", global_function_min_mean);
+          statistics.add_value(particle_manager_index_prefix + "Mean PDF maximum values: ", global_function_max_mean);
+          statistics.add_value(particle_manager_index_prefix + "Minimum of PDF minimum values: ", global_function_min_min);
+          statistics.add_value(particle_manager_index_prefix + "Maximum of PDF maximum values: ", global_function_max_max);
 
           if (particle_manager_index == 0)
             {
-              output << global_standard_deviation_min << "/" << global_standard_deviation_mean << "/" << global_standard_deviation_max << ", "
-                     << global_function_min_mean << "/" << global_function_max_mean << ", " << global_function_min_min << "/" << global_function_max_max;
+              output << global_standard_deviation_min << "/" << global_standard_deviation_mean << "/" << global_standard_deviation_max
+                     << ", " << global_function_min_mean << "/" << global_function_max_mean << ", " << global_function_min_min << "/"
+                     << global_function_max_max;
             }
         }
-      return std::pair<std::string, std::string> ("Particle Distribution Stats (stddev min/mean/max, mean min/max, absolute min/max):",
-                                                  output.str());
-
+      return std::pair<std::string, std::string>("Particle Distribution Stats (stddev min/mean/max, mean min/max, absolute min/max):",
+                                                 output.str());
     }
 
 
@@ -164,63 +179,64 @@ namespace aspect
 
     template <int dim>
     void
-    ParticleDistributionStatistics<dim>::declare_parameters (ParameterHandler &prm)
+    ParticleDistributionStatistics<dim>::declare_parameters(ParameterHandler &prm)
     {
       prm.enter_subsection("Postprocess");
       {
         prm.enter_subsection("Particle distribution statistics");
         {
-          prm.declare_entry("Kernel function","Uniform",
+          prm.declare_entry("Kernel function",
+                            "Uniform",
                             Patterns::Selection("Uniform|Gaussian|Triangular|CutOffFunctionW1"),
-                            "The kernel smoothing function to use for kernel density estimation."
-                           );
-          prm.declare_entry("KDE granularity","2",
-                            Patterns::Integer (1),
+                            "The kernel smoothing function to use for kernel density estimation.");
+          prm.declare_entry("KDE granularity",
+                            "2",
+                            Patterns::Integer(1),
                             "The granularity parameter determines how many discrete inputs exist for "
                             "the probability density function generated by the kernel density estimator. "
                             "The domain of the function is multidimensional so the granularity value determines "
                             "the range of inputs in each dimension. For example, a granularity value of 2 "
                             "results in a PDF which is defined for the inputs 0-1 in each of its dimensions. ");
-          prm.declare_entry("Kernel bandwidth","0.3",
-                            Patterns::Double (0.001),
+          prm.declare_entry("Kernel bandwidth",
+                            "0.3",
+                            Patterns::Double(0.001),
                             "The bandwidth parameter sets the bandwidth used for the kernel function. "
                             "The size of the bandwidth determines the output of the kernel function each, "
                             "time it is called. Larger bandwidth result in a point-density function which "
                             "has more smoothing because there is more overlap between the domains of the "
-                            "individual kernel functions. The opposite is true for smaller bandwidth values."
-                           );
-          prm.declare_entry("Use KDE per particle","false",
+                            "individual kernel functions. The opposite is true for smaller bandwidth values.");
+          prm.declare_entry("Use KDE per particle",
+                            "false",
                             Patterns::Bool(),
                             "If `KDE_per_particle` is true, the point-density function is defined at the position "
                             "of every particle in the cell. If it is false, the point-density-function is defined "
-                            "on a regular grid throughout the cell."
-                           );
+                            "on a regular grid throughout the cell.");
         }
-        prm.leave_subsection ();
+        prm.leave_subsection();
       }
-      prm.leave_subsection ();
+      prm.leave_subsection();
     }
 
 
 
     template <int dim>
     void
-    ParticleDistributionStatistics<dim>::parse_parameters (ParameterHandler &prm)
+    ParticleDistributionStatistics<dim>::parse_parameters(ParameterHandler &prm)
     {
       prm.enter_subsection("Postprocess");
       {
         prm.enter_subsection("Particle distribution statistics");
         {
-          KDE_per_particle = prm.get_bool("Use KDE per particle");
-          granularity = prm.get_integer("KDE granularity");
-          bandwidth = prm.get_double("Kernel bandwidth");
+          KDE_per_particle                   = prm.get_bool("Use KDE per particle");
+          granularity                        = prm.get_integer("KDE granularity");
+          bandwidth                          = prm.get_double("Kernel bandwidth");
           std::string kernel_function_string = prm.get("Kernel function");
 
-          if (kernel_function_string =="Triangular")
+          if (kernel_function_string == "Triangular")
             {
               kernel_function = Particle::ParticlePDF<dim>::KernelFunction::triangular;
             }
-          else if (kernel_function_string =="Gaussian")
+          else if (kernel_function_string == "Gaussian")
             {
               kernel_function = Particle::ParticlePDF<dim>::KernelFunction::gaussian;
             }
@@ -233,9 +249,9 @@ namespace aspect
               kernel_function = Particle::ParticlePDF<dim>::KernelFunction::uniform;
             }
         }
-        prm.leave_subsection ();
+        prm.leave_subsection();
       }
-      prm.leave_subsection ();
+      prm.leave_subsection();
     }
 
 
@@ -244,23 +260,23 @@ namespace aspect
     std::vector<typename Particles::ParticleHandler<dim>::particle_iterator_range>
     Postprocess::ParticleDistributionStatistics<dim>::get_neighboring_particle_ranges(
       const typename Triangulation<dim>::active_cell_iterator &cell,
-      const typename Particles::ParticleHandler<dim> &particle_handler)
+      const typename Particles::ParticleHandler<dim>          &particle_handler)
     {
       // First populate the result vector with particles from the given cell
-      std::vector<typename Particles::ParticleHandler<dim>::particle_iterator_range> particle_ranges_to_sum_over = {particle_handler.particles_in_cell(cell)};
+      std::vector<typename Particles::ParticleHandler<dim>::particle_iterator_range> particle_ranges_to_sum_over = {
+        particle_handler.particles_in_cell(cell)};
 
       // Find the cells neighboring the given cell
       std::set<typename Triangulation<dim>::active_cell_iterator> neighboring_cells;
-      const auto &vertex_to_cell_map = grid_cache->get_vertex_to_cell_map();
+      const auto                                                 &vertex_to_cell_map = grid_cache->get_vertex_to_cell_map();
       for (const auto v : cell->vertex_indices())
         {
           const unsigned int vertex_index = cell->vertex_index(v);
-          neighboring_cells.insert(vertex_to_cell_map[vertex_index].begin(),
-                                   vertex_to_cell_map[vertex_index].end());
+          neighboring_cells.insert(vertex_to_cell_map[vertex_index].begin(), vertex_to_cell_map[vertex_index].end());
         }
 
       // Add the particles from neighboring cells to the vector of particles ranges being returned
-      for (const auto &neighbor_cell: neighboring_cells)
+      for (const auto &neighbor_cell : neighboring_cells)
         {
           particle_ranges_to_sum_over.push_back(particle_handler.particles_in_cell(neighbor_cell));
         }

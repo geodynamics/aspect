@@ -19,27 +19,25 @@
 */
 
 
+#include <aspect/global.h>
+
 #include <aspect/boundary_temperature/function.h>
 #include <aspect/utilities.h>
-#include <aspect/global.h>
 
 namespace aspect
 {
   namespace BoundaryTemperature
   {
     template <int dim>
-    Function<dim>::Function ()
-      :
-      boundary_temperature_function (1)
+    Function<dim>::Function()
+      : boundary_temperature_function(1)
     {}
 
 
 
     template <int dim>
     double
-    Function<dim>::
-    boundary_temperature (const types::boundary_id /*boundary_indicator*/,
-                          const Point<dim> &position) const
+    Function<dim>::boundary_temperature(const types::boundary_id /*boundary_indicator*/, const Point<dim> &position) const
     {
       const Utilities::NaturalCoordinate<dim> point =
         this->get_geometry_model().cartesian_to_other_coordinates(position, coordinate_system);
@@ -55,17 +53,16 @@ namespace aspect
       // we get time passed as seconds (always) but may want
       // to reinterpret it in years
       if (this->convert_output_to_years())
-        boundary_temperature_function.set_time (this->get_time() / year_in_seconds);
+        boundary_temperature_function.set_time(this->get_time() / year_in_seconds);
       else
-        boundary_temperature_function.set_time (this->get_time());
+        boundary_temperature_function.set_time(this->get_time());
     }
 
 
 
     template <int dim>
     double
-    Function<dim>::
-    minimal_temperature (const std::set<types::boundary_id> &) const
+    Function<dim>::minimal_temperature(const std::set<types::boundary_id> &) const
     {
       return min_temperature;
     }
@@ -74,8 +71,7 @@ namespace aspect
 
     template <int dim>
     double
-    Function<dim>::
-    maximal_temperature (const std::set<types::boundary_id> &) const
+    Function<dim>::maximal_temperature(const std::set<types::boundary_id> &) const
     {
       return max_temperature;
     }
@@ -84,31 +80,28 @@ namespace aspect
 
     template <int dim>
     void
-    Function<dim>::declare_parameters (ParameterHandler &prm)
+    Function<dim>::declare_parameters(ParameterHandler &prm)
     {
       prm.enter_subsection("Boundary temperature model");
       {
         prm.enter_subsection("Function");
         {
-          prm.declare_entry ("Coordinate system", "cartesian",
-                             Patterns::Selection ("cartesian|spherical|depth"),
-                             "A selection that determines the assumed coordinate "
-                             "system for the function variables. Allowed values "
-                             "are `cartesian', `spherical', and `depth'. `spherical' coordinates "
-                             "are interpreted as r,phi or r,phi,theta in 2d/3d "
-                             "respectively with theta being the polar angle. `depth' "
-                             "will create a function, in which only the first "
-                             "parameter is non-zero, which is interpreted to "
-                             "be the depth of the point.");
+          prm.declare_entry("Coordinate system",
+                            "cartesian",
+                            Patterns::Selection("cartesian|spherical|depth"),
+                            "A selection that determines the assumed coordinate "
+                            "system for the function variables. Allowed values "
+                            "are `cartesian', `spherical', and `depth'. `spherical' coordinates "
+                            "are interpreted as r,phi or r,phi,theta in 2d/3d "
+                            "respectively with theta being the polar angle. `depth' "
+                            "will create a function, in which only the first "
+                            "parameter is non-zero, which is interpreted to "
+                            "be the depth of the point.");
 
-          Functions::ParsedFunction<dim>::declare_parameters (prm, 1);
+          Functions::ParsedFunction<dim>::declare_parameters(prm, 1);
 
-          prm.declare_entry ("Minimal temperature", "273.",
-                             Patterns::Double (),
-                             "Minimal temperature. Units: $\\text{K}$.");
-          prm.declare_entry ("Maximal temperature", "3773.",
-                             Patterns::Double (),
-                             "Maximal temperature. Units: $\\text{K}$.");
+          prm.declare_entry("Minimal temperature", "273.", Patterns::Double(), "Minimal temperature. Units: $\\text{K}$.");
+          prm.declare_entry("Maximal temperature", "3773.", Patterns::Double(), "Maximal temperature. Units: $\\text{K}$.");
         }
         prm.leave_subsection();
       }
@@ -119,7 +112,7 @@ namespace aspect
 
     template <int dim>
     void
-    Function<dim>::parse_parameters (ParameterHandler &prm)
+    Function<dim>::parse_parameters(ParameterHandler &prm)
     {
       prm.enter_subsection("Boundary temperature model");
       {
@@ -129,7 +122,7 @@ namespace aspect
 
           try
             {
-              boundary_temperature_function.parse_parameters (prm);
+              boundary_temperature_function.parse_parameters(prm);
             }
           catch (...)
             {
@@ -141,8 +134,8 @@ namespace aspect
                         << "is shown below.\n";
               throw;
             }
-          min_temperature = prm.get_double ("Minimal temperature");
-          max_temperature = prm.get_double ("Maximal temperature");
+          min_temperature = prm.get_double("Minimal temperature");
+          max_temperature = prm.get_double("Maximal temperature");
         }
         prm.leave_subsection();
       }

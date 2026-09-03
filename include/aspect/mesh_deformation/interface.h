@@ -22,20 +22,22 @@
 #ifndef _aspect_mesh_deformation_interface_h
 #define _aspect_mesh_deformation_interface_h
 
-#include <aspect/plugins.h>
-#include <aspect/simulator_access.h>
 #include <aspect/global.h>
 
-#include <deal.II/fe/fe_system.h>
-#include <deal.II/dofs/dof_handler.h>
-#include <deal.II/lac/affine_constraints.h>
+#include <aspect/plugins.h>
+
+#include <aspect/simulator/assemblers/interface.h>
+#include <aspect/simulator_access.h>
+
 #include <deal.II/base/index_set.h>
 #include <deal.II/base/mg_level_object.h>
+#include <deal.II/dofs/dof_handler.h>
+#include <deal.II/fe/fe_system.h>
+#include <deal.II/lac/affine_constraints.h>
 #include <deal.II/lac/la_parallel_vector.h>
 #include <deal.II/multigrid/mg_constrained_dofs.h>
-#include <deal.II/multigrid/mg_transfer_matrix_free.h>
 #include <deal.II/multigrid/mg_transfer_global_coarsening.templates.h>
-#include <aspect/simulator/assemblers/interface.h>
+#include <deal.II/multigrid/mg_transfer_matrix_free.h>
 
 namespace aspect
 {
@@ -48,15 +50,14 @@ namespace aspect
      * assembly of the system matrix.
      */
     template <int dim>
-    class ApplyStabilization: public Assemblers::Interface<dim>,
-      public SimulatorAccess<dim>
+    class ApplyStabilization : public Assemblers::Interface<dim>, public SimulatorAccess<dim>
     {
       public:
         ApplyStabilization(const double stabilization_theta);
 
         void
-        execute (internal::Assembly::Scratch::ScratchBase<dim>   &scratch,
-                 internal::Assembly::CopyData::CopyDataBase<dim> &data) const override;
+        execute(internal::Assembly::Scratch::ScratchBase<dim>   &scratch,
+                internal::Assembly::CopyData::CopyDataBase<dim> &data) const override;
 
       private:
         /**
@@ -68,7 +69,8 @@ namespace aspect
     };
   }
 
-  template <int dim> class Simulator;
+  template <int dim>
+  class Simulator;
 
   /**
    * A namespace that contains everything that is related to the deformation
@@ -92,7 +94,8 @@ namespace aspect
         /**
          * A function that will be called to check whether stabilization is needed.
          */
-        virtual bool needs_surface_stabilization() const;
+        virtual bool
+        needs_surface_stabilization() const;
 
 
         /**
@@ -102,10 +105,8 @@ namespace aspect
          * displacement vector of this position. The default implementation
          * returns a zero displacement (= no initial deformation).
          */
-        virtual
-        Tensor<1,dim>
-        compute_initial_deformation_on_boundary(const types::boundary_id boundary_indicator,
-                                                const Point<dim> &position) const;
+        virtual Tensor<1, dim>
+        compute_initial_deformation_on_boundary(const types::boundary_id boundary_indicator, const Point<dim> &position) const;
 
 
         /**
@@ -118,11 +119,10 @@ namespace aspect
          * over the initial deformation or it is more efficient to provide constraints directly,
          * override this function.
          */
-        virtual
-        void
-        compute_initial_deformation_as_constraints(const Mapping<dim> &mapping,
-                                                   const DoFHandler<dim> &mesh_deformation_dof_handler,
-                                                   const types::boundary_id boundary_indicator,
+        virtual void
+        compute_initial_deformation_as_constraints(const Mapping<dim>        &mapping,
+                                                   const DoFHandler<dim>     &mesh_deformation_dof_handler,
+                                                   const types::boundary_id   boundary_indicator,
                                                    AffineConstraints<double> &constraints) const;
 
         /**
@@ -132,10 +132,9 @@ namespace aspect
          * these constraints when computing the new vertex positions.
          * The default implementation creates no constraints.
          */
-        virtual
-        void
-        compute_velocity_constraints_on_boundary(const DoFHandler<dim> &mesh_deformation_dof_handler,
-                                                 AffineConstraints<double> &mesh_velocity_constraints,
+        virtual void
+        compute_velocity_constraints_on_boundary(const DoFHandler<dim>              &mesh_deformation_dof_handler,
+                                                 AffineConstraints<double>          &mesh_velocity_constraints,
                                                  const std::set<types::boundary_id> &boundary_ids) const;
 
         /**
@@ -152,11 +151,10 @@ namespace aspect
          * @return Boundary value of the compositional field @p
          * compositional_field at the position @p position.
          */
-        virtual
-        double
-        boundary_composition (const types::boundary_id boundary_indicator,
-                              const Point<dim> &position,
-                              const unsigned int compositional_field) const;
+        virtual double
+        boundary_composition(const types::boundary_id boundary_indicator,
+                             const Point<dim>        &position,
+                             const unsigned int       compositional_field) const;
     };
 
 
@@ -167,7 +165,7 @@ namespace aspect
      * Arbitrary-Lagrangian-Eulerian correction terms.
      */
     template <int dim>
-    class MeshDeformationHandler: public SimulatorAccess<dim>
+    class MeshDeformationHandler : public SimulatorAccess<dim>
     {
       public:
         /**
@@ -188,20 +186,22 @@ namespace aspect
          *
          * The default implementation of this function does nothing.
          */
-        void initialize();
+        void
+        initialize();
 
         /**
          * Called by Simulator::set_assemblers() to allow the FreeSurface plugin
          * to register its assembler.
          */
-        void set_assemblers(const SimulatorAccess<dim> &simulator_access,
-                            aspect::Assemblers::Manager<dim> &assemblers) const;
+        void
+        set_assemblers(const SimulatorAccess<dim> &simulator_access, aspect::Assemblers::Manager<dim> &assemblers) const;
 
         /**
          * Update function of the MeshDeformationHandler. This function
          * allows the individual mesh deformation objects to update.
          */
-        void update();
+        void
+        update();
 
         /**
          * The main execution step for the mesh deformation implementation. This
@@ -210,40 +210,43 @@ namespace aspect
          * preserve mesh regularity, and calculates the
          * Arbitrary-Lagrangian-Eulerian correction terms for advected quantities.
          */
-        void execute();
+        void
+        execute();
 
         /**
          * Allocates and sets up the members of the MeshDeformationHandler. This
          * is called by Simulator<dim>::setup_dofs()
          */
-        void setup_dofs();
+        void
+        setup_dofs();
 
         /**
          * Declare parameters for the mesh deformation handling.
          */
-        static
-        void declare_parameters (ParameterHandler &prm);
+        static void
+        declare_parameters(ParameterHandler &prm);
 
         /**
          * Parse parameters for the mesh deformation handling.
          */
-        void parse_parameters (ParameterHandler &prm);
+        void
+        parse_parameters(ParameterHandler &prm);
 
         /**
          * Write the data of this object to a stream for the purpose of
          * serialization.
          */
         template <class Archive>
-        void save (Archive &ar,
-                   const unsigned int version) const;
+        void
+        save(Archive &ar, const unsigned int version) const;
 
         /**
          * Read the data of this object from a stream for the purpose of
          * serialization.
          */
         template <class Archive>
-        void load (Archive &ar,
-                   const unsigned int version);
+        void
+        load(Archive &ar, const unsigned int version);
 
         BOOST_SERIALIZATION_SPLIT_MEMBER()
 
@@ -264,34 +267,32 @@ namespace aspect
          * @param factory_function A pointer to a function that can create an
          * object of this mesh deformation model.
          */
-        static
-        void
-        register_mesh_deformation
-        (const std::string &name,
-         const std::string &description,
-         void (*declare_parameters_function) (ParameterHandler &),
-         std::unique_ptr<Interface<dim>> (*factory_function) ());
+        static void
+        register_mesh_deformation(const std::string &name,
+                                  const std::string &description,
+                                  void (*declare_parameters_function)(ParameterHandler &),
+                                  std::unique_ptr<Interface<dim>> (*factory_function)());
 
         /**
          * Return a map of boundary indicators to the names of all mesh deformation models currently
          * used in the computation, as specified in the input file.
          */
         const std::map<types::boundary_id, std::vector<std::string>> &
-        get_active_mesh_deformation_names () const;
+        get_active_mesh_deformation_names() const;
 
         /**
          * Return a map of boundary indicators to vectors of pointers to all mesh deformation models
          * currently used in the computation, as specified in the input file.
          */
-        const std::map<types::boundary_id,std::vector<std::unique_ptr<Interface<dim>>>> &
-        get_active_mesh_deformation_models () const;
+        const std::map<types::boundary_id, std::vector<std::unique_ptr<Interface<dim>>>> &
+        get_active_mesh_deformation_models() const;
 
         /**
          * Return a set of all the indicators of boundaries with
          * mesh deformation objects on them.
          */
         const std::set<types::boundary_id> &
-        get_active_mesh_deformation_boundary_indicators () const;
+        get_active_mesh_deformation_boundary_indicators() const;
 
         /**
          * Return a set of all the indicators of boundaries with
@@ -299,7 +300,7 @@ namespace aspect
          * velocity boundary conditions.
          */
         const std::set<types::boundary_id> &
-        get_tangential_velocity_with_active_mesh_deformation_boundary_indicators () const;
+        get_tangential_velocity_with_active_mesh_deformation_boundary_indicators() const;
 
         /**
          * Return a set of all the indicators of boundaries without
@@ -307,14 +308,14 @@ namespace aspect
          * velocity boundary conditions.
          */
         const std::set<types::boundary_id> &
-        get_tangential_velocity_without_active_mesh_deformation_boundary_indicators () const;
+        get_tangential_velocity_without_active_mesh_deformation_boundary_indicators() const;
 
         /**
          * Return a set of all the indicators of boundaries that
          * require surface stabilization.
          */
         const std::set<types::boundary_id> &
-        get_boundary_indicators_requiring_stabilization () const;
+        get_boundary_indicators_requiring_stabilization() const;
 
         /**
          * Return the boundary id of the surface that has a free surface
@@ -322,12 +323,13 @@ namespace aspect
          * an empty set is returned.
          */
         const std::set<types::boundary_id> &
-        get_free_surface_boundary_indicators () const;
+        get_free_surface_boundary_indicators() const;
 
         /**
          * Return the stabilization parameter for the free surface.
          */
-        double get_free_surface_theta () const;
+        double
+        get_free_surface_theta() const;
 
         /**
          * Return the initial topography stored on
@@ -344,20 +346,20 @@ namespace aspect
          * function can be removed.
          */
         const LinearAlgebra::Vector &
-        get_initial_topography () const;
+        get_initial_topography() const;
 
         /**
          * Return the mesh displacements based on the mesh deformation
          * DoFHandler you can access with get_mesh_deformation_dof_handler().
          */
         const LinearAlgebra::Vector &
-        get_mesh_displacements () const;
+        get_mesh_displacements() const;
 
         /**
          * Return the DoFHandler used to represent the mesh deformation space.
          */
         const DoFHandler<dim> &
-        get_mesh_deformation_dof_handler () const;
+        get_mesh_deformation_dof_handler() const;
 
         /**
          * Go through the list of all mesh deformation objects that have been selected
@@ -369,9 +371,9 @@ namespace aspect
          * argument) is a class derived from the Interface class in this namespace.
          */
         template <typename MeshDeformationType,
-                  typename = typename std::enable_if_t<std::is_base_of<Interface<dim>,MeshDeformationType>::value>>
+                  typename = typename std::enable_if_t<std::is_base_of<Interface<dim>, MeshDeformationType>::value>>
         bool
-        has_matching_mesh_deformation_object () const;
+        has_matching_mesh_deformation_object() const;
 
         /**
          * Go through the list of all mesh deformation objects that have been selected
@@ -385,9 +387,9 @@ namespace aspect
          * argument) is a class derived from the Interface class in this namespace.
          */
         template <typename MeshDeformationType,
-                  typename = typename std::enable_if_t<std::is_base_of<Interface<dim>,MeshDeformationType>::value>>
+                  typename = typename std::enable_if_t<std::is_base_of<Interface<dim>, MeshDeformationType>::value>>
         const MeshDeformationType &
-        get_matching_mesh_deformation_object () const;
+        get_matching_mesh_deformation_object() const;
 
 
         /**
@@ -406,9 +408,9 @@ namespace aspect
          * if deposition occurs, or a field representing deposition depth to the depth below sea level.
          */
         double
-        boundary_composition (const types::boundary_id boundary_indicator,
-                              const Point<dim> &position,
-                              const unsigned int compositional_field) const;
+        boundary_composition(const types::boundary_id boundary_indicator,
+                             const Point<dim>        &position,
+                             const unsigned int       compositional_field) const;
 
         /**
          * For the current plugin subsystem, write a connection graph of all of the
@@ -419,18 +421,15 @@ namespace aspect
          *
          * @param output_stream The stream to write the output to.
          */
-        static
-        void
-        write_plugin_graph (std::ostream &output_stream);
+        static void
+        write_plugin_graph(std::ostream &output_stream);
 
         /**
          * Exception.
          */
-        DeclException1 (ExcMeshDeformationNameNotFound,
-                        std::string,
-                        << "Could not find entry <"
-                        << arg1
-                        << "> among the names of registered mesh deformation objects.");
+        DeclException1(ExcMeshDeformationNameNotFound,
+                       std::string,
+                       << "Could not find entry <" << arg1 << "> among the names of registered mesh deformation objects.");
 
       private:
         /**
@@ -440,7 +439,8 @@ namespace aspect
          * topography) to be used during the simulation. The
          * displacement is given by the active deformation plugins.
          */
-        void make_initial_constraints ();
+        void
+        make_initial_constraints();
 
         /**
          * Compute the constraints for the mesh velocity on the
@@ -454,19 +454,22 @@ namespace aspect
          * marked as additional tangential, then velocities are
          * constrained as tangential.
          */
-        void make_constraints ();
+        void
+        make_constraints();
 
         /**
          * Solve vector Laplacian equation for internal mesh displacements and update
          * the current displacement vector based on the solution.
          */
-        void compute_mesh_displacements ();
+        void
+        compute_mesh_displacements();
 
         /**
          * Solve vector Laplacian equation using GMG for internal mesh displacements and update
          * the current displacement vector based on the solution.
          */
-        void compute_mesh_displacements_gmg ();
+        void
+        compute_mesh_displacements_gmg();
 
         /**
          * Return the polynomial degree to use for the mesh mapping.
@@ -476,7 +479,8 @@ namespace aspect
          * mesh deformation finite element degree. Otherwise, it returns the
          * user-provided explicit value.
          */
-        unsigned int get_mapping_degree () const;
+        unsigned int
+        get_mapping_degree() const;
 
         /**
          * Compute mesh displacements using GMG solver
@@ -484,7 +488,8 @@ namespace aspect
          * This is the implementation called by compute_mesh_displacements_gmg().
          */
         template <unsigned int mesh_deformation_fe_degree>
-        void compute_mesh_displacements_gmg_for_degree();
+        void
+        compute_mesh_displacements_gmg_for_degree();
 
         /**
          * Set up the vector with initial displacements of the mesh
@@ -501,17 +506,20 @@ namespace aspect
          * to the new initial_mesh_deformation functionality, this function
          * can be removed.
          */
-        void set_initial_topography ();
+        void
+        set_initial_topography();
 
         /**
          * Calculate the velocity of the mesh for ALE corrections.
          */
-        void interpolate_mesh_velocity ();
+        void
+        interpolate_mesh_velocity();
 
         /**
          * Update the mesh deformation for the multigrid levels.
          */
-        void update_multilevel_deformation ();
+        void
+        update_multilevel_deformation();
 
         /**
          * Reference to the Simulator object to which a MeshDeformationHandler
@@ -596,7 +604,7 @@ namespace aspect
          * A map of boundary ids to mesh deformation objects that have been requested
          * in the parameter file.
          */
-        std::map<types::boundary_id,std::vector<std::unique_ptr<Interface<dim>>>> mesh_deformation_objects;
+        std::map<types::boundary_id, std::vector<std::unique_ptr<Interface<dim>>>> mesh_deformation_objects;
 
         /**
          * Map from boundary id to a vector of names representing
@@ -700,16 +708,16 @@ namespace aspect
 
     template <int dim>
     template <class Archive>
-    void MeshDeformationHandler<dim>::save (Archive &ar,
-                                            const unsigned int) const
+    void
+    MeshDeformationHandler<dim>::save(Archive &ar, const unsigned int) const
     {
       // let all the mesh deformation plugins save their data in a map and then
       // serialize that
-      //TODO: for now we assume the same plugins are active before and after restart.
-      std::map<std::string,std::string> saved_text;
+      // TODO: for now we assume the same plugins are active before and after restart.
+      std::map<std::string, std::string> saved_text;
       for (const auto &boundary_id_and_mesh_deformation_objects : mesh_deformation_objects)
         for (const auto &p : boundary_id_and_mesh_deformation_objects.second)
-          p->save (saved_text);
+          p->save(saved_text);
 
       ar &saved_text;
     }
@@ -717,29 +725,27 @@ namespace aspect
 
     template <int dim>
     template <class Archive>
-    void MeshDeformationHandler<dim>::load (Archive &ar,
-                                            const unsigned int)
+    void
+    MeshDeformationHandler<dim>::load(Archive &ar, const unsigned int)
     {
       // get the map back out of the stream; then let the mesh deformation plugins
       // that we currently have get their data from there. note that this
       // may not be the same set ofmesh deformation plugins we had when we saved
       // their data
-      std::map<std::string,std::string> saved_text;
-      ar &saved_text;
+      std::map<std::string, std::string> saved_text;
+      ar                                &saved_text;
 
       for (const auto &boundary_id_and_mesh_deformation_objects : mesh_deformation_objects)
         for (const auto &p : boundary_id_and_mesh_deformation_objects.second)
-          p->load (saved_text);
+          p->load(saved_text);
     }
-
 
 
 
     template <int dim>
     template <typename MeshDeformationType, typename>
-    inline
-    bool
-    MeshDeformationHandler<dim>::has_matching_mesh_deformation_object () const
+    inline bool
+    MeshDeformationHandler<dim>::has_matching_mesh_deformation_object() const
     {
       for (const auto &object_iterator : mesh_deformation_objects)
         for (const auto &p : object_iterator.second)
@@ -753,13 +759,14 @@ namespace aspect
 
     template <int dim>
     template <typename MeshDeformationType, typename>
-    inline
-    const MeshDeformationType &
-    MeshDeformationHandler<dim>::get_matching_mesh_deformation_object () const
+    inline const MeshDeformationType &
+    MeshDeformationHandler<dim>::get_matching_mesh_deformation_object() const
     {
-      AssertThrow(has_matching_mesh_deformation_object<MeshDeformationType> (),
+      AssertThrow(has_matching_mesh_deformation_object<MeshDeformationType>(),
                   ExcMessage("You asked MeshDeformation::MeshDeformationHandler::get_matching_mesh_deformation_object() for a "
-                             "mesh deformation object of type <" + boost::core::demangle(typeid(MeshDeformationType).name()) + "> "
+                             "mesh deformation object of type <" +
+                             boost::core::demangle(typeid(MeshDeformationType).name()) +
+                             "> "
                              "that could not be found in the current model. Activate this "
                              "mesh deformation in the input file."));
 
@@ -771,7 +778,6 @@ namespace aspect
       // We will never get here, because we had the Assert above. Just to avoid warnings.
       typename std::vector<std::unique_ptr<Interface<dim>>>::const_iterator mesh_def;
       return Plugins::get_plugin_as_type<MeshDeformationType>(*(*mesh_def));
-
     }
 
 
@@ -783,7 +789,7 @@ namespace aspect
      */
     template <int dim>
     std::string
-    get_valid_model_names_pattern ();
+    get_valid_model_names_pattern();
 
 
 
@@ -794,17 +800,15 @@ namespace aspect
      *
      * @ingroup MeshDeformations
      */
-#define ASPECT_REGISTER_MESH_DEFORMATION_MODEL(classname,name,description) \
+#define ASPECT_REGISTER_MESH_DEFORMATION_MODEL(classname, name, description) \
   template class classname<2>; \
   template class classname<3>; \
-  namespace ASPECT_REGISTER_MESH_DEFORMATION_MODEL_ ## classname \
+  namespace ASPECT_REGISTER_MESH_DEFORMATION_MODEL_##classname \
   { \
-    aspect::internal::Plugins::RegisterHelper<aspect::MeshDeformation::Interface<2>,classname<2>> \
-    dummy_ ## classname ## _2d (&aspect::MeshDeformation::MeshDeformationHandler<2>::register_mesh_deformation, \
-                                name, description); \
-    aspect::internal::Plugins::RegisterHelper<aspect::MeshDeformation::Interface<3>,classname<3>> \
-    dummy_ ## classname ## _3d (&aspect::MeshDeformation::MeshDeformationHandler<3>::register_mesh_deformation, \
-                                name, description); \
+    aspect::internal::Plugins::RegisterHelper<aspect::MeshDeformation::Interface<2>, classname<2>> dummy_##classname##_2d( \
+      &aspect::MeshDeformation::MeshDeformationHandler<2>::register_mesh_deformation, name, description); \
+    aspect::internal::Plugins::RegisterHelper<aspect::MeshDeformation::Interface<3>, classname<3>> dummy_##classname##_3d( \
+      &aspect::MeshDeformation::MeshDeformationHandler<3>::register_mesh_deformation, name, description); \
   }
   }
 }

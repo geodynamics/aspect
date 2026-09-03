@@ -20,87 +20,81 @@
 
 
 #include <aspect/global.h>
+
 #include <aspect/boundary_heat_flux/interface.h>
 #include <aspect/simulator_access.h>
 
-#include <tuple>
 #include <list>
+#include <tuple>
 
 
 namespace aspect
 {
   namespace BoundaryHeatFlux
   {
-// -------------------------------- Deal with registering models and automating
-// -------------------------------- their setup and selection at run time
+    // -------------------------------- Deal with registering models and automating
+    // -------------------------------- their setup and selection at run time
 
     namespace
     {
-      std::tuple
-      <aspect::internal::Plugins::UnusablePluginList,
-      aspect::internal::Plugins::UnusablePluginList,
-      aspect::internal::Plugins::PluginList<Interface<2>>,
-      aspect::internal::Plugins::PluginList<Interface<3>>> registered_plugins;
+      std::tuple<aspect::internal::Plugins::UnusablePluginList,
+                 aspect::internal::Plugins::UnusablePluginList,
+                 aspect::internal::Plugins::PluginList<Interface<2>>,
+                 aspect::internal::Plugins::PluginList<Interface<3>>>
+        registered_plugins;
     }
 
 
 
     template <int dim>
     void
-    register_boundary_heat_flux (const std::string &name,
-                                 const std::string &description,
-                                 void (*declare_parameters_function) (ParameterHandler &),
-                                 std::unique_ptr<Interface<dim>> (*factory_function) ())
+    register_boundary_heat_flux(const std::string &name,
+                                const std::string &description,
+                                void (*declare_parameters_function)(ParameterHandler &),
+                                std::unique_ptr<Interface<dim>> (*factory_function)())
     {
-      std::get<dim>(registered_plugins).register_plugin (name,
-                                                         description,
-                                                         declare_parameters_function,
-                                                         factory_function);
+      std::get<dim>(registered_plugins).register_plugin(name, description, declare_parameters_function, factory_function);
     }
 
 
     template <int dim>
     std::unique_ptr<Interface<dim>>
-    create_boundary_heat_flux (ParameterHandler &prm)
+    create_boundary_heat_flux(ParameterHandler &prm)
     {
       std::string model_name;
-      prm.enter_subsection ("Boundary heat flux model");
+      prm.enter_subsection("Boundary heat flux model");
       {
-        model_name = prm.get ("Model name");
+        model_name = prm.get("Model name");
       }
-      prm.leave_subsection ();
+      prm.leave_subsection();
 
-      return std::get<dim>(registered_plugins).create_plugin (model_name,
-                                                              "Boundary heat flux model::Model name");
+      return std::get<dim>(registered_plugins).create_plugin(model_name, "Boundary heat flux model::Model name");
     }
 
 
 
     template <int dim>
     void
-    declare_parameters (ParameterHandler &prm)
+    declare_parameters(ParameterHandler &prm)
     {
-      prm.enter_subsection ("Boundary heat flux model");
-      const std::string pattern_of_names
-        = std::get<dim>(registered_plugins).get_pattern_of_names ();
-      prm.declare_entry ("Model name", "function",
-                         Patterns::Selection (pattern_of_names),
-                         "Select one of the following plugins:\n\n"
-                         +
-                         std::get<dim>(registered_plugins).get_description_string());
-      prm.leave_subsection ();
+      prm.enter_subsection("Boundary heat flux model");
+      const std::string pattern_of_names = std::get<dim>(registered_plugins).get_pattern_of_names();
+      prm.declare_entry("Model name",
+                        "function",
+                        Patterns::Selection(pattern_of_names),
+                        "Select one of the following plugins:\n\n" + std::get<dim>(registered_plugins).get_description_string());
+      prm.leave_subsection();
 
-      std::get<dim>(registered_plugins).declare_parameters (prm);
+      std::get<dim>(registered_plugins).declare_parameters(prm);
     }
 
 
 
     template <int dim>
     void
-    write_plugin_graph (std::ostream &out)
+    write_plugin_graph(std::ostream &out)
     {
-      std::get<dim>(registered_plugins).write_plugin_graph ("Boundary heat flux interface",
-                                                            out);
+      std::get<dim>(registered_plugins).write_plugin_graph("Boundary heat flux interface", out);
     }
 
   }
@@ -113,25 +107,17 @@ namespace aspect
   {
 #define INSTANTIATE(dim) \
   template class Interface<dim>; \
-  \
-  template \
-  void \
-  register_boundary_heat_flux<dim> (const std::string &, \
-                                    const std::string &, \
-                                    void ( *) (ParameterHandler &), \
-                                    std::unique_ptr<Interface<dim>>( *) ()); \
-  \
-  template  \
-  void \
-  declare_parameters<dim> (ParameterHandler &); \
-  \
-  template \
-  void \
-  write_plugin_graph<dim> (std::ostream &); \
-  \
-  template \
-  std::unique_ptr<Interface<dim>> \
-  create_boundary_heat_flux<dim> (ParameterHandler &prm);
+\
+  template void register_boundary_heat_flux<dim>(const std::string &, \
+                                                 const std::string &, \
+                                                 void (*)(ParameterHandler &), \
+                                                 std::unique_ptr<Interface<dim>> (*)()); \
+\
+  template void declare_parameters<dim>(ParameterHandler &); \
+\
+  template void write_plugin_graph<dim>(std::ostream &); \
+\
+  template std::unique_ptr<Interface<dim>> create_boundary_heat_flux<dim>(ParameterHandler & prm);
 
     ASPECT_INSTANTIATE(INSTANTIATE)
 

@@ -40,11 +40,9 @@ namespace aspect
      * @ingroup MeshRefinement
      */
     template <int dim>
-    class Slope : public Interface<dim>,
-      public SimulatorAccess<dim>
+    class Slope : public Interface<dim>, public SimulatorAccess<dim>
     {
       public:
-
         /**
          * Execute this mesh refinement criterion.
          *
@@ -54,7 +52,7 @@ namespace aspect
          * correct size when the function is called.
          */
         void
-        execute (Vector<float> &error_indicators) const override;
+        execute(Vector<float> &error_indicators) const override;
     };
   }
 }

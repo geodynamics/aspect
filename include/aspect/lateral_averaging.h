@@ -46,25 +46,21 @@ namespace aspect
          * operator() will have @p in and @p out filled out if @p true. By default
          * returns false.
          */
-        virtual
-        bool
+        virtual bool
         need_material_properties() const;
 
         /**
          * If this functor needs additional material model outputs create them
          * in here. By default, this does nothing.
          */
-        virtual
-        void
-        create_additional_material_model_outputs (const unsigned int n_points,
-                                                  MaterialModel::MaterialModelOutputs<dim> &outputs) const;
+        virtual void
+        create_additional_material_model_outputs(const unsigned int n_points, MaterialModel::MaterialModelOutputs<dim> &outputs) const;
 
         /**
          * Called once at the beginning of compute_lateral_averages() to setup
          * internal data structures with the number of quadrature points.
          */
-        virtual
-        void
+        virtual void
         setup(const unsigned int q_points);
 
         /**
@@ -74,19 +70,17 @@ namespace aspect
          * Functions in derived classes should then evaluate the desired quantity
          * and return the results in the output vector, which is q_points long.
          */
-        virtual
-        void
-        operator()(const MaterialModel::MaterialModelInputs<dim> &in,
+        virtual void
+        operator()(const MaterialModel::MaterialModelInputs<dim>  &in,
                    const MaterialModel::MaterialModelOutputs<dim> &out,
-                   const FEValues<dim> &fe_values,
-                   const LinearAlgebra::BlockVector &solution,
-                   std::vector<double> &output) = 0;
+                   const FEValues<dim>                            &fe_values,
+                   const LinearAlgebra::BlockVector               &solution,
+                   std::vector<double>                            &output) = 0;
 
         /**
          * Provide an (empty) virtual destructor.
          */
-        virtual
-        ~FunctorBase();
+        virtual ~FunctorBase();
     };
   }
 
@@ -125,8 +119,7 @@ namespace aspect
        * as many vectors returned as names in @p property_names.
        */
       std::vector<std::vector<double>>
-      compute_lateral_averages(const unsigned int n_slices,
-                               const std::vector<std::string> &property_names) const;
+      compute_lateral_averages(const unsigned int n_slices, const std::vector<std::string> &property_names) const;
 
       /**
        * Return a depth profile of lateral averages of the selected
@@ -151,8 +144,7 @@ namespace aspect
        * and there are as many vectors returned as names in @p property_names.
        */
       std::vector<std::vector<double>>
-      compute_lateral_averages(const std::vector<double> &depth_bounds,
-                               const std::vector<std::string> &property_names) const;
+      compute_lateral_averages(const std::vector<double> &depth_bounds, const std::vector<std::string> &property_names) const;
 
       /**
        * Return a depth profile of lateral averages. This function is the
@@ -185,7 +177,7 @@ namespace aspect
        * the number of @p depth_bounds).
        */
       std::vector<std::vector<double>>
-      compute_lateral_averages(const std::vector<double> &depth_bounds,
+      compute_lateral_averages(const std::vector<double>                                &depth_bounds,
                                std::vector<std::unique_ptr<internal::FunctorBase<dim>>> &functors) const;
 
       /**
@@ -225,8 +217,7 @@ namespace aspect
        * depth slices.
        */
       void
-      get_composition_averages(const unsigned int composition_index,
-                               std::vector<double> &values) const;
+      get_composition_averages(const unsigned int composition_index, std::vector<double> &values) const;
 
       /**
        * Compute a lateral average of the current viscosity.

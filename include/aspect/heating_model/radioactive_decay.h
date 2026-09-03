@@ -23,8 +23,8 @@
 #ifndef _aspect_heating_model_radioactive_decay_h
 #define _aspect_heating_model_radioactive_decay_h
 
-#include <aspect/simulator_access.h>
 #include <aspect/heating_model/interface.h>
+#include <aspect/simulator_access.h>
 
 #include <deal.II/base/parsed_function.h>
 
@@ -44,87 +44,85 @@ namespace aspect
         /**
          * Constructor.
          */
-        RadioactiveDecay ();
+        RadioactiveDecay();
 
         /**
          * Return the specific heating rate as calculated by radioactive
          * decay.
          */
         void
-        evaluate (const MaterialModel::MaterialModelInputs<dim> &material_model_inputs,
-                  const MaterialModel::MaterialModelOutputs<dim> &material_model_outputs,
-                  HeatingModel::HeatingModelOutputs &heating_model_outputs) const override;
+        evaluate(const MaterialModel::MaterialModelInputs<dim>  &material_model_inputs,
+                 const MaterialModel::MaterialModelOutputs<dim> &material_model_outputs,
+                 HeatingModel::HeatingModelOutputs              &heating_model_outputs) const override;
 
         /**
          * Specify which material model outputs the heating model requires
          * for computing the heating terms.
          */
         MaterialModel::MaterialProperties::Property
-        get_required_properties () const override;
+        get_required_properties() const override;
 
         /**
          * Declare the parameters this class takes through input files.
          */
-        static
-        void
-        declare_parameters (ParameterHandler &prm);
+        static void
+        declare_parameters(ParameterHandler &prm);
 
         /**
          * Read the parameters this class declares from the parameter file.
          */
         void
-        parse_parameters (ParameterHandler &prm) override;
+        parse_parameters(ParameterHandler &prm) override;
 
       private:
-
         /**
          * Number of radioactive heating elements. This variable is read from
          * the parameter file through the 'Number of elements' parameter.
          */
-        unsigned int                   n_radio_heating_elements;
+        unsigned int n_radio_heating_elements;
 
         /**
          * Half-lives of different elements. This variable is read from the
          * parameter file through the 'Half decay times' parameter.
          */
-        std::vector<double>            half_decay_times;
+        std::vector<double> half_decay_times;
 
         /**
          * Unit heating rates of different elements. This variable is read from
          * the parameter file through the 'Heating rates' parameter.
          */
-        std::vector<double>            radioactive_heating_rates;
+        std::vector<double> radioactive_heating_rates;
 
         /**
          * Initial concentrations in the crust. This variable is read from the
          * parameter file through the 'Initial concentrations crust' parameter.
          */
-        std::vector<double>            radioactive_initial_concentrations_crust;
+        std::vector<double> radioactive_initial_concentrations_crust;
 
         /**
          * Initial concentrations in the mantle. This variable is read from the
          * parameter file through the 'Initial concentrations mantle' parameter.
          */
-        std::vector<double>            radioactive_initial_concentrations_mantle;
+        std::vector<double> radioactive_initial_concentrations_mantle;
 
         /**
          * Whether the crust is defined by composition or depth. This variable
          * is read from the parameter file through the 'Crust defined by
          * composition' parameter.
          */
-        bool                           is_crust_defined_by_composition;
+        bool is_crust_defined_by_composition;
 
         /**
          * Depth of the crust. This variable is read from the parameter file
          * through the 'Crust depth' parameter.
          */
-        double                         crust_depth;
+        double crust_depth;
 
         /**
          * Composition number of the crust. This variable is read from the
          * parameter file through the 'Crust composition number' parameter.
          */
-        unsigned int                   crust_composition_num;
+        unsigned int crust_composition_num;
     };
   }
 }

@@ -21,10 +21,9 @@
 #ifndef _aspect_particle_interpolator_linear_least_squares_h
 #define _aspect_particle_interpolator_linear_least_squares_h
 
+#include <aspect/particle/interpolator/cell_average.h>
 #include <aspect/particle/interpolator/interface.h>
 #include <aspect/simulator_access.h>
-
-#include <aspect/particle/interpolator/cell_average.h>
 
 namespace aspect
 {
@@ -47,9 +46,9 @@ namespace aspect
            * Return the cell-wise evaluated properties of the linear least squares function at the positions.
            */
           std::vector<std::vector<double>>
-          properties_at_points(const ParticleHandler<dim> &particle_handler,
-                               const std::vector<Point<dim>> &positions,
-                               const ComponentMask &selected_properties,
+          properties_at_points(const ParticleHandler<dim>                                                     &particle_handler,
+                               const std::vector<Point<dim>>                                                  &positions,
+                               const ComponentMask                                                            &selected_properties,
                                const typename parallel::distributed::Triangulation<dim>::active_cell_iterator &cell) const override;
 
           // avoid -Woverloaded-virtual:
@@ -58,15 +57,14 @@ namespace aspect
           /**
            * Declare the parameters this class takes through input files.
            */
-          static
-          void
-          declare_parameters (ParameterHandler &prm);
+          static void
+          declare_parameters(ParameterHandler &prm);
 
           /**
            * Read the parameters this class declares from the parameter file.
            */
           void
-          parse_parameters (ParameterHandler &prm) override;
+          parse_parameters(ParameterHandler &prm) override;
 
         private:
           /**

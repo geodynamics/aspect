@@ -19,9 +19,9 @@
 */
 
 
+#include <aspect/geometry_model/interface.h>
 #include <aspect/postprocess/mass_flux_statistics.h>
 #include <aspect/utilities.h>
-#include <aspect/geometry_model/interface.h>
 
 #include <deal.II/base/quadrature_lib.h>
 #include <deal.II/fe/fe_values.h>
@@ -32,35 +32,26 @@ namespace aspect
   namespace Postprocess
   {
     template <int dim>
-    std::pair<std::string,std::string>
-    MassFluxStatistics<dim>::execute (TableHandler &statistics)
+    std::pair<std::string, std::string>
+    MassFluxStatistics<dim>::execute(TableHandler &statistics)
     {
-      const std::string unit = (this->convert_output_to_years())
-                               ?
-                               "kg/yr"
-                               :
-                               "kg/s";
-      const double in_years = (this->convert_output_to_years())
-                              ?
-                              year_in_seconds
-                              :
-                              1.0;
+      const std::string unit     = (this->convert_output_to_years()) ? "kg/yr" : "kg/s";
+      const double      in_years = (this->convert_output_to_years()) ? year_in_seconds : 1.0;
 
       // create a quadrature formula based on the temperature element alone.
-      const Quadrature<dim-1> &quadrature_formula = this->introspection().face_quadratures.velocities;
+      const Quadrature<dim - 1> &quadrature_formula = this->introspection().face_quadratures.velocities;
 
-      FEFaceValues<dim> fe_face_values (this->get_mapping(),
-                                        this->get_fe(),
-                                        quadrature_formula,
-                                        update_values            | update_gradients |
-                                        update_normal_vectors    |
-                                        update_quadrature_points | update_JxW_values);
+      FEFaceValues<dim> fe_face_values(this->get_mapping(),
+                                       this->get_fe(),
+                                       quadrature_formula,
+                                       update_values | update_gradients | update_normal_vectors | update_quadrature_points |
+                                         update_JxW_values);
 
-      std::vector<std::vector<double>> composition_values (this->n_compositional_fields(),std::vector<double> (quadrature_formula.size()));
+      std::vector<std::vector<double>> composition_values(this->n_compositional_fields(), std::vector<double>(quadrature_formula.size()));
 
       std::map<types::boundary_id, double> local_boundary_fluxes;
 
-      MaterialModel::MaterialModelInputs<dim> in(fe_face_values.n_quadrature_points, this->n_compositional_fields());
+      MaterialModel::MaterialModelInputs<dim>  in(fe_face_values.n_quadrature_points, this->n_compositional_fields());
       MaterialModel::MaterialModelOutputs<dim> out(fe_face_values.n_quadrature_points, this->n_compositional_fields());
       in.requested_properties = MaterialModel::MaterialProperties::density;
 
@@ -73,7 +64,7 @@ namespace aspect
           for (const unsigned int f : cell->face_indices())
             if (cell->at_boundary(f))
               {
-                fe_face_values.reinit (cell, f);
+                fe_face_values.reinit(cell, f);
                 // Set use_strain_rates to false since we don't need viscosity
                 in.reinit(fe_face_values, cell, this->introspection(), this->get_solution());
 
@@ -81,17 +72,12 @@ namespace aspect
 
 
                 double local_normal_flux = 0;
-                for (unsigned int q=0; q<fe_face_values.n_quadrature_points; ++q)
+                for (unsigned int q = 0; q < fe_face_values.n_quadrature_points; ++q)
                   {
-                    local_normal_flux
-                    +=
-                      out.densities[q]
-                      * (in.velocity[q] * fe_face_values.normal_vector(q))
-                      * fe_face_values.JxW(q);
+                    local_normal_flux += out.densities[q] * (in.velocity[q] * fe_face_values.normal_vector(q)) * fe_face_values.JxW(q);
                   }
 
-                const types::boundary_id boundary_indicator
-                  = cell->face(f)->boundary_id();
+                const types::boundary_id boundary_indicator = cell->face(f)->boundary_id();
                 local_boundary_fluxes[boundary_indicator] += local_normal_flux * in_years;
               }
 
@@ -100,54 +86,46 @@ namespace aspect
       {
         // first collect local values in the same order in which they are listed
         // in the set of boundary indicators
-        const std::set<types::boundary_id>
-        boundary_indicators
-          = this->get_geometry_model().get_used_boundary_indicators ();
-        std::vector<double> local_values;
+        const std::set<types::boundary_id> boundary_indicators = this->get_geometry_model().get_used_boundary_indicators();
+        std::vector<double>                local_values;
         local_values.reserve(boundary_indicators.size());
         for (const auto p : boundary_indicators)
-          local_values.push_back (local_boundary_fluxes[p]);
+          local_values.push_back(local_boundary_fluxes[p]);
 
         // then collect contributions from all processors
-        std::vector<double> global_values (local_values.size());
-        Utilities::MPI::sum (local_values, this->get_mpi_communicator(), global_values);
+        std::vector<double> global_values(local_values.size());
+        Utilities::MPI::sum(local_values, this->get_mpi_communicator(), global_values);
 
         // and now take them apart into the global map again
         unsigned int index = 0;
-        for (std::set<types::boundary_id>::const_iterator
-             p = boundary_indicators.begin();
-             p != boundary_indicators.end(); ++p, ++index)
+        for (std::set<types::boundary_id>::const_iterator p = boundary_indicators.begin(); p != boundary_indicators.end(); ++p, ++index)
           global_boundary_fluxes[*p] = global_values[index];
       }
 
       // now add all of the computed mass fluxes to the statistics object
       // and create a single string that can be output to the screen
       std::ostringstream screen_text;
-      unsigned int index = 0;
-      for (std::map<types::boundary_id, double>::const_iterator
-           p = global_boundary_fluxes.begin();
-           p != global_boundary_fluxes.end(); ++p, ++index)
+      unsigned int       index = 0;
+      for (std::map<types::boundary_id, double>::const_iterator p = global_boundary_fluxes.begin(); p != global_boundary_fluxes.end();
+           ++p, ++index)
         {
-          const std::string name = "Outward mass flux through boundary with indicator "
-                                   + Utilities::int_to_string(p->first)
-                                   + aspect::Utilities::parenthesize_if_nonempty(this->get_geometry_model()
-                                                                                 .translate_id_to_symbol_name (p->first))
-                                   + " (" + unit + ")";
-          statistics.add_value (name, p->second);
+          const std::string name =
+            "Outward mass flux through boundary with indicator " + Utilities::int_to_string(p->first) +
+            aspect::Utilities::parenthesize_if_nonempty(this->get_geometry_model().translate_id_to_symbol_name(p->first)) + " (" + unit +
+            ")";
+          statistics.add_value(name, p->second);
 
           // also make sure that the other columns filled by this object
           // all show up with sufficient accuracy and in scientific notation
-          statistics.set_precision (name, 8);
-          statistics.set_scientific (name, true);
+          statistics.set_precision(name, 8);
+          statistics.set_scientific(name, true);
 
           // finally have something for the screen
           screen_text.precision(4);
-          screen_text << p->second << ' ' << unit
-                      << (index == global_boundary_fluxes.size()-1 ? "" : ", ");
+          screen_text << p->second << ' ' << unit << (index == global_boundary_fluxes.size() - 1 ? "" : ", ");
         }
 
-      return std::pair<std::string, std::string> ("Mass fluxes through boundary parts:",
-                                                  screen_text.str());
+      return std::pair<std::string, std::string>("Mass fluxes through boundary parts:", screen_text.str());
     }
   }
 }

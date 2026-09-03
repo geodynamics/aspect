@@ -23,8 +23,8 @@
 
 #include <aspect/simulator.h>
 #include <aspect/simulator_access.h>
-#include <aspect/volume_of_fluid/field.h>
 #include <aspect/volume_of_fluid/assembly.h>
+#include <aspect/volume_of_fluid/field.h>
 
 #include <boost/serialization/map.hpp>
 
@@ -49,85 +49,98 @@ namespace aspect
        * Add the Volume of Fluid field declaration to the list to be included
        * in the solution vector.
        */
-      void edit_finite_element_variables (std::vector<VariableDeclaration<dim>> &vars);
+      void
+      edit_finite_element_variables(std::vector<VariableDeclaration<dim>> &vars);
 
       /**
        * Declare the parameters this class takes through input files.
        */
-      static
-      void declare_parameters (ParameterHandler &prm);
+      static void
+      declare_parameters(ParameterHandler &prm);
 
       /**
        * Read the parameters this class declares from the parameter file.
        */
-      void parse_parameters (ParameterHandler &prm);
+      void
+      parse_parameters(ParameterHandler &prm);
 
       /**
        * Get the number of volume of fluid fields in current model
        */
-      unsigned int get_n_fields() const;
+      unsigned int
+      get_n_fields() const;
 
       /**
        * Get the name of volume of fluid field with index i
        */
-      const std::string name_for_field_index(unsigned int i) const;
+      const std::string
+      name_for_field_index(unsigned int i) const;
 
       /**
        * Get the structure containing the variable locations for the volume of
        * fluid field with index i.
        */
-      const VolumeOfFluidField<dim> &field_struct_for_field_index(unsigned int i) const;
+      const VolumeOfFluidField<dim> &
+      field_struct_for_field_index(unsigned int i) const;
 
       /**
        * Get threshold for volume fraction
        */
-      double get_volume_fraction_threshold() const;
+      double
+      get_volume_fraction_threshold() const;
 
       /**
        * Get the local index (within vof fields) for the named composition/volume of fluid field
        */
-      unsigned int field_index_for_name(const std::string &fieldname) const;
+      unsigned int
+      field_index_for_name(const std::string &fieldname) const;
 
       /**
        * Do necessary internal initialization that is dependent on having the
        * simulator and Finite Element initialized.
        */
-      void initialize (ParameterHandler &prm);
+      void
+      initialize(ParameterHandler &prm);
 
       /**
        * Do initialization routine for all volume of fluid fields
        */
-      void set_initial_volume_fractions ();
+      void
+      set_initial_volume_fractions();
 
       /**
        * Initialize specified field based on a composition field initial condition
        */
-      void initialize_from_composition_field (const VolumeOfFluidField<dim> &field);
+      void
+      initialize_from_composition_field(const VolumeOfFluidField<dim> &field);
 
       /**
        * Initialize specified field based on a level set initial condition
        */
-      void initialize_from_level_set (const VolumeOfFluidField<dim> &field);
+      void
+      initialize_from_level_set(const VolumeOfFluidField<dim> &field);
 
       /**
        * Do interface reconstruction for specified field and cache result in solution vector
        */
-      void update_volume_of_fluid_normals (const VolumeOfFluidField<dim> &field,
-                                           LinearAlgebra::BlockVector &solution);
+      void
+      update_volume_of_fluid_normals(const VolumeOfFluidField<dim> &field, LinearAlgebra::BlockVector &solution);
 
       /**
        * Use current interface reconstruction to produce a composition field
        * approximation that is bilinear on the unit cell and write that field
        * to the specified AdvectionField
        */
-      void update_volume_of_fluid_composition (const AdvectionField &composition_field,
-                                               const VolumeOfFluidField<dim> &volume_of_fluid_field,
-                                               LinearAlgebra::BlockVector &solution);
+      void
+      update_volume_of_fluid_composition(const AdvectionField          &composition_field,
+                                         const VolumeOfFluidField<dim> &volume_of_fluid_field,
+                                         LinearAlgebra::BlockVector    &solution);
 
       /**
        * Do single timestep update, includes logic for doing Strang split update
        */
-      void do_volume_of_fluid_update (const AdvectionField &advection_field);
+      void
+      do_volume_of_fluid_update(const AdvectionField &advection_field);
 
       /**
        * Assemble matrix and RHS for the specified field and dimension
@@ -137,15 +150,17 @@ namespace aspect
        * from the last timestep if necessary without requiring the overhead of
        * copying the data.
        */
-      void assemble_volume_of_fluid_system (const VolumeOfFluidField<dim> &field,
-                                            const unsigned int calculation_dim,
-                                            const bool update_from_old_solution);
+      void
+      assemble_volume_of_fluid_system(const VolumeOfFluidField<dim> &field,
+                                      const unsigned int             calculation_dim,
+                                      const bool                     update_from_old_solution);
 
       /**
        * Solve the diagonal matrix assembled in assemble_volume_of_fluid_system for the
        * specified field.
        */
-      void solve_volume_of_fluid_system (const VolumeOfFluidField<dim> &field);
+      void
+      solve_volume_of_fluid_system(const VolumeOfFluidField<dim> &field);
 
 
     private:
@@ -158,7 +173,8 @@ namespace aspect
        * Function to copy assembled data to final system. Requires access to
        * the full matrix, so must be in this class.
        */
-      void copy_local_to_global_volume_of_fluid_system (const internal::Assembly::CopyData::VolumeOfFluidSystem<dim> &data);
+      void
+      copy_local_to_global_volume_of_fluid_system(const internal::Assembly::CopyData::VolumeOfFluidSystem<dim> &data);
 
       /**
        * Assembler object used for doing the matrix and RHS assembly
@@ -222,19 +238,22 @@ namespace aspect
 
   // Declare the existence of explicit specializations
   template <>
-  void VolumeOfFluidHandler<2>::update_volume_of_fluid_normals (const VolumeOfFluidField<2> &field,
-                                                                LinearAlgebra::BlockVector &solution);
+  void
+  VolumeOfFluidHandler<2>::update_volume_of_fluid_normals(const VolumeOfFluidField<2> &field, LinearAlgebra::BlockVector &solution);
   template <>
-  void VolumeOfFluidHandler<3>::update_volume_of_fluid_normals (const VolumeOfFluidField<3> &/*field*/,
-                                                                LinearAlgebra::BlockVector &/*solution*/);
+  void
+  VolumeOfFluidHandler<3>::update_volume_of_fluid_normals(const VolumeOfFluidField<3> & /*field*/,
+                                                          LinearAlgebra::BlockVector & /*solution*/);
   template <>
-  void VolumeOfFluidHandler<2>::update_volume_of_fluid_composition (const typename Simulator<2>::AdvectionField &composition_field,
-                                                                    const VolumeOfFluidField<2> &volume_of_fluid_field,
-                                                                    LinearAlgebra::BlockVector &solution);
+  void
+  VolumeOfFluidHandler<2>::update_volume_of_fluid_composition(const typename Simulator<2>::AdvectionField &composition_field,
+                                                              const VolumeOfFluidField<2>                 &volume_of_fluid_field,
+                                                              LinearAlgebra::BlockVector                  &solution);
   template <>
-  void VolumeOfFluidHandler<3>::update_volume_of_fluid_composition (const Simulator<3>::AdvectionField &/*composition_field*/,
-                                                                    const VolumeOfFluidField<3> &/*volume_of_fluid_field*/,
-                                                                    LinearAlgebra::BlockVector &/*solution*/);
+  void
+  VolumeOfFluidHandler<3>::update_volume_of_fluid_composition(const Simulator<3>::AdvectionField & /*composition_field*/,
+                                                              const VolumeOfFluidField<3> & /*volume_of_fluid_field*/,
+                                                              LinearAlgebra::BlockVector & /*solution*/);
 
 }
 

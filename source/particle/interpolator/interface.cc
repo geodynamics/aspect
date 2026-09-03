@@ -27,85 +27,77 @@ namespace aspect
   {
     namespace Interpolator
     {
-// -------------------------------- Deal with registering models and automating
-// -------------------------------- their setup and selection at run time
+      // -------------------------------- Deal with registering models and automating
+      // -------------------------------- their setup and selection at run time
 
       namespace
       {
-        std::tuple
-        <aspect::internal::Plugins::UnusablePluginList,
-        aspect::internal::Plugins::UnusablePluginList,
-        aspect::internal::Plugins::PluginList<Interface<2>>,
-        aspect::internal::Plugins::PluginList<Interface<3>>> registered_plugins;
+        std::tuple<aspect::internal::Plugins::UnusablePluginList,
+                   aspect::internal::Plugins::UnusablePluginList,
+                   aspect::internal::Plugins::PluginList<Interface<2>>,
+                   aspect::internal::Plugins::PluginList<Interface<3>>>
+          registered_plugins;
       }
 
 
 
       template <int dim>
       void
-      register_particle_interpolator (const std::string &name,
-                                      const std::string &description,
-                                      void (*declare_parameters_function) (ParameterHandler &),
-                                      std::unique_ptr<Interface<dim>> (*factory_function) ())
+      register_particle_interpolator(const std::string &name,
+                                     const std::string &description,
+                                     void (*declare_parameters_function)(ParameterHandler &),
+                                     std::unique_ptr<Interface<dim>> (*factory_function)())
       {
-        std::get<dim>(registered_plugins).register_plugin (name,
-                                                           description,
-                                                           declare_parameters_function,
-                                                           factory_function);
+        std::get<dim>(registered_plugins).register_plugin(name, description, declare_parameters_function, factory_function);
       }
 
 
 
       template <int dim>
       std::unique_ptr<Interface<dim>>
-      create_particle_interpolator (ParameterHandler &prm)
+      create_particle_interpolator(ParameterHandler &prm)
       {
         std::string name;
-        name = prm.get ("Interpolation scheme");
+        name = prm.get("Interpolation scheme");
 
         // 'bilinear least squares' is the deprecated old name of the 'linear least squares'
         // interpolator. The old name will be removed in the future.
         if (name == "bilinear least squares")
           name = "linear least squares";
 
-        return std::get<dim>(registered_plugins).create_plugin (name,
-                                                                "Particle::Interpolator name");
+        return std::get<dim>(registered_plugins).create_plugin(name, "Particle::Interpolator name");
       }
 
 
 
       template <int dim>
       void
-      declare_parameters (ParameterHandler &prm)
+      declare_parameters(ParameterHandler &prm)
       {
         // declare the entry in the parameter file
-        const std::string pattern_of_names
-          = std::get<dim>(registered_plugins).get_pattern_of_names ();
+        const std::string pattern_of_names = std::get<dim>(registered_plugins).get_pattern_of_names();
 
         // 'bilinear least squares' is the deprecated old name of the 'linear least squares'
         // interpolator. The old name will be removed in the future.
-        prm.declare_entry ("Interpolation scheme", "cell average",
-                           Patterns::Selection (pattern_of_names + "|bilinear least squares"),
-                           "Select one of the following models:\n\n"
-                           +
-                           std::get<dim>(registered_plugins).get_description_string()
-                           +
-                           "\n\n"
-                           "`bilinear least squares': "
-                           "Deprecated, now an alias for `linear least squares'. "
-                           "This alias will be removed in the future. ");
+        prm.declare_entry("Interpolation scheme",
+                          "cell average",
+                          Patterns::Selection(pattern_of_names + "|bilinear least squares"),
+                          "Select one of the following models:\n\n" + std::get<dim>(registered_plugins).get_description_string() +
+                            "\n\n"
+                            "`bilinear least squares': "
+                            "Deprecated, now an alias for `linear least squares'. "
+                            "This alias will be removed in the future. ");
 
-        std::get<dim>(registered_plugins).declare_parameters (prm);
+        std::get<dim>(registered_plugins).declare_parameters(prm);
       }
 
 
 
       template <int dim>
       void
-      write_plugin_graph (std::ostream &out)
+      write_plugin_graph(std::ostream &out)
       {
-        std::get<dim>(registered_plugins).write_plugin_graph ("Particle interpolator interface",
-                                                              out);
+        std::get<dim>(registered_plugins).write_plugin_graph("Particle interpolator interface", out);
       }
     }
   }
@@ -120,25 +112,17 @@ namespace aspect
     {
 #define INSTANTIATE(dim) \
   template class Interface<dim>; \
-  \
-  template \
-  void \
-  register_particle_interpolator<dim> (const std::string &, \
-                                       const std::string &, \
-                                       void ( *) (ParameterHandler &), \
-                                       std::unique_ptr<Interface<dim>>( *) ()); \
-  \
-  template  \
-  void \
-  declare_parameters<dim> (ParameterHandler &); \
-  \
-  template \
-  void \
-  write_plugin_graph<dim> (std::ostream &); \
-  \
-  template \
-  std::unique_ptr<Interface<dim>> \
-  create_particle_interpolator<dim> (ParameterHandler &prm);
+\
+  template void register_particle_interpolator<dim>(const std::string &, \
+                                                    const std::string &, \
+                                                    void (*)(ParameterHandler &), \
+                                                    std::unique_ptr<Interface<dim>> (*)()); \
+\
+  template void declare_parameters<dim>(ParameterHandler &); \
+\
+  template void write_plugin_graph<dim>(std::ostream &); \
+\
+  template std::unique_ptr<Interface<dim>> create_particle_interpolator<dim>(ParameterHandler & prm);
 
       ASPECT_INSTANTIATE(INSTANTIATE)
 

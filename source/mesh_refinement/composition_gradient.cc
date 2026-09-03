@@ -19,8 +19,8 @@
 */
 
 
-#include <aspect/mesh_refinement/composition_gradient.h>
 #include <aspect/advection_field.h>
+#include <aspect/mesh_refinement/composition_gradient.h>
 
 #include <deal.II/base/quadrature_lib.h>
 #include <deal.II/fe/fe_values.h>
@@ -33,25 +33,22 @@ namespace aspect
     void
     CompositionGradient<dim>::execute(Vector<float> &indicators) const
     {
-      AssertThrow (this->n_compositional_fields() >= 1,
-                   ExcMessage ("This refinement criterion can not be used when no "
-                               "compositional fields are active!"));
+      AssertThrow(this->n_compositional_fields() >= 1,
+                  ExcMessage("This refinement criterion can not be used when no "
+                             "compositional fields are active!"));
 
-      indicators = 0;
-      const double power = 1.0 + dim/2.0;
+      indicators         = 0;
+      const double power = 1.0 + dim / 2.0;
 
       for (const unsigned int base_element_index : this->introspection().get_composition_base_element_indices())
         {
-          const Quadrature<dim> quadrature (this->get_fe().base_element(base_element_index).get_unit_support_points());
-          const unsigned int dofs_per_cell = quadrature.size();
-          FEValues<dim> fe_values (this->get_mapping(),
-                                   this->get_fe(),
-                                   quadrature,
-                                   update_quadrature_points | update_gradients);
+          const Quadrature<dim> quadrature(this->get_fe().base_element(base_element_index).get_unit_support_points());
+          const unsigned int    dofs_per_cell = quadrature.size();
+          FEValues<dim>         fe_values(this->get_mapping(), this->get_fe(), quadrature, update_quadrature_points | update_gradients);
 
           // the values of the compositional fields are stored as block vectors for each field
           // we have to extract them in this structure
-          std::vector<Tensor<1,dim>> composition_gradients (quadrature.size());
+          std::vector<Tensor<1, dim>> composition_gradients(quadrature.size());
 
           for (const auto &cell : this->get_dof_handler().active_cell_iterators())
             if (cell->is_locally_owned())
@@ -62,13 +59,13 @@ namespace aspect
                 for (const unsigned int c : this->introspection().get_compositional_field_indices_with_base_element(base_element_index))
                   {
                     const AdvectionField composition = AdvectionField::composition(c);
-                    fe_values[composition.scalar_extractor(this->introspection())].get_function_gradients (this->get_solution(),
-                        composition_gradients);
+                    fe_values[composition.scalar_extractor(this->introspection())].get_function_gradients(this->get_solution(),
+                                                                                                          composition_gradients);
 
                     // Some up the indicators for this composition on this cell. Note that quadrature points and dofs
                     // are enumerated in the same order.
                     double this_indicator = 0.0;
-                    for (unsigned int j=0; j<dofs_per_cell; ++j)
+                    for (unsigned int j = 0; j < dofs_per_cell; ++j)
                       this_indicator += composition_gradients[j].norm();
 
                     // Scale gradient in each cell with the correct power of h. Otherwise,
@@ -87,8 +84,7 @@ namespace aspect
 
     template <int dim>
     void
-    CompositionGradient<dim>::
-    declare_parameters (ParameterHandler &prm)
+    CompositionGradient<dim>::declare_parameters(ParameterHandler &prm)
     {
       prm.enter_subsection("Mesh refinement");
       {
@@ -96,7 +92,7 @@ namespace aspect
         {
           prm.declare_entry("Compositional field scaling factors",
                             "",
-                            Patterns::List (Patterns::Double (0.)),
+                            Patterns::List(Patterns::Double(0.)),
                             "A list of scaling factors by which every individual compositional "
                             "field gradient will be multiplied. If only a single compositional "
                             "field exists, then this parameter has no particular meaning. "
@@ -116,24 +112,21 @@ namespace aspect
 
     template <int dim>
     void
-    CompositionGradient<dim>::parse_parameters (ParameterHandler &prm)
+    CompositionGradient<dim>::parse_parameters(ParameterHandler &prm)
     {
       prm.enter_subsection("Mesh refinement");
       {
         prm.enter_subsection("Composition gradient");
         {
-          composition_scaling_factors
-            = Utilities::string_to_double(
-                Utilities::split_string_list(prm.get("Compositional field scaling factors")));
+          composition_scaling_factors =
+            Utilities::string_to_double(Utilities::split_string_list(prm.get("Compositional field scaling factors")));
 
-          AssertThrow (composition_scaling_factors.size() == this->n_compositional_fields()
-                       ||
-                       composition_scaling_factors.size() == 0,
-                       ExcMessage ("The number of scaling factors given here must either be "
-                                   "zero or equal to the number of chosen refinement criteria."));
+          AssertThrow(composition_scaling_factors.size() == this->n_compositional_fields() || composition_scaling_factors.size() == 0,
+                      ExcMessage("The number of scaling factors given here must either be "
+                                 "zero or equal to the number of chosen refinement criteria."));
 
           if (composition_scaling_factors.size() == 0)
-            composition_scaling_factors.resize (this->n_compositional_fields(), 1.0);
+            composition_scaling_factors.resize(this->n_compositional_fields(), 1.0);
         }
         prm.leave_subsection();
       }

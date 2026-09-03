@@ -22,6 +22,7 @@
 #define _aspect_material_model_rheology_dislocation_creep_h
 
 #include <aspect/global.h>
+
 #include <aspect/simulator_access.h>
 
 namespace aspect
@@ -35,19 +36,19 @@ namespace aspect
        */
       struct DislocationCreepParameters
       {
-        /**
-         * The dislocation creep prefactor, activation energy, activation volume
-         * and stress exponent.
-         */
-        double prefactor;
-        double activation_energy;
-        double activation_volume;
-        double stress_exponent;
+          /**
+           * The dislocation creep prefactor, activation energy, activation volume
+           * and stress exponent.
+           */
+          double prefactor;
+          double activation_energy;
+          double activation_volume;
+          double stress_exponent;
 
-        /**
-         * Constructor. Initializes all values to NaN.
-         */
-        DislocationCreepParameters();
+          /**
+           * Constructor. Initializes all values to NaN.
+           */
+          DislocationCreepParameters();
       };
 
       template <int dim>
@@ -62,9 +63,8 @@ namespace aspect
           /**
            * Declare the parameters this function takes through input files.
            */
-          static
-          void
-          declare_parameters (ParameterHandler &prm);
+          static void
+          declare_parameters(ParameterHandler &prm);
 
           /**
            * Read the parameters this class declares from the parameter file.
@@ -74,8 +74,8 @@ namespace aspect
            * parameters.
            */
           void
-          parse_parameters (ParameterHandler &prm,
-                            const std::unique_ptr<std::vector<unsigned int>> &expected_n_phases_per_composition = nullptr);
+          parse_parameters(ParameterHandler                                 &prm,
+                           const std::unique_ptr<std::vector<unsigned int>> &expected_n_phases_per_composition = nullptr);
 
           /**
            * Compute the creep parameters for the dislocation creep law.
@@ -85,9 +85,9 @@ namespace aspect
            * each phase and then averaged for each compositional field.
            */
           const DislocationCreepParameters
-          compute_creep_parameters (const unsigned int composition,
-                                    const std::vector<double> &phase_function_values = {},
-                                    const std::vector<unsigned int> &n_phase_transitions_per_composition = {}) const;
+          compute_creep_parameters(const unsigned int               composition,
+                                   const std::vector<double>       &phase_function_values               = {},
+                                   const std::vector<unsigned int> &n_phase_transitions_per_composition = {}) const;
 
           /**
            * Compute the viscosity based on the dislocation creep law.
@@ -97,35 +97,34 @@ namespace aspect
            * each phase and then averaged for each compositional field.
            */
           double
-          compute_viscosity (const double strain_rate,
-                             const double pressure,
-                             const double temperature,
-                             const unsigned int composition,
-                             const std::vector<double> &phase_function_values = {},
-                             const std::vector<unsigned int> &n_phase_transitions_per_composition = {}) const;
+          compute_viscosity(const double                     strain_rate,
+                            const double                     pressure,
+                            const double                     temperature,
+                            const unsigned int               composition,
+                            const std::vector<double>       &phase_function_values               = {},
+                            const std::vector<unsigned int> &n_phase_transitions_per_composition = {}) const;
 
           /**
            * Compute the strain rate and first stress derivative
            * as a function of stress based on the dislocation creep law.
            */
           std::pair<double, double>
-          compute_strain_rate_and_derivative (const double stress,
-                                              const double pressure,
-                                              const double temperature,
-                                              const DislocationCreepParameters creep_parameters) const;
+          compute_strain_rate_and_derivative(const double                     stress,
+                                             const double                     pressure,
+                                             const double                     temperature,
+                                             const DislocationCreepParameters creep_parameters) const;
 
           /**
            * Compute the logarithm of strain rate and first derivative with respect to
            * the logarithm of the stress based on the dislocation creep law.
            */
           std::pair<double, double>
-          compute_log_strain_rate_and_derivative (const double log_stress,
-                                                  const double pressure,
-                                                  const double temperature,
-                                                  const DislocationCreepParameters creep_parameters) const;
+          compute_log_strain_rate_and_derivative(const double                     log_stress,
+                                                 const double                     pressure,
+                                                 const double                     temperature,
+                                                 const DislocationCreepParameters creep_parameters) const;
 
         private:
-
           /**
            * List of dislocation creep prefactors A.
            *
@@ -151,7 +150,6 @@ namespace aspect
            * This variable is read from the parameter file through a parameter called 'Activation volumes for dislocation creep'.
            */
           std::vector<double> activation_volumes;
-
       };
     }
   }

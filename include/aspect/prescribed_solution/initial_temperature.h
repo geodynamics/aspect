@@ -24,6 +24,7 @@
 #include <aspect/initial_temperature/interface.h>
 #include <aspect/prescribed_solution/interface.h>
 #include <aspect/simulator_access.h>
+
 #include <deal.II/base/parsed_function.h>
 
 namespace aspect
@@ -41,46 +42,48 @@ namespace aspect
      * @ingroup PrescribedSolution
      */
     template <int dim>
-    class InitialTemperature
-      : public Interface<dim>,
-        public SimulatorAccess<dim>
+    class InitialTemperature : public Interface<dim>, public SimulatorAccess<dim>
     {
       public:
         /**
          * Constructor.
          */
-        InitialTemperature ();
+        InitialTemperature();
 
         /**
-        * Store a shared pointer to the initial temperature manager so the
-        * plugin can safely access it after initialization.
-        */
-        void initialize () override;
+         * Store a shared pointer to the initial temperature manager so the
+         * plugin can safely access it after initialization.
+         */
+        void
+        initialize() override;
 
         /**
          * Update the current time in the indicator function.
          */
-        void update () override;
+        void
+        update() override;
 
         /**
          * Declare the parameters this class takes through input files.
          */
-        static void declare_parameters (ParameterHandler &prm);
+        static void
+        declare_parameters(ParameterHandler &prm);
 
         /**
          * Read the parameters this class declares from the parameter file.
          */
-        void parse_parameters (ParameterHandler &prm) override;
+        void
+        parse_parameters(ParameterHandler &prm) override;
 
         /**
          * Decide and assign cell-wise constraints for temperature DoFs.
          */
-        void constrain_solution (
-          const typename DoFHandler<dim>::active_cell_iterator &cell,
-          const std::vector<Point<dim>> &positions,
-          const std::vector<unsigned int> &component_indices,
-          std::vector<bool> &should_be_constrained,
-          std::vector<double> &solution) override;
+        void
+        constrain_solution(const typename DoFHandler<dim>::active_cell_iterator &cell,
+                           const std::vector<Point<dim>>                        &positions,
+                           const std::vector<unsigned int>                      &component_indices,
+                           std::vector<bool>                                    &should_be_constrained,
+                           std::vector<double>                                  &solution) override;
 
       private:
         /**

@@ -19,9 +19,9 @@
 */
 
 
+#include <aspect/adiabatic_conditions/interface.h>
 #include <aspect/initial_composition/porosity.h>
 #include <aspect/initial_temperature/interface.h>
-#include <aspect/adiabatic_conditions/interface.h>
 #include <aspect/material_model/interface.h>
 #include <aspect/melt.h>
 
@@ -49,9 +49,7 @@ namespace aspect
 
     template <int dim>
     double
-    Porosity<dim>::
-    initial_composition (const Point<dim> &position,
-                         const unsigned int compositional_index) const
+    Porosity<dim>::initial_composition(const Point<dim> &position, const unsigned int compositional_index) const
     {
       AssertThrow(this->introspection().compositional_name_exists("porosity"),
                   ExcMessage("The initial composition plugin `porosity' did not find a "
@@ -69,26 +67,25 @@ namespace aspect
         {
           MaterialModel::MaterialModelInputs<dim> in(1, this->n_compositional_fields());
 
-          in.position[0] = position;
-          in.temperature[0] = initial_temperature_manager->initial_temperature(position);
-          in.pressure[0] = this->get_adiabatic_conditions().pressure(position);
+          in.position[0]          = position;
+          in.temperature[0]       = initial_temperature_manager->initial_temperature(position);
+          in.pressure[0]          = this->get_adiabatic_conditions().pressure(position);
           in.pressure_gradient[0] = 0.0;
-          in.velocity[0] = 0.0;
+          in.velocity[0]          = 0.0;
 
           // Use the initial composition, except for the porosity, to prevent
           // infinite recursion
           for (unsigned int i = 0; i < this->n_compositional_fields(); ++i)
             if (i != porosity_index)
-              in.composition[0][i] = initial_composition_manager->initial_composition(position,i);
+              in.composition[0][i] = initial_composition_manager->initial_composition(position, i);
             else
               in.composition[0][i] = 0.0;
 
-          in.strain_rate[0] = SymmetricTensor<2,dim>();
+          in.strain_rate[0] = SymmetricTensor<2, dim>();
 
           std::vector<double> melt_fraction(1);
 
-          MaterialModel::MeltFractionModel<dim>::as_melt_fraction_model(this->get_material_model())
-          .melt_fractions(in, melt_fraction);
+          MaterialModel::MeltFractionModel<dim>::as_melt_fraction_model(this->get_material_model()).melt_fractions(in, melt_fraction);
 
           return melt_fraction[0];
         }

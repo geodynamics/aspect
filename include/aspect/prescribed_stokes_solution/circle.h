@@ -40,7 +40,8 @@ namespace aspect
     class Circle : public Interface<dim>, public SimulatorAccess<dim>
     {
       public:
-        void stokes_solution (const Point<dim> &p, Vector<double> &value) const override;
+        void
+        stokes_solution(const Point<dim> &p, Vector<double> &value) const override;
     };
   }
 }

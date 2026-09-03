@@ -23,9 +23,8 @@
 #define _aspect_mesh_deformation_free_surface_h
 
 #include <aspect/mesh_deformation/interface.h>
-
-#include <aspect/simulator_access.h>
 #include <aspect/simulator/assemblers/interface.h>
+#include <aspect/simulator_access.h>
 
 
 namespace aspect
@@ -48,14 +47,15 @@ namespace aspect
          * Initialize function, which connects the set_assemblers function
          * to the appropriate Simulator signal.
          */
-        void initialize() override;
+        void
+        initialize() override;
 
         /**
          * Called by Simulator::set_assemblers() to allow the FreeSurface plugin
          * to register its assembler.
          */
-        void set_assemblers(const SimulatorAccess<dim> &simulator_access,
-                            aspect::Assemblers::Manager<dim> &assemblers) const;
+        void
+        set_assemblers(const SimulatorAccess<dim> &simulator_access, aspect::Assemblers::Manager<dim> &assemblers) const;
 
 
         /**
@@ -65,42 +65,49 @@ namespace aspect
          * these constraints when computing the new vertex positions.
          */
         void
-        compute_velocity_constraints_on_boundary(const DoFHandler<dim> &mesh_deformation_dof_handler,
-                                                 AffineConstraints<double> &mesh_velocity_constraints,
+        compute_velocity_constraints_on_boundary(const DoFHandler<dim>              &mesh_deformation_dof_handler,
+                                                 AffineConstraints<double>          &mesh_velocity_constraints,
                                                  const std::set<types::boundary_id> &boundary_ids) const override;
 
         /**
          * Returns whether or not the plugin requires surface stabilization
          */
-        bool needs_surface_stabilization () const override;
+        bool
+        needs_surface_stabilization() const override;
 
         /**
          * Declare parameters for the free surface handling.
          */
-        static
-        void declare_parameters (ParameterHandler &prm);
+        static void
+        declare_parameters(ParameterHandler &prm);
 
         /**
          * Parse parameters for the free surface handling.
          */
-        void parse_parameters (ParameterHandler &prm) override;
+        void
+        parse_parameters(ParameterHandler &prm) override;
 
       private:
         /**
          * Project the Stokes velocity solution onto the
          * free surface. Called by make_constraints()
          */
-        void project_velocity_onto_boundary (const DoFHandler<dim> &free_surface_dof_handler,
-                                             const IndexSet &mesh_locally_owned,
-                                             const IndexSet &mesh_locally_relevant,
-                                             LinearAlgebra::Vector &output) const;
+        void
+        project_velocity_onto_boundary(const DoFHandler<dim> &free_surface_dof_handler,
+                                       const IndexSet        &mesh_locally_owned,
+                                       const IndexSet        &mesh_locally_relevant,
+                                       LinearAlgebra::Vector &output) const;
 
         /**
          * A struct for holding information about how to advect the free surface.
          */
         struct SurfaceAdvection
         {
-          enum Direction { normal, vertical };
+            enum Direction
+            {
+              normal,
+              vertical
+            };
         };
 
         /**

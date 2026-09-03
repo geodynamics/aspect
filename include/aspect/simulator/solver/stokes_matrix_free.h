@@ -22,6 +22,7 @@
 #define _aspect_simulator_solver_stokes_matrix_free_h
 
 #include <aspect/global.h>
+
 #include <aspect/parameters.h>
 #include <aspect/simulator/solver/interface.h>
 
@@ -37,14 +38,15 @@ namespace aspect
    * actual implementation is found inside StokesMatrixFreeHandlerLocalSmoothingImplementation.
    */
   template <int dim>
-  class StokesMatrixFreeHandler: public StokesSolver::Interface<dim>
+  class StokesMatrixFreeHandler : public StokesSolver::Interface<dim>
   {
     public:
       /**
        * Allocates and sets up the members of the StokesMatrixFreeHandler. This
        * is called by Simulator<dim>::setup_dofs()
        */
-      virtual void setup_dofs()=0;
+      virtual void
+      setup_dofs() = 0;
 
       /**
        * Perform various tasks to update the linear system to solve
@@ -53,48 +55,55 @@ namespace aspect
        * model and storing the information necessary for a later call
        * to solve().
        */
-      virtual void assemble()=0;
+      virtual void
+      assemble() = 0;
 
       /**
        * Computes and sets the diagonal for both the mass matrix
        * operator and the A-block operators on each level for the
        * purpose of smoothing inside the multigrid v-cycle.
        */
-      virtual void build_preconditioner()=0;
+      virtual void
+      build_preconditioner() = 0;
 
       /**
        * Declare parameters necessary for this solver.
        */
-      static
-      void declare_parameters (ParameterHandler &prm);
+      static void
+      declare_parameters(ParameterHandler &prm);
 
       /**
        * Return memory consumption in bytes for all DoFHandler objects.
        */
-      virtual std::size_t get_dof_handler_memory_consumption() const = 0;
+      virtual std::size_t
+      get_dof_handler_memory_consumption() const = 0;
 
       /**
        * Return memory consumption in bytes for all transfer objects.
        */
-      virtual std::size_t get_mg_transfer_memory_consumption() const = 0;
+      virtual std::size_t
+      get_mg_transfer_memory_consumption() const = 0;
 
       /**
        * Return memory consumption in bytes for all transfer objects.
        */
-      virtual std::size_t get_constraint_memory_consumption() const = 0;
+      virtual std::size_t
+      get_constraint_memory_consumption() const = 0;
 
       /**
        * Return the memory consumption in bytes that are used to store
        * equation data like viscosity to be able to apply the operators.
        */
-      virtual std::size_t get_cell_data_memory_consumption() const = 0;
+      virtual std::size_t
+      get_cell_data_memory_consumption() const = 0;
   };
 
   /**
    * Create an instance of the StokesMatrixFreeHandler based on the input parameters.
    */
   template <int dim>
-  std::unique_ptr<StokesMatrixFreeHandler<dim>> create_matrix_free_solver(Simulator<dim> &simulator, const Parameters<dim> &parameters);
+  std::unique_ptr<StokesMatrixFreeHandler<dim>>
+  create_matrix_free_solver(Simulator<dim> &simulator, const Parameters<dim> &parameters);
 
 
 

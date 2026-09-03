@@ -20,11 +20,12 @@
 
 
 #include <aspect/global.h>
-#include <aspect/utilities.h>
-#include <aspect/initial_composition/interface.h>
 
-#include <tuple>
+#include <aspect/initial_composition/interface.h>
+#include <aspect/utilities.h>
+
 #include <list>
+#include <tuple>
 
 
 namespace aspect
@@ -37,60 +38,56 @@ namespace aspect
 
     namespace
     {
-      std::tuple
-      <aspect::internal::Plugins::UnusablePluginList,
-      aspect::internal::Plugins::UnusablePluginList,
-      aspect::internal::Plugins::PluginList<Interface<2>>,
-      aspect::internal::Plugins::PluginList<Interface<3>>> registered_plugins;
+      std::tuple<aspect::internal::Plugins::UnusablePluginList,
+                 aspect::internal::Plugins::UnusablePluginList,
+                 aspect::internal::Plugins::PluginList<Interface<2>>,
+                 aspect::internal::Plugins::PluginList<Interface<3>>>
+        registered_plugins;
     }
 
 
 
     template <int dim>
     void
-    Manager<dim>::register_initial_composition (const std::string &name,
-                                                const std::string &description,
-                                                void (*declare_parameters_function) (ParameterHandler &),
-                                                std::unique_ptr<Interface<dim>> (*factory_function) ())
+    Manager<dim>::register_initial_composition(const std::string &name,
+                                               const std::string &description,
+                                               void (*declare_parameters_function)(ParameterHandler &),
+                                               std::unique_ptr<Interface<dim>> (*factory_function)())
     {
-      std::get<dim>(registered_plugins).register_plugin (name,
-                                                         description,
-                                                         declare_parameters_function,
-                                                         factory_function);
+      std::get<dim>(registered_plugins).register_plugin(name, description, declare_parameters_function, factory_function);
     }
 
 
 
     template <int dim>
     void
-    Manager<dim>::parse_parameters (ParameterHandler &prm)
+    Manager<dim>::parse_parameters(ParameterHandler &prm)
     {
       // find out which plugins are requested and the various other
       // parameters we declare here
-      prm.enter_subsection ("Initial composition model");
+      prm.enter_subsection("Initial composition model");
       {
-        this->plugin_names
-          = Utilities::split_string_list(prm.get("List of model names"));
+        this->plugin_names = Utilities::split_string_list(prm.get("List of model names"));
 
         AssertThrow(Utilities::has_unique_entries(this->plugin_names),
                     ExcMessage("The list of strings for the parameter "
                                "'Initial composition model/List of model names' contains entries more than once. "
                                "This is not allowed. Please check your parameter file."));
 
-        const std::string model_name = prm.get ("Model name");
+        const std::string model_name = prm.get("Model name");
 
-        AssertThrow (model_name == "unspecified",
-                     ExcMessage ("The parameter 'Model name' is deprecated. Please add your "
-                                 "initial composition model to the parameter 'List of model names' instead."));
+        AssertThrow(model_name == "unspecified",
+                    ExcMessage("The parameter 'Model name' is deprecated. Please add your "
+                               "initial composition model to the parameter 'List of model names' instead."));
 
         // create operator list
         const std::vector<std::string> model_operator_names =
-          Utilities::possibly_extend_from_1_to_N (Utilities::split_string_list(prm.get("List of model operators")),
-                                                  this->plugin_names.size(),
-                                                  "List of model operators");
+          Utilities::possibly_extend_from_1_to_N(Utilities::split_string_list(prm.get("List of model operators")),
+                                                 this->plugin_names.size(),
+                                                 "List of model operators");
         model_operators = Utilities::create_model_operator_list(model_operator_names);
       }
-      prm.leave_subsection ();
+      prm.leave_subsection();
 
       if (this->plugin_names.size() > 0)
         AssertThrow(this->n_compositional_fields() > 0,
@@ -103,15 +100,14 @@ namespace aspect
       // their own parameters
       for (const auto &model_name : this->plugin_names)
         {
-          this->plugin_objects.emplace_back (std::get<dim>(registered_plugins)
-                                             .create_plugin (model_name,
-                                                             "Initial composition model::Model names"));
+          this->plugin_objects.emplace_back(
+            std::get<dim>(registered_plugins).create_plugin(model_name, "Initial composition model::Model names"));
 
-          if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(&*this->plugin_objects.back()))
-            sim->initialize_simulator (this->get_simulator());
+          if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim> *>(&*this->plugin_objects.back()))
+            sim->initialize_simulator(this->get_simulator());
 
-          this->plugin_objects.back()->parse_parameters (prm);
-          this->plugin_objects.back()->initialize ();
+          this->plugin_objects.back()->parse_parameters(prm);
+          this->plugin_objects.back()->initialize();
         }
     }
 
@@ -119,16 +115,14 @@ namespace aspect
 
     template <int dim>
     double
-    Manager<dim>::initial_composition (const Point<dim> &position,
-                                       const unsigned int n_comp) const
+    Manager<dim>::initial_composition(const Point<dim> &position, const unsigned int n_comp) const
     {
       double composition = 0.0;
-      int i = 0;
+      int    i           = 0;
 
       for (const auto &initial_composition_object : this->plugin_objects)
         {
-          composition = model_operators[i](composition,
-                                           initial_composition_object->initial_composition(position,n_comp));
+          composition = model_operators[i](composition, initial_composition_object->initial_composition(position, n_comp));
           ++i;
         }
 
@@ -138,7 +132,7 @@ namespace aspect
 
     template <int dim>
     const std::vector<std::string> &
-    Manager<dim>::get_active_initial_composition_names () const
+    Manager<dim>::get_active_initial_composition_names() const
     {
       return this->plugin_names;
     }
@@ -146,7 +140,7 @@ namespace aspect
 
     template <int dim>
     const std::list<std::unique_ptr<Interface<dim>>> &
-    Manager<dim>::get_active_initial_composition_conditions () const
+    Manager<dim>::get_active_initial_composition_conditions() const
     {
       return this->plugin_objects;
     }
@@ -154,13 +148,12 @@ namespace aspect
 
     template <int dim>
     void
-    Manager<dim>::declare_parameters (ParameterHandler &prm)
+    Manager<dim>::declare_parameters(ParameterHandler &prm)
     {
       // declare the entry in the parameter file
-      prm.enter_subsection ("Initial composition model");
+      prm.enter_subsection("Initial composition model");
       {
-        const std::string pattern_of_names
-          = std::get<dim>(registered_plugins).get_pattern_of_names ();
+        const std::string pattern_of_names = std::get<dim>(registered_plugins).get_pattern_of_names();
 
         prm.declare_entry("List of model names",
                           "",
@@ -170,49 +163,46 @@ namespace aspect
                           "These plugins are loaded in the order given, and modify the "
                           "existing composition field via the operators listed "
                           "in 'List of model operators'.\n\n"
-                          "The following composition models are available:\n\n"
-                          +
-                          std::get<dim>(registered_plugins).get_description_string());
+                          "The following composition models are available:\n\n" +
+                            std::get<dim>(registered_plugins).get_description_string());
 
-        prm.declare_entry("List of model operators", "add",
+        prm.declare_entry("List of model operators",
+                          "add",
                           Patterns::MultipleSelection(Utilities::get_model_operator_options()),
                           "A comma-separated list of operators that "
                           "will be used to append the listed composition models onto "
                           "the previous models. If only one operator is given, "
                           "the same operator is applied to all models.");
 
-        prm.declare_entry ("Model name", "unspecified",
-                           Patterns::Selection (pattern_of_names+"|unspecified"),
-                           "Select one of the following models:\n\n"
-                           +
-                           std::get<dim>(registered_plugins).get_description_string()
-                           + "\n\n" +
-                           "\\textbf{Warning}: This parameter provides an old and "
-                           "deprecated way of specifying "
-                           "initial composition models and shouldn't be used. "
-                           "Please use 'List of model names' instead.");
+        prm.declare_entry("Model name",
+                          "unspecified",
+                          Patterns::Selection(pattern_of_names + "|unspecified"),
+                          "Select one of the following models:\n\n" + std::get<dim>(registered_plugins).get_description_string() + "\n\n" +
+                            "\\textbf{Warning}: This parameter provides an old and "
+                            "deprecated way of specifying "
+                            "initial composition models and shouldn't be used. "
+                            "Please use 'List of model names' instead.");
       }
-      prm.leave_subsection ();
+      prm.leave_subsection();
 
-      std::get<dim>(registered_plugins).declare_parameters (prm);
+      std::get<dim>(registered_plugins).declare_parameters(prm);
     }
 
 
     template <int dim>
     std::string
-    get_valid_model_names_pattern ()
+    get_valid_model_names_pattern()
     {
-      return std::get<dim>(registered_plugins).get_pattern_of_names ();
+      return std::get<dim>(registered_plugins).get_pattern_of_names();
     }
 
 
 
     template <int dim>
     void
-    Manager<dim>::write_plugin_graph (std::ostream &out)
+    Manager<dim>::write_plugin_graph(std::ostream &out)
     {
-      std::get<dim>(registered_plugins).write_plugin_graph ("Initial composition interface",
-                                                            out);
+      std::get<dim>(registered_plugins).write_plugin_graph("Initial composition interface", out);
     }
   }
 }
@@ -225,10 +215,8 @@ namespace aspect
 #define INSTANTIATE(dim) \
   template class Interface<dim>; \
   template class Manager<dim>; \
-  \
-  template \
-  std::string \
-  get_valid_model_names_pattern<dim> ();
+\
+  template std::string get_valid_model_names_pattern<dim>();
 
     ASPECT_INSTANTIATE(INSTANTIATE)
 

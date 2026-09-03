@@ -18,8 +18,8 @@
   <http://www.gnu.org/licenses/>.
 */
 
-#include <aspect/postprocess/entropy_statistics.h>
 #include <aspect/material_model/entropy_model.h>
+#include <aspect/postprocess/entropy_statistics.h>
 
 namespace aspect
 {
@@ -29,17 +29,16 @@ namespace aspect
     void
     EntropyStatistics<dim>::initialize()
     {
-      const MaterialModel::EntropyModel<dim> &material_model = Plugins::get_plugin_as_type<const MaterialModel::EntropyModel<dim>>(this->get_material_model());
+      const MaterialModel::EntropyModel<dim> &material_model =
+        Plugins::get_plugin_as_type<const MaterialModel::EntropyModel<dim>>(this->get_material_model());
 
       material_model.post_multicomponent_equilibrium.connect(
-        [&](const SimulatorAccess<dim> &/*simulator_access*/,
-            const unsigned int iteration_count)
-      {
-        this->store_entropy_solver_history(iteration_count);
-      });
+        [&](const SimulatorAccess<dim> & /*simulator_access*/, const unsigned int iteration_count) {
+          this->store_entropy_solver_history(iteration_count);
+        });
 
       total_iteration_count = 0;
-      number_of_solves = 0;
+      number_of_solves      = 0;
     }
 
 
@@ -55,29 +54,24 @@ namespace aspect
 
 
     template <int dim>
-    std::pair<std::string,std::string>
-    EntropyStatistics<dim>::execute (TableHandler &statistics)
+    std::pair<std::string, std::string>
+    EntropyStatistics<dim>::execute(TableHandler &statistics)
     {
       // Collect the data from all MPI ranks for calculating the average iteration count.
       std::vector<unsigned int> local_iteration_count = {number_of_solves, total_iteration_count};
-      std::vector<unsigned int> iteration_count (2);
+      std::vector<unsigned int> iteration_count(2);
 
-      Utilities::MPI::sum (local_iteration_count, this->get_mpi_communicator(), iteration_count);
+      Utilities::MPI::sum(local_iteration_count, this->get_mpi_communicator(), iteration_count);
 
       // average iteration per solve = total_iteration_count / number_of_solves
-      const int average_iteration_count = iteration_count[0] > 0
-                                          ?
-                                          iteration_count[1] / iteration_count[0]
-                                          :
-                                          iteration_count[1];
+      const int average_iteration_count = iteration_count[0] > 0 ? iteration_count[1] / iteration_count[0] : iteration_count[1];
 
-      statistics.add_value("Average iterations for multicomponent entropy averaging",
-                           average_iteration_count);
+      statistics.add_value("Average iterations for multicomponent entropy averaging", average_iteration_count);
 
       total_iteration_count = 0;
-      number_of_solves = 0;
+      number_of_solves      = 0;
 
-      return std::make_pair (std::string(),std::string());
+      return std::make_pair(std::string(), std::string());
     }
   }
 }

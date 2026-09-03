@@ -47,7 +47,7 @@ namespace aspect
         /**
          * Constructor. Initialize variables.
          */
-        ComputeProfile ();
+        ComputeProfile();
 
         /**
          * Initialization function. Because this function is called after
@@ -56,14 +56,16 @@ namespace aspect
          * adiabatic conditions along a vertical transect of the geometry
          * based on the given material model and other quantities.
          */
-        void initialize () override;
+        void
+        initialize() override;
 
         /**
          * Update function. By default does nothing, but if a time-dependent
          * surface condition function is used, this will reinitialize the
          * adiabatic profile with the current conditions.
          */
-        void update () override;
+        void
+        update() override;
 
         /**
          * Some plugins need to know whether the adiabatic conditions are
@@ -75,44 +77,47 @@ namespace aspect
          * profile. This way the plugin behaves differently at initialization
          * time of the adiabatic conditions and during the main model run.
          */
-        bool is_initialized() const override;
+        bool
+        is_initialized() const override;
 
         /**
          * Return the adiabatic temperature at a given point of the domain.
          */
-        double temperature (const Point<dim> &p) const override;
+        double
+        temperature(const Point<dim> &p) const override;
 
         /**
          * Return the adiabatic pressure at a given point of the domain.
          */
-        double pressure (const Point<dim> &p) const override;
+        double
+        pressure(const Point<dim> &p) const override;
 
         /**
          * Return the reference density at a given point of the domain.
          */
-        double density (const Point<dim> &p) const override;
+        double
+        density(const Point<dim> &p) const override;
 
         /**
          * Return the derivative of the density with respect to depth
          * at the given point @p p.
          */
-        double density_derivative (const Point<dim> &p) const override;
+        double
+        density_derivative(const Point<dim> &p) const override;
 
         /**
          * Declare the parameters for the input files.
          */
-        static
-        void
-        declare_parameters (ParameterHandler &prm);
+        static void
+        declare_parameters(ParameterHandler &prm);
 
         /**
          * Read the parameters from the parameter file.
          */
         void
-        parse_parameters (ParameterHandler &prm) override;
+        parse_parameters(ParameterHandler &prm) override;
 
       private:
-
         /**
          * Whether the adiabatic conditions are already calculated. This is
          * important for plugins that are used by the adiabatic conditions but
@@ -192,8 +197,8 @@ namespace aspect
          * Internal helper function. Returns the reference property at a
          * given point of the domain.
          */
-        double get_property (const Point<dim> &p,
-                             const std::vector<double> &property) const;
+        double
+        get_property(const Point<dim> &p, const std::vector<double> &property) const;
     };
   }
 }

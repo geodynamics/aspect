@@ -23,10 +23,11 @@
 #define _aspect_boundary_traction_interface_h
 
 #include <aspect/plugins.h>
+
 #include <aspect/geometry_model/interface.h>
 
-#include <deal.II/base/point.h>
 #include <deal.II/base/parameter_handler.h>
+#include <deal.II/base/point.h>
 
 namespace aspect
 {
@@ -61,11 +62,10 @@ namespace aspect
          *
          * @return Boundary traction at position @p position.
          */
-        virtual
-        Tensor<1,dim>
-        boundary_traction (const types::boundary_id boundary_indicator,
-                           const Point<dim> &position,
-                           const Tensor<1,dim> &normal_vector) const = 0;
+        virtual Tensor<1, dim>
+        boundary_traction(const types::boundary_id boundary_indicator,
+                          const Point<dim>        &position,
+                          const Tensor<1, dim>    &normal_vector) const = 0;
     };
 
     template <int dim>
@@ -77,10 +77,10 @@ namespace aspect
          * individual boundary traction objects that are active for boundary id
          * @p boundary_indicator and uses the stored operators to combine them.
          */
-        Tensor<1,dim>
-        boundary_traction (const types::boundary_id boundary_indicator,
-                           const Point<dim> &position,
-                           const Tensor<1,dim> &normal_vector) const;
+        Tensor<1, dim>
+        boundary_traction(const types::boundary_id boundary_indicator,
+                          const Point<dim>        &position,
+                          const Tensor<1, dim>    &normal_vector) const;
 
         /**
          * Return the names of all prescribed boundary traction models currently
@@ -98,8 +98,8 @@ namespace aspect
          * get_active_plugin_names() of the base class ManagerBase instead.
          */
         DEAL_II_DEPRECATED
-        const std::map<types::boundary_id, std::pair<std::string,std::vector<std::string>>> &
-        get_active_boundary_traction_names () const;
+        const std::map<types::boundary_id, std::pair<std::string, std::vector<std::string>>> &
+        get_active_boundary_traction_names() const;
 
         /**
          * Return pointers to all boundary traction models
@@ -114,15 +114,15 @@ namespace aspect
          * get_active_plugins() of the base class ManagerBase instead.
          */
         DEAL_II_DEPRECATED
-        const std::map<types::boundary_id,std::vector<std::unique_ptr<BoundaryTraction::Interface<dim>>>> &
-        get_active_boundary_traction_conditions () const;
+        const std::map<types::boundary_id, std::vector<std::unique_ptr<BoundaryTraction::Interface<dim>>>> &
+        get_active_boundary_traction_conditions() const;
 
         /**
          * Return a set of boundary indicators for which boundary
          * tractions are prescribed.
          */
         const std::set<types::boundary_id> &
-        get_prescribed_boundary_traction_indicators () const;
+        get_prescribed_boundary_traction_indicators() const;
 
         /**
          * Return a list of boundary indicators that indicate for
@@ -150,9 +150,8 @@ namespace aspect
          * Declare the parameters of all known boundary traction plugins, as
          * well as the ones this class has itself.
          */
-        static
-        void
-        declare_parameters (ParameterHandler &prm);
+        static void
+        declare_parameters(ParameterHandler &prm);
 
         /**
          * Read the parameters this class declares from the parameter file.
@@ -160,7 +159,7 @@ namespace aspect
          * then let these objects read their parameters as well.
          */
         void
-        parse_parameters (ParameterHandler &prm) override;
+        parse_parameters(ParameterHandler &prm) override;
 
         /**
          * For the current plugin subsystem, write a connection graph of all of the
@@ -171,19 +170,16 @@ namespace aspect
          *
          * @param output_stream The stream to write the output to.
          */
-        static
-        void
-        write_plugin_graph (std::ostream &output_stream);
+        static void
+        write_plugin_graph(std::ostream &output_stream);
 
 
         /**
          * Exception.
          */
-        DeclException1 (ExcBoundaryTractionNameNotFound,
-                        std::string,
-                        << "Could not find entry <"
-                        << arg1
-                        << "> among the names of registered boundary traction objects.");
+        DeclException1(ExcBoundaryTractionNameNotFound,
+                       std::string,
+                       << "Could not find entry <" << arg1 << "> among the names of registered boundary traction objects.");
 
         /**
          * Register a traction boundary conditions model so that it can be
@@ -201,12 +197,11 @@ namespace aspect
          *
          * @ingroup BoundaryTractions
          */
-        static
-        void
-        register_boundary_traction (const std::string &name,
-                                    const std::string &description,
-                                    void (*declare_parameters_function) (ParameterHandler &),
-                                    std::unique_ptr<Interface<dim>> (*factory_function) ());
+        static void
+        register_boundary_traction(const std::string &name,
+                                   const std::string &description,
+                                   void (*declare_parameters_function)(ParameterHandler &),
+                                   std::unique_ptr<Interface<dim>> (*factory_function)());
 
       private:
         /**
@@ -241,7 +236,7 @@ namespace aspect
          * @deprecated This variable is no longer used, but needed to issue a proper
          * error message in the function get_active_boundary_traction_conditions().
          */
-        std::map<types::boundary_id,std::vector<std::unique_ptr<BoundaryTraction::Interface<dim>>>> boundary_traction_objects;
+        std::map<types::boundary_id, std::vector<std::unique_ptr<BoundaryTraction::Interface<dim>>>> boundary_traction_objects;
 
         /**
          * Map from boundary id to a pair
@@ -256,8 +251,7 @@ namespace aspect
          * get_active_boundary_traction_conditions are removed. Use the base class
          * variable plugin_names instead.
          */
-        std::map<types::boundary_id, std::pair<std::string,std::vector<std::string>>> boundary_traction_indicators;
-
+        std::map<types::boundary_id, std::pair<std::string, std::vector<std::string>>> boundary_traction_indicators;
     };
 
     /**
@@ -272,7 +266,7 @@ namespace aspect
      */
     template <int dim>
     std::unique_ptr<Interface<dim>>
-    create_boundary_traction (const std::string &name);
+    create_boundary_traction(const std::string &name);
 
     /**
      * Return a list of names of all implemented boundary traction models,
@@ -281,7 +275,7 @@ namespace aspect
      */
     template <int dim>
     std::string
-    get_names ();
+    get_names();
 
     /**
      * Declare the runtime parameters of the registered traction boundary
@@ -291,7 +285,7 @@ namespace aspect
      */
     template <int dim>
     void
-    declare_parameters (ParameterHandler &prm);
+    declare_parameters(ParameterHandler &prm);
 
 
     /**
@@ -305,7 +299,7 @@ namespace aspect
      */
     template <int dim>
     void
-    write_plugin_graph (std::ostream &output_stream);
+    write_plugin_graph(std::ostream &output_stream);
 
 
 
@@ -316,17 +310,15 @@ namespace aspect
      *
      * @ingroup BoundaryTractions
      */
-#define ASPECT_REGISTER_BOUNDARY_TRACTION_MODEL(classname,name,description) \
+#define ASPECT_REGISTER_BOUNDARY_TRACTION_MODEL(classname, name, description) \
   template class classname<2>; \
   template class classname<3>; \
-  namespace ASPECT_REGISTER_BOUNDARY_TRACTION_MODEL_ ## classname \
+  namespace ASPECT_REGISTER_BOUNDARY_TRACTION_MODEL_##classname \
   { \
-    aspect::internal::Plugins::RegisterHelper<aspect::BoundaryTraction::Interface<2>,classname<2>> \
-    dummy_ ## classname ## _2d (&aspect::BoundaryTraction::Manager<2>::register_boundary_traction, \
-                                name, description); \
-    aspect::internal::Plugins::RegisterHelper<aspect::BoundaryTraction::Interface<3>,classname<3>> \
-    dummy_ ## classname ## _3d (&aspect::BoundaryTraction::Manager<3>::register_boundary_traction, \
-                                name, description); \
+    aspect::internal::Plugins::RegisterHelper<aspect::BoundaryTraction::Interface<2>, classname<2>> dummy_##classname##_2d( \
+      &aspect::BoundaryTraction::Manager<2>::register_boundary_traction, name, description); \
+    aspect::internal::Plugins::RegisterHelper<aspect::BoundaryTraction::Interface<3>, classname<3>> dummy_##classname##_3d( \
+      &aspect::BoundaryTraction::Manager<3>::register_boundary_traction, name, description); \
   }
   }
 }

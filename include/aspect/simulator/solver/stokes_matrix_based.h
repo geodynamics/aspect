@@ -22,6 +22,7 @@
 #define _aspect_simulator_solver_stokes_matrix_based_h
 
 #include <aspect/global.h>
+
 #include <aspect/simulator/solver/interface.h>
 
 
@@ -33,7 +34,7 @@ namespace aspect
      * A matrix-based iterative solver for the Stokes equations.
      */
     template <int dim>
-    class MatrixBased: public Interface<dim>
+    class MatrixBased : public Interface<dim>
     {
       public:
         /**
@@ -66,16 +67,18 @@ namespace aspect
          * @return A structure that contains information about the solver, like
          * the initial and final residual.
          */
-        SolverOutputs solve(const LinearAlgebra::BlockSparseMatrix &system_matrix,
-                            const LinearAlgebra::BlockVector &system_rhs,
-                            const bool solve_newton_system,
-                            const double last_pressure_normalization_adjustment,
-                            LinearAlgebra::BlockVector &solution_vector) override;
+        SolverOutputs
+        solve(const LinearAlgebra::BlockSparseMatrix &system_matrix,
+              const LinearAlgebra::BlockVector       &system_rhs,
+              const bool                              solve_newton_system,
+              const double                            last_pressure_normalization_adjustment,
+              LinearAlgebra::BlockVector             &solution_vector) override;
 
         /**
          * Return the name of the solver for screen output.
          */
-        std::string name() const override;
+        std::string
+        name() const override;
 
       private:
         /**

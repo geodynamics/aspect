@@ -18,45 +18,43 @@
   <http://www.gnu.org/licenses/>.
 */
 
+#include <aspect/global.h>
+
 #include <aspect/boundary_fluid_pressure/interface.h>
 #include <aspect/gravity_model/interface.h>
 #include <aspect/material_model/melt_global.h>
-#include <aspect/simulator_access.h>
-#include <aspect/global.h>
 #include <aspect/melt.h>
+#include <aspect/simulator_access.h>
 
 namespace aspect
 {
 
   template <int dim>
-  class PressureBdry:
-    public BoundaryFluidPressure::Interface<dim>, public ::aspect::SimulatorAccess<dim>
+  class PressureBdry : public BoundaryFluidPressure::Interface<dim>, public ::aspect::SimulatorAccess<dim>
   {
     public:
-      virtual
-      void fluid_pressure_gradient (
-        const types::boundary_id /*boundary_indicator*/,
-        const MaterialModel::MaterialModelInputs<dim> &material_model_inputs,
-        const MaterialModel::MaterialModelOutputs<dim> &material_model_outputs,
-        const std::vector<Tensor<1,dim>> &normal_vectors,
-        std::vector<double> &fluid_pressure_gradient_outputs
-      ) const override
+      virtual void
+      fluid_pressure_gradient(const types::boundary_id /*boundary_indicator*/,
+                              const MaterialModel::MaterialModelInputs<dim>  &material_model_inputs,
+                              const MaterialModel::MaterialModelOutputs<dim> &material_model_outputs,
+                              const std::vector<Tensor<1, dim>>              &normal_vectors,
+                              std::vector<double>                            &fluid_pressure_gradient_outputs) const override
       {
-        const std::shared_ptr<const MaterialModel::MeltOutputs<dim>> melt_outputs
-          = material_model_outputs.template get_additional_output_object<MaterialModel::MeltOutputs<dim>>();
+        const std::shared_ptr<const MaterialModel::MeltOutputs<dim>> melt_outputs =
+          material_model_outputs.template get_additional_output_object<MaterialModel::MeltOutputs<dim>>();
         Assert(melt_outputs != nullptr, ExcMessage("Need MeltOutputs from the material model for shear heating with melt."));
 
-        for (unsigned int q=0; q<fluid_pressure_gradient_outputs.size(); ++q)
+        for (unsigned int q = 0; q < fluid_pressure_gradient_outputs.size(); ++q)
           {
-            const double density = material_model_outputs.densities[q];
+            const double density      = material_model_outputs.densities[q];
             const double melt_density = melt_outputs->fluid_densities[q];
             const double porosity = material_model_inputs.composition[q][this->introspection().compositional_index_for_name("porosity")];
 
             const double bulk_density = (porosity * melt_density + (1.0 - porosity) * density);
-            fluid_pressure_gradient_outputs[q] = this->get_gravity_model().gravity_vector(material_model_inputs.position[q]) * bulk_density * normal_vectors[q];
+            fluid_pressure_gradient_outputs[q] =
+              this->get_gravity_model().gravity_vector(material_model_inputs.position[q]) * bulk_density * normal_vectors[q];
           }
       }
-
   };
 
   namespace MaterialModel
@@ -65,39 +63,32 @@ namespace aspect
     class Advection : public MaterialModel::MeltGlobal<dim>
     {
       public:
-
-        virtual void evaluate(const MaterialModel::MaterialModelInputs<dim> &in,
-                              MaterialModel::MaterialModelOutputs<dim> &out) const override;
+        virtual void
+        evaluate(const MaterialModel::MaterialModelInputs<dim> &in, MaterialModel::MaterialModelOutputs<dim> &out) const override;
     };
 
 
     template <int dim>
     void
-    Advection<dim>::
-    evaluate(const MaterialModel::MaterialModelInputs<dim> &in,
-             MaterialModel::MaterialModelOutputs<dim> &out) const
+    Advection<dim>::evaluate(const MaterialModel::MaterialModelInputs<dim> &in, MaterialModel::MaterialModelOutputs<dim> &out) const
     {
       MeltGlobal<dim>::evaluate(in, out);
 
       // fill melt outputs if they exist
-      const std::shared_ptr<MeltOutputs<dim>> melt_out
-        = out.template get_additional_output_object<MeltOutputs<dim>>();
-      for (unsigned int i=0; i < in.n_evaluation_points(); ++i)
+      const std::shared_ptr<MeltOutputs<dim>> melt_out = out.template get_additional_output_object<MeltOutputs<dim>>();
+      for (unsigned int i = 0; i < in.n_evaluation_points(); ++i)
         {
           out.densities[i] = 2.0;
         }
 
       if (melt_out != nullptr)
         {
-          for (unsigned int i=0; i < in.n_evaluation_points(); ++i)
+          for (unsigned int i = 0; i < in.n_evaluation_points(); ++i)
             {
               melt_out->fluid_densities[i] = 1.0;
-              melt_out->permeabilities[i] = 1.0;
+              melt_out->permeabilities[i]  = 1.0;
             }
         }
-
-
-
     }
 
   }

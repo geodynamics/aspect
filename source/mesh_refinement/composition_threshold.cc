@@ -30,11 +30,11 @@ namespace aspect
   {
     template <int dim>
     void
-    CompositionThreshold<dim>::tag_additional_cells () const
+    CompositionThreshold<dim>::tag_additional_cells() const
     {
-      AssertThrow (this->n_compositional_fields() >= 1,
-                   ExcMessage ("This refinement criterion can not be used when no "
-                               "compositional fields are active!"));
+      AssertThrow(this->n_compositional_fields() >= 1,
+                  ExcMessage("This refinement criterion can not be used when no "
+                             "compositional fields are active!"));
 
       // tag_additional_cells is executed before the equations are solved
       // for the very first time. If we do not have the finite element, we
@@ -42,19 +42,19 @@ namespace aspect
       if (this->get_dof_handler().n_locally_owned_dofs() == 0)
         return;
 
-      const unsigned int dofs_per_cell = this->get_fe().dofs_per_cell;
+      const unsigned int                   dofs_per_cell = this->get_fe().dofs_per_cell;
       std::vector<types::global_dof_index> local_dof_indices(dofs_per_cell);
 
       for (const auto &cell : this->get_dof_handler().active_cell_iterators())
         if (cell->is_locally_owned())
           {
-            cell->get_dof_indices (local_dof_indices);
+            cell->get_dof_indices(local_dof_indices);
             bool refine = false;
 
-            for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
+            for (unsigned int c = 0; c < this->n_compositional_fields(); ++c)
               {
                 const unsigned int component_idx = this->introspection().component_indices.compositional_fields[c];
-                for (unsigned int i=0; i<dofs_per_cell; ++i)
+                for (unsigned int i = 0; i < dofs_per_cell; ++i)
                   {
                     if (this->get_fe().system_to_component_index(i).first == component_idx)
                       {
@@ -73,16 +73,15 @@ namespace aspect
 
             if (refine)
               {
-                cell->clear_coarsen_flag ();
-                cell->set_refine_flag ();
+                cell->clear_coarsen_flag();
+                cell->set_refine_flag();
               }
           }
     }
 
     template <int dim>
     void
-    CompositionThreshold<dim>::
-    declare_parameters (ParameterHandler &prm)
+    CompositionThreshold<dim>::declare_parameters(ParameterHandler &prm)
     {
       prm.enter_subsection("Mesh refinement");
       {
@@ -90,7 +89,7 @@ namespace aspect
         {
           prm.declare_entry("Compositional field thresholds",
                             "",
-                            Patterns::List (Patterns::Double()),
+                            Patterns::List(Patterns::Double()),
                             "A list of thresholds, one for each compositional field "
                             "to be evaluated against.");
         }
@@ -101,19 +100,17 @@ namespace aspect
 
     template <int dim>
     void
-    CompositionThreshold<dim>::parse_parameters (ParameterHandler &prm)
+    CompositionThreshold<dim>::parse_parameters(ParameterHandler &prm)
     {
       prm.enter_subsection("Mesh refinement");
       {
         prm.enter_subsection("Composition threshold");
         {
-          composition_thresholds
-            = Utilities::string_to_double(
-                Utilities::split_string_list(prm.get("Compositional field thresholds")));
+          composition_thresholds = Utilities::string_to_double(Utilities::split_string_list(prm.get("Compositional field thresholds")));
 
-          AssertThrow (composition_thresholds.size() == this->n_compositional_fields(),
-                       ExcMessage ("The number of thresholds given here must be "
-                                   "equal to the number of compositional fields."));
+          AssertThrow(composition_thresholds.size() == this->n_compositional_fields(),
+                      ExcMessage("The number of thresholds given here must be "
+                                 "equal to the number of compositional fields."));
         }
         prm.leave_subsection();
       }

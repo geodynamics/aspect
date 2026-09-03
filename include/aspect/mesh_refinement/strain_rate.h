@@ -37,8 +37,7 @@ namespace aspect
      * @ingroup MeshRefinement
      */
     template <int dim>
-    class StrainRate : public Interface<dim>,
-      public SimulatorAccess<dim>
+    class StrainRate : public Interface<dim>, public SimulatorAccess<dim>
     {
       public:
         /**
@@ -50,7 +49,7 @@ namespace aspect
          * correct size when the function is called.
          */
         void
-        execute (Vector<float> &error_indicators) const override;
+        execute(Vector<float> &error_indicators) const override;
     };
   }
 }

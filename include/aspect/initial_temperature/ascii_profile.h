@@ -23,8 +23,8 @@
 #define _aspect_initial_temperature_ascii_profile_h
 
 #include <aspect/initial_temperature/interface.h>
-#include <aspect/utilities.h>
 #include <aspect/simulator_access.h>
+#include <aspect/utilities.h>
 
 #include <deal.II/base/point.h>
 
@@ -46,12 +46,13 @@ namespace aspect
         /**
          * Constructor. Initialize variables.
          */
-        AsciiProfile ();
+        AsciiProfile();
 
         /**
          * Initialization function.
          */
-        void initialize () override;
+        void
+        initialize() override;
 
         // avoid -Woverloaded-virtual:
         using Utilities::AsciiDataProfile<dim>::initialize;
@@ -59,23 +60,22 @@ namespace aspect
         /**
          * Return the temperature at a given point of the domain.
          */
-        double initial_temperature (const Point<dim> &p) const override;
+        double
+        initial_temperature(const Point<dim> &p) const override;
 
         /**
          * Declare the parameters for the input files.
          */
-        static
-        void
-        declare_parameters (ParameterHandler  &prm);
+        static void
+        declare_parameters(ParameterHandler &prm);
 
         /**
          * Read the parameters from the parameter file.
          */
         void
-        parse_parameters (ParameterHandler &prm) override;
+        parse_parameters(ParameterHandler &prm) override;
 
       private:
-
         /**
          * The column index of the temperature in the data file.
          */

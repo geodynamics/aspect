@@ -19,8 +19,8 @@
 */
 
 
-#include <aspect/gravity_model/function.h>
 #include <aspect/geometry_model/interface.h>
+#include <aspect/gravity_model/function.h>
 
 #include <iostream>
 
@@ -29,22 +29,20 @@ namespace aspect
   namespace GravityModel
   {
     template <int dim>
-    Function<dim>::Function ()
-      :
-      function (dim)
+    Function<dim>::Function()
+      : function(dim)
     {}
 
     template <int dim>
-    Tensor<1,dim>
-    Function<dim>::
-    gravity_vector (const Point<dim> &position) const
+    Tensor<1, dim>
+    Function<dim>::gravity_vector(const Point<dim> &position) const
     {
-      Tensor<1,dim> gravity;
+      Tensor<1, dim>                          gravity;
       const Utilities::NaturalCoordinate<dim> point =
         this->get_geometry_model().cartesian_to_other_coordinates(position, coordinate_system);
       const Point<dim> point_in_coordinate_system = Utilities::convert_array_to_point<dim>(point.get_coordinates());
-      for (unsigned int d=0; d<dim; ++d)
-        gravity[d] = function.value(point_in_coordinate_system,d);
+      for (unsigned int d = 0; d < dim; ++d)
+        gravity[d] = function.value(point_in_coordinate_system, d);
       return gravity;
     }
 
@@ -57,33 +55,34 @@ namespace aspect
       // we get time passed as seconds (always) but may want
       // to reinterpret it in years
       if (this->convert_output_to_years())
-        function.set_time (this->get_time() / year_in_seconds);
+        function.set_time(this->get_time() / year_in_seconds);
       else
-        function.set_time (this->get_time());
+        function.set_time(this->get_time());
     }
 
 
 
     template <int dim>
     void
-    Function<dim>::declare_parameters (ParameterHandler &prm)
+    Function<dim>::declare_parameters(ParameterHandler &prm)
     {
       prm.enter_subsection("Gravity model");
       {
         prm.enter_subsection("Function");
         {
-          prm.declare_entry ("Coordinate system", "cartesian",
-                             Patterns::Selection ("cartesian|spherical|depth"),
-                             "A selection that determines the assumed coordinate "
-                             "system for the function variables. Allowed values "
-                             "are `cartesian', `spherical', and `depth'. `spherical' coordinates "
-                             "are interpreted as r,phi or r,phi,theta in 2d/3d "
-                             "respectively with theta being the polar angle. `depth' "
-                             "will create a function, in which only the first "
-                             "parameter is non-zero, which is interpreted to "
-                             "be the depth of the point.");
+          prm.declare_entry("Coordinate system",
+                            "cartesian",
+                            Patterns::Selection("cartesian|spherical|depth"),
+                            "A selection that determines the assumed coordinate "
+                            "system for the function variables. Allowed values "
+                            "are `cartesian', `spherical', and `depth'. `spherical' coordinates "
+                            "are interpreted as r,phi or r,phi,theta in 2d/3d "
+                            "respectively with theta being the polar angle. `depth' "
+                            "will create a function, in which only the first "
+                            "parameter is non-zero, which is interpreted to "
+                            "be the depth of the point.");
 
-          Functions::ParsedFunction<dim>::declare_parameters (prm, dim);
+          Functions::ParsedFunction<dim>::declare_parameters(prm, dim);
         }
         prm.leave_subsection();
       }
@@ -94,7 +93,7 @@ namespace aspect
 
     template <int dim>
     void
-    Function<dim>::parse_parameters (ParameterHandler &prm)
+    Function<dim>::parse_parameters(ParameterHandler &prm)
     {
       prm.enter_subsection("Gravity model");
       {
@@ -104,7 +103,7 @@ namespace aspect
         }
         try
           {
-            function.parse_parameters (prm);
+            function.parse_parameters(prm);
           }
         catch (...)
           {

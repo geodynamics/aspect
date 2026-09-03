@@ -45,11 +45,11 @@ namespace aspect
         /**
          * Return the boundary heat flux as a function of position.
          */
-        std::vector<Tensor<1,dim>>
-        heat_flux (const types::boundary_id boundary_indicator,
-                   const MaterialModel::MaterialModelInputs<dim> &material_model_inputs,
-                   const MaterialModel::MaterialModelOutputs<dim> &material_model_outputs,
-                   const std::vector<Tensor<1,dim>> &normal_vectors) const override;
+        std::vector<Tensor<1, dim>>
+        heat_flux(const types::boundary_id                        boundary_indicator,
+                  const MaterialModel::MaterialModelInputs<dim>  &material_model_inputs,
+                  const MaterialModel::MaterialModelOutputs<dim> &material_model_outputs,
+                  const std::vector<Tensor<1, dim>>              &normal_vectors) const override;
 
         /**
          * A function that is called at the beginning of each time step to
@@ -57,20 +57,20 @@ namespace aspect
          * next be evaluated. For the current class, the function passes to
          * the parsed function what the current time is.
          */
-        void update () override;
+        void
+        update() override;
 
         /**
          * Declare the parameters this class takes through input files.
          */
-        static
-        void
-        declare_parameters (ParameterHandler &prm);
+        static void
+        declare_parameters(ParameterHandler &prm);
 
         /**
          * Read the parameters this class declares from the parameter file.
          */
         void
-        parse_parameters (ParameterHandler &prm) override;
+        parse_parameters(ParameterHandler &prm) override;
 
       private:
         /**

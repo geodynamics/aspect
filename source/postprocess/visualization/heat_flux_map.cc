@@ -19,10 +19,10 @@
 */
 
 
-#include <aspect/postprocess/visualization/heat_flux_map.h>
-#include <aspect/postprocess/heat_flux_map.h>
-#include <aspect/geometry_model/interface.h>
 #include <aspect/boundary_velocity/interface.h>
+#include <aspect/geometry_model/interface.h>
+#include <aspect/postprocess/heat_flux_map.h>
+#include <aspect/postprocess/visualization/heat_flux_map.h>
 
 #include <deal.II/base/quadrature_lib.h>
 #include <deal.II/fe/fe_values.h>
@@ -34,19 +34,16 @@ namespace aspect
     namespace VisualizationPostprocessors
     {
       template <int dim>
-      HeatFluxMap<dim>::
-      HeatFluxMap ()
-        :
-        DataPostprocessorScalar<dim> ("heat_flux_map",
-                                      update_quadrature_points),
-        Interface<dim>("W/m/m")
+      HeatFluxMap<dim>::HeatFluxMap()
+        : DataPostprocessorScalar<dim>("heat_flux_map", update_quadrature_points)
+        , Interface<dim>("W/m/m")
       {}
 
 
 
       template <int dim>
       void
-      HeatFluxMap<dim>::initialize ()
+      HeatFluxMap<dim>::initialize()
       {
         CitationInfo::add("cbfheatflux");
       }
@@ -55,21 +52,20 @@ namespace aspect
 
       template <int dim>
       void
-      HeatFluxMap<dim>::update ()
+      HeatFluxMap<dim>::update()
       {
         if (output_point_wise_heat_flux)
           heat_flux_density_solution = Postprocess::internal::compute_dirichlet_boundary_heat_flux_solution_vector(*this);
         else
-          heat_flux_and_area = internal::compute_heat_flux_through_boundary_faces (*this);
+          heat_flux_and_area = internal::compute_heat_flux_through_boundary_faces(*this);
       }
 
 
 
       template <int dim>
       void
-      HeatFluxMap<dim>::
-      evaluate_vector_field(const DataPostprocessorInputs::Vector<dim> &input_data,
-                            std::vector<Vector<double>> &computed_quantities) const
+      HeatFluxMap<dim>::evaluate_vector_field(const DataPostprocessorInputs::Vector<dim> &input_data,
+                                              std::vector<Vector<double>>                &computed_quantities) const
       {
         for (auto &quantity : computed_quantities)
           quantity(0) = 0;
@@ -81,29 +77,27 @@ namespace aspect
             bool cell_at_top_or_bottom_boundary = false;
             for (const unsigned int f : cell->face_indices())
               if (cell->at_boundary(f) &&
-                  (this->get_geometry_model().translate_id_to_symbol_name (cell->face(f)->boundary_id()) == "top" ||
-                   this->get_geometry_model().translate_id_to_symbol_name (cell->face(f)->boundary_id()) == "bottom"))
+                  (this->get_geometry_model().translate_id_to_symbol_name(cell->face(f)->boundary_id()) == "top" ||
+                   this->get_geometry_model().translate_id_to_symbol_name(cell->face(f)->boundary_id()) == "bottom"))
                 cell_at_top_or_bottom_boundary = true;
 
             if (cell_at_top_or_bottom_boundary)
               {
                 std::vector<Point<dim>> quadrature_points(input_data.evaluation_points.size());
-                for (unsigned int i=0; i<input_data.evaluation_points.size(); ++i)
-                  quadrature_points[i] = this->get_mapping().transform_real_to_unit_cell(cell,input_data.evaluation_points[i]);
+                for (unsigned int i = 0; i < input_data.evaluation_points.size(); ++i)
+                  quadrature_points[i] = this->get_mapping().transform_real_to_unit_cell(cell, input_data.evaluation_points[i]);
 
                 const Quadrature<dim> quadrature_formula(quadrature_points);
 
-                FEValues<dim> fe_volume_values (this->get_mapping(),
-                                                this->get_fe(),
-                                                quadrature_formula,
-                                                update_values);
+                FEValues<dim> fe_volume_values(this->get_mapping(), this->get_fe(), quadrature_formula, update_values);
 
                 fe_volume_values.reinit(cell);
 
                 std::vector<double> heat_flux_values(quadrature_formula.size());
-                fe_volume_values[this->introspection().extractors.temperature].get_function_values(heat_flux_density_solution, heat_flux_values);
+                fe_volume_values[this->introspection().extractors.temperature].get_function_values(heat_flux_density_solution,
+                                                                                                   heat_flux_values);
 
-                for (unsigned int q=0; q<quadrature_formula.size(); ++q)
+                for (unsigned int q = 0; q < quadrature_formula.size(); ++q)
                   computed_quantities[q](0) = heat_flux_values[q];
               }
           }
@@ -113,12 +107,12 @@ namespace aspect
 
             for (const unsigned int f : cell->face_indices())
               if (cell->at_boundary(f) &&
-                  (this->get_geometry_model().translate_id_to_symbol_name (cell->face(f)->boundary_id()) == "top" ||
-                   this->get_geometry_model().translate_id_to_symbol_name (cell->face(f)->boundary_id()) == "bottom"))
+                  (this->get_geometry_model().translate_id_to_symbol_name(cell->face(f)->boundary_id()) == "top" ||
+                   this->get_geometry_model().translate_id_to_symbol_name(cell->face(f)->boundary_id()) == "bottom"))
                 {
                   // add heatflow for this face
-                  heat_flux += heat_flux_and_area[cell->active_cell_index()][f].first /
-                               heat_flux_and_area[cell->active_cell_index()][f].second;
+                  heat_flux +=
+                    heat_flux_and_area[cell->active_cell_index()][f].first / heat_flux_and_area[cell->active_cell_index()][f].second;
                 }
 
             for (auto &quantity : computed_quantities)
@@ -130,7 +124,7 @@ namespace aspect
 
       template <int dim>
       void
-      HeatFluxMap<dim>::declare_parameters (ParameterHandler &prm)
+      HeatFluxMap<dim>::declare_parameters(ParameterHandler &prm)
       {
         prm.enter_subsection("Postprocess");
         {
@@ -160,7 +154,7 @@ namespace aspect
 
       template <int dim>
       void
-      HeatFluxMap<dim>::parse_parameters (ParameterHandler &prm)
+      HeatFluxMap<dim>::parse_parameters(ParameterHandler &prm)
       {
         prm.enter_subsection("Postprocess");
         {

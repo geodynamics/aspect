@@ -18,8 +18,8 @@
  <http://www.gnu.org/licenses/>.
  */
 
-#include <aspect/particle/property/function.h>
 #include <aspect/geometry_model/interface.h>
+#include <aspect/particle/property/function.h>
 
 namespace aspect
 {
@@ -29,17 +29,16 @@ namespace aspect
     {
       template <int dim>
       Function<dim>::Function()
-        :
-        n_components (0)
+        : n_components(0)
       {}
 
       template <int dim>
       void
-      Function<dim>::initialize_one_particle_property(const Point<dim> &position,
-                                                      std::vector<double> &data) const
+      Function<dim>::initialize_one_particle_property(const Point<dim> &position, std::vector<double> &data) const
       {
         // convert the position into the selected coordinate system
-        const Utilities::NaturalCoordinate<dim> point = this->get_geometry_model().cartesian_to_other_coordinates(position, coordinate_system);
+        const Utilities::NaturalCoordinate<dim> point =
+          this->get_geometry_model().cartesian_to_other_coordinates(position, coordinate_system);
 
         for (unsigned int i = 0; i < n_components; ++i)
           {
@@ -52,32 +51,34 @@ namespace aspect
       std::vector<std::pair<std::string, unsigned int>>
       Function<dim>::get_property_information() const
       {
-        const std::vector<std::pair<std::string,unsigned int>> property_information (1,std::make_pair("function",n_components));
+        const std::vector<std::pair<std::string, unsigned int>> property_information(1, std::make_pair("function", n_components));
         return property_information;
       }
 
 
       template <int dim>
       void
-      Function<dim>::declare_parameters (ParameterHandler &prm)
+      Function<dim>::declare_parameters(ParameterHandler &prm)
       {
         prm.enter_subsection("Function");
         {
-          prm.declare_entry ("Coordinate system", "cartesian",
-                             Patterns::Selection ("cartesian|spherical|depth"),
-                             "A selection that determines the assumed coordinate "
-                             "system for the function variables. Allowed values "
-                             "are `cartesian', `spherical', and `depth'. `spherical' coordinates "
-                             "are interpreted as r,phi or r,phi,theta in 2d/3d "
-                             "respectively with theta being the polar angle. `depth' "
-                             "will create a function, in which only the first "
-                             "parameter is non-zero, which is interpreted to "
-                             "be the depth of the point.");
-          prm.declare_entry ("Number of components", "1",
-                             Patterns::Integer (0),
-                             "The number of function components where each component is described "
-                             "by a function expression delimited by a ';'.");
-          Functions::ParsedFunction<dim>::declare_parameters (prm, 1);
+          prm.declare_entry("Coordinate system",
+                            "cartesian",
+                            Patterns::Selection("cartesian|spherical|depth"),
+                            "A selection that determines the assumed coordinate "
+                            "system for the function variables. Allowed values "
+                            "are `cartesian', `spherical', and `depth'. `spherical' coordinates "
+                            "are interpreted as r,phi or r,phi,theta in 2d/3d "
+                            "respectively with theta being the polar angle. `depth' "
+                            "will create a function, in which only the first "
+                            "parameter is non-zero, which is interpreted to "
+                            "be the depth of the point.");
+          prm.declare_entry("Number of components",
+                            "1",
+                            Patterns::Integer(0),
+                            "The number of function components where each component is described "
+                            "by a function expression delimited by a ';'.");
+          Functions::ParsedFunction<dim>::declare_parameters(prm, 1);
         }
         prm.leave_subsection();
       }
@@ -85,15 +86,15 @@ namespace aspect
 
       template <int dim>
       void
-      Function<dim>::parse_parameters (ParameterHandler &prm)
+      Function<dim>::parse_parameters(ParameterHandler &prm)
       {
         prm.enter_subsection("Function");
         {
-          n_components = prm.get_integer ("Number of components");
+          n_components = prm.get_integer("Number of components");
           try
             {
               function = std::make_unique<Functions::ParsedFunction<dim>>(n_components);
-              function->parse_parameters (prm);
+              function->parse_parameters(prm);
             }
           catch (...)
             {

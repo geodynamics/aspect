@@ -23,19 +23,22 @@
 #define _aspect_initial_composition_interface_h
 
 #include <aspect/plugins.h>
-#include <aspect/utilities.h>
-#include <aspect/simulator_access.h>
 
-#include <deal.II/base/point.h>
+#include <aspect/simulator_access.h>
+#include <aspect/utilities.h>
+
 #include <deal.II/base/parameter_handler.h>
+#include <deal.II/base/point.h>
 
 #include <boost/core/demangle.hpp>
+
 #include <typeinfo>
 
 
 namespace aspect
 {
-  template <int dim> class SimulatorAccess;
+  template <int dim>
+  class SimulatorAccess;
 
   /**
    * A namespace in which we define everything that has to do with defining
@@ -57,8 +60,8 @@ namespace aspect
         /**
          * Return the initial composition as a function of position.
          */
-        virtual
-        double initial_composition (const Point<dim> &position, const unsigned int n_comp) const = 0;
+        virtual double
+        initial_composition(const Point<dim> &position, const unsigned int n_comp) const = 0;
     };
 
 
@@ -76,9 +79,8 @@ namespace aspect
          * Declare the parameters of all known initial composition plugins, as
          * well as of ones this class has itself.
          */
-        static
-        void
-        declare_parameters (ParameterHandler &prm);
+        static void
+        declare_parameters(ParameterHandler &prm);
 
         /**
          * Read the parameters this class declares from the parameter file.
@@ -86,7 +88,7 @@ namespace aspect
          * then let these objects read their parameters as well.
          */
         void
-        parse_parameters (ParameterHandler &prm) override;
+        parse_parameters(ParameterHandler &prm) override;
 
         /**
          * A function that calls the initial_composition functions of all
@@ -95,8 +97,7 @@ namespace aspect
          * individual calls.
          */
         double
-        initial_composition (const Point<dim> &position,
-                             const unsigned int n_comp) const;
+        initial_composition(const Point<dim> &position, const unsigned int n_comp) const;
 
         /**
          * A function that is used to register initial composition objects in
@@ -115,12 +116,11 @@ namespace aspect
          * @param factory_function A pointer to a function that can create an
          * object of this initial composition model.
          */
-        static
-        void
-        register_initial_composition (const std::string &name,
-                                      const std::string &description,
-                                      void (*declare_parameters_function) (ParameterHandler &),
-                                      std::unique_ptr<Interface<dim>> (*factory_function) ());
+        static void
+        register_initial_composition(const std::string &name,
+                                     const std::string &description,
+                                     void (*declare_parameters_function)(ParameterHandler &),
+                                     std::unique_ptr<Interface<dim>> (*factory_function)());
 
 
         /**
@@ -132,7 +132,7 @@ namespace aspect
          */
         DEAL_II_DEPRECATED
         const std::vector<std::string> &
-        get_active_initial_composition_names () const;
+        get_active_initial_composition_names() const;
 
         /**
          * Return a list of pointers to all initial composition models
@@ -143,7 +143,7 @@ namespace aspect
          */
         DEAL_II_DEPRECATED
         const std::list<std::unique_ptr<Interface<dim>>> &
-        get_active_initial_composition_conditions () const;
+        get_active_initial_composition_conditions() const;
 
         /**
          * Go through the list of all initial composition models that have been selected
@@ -160,10 +160,9 @@ namespace aspect
          *   class of the current class.
          */
         template <typename InitialCompositionType,
-                  typename = typename std::enable_if_t<std::is_base_of<Interface<dim>,InitialCompositionType>::value>>
-        DEAL_II_DEPRECATED
-        bool
-        has_matching_initial_composition_model () const;
+                  typename = typename std::enable_if_t<std::is_base_of<Interface<dim>, InitialCompositionType>::value>>
+        DEAL_II_DEPRECATED bool
+        has_matching_initial_composition_model() const;
 
         /**
          * Go through the list of all initial composition models that have been selected
@@ -182,10 +181,9 @@ namespace aspect
          *   class of the current class.
          */
         template <typename InitialCompositionType,
-                  typename = typename std::enable_if_t<std::is_base_of<Interface<dim>,InitialCompositionType>::value>>
-        DEAL_II_DEPRECATED
-        const InitialCompositionType &
-        get_matching_initial_composition_model () const;
+                  typename = typename std::enable_if_t<std::is_base_of<Interface<dim>, InitialCompositionType>::value>>
+        DEAL_II_DEPRECATED const InitialCompositionType &
+        get_matching_initial_composition_model() const;
 
         /**
          * For the current plugin subsystem, write a connection graph of all of the
@@ -196,18 +194,16 @@ namespace aspect
          *
          * @param output_stream The stream to write the output to.
          */
-        static
-        void
-        write_plugin_graph (std::ostream &output_stream);
+        static void
+        write_plugin_graph(std::ostream &output_stream);
 
         /**
          * Exception.
          */
-        DeclException1 (ExcInitialCompositionNameNotFound,
-                        std::string,
-                        << "Could not find entry <"
-                        << arg1
-                        << "> among the names of registered initial composition objects.");
+        DeclException1(ExcInitialCompositionNameNotFound,
+                       std::string,
+                       << "Could not find entry <" << arg1 << "> among the names of registered initial composition objects.");
+
       private:
         /**
          * A list of enums of initial composition operators that have been
@@ -222,9 +218,8 @@ namespace aspect
 
     template <int dim>
     template <typename InitialCompositionType, typename>
-    inline
-    bool
-    Manager<dim>::has_matching_initial_composition_model () const
+    inline bool
+    Manager<dim>::has_matching_initial_composition_model() const
     {
       return this->template has_matching_active_plugin<InitialCompositionType>();
     }
@@ -232,9 +227,8 @@ namespace aspect
 
     template <int dim>
     template <typename InitialCompositionType, typename>
-    inline
-    const InitialCompositionType &
-    Manager<dim>::get_matching_initial_composition_model () const
+    inline const InitialCompositionType &
+    Manager<dim>::get_matching_initial_composition_model() const
     {
       return this->template get_matching_active_plugin<InitialCompositionType>();
     }
@@ -250,7 +244,7 @@ namespace aspect
      */
     template <int dim>
     std::string
-    get_valid_model_names_pattern ();
+    get_valid_model_names_pattern();
 
 
 
@@ -261,17 +255,15 @@ namespace aspect
      *
      * @ingroup InitialCompositions
      */
-#define ASPECT_REGISTER_INITIAL_COMPOSITION_MODEL(classname,name,description) \
+#define ASPECT_REGISTER_INITIAL_COMPOSITION_MODEL(classname, name, description) \
   template class classname<2>; \
   template class classname<3>; \
-  namespace ASPECT_REGISTER_INITIAL_COMPOSITION_MODEL_ ## classname \
+  namespace ASPECT_REGISTER_INITIAL_COMPOSITION_MODEL_##classname \
   { \
-    aspect::internal::Plugins::RegisterHelper<aspect::InitialComposition::Interface<2>,classname<2>> \
-    dummy_ ## classname ## _2d (&aspect::InitialComposition::Manager<2>::register_initial_composition, \
-                                name, description); \
-    aspect::internal::Plugins::RegisterHelper<aspect::InitialComposition::Interface<3>,classname<3>> \
-    dummy_ ## classname ## _3d (&aspect::InitialComposition::Manager<3>::register_initial_composition, \
-                                name, description); \
+    aspect::internal::Plugins::RegisterHelper<aspect::InitialComposition::Interface<2>, classname<2>> dummy_##classname##_2d( \
+      &aspect::InitialComposition::Manager<2>::register_initial_composition, name, description); \
+    aspect::internal::Plugins::RegisterHelper<aspect::InitialComposition::Interface<3>, classname<3>> dummy_##classname##_3d( \
+      &aspect::InitialComposition::Manager<3>::register_initial_composition, name, description); \
   }
   }
 }

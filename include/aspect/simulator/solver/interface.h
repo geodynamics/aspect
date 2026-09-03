@@ -22,6 +22,7 @@
 #define _aspect_simulator_solver_interface_h
 
 #include <aspect/global.h>
+
 #include <aspect/simulator_access.h>
 
 
@@ -35,33 +36,32 @@ namespace aspect
      */
     struct SolverOutputs
     {
-      SolverOutputs()
-        :
-        initial_nonlinear_residual(numbers::signaling_nan<double>()),
-        final_linear_residual(numbers::signaling_nan<double>()),
-        pressure_normalization_adjustment(numbers::signaling_nan<double>())
-      {}
+        SolverOutputs()
+          : initial_nonlinear_residual(numbers::signaling_nan<double>())
+          , final_linear_residual(numbers::signaling_nan<double>())
+          , pressure_normalization_adjustment(numbers::signaling_nan<double>())
+        {}
 
-      /**
-       * The initial residual of the nonlinear solver (before solving)
-       * and the final residual of the linear solver (after solving).
-       */
-      double initial_nonlinear_residual;
-      double final_linear_residual;
+        /**
+         * The initial residual of the nonlinear solver (before solving)
+         * and the final residual of the linear solver (after solving).
+         */
+        double initial_nonlinear_residual;
+        double final_linear_residual;
 
-      /**
-       * The amount by which the pressure was adjusted to satisfy the
-       * chosen pressure normalization. This information is
-       * necessary to undo the normalization before the next solve.
-       */
-      double pressure_normalization_adjustment;
+        /**
+         * The amount by which the pressure was adjusted to satisfy the
+         * chosen pressure normalization. This information is
+         * necessary to undo the normalization before the next solve.
+         */
+        double pressure_normalization_adjustment;
     };
 
     /**
      * Base class for ASPECT solvers.
      */
     template <int dim>
-    class Interface: public SimulatorAccess<dim>, public Plugins::InterfaceBase
+    class Interface : public SimulatorAccess<dim>, public Plugins::InterfaceBase
     {
       public:
         /**
@@ -86,18 +86,18 @@ namespace aspect
          * @return A structure that contains information about the solver, like
          * the initial and final residual.
          */
-        virtual
-        SolverOutputs solve(const LinearAlgebra::BlockSparseMatrix &system_matrix,
-                            const LinearAlgebra::BlockVector &system_rhs,
-                            const bool solve_newton_system,
-                            const double last_pressure_normalization_adjustment,
-                            LinearAlgebra::BlockVector &solution_vector) = 0;
+        virtual SolverOutputs
+        solve(const LinearAlgebra::BlockSparseMatrix &system_matrix,
+              const LinearAlgebra::BlockVector       &system_rhs,
+              const bool                              solve_newton_system,
+              const double                            last_pressure_normalization_adjustment,
+              LinearAlgebra::BlockVector             &solution_vector) = 0;
 
         /**
          * Return the name of the solver for screen output.
          */
-        virtual
-        std::string name() const = 0;
+        virtual std::string
+        name() const = 0;
     };
   }
 }

@@ -20,6 +20,7 @@
 
 
 #include <aspect/global.h>
+
 #include <aspect/adiabatic_conditions/interface.h>
 #include <aspect/initial_temperature/patch_on_S40RTS.h>
 #include <aspect/utilities.h>
@@ -31,13 +32,12 @@ namespace aspect
   namespace InitialTemperature
   {
     template <int dim>
-    PatchOnS40RTS<dim>::PatchOnS40RTS ()
-      = default;
+    PatchOnS40RTS<dim>::PatchOnS40RTS() = default;
 
 
     template <int dim>
     void
-    PatchOnS40RTS<dim>::initialize ()
+    PatchOnS40RTS<dim>::initialize()
     {
       this->Utilities::AsciiDataInitial<dim>::initialize(1);
     }
@@ -45,18 +45,16 @@ namespace aspect
 
     template <int dim>
     double
-    PatchOnS40RTS<dim>::
-    ascii_grid_vs (const Point<dim> &position) const
+    PatchOnS40RTS<dim>::ascii_grid_vs(const Point<dim> &position) const
     {
-      const double vs_perturbation = Utilities::AsciiDataInitial<dim>::get_data_component(position,0);
+      const double vs_perturbation = Utilities::AsciiDataInitial<dim>::get_data_component(position, 0);
       return vs_perturbation;
     }
 
 
     template <int dim>
     double
-    PatchOnS40RTS<dim>::
-    initial_temperature (const Point<dim> &position) const
+    PatchOnS40RTS<dim>::initial_temperature(const Point<dim> &position) const
     {
       const double depth = this->get_geometry_model().depth(position);
 
@@ -65,11 +63,11 @@ namespace aspect
         {
           vs_perturbation = ascii_grid_vs(position);
         }
-      //add smoothing between the two models
+      // add smoothing between the two models
       else if (depth > max_grid_depth - smoothing_length_scale && depth < max_grid_depth)
         {
-          const double scale_factor = (depth-(max_grid_depth-smoothing_length_scale))/smoothing_length_scale;
-          vs_perturbation = s40rts.get_Vs(position)*(scale_factor) + ascii_grid_vs(position)*(1.0-scale_factor);
+          const double scale_factor = (depth - (max_grid_depth - smoothing_length_scale)) / smoothing_length_scale;
+          vs_perturbation           = s40rts.get_Vs(position) * (scale_factor) + ascii_grid_vs(position) * (1.0 - scale_factor);
         }
       else
         {
@@ -79,8 +77,8 @@ namespace aspect
       // use either the user-input reference temperature as background temperature
       // (incompressible model) or the adiabatic temperature profile (compressible model)
       const double background_temperature = this->get_material_model().is_compressible() ?
-                                            this->get_adiabatic_conditions().temperature(position) :
-                                            s40rts.reference_temperature;
+                                              this->get_adiabatic_conditions().temperature(position) :
+                                              s40rts.reference_temperature;
 
       // get the Vs to density conversion
       double vs_to_density = 0.0;
@@ -96,10 +94,10 @@ namespace aspect
       // scale the perturbation in seismic velocity into a density perturbation
       // vs_to_density is read in from input file
       const double density_perturbation = vs_to_density * vs_perturbation;
-      double temperature_perturbation;
+      double       temperature_perturbation;
       if (depth > no_perturbation_depth_patch)
         // scale the density perturbation into a temperature perturbation
-        temperature_perturbation =  -1./s40rts.thermal_alpha * density_perturbation;
+        temperature_perturbation = -1. / s40rts.thermal_alpha * density_perturbation;
       else
         // set heterogeneity to zero down to a specified depth
         temperature_perturbation = 0.0;
@@ -109,35 +107,36 @@ namespace aspect
 
     template <int dim>
     void
-    PatchOnS40RTS<dim>::declare_parameters (ParameterHandler &prm)
+    PatchOnS40RTS<dim>::declare_parameters(ParameterHandler &prm)
     {
-      prm.enter_subsection ("Initial temperature model");
+      prm.enter_subsection("Initial temperature model");
       {
-        prm.enter_subsection ("Patch on S40RTS");
+        prm.enter_subsection("Patch on S40RTS");
         {
-          prm.declare_entry ("Maximum grid depth", "700000.0",
-                             Patterns::Double (0.),
-                             "The maximum depth of the Vs ascii grid. The model will read in  "
-                             "Vs from S40RTS below this depth.");
-          prm.declare_entry ("Smoothing length scale", "200000.0",
-                             Patterns::Double (0.),
-                             "The depth range (above maximum grid depth) over which to smooth. "
-                             "The boundary is smoothed using a depth weighted combination of Vs "
-                             "values from the ascii grid and S40RTS at each point in the region of smoothing.");
-          prm.declare_entry ("Remove temperature heterogeneity down to specified depth",
-                             boost::lexical_cast<std::string>(std::numeric_limits<double>::lowest()),
-                             Patterns::Double (),
-                             "This will set the heterogeneity prescribed by the Vs ascii grid and S40RTS to zero "
-                             "down to the specified depth (in meters). Note that your resolution has "
-                             "to be adequate to capture this cutoff. For example if you specify a depth "
-                             "of 660 km, but your closest spherical depth layers are only at 500 km and "
-                             "750 km (due to a coarse resolution) it will only zero out heterogeneities "
-                             "down to 500 km. Similar caution has to be taken when using adaptive meshing.");
+          prm.declare_entry("Maximum grid depth",
+                            "700000.0",
+                            Patterns::Double(0.),
+                            "The maximum depth of the Vs ascii grid. The model will read in  "
+                            "Vs from S40RTS below this depth.");
+          prm.declare_entry("Smoothing length scale",
+                            "200000.0",
+                            Patterns::Double(0.),
+                            "The depth range (above maximum grid depth) over which to smooth. "
+                            "The boundary is smoothed using a depth weighted combination of Vs "
+                            "values from the ascii grid and S40RTS at each point in the region of smoothing.");
+          prm.declare_entry("Remove temperature heterogeneity down to specified depth",
+                            boost::lexical_cast<std::string>(std::numeric_limits<double>::lowest()),
+                            Patterns::Double(),
+                            "This will set the heterogeneity prescribed by the Vs ascii grid and S40RTS to zero "
+                            "down to the specified depth (in meters). Note that your resolution has "
+                            "to be adequate to capture this cutoff. For example if you specify a depth "
+                            "of 660 km, but your closest spherical depth layers are only at 500 km and "
+                            "750 km (due to a coarse resolution) it will only zero out heterogeneities "
+                            "down to 500 km. Similar caution has to be taken when using adaptive meshing.");
 
           Utilities::AsciiDataBase<dim>::declare_parameters(prm,
                                                             "$ASPECT_SOURCE_DIR/data/initial-temperature/patch-on-S40RTS/test/",
                                                             "upper_shell_3d.txt");
-
         }
         prm.leave_subsection();
       }
@@ -146,27 +145,25 @@ namespace aspect
 
     template <int dim>
     void
-    PatchOnS40RTS<dim>::parse_parameters (ParameterHandler &prm)
+    PatchOnS40RTS<dim>::parse_parameters(ParameterHandler &prm)
     {
       prm.enter_subsection("Initial temperature model");
       {
-        prm.enter_subsection ("Patch on S40RTS");
+        prm.enter_subsection("Patch on S40RTS");
         {
-          max_grid_depth           = prm.get_double ("Maximum grid depth");
-          smoothing_length_scale   = prm.get_double ("Smoothing length scale");
-          no_perturbation_depth_patch   = prm.get_double ("Remove temperature heterogeneity down to specified depth");
+          max_grid_depth              = prm.get_double("Maximum grid depth");
+          smoothing_length_scale      = prm.get_double("Smoothing length scale");
+          no_perturbation_depth_patch = prm.get_double("Remove temperature heterogeneity down to specified depth");
 
           Utilities::AsciiDataBase<dim>::parse_parameters(prm);
-
         }
-        prm.leave_subsection ();
+        prm.leave_subsection();
       }
-      prm.leave_subsection ();
+      prm.leave_subsection();
 
-      s40rts.initialize_simulator (this->get_simulator());
+      s40rts.initialize_simulator(this->get_simulator());
       s40rts.parse_parameters(prm);
       s40rts.initialize();
-
     }
   }
 }

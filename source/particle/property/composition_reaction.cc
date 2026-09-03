@@ -18,9 +18,9 @@
  <http://www.gnu.org/licenses/>.
  */
 
-#include <aspect/particle/property/composition_reaction.h>
-#include <aspect/initial_composition/interface.h>
 #include <aspect/geometry_model/interface.h>
+#include <aspect/initial_composition/interface.h>
+#include <aspect/particle/property/composition_reaction.h>
 
 namespace aspect
 {
@@ -30,50 +30,48 @@ namespace aspect
     {
       template <int dim>
       void
-      CompositionReaction<dim>::initialize_one_particle_property(const Point<dim> &position,
-                                                                 std::vector<double> &data) const
+      CompositionReaction<dim>::initialize_one_particle_property(const Point<dim> &position, std::vector<double> &data) const
       {
         for (unsigned int i = 0; i < this->n_compositional_fields(); ++i)
-          data.push_back(this->get_initial_composition_manager().initial_composition(position,i));
+          data.push_back(this->get_initial_composition_manager().initial_composition(position, i));
       }
 
 
 
       template <int dim>
       void
-      CompositionReaction<dim>::update_particle_properties(const ParticleUpdateInputs<dim> &/*inputs*/,
+      CompositionReaction<dim>::update_particle_properties(const ParticleUpdateInputs<dim> & /*inputs*/,
                                                            typename ParticleHandler<dim>::particle_iterator_range &particles) const
       {
         // we get time passed as seconds (always) but may want
         // to reinterpret it in years
         if (this->convert_output_to_years())
-          reaction_rate->set_time (this->get_time() / year_in_seconds);
+          reaction_rate->set_time(this->get_time() / year_in_seconds);
         else
-          reaction_rate->set_time (this->get_time());
+          reaction_rate->set_time(this->get_time());
 
         // Check if any reaction occurs during the current time step.
         const unsigned int n_reactions = reactant_indices.size();
-        std::vector<bool> reaction_occurs (n_reactions, false);
+        std::vector<bool>  reaction_occurs(n_reactions, false);
 
-        for (unsigned int i=0; i<n_reactions; ++i)
-          if (this->get_time() >= reaction_times[i] &&
-              (this->get_time() - this->get_timestep()) < reaction_times[i])
+        for (unsigned int i = 0; i < n_reactions; ++i)
+          if (this->get_time() >= reaction_times[i] && (this->get_time() - this->get_timestep()) < reaction_times[i])
             reaction_occurs[i] = true;
 
         if (std::find(reaction_occurs.begin(), reaction_occurs.end(), true) == reaction_occurs.end())
           return;
 
         // Loop over all particles to apply reactions.
-        for (auto &particle: particles)
+        for (auto &particle : particles)
           {
             const Utilities::NaturalCoordinate<dim> point =
               this->get_geometry_model().cartesian_to_other_coordinates(particle.get_location(), coordinate_system);
             const ArrayView<double> particle_properties = particle.get_properties();
 
             // Loop over all reactions and compute total change for each compositional field.
-            for (unsigned int i=0; i<n_reactions; ++i)
+            for (unsigned int i = 0; i < n_reactions; ++i)
               {
-                std::array<double,2> reactant_and_product;
+                std::array<double, 2> reactant_and_product;
                 if (reactant_indices[i] == background_index)
                   reactant_and_product[0] = 0.0;
                 else
@@ -101,7 +99,7 @@ namespace aspect
 
       template <int dim>
       InitializationModeForLateParticles
-      CompositionReaction<dim>::late_initialization_mode () const
+      CompositionReaction<dim>::late_initialization_mode() const
       {
         return interpolate_respect_boundary;
       }
@@ -110,10 +108,9 @@ namespace aspect
 
       template <int dim>
       AdvectionField
-      CompositionReaction<dim>::advection_field_for_boundary_initialization (const unsigned int property_component) const
+      CompositionReaction<dim>::advection_field_for_boundary_initialization(const unsigned int property_component) const
       {
-        Assert (property_component < this->n_compositional_fields(),
-                ExcInternalError());
+        Assert(property_component < this->n_compositional_fields(), ExcInternalError());
 
         return AdvectionField::composition(property_component);
       }
@@ -133,13 +130,13 @@ namespace aspect
       std::vector<std::pair<std::string, unsigned int>>
       CompositionReaction<dim>::get_property_information() const
       {
-        std::vector<std::pair<std::string,unsigned int>> property_information;
+        std::vector<std::pair<std::string, unsigned int>> property_information;
 
         for (unsigned int i = 0; i < this->n_compositional_fields(); ++i)
           {
             std::ostringstream field_name;
             field_name << this->introspection().name_for_compositional_index(i) << " reaction";
-            property_information.emplace_back(field_name.str(),1);
+            property_information.emplace_back(field_name.str(), 1);
           }
 
         return property_information;
@@ -148,72 +145,78 @@ namespace aspect
 
       template <int dim>
       void
-      CompositionReaction<dim>::declare_parameters (ParameterHandler &prm)
+      CompositionReaction<dim>::declare_parameters(ParameterHandler &prm)
       {
         prm.enter_subsection("Composition reaction");
         {
-          prm.declare_entry ("List of reactants", "",
-                             Patterns::List(Patterns::Anything()),
-                             "Select the compositional fields that are the reaction inputs. "
-                             "Each entry represents the input for one reaction. The parameter "
-                             "should contain a list of compositional field names, one per reaction. "
-                             "'background' can be selected to set up a reaction without reactants. "
-                             "The length of this list determines the number of components in the "
-                             "reaction function.");
-          prm.declare_entry ("List of products", "",
-                             Patterns::List(Patterns::Anything()),
-                             "Select the compositional fields that are the reaction outputs. "
-                             "Each entry represents the output of one reaction. The parameter "
-                             "should contain a list of compositional field names, one per reaction. "
-                             "'background' can be selected to set up a reaction without products. "
-                             "Needs to have as many entries as the 'List of reactants'.");
-          prm.declare_entry ("List of reaction times", "",
-                             Patterns::List(Patterns::Double(0.)),
-                             "List a specific point in time when each reaction should occur during "
-                             "the simulation. If set to zero, the reaction occurs throughout the "
-                             "whole simulation."
-                             "Units: yr or s, depending on the ``Use years instead of seconds'' "
-                             "parameter.");
+          prm.declare_entry("List of reactants",
+                            "",
+                            Patterns::List(Patterns::Anything()),
+                            "Select the compositional fields that are the reaction inputs. "
+                            "Each entry represents the input for one reaction. The parameter "
+                            "should contain a list of compositional field names, one per reaction. "
+                            "'background' can be selected to set up a reaction without reactants. "
+                            "The length of this list determines the number of components in the "
+                            "reaction function.");
+          prm.declare_entry("List of products",
+                            "",
+                            Patterns::List(Patterns::Anything()),
+                            "Select the compositional fields that are the reaction outputs. "
+                            "Each entry represents the output of one reaction. The parameter "
+                            "should contain a list of compositional field names, one per reaction. "
+                            "'background' can be selected to set up a reaction without products. "
+                            "Needs to have as many entries as the 'List of reactants'.");
+          prm.declare_entry("List of reaction times",
+                            "",
+                            Patterns::List(Patterns::Double(0.)),
+                            "List a specific point in time when each reaction should occur during "
+                            "the simulation. If set to zero, the reaction occurs throughout the "
+                            "whole simulation."
+                            "Units: yr or s, depending on the ``Use years instead of seconds'' "
+                            "parameter.");
 
           prm.enter_subsection("Reaction area function");
           {
-            Functions::ParsedFunction<dim>::declare_parameters (prm, 1);
+            Functions::ParsedFunction<dim>::declare_parameters(prm, 1);
 
-            prm.declare_entry ("Coordinate system", "cartesian",
-                               Patterns::Selection ("depth|cartesian|spherical"),
-                               "A selection that determines the assumed coordinate "
-                               "system for the function variables. Allowed values "
-                               "are `depth', `cartesian' and `spherical'. `depth' "
-                               "will create a function with only the first variable "
-                               "being is non-zero, and this first variable is interpreted "
-                               "as the depth of the point. `spherical' coordinates "
-                               "are interpreted as r,phi or r,phi,theta in 2d/3d, "
-                               "respectively, with theta being the polar angle.");
+            prm.declare_entry("Coordinate system",
+                              "cartesian",
+                              Patterns::Selection("depth|cartesian|spherical"),
+                              "A selection that determines the assumed coordinate "
+                              "system for the function variables. Allowed values "
+                              "are `depth', `cartesian' and `spherical'. `depth' "
+                              "will create a function with only the first variable "
+                              "being is non-zero, and this first variable is interpreted "
+                              "as the depth of the point. `spherical' coordinates "
+                              "are interpreted as r,phi or r,phi,theta in 2d/3d, "
+                              "respectively, with theta being the polar angle.");
           }
           prm.leave_subsection();
 
           prm.enter_subsection("Reaction rate function");
           {
-            Functions::ParsedFunction<dim>::declare_parameters (prm, 1);
+            Functions::ParsedFunction<dim>::declare_parameters(prm, 1);
 
-            prm.declare_entry ("Variable names", "reactant,product,t",
-                               Patterns::Anything(),
-                               "The names of the variables as they will be used in the function, "
-                               "separated by commas. Instead of spatial coordinates, the inputs for "
-                               "this function represent the value of the `reactant' and `product' "
-                               "compositions so that the value of the current composition can be "
-                               "used to calculate the change due to the reaction. Additionally, "
-                               "`t' represents the time. You can use these variable "
-                               "names in your function expression and they will be replaced by the "
-                               "values of these variables at which the function is currently evaluated. "
-                               "However, you can also choose a different set of names for the "
-                               "independent variables at which to evaluate your function expression.");
-            prm.declare_entry ("Function expression","1.",
-                               Patterns::Anything(),
-                               "Expression for the change in value of the reactant and reaction product "
-                               "for each reaction, in dependence of the current values of reactant and "
-                               "reaction product. One expression for each reaction should be listed, "
-                               "separated by semicolons.");
+            prm.declare_entry("Variable names",
+                              "reactant,product,t",
+                              Patterns::Anything(),
+                              "The names of the variables as they will be used in the function, "
+                              "separated by commas. Instead of spatial coordinates, the inputs for "
+                              "this function represent the value of the `reactant' and `product' "
+                              "compositions so that the value of the current composition can be "
+                              "used to calculate the change due to the reaction. Additionally, "
+                              "`t' represents the time. You can use these variable "
+                              "names in your function expression and they will be replaced by the "
+                              "values of these variables at which the function is currently evaluated. "
+                              "However, you can also choose a different set of names for the "
+                              "independent variables at which to evaluate your function expression.");
+            prm.declare_entry("Function expression",
+                              "1.",
+                              Patterns::Anything(),
+                              "Expression for the change in value of the reactant and reaction product "
+                              "for each reaction, in dependence of the current values of reactant and "
+                              "reaction product. One expression for each reaction should be listed, "
+                              "separated by semicolons.");
           }
           prm.leave_subsection();
         }
@@ -223,7 +226,7 @@ namespace aspect
 
       template <int dim>
       void
-      CompositionReaction<dim>::parse_parameters (ParameterHandler &prm)
+      CompositionReaction<dim>::parse_parameters(ParameterHandler &prm)
       {
         AssertThrow(this->n_compositional_fields() > 0,
                     ExcMessage("You have requested the particle property <composition "
@@ -234,49 +237,49 @@ namespace aspect
         prm.enter_subsection("Composition reaction");
         {
           std::vector<std::string> compositional_field_names = this->introspection().get_composition_names();
-          compositional_field_names.insert(compositional_field_names.begin(),"background");
+          compositional_field_names.insert(compositional_field_names.begin(), "background");
 
           std::vector<std::string> reactants = Utilities::split_string_list(prm.get("List of reactants"));
-          std::vector<std::string> products = Utilities::split_string_list(prm.get("List of products"));
-          reaction_times = Utilities::string_to_double
-                           (Utilities::split_string_list(prm.get ("List of reaction times")));
+          std::vector<std::string> products  = Utilities::split_string_list(prm.get("List of products"));
+          reaction_times                     = Utilities::string_to_double(Utilities::split_string_list(prm.get("List of reaction times")));
 
           if (this->convert_output_to_years() == true)
             for (double &time : reaction_times)
               time *= year_in_seconds;
 
-          AssertThrow ((reactants.size() == products.size()),
-                       ExcMessage ("The list of reactants and products need to have the "
-                                   "same size. You provided "
-                                   + Utilities::to_string(reactants.size()) + " reactants and "
-                                   + Utilities::to_string(products.size()) + " products."));
+          AssertThrow((reactants.size() == products.size()),
+                      ExcMessage("The list of reactants and products need to have the "
+                                 "same size. You provided " +
+                                 Utilities::to_string(reactants.size()) + " reactants and " + Utilities::to_string(products.size()) +
+                                 " products."));
 
-          AssertThrow ((reactants.size() == reaction_times.size()),
-                       ExcMessage ("There must be as many reaction times given "
-                                   "as there are reactions. You provided "
-                                   + Utilities::to_string(reaction_times.size()) +
-                                   " reaction times but there are "
-                                   + Utilities::to_string(reactants.size()) + " reactions."));
+          AssertThrow((reactants.size() == reaction_times.size()),
+                      ExcMessage("There must be as many reaction times given "
+                                 "as there are reactions. You provided " +
+                                 Utilities::to_string(reaction_times.size()) + " reaction times but there are " +
+                                 Utilities::to_string(reactants.size()) + " reactions."));
 
           reactant_indices.resize(reactants.size());
           product_indices.resize(products.size());
 
-          for (unsigned int i=0; i<reactants.size(); ++i)
+          for (unsigned int i = 0; i < reactants.size(); ++i)
             {
-              AssertThrow (std::find(compositional_field_names.begin(), compositional_field_names.end(), reactants[i])
-                           != compositional_field_names.end(),
-                           ExcMessage ("The reactant " + reactants[i]  + " you provided "
-                                       "in the 'List of reactants' is not a compositional field name."));
+              AssertThrow(std::find(compositional_field_names.begin(), compositional_field_names.end(), reactants[i]) !=
+                            compositional_field_names.end(),
+                          ExcMessage("The reactant " + reactants[i] +
+                                     " you provided "
+                                     "in the 'List of reactants' is not a compositional field name."));
 
               if (reactants[i] == "background")
                 reactant_indices[i] = background_index;
               else
                 reactant_indices[i] = this->introspection().compositional_index_for_name(reactants[i]);
 
-              AssertThrow (std::find(compositional_field_names.begin(), compositional_field_names.end(), products[i])
-                           != compositional_field_names.end(),
-                           ExcMessage ("The product " + products[i]  + " you provided "
-                                       "in the 'List of products' is not a compositional field name."));
+              AssertThrow(std::find(compositional_field_names.begin(), compositional_field_names.end(), products[i]) !=
+                            compositional_field_names.end(),
+                          ExcMessage("The product " + products[i] +
+                                     " you provided "
+                                     "in the 'List of products' is not a compositional field name."));
 
               if (products[i] == "background")
                 product_indices[i] = background_index;
@@ -286,13 +289,12 @@ namespace aspect
 
           prm.enter_subsection("Reaction area function");
           {
-
             coordinate_system = ::aspect::Utilities::Coordinates::string_to_coordinate_system(prm.get("Coordinate system"));
 
             try
               {
                 reaction_area = std::make_unique<Functions::ParsedFunction<dim>>(reactants.size());
-                reaction_area->parse_parameters (prm);
+                reaction_area->parse_parameters(prm);
               }
             catch (...)
               {
@@ -310,7 +312,7 @@ namespace aspect
             try
               {
                 reaction_rate = std::make_unique<Functions::ParsedFunction<2>>(reactants.size());
-                reaction_rate->parse_parameters (prm);
+                reaction_rate->parse_parameters(prm);
               }
             catch (...)
               {

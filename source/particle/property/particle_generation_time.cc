@@ -19,6 +19,7 @@
  */
 
 #include <aspect/global.h>
+
 #include <aspect/particle/property/particle_generation_time.h>
 
 namespace aspect
@@ -29,8 +30,7 @@ namespace aspect
     {
       template <int dim>
       void
-      ParticleGenerationTime<dim>::initialize_one_particle_property(const Point<dim> &,
-                                                                    std::vector<double> &data) const
+      ParticleGenerationTime<dim>::initialize_one_particle_property(const Point<dim> &, std::vector<double> &data) const
       {
         const double current_time = this->get_time() / (this->convert_output_to_years() ? year_in_seconds : 1.0);
         data.push_back(current_time);
@@ -42,14 +42,14 @@ namespace aspect
       std::vector<std::pair<std::string, unsigned int>>
       ParticleGenerationTime<dim>::get_property_information() const
       {
-        return {{"particle generation time",1}};
+        return {{"particle generation time", 1}};
       }
 
 
 
       template <int dim>
       InitializationModeForLateParticles
-      ParticleGenerationTime<dim>::late_initialization_mode () const
+      ParticleGenerationTime<dim>::late_initialization_mode() const
       {
         return initialize;
       }

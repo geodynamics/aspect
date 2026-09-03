@@ -32,27 +32,27 @@ namespace aspect
     void
     Composition<dim>::execute(Vector<float> &indicators) const
     {
-      AssertThrow (this->n_compositional_fields() >= 1,
-                   ExcMessage ("This refinement criterion cannot be used when no "
-                               "compositional fields are active!"));
+      AssertThrow(this->n_compositional_fields() >= 1,
+                  ExcMessage("This refinement criterion cannot be used when no "
+                             "compositional fields are active!"));
       indicators = 0;
-      Vector<float> this_indicator (indicators.size());
+      Vector<float> this_indicator(indicators.size());
 
-      const Quadrature<dim-1> &quadrature = this->introspection().face_quadratures.compositional_fields;
+      const Quadrature<dim - 1> &quadrature = this->introspection().face_quadratures.compositional_fields;
 
-      for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
+      for (unsigned int c = 0; c < this->n_compositional_fields(); ++c)
         {
           this_indicator = 0;
-          KellyErrorEstimator<dim>::estimate (this->get_mapping(),
-                                              this->get_dof_handler(),
-                                              quadrature,
-                                              std::map<types::boundary_id,const Function<dim>*>(),
-                                              this->get_solution(),
-                                              this_indicator,
-                                              this->introspection().component_masks.compositional_fields[c],
-                                              nullptr,
-                                              0,
-                                              this->get_triangulation().locally_owned_subdomain());
+          KellyErrorEstimator<dim>::estimate(this->get_mapping(),
+                                             this->get_dof_handler(),
+                                             quadrature,
+                                             std::map<types::boundary_id, const Function<dim> *>(),
+                                             this->get_solution(),
+                                             this_indicator,
+                                             this->introspection().component_masks.compositional_fields[c],
+                                             nullptr,
+                                             0,
+                                             this->get_triangulation().locally_owned_subdomain());
           // compute indicators += c*this_indicator:
           indicators.add(composition_scaling_factors[c], this_indicator);
         }
@@ -60,8 +60,7 @@ namespace aspect
 
     template <int dim>
     void
-    Composition<dim>::
-    declare_parameters (ParameterHandler &prm)
+    Composition<dim>::declare_parameters(ParameterHandler &prm)
     {
       prm.enter_subsection("Mesh refinement");
       {
@@ -69,7 +68,7 @@ namespace aspect
         {
           prm.declare_entry("Compositional field scaling factors",
                             "",
-                            Patterns::List (Patterns::Double (0.)),
+                            Patterns::List(Patterns::Double(0.)),
                             "A list of scaling factors by which every individual compositional "
                             "field will be multiplied. If only a single compositional "
                             "field exists, then this parameter has no particular meaning. "
@@ -89,24 +88,21 @@ namespace aspect
 
     template <int dim>
     void
-    Composition<dim>::parse_parameters (ParameterHandler &prm)
+    Composition<dim>::parse_parameters(ParameterHandler &prm)
     {
       prm.enter_subsection("Mesh refinement");
       {
         prm.enter_subsection("Composition");
         {
-          composition_scaling_factors
-            = Utilities::string_to_double(
-                Utilities::split_string_list(prm.get("Compositional field scaling factors")));
+          composition_scaling_factors =
+            Utilities::string_to_double(Utilities::split_string_list(prm.get("Compositional field scaling factors")));
 
-          AssertThrow (composition_scaling_factors.size() == this->n_compositional_fields()
-                       ||
-                       composition_scaling_factors.size() == 0,
-                       ExcMessage ("The number of scaling factors given here must either be "
-                                   "zero or equal to the number of chosen refinement criteria."));
+          AssertThrow(composition_scaling_factors.size() == this->n_compositional_fields() || composition_scaling_factors.size() == 0,
+                      ExcMessage("The number of scaling factors given here must either be "
+                                 "zero or equal to the number of chosen refinement criteria."));
 
           if (composition_scaling_factors.size() == 0)
-            composition_scaling_factors.resize (this->n_compositional_fields(), 1.0);
+            composition_scaling_factors.resize(this->n_compositional_fields(), 1.0);
         }
         prm.leave_subsection();
       }

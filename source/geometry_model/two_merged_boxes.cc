@@ -18,16 +18,16 @@
   <http://www.gnu.org/licenses/>.
 */
 
-#include <algorithm>
-#include <aspect/geometry_model/two_merged_boxes.h>
 #include <aspect/geometry_model/initial_topography_model/zero_topography.h>
-
-#include <deal.II/grid/grid_generator.h>
-#include <deal.II/grid/tria_iterator.h>
-#include <deal.II/grid/tria_accessor.h>
-#include <deal.II/grid/grid_tools.h>
+#include <aspect/geometry_model/two_merged_boxes.h>
 #include <aspect/simulator_signals.h>
 
+#include <deal.II/grid/grid_generator.h>
+#include <deal.II/grid/grid_tools.h>
+#include <deal.II/grid/tria_accessor.h>
+#include <deal.II/grid/tria_iterator.h>
+
+#include <algorithm>
 #include <functional>
 
 namespace aspect
@@ -36,7 +36,7 @@ namespace aspect
   {
     template <int dim>
     void
-    TwoMergedBoxes<dim>::initialize ()
+    TwoMergedBoxes<dim>::initialize()
     {
       // Check that initial topography is required.
       // If so, connect the initial topography function
@@ -45,17 +45,9 @@ namespace aspect
       if (Plugins::plugin_type_matches<InitialTopographyModel::ZeroTopography<dim>>(this->get_initial_topography_model()) == false)
         {
           this->get_signals().pre_set_initial_state.connect(
-            [&](typename parallel::distributed::Triangulation<dim> &tria)
-          {
-            this->add_topography_to_mesh(tria);
-          }
-          );
+            [&](typename parallel::distributed::Triangulation<dim> &tria) { this->add_topography_to_mesh(tria); });
           this->get_signals().post_resume_load_user_data.connect(
-            [&](typename parallel::distributed::Triangulation<dim> &tria)
-          {
-            this->add_topography_to_mesh(tria);
-          }
-          );
+            [&](typename parallel::distributed::Triangulation<dim> &tria) { this->add_topography_to_mesh(tria); });
         }
     }
 
@@ -63,8 +55,7 @@ namespace aspect
 
     template <int dim>
     void
-    TwoMergedBoxes<dim>::
-    set_boundary_indicators (parallel::distributed::Triangulation<dim> &triangulation) const
+    TwoMergedBoxes<dim>::set_boundary_indicators(parallel::distributed::Triangulation<dim> &triangulation) const
     {
       // iterate over all active cells and (re)set the boundary indicators
       for (const auto &cell : triangulation.active_cell_iterators())
@@ -72,30 +63,30 @@ namespace aspect
           // first set the default boundary indicators
           for (const unsigned int f : cell->face_indices())
             if (cell->face(f)->at_boundary())
-              cell->face(f)->set_boundary_id (f);
+              cell->face(f)->set_boundary_id(f);
 
           // Then for individual faces set the boundary indicators in specific ways:
           if (cell->face(0)->at_boundary())
             // set the lithospheric part of the left boundary to indicator 2*dim
-            if (cell->face(0)->vertex(cell->face(0)->n_vertices()-1)[dim-1] > height_lith)
-              cell->face(0)->set_boundary_id (2*dim);
+            if (cell->face(0)->vertex(cell->face(0)->n_vertices() - 1)[dim - 1] > height_lith)
+              cell->face(0)->set_boundary_id(2 * dim);
 
           if (cell->face(1)->at_boundary())
             // set the lithospheric part of the right boundary to indicator 2*dim+1
-            if (cell->face(1)->vertex(cell->face(1)->n_vertices()-1)[dim-1] > height_lith)
-              cell->face(1)->set_boundary_id (2*dim+1);
+            if (cell->face(1)->vertex(cell->face(1)->n_vertices() - 1)[dim - 1] > height_lith)
+              cell->face(1)->set_boundary_id(2 * dim + 1);
 
-          if (dim==3)
+          if (dim == 3)
             {
               // set the lithospheric part of the front boundary to indicator 2*dim+2
               if (cell->face(2)->at_boundary())
-                if (cell->face(2)->vertex(cell->face(2)->n_vertices()-1)[dim-1] > height_lith)
-                  cell->face(2)->set_boundary_id (2*dim+2);
+                if (cell->face(2)->vertex(cell->face(2)->n_vertices() - 1)[dim - 1] > height_lith)
+                  cell->face(2)->set_boundary_id(2 * dim + 2);
 
               // set the lithospheric part of the back boundary to indicator 2*dim+3
               if (cell->face(3)->at_boundary())
-                if (cell->face(3)->vertex(cell->face(3)->n_vertices()-1)[dim-1] > height_lith)
-                  cell->face(3)->set_boundary_id (2*dim+3);
+                if (cell->face(3)->vertex(cell->face(3)->n_vertices() - 1)[dim - 1] > height_lith)
+                  cell->face(3)->set_boundary_id(2 * dim + 3);
             }
         }
     }
@@ -104,8 +95,7 @@ namespace aspect
 
     template <int dim>
     void
-    TwoMergedBoxes<dim>::
-    create_coarse_mesh (parallel::distributed::Triangulation<dim> &total_coarse_grid) const
+    TwoMergedBoxes<dim>::create_coarse_mesh(parallel::distributed::Triangulation<dim> &total_coarse_grid) const
     {
       std::vector<unsigned int> lower_rep_vec(lower_repetitions.begin(), lower_repetitions.end());
       if (use_merged_grids)
@@ -117,74 +107,54 @@ namespace aspect
           Triangulation<dim> upper_coarse_grid;
 
           // create lower_coarse_grid mesh
-          GridGenerator::subdivided_hyper_rectangle (lower_coarse_grid,
-                                                     lower_rep_vec,
-                                                     lower_box_origin,
-                                                     lower_box_origin+lower_extents,
-                                                     false);
+          GridGenerator::subdivided_hyper_rectangle(
+            lower_coarse_grid, lower_rep_vec, lower_box_origin, lower_box_origin + lower_extents, false);
 
           // create upper_coarse_grid mesh
-          GridGenerator::subdivided_hyper_rectangle (upper_coarse_grid,
-                                                     upper_rep_vec,
-                                                     upper_box_origin,
-                                                     upper_box_origin+upper_extents,
-                                                     false);
+          GridGenerator::subdivided_hyper_rectangle(
+            upper_coarse_grid, upper_rep_vec, upper_box_origin, upper_box_origin + upper_extents, false);
 
           // merge the lower and upper mesh into one total_coarse_grid.
           // now we have at least two cells
-          GridGenerator::merge_triangulations(lower_coarse_grid,
-                                              upper_coarse_grid,
-                                              total_coarse_grid);
+          GridGenerator::merge_triangulations(lower_coarse_grid, upper_coarse_grid, total_coarse_grid);
         }
       else
         {
-          GridGenerator::subdivided_hyper_rectangle (total_coarse_grid,
-                                                     lower_rep_vec,
-                                                     lower_box_origin,
-                                                     upper_box_origin+upper_extents,
-                                                     false);
+          GridGenerator::subdivided_hyper_rectangle(
+            total_coarse_grid, lower_rep_vec, lower_box_origin, upper_box_origin + upper_extents, false);
         }
 
       // set the boundary indicators
       set_boundary_indicators(total_coarse_grid);
 
       // tell p4est about the periodicity of the mesh.
-      std::vector<GridTools::PeriodicFacePair<typename parallel::distributed::Triangulation<dim>::cell_iterator>>
-      periodicity_vector;
-      for (int i=0; i<dim+dim-1; ++i)
+      std::vector<GridTools::PeriodicFacePair<typename parallel::distributed::Triangulation<dim>::cell_iterator>> periodicity_vector;
+      for (int i = 0; i < dim + dim - 1; ++i)
         {
           if (periodic[i])
-            GridTools::collect_periodic_faces
-            (total_coarse_grid, /*b_id1*/ 2*i, /*b_id2*/ 2*i+1,
-             /*direction*/ i%dim, periodicity_vector);
+            GridTools::collect_periodic_faces(total_coarse_grid,
+                                              /*b_id1*/ 2 * i,
+                                              /*b_id2*/ 2 * i + 1,
+                                              /*direction*/ i % dim,
+                                              periodicity_vector);
         }
       if (periodicity_vector.size() > 0)
-        total_coarse_grid.add_periodicity (periodicity_vector);
+        total_coarse_grid.add_periodicity(periodicity_vector);
 
       // make sure the right boundary indicators are set after refinement
       // through the function set_boundary_indicators above
-      total_coarse_grid.signals.post_refinement.connect (
-        [&]()
-      {
-        this->set_boundary_indicators(total_coarse_grid);
-      });
+      total_coarse_grid.signals.post_refinement.connect([&]() { this->set_boundary_indicators(total_coarse_grid); });
     }
 
 
 
     template <int dim>
     void
-    TwoMergedBoxes<dim>::
-    add_topography_to_mesh (typename parallel::distributed::Triangulation<dim> &grid) const
+    TwoMergedBoxes<dim>::add_topography_to_mesh(typename parallel::distributed::Triangulation<dim> &grid) const
     {
       // Here we provide GridTools with the function to displace vertices
       // in the vertical direction by an amount specified by the initial topography model
-      GridTools::transform(
-        [&](const Point<dim> &p) -> Point<dim>
-      {
-        return this->add_topography_to_point(p);
-      },
-      grid);
+      GridTools::transform([&](const Point<dim> &p) -> Point<dim> { return this->add_topography_to_point(p); }, grid);
 
       this->get_pcout() << "   Added initial topography to grid" << std::endl << std::endl;
     }
@@ -193,19 +163,17 @@ namespace aspect
 
     template <int dim>
     Point<dim>
-    TwoMergedBoxes<dim>::
-    add_topography_to_point (const Point<dim> &x_y_z) const
+    TwoMergedBoxes<dim>::add_topography_to_point(const Point<dim> &x_y_z) const
     {
-
       // Get the surface topography at this point
       const double topo = get_topography_at_point(x_y_z);
 
       // Compute the displacement of the z coordinate
-      const double ztopo = (x_y_z[dim-1] - lower_box_origin[dim-1]) / extents[dim-1] * topo;
+      const double ztopo = (x_y_z[dim - 1] - lower_box_origin[dim - 1]) / extents[dim - 1] * topo;
 
       // Compute the new point
       Point<dim> x_y_ztopo = x_y_z;
-      x_y_ztopo[dim-1] += ztopo;
+      x_y_ztopo[dim - 1] += ztopo;
 
       return x_y_ztopo;
     }
@@ -214,57 +182,44 @@ namespace aspect
 
     template <int dim>
     std::set<types::boundary_id>
-    TwoMergedBoxes<dim>::
-    get_used_boundary_indicators () const
+    TwoMergedBoxes<dim>::get_used_boundary_indicators() const
     {
       // boundary indicators are zero through 2*dim+2*(dim-1)-1
       std::set<types::boundary_id> s;
-      for (unsigned int i=0; i<2*dim+2*(dim-1); ++i)
-        s.insert (i);
+      for (unsigned int i = 0; i < 2 * dim + 2 * (dim - 1); ++i)
+        s.insert(i);
       return s;
     }
 
 
 
     template <int dim>
-    std::map<std::string,types::boundary_id>
-    TwoMergedBoxes<dim>::
-    get_symbolic_boundary_names_map () const
+    std::map<std::string, types::boundary_id>
+    TwoMergedBoxes<dim>::get_symbolic_boundary_names_map() const
     {
       switch (dim)
         {
           case 2:
-          {
-            return
             {
-              {"left",   0},
-              {"right",  1},
-              {"bottom", 2},
-              {"top",    3},
-              {"left lithosphere", 4},
-              {"right lithosphere",5}
-            };
-          }
+              return {{"left", 0}, {"right", 1}, {"bottom", 2}, {"top", 3}, {"left lithosphere", 4}, {"right lithosphere", 5}};
+            }
 
           case 3:
-          {
-            return
             {
-              {"left",   0},
-              {"right",  1},
-              {"front",  2},
-              {"back",   3},
-              {"bottom", 4},
-              {"top",    5},
-              {"left lithosphere",  6},
-              {"right lithosphere", 7},
-              {"front lithosphere", 8},
-              {"back lithosphere",  9}
-            };
-          }
+              return {{"left", 0},
+                      {"right", 1},
+                      {"front", 2},
+                      {"back", 3},
+                      {"bottom", 4},
+                      {"top", 5},
+                      {"left lithosphere", 6},
+                      {"right lithosphere", 7},
+                      {"front lithosphere", 8},
+                      {"back lithosphere", 9}};
+            }
         }
 
-      Assert (false, ExcNotImplemented());
+      Assert(false, ExcNotImplemented());
       return {};
     }
 
@@ -272,15 +227,14 @@ namespace aspect
 
     template <int dim>
     std::set<std::pair<std::pair<types::boundary_id, types::boundary_id>, unsigned int>>
-    TwoMergedBoxes<dim>::
-    get_periodic_boundary_pairs () const
+    TwoMergedBoxes<dim>::get_periodic_boundary_pairs() const
     {
       std::set<std::pair<std::pair<types::boundary_id, types::boundary_id>, unsigned int>> periodic_boundaries;
-      for ( unsigned int i=0; i<dim+dim-1; ++i)
+      for (unsigned int i = 0; i < dim + dim - 1; ++i)
         if (periodic[i])
           {
-            const unsigned int direction = i>=dim ? i-dim : i;
-            periodic_boundaries.insert( std::make_pair( std::pair<types::boundary_id, types::boundary_id>(2*i, 2*i+1), direction) );
+            const unsigned int direction = i >= dim ? i - dim : i;
+            periodic_boundaries.insert(std::make_pair(std::pair<types::boundary_id, types::boundary_id>(2 * i, 2 * i + 1), direction));
           }
       return periodic_boundaries;
     }
@@ -289,9 +243,9 @@ namespace aspect
 
     template <int dim>
     void
-    TwoMergedBoxes<dim>::adjust_positions_for_periodicity (Point<dim> &position,
-                                                           const ArrayView<Point<dim>> &connected_positions,
-                                                           const ArrayView<Tensor<1, dim>> &/*connected_velocities*/) const
+    TwoMergedBoxes<dim>::adjust_positions_for_periodicity(Point<dim>                  &position,
+                                                          const ArrayView<Point<dim>> &connected_positions,
+                                                          const ArrayView<Tensor<1, dim>> & /*connected_velocities*/) const
     {
       for (unsigned int i = 0; i < dim; ++i)
         if (periodic[i])
@@ -299,13 +253,13 @@ namespace aspect
             if (position[i] < lower_box_origin[i])
               {
                 position[i] += extents[i];
-                for (auto &connected_position: connected_positions)
+                for (auto &connected_position : connected_positions)
                   connected_position[i] += extents[i];
               }
             else if (position[i] > lower_box_origin[i] + extents[i])
               {
                 position[i] -= extents[i];
-                for (auto &connected_position: connected_positions)
+                for (auto &connected_position : connected_positions)
                   connected_position[i] -= extents[i];
               }
           }
@@ -315,11 +269,11 @@ namespace aspect
 
     template <int dim>
     double
-    TwoMergedBoxes<dim>::get_topography_at_point (const Point<dim> &position ) const
+    TwoMergedBoxes<dim>::get_topography_at_point(const Point<dim> &position) const
     {
       // Get the surface x (,y) point
-      Point<dim-1> surface_point;
-      for (unsigned int d=0; d<dim-1; ++d)
+      Point<dim - 1> surface_point;
+      for (unsigned int d = 0; d < dim - 1; ++d)
         surface_point[d] = position[d];
 
       return this->get_initial_topography_model().value(surface_point);
@@ -329,7 +283,7 @@ namespace aspect
 
     template <int dim>
     Point<dim>
-    TwoMergedBoxes<dim>::get_extents () const
+    TwoMergedBoxes<dim>::get_extents() const
     {
       return extents;
     }
@@ -338,7 +292,7 @@ namespace aspect
 
     template <int dim>
     const std::array<unsigned int, dim> &
-    TwoMergedBoxes<dim>::get_repetitions () const
+    TwoMergedBoxes<dim>::get_repetitions() const
     {
       return lower_repetitions;
     }
@@ -347,17 +301,16 @@ namespace aspect
 
     template <int dim>
     Point<dim>
-    TwoMergedBoxes<dim>::get_origin () const
+    TwoMergedBoxes<dim>::get_origin() const
     {
       return lower_box_origin;
     }
 
     template <int dim>
     double
-    TwoMergedBoxes<dim>::
-    length_scale () const
+    TwoMergedBoxes<dim>::length_scale() const
     {
-      return 0.01*extents[0];
+      return 0.01 * extents[0];
     }
 
 
@@ -365,9 +318,8 @@ namespace aspect
     double
     TwoMergedBoxes<dim>::depth(const Point<dim> &position) const
     {
-
       const double topo = get_topography_at_point(position);
-      const double d = extents[dim-1] + topo - (position(dim-1)-lower_box_origin[dim-1]);
+      const double d    = extents[dim - 1] + topo - (position(dim - 1) - lower_box_origin[dim - 1]);
       return std::clamp(d, 0., maximal_depth());
     }
 
@@ -376,7 +328,7 @@ namespace aspect
     double
     TwoMergedBoxes<dim>::height_above_reference_surface(const Point<dim> &position) const
     {
-      return (position(dim-1)-lower_box_origin[dim-1]) - extents[dim-1];
+      return (position(dim - 1) - lower_box_origin[dim - 1]) - extents[dim - 1];
     }
 
 
@@ -385,17 +337,15 @@ namespace aspect
     Point<dim>
     TwoMergedBoxes<dim>::representative_point(const double depth) const
     {
-      Assert (depth >= 0,
-              ExcMessage ("Given depth must be positive or zero."));
-      Assert (depth <= maximal_depth(),
-              ExcMessage ("Given depth must be less than or equal to the maximal depth of this geometry."));
+      Assert(depth >= 0, ExcMessage("Given depth must be positive or zero."));
+      Assert(depth <= maximal_depth(), ExcMessage("Given depth must be less than or equal to the maximal depth of this geometry."));
 
       // choose a point on the center axis of the domain
-      Point<dim> p = extents/2+lower_box_origin;
+      Point<dim> p = extents / 2 + lower_box_origin;
 
       const double topo = get_topography_at_point(p);
 
-      p[dim-1] = extents[dim-1]+lower_box_origin[dim-1]-depth+topo;
+      p[dim - 1] = extents[dim - 1] + lower_box_origin[dim - 1] - depth + topo;
 
       return p;
     }
@@ -405,7 +355,7 @@ namespace aspect
     double
     TwoMergedBoxes<dim>::maximal_depth() const
     {
-      return extents[dim-1] + this->get_initial_topography_model().max_topography();
+      return extents[dim - 1] + this->get_initial_topography_model().max_topography();
     }
 
     template <int dim>
@@ -421,17 +371,18 @@ namespace aspect
     bool
     TwoMergedBoxes<dim>::point_is_in_domain(const Point<dim> &point) const
     {
-      AssertThrow(!this->get_parameters().mesh_deformation_enabled == 0 ||
-                  this->simulator_is_past_initialization() == false,
-                  ExcMessage("After displacement of the mesh, this function can no longer be used to determine whether a point lies in the domain or not."));
+      AssertThrow(
+        !this->get_parameters().mesh_deformation_enabled == 0 || this->simulator_is_past_initialization() == false,
+        ExcMessage(
+          "After displacement of the mesh, this function can no longer be used to determine whether a point lies in the domain or not."));
 
       double topo = 0.;
       if (!Plugins::plugin_type_matches<const InitialTopographyModel::ZeroTopography<dim>>(this->get_initial_topography_model()))
         topo = get_topography_at_point(point);
 
       for (unsigned int d = 0; d < dim; ++d)
-        if (point[d] > topo+extents[d]+lower_box_origin[d]+std::numeric_limits<double>::epsilon()*extents[d] ||
-            point[d] < lower_box_origin[d]-std::numeric_limits<double>::epsilon()*extents[d])
+        if (point[d] > topo + extents[d] + lower_box_origin[d] + std::numeric_limits<double>::epsilon() * extents[d] ||
+            point[d] < lower_box_origin[d] - std::numeric_limits<double>::epsilon() * extents[d])
           return false;
 
       return true;
@@ -447,10 +398,10 @@ namespace aspect
 
 
     template <int dim>
-    std::array<double,dim>
+    std::array<double, dim>
     TwoMergedBoxes<dim>::cartesian_to_natural_coordinates(const Point<dim> &position_point) const
     {
-      std::array<double,dim> position_array;
+      std::array<double, dim> position_array;
       for (unsigned int i = 0; i < dim; ++i)
         position_array[i] = position_point(i);
 
@@ -461,7 +412,7 @@ namespace aspect
 
     template <int dim>
     Point<dim>
-    TwoMergedBoxes<dim>::natural_to_cartesian_coordinates(const std::array<double,dim> &position_tensor) const
+    TwoMergedBoxes<dim>::natural_to_cartesian_coordinates(const std::array<double, dim> &position_tensor) const
     {
       Point<dim> position_point;
       for (unsigned int i = 0; i < dim; ++i)
@@ -474,99 +425,98 @@ namespace aspect
 
     template <int dim>
     void
-    TwoMergedBoxes<dim>::
-    declare_parameters (ParameterHandler &prm)
+    TwoMergedBoxes<dim>::declare_parameters(ParameterHandler &prm)
     {
       prm.enter_subsection("Geometry model");
       {
         prm.enter_subsection("Box with lithosphere boundary indicators");
         {
-          prm.declare_entry ("Lithospheric thickness", "0.2",
-                             Patterns::Double (0.),
-                             "The thickness of the lithosphere used to create "
-                             "additional boundary indicators to set specific "
-                             "boundary conditions for the lithosphere. ");
+          prm.declare_entry("Lithospheric thickness",
+                            "0.2",
+                            Patterns::Double(0.),
+                            "The thickness of the lithosphere used to create "
+                            "additional boundary indicators to set specific "
+                            "boundary conditions for the lithosphere. ");
 
           // Total box extents
-          prm.declare_entry ("X extent", "1.",
-                             Patterns::Double (0.),
-                             "Extent of the box in x-direction. Units: \\si{\\meter}.");
-          prm.declare_entry ("Y extent", "1.",
-                             Patterns::Double (0.),
-                             "Extent of the box in y-direction. Units: \\si{\\meter}.");
-          prm.declare_entry ("Z extent", "1.",
-                             Patterns::Double (0.),
-                             "Extent of the box in z-direction. This value is ignored "
-                             "if the simulation is in 2d. Units: \\si{\\meter}.");
+          prm.declare_entry("X extent", "1.", Patterns::Double(0.), "Extent of the box in x-direction. Units: \\si{\\meter}.");
+          prm.declare_entry("Y extent", "1.", Patterns::Double(0.), "Extent of the box in y-direction. Units: \\si{\\meter}.");
+          prm.declare_entry("Z extent",
+                            "1.",
+                            Patterns::Double(0.),
+                            "Extent of the box in z-direction. This value is ignored "
+                            "if the simulation is in 2d. Units: \\si{\\meter}.");
 
           // Total box origin
-          prm.declare_entry ("Box origin X coordinate", "0.",
-                             Patterns::Double (),
-                             "X coordinate of box origin. Units: \\si{\\meter}.");
-          prm.declare_entry ("Box origin Y coordinate", "0.",
-                             Patterns::Double (),
-                             "Y coordinate of box origin. Units: \\si{\\meter}.");
-          prm.declare_entry ("Box origin Z coordinate", "0.",
-                             Patterns::Double (),
-                             "Z coordinate of box origin. This value is ignored "
-                             "if the simulation is in 2d. Units: \\si{\\meter}.");
+          prm.declare_entry("Box origin X coordinate", "0.", Patterns::Double(), "X coordinate of box origin. Units: \\si{\\meter}.");
+          prm.declare_entry("Box origin Y coordinate", "0.", Patterns::Double(), "Y coordinate of box origin. Units: \\si{\\meter}.");
+          prm.declare_entry("Box origin Z coordinate",
+                            "0.",
+                            Patterns::Double(),
+                            "Z coordinate of box origin. This value is ignored "
+                            "if the simulation is in 2d. Units: \\si{\\meter}.");
 
           // Lower box repetitions
-          prm.declare_entry ("X repetitions", "1",
-                             Patterns::Integer (1),
-                             "Number of cells in X direction of the lower box. "
-                             "The same number of repetitions will be used in the upper box.");
-          prm.declare_entry ("Y repetitions", "1",
-                             Patterns::Integer (1),
-                             "Number of cells in Y direction of the lower box. If the simulation "
-                             "is in 3d, the same number of repetitions will be used in the upper box.");
-          prm.declare_entry ("Z repetitions", "1",
-                             Patterns::Integer (1),
-                             "Number of cells in Z direction of the lower box. "
-                             "This value is ignored if the simulation is in 2d.");
+          prm.declare_entry("X repetitions",
+                            "1",
+                            Patterns::Integer(1),
+                            "Number of cells in X direction of the lower box. "
+                            "The same number of repetitions will be used in the upper box.");
+          prm.declare_entry("Y repetitions",
+                            "1",
+                            Patterns::Integer(1),
+                            "Number of cells in Y direction of the lower box. If the simulation "
+                            "is in 3d, the same number of repetitions will be used in the upper box.");
+          prm.declare_entry("Z repetitions",
+                            "1",
+                            Patterns::Integer(1),
+                            "Number of cells in Z direction of the lower box. "
+                            "This value is ignored if the simulation is in 2d.");
 
           // Upper box repetitions
-          prm.declare_entry ("Y repetitions lithosphere", "1",
-                             Patterns::Integer (1),
-                             "Number of cells in Y direction in the lithosphere. "
-                             "This value is ignored if the simulation is in 3d.");
-          prm.declare_entry ("Z repetitions lithosphere", "1",
-                             Patterns::Integer (1),
-                             "Number of cells in Z direction in the lithosphere. "
-                             "This value is ignored if the simulation is in 2d.");
+          prm.declare_entry("Y repetitions lithosphere",
+                            "1",
+                            Patterns::Integer(1),
+                            "Number of cells in Y direction in the lithosphere. "
+                            "This value is ignored if the simulation is in 3d.");
+          prm.declare_entry("Z repetitions lithosphere",
+                            "1",
+                            Patterns::Integer(1),
+                            "Number of cells in Z direction in the lithosphere. "
+                            "This value is ignored if the simulation is in 2d.");
 
           // Whole box periodicity
-          prm.declare_entry ("X periodic", "false",
-                             Patterns::Bool (),
-                             "Whether the box should be periodic in X direction.");
-          prm.declare_entry ("Y periodic", "false",
-                             Patterns::Bool (),
-                             "Whether the box should be periodic in Y direction.");
-          prm.declare_entry ("Z periodic", "false",
-                             Patterns::Bool (),
-                             "Whether the box should be periodic in Z direction. "
-                             "This value is ignored if the simulation is in 2d.");
-          prm.declare_entry ("X periodic lithosphere", "false",
-                             Patterns::Bool (),
-                             "Whether the box should be periodic in X direction in the lithosphere.");
-          prm.declare_entry ("Y periodic lithosphere", "false",
-                             Patterns::Bool (),
-                             "Whether the box should be periodic in Y direction in the lithosphere. "
-                             "This value is ignored if the simulation is in 2d. ");
+          prm.declare_entry("X periodic", "false", Patterns::Bool(), "Whether the box should be periodic in X direction.");
+          prm.declare_entry("Y periodic", "false", Patterns::Bool(), "Whether the box should be periodic in Y direction.");
+          prm.declare_entry("Z periodic",
+                            "false",
+                            Patterns::Bool(),
+                            "Whether the box should be periodic in Z direction. "
+                            "This value is ignored if the simulation is in 2d.");
+          prm.declare_entry("X periodic lithosphere",
+                            "false",
+                            Patterns::Bool(),
+                            "Whether the box should be periodic in X direction in the lithosphere.");
+          prm.declare_entry("Y periodic lithosphere",
+                            "false",
+                            Patterns::Bool(),
+                            "Whether the box should be periodic in Y direction in the lithosphere. "
+                            "This value is ignored if the simulation is in 2d. ");
 
           // grid creation parameters
-          prm.declare_entry ("Use merged grids", "true",
-                             Patterns::Bool (),
-                             "Whether to make the grid by gluing together two boxes, or just "
-                             "use one chunk to make the grid. Using two grids glued together "
-                             "is a safer option, since it forces the boundary conditions "
-                             "to be always applied to the same depth, but using one grid allows "
-                             "for a more flexible usage of the adaptive refinement. Note that if "
-                             "there is no cell boundary exactly on the boundary between the lithosphere "
-                             "and the mantle, the velocity boundary will not be exactly at that depth. "
-                             "Therefore, using a merged grid is generally recommended over using one grid."
-                             "When using one grid, the parameter for lower repetitions is used and the upper "
-                             "repetitions are ignored.");
+          prm.declare_entry("Use merged grids",
+                            "true",
+                            Patterns::Bool(),
+                            "Whether to make the grid by gluing together two boxes, or just "
+                            "use one chunk to make the grid. Using two grids glued together "
+                            "is a safer option, since it forces the boundary conditions "
+                            "to be always applied to the same depth, but using one grid allows "
+                            "for a more flexible usage of the adaptive refinement. Note that if "
+                            "there is no cell boundary exactly on the boundary between the lithosphere "
+                            "and the mantle, the velocity boundary will not be exactly at that depth. "
+                            "Therefore, using a merged grid is generally recommended over using one grid."
+                            "When using one grid, the parameter for lower repetitions is used and the upper "
+                            "repetitions are ignored.");
         }
         prm.leave_subsection();
       }
@@ -577,7 +527,7 @@ namespace aspect
 
     template <int dim>
     void
-    TwoMergedBoxes<dim>::parse_parameters (ParameterHandler &prm)
+    TwoMergedBoxes<dim>::parse_parameters(ParameterHandler &prm)
     {
       prm.enter_subsection("Geometry model");
       {
@@ -585,52 +535,52 @@ namespace aspect
         {
           const double thickness_lith = prm.get_double("Lithospheric thickness");
 
-          extents[0]           = prm.get_double ("X extent");
-          lower_extents[0]     = extents[0];
-          upper_extents[0]     = extents[0];
-          lower_box_origin[0]  = prm.get_double ("Box origin X coordinate");
-          upper_box_origin[0]  = lower_box_origin[0];
-          periodic[0]          = prm.get_bool ("X periodic");
-          periodic[dim]        = prm.get_bool ("X periodic lithosphere");
+          extents[0]          = prm.get_double("X extent");
+          lower_extents[0]    = extents[0];
+          upper_extents[0]    = extents[0];
+          lower_box_origin[0] = prm.get_double("Box origin X coordinate");
+          upper_box_origin[0] = lower_box_origin[0];
+          periodic[0]         = prm.get_bool("X periodic");
+          periodic[dim]       = prm.get_bool("X periodic lithosphere");
           // to match the two triangulations, it is required that the
           // number of horizontal repetitions are the same
-          lower_repetitions[0] = prm.get_integer ("X repetitions");
+          lower_repetitions[0] = prm.get_integer("X repetitions");
           upper_repetitions[0] = lower_repetitions[0];
 
-          extents[1]           = prm.get_double ("Y extent");
-          lower_box_origin[1]  = prm.get_double ("Box origin Y coordinate");
-          periodic[1]          = prm.get_bool ("Y periodic");
-          lower_repetitions[1] = prm.get_integer ("Y repetitions");
+          extents[1]           = prm.get_double("Y extent");
+          lower_box_origin[1]  = prm.get_double("Box origin Y coordinate");
+          periodic[1]          = prm.get_bool("Y periodic");
+          lower_repetitions[1] = prm.get_integer("Y repetitions");
 
           if (dim == 2)
             {
               lower_extents[1]     = extents[1] - thickness_lith;
               upper_extents[1]     = thickness_lith;
               upper_box_origin[1]  = lower_box_origin[1] + lower_extents[1];
-              upper_repetitions[1] = prm.get_integer ("Y repetitions lithosphere");
+              upper_repetitions[1] = prm.get_integer("Y repetitions lithosphere");
             }
 
           if (dim == 3)
             {
-              lower_extents[1]     = extents[1];
-              upper_extents[1]     = extents[1];
-              upper_box_origin[1]  = lower_box_origin[1];
-              periodic[dim+1]      = prm.get_bool ("Y periodic lithosphere");
+              lower_extents[1]    = extents[1];
+              upper_extents[1]    = extents[1];
+              upper_box_origin[1] = lower_box_origin[1];
+              periodic[dim + 1]   = prm.get_bool("Y periodic lithosphere");
               // to match the two triangulations, it is required that the
               // number of horizontal repetitions are the same
               upper_repetitions[1] = lower_repetitions[1];
-              extents[2]           = prm.get_double ("Z extent");
+              extents[2]           = prm.get_double("Z extent");
               lower_extents[2]     = extents[2] - thickness_lith;
               upper_extents[2]     = thickness_lith;
-              lower_box_origin[2]  = prm.get_double ("Box origin Z coordinate");
+              lower_box_origin[2]  = prm.get_double("Box origin Z coordinate");
               upper_box_origin[2]  = lower_box_origin[2] + lower_extents[2];
-              periodic[2]          = prm.get_bool ("Z periodic");
-              lower_repetitions[2] = prm.get_integer ("Z repetitions");
-              upper_repetitions[2] = prm.get_integer ("Z repetitions lithosphere");
+              periodic[2]          = prm.get_bool("Z periodic");
+              lower_repetitions[2] = prm.get_integer("Z repetitions");
+              upper_repetitions[2] = prm.get_integer("Z repetitions lithosphere");
             }
 
-          height_lith = upper_box_origin[dim-1];
-          use_merged_grids = prm.get_bool ("Use merged grids");
+          height_lith      = upper_box_origin[dim - 1];
+          use_merged_grids = prm.get_bool("Use merged grids");
         }
         prm.leave_subsection();
       }

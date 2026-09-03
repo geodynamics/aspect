@@ -41,11 +41,10 @@ namespace aspect
        * base class. See there for their meaning.
        */
       template <int dim>
-      class SurfaceDynamicTopography
-        : public DataPostprocessorScalar<dim>,
-          public SimulatorAccess<dim>,
-          public Interface<dim>,
-          public SurfaceOnlyVisualization<dim>
+      class SurfaceDynamicTopography : public DataPostprocessorScalar<dim>,
+                                       public SimulatorAccess<dim>,
+                                       public Interface<dim>,
+                                       public SurfaceOnlyVisualization<dim>
       {
         public:
           SurfaceDynamicTopography();
@@ -57,7 +56,7 @@ namespace aspect
            */
           void
           evaluate_vector_field(const DataPostprocessorInputs::Vector<dim> &input_data,
-                                std::vector<Vector<double>> &computed_quantities) const override;
+                                std::vector<Vector<double>>                &computed_quantities) const override;
 
           /**
            * Register the other postprocessor that we need: DynamicTopography

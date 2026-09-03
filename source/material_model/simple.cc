@@ -18,9 +18,10 @@
   <http://www.gnu.org/licenses/>.
 */
 
-#include <algorithm>
-#include <aspect/material_model/simple.h>
 #include <aspect/material_model/equation_of_state/interface.h>
+#include <aspect/material_model/simple.h>
+
+#include <algorithm>
 
 
 namespace aspect
@@ -29,57 +30,48 @@ namespace aspect
   {
     template <int dim>
     void
-    Simple<dim>::
-    evaluate(const MaterialModel::MaterialModelInputs<dim> &in,
-             MaterialModel::MaterialModelOutputs<dim> &out) const
+    Simple<dim>::evaluate(const MaterialModel::MaterialModelInputs<dim> &in, MaterialModel::MaterialModelOutputs<dim> &out) const
     {
       // The Simple model has up to one compositional field (plus one background field)
       // that can influence the density
-      const unsigned int n_compositions_for_eos = std::min(this->n_compositional_fields()+1, 2u);
-      EquationOfStateOutputs<dim> eos_outputs (n_compositions_for_eos);
+      const unsigned int          n_compositions_for_eos = std::min(this->n_compositional_fields() + 1, 2u);
+      EquationOfStateOutputs<dim> eos_outputs(n_compositions_for_eos);
 
-      for (unsigned int i=0; i < in.n_evaluation_points(); ++i)
+      for (unsigned int i = 0; i < in.n_evaluation_points(); ++i)
         {
-          const double delta_temp = in.temperature[i]-reference_T;
-          const double temperature_dependence
-            = (reference_T > 0
-               ?
-               std::clamp(std::exp(-thermal_viscosity_exponent *
-                                   delta_temp/reference_T),
-                          minimum_thermal_prefactor,
-                          maximum_thermal_prefactor)
-               :
-               1.0);
+          const double delta_temp = in.temperature[i] - reference_T;
+          const double temperature_dependence =
+            (reference_T > 0 ? std::clamp(std::exp(-thermal_viscosity_exponent * delta_temp / reference_T),
+                                          minimum_thermal_prefactor,
+                                          maximum_thermal_prefactor) :
+                               1.0);
 
-          out.viscosities[i] = ((composition_viscosity_prefactor != 1.0) && (in.composition[i].size()>0))
-                               ?
-                               // Geometric interpolation
-                               std::pow(10.0, ((1-in.composition[i][0]) * std::log10(eta *
-                                                                                     temperature_dependence)
-                                               + in.composition[i][0] * std::log10(eta *
-                                                                                   composition_viscosity_prefactor *
-                                                                                   temperature_dependence)))
-                               :
-                               temperature_dependence * eta;
+          out.viscosities[i] =
+            ((composition_viscosity_prefactor != 1.0) && (in.composition[i].size() > 0)) ?
+              // Geometric interpolation
+              std::pow(10.0,
+                       ((1 - in.composition[i][0]) * std::log10(eta * temperature_dependence) +
+                        in.composition[i][0] * std::log10(eta * composition_viscosity_prefactor * temperature_dependence))) :
+              temperature_dependence * eta;
 
           equation_of_state.evaluate(in, i, eos_outputs);
 
           // except for the density, all material properties are constant across compositions
           out.thermal_expansion_coefficients[i] = eos_outputs.thermal_expansion_coefficients[0];
-          out.specific_heat[i] = eos_outputs.specific_heat_capacities[0];
-          out.thermal_conductivities[i] = k_value;
-          out.compressibilities[i] = eos_outputs.compressibilities[0];
-          out.entropy_derivative_pressure[i] = eos_outputs.entropy_derivative_pressure[0];
+          out.specific_heat[i]                  = eos_outputs.specific_heat_capacities[0];
+          out.thermal_conductivities[i]         = k_value;
+          out.compressibilities[i]              = eos_outputs.compressibilities[0];
+          out.entropy_derivative_pressure[i]    = eos_outputs.entropy_derivative_pressure[0];
           out.entropy_derivative_temperature[i] = eos_outputs.entropy_derivative_temperature[0];
 
           // Change in composition due to chemical reactions at the
           // given positions. The term reaction_terms[i][c] is the
           // change in compositional field c at point i.
-          for (unsigned int c=0; c<in.composition[i].size(); ++c)
+          for (unsigned int c = 0; c < in.composition[i].size(); ++c)
             out.reaction_terms[i][c] = 0.0;
 
-          std::vector<double> volume_fractions (n_compositions_for_eos, 1.0);
-          if (in.composition[i].size()>0)
+          std::vector<double> volume_fractions(n_compositions_for_eos, 1.0);
+          if (in.composition[i].size() > 0)
             {
               volume_fractions[1] = std::max(0.0, in.composition[i][0]);
               volume_fractions[0] = 1.0 - volume_fractions[1];
@@ -93,58 +85,64 @@ namespace aspect
 
     template <int dim>
     bool
-    Simple<dim>::
-    is_compressible () const
+    Simple<dim>::is_compressible() const
     {
-      return equation_of_state.is_compressible ();
+      return equation_of_state.is_compressible();
     }
 
 
 
     template <int dim>
     void
-    Simple<dim>::declare_parameters (ParameterHandler &prm)
+    Simple<dim>::declare_parameters(ParameterHandler &prm)
     {
       prm.enter_subsection("Material model");
       {
         prm.enter_subsection("Simple model");
         {
-          EquationOfState::LinearizedIncompressible<dim>::declare_parameters (prm, 1);
+          EquationOfState::LinearizedIncompressible<dim>::declare_parameters(prm, 1);
 
-          prm.declare_entry ("Reference temperature", "293.",
-                             Patterns::Double (0.),
-                             "The reference temperature $T_0$. The reference temperature is used "
-                             "in both the density and viscosity formulas. Units: \\si{\\kelvin}.");
-          prm.declare_entry ("Viscosity", "5e24",
-                             Patterns::Double (0.),
-                             "The value of the constant viscosity $\\eta_0$. This viscosity may be "
-                             "modified by both temperature and compositional dependencies. "
-                             "Units: \\si{\\pascal\\second}.");
-          prm.declare_entry ("Composition viscosity prefactor", "1.0",
-                             Patterns::Double (0.),
-                             "A linear dependency of viscosity on the first compositional field. "
-                             "Dimensionless prefactor. With a value of 1.0 (the default) the "
-                             "viscosity does not depend on the composition. See the general documentation "
-                             "of this model for a formula that states the dependence of the "
-                             "viscosity on this factor, which is called $\\xi$ there.");
-          prm.declare_entry ("Thermal viscosity exponent", "0.0",
-                             Patterns::Double (0.),
-                             "The temperature dependence of viscosity. Dimensionless exponent. "
-                             "See the general documentation "
-                             "of this model for a formula that states the dependence of the "
-                             "viscosity on this factor, which is called $\\beta$ there.");
-          prm.declare_entry("Maximum thermal prefactor","1.0e2",
-                            Patterns::Double (0.),
+          prm.declare_entry("Reference temperature",
+                            "293.",
+                            Patterns::Double(0.),
+                            "The reference temperature $T_0$. The reference temperature is used "
+                            "in both the density and viscosity formulas. Units: \\si{\\kelvin}.");
+          prm.declare_entry("Viscosity",
+                            "5e24",
+                            Patterns::Double(0.),
+                            "The value of the constant viscosity $\\eta_0$. This viscosity may be "
+                            "modified by both temperature and compositional dependencies. "
+                            "Units: \\si{\\pascal\\second}.");
+          prm.declare_entry("Composition viscosity prefactor",
+                            "1.0",
+                            Patterns::Double(0.),
+                            "A linear dependency of viscosity on the first compositional field. "
+                            "Dimensionless prefactor. With a value of 1.0 (the default) the "
+                            "viscosity does not depend on the composition. See the general documentation "
+                            "of this model for a formula that states the dependence of the "
+                            "viscosity on this factor, which is called $\\xi$ there.");
+          prm.declare_entry("Thermal viscosity exponent",
+                            "0.0",
+                            Patterns::Double(0.),
+                            "The temperature dependence of viscosity. Dimensionless exponent. "
+                            "See the general documentation "
+                            "of this model for a formula that states the dependence of the "
+                            "viscosity on this factor, which is called $\\beta$ there.");
+          prm.declare_entry("Maximum thermal prefactor",
+                            "1.0e2",
+                            Patterns::Double(0.),
                             "The maximum value of the viscosity prefactor associated with temperature "
                             "dependence.");
-          prm.declare_entry("Minimum thermal prefactor","1.0e-2",
-                            Patterns::Double (0.),
+          prm.declare_entry("Minimum thermal prefactor",
+                            "1.0e-2",
+                            Patterns::Double(0.),
                             "The minimum value of the viscosity prefactor associated with temperature "
                             "dependence.");
-          prm.declare_entry ("Thermal conductivity", "4.7",
-                             Patterns::Double (0.),
-                             "The value of the thermal conductivity $k$. "
-                             "Units: \\si{\\watt\\per\\meter\\per\\kelvin}.");
+          prm.declare_entry("Thermal conductivity",
+                            "4.7",
+                            Patterns::Double(0.),
+                            "The value of the thermal conductivity $k$. "
+                            "Units: \\si{\\watt\\per\\meter\\per\\kelvin}.");
         }
         prm.leave_subsection();
       }
@@ -155,26 +153,28 @@ namespace aspect
 
     template <int dim>
     void
-    Simple<dim>::parse_parameters (ParameterHandler &prm)
+    Simple<dim>::parse_parameters(ParameterHandler &prm)
     {
       prm.enter_subsection("Material model");
       {
         prm.enter_subsection("Simple model");
         {
-          equation_of_state.parse_parameters (prm, 1);
+          equation_of_state.parse_parameters(prm, 1);
 
-          reference_T                = prm.get_double ("Reference temperature");
-          eta                        = prm.get_double ("Viscosity");
-          composition_viscosity_prefactor = prm.get_double ("Composition viscosity prefactor");
-          thermal_viscosity_exponent = prm.get_double ("Thermal viscosity exponent");
-          maximum_thermal_prefactor       = prm.get_double ("Maximum thermal prefactor");
-          minimum_thermal_prefactor       = prm.get_double ("Minimum thermal prefactor");
-          if ( maximum_thermal_prefactor == 0.0 ) maximum_thermal_prefactor = std::numeric_limits<double>::max();
-          if ( minimum_thermal_prefactor == 0.0 ) minimum_thermal_prefactor = std::numeric_limits<double>::min();
+          reference_T                     = prm.get_double("Reference temperature");
+          eta                             = prm.get_double("Viscosity");
+          composition_viscosity_prefactor = prm.get_double("Composition viscosity prefactor");
+          thermal_viscosity_exponent      = prm.get_double("Thermal viscosity exponent");
+          maximum_thermal_prefactor       = prm.get_double("Maximum thermal prefactor");
+          minimum_thermal_prefactor       = prm.get_double("Minimum thermal prefactor");
+          if (maximum_thermal_prefactor == 0.0)
+            maximum_thermal_prefactor = std::numeric_limits<double>::max();
+          if (minimum_thermal_prefactor == 0.0)
+            minimum_thermal_prefactor = std::numeric_limits<double>::min();
 
-          k_value                    = prm.get_double ("Thermal conductivity");
+          k_value = prm.get_double("Thermal conductivity");
 
-          if (thermal_viscosity_exponent!=0.0 && reference_T == 0.0)
+          if (thermal_viscosity_exponent != 0.0 && reference_T == 0.0)
             AssertThrow(false, ExcMessage("Error: Material model simple with Thermal viscosity exponent can not have reference_T=0."));
         }
         prm.leave_subsection();
@@ -182,11 +182,11 @@ namespace aspect
       prm.leave_subsection();
 
       // Declare dependencies on solution variables
-      this->model_dependence.compressibility = NonlinearDependence::none;
-      this->model_dependence.specific_heat = NonlinearDependence::none;
+      this->model_dependence.compressibility      = NonlinearDependence::none;
+      this->model_dependence.specific_heat        = NonlinearDependence::none;
       this->model_dependence.thermal_conductivity = NonlinearDependence::none;
-      this->model_dependence.viscosity = NonlinearDependence::none;
-      this->model_dependence.density = NonlinearDependence::temperature|NonlinearDependence::compositional_fields;
+      this->model_dependence.viscosity            = NonlinearDependence::none;
+      this->model_dependence.density              = NonlinearDependence::temperature | NonlinearDependence::compositional_fields;
 
       if (thermal_viscosity_exponent != 0)
         this->model_dependence.viscosity |= NonlinearDependence::temperature;

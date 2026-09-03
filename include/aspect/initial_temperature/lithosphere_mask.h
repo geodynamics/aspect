@@ -40,14 +40,14 @@ namespace aspect
           /**
            * Empty Constructor.
            */
-          LABDepthLookup ();
+          LABDepthLookup();
 
           /**
            * Initialization function. This function is called once at the
            * beginning of the program. Checks preconditions.
            */
           void
-          initialize ();
+          initialize();
 
           /**
            * Return LAB depth as a function of position (latitude and longitude). This
@@ -56,20 +56,19 @@ namespace aspect
            * two dimensions so the third column (depth) is treated as data.
            */
           double
-          get_lab_depth (const Point<dim> &position) const;
+          get_lab_depth(const Point<dim> &position) const;
 
           /**
            * Declare the parameters this class takes through input files.
            */
-          static
-          void
-          declare_parameters (ParameterHandler &prm);
+          static void
+          declare_parameters(ParameterHandler &prm);
 
           /**
            * Read the parameters this class declares from the parameter file.
            */
           void
-          parse_parameters (ParameterHandler &prm);
+          parse_parameters(ParameterHandler &prm);
 
         private:
           /**
@@ -129,7 +128,7 @@ namespace aspect
          * beginning of the program. Checks preconditions.
          */
         void
-        initialize () override;
+        initialize() override;
 
         /**
          * Return the initial temperature as a function of position. For the
@@ -137,20 +136,19 @@ namespace aspect
          * above the lithosphere-asthenosphere boundary and nans below.
          */
         double
-        initial_temperature (const Point<dim> &position) const override;
+        initial_temperature(const Point<dim> &position) const override;
 
         /**
          * Declare the parameters this class takes through input files.
          */
-        static
-        void
-        declare_parameters (ParameterHandler &prm);
+        static void
+        declare_parameters(ParameterHandler &prm);
 
         /**
          * Read the parameters this class declares from the parameter file.
          */
         void
-        parse_parameters (ParameterHandler &prm) override;
+        parse_parameters(ParameterHandler &prm) override;
 
       private:
         /**

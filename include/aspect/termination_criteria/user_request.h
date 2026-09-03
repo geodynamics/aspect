@@ -22,8 +22,8 @@
 #ifndef _aspect_termination_criteria_user_request_h
 #define _aspect_termination_criteria_user_request_h
 
-#include <aspect/termination_criteria/interface.h>
 #include <aspect/simulator_access.h>
+#include <aspect/termination_criteria/interface.h>
 
 namespace aspect
 {
@@ -48,27 +48,26 @@ namespace aspect
          * (false).
          */
         bool
-        execute () override;
+        execute() override;
 
         /**
          * Declare the parameters this class takes through input files.
          */
-        static
-        void
-        declare_parameters (ParameterHandler &prm);
+        static void
+        declare_parameters(ParameterHandler &prm);
 
         /**
          * Read the parameters this class declares from the parameter file.
          */
         void
-        parse_parameters (ParameterHandler &prm) override;
+        parse_parameters(ParameterHandler &prm) override;
 
       private:
         /**
          * This variable is read from the parameter file through a parameter
          * called 'File name'.
          */
-        std::string             filename_to_test;
+        std::string filename_to_test;
     };
   }
 }

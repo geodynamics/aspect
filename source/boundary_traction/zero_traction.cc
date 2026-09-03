@@ -27,14 +27,11 @@ namespace aspect
   namespace BoundaryTraction
   {
     template <int dim>
-    Tensor<1,dim>
-    ZeroTraction<dim>::
-    boundary_traction (const types::boundary_id,
-                       const Point<dim> &,
-                       const Tensor<1,dim> &) const
+    Tensor<1, dim>
+    ZeroTraction<dim>::boundary_traction(const types::boundary_id, const Point<dim> &, const Tensor<1, dim> &) const
     {
       // return a zero tensor regardless of position
-      return Tensor<1,dim>();
+      return Tensor<1, dim>();
     }
   }
 }

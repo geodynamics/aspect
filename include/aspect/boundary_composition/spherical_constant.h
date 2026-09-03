@@ -23,7 +23,6 @@
 #define _aspect_boundary_composition_spherical_constant_h
 
 #include <aspect/boundary_composition/interface.h>
-
 #include <aspect/simulator_access.h>
 
 
@@ -57,23 +56,23 @@ namespace aspect
          *
          * @copydoc aspect::BoundaryComposition::Interface::boundary_composition()
          */
-        double boundary_composition (const types::boundary_id boundary_indicator,
-                                     const Point<dim> &position,
-                                     const unsigned int compositional_field) const override;
+        double
+        boundary_composition(const types::boundary_id boundary_indicator,
+                             const Point<dim>        &position,
+                             const unsigned int       compositional_field) const override;
 
         /**
          * Declare the parameters this class takes through input files. This
          * class declares the inner and outer boundary compositions.
          */
-        static
-        void
-        declare_parameters (ParameterHandler &prm);
+        static void
+        declare_parameters(ParameterHandler &prm);
 
         /**
          * Read the parameters this class declares from the parameter file.
          */
         void
-        parse_parameters (ParameterHandler &prm) override;
+        parse_parameters(ParameterHandler &prm) override;
 
       private:
         /**

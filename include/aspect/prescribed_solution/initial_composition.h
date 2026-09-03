@@ -37,45 +37,46 @@ namespace aspect
      * indicator function.
      */
     template <int dim>
-    class InitialComposition
-      : public Interface<dim>,
-        public SimulatorAccess<dim>
+    class InitialComposition : public Interface<dim>, public SimulatorAccess<dim>
     {
       public:
-
-        InitialComposition ();
+        InitialComposition();
 
         /**
          * Store shared pointer to initial composition manager.
          */
-        void initialize () override;
+        void
+        initialize() override;
 
         /**
          * Update function time.
          */
-        void update () override;
+        void
+        update() override;
 
         /**
          * Declare parameters.
          */
-        static void declare_parameters (ParameterHandler &prm);
+        static void
+        declare_parameters(ParameterHandler &prm);
 
         /**
          * Parse parameters.
          */
-        void parse_parameters (ParameterHandler &prm) override;
+        void
+        parse_parameters(ParameterHandler &prm) override;
 
         /**
          * Constrain compositional solution.
          */
-        void constrain_solution (const typename DoFHandler<dim>::active_cell_iterator &cell,
-                                 const std::vector<Point<dim>> &positions,
-                                 const std::vector<unsigned int> &component_indices,
-                                 std::vector<bool> &should_be_constrained,
-                                 std::vector<double> &solution) override;
+        void
+        constrain_solution(const typename DoFHandler<dim>::active_cell_iterator &cell,
+                           const std::vector<Point<dim>>                        &positions,
+                           const std::vector<unsigned int>                      &component_indices,
+                           std::vector<bool>                                    &should_be_constrained,
+                           std::vector<double>                                  &solution) override;
 
       private:
-
         /**
          * Indicator function defining region where composition
          * is prescribed.

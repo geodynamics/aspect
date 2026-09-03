@@ -28,45 +28,45 @@ namespace aspect
 {
   // provide locations for the static variables of this class
   template <int dim>
-  boost::signals2::signal<void (const unsigned int,
-                                ParameterHandler &)>  SimulatorSignals<dim>::declare_additional_parameters;
+  boost::signals2::signal<void(const unsigned int, ParameterHandler &)> SimulatorSignals<dim>::declare_additional_parameters;
 
   template <int dim>
-  boost::signals2::signal<void (const Parameters<dim> &,
-                                ParameterHandler &)>  SimulatorSignals<dim>::parse_additional_parameters;
+  boost::signals2::signal<void(const Parameters<dim> &, ParameterHandler &)> SimulatorSignals<dim>::parse_additional_parameters;
 
 
   namespace internals
   {
     namespace SimulatorSignals
     {
-      std::list<std::function<void (aspect::SimulatorSignals<2> &)>> connector_functions_2d;
-      std::list<std::function<void (aspect::SimulatorSignals<3> &)>> connector_functions_3d;
+      std::list<std::function<void(aspect::SimulatorSignals<2> &)>> connector_functions_2d;
+      std::list<std::function<void(aspect::SimulatorSignals<3> &)>> connector_functions_3d;
 
       static bool connector_functions_have_been_called = false;
 
       // add a user-provided connector to the list of connectors we keep
-      void register_connector_function_2d (const std::function<void (aspect::SimulatorSignals<2> &)> &connector)
+      void
+      register_connector_function_2d(const std::function<void(aspect::SimulatorSignals<2> &)> &connector)
       {
         Assert(!connector_functions_have_been_called,
                ExcMessage("Registration of signal connector happened after connection has already been called!"));
-        connector_functions_2d.push_back (connector);
+        connector_functions_2d.push_back(connector);
       }
 
-      void register_connector_function_3d (const std::function<void (aspect::SimulatorSignals<3> &)> &connector)
+      void
+      register_connector_function_3d(const std::function<void(aspect::SimulatorSignals<3> &)> &connector)
       {
         Assert(!connector_functions_have_been_called,
                ExcMessage("Registration of signal connector happened after connection has already been called!"));
-        connector_functions_3d.push_back (connector);
+        connector_functions_3d.push_back(connector);
       }
 
 
       // call connectors to ensure that plugins get a change to register their slots
       template <>
-      void call_connector_functions (aspect::SimulatorSignals<2> &signals)
+      void
+      call_connector_functions(aspect::SimulatorSignals<2> &signals)
       {
-        Assert(!connector_functions_have_been_called,
-               ExcInternalError());
+        Assert(!connector_functions_have_been_called, ExcInternalError());
 
         for (const auto &p : connector_functions_2d)
           p(signals);
@@ -75,10 +75,10 @@ namespace aspect
       }
 
       template <>
-      void call_connector_functions (aspect::SimulatorSignals<3> &signals)
+      void
+      call_connector_functions(aspect::SimulatorSignals<3> &signals)
       {
-        Assert(!connector_functions_have_been_called,
-               ExcInternalError());
+        Assert(!connector_functions_have_been_called, ExcInternalError());
 
         for (const auto &p : connector_functions_3d)
           p(signals);
@@ -93,8 +93,7 @@ namespace aspect
 // explicit instantiations
 namespace aspect
 {
-#define INSTANTIATE(dim) \
-  template struct SimulatorSignals<dim>;
+#define INSTANTIATE(dim) template struct SimulatorSignals<dim>;
 
   ASPECT_INSTANTIATE(INSTANTIATE)
 

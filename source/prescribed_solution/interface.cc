@@ -30,37 +30,34 @@ namespace aspect
   {
 
     /**
-    * A set of helper functions that either return the point passed to it (if
-    * the current dimension is the same) or return a dummy value (otherwise).
-    */
+     * A set of helper functions that either return the point passed to it (if
+     * the current dimension is the same) or return a dummy value (otherwise).
+     */
     namespace
     {
-      std::tuple
-      <aspect::internal::Plugins::UnusablePluginList,
-      aspect::internal::Plugins::UnusablePluginList,
-      aspect::internal::Plugins::PluginList<Interface<2>>,
-      aspect::internal::Plugins::PluginList<Interface<3>>> registered_plugins;
+      std::tuple<aspect::internal::Plugins::UnusablePluginList,
+                 aspect::internal::Plugins::UnusablePluginList,
+                 aspect::internal::Plugins::PluginList<Interface<2>>,
+                 aspect::internal::Plugins::PluginList<Interface<3>>>
+        registered_plugins;
     }
 
 
     template <int dim>
     void
-    Manager<dim>::register_prescribed_solution_plugin (const std::string &name,
-                                                       const std::string &description,
-                                                       void (*declare_parameters_function) (ParameterHandler &),
-                                                       std::unique_ptr<Interface<dim>> (*factory_function) ())
+    Manager<dim>::register_prescribed_solution_plugin(const std::string &name,
+                                                      const std::string &description,
+                                                      void (*declare_parameters_function)(ParameterHandler &),
+                                                      std::unique_ptr<Interface<dim>> (*factory_function)())
     {
-      std::get<dim>(registered_plugins).register_plugin (name,
-                                                         description,
-                                                         declare_parameters_function,
-                                                         factory_function);
+      std::get<dim>(registered_plugins).register_plugin(name, description, declare_parameters_function, factory_function);
     }
 
 
 
     template <int dim>
     void
-    Manager<dim>::constrain_solution (AffineConstraints<double> &current_constraints) const
+    Manager<dim>::constrain_solution(AffineConstraints<double> &current_constraints) const
     {
       // If there are no active plugins, return without doing anything
       if (this->plugin_objects.size() == 0)
@@ -70,53 +67,45 @@ namespace aspect
 
       // Create a quadrature at the support points of the finite element
       // Each quadrature point therefore represent a location where a degree of freedom is defined
-      const Quadrature<dim> quadrature (aspect::Utilities::get_unit_support_points(*this));
-      const auto &finite_element = this->get_fe();
+      const Quadrature<dim> quadrature(aspect::Utilities::get_unit_support_points(*this));
+      const auto           &finite_element = this->get_fe();
 
-      FEValues<dim> fe_values (finite_element, quadrature, update_quadrature_points);
+      FEValues<dim> fe_values(finite_element, quadrature, update_quadrature_points);
 
-      const unsigned int n_dofs = quadrature.size();
-      std::vector<unsigned int> component_indices(n_dofs);
-      std::vector<bool> should_be_constrained(n_dofs);
-      std::vector<double> solution(n_dofs);
+      const unsigned int                   n_dofs = quadrature.size();
+      std::vector<unsigned int>            component_indices(n_dofs);
+      std::vector<bool>                    should_be_constrained(n_dofs);
+      std::vector<double>                  solution(n_dofs);
       std::vector<types::global_dof_index> local_dof_indices(n_dofs);
 
       // Loop over all cells
       for (const auto &cell : this->get_dof_handler().active_cell_iterators())
         if (!cell->is_artificial())
           {
-            fe_values.reinit (cell);
-            cell->get_dof_indices (local_dof_indices);
+            fe_values.reinit(cell);
+            cell->get_dof_indices(local_dof_indices);
 
-            for (unsigned int q=0; q<n_dofs; q++)
+            for (unsigned int q = 0; q < n_dofs; q++)
               {
                 should_be_constrained[q] = false;
-                solution[q] = 0.0;
-                component_indices[q] = finite_element.system_to_component_index(q).first;
+                solution[q]              = 0.0;
+                component_indices[q]     = finite_element.system_to_component_index(q).first;
               }
 
-            for (auto &p: this->plugin_objects)
+            for (auto &p : this->plugin_objects)
               {
-                p->constrain_solution(cell,
-                                      fe_values.get_quadrature_points(),
-                                      component_indices,
-                                      should_be_constrained,
-                                      solution);
+                p->constrain_solution(cell, fe_values.get_quadrature_points(), component_indices, should_be_constrained, solution);
               }
 
-            for (unsigned int q=0; q<n_dofs; q++)
+            for (unsigned int q = 0; q < n_dofs; q++)
               {
                 // If it's okay to constrain this DOF
-                if (current_constraints.can_store_line(local_dof_indices[q]) &&
-                    !current_constraints.is_constrained(local_dof_indices[q]) &&
+                if (current_constraints.can_store_line(local_dof_indices[q]) && !current_constraints.is_constrained(local_dof_indices[q]) &&
                     should_be_constrained[q] == true)
                   {
                     // Add a constraint of the form dof[q] = u_i
                     // to the list of constraints.
-                    current_constraints.add_constraint(local_dof_indices[q],
-                                                       {},
-                                                       solution[q]);
-
+                    current_constraints.add_constraint(local_dof_indices[q], {}, solution[q]);
                   }
               }
           }
@@ -127,12 +116,11 @@ namespace aspect
 
     template <int dim>
     void
-    Manager<dim>::declare_parameters (ParameterHandler &prm)
+    Manager<dim>::declare_parameters(ParameterHandler &prm)
     {
-      prm.enter_subsection ("Prescribed solution");
+      prm.enter_subsection("Prescribed solution");
       {
-        const std::string pattern_of_names
-          = std::get<dim>(registered_plugins).get_pattern_of_names ();
+        const std::string pattern_of_names = std::get<dim>(registered_plugins).get_pattern_of_names();
 
         prm.declare_entry("List of model names",
                           "",
@@ -142,47 +130,44 @@ namespace aspect
                           "These plugins are loaded in the order given, and are combined "
                           "via the operators listed "
                           "in 'List of model operators'.\n\n"
-                          "The following prescribed solution models are available:\n\n"
-                          +
-                          std::get<dim>(registered_plugins).get_description_string());
+                          "The following prescribed solution models are available:\n\n" +
+                            std::get<dim>(registered_plugins).get_description_string());
       }
-      prm.leave_subsection ();
+      prm.leave_subsection();
 
-      std::get<dim>(registered_plugins).declare_parameters (prm);
+      std::get<dim>(registered_plugins).declare_parameters(prm);
     }
 
 
 
     template <int dim>
     void
-    Manager<dim>::parse_parameters (ParameterHandler &prm)
+    Manager<dim>::parse_parameters(ParameterHandler &prm)
     {
-      prm.enter_subsection ("Prescribed solution");
+      prm.enter_subsection("Prescribed solution");
       {
-        this->plugin_names
-          = Utilities::split_string_list(prm.get("List of model names"));
+        this->plugin_names = Utilities::split_string_list(prm.get("List of model names"));
 
         AssertThrow(Utilities::has_unique_entries(this->plugin_names),
                     ExcMessage("The list of strings for the parameter "
                                "'Prescribed solution/List of model names' contains entries more than once. "
                                "This is not allowed. Please check your parameter file."));
       }
-      prm.leave_subsection ();
+      prm.leave_subsection();
 
       // go through the list, create objects and let them parse
       // their own parameters
       for (auto &model_name : this->plugin_names)
         {
           // create initial temperature objects
-          this->plugin_objects.emplace_back (std::get<dim>(registered_plugins)
-                                             .create_plugin (model_name,
-                                                             "Prescribed solution::Model names"));
+          this->plugin_objects.emplace_back(
+            std::get<dim>(registered_plugins).create_plugin(model_name, "Prescribed solution::Model names"));
 
-          if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(this->plugin_objects.back().get()))
-            sim->initialize_simulator (this->get_simulator());
+          if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim> *>(this->plugin_objects.back().get()))
+            sim->initialize_simulator(this->get_simulator());
 
-          this->plugin_objects.back()->parse_parameters (prm);
-          this->plugin_objects.back()->initialize ();
+          this->plugin_objects.back()->parse_parameters(prm);
+          this->plugin_objects.back()->initialize();
         }
     }
 
@@ -190,19 +175,18 @@ namespace aspect
 
     template <int dim>
     std::string
-    get_valid_model_names_pattern ()
+    get_valid_model_names_pattern()
     {
-      return std::get<dim>(registered_plugins).get_pattern_of_names ();
+      return std::get<dim>(registered_plugins).get_pattern_of_names();
     }
 
 
 
     template <int dim>
     void
-    Manager<dim>::write_plugin_graph (std::ostream &out)
+    Manager<dim>::write_plugin_graph(std::ostream &out)
     {
-      std::get<dim>(registered_plugins).write_plugin_graph ("Prescribed solution interface",
-                                                            out);
+      std::get<dim>(registered_plugins).write_plugin_graph("Prescribed solution interface", out);
     }
   }
 }
@@ -213,7 +197,7 @@ namespace aspect
   namespace PrescribedSolution
   {
 #define INSTANTIATE(dim) \
-  template class Interface<dim>;\
+  template class Interface<dim>; \
   template class Manager<dim>;
 
     ASPECT_INSTANTIATE(INSTANTIATE)

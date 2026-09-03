@@ -23,8 +23,10 @@
 #define _aspect_adiabatic_conditions_interface_h
 
 #include <aspect/plugins.h>
+
 #include <aspect/geometry_model/interface.h>
 #include <aspect/simulator_access.h>
+
 #include <deal.II/base/parameter_handler.h>
 #include <deal.II/distributed/tria.h>
 
@@ -50,7 +52,7 @@ namespace aspect
      * @ingroup AdiabaticConditions
      */
     template <int dim>
-    class Interface: public SimulatorAccess<dim>, public Plugins::InterfaceBase
+    class Interface : public SimulatorAccess<dim>, public Plugins::InterfaceBase
     {
       public:
         /**
@@ -60,34 +62,33 @@ namespace aspect
          * profile. Utilizing this function they may behave differently on
          * initialization of the adiabatic conditions and at model runtime.
          */
-        virtual
-        bool
-        is_initialized () const = 0;
+        virtual bool
+        is_initialized() const = 0;
 
         /**
          * Return the adiabatic temperature at a given point of the domain.
          */
-        virtual
-        double temperature (const Point<dim> &p) const = 0;
+        virtual double
+        temperature(const Point<dim> &p) const = 0;
 
         /**
          * Return the adiabatic pressure at a given point of the domain.
          */
-        virtual
-        double pressure (const Point<dim> &p) const = 0;
+        virtual double
+        pressure(const Point<dim> &p) const = 0;
 
         /**
          * Return the reference_density at a given point of the domain.
          */
-        virtual
-        double density (const Point<dim> &p) const = 0;
+        virtual double
+        density(const Point<dim> &p) const = 0;
 
         /**
          * Return the derivative of the density with respect to depth
          * at the given point @p p.
          */
-        virtual
-        double density_derivative (const Point<dim> &p) const = 0;
+        virtual double
+        density_derivative(const Point<dim> &p) const = 0;
 
         /**
          * Return the adiabatic temperature profile as a vector of values
@@ -101,8 +102,8 @@ namespace aspect
          * Use the function temperature() for specific positions instead.
          */
         DEAL_II_DEPRECATED
-        virtual
-        void get_adiabatic_temperature_profile(std::vector<double> &values) const;
+        virtual void
+        get_adiabatic_temperature_profile(std::vector<double> &values) const;
 
         /**
          * Like get_adiabatic_temperature_profile() but for the pressure.
@@ -111,8 +112,8 @@ namespace aspect
          * Use the function pressure() for specific positions instead.
          */
         DEAL_II_DEPRECATED
-        virtual
-        void get_adiabatic_pressure_profile(std::vector<double> &values) const;
+        virtual void
+        get_adiabatic_pressure_profile(std::vector<double> &values) const;
 
         /**
          * Like get_adiabatic_temperature_profile() but for the density.
@@ -121,8 +122,8 @@ namespace aspect
          * Use the function density() for specific positions instead.
          */
         DEAL_II_DEPRECATED
-        virtual
-        void get_adiabatic_density_profile(std::vector<double> &values) const;
+        virtual void
+        get_adiabatic_density_profile(std::vector<double> &values) const;
 
         /**
          * Like get_adiabatic_temperature_profile() but for the density derivative.
@@ -131,8 +132,8 @@ namespace aspect
          * Use the function density_derivative() for specific positions instead.
          */
         DEAL_II_DEPRECATED
-        virtual
-        void get_adiabatic_density_derivative_profile(std::vector<double> &values) const;
+        virtual void
+        get_adiabatic_density_derivative_profile(std::vector<double> &values) const;
     };
 
 
@@ -153,10 +154,10 @@ namespace aspect
      */
     template <int dim>
     void
-    register_adiabatic_conditions (const std::string &name,
-                                   const std::string &description,
-                                   void (*declare_parameters_function) (ParameterHandler &),
-                                   std::unique_ptr<Interface<dim>> (*factory_function) ());
+    register_adiabatic_conditions(const std::string &name,
+                                  const std::string &description,
+                                  void (*declare_parameters_function)(ParameterHandler &),
+                                  std::unique_ptr<Interface<dim>> (*factory_function)());
 
     /**
      * A function that given the name of a model returns a pointer to an
@@ -170,7 +171,7 @@ namespace aspect
      */
     template <int dim>
     std::unique_ptr<Interface<dim>>
-    create_adiabatic_conditions (ParameterHandler &prm);
+    create_adiabatic_conditions(ParameterHandler &prm);
 
 
     /**
@@ -181,7 +182,7 @@ namespace aspect
      */
     template <int dim>
     void
-    declare_parameters (ParameterHandler &prm);
+    declare_parameters(ParameterHandler &prm);
 
 
     /**
@@ -195,7 +196,7 @@ namespace aspect
      */
     template <int dim>
     void
-    write_plugin_graph (std::ostream &output_stream);
+    write_plugin_graph(std::ostream &output_stream);
 
 
     /**
@@ -208,14 +209,12 @@ namespace aspect
 #define ASPECT_REGISTER_ADIABATIC_CONDITIONS_MODEL(classname, name, description) \
   template class classname<2>; \
   template class classname<3>; \
-  namespace ASPECT_REGISTER_ADIABATIC_CONDITIONS_MODEL_ ## classname \
+  namespace ASPECT_REGISTER_ADIABATIC_CONDITIONS_MODEL_##classname \
   { \
-    aspect::internal::Plugins::RegisterHelper<aspect::AdiabaticConditions::Interface<2>,classname<2>> \
-    dummy_ ## classname ## _2d (&aspect::AdiabaticConditions::register_adiabatic_conditions<2>, \
-                                name, description); \
-    aspect::internal::Plugins::RegisterHelper<aspect::AdiabaticConditions::Interface<3>,classname<3>> \
-    dummy_ ## classname ## _3d (&aspect::AdiabaticConditions::register_adiabatic_conditions<3>, \
-                                name, description); \
+    aspect::internal::Plugins::RegisterHelper<aspect::AdiabaticConditions::Interface<2>, classname<2>> dummy_##classname##_2d( \
+      &aspect::AdiabaticConditions::register_adiabatic_conditions<2>, name, description); \
+    aspect::internal::Plugins::RegisterHelper<aspect::AdiabaticConditions::Interface<3>, classname<3>> dummy_##classname##_3d( \
+      &aspect::AdiabaticConditions::register_adiabatic_conditions<3>, name, description); \
   }
   }
 }
