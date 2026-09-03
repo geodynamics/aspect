@@ -161,14 +161,14 @@ For euler angles the first row of the passive rotation matrix defined in `aspect
 ### Shear Box Benchmark
 
 ```{figure-md} fig:rotation_average_shearbox_t0
-<img src="shearbox_comparison_t0.png" style="width:100.0%" />
+<img src="shearbox_comparison_t0.*" style="width:100.0%" />
 
 Expected output of the shear box model at time zero. White arrows are the applied velocity boundary condition. Dark red arrows are the interpolated rotation axis. Light red is the interpolated 100-axis. Dark green is the rotation axis on the particles. Light green is the 100-axis on the particles.
 ```
 At time zero one can nicely see how the symmetry average is able to interpolate rotations while taking into account that an orientation of $[\mathbf{v}_1, \mathbf{v}_2, \mathbf{v}_2]$ is equivalent to an orientation of $[-\mathbf{v}_1, -\mathbf{v}_2, \mathbf{v}_2]$.
 
 ```{figure-md} fig:rotation_average_shearbox_tlast
-<img src="shearbox_comparison_tlast.png" style="width:100.0%" />
+<img src="shearbox_comparison_tlast.*" style="width:100.0%" />
 
 Expected output of the shear box model at time t=3.5. White arrows are the applied velocity boundary condition. Dark red arrows are the interpolated rotation axis. Light red is the interpolated 100-axis. Dark green is the rotation axis on the particles. Light green is the 100-axis on the particles.
 ```
@@ -183,7 +183,7 @@ We compare 3 methods to average a crystal orientation subject to orthorhombic sy
 By now the only implementation of a rotation average was the Euler angle average (possibly with linear least squares). The triclinic average is a well established method in the aviation and compute graphics industry and the orthorhombic average is a new experimental feature described in the section above.
 
 ```{figure-md} fig:rotation_average_t1
-<img src="average_comparsion.png" style="width:100.0%" />
+<img src="average_comparison.*" style="width:100.0%" />
 
 Expected output of a 2d convection box model in its spin up phase. White arrows are the velocity. Black lines are the 100-axis tracked on particles. White lines is the average 100-axis interpolated to the model grid.
 ```
@@ -192,7 +192,7 @@ In the figure one can see the a-axis or 100-axis orientation of olivine. The bla
 In areas where crystal orientations are close to another the triclinic and orthorhombc average aligns, where as in more dynamic areas with spacial variations in the flow over the length of one gridcell they tend to disagree.
 
 ```{figure-md} fig:rotation_average_tlast
-<img src="average_comparison_tlast.png" style="width:100.0%" />
+<img src="average_comparison_tlast.*" style="width:100.0%" />
 
 Expected output of a 2d convection box model in its steady state phase. White arrows are the velocity. Black lines are the 100-axis tracked on particles. White lines is the average 100-axis interpolated to the model grid.
 ```
