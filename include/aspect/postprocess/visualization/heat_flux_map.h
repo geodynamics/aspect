@@ -38,10 +38,7 @@ namespace aspect
        * @ingroup Postprocessing
        */
       template <int dim>
-      class HeatFluxMap
-        : public DataPostprocessorScalar<dim>,
-          public SimulatorAccess<dim>,
-          public Interface<dim>
+      class HeatFluxMap : public DataPostprocessorScalar<dim>, public SimulatorAccess<dim>, public Interface<dim>
       {
         public:
           /**
@@ -61,7 +58,8 @@ namespace aspect
            *
            * @copydoc Interface<dim>::update()
            */
-          void update() override;
+          void
+          update() override;
 
           /**
            * Compute the heat flux for the given input cell.
@@ -70,20 +68,19 @@ namespace aspect
            */
           void
           evaluate_vector_field(const DataPostprocessorInputs::Vector<dim> &input_data,
-                                std::vector<Vector<double>> &computed_quantities) const override;
+                                std::vector<Vector<double>>                &computed_quantities) const override;
 
           /**
            * @copydoc Interface<dim>::declare_parameters()
            */
-          static
-          void
-          declare_parameters (ParameterHandler &prm);
+          static void
+          declare_parameters(ParameterHandler &prm);
 
           /**
            * @copydoc Interface<dim>::parse_parameters()
            */
           void
-          parse_parameters (ParameterHandler &prm) override;
+          parse_parameters(ParameterHandler &prm) override;
 
         private:
           /**

@@ -36,8 +36,7 @@ namespace aspect
         class SphericalHarmonicsLookup
         {
           public:
-            SphericalHarmonicsLookup(const std::string &filename,
-                                     const MPI_Comm comm);
+            SphericalHarmonicsLookup(const std::string &filename, const MPI_Comm comm);
 
             /// Declare a function that returns the cosine coefficients
             const std::vector<double> &
@@ -47,10 +46,11 @@ namespace aspect
             const std::vector<double> &
             sin_coeffs() const;
 
-            unsigned int maxdegree() const;
+            unsigned int
+            maxdegree() const;
 
           private:
-            unsigned int order;
+            unsigned int        order;
             std::vector<double> a_lm;
             std::vector<double> b_lm;
         };
@@ -58,8 +58,7 @@ namespace aspect
         class SplineDepthsLookup
         {
           public:
-            SplineDepthsLookup(const std::string &filename,
-                               const MPI_Comm comm);
+            SplineDepthsLookup(const std::string &filename, const MPI_Comm comm);
 
             const std::vector<double> &
             spline_depths() const;
@@ -90,41 +89,40 @@ namespace aspect
         /**
          * Constructor. Initialize variables.
          */
-        S40RTSPerturbation ();
+        S40RTSPerturbation();
 
         /**
          * Initialization function. Loads the material data and sets up
          * pointers.
          */
         void
-        initialize () override;
+        initialize() override;
 
         /**
          * Return the Vs as a function of position.
          */
-        virtual
-        double get_Vs (const Point<dim> &position) const;
+        virtual double
+        get_Vs(const Point<dim> &position) const;
 
         /**
          * Return the initial temperature as a function of position.
          */
-        double initial_temperature (const Point<dim> &position) const override;
+        double
+        initial_temperature(const Point<dim> &position) const override;
 
         /**
          * Declare the parameters this class takes through input files.
          */
-        static
-        void
-        declare_parameters (ParameterHandler &prm);
+        static void
+        declare_parameters(ParameterHandler &prm);
 
         /**
          * Read the parameters this class declares from the parameter file.
          */
         void
-        parse_parameters (ParameterHandler &prm) override;
+        parse_parameters(ParameterHandler &prm) override;
 
       private:
-
         /**
          * An enum to describe which method should be chosen to scale vs to density.
          */
@@ -174,11 +172,13 @@ namespace aspect
          */
         double vs_to_density_constant;
         /**
-         * This variable is read from the parameter file through a parameter called 'Thermal expansion coefficient in initial temperature scaling'.
+         * This variable is read from the parameter file through a parameter called 'Thermal expansion coefficient in initial temperature
+         * scaling'.
          */
         double thermal_alpha;
         /**
-         * This variable is read from the parameter file through a parameter called 'Remove temperature heterogeneity down to specified depth'.
+         * This variable is read from the parameter file through a parameter called 'Remove temperature heterogeneity down to specified
+         * depth'.
          */
         double no_perturbation_depth;
 
@@ -241,7 +241,8 @@ namespace aspect
          */
         bool use_material_model_thermal_alpha;
 
-        template <int dim2> friend class PatchOnS40RTS;
+        template <int dim2>
+        friend class PatchOnS40RTS;
     };
 
   }

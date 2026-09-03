@@ -23,26 +23,23 @@
 
 #include <aspect/global.h>
 
-#include <deal.II/particles/particle.h>
-#include <deal.II/particles/particle_accessor.h>
-#include <deal.II/particles/particle_iterator.h>
-#include <deal.II/particles/particle_handler.h>
-#include <deal.II/particles/property_pool.h>
 #include <aspect/particle/distribution.h>
-
-#include <deal.II/matrix_free/fe_point_evaluation.h>
-
 #include <aspect/particle/generator/interface.h>
 #include <aspect/particle/integrator/interface.h>
 #include <aspect/particle/interpolator/interface.h>
 #include <aspect/particle/property/interface.h>
-
 #include <aspect/simulator_access.h>
 #include <aspect/simulator_signals.h>
 #include <aspect/solution_evaluator.h>
 
-#include <deal.II/base/timer.h>
 #include <deal.II/base/array_view.h>
+#include <deal.II/base/timer.h>
+#include <deal.II/matrix_free/fe_point_evaluation.h>
+#include <deal.II/particles/particle.h>
+#include <deal.II/particles/particle_accessor.h>
+#include <deal.II/particles/particle_handler.h>
+#include <deal.II/particles/particle_iterator.h>
+#include <deal.II/particles/property_pool.h>
 
 #include <boost/serialization/unique_ptr.hpp>
 
@@ -125,12 +122,14 @@ namespace aspect
         /**
          * Initialize the particle manager.
          */
-        void initialize();
+        void
+        initialize();
 
         /**
          * Update the particle manager at the beginning of each time step.
          */
-        void update();
+        void
+        update();
 
         /**
          * Get the particle property manager for this particle manager.
@@ -180,15 +179,17 @@ namespace aspect
          * state later under certain conditions, for example if
          * a timestep has to be undone and repeated.
          */
-        void copy_particle_handler (const Particles::ParticleHandler<dim> &from_particle_handler,
-                                    Particles::ParticleHandler<dim> &to_particle_handler) const;
+        void
+        copy_particle_handler(const Particles::ParticleHandler<dim> &from_particle_handler,
+                              Particles::ParticleHandler<dim>       &to_particle_handler) const;
 
         /**
          * @brief Stores a copy of the particle handler in particle_handler_backup. This copy can be
          * used to restore the position and properties of the particles for example after advection
          * solver iterations of the iterated advection scheme or when a timestep has to be repeated.
          */
-        void backup_particles ();
+        void
+        backup_particles();
 
         /**
          * @brief Restores the particle handler particle_handler based on the copy
@@ -196,13 +197,15 @@ namespace aspect
          * to those in the copy and can be used for example after advection solver iterations
          * of the iterated advection scheme or when a timestep has to be repeated.
          */
-        void restore_particles ();
+        void
+        restore_particles();
 
 
         /**
          * Do initial logic for handling pre-refinement steps
          */
-        void setup_initial_state ();
+        void
+        setup_initial_state();
 
         /**
          * Get the particle interpolator for this particle manager.
@@ -215,11 +218,13 @@ namespace aspect
         /**
          * Initialize the particle properties.
          */
-        void generate_particles();
+        void
+        generate_particles();
         /**
          * Initialize the particle properties.
          */
-        void initialize_particles();
+        void
+        initialize_particles();
 
         /**
          * Advance particles by the old timestep using the current
@@ -228,7 +233,8 @@ namespace aspect
          * length is already updated for the next step at the time this
          * function is called.
          */
-        void advance_timestep();
+        void
+        advance_timestep();
 
         /**
          * Return the total number of particles in the simulation. This
@@ -241,7 +247,8 @@ namespace aspect
          *
          * @return Total number of particles in simulation.
          */
-        types::particle_index n_global_particles() const;
+        types::particle_index
+        n_global_particles() const;
 
         /**
          * This callback function is registered within Simulator by the
@@ -262,40 +269,38 @@ namespace aspect
          * depending on the number of contained particles.
          */
         unsigned int
-        cell_weight(const typename parallel::distributed::Triangulation<dim>::cell_iterator &cell,
-                    const CellStatus status);
+        cell_weight(const typename parallel::distributed::Triangulation<dim>::cell_iterator &cell, const CellStatus status);
 
         /**
          * Update the particle properties if necessary.
          */
-        void update_particles();
+        void
+        update_particles();
 
         /**
          * Serialize the contents of this class.
          */
         template <class Archive>
-        void serialize (Archive &ar, const unsigned int version);
+        void
+        serialize(Archive &ar, const unsigned int version);
 
         /**
          * Save the state of the object.
          */
-        virtual
-        void
-        save (std::ostringstream &os) const;
+        virtual void
+        save(std::ostringstream &os) const;
 
         /**
          * Restore the state of the object.
          */
-        virtual
-        void
-        load (std::istringstream &is);
+        virtual void
+        load(std::istringstream &is);
 
         /**
          * Declare the parameters this class takes through input files.
          */
-        static
-        void
-        declare_parameters (ParameterHandler &prm);
+        static void
+        declare_parameters(ParameterHandler &prm);
 
         /**
          * Read the parameters this class declares from the parameter file, using the
@@ -304,9 +309,8 @@ namespace aspect
          *
          * @param prm The ParameterHandler.
          */
-        virtual
-        void
-        parse_parameters (ParameterHandler &prm);
+        virtual void
+        parse_parameters(ParameterHandler &prm);
 
         /**
          * Return whether particles managed by this particle manager are advected
@@ -316,7 +320,6 @@ namespace aspect
         get_particle_velocity_choice() const;
 
       private:
-
         /**
          * The index of this particle manager. This is used to distinguish between multiple
          * particle managers in the same simulation.
@@ -325,14 +328,14 @@ namespace aspect
 
         struct ParticleLoadBalancing
         {
-          enum Kind
-          {
-            no_balancing = 0x0,
-            remove_particles = 0x1,
-            add_particles = 0x2,
-            repartition = 0x4,
-            remove_and_add_particles = remove_particles | add_particles
-          };
+            enum Kind
+            {
+              no_balancing             = 0x0,
+              remove_particles         = 0x1,
+              add_particles            = 0x2,
+              repartition              = 0x4,
+              remove_and_add_particles = remove_particles | add_particles
+            };
         };
 
         /**
@@ -506,7 +509,8 @@ namespace aspect
          * Advect the particle positions by one integration step. Needs to be
          * called until integrator->continue() returns false.
          */
-        void advect_particles();
+        void
+        advect_particles();
 
         /**
          * Initialize the particle properties of one cell.
@@ -526,10 +530,10 @@ namespace aspect
          * @param evaluator The solution evaluator that is used to update the particles.
          */
         void
-        local_update_particles(Property::ParticleUpdateInputs<dim> &inputs,
-                               small_vector<Point<dim>> &positions,
+        local_update_particles(Property::ParticleUpdateInputs<dim>                 &inputs,
+                               small_vector<Point<dim>>                            &positions,
                                const std::vector<EvaluationFlags::EvaluationFlags> &evaluation_flags,
-                               SolutionEvaluator<dim> &evaluator);
+                               SolutionEvaluator<dim>                              &evaluator);
 
         /**
          * Advect the particles of one cell. Performs only one step for
@@ -540,10 +544,10 @@ namespace aspect
          * them into the new cell).
          */
         void
-        local_advect_particles(const typename DoFHandler<dim>::active_cell_iterator &cell,
+        local_advect_particles(const typename DoFHandler<dim>::active_cell_iterator   &cell,
                                const typename ParticleHandler<dim>::particle_iterator &begin_particle,
                                const typename ParticleHandler<dim>::particle_iterator &end_particle,
-                               SolutionEvaluator<dim> &evaluators);
+                               SolutionEvaluator<dim>                                 &evaluators);
 
         /**
          * This function registers the necessary functions to the
@@ -551,8 +555,8 @@ namespace aspect
          */
         void
         connect_particle_handler_signals(aspect::SimulatorSignals<dim> &signals,
-                                         ParticleHandler<dim> &particle_handler,
-                                         const bool connect_to_checkpoint_signals = true) const;
+                                         ParticleHandler<dim>          &particle_handler,
+                                         const bool                     connect_to_checkpoint_signals = true) const;
 
         /**
          * This function returns a vector containing the particle_iterator_ranges of
@@ -564,24 +568,23 @@ namespace aspect
          */
         std::vector<typename Particles::ParticleHandler<dim>::particle_iterator_range>
         get_neighboring_particle_ranges(const typename Triangulation<dim>::active_cell_iterator &cell,
-                                        const typename Particles::ParticleHandler<dim> &particle_handler,
-                                        typename GridTools::Cache<dim> &grid_cache);
+                                        const typename Particles::ParticleHandler<dim>          &particle_handler,
+                                        typename GridTools::Cache<dim>                          &grid_cache);
     };
 
     /* -------------------------- inline and template functions ---------------------- */
 
     template <int dim>
     template <class Archive>
-    void Manager<dim>::serialize (Archive &ar, const unsigned int)
+    void
+    Manager<dim>::serialize(Archive &ar, const unsigned int)
     {
       ar &particle_manager_index;
 
       // Note that although Boost claims to handle serialization of pointers
       // correctly, at least for the case of unique_ptr it seems to not work.
       // It works correctly when archiving the content of the pointer instead.
-      ar
-      &(*particle_handler)
-      ;
+      ar &(*particle_handler);
     }
   }
 }

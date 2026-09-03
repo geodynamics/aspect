@@ -20,15 +20,15 @@
 
 
 #include <aspect/global.h>
-#include <aspect/boundary_composition/interface.h>
 
-#include <aspect/utilities.h>
+#include <aspect/boundary_composition/interface.h>
 #include <aspect/simulator_access.h>
+#include <aspect/utilities.h>
 
 #include <deal.II/base/signaling_nan.h>
 
-#include <tuple>
 #include <list>
+#include <tuple>
 
 
 namespace aspect
@@ -41,38 +41,34 @@ namespace aspect
 
     namespace
     {
-      std::tuple
-      <aspect::internal::Plugins::UnusablePluginList,
-      aspect::internal::Plugins::UnusablePluginList,
-      aspect::internal::Plugins::PluginList<Interface<2>>,
-      aspect::internal::Plugins::PluginList<Interface<3>>> registered_plugins;
+      std::tuple<aspect::internal::Plugins::UnusablePluginList,
+                 aspect::internal::Plugins::UnusablePluginList,
+                 aspect::internal::Plugins::PluginList<Interface<2>>,
+                 aspect::internal::Plugins::PluginList<Interface<3>>>
+        registered_plugins;
     }
 
 
     template <int dim>
     void
-    Manager<dim>::register_boundary_composition (const std::string &name,
-                                                 const std::string &description,
-                                                 void (*declare_parameters_function) (ParameterHandler &),
-                                                 std::unique_ptr<Interface<dim>> (*factory_function) ())
+    Manager<dim>::register_boundary_composition(const std::string &name,
+                                                const std::string &description,
+                                                void (*declare_parameters_function)(ParameterHandler &),
+                                                std::unique_ptr<Interface<dim>> (*factory_function)())
     {
-      std::get<dim>(registered_plugins).register_plugin (name,
-                                                         description,
-                                                         declare_parameters_function,
-                                                         factory_function);
+      std::get<dim>(registered_plugins).register_plugin(name, description, declare_parameters_function, factory_function);
     }
 
 
     template <int dim>
     void
-    Manager<dim>::parse_parameters (ParameterHandler &prm)
+    Manager<dim>::parse_parameters(ParameterHandler &prm)
     {
       // find out which plugins are requested and the various other
       // parameters we declare here
-      prm.enter_subsection ("Boundary composition model");
+      prm.enter_subsection("Boundary composition model");
       {
-        this->plugin_names
-          = Utilities::split_string_list(prm.get("List of model names"));
+        this->plugin_names = Utilities::split_string_list(prm.get("List of model names"));
 
         AssertThrow(Utilities::has_unique_entries(this->plugin_names),
                     ExcMessage("The list of strings for the parameter "
@@ -81,19 +77,18 @@ namespace aspect
 
         // create operator list
         std::vector<std::string> model_operator_names =
-          Utilities::possibly_extend_from_1_to_N (Utilities::split_string_list(prm.get("List of model operators")),
-                                                  this->plugin_names.size(),
-                                                  "List of model operators");
+          Utilities::possibly_extend_from_1_to_N(Utilities::split_string_list(prm.get("List of model operators")),
+                                                 this->plugin_names.size(),
+                                                 "List of model operators");
         model_operators = Utilities::create_model_operator_list(model_operator_names);
 
         try
           {
-            const std::vector<types::boundary_id> x_fixed_composition_boundary_indicators
-              = this->get_geometry_model().translate_symbolic_boundary_names_to_ids (Utilities::split_string_list
-                                                                                     (prm.get ("Fixed composition boundary indicators")));
-            fixed_composition_boundary_indicators
-              = std::set<types::boundary_id> (x_fixed_composition_boundary_indicators.begin(),
-                                              x_fixed_composition_boundary_indicators.end());
+            const std::vector<types::boundary_id> x_fixed_composition_boundary_indicators =
+              this->get_geometry_model().translate_symbolic_boundary_names_to_ids(
+                Utilities::split_string_list(prm.get("Fixed composition boundary indicators")));
+            fixed_composition_boundary_indicators =
+              std::set<types::boundary_id>(x_fixed_composition_boundary_indicators.begin(), x_fixed_composition_boundary_indicators.end());
 
             // If model names have been set, but no boundaries on which to use them,
             // ignore the set values, do not create objects that are never used.
@@ -105,38 +100,39 @@ namespace aspect
           }
         catch (const std::string &error)
           {
-            AssertThrow (false, ExcMessage ("While parsing the entry <Boundary composition model/Fixed composition "
-                                            "boundary indicators>, there was an error. Specifically, "
-                                            "the conversion function complained as follows:\n\n"
-                                            + error));
+            AssertThrow(false,
+                        ExcMessage("While parsing the entry <Boundary composition model/Fixed composition "
+                                   "boundary indicators>, there was an error. Specifically, "
+                                   "the conversion function complained as follows:\n\n" +
+                                   error));
           }
 
-        if (prm.get ("Allow fixed composition on outflow boundaries") == "true")
+        if (prm.get("Allow fixed composition on outflow boundaries") == "true")
           allow_fixed_composition_on_outflow_boundaries = true;
-        else if (prm.get ("Allow fixed composition on outflow boundaries") == "false")
+        else if (prm.get("Allow fixed composition on outflow boundaries") == "false")
           allow_fixed_composition_on_outflow_boundaries = false;
-        else if (prm.get ("Allow fixed composition on outflow boundaries") == "false for models without melt")
+        else if (prm.get("Allow fixed composition on outflow boundaries") == "false for models without melt")
           allow_fixed_composition_on_outflow_boundaries = this->get_parameters().include_melt_transport;
         else
-          AssertThrow(false, ExcMessage("'Allow fixed composition on outflow boundaries' "
-                                        "must be set to 'true' or 'false', or to its default value."));
+          AssertThrow(false,
+                      ExcMessage("'Allow fixed composition on outflow boundaries' "
+                                 "must be set to 'true' or 'false', or to its default value."));
       }
-      prm.leave_subsection ();
+      prm.leave_subsection();
 
       // go through the list, create objects and let them parse
       // their own parameters
       for (auto &model_name : this->plugin_names)
         {
           // create boundary composition objects
-          this->plugin_objects.emplace_back (std::get<dim>(registered_plugins)
-                                             .create_plugin (model_name,
-                                                             "Boundary composition::Model names"));
+          this->plugin_objects.emplace_back(
+            std::get<dim>(registered_plugins).create_plugin(model_name, "Boundary composition::Model names"));
 
-          if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(this->plugin_objects.back().get()))
-            sim->initialize_simulator (this->get_simulator());
+          if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim> *>(this->plugin_objects.back().get()))
+            sim->initialize_simulator(this->get_simulator());
 
-          this->plugin_objects.back()->parse_parameters (prm);
-          this->plugin_objects.back()->initialize ();
+          this->plugin_objects.back()->parse_parameters(prm);
+          this->plugin_objects.back()->initialize();
         }
     }
 
@@ -144,18 +140,15 @@ namespace aspect
 
     template <int dim>
     double
-    Manager<dim>::boundary_composition (const types::boundary_id boundary_indicator,
-                                        const Point<dim> &position,
-                                        const unsigned int compositional_field) const
+    Manager<dim>::boundary_composition(const types::boundary_id boundary_indicator,
+                                       const Point<dim>        &position,
+                                       const unsigned int       compositional_field) const
     {
       double composition = 0.0;
 
       auto p = this->plugin_objects.begin();
-      for (unsigned int i=0; i<this->plugin_objects.size(); ++p, ++i)
-        composition = model_operators[i](composition,
-                                         (*p)->boundary_composition(boundary_indicator,
-                                                                    position,
-                                                                    compositional_field));
+      for (unsigned int i = 0; i < this->plugin_objects.size(); ++p, ++i)
+        composition = model_operators[i](composition, (*p)->boundary_composition(boundary_indicator, position, compositional_field));
 
       return composition;
     }
@@ -164,7 +157,7 @@ namespace aspect
 
     template <int dim>
     const std::vector<std::string> &
-    Manager<dim>::get_active_boundary_composition_names () const
+    Manager<dim>::get_active_boundary_composition_names() const
     {
       return this->plugin_names;
     }
@@ -172,7 +165,7 @@ namespace aspect
 
     template <int dim>
     const std::list<std::unique_ptr<Interface<dim>>> &
-    Manager<dim>::get_active_boundary_composition_conditions () const
+    Manager<dim>::get_active_boundary_composition_conditions() const
     {
       return this->plugin_objects;
     }
@@ -199,13 +192,12 @@ namespace aspect
 
     template <int dim>
     void
-    Manager<dim>::declare_parameters (ParameterHandler &prm)
+    Manager<dim>::declare_parameters(ParameterHandler &prm)
     {
       // declare the entry in the parameter file
-      prm.enter_subsection ("Boundary composition model");
+      prm.enter_subsection("Boundary composition model");
       {
-        const std::string pattern_of_names
-          = std::get<dim>(registered_plugins).get_pattern_of_names ();
+        const std::string pattern_of_names = std::get<dim>(registered_plugins).get_pattern_of_names();
 
         prm.declare_entry("List of model names",
                           "",
@@ -215,94 +207,95 @@ namespace aspect
                           "These plugins are loaded in the order given, and modify the "
                           "existing composition field via the operators listed "
                           "in 'List of model operators'.\n\n"
-                          "The following boundary composition models are available:\n\n"
-                          +
-                          std::get<dim>(registered_plugins).get_description_string());
+                          "The following boundary composition models are available:\n\n" +
+                            std::get<dim>(registered_plugins).get_description_string());
 
-        prm.declare_entry("List of model operators", "add",
+        prm.declare_entry("List of model operators",
+                          "add",
                           Patterns::MultipleSelection(Utilities::get_model_operator_options()),
                           "A comma-separated list of operators that "
                           "will be used to append the listed composition models onto "
                           "the previous models. If only one operator is given, "
                           "the same operator is applied to all models.");
 
-        prm.declare_entry ("Fixed composition boundary indicators", "",
-                           Patterns::List (Patterns::Anything()),
-                           "A comma separated list of names denoting those boundaries "
-                           "on which the composition is fixed and described by the "
-                           "boundary composition object selected in its own section "
-                           "of this input file. All boundary indicators used by the geometry "
-                           "but not explicitly listed here will end up with no-flux "
-                           "(insulating) boundary conditions."
-                           "\n\n"
-                           "The names of the boundaries listed here can either be "
-                           "numbers (in which case they correspond to the numerical "
-                           "boundary indicators assigned by the geometry object), or they "
-                           "can correspond to any of the symbolic names the geometry object "
-                           "may have provided for each part of the boundary. You may want "
-                           "to compare this with the documentation of the geometry model you "
-                           "use in your model."
-                           "\n\n"
-                           "This parameter only describes which boundaries have a fixed "
-                           "composition, but not what composition should hold on these "
-                           "boundaries. The latter piece of information needs to be "
-                           "implemented in a plugin in the BoundaryComposition "
-                           "group, unless an existing implementation in this group "
-                           "already provides what you want.");
-        prm.declare_entry ("Allow fixed composition on outflow boundaries", "false for models without melt",
-                           Patterns::Selection("true|false|false for models without melt"),
-                           "When the composition is fixed on a given boundary as determined "
-                           "by the list of 'Fixed composition boundary indicators', there "
-                           "might be parts of the boundary where material flows out and "
-                           "one may want to prescribe the composition only on those parts of "
-                           "the boundary where there is inflow. This parameter determines "
-                           "if compositions are only prescribed at these inflow parts of the "
-                           "boundary (if false) or everywhere on a given boundary, independent "
-                           "of the flow direction (if true). By default, this parameter is set "
-                           "to false, except in models with melt transport (see below). "
-                           "Note that in this context, `fixed' refers to the fact that these "
-                           "are the boundary indicators where Dirichlet boundary conditions are "
-                           "applied, and does not imply that the boundary composition is "
-                           "time-independent. "
-                           "\n\n"
-                           "Mathematically speaking, the compositional fields satisfy an "
-                           "advection equation that has no diffusion. For this equation, one "
-                           "can only impose Dirichlet boundary conditions (i.e., prescribe a "
-                           "fixed compositional field value at the boundary) at those boundaries "
-                           "where material flows in. This would correspond to the ``false'' "
-                           "setting of this parameter, which is correspondingly the default. "
-                           "On the other hand, on a finite dimensional discretization such as "
-                           "the one one obtains from the finite element method, it is possible "
-                           "to also prescribe values on outflow boundaries, even though this may "
-                           "make no physical sense. This would then correspond to the ``true'' "
-                           "setting of this parameter. Note however that this parameter is only "
-                           "taken into account for the continuous field method and is not "
-                           "applied to the Discontinuous Galerkin (DG) field method. "
-                           "\n\n"
-                           "A warning for models with melt transport: In models with fluid flow, "
-                           "some compositional fields (in particular the porosity) might be "
-                           "transported with the fluid velocity, and would need to set the "
-                           "constraints based on the fluid velocity. However, this is currently "
-                           "not possible, because we reuse the same matrix for all compositional "
-                           "fields, and therefore can not use different constraints for different "
-                           "fields. Consequently, we set this parameter to true by default in "
-                           "models where melt transport is enabled. Be aware that if you change "
-                           "this default setting, you will not use the melt velocity, but the solid "
-                           "velocity to determine on which parts of the boundaries there is outflow.");
+        prm.declare_entry("Fixed composition boundary indicators",
+                          "",
+                          Patterns::List(Patterns::Anything()),
+                          "A comma separated list of names denoting those boundaries "
+                          "on which the composition is fixed and described by the "
+                          "boundary composition object selected in its own section "
+                          "of this input file. All boundary indicators used by the geometry "
+                          "but not explicitly listed here will end up with no-flux "
+                          "(insulating) boundary conditions."
+                          "\n\n"
+                          "The names of the boundaries listed here can either be "
+                          "numbers (in which case they correspond to the numerical "
+                          "boundary indicators assigned by the geometry object), or they "
+                          "can correspond to any of the symbolic names the geometry object "
+                          "may have provided for each part of the boundary. You may want "
+                          "to compare this with the documentation of the geometry model you "
+                          "use in your model."
+                          "\n\n"
+                          "This parameter only describes which boundaries have a fixed "
+                          "composition, but not what composition should hold on these "
+                          "boundaries. The latter piece of information needs to be "
+                          "implemented in a plugin in the BoundaryComposition "
+                          "group, unless an existing implementation in this group "
+                          "already provides what you want.");
+        prm.declare_entry("Allow fixed composition on outflow boundaries",
+                          "false for models without melt",
+                          Patterns::Selection("true|false|false for models without melt"),
+                          "When the composition is fixed on a given boundary as determined "
+                          "by the list of 'Fixed composition boundary indicators', there "
+                          "might be parts of the boundary where material flows out and "
+                          "one may want to prescribe the composition only on those parts of "
+                          "the boundary where there is inflow. This parameter determines "
+                          "if compositions are only prescribed at these inflow parts of the "
+                          "boundary (if false) or everywhere on a given boundary, independent "
+                          "of the flow direction (if true). By default, this parameter is set "
+                          "to false, except in models with melt transport (see below). "
+                          "Note that in this context, `fixed' refers to the fact that these "
+                          "are the boundary indicators where Dirichlet boundary conditions are "
+                          "applied, and does not imply that the boundary composition is "
+                          "time-independent. "
+                          "\n\n"
+                          "Mathematically speaking, the compositional fields satisfy an "
+                          "advection equation that has no diffusion. For this equation, one "
+                          "can only impose Dirichlet boundary conditions (i.e., prescribe a "
+                          "fixed compositional field value at the boundary) at those boundaries "
+                          "where material flows in. This would correspond to the ``false'' "
+                          "setting of this parameter, which is correspondingly the default. "
+                          "On the other hand, on a finite dimensional discretization such as "
+                          "the one one obtains from the finite element method, it is possible "
+                          "to also prescribe values on outflow boundaries, even though this may "
+                          "make no physical sense. This would then correspond to the ``true'' "
+                          "setting of this parameter. Note however that this parameter is only "
+                          "taken into account for the continuous field method and is not "
+                          "applied to the Discontinuous Galerkin (DG) field method. "
+                          "\n\n"
+                          "A warning for models with melt transport: In models with fluid flow, "
+                          "some compositional fields (in particular the porosity) might be "
+                          "transported with the fluid velocity, and would need to set the "
+                          "constraints based on the fluid velocity. However, this is currently "
+                          "not possible, because we reuse the same matrix for all compositional "
+                          "fields, and therefore can not use different constraints for different "
+                          "fields. Consequently, we set this parameter to true by default in "
+                          "models where melt transport is enabled. Be aware that if you change "
+                          "this default setting, you will not use the melt velocity, but the solid "
+                          "velocity to determine on which parts of the boundaries there is outflow.");
       }
-      prm.leave_subsection ();
+      prm.leave_subsection();
 
-      std::get<dim>(registered_plugins).declare_parameters (prm);
+      std::get<dim>(registered_plugins).declare_parameters(prm);
     }
 
 
 
     template <int dim>
     void
-    Manager<dim>::write_plugin_graph (std::ostream &out)
+    Manager<dim>::write_plugin_graph(std::ostream &out)
     {
-      std::get<dim>(registered_plugins).write_plugin_graph ("Boundary composition interface",
-                                                            out);
+      std::get<dim>(registered_plugins).write_plugin_graph("Boundary composition interface", out);
     }
   }
 }

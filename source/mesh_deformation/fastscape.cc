@@ -19,13 +19,15 @@
  */
 #include <aspect/global.h>
 
-#include <aspect/mesh_deformation/fastscape.h>
 #include <aspect/geometry_model/box.h>
 #include <aspect/geometry_model/two_merged_boxes.h>
-#include <deal.II/numerics/vector_tools.h>
+#include <aspect/mesh_deformation/fastscape.h>
 #include <aspect/postprocess/visualization.h>
-#include <ctime>
 #include <aspect/simulator.h>
+
+#include <deal.II/numerics/vector_tools.h>
+
+#include <ctime>
 
 namespace aspect
 {
@@ -42,147 +44,161 @@ namespace aspect
      * their input parameters. These functions must be defined at the top here before
      * they are used.
      */
-    extern"C"
+    extern "C"
     {
       /**
        * Function to initialize FastScape.
        */
-      void fastscape_init_();
+      void
+      fastscape_init_();
 
       /**
        * Set the x and y extent of the FastScape model.
        */
-      void fastscape_set_xl_yl_(const double *xxl,
-                                const double *yyl);
+      void
+      fastscape_set_xl_yl_(const double *xxl, const double *yyl);
 
       /**
        * Set number of grid points in x (nx) and y (ny)
        */
-      void fastscape_set_nx_ny_(const unsigned int *nnx,
-                                const unsigned int *nny);
+      void
+      fastscape_set_nx_ny_(const unsigned int *nnx, const unsigned int *nny);
 
       /**
        * Allocate memory, must be called after set nx/ny.
        */
-      void fastscape_setup_();
+      void
+      fastscape_setup_();
 
       /**
        * Set FastScape boundary conditions.
        */
-      void fastscape_set_bc_(const unsigned int *jbc);
+      void
+      fastscape_set_bc_(const unsigned int *jbc);
 
       /**
        * Set FastScape timestep. This will vary based on the ASPECT timestep.
        */
-      void fastscape_set_dt_(const double *dtt);
+      void
+      fastscape_set_dt_(const double *dtt);
 
       /**
        * Initialize FastScape topography.
        */
-      void fastscape_init_h_(double *hp);
+      void
+      fastscape_init_h_(double *hp);
 
       /**
        * Initialize FastScape silt fraction during a restart.
        */
-      void fastscape_init_f_(double *sf);
+      void
+      fastscape_init_f_(double *sf);
 
       /**
        * Set FastScape erosional parameters on land. These parameters will apply to the stream power law (SPL)
        * and hillslope diffusion for basement and sediment. This can be set between timesteps.
        */
-      void fastscape_set_erosional_parameters_(double *kkf,
-                                               const double *kkfsed,
-                                               const double *mm,
-                                               const double *nnn,
-                                               double *kkd,
-                                               const double *kkdsed,
-                                               const double *gg1,
-                                               const double *gg2,
-                                               const double *pp);
+      void
+      fastscape_set_erosional_parameters_(double       *kkf,
+                                          const double *kkfsed,
+                                          const double *mm,
+                                          const double *nnn,
+                                          double       *kkd,
+                                          const double *kkdsed,
+                                          const double *gg1,
+                                          const double *gg2,
+                                          const double *pp);
 
       /**
        * Set FastScape marine erosional parameters. This can be set between timesteps.
        */
-      void fastscape_set_marine_parameters_(const double *sl,
-                                            const double *p1,
-                                            const double *p2,
-                                            const double *z1,
-                                            const double *z2,
-                                            const double *r,
-                                            const double *l,
-                                            const double *kds1,
-                                            const double *kds2);
+      void
+      fastscape_set_marine_parameters_(const double *sl,
+                                       const double *p1,
+                                       const double *p2,
+                                       const double *z1,
+                                       const double *z2,
+                                       const double *r,
+                                       const double *l,
+                                       const double *kds1,
+                                       const double *kds2);
 
       /**
        * Set advection velocities for FastScape. This can be set between timesteps.
        */
-      void fastscape_set_v_(double *ux,
-                            double *uy);
+      void
+      fastscape_set_v_(double *ux, double *uy);
 
       /**
        * Set FastScape uplift rate. This can be set between timesteps.
        */
-      void fastscape_set_u_(double *up);
+      void
+      fastscape_set_u_(double *up);
 
       /**
        * Set FastScape topography. This can be set between timesteps.
        */
-      void fastscape_set_h_(double *hp);
+      void
+      fastscape_set_h_(double *hp);
 
       /**
-      * Set FastScape basement. This can be set between timesteps. Sediment within FastScape
-      * is considered as the difference between the topography and basement, though this may differ
-      * from sediment as seen in ASPECT because the FastScape basement only takes the surface
-      * velocities into consideration.
-      */
-      void fastscape_set_basement_(double *b);
+       * Set FastScape basement. This can be set between timesteps. Sediment within FastScape
+       * is considered as the difference between the topography and basement, though this may differ
+       * from sediment as seen in ASPECT because the FastScape basement only takes the surface
+       * velocities into consideration.
+       */
+      void
+      fastscape_set_basement_(double *b);
 
       /**
        * Run FastScape for a single FastScape timestep.
        */
-      void fastscape_execute_step_();
+      void
+      fastscape_execute_step_();
 
 #ifdef ASPECT_HAVE_FASTSCAPE_NAMED_VTK
       /**
        * Create a .VTK file for the FastScape surface within the FastScape folder of the
        * ASPECT output folder.
        */
-      void fastscape_named_vtk_(double *fp,
-                                const double *vexp,
-                                unsigned int *astep,
-                                const char *c,
-                                const unsigned int *length);
+      void
+      fastscape_named_vtk_(double *fp, const double *vexp, unsigned int *astep, const char *c, const unsigned int *length);
 #endif
 
       /**
        * Copy the current FastScape topography.
        */
-      void fastscape_copy_h_(double *hp);
+      void
+      fastscape_copy_h_(double *hp);
 
       /**
        * Copy the current FastScape basement.
        */
-      void fastscape_copy_basement_(double *b);
+      void
+      fastscape_copy_basement_(double *b);
 
       /**
        * Copy the current FastScape silt fraction.
        */
-      void fastscape_copy_f_(double *sf);
+      void
+      fastscape_copy_f_(double *sf);
 
       /**
        * Copy the current FastScape slopes.
        */
-      void fastscape_copy_slope_(double *slopep);
+      void
+      fastscape_copy_slope_(double *slopep);
 
       /**
        * Destroy FastScape.
        */
-      void fastscape_destroy_();
+      void
+      fastscape_destroy_();
     }
 
 
     template <int dim>
-    FastScape<dim>::~FastScape ()
+    FastScape<dim>::~FastScape()
     {
 #ifdef ASPECT_WITH_FASTSCAPE
       // It doesn't seem to matter if this is done on all processors or only on the one that runs
@@ -194,29 +210,28 @@ namespace aspect
 
     template <int dim>
     void
-    FastScape<dim>::initialize ()
+    FastScape<dim>::initialize()
     {
 #ifdef ASPECT_WITH_FASTSCAPE
 
       CitationInfo::add("fastscape");
 
-      const GeometryModel::Box<dim> *box_geometry
-        = dynamic_cast<const GeometryModel::Box<dim>*> (&this->get_geometry_model());
-      const GeometryModel::TwoMergedBoxes<dim> *two_merged_boxes_geometry
-        = dynamic_cast<const GeometryModel::TwoMergedBoxes<dim>*> (&this->get_geometry_model());
+      const GeometryModel::Box<dim>            *box_geometry = dynamic_cast<const GeometryModel::Box<dim> *>(&this->get_geometry_model());
+      const GeometryModel::TwoMergedBoxes<dim> *two_merged_boxes_geometry =
+        dynamic_cast<const GeometryModel::TwoMergedBoxes<dim> *>(&this->get_geometry_model());
 
       AssertThrow(box_geometry != nullptr || two_merged_boxes_geometry != nullptr,
                   ExcMessage("FastScape can only be run with the 'box' or "
                              "'box with lithosphere boundary indicators' geometry models."));
 
       // Find the id associated with the top boundary and boundaries that call mesh deformation.
-      const types::boundary_id top_boundary = this->get_geometry_model().translate_symbolic_boundary_name_to_id ("top");
-      const std::set<types::boundary_id> mesh_deformation_boundary_ids
-        = this->get_mesh_deformation_handler().get_active_mesh_deformation_boundary_indicators();
+      const types::boundary_id           top_boundary = this->get_geometry_model().translate_symbolic_boundary_name_to_id("top");
+      const std::set<types::boundary_id> mesh_deformation_boundary_ids =
+        this->get_mesh_deformation_handler().get_active_mesh_deformation_boundary_indicators();
 
       // Get the deformation type names called for each boundary.
-      std::map<types::boundary_id, std::vector<std::string>> mesh_deformation_boundary_indicators_map
-        = this->get_mesh_deformation_handler().get_active_mesh_deformation_names();
+      std::map<types::boundary_id, std::vector<std::string>> mesh_deformation_boundary_indicators_map =
+        this->get_mesh_deformation_handler().get_active_mesh_deformation_names();
 
       // Loop over each mesh deformation boundary, and make sure FastScape is only called on the surface.
       for (const types::boundary_id id : mesh_deformation_boundary_ids)
@@ -225,8 +240,7 @@ namespace aspect
           for (const auto &name : names)
             {
               if (name == "fastscape")
-                AssertThrow(id == top_boundary,
-                            ExcMessage("FastScape can only be called on the surface boundary."));
+                AssertThrow(id == top_boundary, ExcMessage("FastScape can only be called on the surface boundary."));
             }
         }
 
@@ -240,41 +254,36 @@ namespace aspect
       const std::vector<std::string> chemical_field_names = this->introspection().chemical_composition_field_names();
       if (this->introspection().compositional_name_exists("sediment_age"))
         {
-          const std::vector<std::string>::const_iterator
-          it = std::find(chemical_field_names.begin(), chemical_field_names.end(), "sediment_age");
-          AssertThrow (it == chemical_field_names.end(),
-                       ExcMessage("There is a field sediment_age that is of type chemical composition. "
-                                  "Please change it to type generic so that it does not affect material properties."));
+          const std::vector<std::string>::const_iterator it =
+            std::find(chemical_field_names.begin(), chemical_field_names.end(), "sediment_age");
+          AssertThrow(it == chemical_field_names.end(),
+                      ExcMessage("There is a field sediment_age that is of type chemical composition. "
+                                 "Please change it to type generic so that it does not affect material properties."));
         }
       if (this->introspection().compositional_name_exists("deposition_depth"))
         {
-          const std::vector<std::string>::const_iterator
-          it = std::find(chemical_field_names.begin(), chemical_field_names.end(), "deposition_depth");
-          AssertThrow (it == chemical_field_names.end(),
-                       ExcMessage("There is a field deposition_depth that is of type chemical composition. "
-                                  "Please change it to type generic so that it does not affect material properties."));
+          const std::vector<std::string>::const_iterator it =
+            std::find(chemical_field_names.begin(), chemical_field_names.end(), "deposition_depth");
+          AssertThrow(it == chemical_field_names.end(),
+                      ExcMessage("There is a field deposition_depth that is of type chemical composition. "
+                                 "Please change it to type generic so that it does not affect material properties."));
         }
 
-      const Point<dim> origin = (box_geometry != nullptr
-                                 ? box_geometry->get_origin()
-                                 : two_merged_boxes_geometry->get_origin());
-      const Point<dim> extents = (box_geometry != nullptr
-                                  ? box_geometry->get_extents()
-                                  : two_merged_boxes_geometry->get_extents());
+      const Point<dim> origin  = (box_geometry != nullptr ? box_geometry->get_origin() : two_merged_boxes_geometry->get_origin());
+      const Point<dim> extents = (box_geometry != nullptr ? box_geometry->get_extents() : two_merged_boxes_geometry->get_extents());
 
       // The first entry represents the minimum coordinate of the model domain,
       // and the second the model extent.
-      for (unsigned int d=0; d<dim; ++d)
+      for (unsigned int d = 0; d < dim; ++d)
         {
-          grid_extent[d].first = origin[d];
+          grid_extent[d].first  = origin[d];
           grid_extent[d].second = extents[d];
         }
 
       // Get the x and y repetitions used in the parameter file so
       // the FastScape cell size can be properly set.
-      const std::array<unsigned int, dim> repetitions = (box_geometry != nullptr
-                                                         ? box_geometry->get_repetitions()
-                                                         : two_merged_boxes_geometry->get_repetitions());
+      const std::array<unsigned int, dim> repetitions =
+        (box_geometry != nullptr ? box_geometry->get_repetitions() : two_merged_boxes_geometry->get_repetitions());
 
       // Set number of x points, which is generally 1+(FastScape refinement level)^2.
       // The FastScape refinement level is a combination of the maximum ASPECT refinement level
@@ -282,40 +291,40 @@ namespace aspect
       // repetitions are specified we need to adjust the number of points to match what ASPECT has,
       // which can be determined by multiplying the points by the repetitions before adding 1.
       // Finally, if ghost nodes are used we add two additional points on each side.
-      const unsigned int ghost_nodes = 2*use_ghost_nodes;
+      const unsigned int ghost_nodes                = 2 * use_ghost_nodes;
       const unsigned int fastscape_refinement_level = maximum_surface_refinement_level + additional_refinement_levels;
-      const unsigned int fastscape_nodes = Utilities::pow(2,fastscape_refinement_level);
-      fastscape_nx = fastscape_nodes * repetitions[0] + ghost_nodes + 1;
+      const unsigned int fastscape_nodes            = Utilities::pow(2, fastscape_refinement_level);
+      fastscape_nx                                  = fastscape_nodes * repetitions[0] + ghost_nodes + 1;
 
       // Size of FastScape cell.
-      fastscape_dx = (grid_extent[0].second)/(fastscape_nodes * repetitions[0]);
+      fastscape_dx = (grid_extent[0].second) / (fastscape_nodes * repetitions[0]);
 
       // FastScape X extent, which is generally ASPECT's extent unless the ghost nodes are used,
       // in which case 2 cells are added on either side.
       fastscape_x_extent = (grid_extent[0].second) + fastscape_dx * ghost_nodes;
 
       // Sub intervals are 3 less than points, if including the ghost nodes. Otherwise 1 less.
-      table_intervals[0] = fastscape_nodes * repetitions[0];
-      table_intervals[dim-1] = 1;
+      table_intervals[0]       = fastscape_nodes * repetitions[0];
+      table_intervals[dim - 1] = 1;
 
       if (dim == 2)
         {
-          fastscape_dy = fastscape_dx;
-          fastscape_y_extent = (std::round(fastscape_y_extent_2d/fastscape_dy) + ghost_nodes) * fastscape_dy;
-          fastscape_ny = 1+static_cast<int>(std::round(fastscape_y_extent_2d/fastscape_dy)) + ghost_nodes;
+          fastscape_dy       = fastscape_dx;
+          fastscape_y_extent = (std::round(fastscape_y_extent_2d / fastscape_dy) + ghost_nodes) * fastscape_dy;
+          fastscape_ny       = 1 + static_cast<int>(std::round(fastscape_y_extent_2d / fastscape_dy)) + ghost_nodes;
         }
       else
         {
-          fastscape_ny = fastscape_nodes * repetitions[1] + ghost_nodes + 1;
-          fastscape_dy = (grid_extent[1].second)/(fastscape_nodes * repetitions[1]);
+          fastscape_ny       = fastscape_nodes * repetitions[1] + ghost_nodes + 1;
+          fastscape_dy       = (grid_extent[1].second) / (fastscape_nodes * repetitions[1]);
           table_intervals[1] = fastscape_nodes * repetitions[1];
           fastscape_y_extent = (grid_extent[1].second) + fastscape_dy * ghost_nodes;
         }
 
       // Create a folder for the FastScape visualization files.
-      Utilities::create_directory (this->get_output_directory() + "fastscape/",
-                                   this->get_mpi_communicator(),
-                                   true /*do not print message in log file*/);
+      Utilities::create_directory(this->get_output_directory() + "fastscape/",
+                                  this->get_mpi_communicator(),
+                                  true /*do not print message in log file*/);
 
       last_output_time = 0;
 #else
@@ -326,8 +335,8 @@ namespace aspect
 
     template <int dim>
     void
-    FastScape<dim>::compute_velocity_constraints_on_boundary(const DoFHandler<dim> &mesh_deformation_dof_handler,
-                                                             AffineConstraints<double> &mesh_velocity_constraints,
+    FastScape<dim>::compute_velocity_constraints_on_boundary(const DoFHandler<dim>              &mesh_deformation_dof_handler,
+                                                             AffineConstraints<double>          &mesh_velocity_constraints,
                                                              const std::set<types::boundary_id> &boundary_ids) const
     {
 #ifdef ASPECT_WITH_FASTSCAPE
@@ -339,20 +348,20 @@ namespace aspect
 
       this->get_computing_timer().enter_subsection("FastScape plugin");
 
-      const unsigned int current_timestep = this->get_timestep_number ();
-      const double aspect_timestep_in_years = this->get_timestep() / year_in_seconds;
+      const unsigned int current_timestep         = this->get_timestep_number();
+      const double       aspect_timestep_in_years = this->get_timestep() / year_in_seconds;
 
       // Find a FastScape timestep that is below our maximum timestep.
-      unsigned int fastscape_iterations = fastscape_steps_per_aspect_step;
-      double fastscape_timestep_in_years = aspect_timestep_in_years/fastscape_iterations;
-      while (fastscape_timestep_in_years>maximum_fastscape_timestep)
+      unsigned int fastscape_iterations        = fastscape_steps_per_aspect_step;
+      double       fastscape_timestep_in_years = aspect_timestep_in_years / fastscape_iterations;
+      while (fastscape_timestep_in_years > maximum_fastscape_timestep)
         {
           fastscape_iterations *= 2;
           fastscape_timestep_in_years *= 0.5;
         }
 
       // Vector to hold the velocities that represent the change to the surface.
-      const unsigned int fastscape_array_size = fastscape_nx*fastscape_ny;
+      const unsigned int  fastscape_array_size = fastscape_nx * fastscape_ny;
       std::vector<double> mesh_velocity_z(fastscape_array_size);
 
       // FastScape requires multiple specially defined and ordered variables sent to its functions. To make
@@ -385,26 +394,18 @@ namespace aspect
 
           if (current_timestep == 1)
             {
-              this->get_pcout() << "   Initializing FastScape... " << (1+maximum_surface_refinement_level+additional_refinement_levels) <<
-                                " levels, cell size: " << fastscape_dx << " m." << std::endl;
+              this->get_pcout() << "   Initializing FastScape... " << (1 + maximum_surface_refinement_level + additional_refinement_levels)
+                                << " levels, cell size: " << fastscape_dx << " m." << std::endl;
 
               // Set ghost nodes before initializing.
               if (use_ghost_nodes)
-                set_ghost_nodes(elevation,
-                                velocity_x,
-                                velocity_y,
-                                velocity_z,
-                                bedrock_transport_coefficient_array,
-                                fastscape_timestep_in_years,
-                                true);
+                set_ghost_nodes(
+                  elevation, velocity_x, velocity_y, velocity_z, bedrock_transport_coefficient_array, fastscape_timestep_in_years, true);
 
               // Initialize fastscape, at this point only the first vector is used,
               // with the other two being relevant during restarts.
               std::vector<double> empty_basement, empty_silt_fraction;
-              initialize_fastscape(elevation,
-                                   empty_basement,
-                                   empty_silt_fraction,
-                                   false);
+              initialize_fastscape(elevation, empty_basement, empty_silt_fraction, false);
             }
           else
             {
@@ -416,22 +417,20 @@ namespace aspect
             }
 
           // Find the appropriate sediment rain based off the time interval.
-          const double time_in_years = this->get_time() / year_in_seconds;
-          auto it = std::lower_bound(sediment_rain_times.begin(), sediment_rain_times.end(), time_in_years);
-          const unsigned int inds = std::distance(sediment_rain_times.begin(), it);
-          const double sediment_rain = sediment_rain_rates[inds];
+          const double       time_in_years = this->get_time() / year_in_seconds;
+          auto               it            = std::lower_bound(sediment_rain_times.begin(), sediment_rain_times.end(), time_in_years);
+          const unsigned int inds          = std::distance(sediment_rain_times.begin(), it);
+          const double       sediment_rain = sediment_rain_rates[inds];
 
           // Keep initial h values so we can calculate velocity later.
           // In the first timestep, h will be given from other processes.
           // In later timesteps, we copy h directly from FastScape.
-          std::mt19937 random_number_generator(fastscape_seed);
-          std::uniform_real_distribution<double> random_distribution(-noise_elevation,noise_elevation);
+          std::mt19937                           random_number_generator(fastscape_seed);
+          std::uniform_real_distribution<double> random_distribution(-noise_elevation, noise_elevation);
           // read sea level from the user defined function or constant value;
-          const double current_sea_level = use_sea_level_function
-                                           ? sea_level_function.value(Point<1>())
-                                           : sea_level_constant_value;
+          const double current_sea_level = use_sea_level_function ? sea_level_function.value(Point<1>()) : sea_level_constant_value;
 
-          for (unsigned int i=0; i<fastscape_array_size; ++i)
+          for (unsigned int i = 0; i < fastscape_array_size; ++i)
             {
               elevation_old[i] = elevation[i];
 
@@ -441,13 +440,13 @@ namespace aspect
               // or not. However, the boundaries can be changed using the uplift velocity and not cause
               // these issues.
               // TODO: Should this be done through velocities instead of a flat height change?
-              if (!is_ghost_node(i,true))
+              if (!is_ghost_node(i, true))
                 {
                   if (current_timestep == 1)
                     {
                       // + or - topography based on the initial noise magnitude.
                       const double elevation_seed = random_distribution(random_number_generator);
-                      elevation[i] = elevation[i] + elevation_seed;
+                      elevation[i]                = elevation[i] + elevation_seed;
                     }
 
                   // Here we add the sediment rain (m/yr) as a flat increase in height.
@@ -458,10 +457,10 @@ namespace aspect
                       if (elevation[i] < current_sea_level)
                         {
                           // If the rain would put us above sea level, set height to sea level.
-                          if (elevation[i] + sediment_rain*aspect_timestep_in_years > current_sea_level)
+                          if (elevation[i] + sediment_rain * aspect_timestep_in_years > current_sea_level)
                             elevation[i] = current_sea_level;
                           else
-                            elevation[i] = std::min(current_sea_level,elevation[i] + sediment_rain*aspect_timestep_in_years);
+                            elevation[i] = std::min(current_sea_level, elevation[i] + sediment_rain * aspect_timestep_in_years);
                         }
                     }
                 }
@@ -472,26 +471,18 @@ namespace aspect
           // FastScape will be set as a 2D 5x5 point surface. On return to ASPECT, the outer ghost nodes
           // will be ignored, and ASPECT will see only the inner 3x3 surface of FastScape.
           if (use_ghost_nodes)
-            set_ghost_nodes(elevation,
-                            velocity_x,
-                            velocity_y,
-                            velocity_z,
-                            bedrock_transport_coefficient_array,
-                            fastscape_timestep_in_years,
-                            false);
+            set_ghost_nodes(
+              elevation, velocity_x, velocity_y, velocity_z, bedrock_transport_coefficient_array, fastscape_timestep_in_years, false);
 
           // If specified, apply the orographic controls to the FastScape model.
           if (use_orographic_controls)
-            apply_orographic_controls(elevation,
-                                      bedrock_transport_coefficient_array,
-                                      bedrock_river_incision_rate_array);
+            apply_orographic_controls(elevation, bedrock_transport_coefficient_array, bedrock_river_incision_rate_array);
 
           // Set velocity components.
           if (fastscape_advection_uplift)
             {
               fastscape_set_u_(velocity_z.data());
-              fastscape_set_v_(velocity_x.data(),
-                               velocity_y.data());
+              fastscape_set_v_(velocity_x.data(), velocity_y.data());
             }
 
           // Set elevation to new values, and set erosional/marine parameters.
@@ -553,7 +544,8 @@ namespace aspect
                     combined_kf[i] = sediment_river_incision_rate;
                   else
                     {
-                      AssertThrow (false, ExcMessage ("Unexpected conditions reached while filling the combined kf array in the FastScape interface."));
+                      AssertThrow(
+                        false, ExcMessage("Unexpected conditions reached while filling the combined kf array in the FastScape interface."));
                     }
 
                   // The same diffusion coefficient is used for sediments as for bedrock.
@@ -567,7 +559,8 @@ namespace aspect
                     combined_kd[i] = sediment_transport_coefficient;
                   else
                     {
-                      AssertThrow (false, ExcMessage ("Unexpected conditions reached while filling the combined kd array in the FastScape interface."));
+                      AssertThrow(
+                        false, ExcMessage("Unexpected conditions reached while filling the combined kd array in the FastScape interface."));
                     }
                 }
               // Below sea level, when the marine component is used,
@@ -582,12 +575,14 @@ namespace aspect
                   // The combined marine diffusion coefficient is an approximation
                   // of the actual diffusion, which is solved for both sediment
                   // types separately in Fastscape.
-                  const double marine_diffusion_coefficient = silt_fraction[i] * silt_transport_coefficient + (1. - silt_fraction[i]) * sand_transport_coefficient;
+                  const double marine_diffusion_coefficient =
+                    silt_fraction[i] * silt_transport_coefficient + (1. - silt_fraction[i]) * sand_transport_coefficient;
                   combined_kd[i] = marine_diffusion_coefficient;
                 }
               else
                 {
-                  AssertThrow (false, ExcMessage ("Unexpected conditions reached while filling the kf and kd arrays in the FastScape interface."));
+                  AssertThrow(false,
+                              ExcMessage("Unexpected conditions reached while filling the kf and kd arrays in the FastScape interface."));
                 }
             }
 
@@ -597,27 +592,27 @@ namespace aspect
           switch (additional_output_variable)
             {
               case FastscapeOutputVariable::kf:
-              {
-                additional_output_field = combined_kf;
-                break;
-              }
+                {
+                  additional_output_field = combined_kf;
+                  break;
+                }
               case FastscapeOutputVariable::kd:
-              {
-                additional_output_field = combined_kd;
-                break;
-              }
+                {
+                  additional_output_field = combined_kd;
+                  break;
+                }
               case FastscapeOutputVariable::uplift_rate:
-              {
-                additional_output_field = velocity_z;
-                break;
-              }
+                {
+                  additional_output_field = velocity_z;
+                  break;
+                }
               default:
                 AssertThrow(false, ExcMessage("Invalid Fastscape variable."));
             }
 
           // Find timestep size, run FastScape, and make visualizations.
           execute_fastscape(elevation,
-                            additional_output_field,  // corresponds to FastScape's 'HHHHH' argument
+                            additional_output_field, // corresponds to FastScape's 'HHHHH' argument
                             velocity_x,
                             velocity_y,
                             velocity_z,
@@ -627,20 +622,22 @@ namespace aspect
 
           // Find out our velocities from the change in height.
           // Where mesh_velocity_z is a vector of array size that exists on all processes.
-          for (unsigned int i=0; i<fastscape_array_size; ++i)
-            mesh_velocity_z[i] = (elevation[i] - elevation_old[i])/aspect_timestep_in_years;
+          for (unsigned int i = 0; i < fastscape_array_size; ++i)
+            mesh_velocity_z[i] = (elevation[i] - elevation_old[i]) / aspect_timestep_in_years;
         }
       else
         // For ranks other than the root:
         {
-          for (unsigned int i=0; i<local_aspect_values.size(); ++i)
-            MPI_Ssend(&local_aspect_values[i][0], local_aspect_values[i].size(), MPI_DOUBLE,
+          for (unsigned int i = 0; i < local_aspect_values.size(); ++i)
+            MPI_Ssend(&local_aspect_values[i][0],
+                      local_aspect_values[i].size(),
+                      MPI_DOUBLE,
                       /* destination is root= */ 0,
                       /* tag= */ 42,
                       this->get_mpi_communicator());
 
           // Check whether the FastScape mesh was filled with data.
-          const bool fastscape_mesh_filled = Utilities::MPI::broadcast (this->get_mpi_communicator(), true, 0);
+          const bool fastscape_mesh_filled = Utilities::MPI::broadcast(this->get_mpi_communicator(), true, 0);
           if (fastscape_mesh_filled != true)
             throw aspect::QuietException();
 
@@ -655,53 +652,46 @@ namespace aspect
       // that will be interpolated back to ASPECT. We need this table on all
       // processes, and can achieve this goal by first filling it on the root process,
       // and then replicating it on all processes (if possible using shared memory).
-      Table<dim,double> velocity_table;
+      Table<dim, double> velocity_table;
       if (Utilities::MPI::this_mpi_process(this->get_mpi_communicator()) == 0)
         {
           TableIndices<dim> size_idx;
-          for (unsigned int d=0; d<dim; ++d)
-            size_idx[d] = table_intervals[d]+1;
+          for (unsigned int d = 0; d < dim; ++d)
+            size_idx[d] = table_intervals[d] + 1;
 
           velocity_table = fill_data_table(mesh_velocity_z, size_idx, fastscape_nx, fastscape_ny);
         }
-      velocity_table.replicate_across_communicator (this->get_mpi_communicator(),
-                                                    /*root_process=*/0);
+      velocity_table.replicate_across_communicator(this->get_mpi_communicator(),
+                                                   /*root_process=*/0);
 
       // As our grid_extent variable end points do not account for the change related to an origin
       // not at 0, we adjust this here into an interpolation extent.
-      std::array<std::pair<double,double>,dim> interpolation_extent;
-      for (unsigned int d=0; d<dim; ++d)
+      std::array<std::pair<double, double>, dim> interpolation_extent;
+      for (unsigned int d = 0; d < dim; ++d)
         {
-          interpolation_extent[d].first = grid_extent[d].first;
+          interpolation_extent[d].first  = grid_extent[d].first;
           interpolation_extent[d].second = (grid_extent[d].second + grid_extent[d].first);
         }
 
       // Then create a function that can be interpolated from the data table.
       // Use move semantics to ensure that we keep using the replicated
       // table:
-      const Functions::InterpolatedUniformGridData<dim> velocities (std::move(interpolation_extent),
-                                                                    std::move(table_intervals),
-                                                                    std::move(velocity_table));
+      const Functions::InterpolatedUniformGridData<dim> velocities(std::move(interpolation_extent),
+                                                                   std::move(table_intervals),
+                                                                   std::move(velocity_table));
 
-      VectorFunctionFromScalarFunctionObject<dim> vector_function_object(
-        [&](const Point<dim> &p) -> double
-      {
-        return velocities.value(p);
-      },
-      dim-1,
-      dim);
+      VectorFunctionFromScalarFunctionObject<dim> vector_function_object([&](const Point<dim> &p) -> double { return velocities.value(p); },
+                                                                         dim - 1,
+                                                                         dim);
 
       for (const types::boundary_id boundary : boundary_ids)
-        VectorTools::interpolate_boundary_values (mesh_deformation_dof_handler,
-                                                  boundary,
-                                                  vector_function_object,
-                                                  mesh_velocity_constraints);
+        VectorTools::interpolate_boundary_values(mesh_deformation_dof_handler, boundary, vector_function_object, mesh_velocity_constraints);
 
       this->get_computing_timer().leave_subsection("FastScape plugin");
 #else
-      (void) mesh_deformation_dof_handler;
-      (void) mesh_velocity_constraints;
-      (void) boundary_ids;
+      (void)mesh_deformation_dof_handler;
+      (void)mesh_velocity_constraints;
+      (void)boundary_ids;
 #endif
     }
 
@@ -712,28 +702,24 @@ namespace aspect
     {
 #ifdef ASPECT_WITH_FASTSCAPE
 
-      const types::boundary_id relevant_boundary = this->get_geometry_model().translate_symbolic_boundary_name_to_id ("top");
-      std::vector<std::vector<double>> local_aspect_values(dim+2, std::vector<double>());
+      const types::boundary_id         relevant_boundary = this->get_geometry_model().translate_symbolic_boundary_name_to_id("top");
+      std::vector<std::vector<double>> local_aspect_values(dim + 2, std::vector<double>());
 
       // Get a quadrature rule that exists only on the corners, and increase the refinement if specified.
-      const QIterated<dim-1> face_corners (QTrapezoid<1>(),
-                                           Utilities::pow(2,additional_refinement_levels+surface_refinement_difference));
+      const QIterated<dim - 1> face_corners(QTrapezoid<1>(),
+                                            Utilities::pow(2, additional_refinement_levels + surface_refinement_difference));
 
-      FEFaceValues<dim> fe_face_values (this->get_mapping(),
-                                        this->get_fe(),
-                                        face_corners,
-                                        update_values |
-                                        update_quadrature_points);
+      FEFaceValues<dim> fe_face_values(this->get_mapping(), this->get_fe(), face_corners, update_values | update_quadrature_points);
 
       for (const auto &cell : this->get_dof_handler().active_cell_iterators())
         if (cell->is_locally_owned() && cell->at_boundary())
           for (unsigned int face_no = 0; face_no < GeometryInfo<dim>::faces_per_cell; ++face_no)
             if (cell->face(face_no)->at_boundary())
               {
-                if ( cell->face(face_no)->boundary_id() != relevant_boundary)
+                if (cell->face(face_no)->boundary_id() != relevant_boundary)
                   continue;
 
-                std::vector<Tensor<1,dim>> vel(face_corners.size());
+                std::vector<Tensor<1, dim>> vel(face_corners.size());
                 fe_face_values.reinit(cell, face_no);
                 fe_face_values[this->introspection().extractors.velocities].get_function_values(this->get_solution(), vel);
 
@@ -743,7 +729,7 @@ namespace aspect
 
                     // Find what x point we're at. Add 1 or 2 depending on if ghost nodes are used.
                     // Subtract the origin point so that it corresponds to an origin of 0,0 in FastScape.
-                    const double indx = 1+use_ghost_nodes+(vertex(0) - grid_extent[0].first)/fastscape_dx;
+                    const double indx = 1 + use_ghost_nodes + (vertex(0) - grid_extent[0].first) / fastscape_dx;
 
                     // The quadrature rule is created so that there are enough interpolation points in the
                     // lowest resolved ASPECT surface cell to fill out the FastScape mesh. However, as the
@@ -757,7 +743,7 @@ namespace aspect
                     // If we're in 2D, we want to take the values and apply them to every row of X points.
                     if (dim == 2)
                       {
-                        for (unsigned int ys=0; ys<fastscape_ny; ++ys)
+                        for (unsigned int ys = 0; ys < fastscape_ny; ++ys)
                           {
                             // FastScape indexes from 1 to n, starting at X and Y = 0, and increases
                             // across the X row. At the end of the row, it jumps back to X = 0
@@ -765,19 +751,19 @@ namespace aspect
                             // this to correctly place the variables later on.
                             // Nx*ys effectively tells us what row we are in
                             // and then indx tells us what position in that row.
-                            const double index = std::round(indx)+fastscape_nx*ys;
+                            const double index = std::round(indx) + fastscape_nx * ys;
 
-                            local_aspect_values[0].push_back(vertex(dim-1) - grid_extent[dim-1].second);
+                            local_aspect_values[0].push_back(vertex(dim - 1) - grid_extent[dim - 1].second);
 
                             // In local_aspect_values[1], we store integer indices even though the
                             // type of the left hand side is 'double'. We will have to cast back
                             // when we read from local_aspect_values[1].
-                            local_aspect_values[1].push_back(static_cast<double>(index-1));
+                            local_aspect_values[1].push_back(static_cast<double>(index - 1));
 
-                            for (unsigned int d=0; d<dim; ++d)
+                            for (unsigned int d = 0; d < dim; ++d)
                               {
                                 // Always convert to m/yr for FastScape
-                                local_aspect_values[2+d].push_back(vel[corner][d]*year_in_seconds);
+                                local_aspect_values[2 + d].push_back(vel[corner][d] * year_in_seconds);
                               }
                           }
                       }
@@ -785,23 +771,23 @@ namespace aspect
                     else
                       {
                         // Because indy only gives us the row we're in, we don't need to add 2 for the ghost node.
-                        const double indy = 1+use_ghost_nodes+(vertex(1) - grid_extent[1].first)/fastscape_dy;
+                        const double indy = 1 + use_ghost_nodes + (vertex(1) - grid_extent[1].first) / fastscape_dy;
 
                         if (std::abs(indy - std::round(indy)) >= node_tolerance)
                           continue;
 
-                        const double index = std::round((indy-1))*fastscape_nx+std::round(indx);
+                        const double index = std::round((indy - 1)) * fastscape_nx + std::round(indx);
 
-                        local_aspect_values[0].push_back(vertex(dim-1) - grid_extent[dim-1].second);   //z component
+                        local_aspect_values[0].push_back(vertex(dim - 1) - grid_extent[dim - 1].second); // z component
 
                         // In local_aspect_values[1], we store integer indices even though the
                         // type of the left hand side is 'double'. We will have to cast back
                         // when we read from local_aspect_values[1].
-                        local_aspect_values[1].push_back(static_cast<double>(index-1));
+                        local_aspect_values[1].push_back(static_cast<double>(index - 1));
 
-                        for (unsigned int d=0; d<dim; ++d)
+                        for (unsigned int d = 0; d < dim; ++d)
                           {
-                            local_aspect_values[2+d].push_back(vel[corner][d]*year_in_seconds);
+                            local_aspect_values[2 + d].push_back(vel[corner][d] * year_in_seconds);
                           }
                       }
                   }
@@ -815,23 +801,24 @@ namespace aspect
 
 
     template <int dim>
-    void FastScape<dim>::fill_fastscape_arrays(std::vector<double> &elevation,
-                                               std::vector<double> &bedrock_transport_coefficient_array,
-                                               std::vector<double> &bedrock_river_incision_rate_array,
-                                               std::vector<double> &velocity_x,
-                                               std::vector<double> &velocity_y,
-                                               std::vector<double> &velocity_z,
-                                               std::vector<std::vector<double>> &local_aspect_values) const
+    void
+    FastScape<dim>::fill_fastscape_arrays(std::vector<double>              &elevation,
+                                          std::vector<double>              &bedrock_transport_coefficient_array,
+                                          std::vector<double>              &bedrock_river_incision_rate_array,
+                                          std::vector<double>              &velocity_x,
+                                          std::vector<double>              &velocity_y,
+                                          std::vector<double>              &velocity_z,
+                                          std::vector<std::vector<double>> &local_aspect_values) const
     {
 #ifdef ASPECT_WITH_FASTSCAPE
-      for (unsigned int i=0; i<local_aspect_values[1].size(); ++i)
+      for (unsigned int i = 0; i < local_aspect_values[1].size(); ++i)
         {
           // In get_aspect_values(), we store an integer value as a double in local_aspect_values[1][...].
           // Explicitly cast it back.
           const unsigned int index = static_cast<unsigned int>(local_aspect_values[1][i]);
-          elevation[index] = local_aspect_values[0][i];
-          velocity_x[index] = local_aspect_values[2][i];
-          velocity_z[index] = local_aspect_values[dim+1][i];
+          elevation[index]         = local_aspect_values[0][i];
+          velocity_x[index]        = local_aspect_values[2][i];
+          velocity_z[index]        = local_aspect_values[dim + 1][i];
 
           if (dim == 2)
             velocity_y[index] = 0;
@@ -839,7 +826,7 @@ namespace aspect
             velocity_y[index] = local_aspect_values[3][i];
         }
 
-      for (unsigned int p=1; p<Utilities::MPI::n_mpi_processes(this->get_mpi_communicator()); ++p)
+      for (unsigned int p = 1; p < Utilities::MPI::n_mpi_processes(this->get_mpi_communicator()); ++p)
         {
           // First, find out the size of the array a process wants to send.
           MPI_Status status;
@@ -848,29 +835,32 @@ namespace aspect
           MPI_Get_count(&status, MPI_DOUBLE, &incoming_size);
 
           // Resize the array so it fits whatever the process sends.
-          for (unsigned int i=0; i<local_aspect_values.size(); ++i)
+          for (unsigned int i = 0; i < local_aspect_values.size(); ++i)
             {
               local_aspect_values[i].resize(incoming_size);
             }
 
-          for (unsigned int i=0; i<local_aspect_values.size(); ++i)
-            MPI_Recv(&local_aspect_values[i][0], incoming_size, MPI_DOUBLE,
+          for (unsigned int i = 0; i < local_aspect_values.size(); ++i)
+            MPI_Recv(&local_aspect_values[i][0],
+                     incoming_size,
+                     MPI_DOUBLE,
                      /* sender= */ p,
                      /* tag = */ 42,
-                     this->get_mpi_communicator(), &status);
+                     this->get_mpi_communicator(),
+                     &status);
 
           // Now, place the numbers into the correct place based off the index.
-          for (unsigned int i=0; i<local_aspect_values[1].size(); ++i)
+          for (unsigned int i = 0; i < local_aspect_values[1].size(); ++i)
             {
               // In get_aspect_values(), we store an integer value as a double in local_aspect_values[1][...].
               // Explicitly cast it back.
               const unsigned int index = static_cast<unsigned int>(local_aspect_values[1][i]);
-              elevation[index] = local_aspect_values[0][i];
-              velocity_x[index] = local_aspect_values[2][i];
-              velocity_z[index] = local_aspect_values[dim+1][i];
+              elevation[index]         = local_aspect_values[0][i];
+              velocity_x[index]        = local_aspect_values[2][i];
+              velocity_z[index]        = local_aspect_values[dim + 1][i];
 
               // In 2D there are no y velocities, so we set them to zero.
-              if (dim == 2 )
+              if (dim == 2)
                 velocity_y[index] = 0;
               else
                 velocity_y[index] = local_aspect_values[3][i];
@@ -881,11 +871,11 @@ namespace aspect
       // and check that there are no empty mesh points due to
       // an improperly set maximum_surface_refinement_level, additional_refinement_levels,
       // and surface_refinement_difference
-      bool fastscape_mesh_filled = true;
-      const unsigned int fastscape_array_size = fastscape_nx*fastscape_ny;
-      for (unsigned int i=0; i<fastscape_array_size; ++i)
+      bool               fastscape_mesh_filled = true;
+      const unsigned int fastscape_array_size  = fastscape_nx * fastscape_ny;
+      for (unsigned int i = 0; i < fastscape_array_size; ++i)
         {
-          //reset index
+          // reset index
           const unsigned int ix = i % fastscape_nx;
           const unsigned int iy = i / fastscape_nx;
 
@@ -902,60 +892,53 @@ namespace aspect
           const double time_scaling_factor = (this->convert_output_to_years() ? 1.0 : year_in_seconds);
           // Set bedrock transport coefficient kd either from a function or a constant.
           bedrock_transport_coefficient_array[i] =
-            (use_kd_distribution_function
-             ?
-             time_scaling_factor * kd_distribution_function.value(Point<2>(x, y))
-             :
-             time_scaling_factor * constant_bedrock_transport_coefficient);
+            (use_kd_distribution_function ? time_scaling_factor * kd_distribution_function.value(Point<2>(x, y)) :
+                                            time_scaling_factor * constant_bedrock_transport_coefficient);
 
           // Set bedrock river incision rate kf either from a function or a constant.
-          bedrock_river_incision_rate_array[i] =
-            (use_kf_distribution_function)
-            ?
-            time_scaling_factor * kf_distribution_function.value(Point<2>(x, y))
-            :
-            time_scaling_factor * constant_bedrock_river_incision_rate;
+          bedrock_river_incision_rate_array[i] = (use_kf_distribution_function) ?
+                                                   time_scaling_factor * kf_distribution_function.value(Point<2>(x, y)) :
+                                                   time_scaling_factor * constant_bedrock_river_incision_rate;
 
 
           // If this is a boundary node that is a ghost node then ignore that it
           // has not filled yet as the ghost nodes haven't been set.
-          if (elevation[i] == std::numeric_limits<double>::max() && !is_ghost_node(i,false))
+          if (elevation[i] == std::numeric_limits<double>::max() && !is_ghost_node(i, false))
             fastscape_mesh_filled = false;
         }
 
       fastscape_mesh_filled = Utilities::MPI::broadcast(this->get_mpi_communicator(), fastscape_mesh_filled, 0);
-      AssertThrow (fastscape_mesh_filled == true,
-                   ExcMessage("The FastScape mesh is missing data. A likely cause for this is that the "
-                              "maximum surface refinement or surface refinement difference are improperly set."));
+      AssertThrow(fastscape_mesh_filled == true,
+                  ExcMessage("The FastScape mesh is missing data. A likely cause for this is that the "
+                             "maximum surface refinement or surface refinement difference are improperly set."));
 #else
-      (void) elevation;
-      (void) bedrock_transport_coefficient_array;
-      (void) bedrock_river_incision_rate_array;
-      (void) velocity_x;
-      (void) velocity_y;
-      (void) velocity_z;
-      (void) local_aspect_values;
+      (void)elevation;
+      (void)bedrock_transport_coefficient_array;
+      (void)bedrock_river_incision_rate_array;
+      (void)velocity_x;
+      (void)velocity_y;
+      (void)velocity_z;
+      (void)local_aspect_values;
 #endif
     }
 
 
     template <int dim>
-    void FastScape<dim>::initialize_fastscape(std::vector<double> &elevation,
-                                              std::vector<double> &basement,
-                                              std::vector<double> &silt_fraction,
-                                              bool restart) const
+    void
+    FastScape<dim>::initialize_fastscape(std::vector<double> &elevation,
+                                         std::vector<double> &basement,
+                                         std::vector<double> &silt_fraction,
+                                         bool                 restart) const
     {
 #ifdef ASPECT_WITH_FASTSCAPE
-      Assert (Utilities::MPI::this_mpi_process(this->get_mpi_communicator()) == 0, ExcInternalError());
+      Assert(Utilities::MPI::this_mpi_process(this->get_mpi_communicator()) == 0, ExcInternalError());
 
       // Initialize FastScape with grid and extent.
       fastscape_init_();
 
-      fastscape_set_nx_ny_(&fastscape_nx,
-                           &fastscape_ny);
+      fastscape_set_nx_ny_(&fastscape_nx, &fastscape_ny);
       fastscape_setup_();
-      fastscape_set_xl_yl_(&fastscape_x_extent,
-                           &fastscape_y_extent);
+      fastscape_set_xl_yl_(&fastscape_x_extent, &fastscape_y_extent);
 
       // Set boundary conditions
       fastscape_set_bc_(&fastscape_boundary_conditions);
@@ -970,58 +953,55 @@ namespace aspect
             fastscape_init_f_(silt_fraction.data());
         }
 #else
-      (void) elevation;
-      (void) basement;
-      (void) silt_fraction;
-      (void) restart;
+      (void)elevation;
+      (void)basement;
+      (void)silt_fraction;
+      (void)restart;
 #endif
     }
 
 
     template <int dim>
-    void FastScape<dim>::execute_fastscape(std::vector<double> &elevation,
-                                           std::vector<double> &extra_vtk_field,
-                                           std::vector<double> &velocity_x,
-                                           std::vector<double> &velocity_y,
-                                           std::vector<double> &velocity_z,
-                                           std::vector<double> &bedrock_transport_coefficient_array,
-                                           const double &fastscape_timestep_in_years,
-                                           const unsigned int &fastscape_iterations) const
+    void
+    FastScape<dim>::execute_fastscape(std::vector<double> &elevation,
+                                      std::vector<double> &extra_vtk_field,
+                                      std::vector<double> &velocity_x,
+                                      std::vector<double> &velocity_y,
+                                      std::vector<double> &velocity_z,
+                                      std::vector<double> &bedrock_transport_coefficient_array,
+                                      const double        &fastscape_timestep_in_years,
+                                      const unsigned int  &fastscape_iterations) const
     {
 #ifdef ASPECT_WITH_FASTSCAPE
       // This function can only be called on the root process where we run
       // Fastscape:
-      Assert (Utilities::MPI::this_mpi_process(this->get_mpi_communicator()) == 0,
-              ExcInternalError());
+      Assert(Utilities::MPI::this_mpi_process(this->get_mpi_communicator()) == 0, ExcInternalError());
 
       this->get_computing_timer().enter_subsection("Execute FastScape");
 
       // Because on the first timestep we will create an initial VTK file before running FastScape
       // and a second after, we first set the visualization step to zero.
-      unsigned int visualization_step = 0;
-      const unsigned int current_timestep = this->get_timestep_number ();
-      const std::string dirname = (this->get_output_directory() + "fastscape/");
-      const char *dirname_char=dirname.c_str();
-      const unsigned int dirname_length = dirname.length();
+      unsigned int       visualization_step = 0;
+      const unsigned int current_timestep   = this->get_timestep_number();
+      const std::string  dirname            = (this->get_output_directory() + "fastscape/");
+      const char        *dirname_char       = dirname.c_str();
+      const unsigned int dirname_length     = dirname.length();
 
       // Set time step
       fastscape_set_dt_(&fastscape_timestep_in_years);
-      this->get_pcout() << "   Executing FastScape... " << (fastscape_iterations) << " timesteps of " << fastscape_timestep_in_years << " years." << std::endl;
+      this->get_pcout() << "   Executing FastScape... " << (fastscape_iterations) << " timesteps of " << fastscape_timestep_in_years
+                        << " years." << std::endl;
       {
         // If it is the first timestep, write an initial VTK file.
         if (current_timestep == 1)
           {
-#ifdef ASPECT_HAVE_FASTSCAPE_NAMED_VTK
+#  ifdef ASPECT_HAVE_FASTSCAPE_NAMED_VTK
             this->get_pcout() << "      Writing initial VTK..." << std::endl;
             // FastScape by default visualizes a field called HHHHH,
             // and the parameter this shows will be whatever is given as the first
             // position. extra_vtk_field is set to the river incision rate by default.
-            fastscape_named_vtk_(extra_vtk_field.data(),
-                                 &vexp,
-                                 &visualization_step,
-                                 dirname_char,
-                                 &dirname_length);
-#else
+            fastscape_named_vtk_(extra_vtk_field.data(), &vexp, &visualization_step, dirname_char, &dirname_length);
+#  else
             (void)extra_vtk_field;
             (void)vexp;
             (void)visualization_step;
@@ -1030,7 +1010,7 @@ namespace aspect
 
             this->get_pcout() << "      Not writing initial VTK because the FastScape library does not support this functionality."
                               << std::endl;
-#endif
+#  endif
           }
 
         for (unsigned int fastscape_iteration = 0; fastscape_iteration < fastscape_iterations; ++fastscape_iteration)
@@ -1042,20 +1022,14 @@ namespace aspect
               {
                 fastscape_copy_h_(elevation.data());
 
-                set_ghost_nodes(elevation,
-                                velocity_x,
-                                velocity_y,
-                                velocity_z,
-                                bedrock_transport_coefficient_array,
-                                fastscape_timestep_in_years,
-                                false);
+                set_ghost_nodes(
+                  elevation, velocity_x, velocity_y, velocity_z, bedrock_transport_coefficient_array, fastscape_timestep_in_years, false);
 
                 // Set velocity components.
                 if (fastscape_advection_uplift)
                   {
                     fastscape_set_u_(velocity_z.data());
-                    fastscape_set_v_(velocity_x.data(),
-                                     velocity_y.data());
+                    fastscape_set_v_(velocity_x.data(), velocity_y.data());
                   }
 
                 // Set h to new values, and erosional parameters if there have been changes.
@@ -1081,28 +1055,25 @@ namespace aspect
                 // edge case where last_output_time+output_interval==current_time,
                 // we did an output and std::floor sadly rounds to zero. This is done
                 // by forcing std::floor to round 1.0-eps to 1.0.
-                const double magic = 1.0+2.0*std::numeric_limits<double>::epsilon();
-                last_output_time = last_output_time + std::floor((this->get_time()-last_output_time)/output_interval*magic) * output_interval/magic;
+                const double magic = 1.0 + 2.0 * std::numeric_limits<double>::epsilon();
+                last_output_time =
+                  last_output_time + std::floor((this->get_time() - last_output_time) / output_interval * magic) * output_interval / magic;
               }
           }
 
         if (write_vtk)
           {
-#ifdef ASPECT_HAVE_FASTSCAPE_NAMED_VTK
+#  ifdef ASPECT_HAVE_FASTSCAPE_NAMED_VTK
             this->get_pcout() << "      Writing FastScape VTK..." << std::endl;
             visualization_step = current_timestep;
             // Get the output directory name and name length again
             // to avoid Fortran error that the dirname has length -1,
             // eventhough dirname_length passes the correct length.
-            const std::string dirname = (this->get_output_directory() + "fastscape/");
-            const char *dirname_char=dirname.c_str();
+            const std::string  dirname        = (this->get_output_directory() + "fastscape/");
+            const char        *dirname_char   = dirname.c_str();
             const unsigned int dirname_length = dirname.length();
-            fastscape_named_vtk_(extra_vtk_field.data(),
-                                 &vexp,
-                                 &visualization_step,
-                                 dirname_char,
-                                 &dirname_length);
-#else
+            fastscape_named_vtk_(extra_vtk_field.data(), &vexp, &visualization_step, dirname_char, &dirname_length);
+#  else
             (void)extra_vtk_field;
             (void)vexp;
             (void)visualization_step;
@@ -1111,45 +1082,46 @@ namespace aspect
 
             this->get_pcout() << "      Not writing FastScape VTK because the FastScape library does not support this functionality."
                               << std::endl;
-#endif
+#  endif
           }
       }
 
       this->get_computing_timer().leave_subsection("Execute FastScape");
 #else
-      (void) elevation;
-      (void) extra_vtk_field;
-      (void) velocity_x;
-      (void) velocity_y;
-      (void) velocity_z;
-      (void) bedrock_transport_coefficient_array;
-      (void) fastscape_timestep_in_years;
-      (void) fastscape_iterations;
+      (void)elevation;
+      (void)extra_vtk_field;
+      (void)velocity_x;
+      (void)velocity_y;
+      (void)velocity_z;
+      (void)bedrock_transport_coefficient_array;
+      (void)fastscape_timestep_in_years;
+      (void)fastscape_iterations;
 #endif
     }
 
 
     template <int dim>
-    void FastScape<dim>::apply_orographic_controls(const std::vector<double> &elevation,
-                                                   std::vector<double> &bedrock_transport_coefficient_array,
-                                                   std::vector<double> &bedrock_river_incision_rate_array) const
+    void
+    FastScape<dim>::apply_orographic_controls(const std::vector<double> &elevation,
+                                              std::vector<double>       &bedrock_transport_coefficient_array,
+                                              std::vector<double>       &bedrock_river_incision_rate_array) const
     {
 #ifdef ASPECT_WITH_FASTSCAPE
       // First for the wind barrier, we find the maximum height and index
       // along each line in the x and y direction.
       // If wind is east or west, we find maximum point for each ny row along x.
-      const unsigned int fastscape_array_size = fastscape_nx*fastscape_ny;
+      const unsigned int               fastscape_array_size = fastscape_nx * fastscape_ny;
       std::vector<std::vector<double>> max_elevation_along_x(2, std::vector<double>(fastscape_ny, 0.0));
       if (wind_direction == 0 || wind_direction == 1)
         {
-          for (unsigned int i=0; i<fastscape_ny; ++i)
+          for (unsigned int i = 0; i < fastscape_ny; ++i)
             {
-              for (unsigned int j=0; j<fastscape_nx; ++j)
+              for (unsigned int j = 0; j < fastscape_nx; ++j)
                 {
-                  if ( elevation[fastscape_nx*i+j] > max_elevation_along_x[0][i])
+                  if (elevation[fastscape_nx * i + j] > max_elevation_along_x[0][i])
                     {
                       // Maximum elevation value along the ny row.
-                      max_elevation_along_x[0][i] = elevation[fastscape_nx*i+j];
+                      max_elevation_along_x[0][i] = elevation[fastscape_nx * i + j];
                       // Location of maximum elevation.
                       max_elevation_along_x[1][i] = j;
                     }
@@ -1161,13 +1133,13 @@ namespace aspect
       std::vector<std::vector<double>> max_elevation_along_y(2, std::vector<double>(fastscape_nx, 0.0));
       if (wind_direction == 2 || wind_direction == 3)
         {
-          for (unsigned int i=0; i<fastscape_nx; ++i)
+          for (unsigned int i = 0; i < fastscape_nx; ++i)
             {
-              for (unsigned int j=0; j<fastscape_ny; ++j)
+              for (unsigned int j = 0; j < fastscape_ny; ++j)
                 {
-                  if ( elevation[fastscape_nx*j+i] > max_elevation_along_y[0][i])
+                  if (elevation[fastscape_nx * j + i] > max_elevation_along_y[0][i])
                     {
-                      max_elevation_along_y[0][i] = elevation[fastscape_nx*j+i];
+                      max_elevation_along_y[0][i] = elevation[fastscape_nx * j + i];
                       max_elevation_along_y[1][i] = j;
                     }
                 }
@@ -1176,111 +1148,117 @@ namespace aspect
 
       // Now we loop through all the points again and apply the factors.
       std::vector<double> control_applied(fastscape_array_size, 0);
-      for (unsigned int i=0; i<fastscape_ny; ++i)
+      for (unsigned int i = 0; i < fastscape_ny; ++i)
         {
           // Factor from wind barrier. Apply a switch based off wind direction.
           // Where 0 is wind going to the west, 1 the east, 2 the south, and 3 the north.
-          for (unsigned int j=0; j<fastscape_nx; ++j)
+          for (unsigned int j = 0; j < fastscape_nx; ++j)
             {
               switch (wind_direction)
                 {
-                  case 0 :
-                  {
-                    // If we are above the set elevation, and on the correct side based on the wind direction apply
-                    // the factor. Apply this regardless of whether or not we stack controls.
-                    if ( (max_elevation_along_x[0][i] > wind_barrier_elevation) && (j < max_elevation_along_x[1][i]) )
-                      {
-                        bedrock_river_incision_rate_array[fastscape_nx*i+j] *= wind_barrier_erosional_factor;
-                        bedrock_transport_coefficient_array[fastscape_nx*i+j] *= wind_barrier_erosional_factor;
-                        control_applied[fastscape_nx*i+j] = 1;
-                      }
-                    break;
-                  }
-                  case 1 :
-                  {
-                    if ( (max_elevation_along_x[0][i] > wind_barrier_elevation) && (j > max_elevation_along_x[1][i]) )
-                      {
-                        bedrock_river_incision_rate_array[fastscape_nx*i+j] *= wind_barrier_erosional_factor;
-                        bedrock_transport_coefficient_array[fastscape_nx*i+j] *= wind_barrier_erosional_factor;
-                        control_applied[fastscape_nx*i+j] = 1;
-                      }
-                    break;
-                  }
-                  case 2 :
-                  {
-                    if ( (max_elevation_along_y[0][j] > wind_barrier_elevation) && (i > max_elevation_along_y[1][j]) )
-                      {
-                        bedrock_river_incision_rate_array[fastscape_nx*i+j] *= wind_barrier_erosional_factor;
-                        bedrock_transport_coefficient_array[fastscape_nx*i+j] *= wind_barrier_erosional_factor;
-                        control_applied[fastscape_nx*i+j] = 1;
-                      }
-                    break;
-                  }
-                  case 3 :
-                  {
-                    if ( (max_elevation_along_y[0][j] > wind_barrier_elevation) && (i < max_elevation_along_y[1][j]) )
-                      {
-                        bedrock_river_incision_rate_array[fastscape_nx*i+j] *= wind_barrier_erosional_factor;
-                        bedrock_transport_coefficient_array[fastscape_nx*i+j] *= wind_barrier_erosional_factor;
-                        control_applied[fastscape_nx*i+j] = 1;
-                      }
-                    break;
-                  }
-                  default :
+                  case 0:
+                    {
+                      // If we are above the set elevation, and on the correct side based on the wind direction apply
+                      // the factor. Apply this regardless of whether or not we stack controls.
+                      if ((max_elevation_along_x[0][i] > wind_barrier_elevation) && (j < max_elevation_along_x[1][i]))
+                        {
+                          bedrock_river_incision_rate_array[fastscape_nx * i + j] *= wind_barrier_erosional_factor;
+                          bedrock_transport_coefficient_array[fastscape_nx * i + j] *= wind_barrier_erosional_factor;
+                          control_applied[fastscape_nx * i + j] = 1;
+                        }
+                      break;
+                    }
+                  case 1:
+                    {
+                      if ((max_elevation_along_x[0][i] > wind_barrier_elevation) && (j > max_elevation_along_x[1][i]))
+                        {
+                          bedrock_river_incision_rate_array[fastscape_nx * i + j] *= wind_barrier_erosional_factor;
+                          bedrock_transport_coefficient_array[fastscape_nx * i + j] *= wind_barrier_erosional_factor;
+                          control_applied[fastscape_nx * i + j] = 1;
+                        }
+                      break;
+                    }
+                  case 2:
+                    {
+                      if ((max_elevation_along_y[0][j] > wind_barrier_elevation) && (i > max_elevation_along_y[1][j]))
+                        {
+                          bedrock_river_incision_rate_array[fastscape_nx * i + j] *= wind_barrier_erosional_factor;
+                          bedrock_transport_coefficient_array[fastscape_nx * i + j] *= wind_barrier_erosional_factor;
+                          control_applied[fastscape_nx * i + j] = 1;
+                        }
+                      break;
+                    }
+                  case 3:
+                    {
+                      if ((max_elevation_along_y[0][j] > wind_barrier_elevation) && (i < max_elevation_along_y[1][j]))
+                        {
+                          bedrock_river_incision_rate_array[fastscape_nx * i + j] *= wind_barrier_erosional_factor;
+                          bedrock_transport_coefficient_array[fastscape_nx * i + j] *= wind_barrier_erosional_factor;
+                          control_applied[fastscape_nx * i + j] = 1;
+                        }
+                      break;
+                    }
+                  default:
                     AssertThrow(false, ExcMessage("This does not correspond with a wind direction."));
                     break;
                 }
 
               // If we are above the flat elevation and stack controls, apply the flat elevation factor. If we are not
               // stacking controls, apply the factor if the wind barrier was not applied to this point.
-              if (elevation[fastscape_nx*i+j] > flat_elevation)
+              if (elevation[fastscape_nx * i + j] > flat_elevation)
                 {
-                  if ( stack_controls==true || (!stack_controls && (control_applied[fastscape_nx*i+j]==0)) )
+                  if (stack_controls == true || (!stack_controls && (control_applied[fastscape_nx * i + j] == 0)))
                     {
-                      bedrock_river_incision_rate_array[fastscape_nx*i+j] *= flat_erosional_factor;
-                      bedrock_transport_coefficient_array[fastscape_nx*i+j] *= flat_erosional_factor;
+                      bedrock_river_incision_rate_array[fastscape_nx * i + j] *= flat_erosional_factor;
+                      bedrock_transport_coefficient_array[fastscape_nx * i + j] *= flat_erosional_factor;
                     }
                   // If we are not stacking controls and the wind barrier was applied to this point, only
                   // switch to this control if the factor is greater.
-                  else if ( stack_controls==false && (control_applied[fastscape_nx*i+j]==1) && (flat_erosional_factor > wind_barrier_erosional_factor) )
+                  else if (stack_controls == false && (control_applied[fastscape_nx * i + j] == 1) &&
+                           (flat_erosional_factor > wind_barrier_erosional_factor))
                     {
-                      if ( wind_barrier_erosional_factor != 0)
+                      if (wind_barrier_erosional_factor != 0)
                         {
-                          bedrock_river_incision_rate_array[fastscape_nx*i+j] = (bedrock_river_incision_rate_array[fastscape_nx*i+j]/wind_barrier_erosional_factor)*flat_erosional_factor;
-                          bedrock_transport_coefficient_array[fastscape_nx*i+j] = (bedrock_transport_coefficient_array[fastscape_nx*i+j]/wind_barrier_erosional_factor)*flat_erosional_factor;
+                          bedrock_river_incision_rate_array[fastscape_nx * i + j] =
+                            (bedrock_river_incision_rate_array[fastscape_nx * i + j] / wind_barrier_erosional_factor) *
+                            flat_erosional_factor;
+                          bedrock_transport_coefficient_array[fastscape_nx * i + j] =
+                            (bedrock_transport_coefficient_array[fastscape_nx * i + j] / wind_barrier_erosional_factor) *
+                            flat_erosional_factor;
                         }
                       // If a wind barrier factor of zero was applied for some reason, we set it back to the default
                       // and apply the flat_erosional_factor.
                       else
                         {
-                          bedrock_river_incision_rate_array[fastscape_nx*i+j] *= flat_erosional_factor;
-                          bedrock_transport_coefficient_array[fastscape_nx*i+j] *= flat_erosional_factor;
+                          bedrock_river_incision_rate_array[fastscape_nx * i + j] *= flat_erosional_factor;
+                          bedrock_transport_coefficient_array[fastscape_nx * i + j] *= flat_erosional_factor;
                         }
                     }
                 }
             }
         }
 #else
-      (void) elevation;
-      (void) bedrock_transport_coefficient_array;
-      (void) bedrock_river_incision_rate_array;
+      (void)elevation;
+      (void)bedrock_transport_coefficient_array;
+      (void)bedrock_river_incision_rate_array;
 #endif
     }
 
 
     template <int dim>
-    void FastScape<dim>::set_ghost_nodes(std::vector<double> &elevation,
-                                         std::vector<double> &velocity_x,
-                                         std::vector<double> &velocity_y,
-                                         std::vector<double> &velocity_z,
-                                         std::vector<double> &bedrock_transport_coefficient_array,
-                                         const double &fastscape_timestep_in_years,
-                                         const bool init) const
+    void
+    FastScape<dim>::set_ghost_nodes(std::vector<double> &elevation,
+                                    std::vector<double> &velocity_x,
+                                    std::vector<double> &velocity_y,
+                                    std::vector<double> &velocity_z,
+                                    std::vector<double> &bedrock_transport_coefficient_array,
+                                    const double        &fastscape_timestep_in_years,
+                                    const bool           init) const
     {
 #ifdef ASPECT_WITH_FASTSCAPE
       // Copy the slopes at each point, this will be used to set an H
       // at the ghost nodes if a boundary mass flux is given.
-      const unsigned int fastscape_array_size = fastscape_nx*fastscape_ny;
+      const unsigned int  fastscape_array_size = fastscape_nx * fastscape_ny;
       std::vector<double> slopep(fastscape_array_size);
 
       if (!init)
@@ -1290,23 +1268,23 @@ namespace aspect
       // this involves setting the node to the same values of v and h as the inward node.
       // With the inward node being above or below for the bottom and top rows of ghost nodes,
       // or to the left and right for the right and left columns of ghost nodes.
-      for (unsigned int j=0; j<fastscape_ny; ++j)
+      for (unsigned int j = 0; j < fastscape_ny; ++j)
         {
           // Nx*j will give us the row we're in, and one is subtracted as FastScape starts from 1 not zero.
           // If we're on the left, the multiple of the row will always represent the first node.
           // Subtracting one from the row above this gives us the last node of the previous row.
-          const unsigned int index_left = fastscape_nx*j;
-          const unsigned int index_right = fastscape_nx*(j+1)-1;
-          double slope = 0;
+          const unsigned int index_left  = fastscape_nx * j;
+          const unsigned int index_right = fastscape_nx * (j + 1) - 1;
+          double             slope       = 0;
 
           // Here we set the ghost nodes to the value of the nodes next to them, where for the left we
           // add one to go to the node to the right, and for the right side
           // we subtract one to go to the inner node to the left.
           // For xy velocities, this is always set.
-          velocity_x[index_left] = velocity_x[index_left+1];
-          velocity_y[index_left] = velocity_y[index_left+1];
-          velocity_x[index_right] = velocity_x[index_right-1];
-          velocity_y[index_right] = velocity_y[index_right-1];
+          velocity_x[index_left]  = velocity_x[index_left + 1];
+          velocity_y[index_left]  = velocity_y[index_left + 1];
+          velocity_x[index_right] = velocity_x[index_right - 1];
+          velocity_y[index_right] = velocity_y[index_right - 1];
 
           // If we are not fixing the base level, set the uplift velocities and
           // adjust the term so that the elevation at the end will match that of
@@ -1316,8 +1294,10 @@ namespace aspect
           // power law but not all boundaries need to be fixed.
           if (!use_fixed_erosional_base)
             {
-              velocity_z[index_left] = velocity_z[index_left+1] + (elevation[index_left+1] - elevation[index_left])/fastscape_timestep_in_years;
-              velocity_z[index_right] = velocity_z[index_right-1] + (elevation[index_right-1] - elevation[index_right])/fastscape_timestep_in_years;
+              velocity_z[index_left] =
+                velocity_z[index_left + 1] + (elevation[index_left + 1] - elevation[index_left]) / fastscape_timestep_in_years;
+              velocity_z[index_right] =
+                velocity_z[index_right - 1] + (elevation[index_right - 1] - elevation[index_right]) / fastscape_timestep_in_years;
             }
 
           if (init)
@@ -1327,17 +1307,17 @@ namespace aspect
               // will set it equal to the node next to it, and finally adjust based on user-defined
               // influx if necessary. FastScape calculates the slope by looking at all
               // nodes surrounding the point so we need to consider the slope over 2 dx.
-              slope = left_flux/bedrock_transport_coefficient_array[j];
+              slope = left_flux / bedrock_transport_coefficient_array[j];
               if (left == 1 && use_fixed_erosional_base)
                 elevation[index_left] = h_erosional_base;
               else
-                elevation[index_left] = elevation[index_left+1] + slope*2*fastscape_dx;
+                elevation[index_left] = elevation[index_left + 1] + slope * 2 * fastscape_dx;
 
-              slope = right_flux/bedrock_transport_coefficient_array[j];
+              slope = right_flux / bedrock_transport_coefficient_array[j];
               if (right == 1 && use_fixed_erosional_base)
                 elevation[index_right] = h_erosional_base;
               else
-                elevation[index_right] = elevation[index_right-1] + slope*2*fastscape_dx;
+                elevation[index_right] = elevation[index_right - 1] + slope * 2 * fastscape_dx;
             }
 
           // If we have flux through a boundary, we need to update the height to keep the correct slope.
@@ -1352,9 +1332,11 @@ namespace aspect
             {
               slope = 0;
               if (j == 0)
-                slope = left_flux / bedrock_transport_coefficient_array[j] - std::tan(slopep[index_left + fastscape_nx + 1] * numbers::PI / 180.);
+                slope =
+                  left_flux / bedrock_transport_coefficient_array[j] - std::tan(slopep[index_left + fastscape_nx + 1] * numbers::PI / 180.);
               else if (j == (fastscape_ny - 1))
-                slope = left_flux / bedrock_transport_coefficient_array[j] - std::tan(slopep[index_left - fastscape_nx + 1] * numbers::PI / 180.);
+                slope =
+                  left_flux / bedrock_transport_coefficient_array[j] - std::tan(slopep[index_left - fastscape_nx + 1] * numbers::PI / 180.);
               else
                 slope = left_flux / bedrock_transport_coefficient_array[j] - std::tan(slopep[index_left + 1] * numbers::PI / 180.);
 
@@ -1365,9 +1347,11 @@ namespace aspect
             {
               slope = 0;
               if (j == 0)
-                slope = right_flux / bedrock_transport_coefficient_array[j] - std::tan(slopep[index_right + fastscape_nx - 1] * numbers::PI / 180.);
+                slope = right_flux / bedrock_transport_coefficient_array[j] -
+                        std::tan(slopep[index_right + fastscape_nx - 1] * numbers::PI / 180.);
               else if (j == (fastscape_ny - 1))
-                slope = right_flux / bedrock_transport_coefficient_array[j] - std::tan(slopep[index_right - fastscape_nx - 1] * numbers::PI / 180.);
+                slope = right_flux / bedrock_transport_coefficient_array[j] -
+                        std::tan(slopep[index_right - fastscape_nx - 1] * numbers::PI / 180.);
               else
                 slope = right_flux / bedrock_transport_coefficient_array[j] - std::tan(slopep[index_right - 1] * numbers::PI / 180.);
 
@@ -1381,7 +1365,7 @@ namespace aspect
           if ((left == 0 && right == 0) || leftright_ghost_nodes_periodic == true)
             {
               // First we assume that flow is going to the left.
-              unsigned int side = index_left;
+              unsigned int side    = index_left;
               unsigned int op_side = index_right;
 
               // Indexing depending on which side the ghost node is being set to.
@@ -1404,14 +1388,16 @@ namespace aspect
               // amount of diffusion and SPL.
 
               // From the previous example this sets 8 to 2
-              velocity_x[index_right] = velocity_x[index_left+2];
-              velocity_y[index_right] = velocity_y[index_left+2];
-              velocity_z[index_right] = velocity_z[index_left+2] + (elevation[index_left+2] - elevation[index_right])/fastscape_timestep_in_years;
+              velocity_x[index_right] = velocity_x[index_left + 2];
+              velocity_y[index_right] = velocity_y[index_left + 2];
+              velocity_z[index_right] =
+                velocity_z[index_left + 2] + (elevation[index_left + 2] - elevation[index_right]) / fastscape_timestep_in_years;
 
               // This sets 0 to 6.
-              velocity_x[index_left] = velocity_x[index_right-2];
-              velocity_y[index_left] = velocity_y[index_right-2];
-              velocity_z[index_left] = velocity_z[index_right-2] + (elevation[index_right-2] - elevation[index_left])/fastscape_timestep_in_years;
+              velocity_x[index_left] = velocity_x[index_right - 2];
+              velocity_y[index_left] = velocity_y[index_right - 2];
+              velocity_z[index_left] =
+                velocity_z[index_right - 2] + (elevation[index_right - 2] - elevation[index_left]) / fastscape_timestep_in_years;
 
               // If nodes on both sides are going the same direction, then set the respective
               // aspect boundary node to equal the other side (e.g., setting 1 to 7 in the previous
@@ -1420,17 +1406,17 @@ namespace aspect
               // TODO: With changes since initial implementation of the ghost nodes, I am not sure
               // if anything below this point is necessary. Maybe setting the two nodes is sufficient
               // but this would need further testing.
-              if (velocity_x[index_right-1] > 0 && velocity_x[index_left+1] >= 0)
+              if (velocity_x[index_right - 1] > 0 && velocity_x[index_left + 1] >= 0)
                 {
-                  side = index_right;
+                  side    = index_right;
                   op_side = index_left;
-                  jj = -1;
+                  jj      = -1;
                 }
-              else if (velocity_x[index_right-1] <= 0 && velocity_x[index_left+1] < 0)
+              else if (velocity_x[index_right - 1] <= 0 && velocity_x[index_left + 1] < 0)
                 {
-                  side = index_left;
+                  side    = index_left;
                   op_side = index_right;
-                  jj = 1;
+                  jj      = 1;
                 }
               else
                 continue;
@@ -1444,40 +1430,42 @@ namespace aspect
               // with how we set the ghost nodes. E.g., from the
               // above example if 1 and 7 are both surrounded by
               // identical nodes (6 and 2) do they need to be set?
-              elevation[op_side-jj] = elevation[side+jj];
-              velocity_x[op_side-jj] = velocity_x[side+jj];
-              velocity_y[op_side-jj] = velocity_y[side+jj];
-              velocity_z[op_side-jj] = velocity_z[side+jj];
+              elevation[op_side - jj]  = elevation[side + jj];
+              velocity_x[op_side - jj] = velocity_x[side + jj];
+              velocity_y[op_side - jj] = velocity_y[side + jj];
+              velocity_z[op_side - jj] = velocity_z[side + jj];
             }
         }
 
       // Now do the same for the top and bottom ghost nodes.
-      for (unsigned int j=0; j<fastscape_nx; ++j)
+      for (unsigned int j = 0; j < fastscape_nx; ++j)
         {
           // The bottom row indexes are 0 to nx-1.
           const unsigned int index_bot = j;
 
           // Nx multiplied by (total rows - 1) gives us the start of
           // the top row, and j gives the position in the row.
-          const unsigned int index_top = fastscape_nx*(fastscape_ny-1)+j;
-          double slope = 0;
+          const unsigned int index_top = fastscape_nx * (fastscape_ny - 1) + j;
+          double             slope     = 0;
 
           // Here we set the ghost nodes to the value of the nodes below or above
           // them, where for the bottom we go up one row (fastscape_nx) and for the
           // top we go down one row (-fastscape_new). For xy velocities this is
           // always called.
-          velocity_y[index_top] = velocity_y[index_top-fastscape_nx];
-          velocity_x[index_top] = velocity_x[index_top-fastscape_nx];
-          velocity_y[index_bot] = velocity_y[index_bot+fastscape_nx];
-          velocity_x[index_bot] = velocity_x[index_bot+fastscape_nx];
+          velocity_y[index_top] = velocity_y[index_top - fastscape_nx];
+          velocity_x[index_top] = velocity_x[index_top - fastscape_nx];
+          velocity_y[index_bot] = velocity_y[index_bot + fastscape_nx];
+          velocity_x[index_bot] = velocity_x[index_bot + fastscape_nx];
 
           // If we are not fixing the base level, set the uplift velocities and
           // adjust the term so that the elevation at the end will match that of
           // the ASPECT boundary node.
           if (!use_fixed_erosional_base)
             {
-              velocity_z[index_top] = velocity_z[index_top-fastscape_nx] + (elevation[index_top - fastscape_nx] - elevation[index_top])/fastscape_timestep_in_years;
-              velocity_z[index_bot] = velocity_z[index_bot+fastscape_nx] + (elevation[index_bot + fastscape_nx] - elevation[index_bot])/fastscape_timestep_in_years;
+              velocity_z[index_top] = velocity_z[index_top - fastscape_nx] +
+                                      (elevation[index_top - fastscape_nx] - elevation[index_top]) / fastscape_timestep_in_years;
+              velocity_z[index_bot] = velocity_z[index_bot + fastscape_nx] +
+                                      (elevation[index_bot + fastscape_nx] - elevation[index_bot]) / fastscape_timestep_in_years;
             }
 
           if (init)
@@ -1486,22 +1474,24 @@ namespace aspect
               if (top == 1 && use_fixed_erosional_base)
                 elevation[index_top] = h_erosional_base;
               else
-                elevation[index_top] = elevation[index_top-fastscape_nx] + slope*2*fastscape_dx;
+                elevation[index_top] = elevation[index_top - fastscape_nx] + slope * 2 * fastscape_dx;
 
               slope = bottom_flux / bedrock_transport_coefficient_array[j];
               if (bottom == 1 && use_fixed_erosional_base)
                 elevation[index_bot] = h_erosional_base;
               else
-                elevation[index_bot] = elevation[index_bot + fastscape_nx] + slope*2*fastscape_dx;
+                elevation[index_bot] = elevation[index_bot + fastscape_nx] + slope * 2 * fastscape_dx;
             }
 
           if (!init && top_flux > 0)
             {
               slope = 0;
               if (j == 0)
-                slope = top_flux / bedrock_transport_coefficient_array[j] - std::tan(slopep[index_top - fastscape_nx + 1] * numbers::PI / 180.);
+                slope =
+                  top_flux / bedrock_transport_coefficient_array[j] - std::tan(slopep[index_top - fastscape_nx + 1] * numbers::PI / 180.);
               else if (j == (fastscape_nx - 1))
-                slope = top_flux / bedrock_transport_coefficient_array[j] - std::tan(slopep[index_top - fastscape_nx - 1] * numbers::PI / 180.);
+                slope =
+                  top_flux / bedrock_transport_coefficient_array[j] - std::tan(slopep[index_top - fastscape_nx - 1] * numbers::PI / 180.);
               else
                 slope = top_flux / bedrock_transport_coefficient_array[j] - std::tan(slopep[index_top - fastscape_nx] * numbers::PI / 180.);
 
@@ -1512,68 +1502,73 @@ namespace aspect
             {
               slope = 0;
               if (j == 0)
-                slope = bottom_flux / bedrock_transport_coefficient_array[j] - std::tan(slopep[index_bot + fastscape_nx + 1] * numbers::PI / 180.);
+                slope = bottom_flux / bedrock_transport_coefficient_array[j] -
+                        std::tan(slopep[index_bot + fastscape_nx + 1] * numbers::PI / 180.);
               else if (j == (fastscape_nx - 1))
-                slope = bottom_flux / bedrock_transport_coefficient_array[j] - std::tan(slopep[index_bot + fastscape_nx - 1] * numbers::PI / 180.);
+                slope = bottom_flux / bedrock_transport_coefficient_array[j] -
+                        std::tan(slopep[index_bot + fastscape_nx - 1] * numbers::PI / 180.);
               else
-                slope = bottom_flux / bedrock_transport_coefficient_array[j] - std::tan(slopep[index_bot + fastscape_nx] * numbers::PI / 180.);
+                slope =
+                  bottom_flux / bedrock_transport_coefficient_array[j] - std::tan(slopep[index_bot + fastscape_nx] * numbers::PI / 180.);
 
               elevation[index_bot] = elevation[index_bot] + slope * 2 * fastscape_dx;
             }
 
           if ((bottom == 0 && top == 0) || topbottom_ghost_nodes_periodic == true)
             {
-              unsigned int side = index_bot;
+              unsigned int side    = index_bot;
               unsigned int op_side = index_top;
-              int jj = fastscape_nx;
+              int          jj      = fastscape_nx;
 
               // See documentation within left and right ghost nodes for how these are done.
               // Set top ghost node
-              velocity_x[index_top] = velocity_x[index_bot + 2*fastscape_nx];
-              velocity_y[index_top] = velocity_y[index_bot + 2*fastscape_nx];
-              velocity_z[index_top] = velocity_z[index_bot + 2*fastscape_nx] + (elevation[index_bot + 2*fastscape_nx] - elevation[index_top])/fastscape_timestep_in_years;
+              velocity_x[index_top] = velocity_x[index_bot + 2 * fastscape_nx];
+              velocity_y[index_top] = velocity_y[index_bot + 2 * fastscape_nx];
+              velocity_z[index_top] = velocity_z[index_bot + 2 * fastscape_nx] +
+                                      (elevation[index_bot + 2 * fastscape_nx] - elevation[index_top]) / fastscape_timestep_in_years;
 
               // Set bottom ghost node
-              velocity_x[index_bot] = velocity_x[index_top - 2*fastscape_nx];
-              velocity_y[index_bot] = velocity_y[index_top - 2*fastscape_nx];
-              velocity_z[index_bot] = velocity_z[index_top - 2*fastscape_nx] + (elevation[index_top - 2*fastscape_nx] - elevation[index_bot])/fastscape_timestep_in_years;
+              velocity_x[index_bot] = velocity_x[index_top - 2 * fastscape_nx];
+              velocity_y[index_bot] = velocity_y[index_top - 2 * fastscape_nx];
+              velocity_z[index_bot] = velocity_z[index_top - 2 * fastscape_nx] +
+                                      (elevation[index_top - 2 * fastscape_nx] - elevation[index_bot]) / fastscape_timestep_in_years;
 
-              if (velocity_y[index_bot+fastscape_nx-1] > 0 && velocity_y[index_top-fastscape_nx-1] >= 0)
+              if (velocity_y[index_bot + fastscape_nx - 1] > 0 && velocity_y[index_top - fastscape_nx - 1] >= 0)
                 {
-                  side = index_top;
+                  side    = index_top;
                   op_side = index_bot;
-                  jj = -fastscape_nx;
+                  jj      = -fastscape_nx;
                 }
-              else if (velocity_y[index_bot+fastscape_nx-1] <= 0 && velocity_y[index_top-fastscape_nx-1] < 0)
+              else if (velocity_y[index_bot + fastscape_nx - 1] <= 0 && velocity_y[index_top - fastscape_nx - 1] < 0)
                 {
-                  side = index_bot;
+                  side    = index_bot;
                   op_side = index_top;
-                  jj = fastscape_nx;
+                  jj      = fastscape_nx;
                 }
               else
                 continue;
 
               // Set opposing ASPECT boundary so it's periodic.
-              elevation[op_side-jj] = elevation[side+jj];
-              velocity_x[op_side-jj] = velocity_x[side+jj];
-              velocity_y[op_side-jj] = velocity_y[side+jj];
-              velocity_z[op_side-jj] = velocity_z[side+jj];
+              elevation[op_side - jj]  = elevation[side + jj];
+              velocity_x[op_side - jj] = velocity_x[side + jj];
+              velocity_y[op_side - jj] = velocity_y[side + jj];
+              velocity_z[op_side - jj] = velocity_z[side + jj];
             }
         }
 #else
-      (void) elevation;
-      (void) velocity_x;
-      (void) velocity_y;
-      (void) velocity_z;
-      (void) bedrock_transport_coefficient_array;
-      (void) fastscape_timestep_in_years;
-      (void) init;
+      (void)elevation;
+      (void)velocity_x;
+      (void)velocity_y;
+      (void)velocity_z;
+      (void)bedrock_transport_coefficient_array;
+      (void)fastscape_timestep_in_years;
+      (void)init;
 #endif
     }
 
     template <int dim>
-    bool FastScape<dim>::is_ghost_node(const unsigned int &index,
-                                       const bool &exclude_boundaries) const
+    bool
+    FastScape<dim>::is_ghost_node(const unsigned int &index, const bool &exclude_boundaries) const
     {
 #ifdef ASPECT_WITH_FASTSCAPE
       if (use_ghost_nodes == false && exclude_boundaries == false)
@@ -1584,82 +1579,82 @@ namespace aspect
 
       // If we are at a boundary node and ghost nodes are enabled
       // or we are excluding the boundaries then return true.
-      if (row == 0 || row == fastscape_ny-1 || col == 0 || col == fastscape_nx-1)
+      if (row == 0 || row == fastscape_ny - 1 || col == 0 || col == fastscape_nx - 1)
         return true;
       else
         return false;
 #else
-      (void) index;
-      (void) exclude_boundaries;
+      (void)index;
+      (void)exclude_boundaries;
       return false;
 #endif
     }
 
 
     template <int dim>
-    Table<dim,double>
+    Table<dim, double>
     FastScape<dim>::fill_data_table(const std::vector<double> &values,
-                                    const TableIndices<dim> &size_idx,
-                                    const unsigned int &fastscape_nx,
-                                    const unsigned int &fastscape_ny) const
+                                    const TableIndices<dim>   &size_idx,
+                                    const unsigned int        &fastscape_nx,
+                                    const unsigned int        &fastscape_ny) const
     {
 #ifdef ASPECT_WITH_FASTSCAPE
       // Create data table based off of the given size.
-      Table<dim,double> data_table;
-      data_table.TableBase<dim,double>::reinit(size_idx);
+      Table<dim, double> data_table;
+      data_table.TableBase<dim, double>::reinit(size_idx);
 
       // Loop through the data table and fill it with the velocities from FastScape.
       if constexpr (dim == 2)
         {
           std::vector<double> values_2d(fastscape_nx);
 
-          for (unsigned int x=use_ghost_nodes; x<(fastscape_nx-use_ghost_nodes); ++x)
+          for (unsigned int x = use_ghost_nodes; x < (fastscape_nx - use_ghost_nodes); ++x)
             {
               // If we do not average the values, then use a slice near the center.
               if (!average_out_of_plane_surface_topography)
                 {
-                  const unsigned int index = x+fastscape_nx*static_cast<int>(std::round((fastscape_ny-use_ghost_nodes)/2));
+                  const unsigned int index = x + fastscape_nx * static_cast<int>(std::round((fastscape_ny - use_ghost_nodes) / 2));
 
                   // If we are using the ghost nodes, then the x value locations need to be shifted back 1
                   // e.g., given a 4x4 mesh an index of 5 would correspond to an x of 1 and y of 1 in the loop,
                   // but should correspond to 0,0 for ASPECT.
-                  values_2d[x-use_ghost_nodes] = values[index];
+                  values_2d[x - use_ghost_nodes] = values[index];
                 }
               // Here we use average velocities across the y nodes, excluding the ghost nodes (top and bottom row).
               // Note: If ghost nodes are turned off, boundary effects may influence this.
               else
                 {
-                  for (unsigned int y=use_ghost_nodes; y<(fastscape_ny-use_ghost_nodes); ++y)
+                  for (unsigned int y = use_ghost_nodes; y < (fastscape_ny - use_ghost_nodes); ++y)
                     {
-                      const unsigned int index = x+fastscape_nx*y;
-                      values_2d[x-use_ghost_nodes] += values[index];
+                      const unsigned int index = x + fastscape_nx * y;
+                      values_2d[x - use_ghost_nodes] += values[index];
                     }
-                  values_2d[x-use_ghost_nodes] = values_2d[x-use_ghost_nodes]/(fastscape_ny-2*use_ghost_nodes);
+                  values_2d[x - use_ghost_nodes] = values_2d[x - use_ghost_nodes] / (fastscape_ny - 2 * use_ghost_nodes);
                 }
             }
 
-          for (unsigned int x=0; x<data_table.size()[0]; ++x)
-            for (unsigned int y=0; y<(data_table.size()[1]); ++y)
+          for (unsigned int x = 0; x < data_table.size()[0]; ++x)
+            for (unsigned int y = 0; y < (data_table.size()[1]); ++y)
               // Convert back to m/s.
-              data_table(x,y) = values_2d[x] / year_in_seconds;
+              data_table(x, y) = values_2d[x] / year_in_seconds;
         }
       else
         {
           // Indexes through x, y, and z.
-          for (unsigned int x=0; x<data_table.size()[0]; ++x)
-            for (unsigned int y=0; y<data_table.size()[1]; ++y)
-              for (unsigned int z=0; z<data_table.size()[2]; ++z)
+          for (unsigned int x = 0; x < data_table.size()[0]; ++x)
+            for (unsigned int y = 0; y < data_table.size()[1]; ++y)
+              for (unsigned int z = 0; z < data_table.size()[2]; ++z)
                 // Convert back to m/s.
-                data_table(x,y,z) = values[(fastscape_nx+1)*use_ghost_nodes+fastscape_nx*y+x] / year_in_seconds;
+                data_table(x, y, z) = values[(fastscape_nx + 1) * use_ghost_nodes + fastscape_nx * y + x] / year_in_seconds;
         }
 
       return data_table;
 #else
-      (void) values;
-      (void) size_idx;
-      (void) fastscape_nx;
-      (void) fastscape_ny;
-      return Table<dim,double>();
+      (void)values;
+      (void)size_idx;
+      (void)fastscape_nx;
+      (void)fastscape_ny;
+      return Table<dim, double>();
 #endif
     }
 
@@ -1667,55 +1662,47 @@ namespace aspect
 
     template <int dim>
     double
-    FastScape<dim>::
-    boundary_composition (const types::boundary_id boundary_indicator,
-                          const Point<dim> &position,
-                          const unsigned int compositional_field) const
+    FastScape<dim>::boundary_composition(const types::boundary_id boundary_indicator,
+                                         const Point<dim>        &position,
+                                         const unsigned int       compositional_field) const
     {
 #ifdef ASPECT_WITH_FASTSCAPE
       // FastScape is only applied to the top boundary of the model domain.
       // If a composition value is requested for any other boundary,
       // return zero.
-      if (boundary_indicator != this->get_geometry_model().translate_symbolic_boundary_name_to_id ("top"))
+      if (boundary_indicator != this->get_geometry_model().translate_symbolic_boundary_name_to_id("top"))
         return 0.0;
 
       // Two fields often used in conjunction with the FastScape plugin
       // are sediment_age and deposition_depth. If the fields exist, and
       // their boundary values are requested, set them here.
-      if ( this->introspection().compositional_name_exists("sediment_age") &&
-           compositional_field == this->introspection().compositional_index_for_name("sediment_age"))
+      if (this->introspection().compositional_name_exists("sediment_age") &&
+          compositional_field == this->introspection().compositional_index_for_name("sediment_age"))
         {
-          return this->get_parameters().convert_to_years ? this->get_time()/year_in_seconds : this->get_time();
+          return this->get_parameters().convert_to_years ? this->get_time() / year_in_seconds : this->get_time();
         }
-      else if ( this->introspection().compositional_name_exists("deposition_depth") &&
-                compositional_field == this->introspection().compositional_index_for_name("deposition_depth"))
+      else if (this->introspection().compositional_name_exists("deposition_depth") &&
+               compositional_field == this->introspection().compositional_index_for_name("deposition_depth"))
         {
           // Get the time-dependent sea level if necessary.
-          const double current_sea_level = use_sea_level_function
-                                           ? sea_level_function.value(Point<1>())
-                                           : sea_level_constant_value;
+          const double current_sea_level = use_sea_level_function ? sea_level_function.value(Point<1>()) : sea_level_constant_value;
 
           // FastScape only works on box geometries, so the last component of the position is the height.
           // The sea level is defined with respect to the original, unperturbed height of the box.
           // Sediments deposited below sea level will have a positive deposition depth.
-          const GeometryModel::Box<dim> *box_geometry
-            = dynamic_cast<const GeometryModel::Box<dim>*> (&this->get_geometry_model());
-          const GeometryModel::TwoMergedBoxes<dim> *two_merged_boxes_geometry
-            = dynamic_cast<const GeometryModel::TwoMergedBoxes<dim>*> (&this->get_geometry_model());
-          const Point<dim> origin = (box_geometry != nullptr
-                                     ? box_geometry->get_origin()
-                                     : two_merged_boxes_geometry->get_origin());
-          const Point<dim> extents = (box_geometry != nullptr
-                                      ? box_geometry->get_extents()
-                                      : two_merged_boxes_geometry->get_extents());
-          return origin[dim-1] + extents[dim-1] + current_sea_level - position[dim-1];
+          const GeometryModel::Box<dim> *box_geometry = dynamic_cast<const GeometryModel::Box<dim> *>(&this->get_geometry_model());
+          const GeometryModel::TwoMergedBoxes<dim> *two_merged_boxes_geometry =
+            dynamic_cast<const GeometryModel::TwoMergedBoxes<dim> *>(&this->get_geometry_model());
+          const Point<dim> origin  = (box_geometry != nullptr ? box_geometry->get_origin() : two_merged_boxes_geometry->get_origin());
+          const Point<dim> extents = (box_geometry != nullptr ? box_geometry->get_extents() : two_merged_boxes_geometry->get_extents());
+          return origin[dim - 1] + extents[dim - 1] + current_sea_level - position[dim - 1];
         }
       else
         return 0.0;
 #else
-      (void) boundary_indicator;
-      (void) position;
-      (void) compositional_field;
+      (void)boundary_indicator;
+      (void)position;
+      (void)compositional_field;
       return 0.0;
 #endif
     }
@@ -1724,12 +1711,13 @@ namespace aspect
 
     template <int dim>
     template <class Archive>
-    void FastScape<dim>::serialize (Archive &ar, const unsigned int)
+    void
+    FastScape<dim>::serialize(Archive &ar, const unsigned int)
     {
 #ifdef ASPECT_WITH_FASTSCAPE
       ar &last_output_time;
 #else
-      (void) ar;
+      (void)ar;
 #endif
     }
 
@@ -1737,7 +1725,7 @@ namespace aspect
 
     template <int dim>
     void
-    FastScape<dim>::save (std::map<std::string, std::string> &status_strings) const
+    FastScape<dim>::save(std::map<std::string, std::string> &status_strings) const
     {
 #ifdef ASPECT_WITH_FASTSCAPE
       // FastScape elevation values for restart.
@@ -1754,7 +1742,7 @@ namespace aspect
       // is run solely on that process it shouldn't cause issues.
       if (Utilities::MPI::this_mpi_process(this->get_mpi_communicator()) == 0)
         {
-          const unsigned int fastscape_array_size = fastscape_nx*fastscape_ny;
+          const unsigned int fastscape_array_size = fastscape_nx * fastscape_ny;
           elevation.resize(fastscape_array_size);
           basement.resize(fastscape_array_size);
           silt_fraction.resize(fastscape_array_size);
@@ -1782,7 +1770,7 @@ namespace aspect
       // query the completed string below.
       std::ostringstream os;
       {
-        aspect::oarchive oa (os);
+        aspect::oarchive oa(os);
 
         // Save everything that is a member variable:
         oa << (*this);
@@ -1798,7 +1786,7 @@ namespace aspect
 
       status_strings["FastScape"] = os.str();
 #else
-      (void) status_strings;
+      (void)status_strings;
 #endif
     }
 
@@ -1806,7 +1794,7 @@ namespace aspect
 
     template <int dim>
     void
-    FastScape<dim>::load (const std::map<std::string, std::string> &status_strings)
+    FastScape<dim>::load(const std::map<std::string, std::string> &status_strings)
     {
 #ifdef ASPECT_WITH_FASTSCAPE
       // FastScape elevation values for restart.
@@ -1820,8 +1808,8 @@ namespace aspect
 
       if (status_strings.find("FastScape") != status_strings.end())
         {
-          std::istringstream is (status_strings.find("FastScape")->second);
-          aspect::iarchive ia (is);
+          std::istringstream is(status_strings.find("FastScape")->second);
+          aspect::iarchive   ia(is);
 
           // Read in all of the variables that are members.
           ia >> (*this);
@@ -1832,16 +1820,13 @@ namespace aspect
             ia >> elevation >> basement >> silt_fraction;
         }
       else
-        AssertThrow (false, ExcMessage("Trying to load data for FastScape from a checkpoint, but no data seems to have been written."));
+        AssertThrow(false, ExcMessage("Trying to load data for FastScape from a checkpoint, but no data seems to have been written."));
 
       // Initialize FastScape on root processor.
       if (Utilities::MPI::this_mpi_process(this->get_mpi_communicator()) == 0)
-        initialize_fastscape(elevation,
-                             basement,
-                             silt_fraction,
-                             true);
+        initialize_fastscape(elevation, basement, silt_fraction, true);
 #else
-      (void) status_strings;
+      (void)status_strings;
 #endif
     }
 
@@ -1852,7 +1837,7 @@ namespace aspect
 #ifdef ASPECT_WITH_FASTSCAPE
       // Set the time in seconds or years in each
       // of the used functions.
-      const double time = this->get_time();
+      const double time        = this->get_time();
       const double scaled_time = this->convert_output_to_years() ? time / year_in_seconds : time;
 
       if (use_kd_distribution_function)
@@ -1875,8 +1860,7 @@ namespace aspect
 
     template <int dim>
     bool
-    FastScape<dim>::
-    needs_surface_stabilization () const
+    FastScape<dim>::needs_surface_stabilization() const
     {
 #ifdef ASPECT_WITH_FASTSCAPE
       return true;
@@ -1888,206 +1872,231 @@ namespace aspect
 
 
     template <int dim>
-    void FastScape<dim>::declare_parameters(ParameterHandler &prm)
+    void
+    FastScape<dim>::declare_parameters(ParameterHandler &prm)
     {
-      prm.enter_subsection ("Mesh deformation");
+      prm.enter_subsection("Mesh deformation");
       {
-        prm.enter_subsection ("Fastscape");
+        prm.enter_subsection("Fastscape");
         {
-          prm.declare_entry("Number of fastscape timesteps per aspect timestep", "5",
+          prm.declare_entry("Number of fastscape timesteps per aspect timestep",
+                            "5",
                             Patterns::Integer(),
                             "Initial number of fastscape time steps per ASPECT timestep, this value will double if "
                             "the FastScape timestep is above the maximum FastScape timestep.");
-          prm.declare_entry("Maximum timestep length", "10e3",
-                            Patterns::Double(0),
-                            "Maximum timestep for FastScape. Units: ${yrs}$");
-          prm.declare_entry("Vertical exaggeration", "-1",
+          prm.declare_entry("Maximum timestep length", "10e3", Patterns::Double(0), "Maximum timestep for FastScape. Units: ${yrs}$");
+          prm.declare_entry("Vertical exaggeration",
+                            "-1",
                             Patterns::Double(),
                             "Vertical exaggeration for FastScape's VTK file. -1 outputs topography, basement, and sealevel.");
-          prm.declare_entry("Additional fastscape refinement", "0",
+          prm.declare_entry("Additional fastscape refinement",
+                            "0",
                             Patterns::Integer(),
                             "How many levels above the ASPECT mesh the FastScape mesh should be refined.");
-          prm.declare_entry ("Average out of plane surface topography in 2d", "true",
-                             Patterns::Bool (),
-                             "If this is set to false, then a 2D model will only consider the "
-                             "center slice FastScape gives. If set to true, then ASPECT will "
-                             "average the mesh along Y excluding the ghost nodes.");
-          prm.declare_entry("Fastscape seed", "1000",
+          prm.declare_entry("Average out of plane surface topography in 2d",
+                            "true",
+                            Patterns::Bool(),
+                            "If this is set to false, then a 2D model will only consider the "
+                            "center slice FastScape gives. If set to true, then ASPECT will "
+                            "average the mesh along Y excluding the ghost nodes.");
+          prm.declare_entry("Fastscape seed",
+                            "1000",
                             Patterns::Integer(),
                             "Seed used for adding an initial noise to FastScape topography based on the initial noise magnitude.");
-          prm.declare_entry("Maximum surface refinement level", "1",
+          prm.declare_entry("Maximum surface refinement level",
+                            "1",
                             Patterns::Integer(),
                             "This should be set to the highest ASPECT refinement level expected at the surface.");
-          prm.declare_entry("Surface refinement difference", "0",
+          prm.declare_entry("Surface refinement difference",
+                            "0",
                             Patterns::Integer(),
                             "The difference between the lowest and highest refinement level at the surface. E.g., if three resolution "
                             "levels are expected, this would be set to two.");
-          prm.declare_entry ("Use marine component", "false",
-                             Patterns::Bool (),
-                             "Flag to use the marine component of FastScape.");
-          prm.declare_entry("Y extent in 2d", "100000",
+          prm.declare_entry("Use marine component", "false", Patterns::Bool(), "Flag to use the marine component of FastScape.");
+          prm.declare_entry("Y extent in 2d",
+                            "100000",
                             Patterns::Double(),
                             "FastScape Y extent when using a 2D ASPECT model. Units: ${m}$");
-          prm.declare_entry ("Use ghost nodes", "true",
-                             Patterns::Bool (),
-                             "Flag to use ghost nodes.");
-          prm.declare_entry ("Uplift and advect with fastscape", "true",
-                             Patterns::Bool (),
-                             "Flag to use FastScape advection and uplift.");
-          prm.declare_entry("Node tolerance", "0.001",
+          prm.declare_entry("Use ghost nodes", "true", Patterns::Bool(), "Flag to use ghost nodes.");
+          prm.declare_entry("Uplift and advect with fastscape", "true", Patterns::Bool(), "Flag to use FastScape advection and uplift.");
+          prm.declare_entry("Node tolerance",
+                            "0.001",
                             Patterns::Double(),
                             "Node tolerance for how close an ASPECT node must be to a FastScape node for the value to be transferred.");
-          prm.declare_entry ("Sediment rain rates", "0,0",
-                             Patterns::List (Patterns::Double(0)),
-                             "Sediment rain rates given as a list 1 greater than the number of sediment rain time intervals. E.g, "
-                             "If the time interval is given at 5 Myr, there will be one value for 0-5 Myr model time and a second value "
-                             "for 5+ Myr. Units: ${m/yr}$");
-          prm.declare_entry ("Sediment rain time intervals", "0",
-                             Patterns::List (Patterns::Double(0)),
-                             "A list of times to change the sediment rain rate. Units: ${yrs}$");
-          prm.declare_entry("Initial noise magnitude", "5",
+          prm.declare_entry("Sediment rain rates",
+                            "0,0",
+                            Patterns::List(Patterns::Double(0)),
+                            "Sediment rain rates given as a list 1 greater than the number of sediment rain time intervals. E.g, "
+                            "If the time interval is given at 5 Myr, there will be one value for 0-5 Myr model time and a second value "
+                            "for 5+ Myr. Units: ${m/yr}$");
+          prm.declare_entry("Sediment rain time intervals",
+                            "0",
+                            Patterns::List(Patterns::Double(0)),
+                            "A list of times to change the sediment rain rate. Units: ${yrs}$");
+          prm.declare_entry("Initial noise magnitude",
+                            "5",
                             Patterns::Double(),
                             "Maximum topography change from the initial noise. Units: ${m}$");
-          prm.declare_entry("Additional output variables", "river incision rate",
+          prm.declare_entry("Additional output variables",
+                            "river incision rate",
                             Patterns::Selection("river incision rate|transport coefficient|uplift rate"),
                             "Select one additional Fastscape variable to output in the Fastcape vtk. "
-                            "Output are in units of per year. "
-                           );
+                            "Output are in units of per year. ");
 
-          prm.enter_subsection ("Boundary conditions");
+          prm.enter_subsection("Boundary conditions");
           {
-            prm.declare_entry ("Front", "1",
-                               Patterns::Integer (0, 1),
-                               "Front (bottom) boundary condition, where 1 is fixed and 0 is reflective.");
-            prm.declare_entry ("Right", "1",
-                               Patterns::Integer (0, 1),
-                               "Right boundary condition, where 1 is fixed and 0 is reflective.");
-            prm.declare_entry ("Back", "1",
-                               Patterns::Integer (0, 1),
-                               "Back (top) boundary condition, where 1 is fixed and 0 is reflective.");
-            prm.declare_entry ("Left", "1",
-                               Patterns::Integer (0, 1),
-                               "Left boundary condition, where 1 is fixed and 0 is reflective.");
-            prm.declare_entry("Left mass flux", "0",
+            prm.declare_entry("Front",
+                              "1",
+                              Patterns::Integer(0, 1),
+                              "Front (bottom) boundary condition, where 1 is fixed and 0 is reflective.");
+            prm.declare_entry("Right", "1", Patterns::Integer(0, 1), "Right boundary condition, where 1 is fixed and 0 is reflective.");
+            prm.declare_entry("Back", "1", Patterns::Integer(0, 1), "Back (top) boundary condition, where 1 is fixed and 0 is reflective.");
+            prm.declare_entry("Left", "1", Patterns::Integer(0, 1), "Left boundary condition, where 1 is fixed and 0 is reflective.");
+            prm.declare_entry("Left mass flux",
+                              "0",
                               Patterns::Double(),
                               "Flux per unit length through the left boundary. Units: ${m^2/yr}$ ");
-            prm.declare_entry("Right mass flux", "0",
+            prm.declare_entry("Right mass flux",
+                              "0",
                               Patterns::Double(),
                               "Flux per unit length through the right boundary. Units: ${m^2/yr}$ ");
-            prm.declare_entry("Back mass flux", "0",
+            prm.declare_entry("Back mass flux",
+                              "0",
                               Patterns::Double(),
                               "Flux per unit length through the back boundary. Units: ${m^2/yr}$ ");
-            prm.declare_entry("Front mass flux", "0",
+            prm.declare_entry("Front mass flux",
+                              "0",
                               Patterns::Double(),
                               "Flux per unit length through the front boundary. Units: ${m^2/yr}$ ");
-            prm.declare_entry ("Back front ghost nodes periodic", "false",
-                               Patterns::Bool (),
-                               "Whether to set the ghost nodes at the FastScape back and front boundary "
-                               "to periodic even if 'Back' and 'Front' are set to fixed boundary.");
-            prm.declare_entry ("Left right ghost nodes periodic", "false",
-                               Patterns::Bool (),
-                               "Whether to set the ghost nodes at the FastScape left and right boundary "
-                               "to periodic even if 'Left' and 'Right' are set to fixed boundary.");
+            prm.declare_entry("Back front ghost nodes periodic",
+                              "false",
+                              Patterns::Bool(),
+                              "Whether to set the ghost nodes at the FastScape back and front boundary "
+                              "to periodic even if 'Back' and 'Front' are set to fixed boundary.");
+            prm.declare_entry("Left right ghost nodes periodic",
+                              "false",
+                              Patterns::Bool(),
+                              "Whether to set the ghost nodes at the FastScape left and right boundary "
+                              "to periodic even if 'Left' and 'Right' are set to fixed boundary.");
           }
           prm.leave_subsection();
 
-          prm.enter_subsection ("Erosional parameters");
+          prm.enter_subsection("Erosional parameters");
           {
-            prm.declare_entry("Drainage area exponent", "0.4",
+            prm.declare_entry("Drainage area exponent",
+                              "0.4",
                               Patterns::Double(),
                               "The drainage area exponent for the Stream Power Law (m).");
-            prm.declare_entry("Slope exponent", "1",
+            prm.declare_entry("Slope exponent",
+                              "1",
                               Patterns::Double(),
                               "The slope exponent for the Stream Power Law (n). Generally m/n should equal approximately 0.4");
-            prm.declare_entry("Multi-direction slope exponent", "1",
+            prm.declare_entry("Multi-direction slope exponent",
+                              "1",
                               Patterns::Double(),
                               "Exponent to determine the distribution from the SPL to neighbor nodes, with "
                               "10 being steepest decent and 1 being more varied.");
-            prm.declare_entry("Bedrock deposition coefficient", "1",
-                              Patterns::Double(),
-                              "Deposition coefficient for bedrock.");
-            prm.declare_entry("Sediment deposition coefficient", "-1",
-                              Patterns::Double(),
-                              "Deposition coefficient for sediment. A value smaller than 0 sets this to the same as the bedrock deposition coefficient.");
+            prm.declare_entry("Bedrock deposition coefficient", "1", Patterns::Double(), "Deposition coefficient for bedrock.");
+            prm.declare_entry(
+              "Sediment deposition coefficient",
+              "-1",
+              Patterns::Double(),
+              "Deposition coefficient for sediment. A value smaller than 0 sets this to the same as the bedrock deposition coefficient.");
             // Define Bedrock river incision rate (Kf) as a constant value or a time-dependent user-defined function
-            prm.declare_entry("Use kf distribution function", "false",
+            prm.declare_entry("Use kf distribution function",
+                              "false",
                               Patterns::Bool(),
                               "Whether to define bedrock river incision rate using a distribution function. "
                               "If false, a constant kf value will be used, which can be specified by setting "
                               "the parameter ``Bedrock river incision rate''. Units: ${m^(1-2drainage_area_exponent)/yr}$ "
                               "if ``Use years instead of seconds'' is true; otherwise, the units are ${m^(1-2drainage_area_exponent)/s}$.");
-            prm.declare_entry("Bedrock river incision rate", "1e-5",
+            prm.declare_entry("Bedrock river incision rate",
+                              "1e-5",
                               Patterns::Double(),
                               "River incision rate for bedrock in the Stream Power Law. "
                               "Units: ${m^(1-2drainage_area_exponent)/yr}$ if ``Use years instead of seconds'' is true; "
                               "otherwise, the units are ${m^(1-2drainage_area_exponent)/s}$.");
-            prm.enter_subsection ("kf distribution function");
+            prm.enter_subsection("kf distribution function");
             {
               Functions::ParsedFunction<2>::declare_parameters(prm, 2);
             }
             prm.leave_subsection();
-            prm.declare_entry("Sediment river incision rate", "-1",
-                              Patterns::Double(),
-                              "River incision rate for sediment in the Stream Power Law. A value smaller than 0 sets this to the bedrock river incision rate. "
-                              "Units: $m^(1-2drainage_area_exponent)/yr}$ if ``Use years instead of seconds'' is true; "
-                              "otherwise, the units are $m^(1-2drainage_area_exponent)/s}$.");
+            prm.declare_entry(
+              "Sediment river incision rate",
+              "-1",
+              Patterns::Double(),
+              "River incision rate for sediment in the Stream Power Law. A value smaller than 0 sets this to the bedrock river incision rate. "
+              "Units: $m^(1-2drainage_area_exponent)/yr}$ if ``Use years instead of seconds'' is true; "
+              "otherwise, the units are $m^(1-2drainage_area_exponent)/s}$.");
 
             // Define Bedrock transport coefficient (Kd) as a constant value of time dependent user-defined function
-            prm.declare_entry("Use kd distribution function", "false",
+            prm.declare_entry("Use kd distribution function",
+                              "false",
                               Patterns::Bool(),
                               "Whether to define Bedrock transport coefficient (diffusivity) using a distribution function. "
                               "If false, a constant kd value will be used, which can be specified by setting the parameter "
                               "``Bedrock diffusivity''. Units: ${m^2/yr}$ if ``Use years instead of seconds'' "
                               "is true; otherwise, the units are ${m^2/s}$.");
-            prm.declare_entry("Bedrock diffusivity", "1e-2",
+            prm.declare_entry("Bedrock diffusivity",
+                              "1e-2",
                               Patterns::Double(),
                               "Transport coefficient (diffusivity) for bedrock. Units: ${m^2/yr}$ if ``Use years instead of seconds'' "
                               "is true; otherwise, the units are ${m^2/s}$.");
-            prm.enter_subsection ("kd distribution function");
+            prm.enter_subsection("kd distribution function");
             {
               Functions::ParsedFunction<2>::declare_parameters(prm, 2);
             }
             prm.leave_subsection();
 
-            prm.declare_entry("Sediment diffusivity", "-1",
-                              Patterns::Double(),
-                              "Transport coefficient (diffusivity) for sediment. -1 sets this to the bedrock diffusivity. Units: ${m^2/yr}$ "
-                              "if ``Use years instead of seconds'' is true; otherwise, the units are ${m^2/s}$.");
-            prm.declare_entry("Orographic elevation control", "2000",
+            prm.declare_entry(
+              "Sediment diffusivity",
+              "-1",
+              Patterns::Double(),
+              "Transport coefficient (diffusivity) for sediment. -1 sets this to the bedrock diffusivity. Units: ${m^2/yr}$ "
+              "if ``Use years instead of seconds'' is true; otherwise, the units are ${m^2/s}$.");
+            prm.declare_entry("Orographic elevation control",
+                              "2000",
                               Patterns::Integer(),
                               "Above this height, the elevation factor is applied. Units: ${m}$");
-            prm.declare_entry("Orographic wind barrier height", "500",
+            prm.declare_entry("Orographic wind barrier height",
+                              "500",
                               Patterns::Integer(),
                               "When terrain reaches this height the wind barrier factor is applied. Units: ${m}$");
-            prm.declare_entry("Elevation factor", "1",
-                              Patterns::Double(),
-                              "Amount to multiply the bedrock river incision rate and transport coefficient by past the given orographic elevation control.");
-            prm.declare_entry("Wind barrier factor", "1",
-                              Patterns::Double(),
-                              "Amount to multiply the bedrock river incision rate and transport coefficient by past given wind barrier height.");
-            prm.declare_entry ("Stack orographic controls", "true",
-                               Patterns::Bool (),
-                               "Whether or not to apply both controls to a point, or only a maximum of one set as the wind barrier.");
-            prm.declare_entry ("Flag to use orographic controls", "false",
-                               Patterns::Bool (),
-                               "Whether or not to apply orographic controls.");
-            prm.declare_entry ("Wind direction", "west",
-                               Patterns::Selection("east|west|south|north"),
-                               "This parameter assumes a wind direction, deciding which side is reduced from the wind barrier.");
-            prm.declare_entry ("Use a fixed erosional base level", "false",
-                               Patterns::Bool (),
-                               "Whether or not to use an erosional base level that differs from sea level. Setting this parameter to "
-                               "true will set all ghost nodes of fixed FastScape boundaries to the height you specify in "
-                               "'set Erosional base level'. \nThis can make "
-                               "sense for a continental model where the model surrounding topography is assumed above sea level, "
-                               "e.g. highlands. If the sea level would be used as an erosional base level in this case, all topography "
-                               "erodes away with lots of 'sediment volume' lost through the sides of the model. This is mostly "
-                               "important, when there are mountains in the middle of the model, while it is less important when there "
-                               "is lower relief in the middle of the model. \n"
-                               "In the FastScape  visualization files, setting the extra base level may show up as a strong "
-                               "slope at the fixed boundaries of the model. However, in the ASPECT visualization files it will not "
-                               "show up, as the ghost nodes only exist in FastScape.");
-            prm.declare_entry("Erosional base level", "0",
+            prm.declare_entry(
+              "Elevation factor",
+              "1",
+              Patterns::Double(),
+              "Amount to multiply the bedrock river incision rate and transport coefficient by past the given orographic elevation control.");
+            prm.declare_entry(
+              "Wind barrier factor",
+              "1",
+              Patterns::Double(),
+              "Amount to multiply the bedrock river incision rate and transport coefficient by past given wind barrier height.");
+            prm.declare_entry("Stack orographic controls",
+                              "true",
+                              Patterns::Bool(),
+                              "Whether or not to apply both controls to a point, or only a maximum of one set as the wind barrier.");
+            prm.declare_entry("Flag to use orographic controls", "false", Patterns::Bool(), "Whether or not to apply orographic controls.");
+            prm.declare_entry("Wind direction",
+                              "west",
+                              Patterns::Selection("east|west|south|north"),
+                              "This parameter assumes a wind direction, deciding which side is reduced from the wind barrier.");
+            prm.declare_entry("Use a fixed erosional base level",
+                              "false",
+                              Patterns::Bool(),
+                              "Whether or not to use an erosional base level that differs from sea level. Setting this parameter to "
+                              "true will set all ghost nodes of fixed FastScape boundaries to the height you specify in "
+                              "'set Erosional base level'. \nThis can make "
+                              "sense for a continental model where the model surrounding topography is assumed above sea level, "
+                              "e.g. highlands. If the sea level would be used as an erosional base level in this case, all topography "
+                              "erodes away with lots of 'sediment volume' lost through the sides of the model. This is mostly "
+                              "important, when there are mountains in the middle of the model, while it is less important when there "
+                              "is lower relief in the middle of the model. \n"
+                              "In the FastScape  visualization files, setting the extra base level may show up as a strong "
+                              "slope at the fixed boundaries of the model. However, in the ASPECT visualization files it will not "
+                              "show up, as the ghost nodes only exist in FastScape.");
+            prm.declare_entry("Erosional base level",
+                              "0",
                               Patterns::Double(),
                               "When 'Use a fixed erosional base level' is set to true, all ghost nodes of fixed "
                               "FastScape boundaries where no mass flux is specified by the user (FastScape boundary condition set to 1 "
@@ -2098,47 +2107,52 @@ namespace aspect
           }
           prm.leave_subsection();
 
-          prm.enter_subsection ("Marine parameters");
+          prm.enter_subsection("Marine parameters");
           {
             // Define sea level as a constant value of time dependent user-defined function
-            prm.declare_entry("Use sea level function", "false",
+            prm.declare_entry("Use sea level function",
+                              "false",
                               Patterns::Bool(),
                               "Whether to define sea level using a time-dependent function. "
                               "If false, a constant value will be used.");
 
-            prm.declare_entry("Sea level", "0.0",
-                              Patterns::Double(),
-                              "Constant sea level relative to the ASPECT surface, where the maximum Z or Y extent in ASPECT is a sea level of zero. "
-                              "Units: ${m}$ ");
+            prm.declare_entry(
+              "Sea level",
+              "0.0",
+              Patterns::Double(),
+              "Constant sea level relative to the ASPECT surface, where the maximum Z or Y extent in ASPECT is a sea level of zero. "
+              "Units: ${m}$ ");
 
-            prm.enter_subsection ("Sea level function");
+            prm.enter_subsection("Sea level function");
             {
               Functions::ParsedFunction<1>::declare_parameters(prm, 1);
             }
             prm.leave_subsection();
 
-            prm.declare_entry("Sand porosity", "0.0",
-                              Patterns::Double(),
-                              "Porosity of sand. ");
-            prm.declare_entry("Silt porosity", "0.0",
-                              Patterns::Double(),
-                              "Porosity of silt. ");
-            prm.declare_entry("Sand e-folding depth", "1e3",
+            prm.declare_entry("Sand porosity", "0.0", Patterns::Double(), "Porosity of sand. ");
+            prm.declare_entry("Silt porosity", "0.0", Patterns::Double(), "Porosity of silt. ");
+            prm.declare_entry("Sand e-folding depth",
+                              "1e3",
                               Patterns::Double(),
                               "E-folding depth for the exponential of the sand porosity law. Units: ${m}$");
-            prm.declare_entry("Silt e-folding depth", "1e3",
+            prm.declare_entry("Silt e-folding depth",
+                              "1e3",
                               Patterns::Double(),
                               "E-folding depth for the exponential of the silt porosity law. Units: ${m}$");
-            prm.declare_entry("Silt fraction", "0.5",
+            prm.declare_entry("Silt fraction",
+                              "0.5",
                               Patterns::Double(),
                               "Fraction of silt for material leaving continent. Formerly called Sand-silt ratio.");
-            prm.declare_entry("Depth averaging thickness", "1e2",
+            prm.declare_entry("Depth averaging thickness",
+                              "1e2",
                               Patterns::Double(),
                               "Depth averaging for the sand-silt equation. Units: ${m}$");
-            prm.declare_entry("Sand transport coefficient", "5e2",
+            prm.declare_entry("Sand transport coefficient",
+                              "5e2",
                               Patterns::Double(),
                               "Transport coefficient (diffusivity) for sand. Units: ${m^2/yr}$");
-            prm.declare_entry("Silt transport coefficient", "2.5e2",
+            prm.declare_entry("Silt transport coefficient",
+                              "2.5e2",
                               Patterns::Double(),
                               "Transport coefficient (diffusivity) for silt. Units: ${m^2/yr}$ ");
           }
@@ -2146,58 +2160,58 @@ namespace aspect
         }
         prm.leave_subsection();
       }
-      prm.leave_subsection ();
+      prm.leave_subsection();
     }
 
 
     template <int dim>
-    void FastScape<dim>::parse_parameters(ParameterHandler &prm)
+    void
+    FastScape<dim>::parse_parameters(ParameterHandler &prm)
     {
-      prm.enter_subsection ("Mesh deformation");
+      prm.enter_subsection("Mesh deformation");
       {
         prm.enter_subsection("Fastscape");
         {
-          fastscape_steps_per_aspect_step = prm.get_integer("Number of fastscape timesteps per aspect timestep");
-          maximum_fastscape_timestep = prm.get_double("Maximum timestep length");
-          vexp = prm.get_double("Vertical exaggeration");
-          additional_refinement_levels = prm.get_integer("Additional fastscape refinement");
+          fastscape_steps_per_aspect_step         = prm.get_integer("Number of fastscape timesteps per aspect timestep");
+          maximum_fastscape_timestep              = prm.get_double("Maximum timestep length");
+          vexp                                    = prm.get_double("Vertical exaggeration");
+          additional_refinement_levels            = prm.get_integer("Additional fastscape refinement");
           average_out_of_plane_surface_topography = prm.get_bool("Average out of plane surface topography in 2d");
-          fastscape_seed = prm.get_integer("Fastscape seed");
-          maximum_surface_refinement_level = prm.get_integer("Maximum surface refinement level");
-          surface_refinement_difference = prm.get_integer("Surface refinement difference");
-          use_marine_component = prm.get_bool("Use marine component");
-          fastscape_y_extent_2d = prm.get_double("Y extent in 2d");
-          use_ghost_nodes = prm.get_bool("Use ghost nodes");
-          fastscape_advection_uplift = prm.get_bool("Uplift and advect with fastscape");
-          node_tolerance = prm.get_double("Node tolerance");
-          noise_elevation = prm.get_double("Initial noise magnitude");
-          sediment_rain_rates = Utilities::string_to_double
-                                (Utilities::split_string_list(prm.get ("Sediment rain rates")));
-          sediment_rain_times = Utilities::string_to_double
-                                (Utilities::split_string_list(prm.get ("Sediment rain time intervals")));
+          fastscape_seed                          = prm.get_integer("Fastscape seed");
+          maximum_surface_refinement_level        = prm.get_integer("Maximum surface refinement level");
+          surface_refinement_difference           = prm.get_integer("Surface refinement difference");
+          use_marine_component                    = prm.get_bool("Use marine component");
+          fastscape_y_extent_2d                   = prm.get_double("Y extent in 2d");
+          use_ghost_nodes                         = prm.get_bool("Use ghost nodes");
+          fastscape_advection_uplift              = prm.get_bool("Uplift and advect with fastscape");
+          node_tolerance                          = prm.get_double("Node tolerance");
+          noise_elevation                         = prm.get_double("Initial noise magnitude");
+          sediment_rain_rates = Utilities::string_to_double(Utilities::split_string_list(prm.get("Sediment rain rates")));
+          sediment_rain_times = Utilities::string_to_double(Utilities::split_string_list(prm.get("Sediment rain time intervals")));
 
           if (!this->convert_output_to_years())
             {
               maximum_fastscape_timestep /= year_in_seconds;
-              for (unsigned int j=0; j<sediment_rain_rates.size(); ++j)
+              for (unsigned int j = 0; j < sediment_rain_rates.size(); ++j)
                 sediment_rain_rates[j] *= year_in_seconds;
             }
 
-          if (sediment_rain_rates.size() != sediment_rain_times.size()+1)
+          if (sediment_rain_rates.size() != sediment_rain_times.size() + 1)
             AssertThrow(false, ExcMessage("Error: There must be one more sediment rain rate than time interval."));
 
-          for (unsigned int i=1; i<sediment_rain_times.size(); ++i)
-            AssertThrow(sediment_rain_times[i] > sediment_rain_times[i-1], ExcMessage("Sediment rain time intervals must be an increasing array."));
+          for (unsigned int i = 1; i < sediment_rain_times.size(); ++i)
+            AssertThrow(sediment_rain_times[i] > sediment_rain_times[i - 1],
+                        ExcMessage("Sediment rain time intervals must be an increasing array."));
 
           prm.enter_subsection("Boundary conditions");
           {
-            bottom = prm.get_integer("Front");
-            right = prm.get_integer("Right");
-            top = prm.get_integer("Back");
-            left = prm.get_integer("Left");
-            left_flux = prm.get_double("Left mass flux");
-            right_flux = prm.get_double("Right mass flux");
-            top_flux = prm.get_double("Back mass flux");
+            bottom      = prm.get_integer("Front");
+            right       = prm.get_integer("Right");
+            top         = prm.get_integer("Back");
+            left        = prm.get_integer("Left");
+            left_flux   = prm.get_double("Left mass flux");
+            right_flux  = prm.get_double("Right mass flux");
+            top_flux    = prm.get_double("Back mass flux");
             bottom_flux = prm.get_double("Front mass flux");
 
             if (!this->convert_output_to_years())
@@ -2209,11 +2223,11 @@ namespace aspect
               }
 
             // Put the boundary condition values into a four digit value to send to FastScape.
-            fastscape_boundary_conditions = bottom*1000+right*100+top*10+left;
+            fastscape_boundary_conditions = bottom * 1000 + right * 100 + top * 10 + left;
 
-            if ((left_flux != 0 && top_flux != 0) || (left_flux != 0 && bottom_flux != 0) ||
-                (right_flux != 0 && bottom_flux != 0) || (right_flux != 0 && top_flux != 0))
-              AssertThrow(false,ExcMessage("Currently the plugin does not support mass flux through adjacent boundaries."));
+            if ((left_flux != 0 && top_flux != 0) || (left_flux != 0 && bottom_flux != 0) || (right_flux != 0 && bottom_flux != 0) ||
+                (right_flux != 0 && top_flux != 0))
+              AssertThrow(false, ExcMessage("Currently the plugin does not support mass flux through adjacent boundaries."));
 
             topbottom_ghost_nodes_periodic = prm.get_bool("Back front ghost nodes periodic");
             leftright_ghost_nodes_periodic = prm.get_bool("Left right ghost nodes periodic");
@@ -2235,7 +2249,7 @@ namespace aspect
           prm.enter_subsection("Erosional parameters");
           {
             drainage_area_exponent_m = prm.get_double("Drainage area exponent");
-            slope_exponent_n = prm.get_double("Slope exponent");
+            slope_exponent_n         = prm.get_double("Slope exponent");
             // Fastscape always expects units in years, not seconds. Therefore, scale
             // the sediment Kf and Kd when "Use years instead of seconds" in ASPECT is set to false.
             // In that case the transport coefficient has units ${m^2/s}$, and the river
@@ -2243,7 +2257,7 @@ namespace aspect
             // with a year in seconds. The bedrock values are scaled when filling the FastScape
             // arrays.
             const double time_scaling_factor = (this->convert_output_to_years() ? 1.0 : year_in_seconds);
-            sediment_river_incision_rate = time_scaling_factor * prm.get_double("Sediment river incision rate");
+            sediment_river_incision_rate     = time_scaling_factor * prm.get_double("Sediment river incision rate");
             // kf
             use_kf_distribution_function = prm.get_bool("Use kf distribution function");
             if (use_kf_distribution_function)
@@ -2281,24 +2295,24 @@ namespace aspect
               {
                 constant_bedrock_transport_coefficient = prm.get_double("Bedrock diffusivity");
               }
-            bedrock_deposition_g = prm.get_double("Bedrock deposition coefficient");
-            sediment_deposition_g = prm.get_double("Sediment deposition coefficient");
-            slope_exponent_p = prm.get_double("Multi-direction slope exponent");
-            flat_elevation = prm.get_integer("Orographic elevation control");
-            wind_barrier_elevation = prm.get_integer("Orographic wind barrier height");
-            flat_erosional_factor = prm.get_double("Elevation factor");
+            bedrock_deposition_g          = prm.get_double("Bedrock deposition coefficient");
+            sediment_deposition_g         = prm.get_double("Sediment deposition coefficient");
+            slope_exponent_p              = prm.get_double("Multi-direction slope exponent");
+            flat_elevation                = prm.get_integer("Orographic elevation control");
+            wind_barrier_elevation        = prm.get_integer("Orographic wind barrier height");
+            flat_erosional_factor         = prm.get_double("Elevation factor");
             wind_barrier_erosional_factor = prm.get_double("Wind barrier factor");
-            stack_controls = prm.get_bool("Stack orographic controls");
-            use_orographic_controls = prm.get_bool("Flag to use orographic controls");
+            stack_controls                = prm.get_bool("Stack orographic controls");
+            use_orographic_controls       = prm.get_bool("Flag to use orographic controls");
 
             // Wind direction
-            if (prm.get ("Wind direction") == "west")
+            if (prm.get("Wind direction") == "west")
               wind_direction = 0;
-            else if (prm.get ("Wind direction") == "east")
+            else if (prm.get("Wind direction") == "east")
               wind_direction = 1;
-            else if (prm.get ("Wind direction") == "north")
+            else if (prm.get("Wind direction") == "north")
               wind_direction = 2;
-            else if (prm.get ("Wind direction") == "south")
+            else if (prm.get("Wind direction") == "south")
               wind_direction = 3;
             else
               AssertThrow(false, ExcMessage("Not a valid wind direction."));
@@ -2306,9 +2320,9 @@ namespace aspect
             // set fixed ghost nodes to a base level for erosion that differs from sea level
             use_fixed_erosional_base = prm.get_bool("Use a fixed erosional base level");
             if (use_fixed_erosional_base)
-              AssertThrow(use_fixed_erosional_base && use_ghost_nodes, ExcMessage(
-                            "If you want to use an erosional base level differing from sea level, "
-                            "you need to use ghost nodes."));
+              AssertThrow(use_fixed_erosional_base && use_ghost_nodes,
+                          ExcMessage("If you want to use an erosional base level differing from sea level, "
+                                     "you need to use ghost nodes."));
             h_erosional_base = prm.get_double("Erosional base level");
           }
           prm.leave_subsection();
@@ -2333,12 +2347,12 @@ namespace aspect
               {
                 sea_level_constant_value = prm.get_double("Sea level");
               }
-            sand_surface_porosity = prm.get_double("Sand porosity");
-            silt_surface_porosity = prm.get_double("Silt porosity");
-            sand_efold_depth = prm.get_double("Sand e-folding depth");
-            silt_efold_depth = prm.get_double("Silt e-folding depth");
-            incoming_silt_fraction = prm.get_double("Silt fraction");
-            sand_silt_averaging_depth = prm.get_double("Depth averaging thickness");
+            sand_surface_porosity      = prm.get_double("Sand porosity");
+            silt_surface_porosity      = prm.get_double("Silt porosity");
+            sand_efold_depth           = prm.get_double("Sand e-folding depth");
+            silt_efold_depth           = prm.get_double("Silt e-folding depth");
+            incoming_silt_fraction     = prm.get_double("Silt fraction");
+            sand_silt_averaging_depth  = prm.get_double("Depth averaging thickness");
             sand_transport_coefficient = prm.get_double("Sand transport coefficient");
             silt_transport_coefficient = prm.get_double("Silt transport coefficient");
 
@@ -2352,13 +2366,13 @@ namespace aspect
         }
         prm.leave_subsection();
       }
-      prm.leave_subsection ();
+      prm.leave_subsection();
 
       prm.enter_subsection("Postprocess");
       {
         prm.enter_subsection("Visualization");
         {
-          output_interval = prm.get_double ("Time between graphical output");
+          output_interval = prm.get_double("Time between graphical output");
           if (this->convert_output_to_years())
             output_interval *= year_in_seconds;
         }
@@ -2375,36 +2389,37 @@ namespace aspect
 {
   namespace MeshDeformation
   {
-    ASPECT_REGISTER_MESH_DEFORMATION_MODEL(FastScape,
-                                           "fastscape",
-                                           "A plugin that uses the program FastScape to compute the deformation of the mesh surface. "
-                                           "FastScape is a surface processes code that computes the erosion, transport and "
-                                           "deposition of sediments both on land and in the marine domain. These surface processes "
-                                           "include river incision (through the stream power law), hillslope diffusion and "
-                                           "marine diffusion, as described in Braun and Willett 2013; Yuan et al. 2019; "
-                                           "Yuan et al. 2019b. "
-                                           "\n"
-                                           "Upon initialization, FastScape requires the initial topography of the surface boundary "
-                                           "of ASPECT's model domain and several user-specified erosional and depositional parameters. "
-                                           "In each ASPECT timestep, FastScape is then fed ASPECT's material velocity at the surface "
-                                           "boundary. The z-component of this velocity is used to uplift the FastScape surface, "
-                                           "while the horizontal components are used to advect the topography in the x-y plane. "
-                                           "\n"
-                                           "After solving its governing equations (this can be done in several timesteps "
-                                           "that are smaller than the ASPECT timestep), FastScape returns a new topography of the surface. "
-                                           "The difference in topography before and after the call to FastScape divided by the ASPECT "
-                                           "timestep provides the mesh velocity at the domain's surface that is used to displace the surface "
-                                           "and internal mesh nodes. "
-                                           "\n"
-                                           "FastScape can be used in both 2D and 3D ASPECT simulations. In 2D, one can think of the coupled "
-                                           "model as a T-model.The ASPECT domain spans the x - z plane, while FastScape acts on the horizontal "
-                                           "x-y plane. This means that to communicate ASPECT's material velocities to FastScape, "
-                                           "FastScape mesh nodes with the same x-coordinate (so lying along the y-direction) get the same velocities. "
-                                           "In turn, the FastScape topography is collapsed back onto the line of the ASPECT surface boundary "
-                                           "by averaging the topography over the y-direction. In 3D no such actions are necessary. "
-                                           "\n"
-                                           "The FastScape manual (https://fastscape.org/fastscapelib-fortran/) provides more information "
-                                           "on the input parameters. ")
+    ASPECT_REGISTER_MESH_DEFORMATION_MODEL(
+      FastScape,
+      "fastscape",
+      "A plugin that uses the program FastScape to compute the deformation of the mesh surface. "
+      "FastScape is a surface processes code that computes the erosion, transport and "
+      "deposition of sediments both on land and in the marine domain. These surface processes "
+      "include river incision (through the stream power law), hillslope diffusion and "
+      "marine diffusion, as described in Braun and Willett 2013; Yuan et al. 2019; "
+      "Yuan et al. 2019b. "
+      "\n"
+      "Upon initialization, FastScape requires the initial topography of the surface boundary "
+      "of ASPECT's model domain and several user-specified erosional and depositional parameters. "
+      "In each ASPECT timestep, FastScape is then fed ASPECT's material velocity at the surface "
+      "boundary. The z-component of this velocity is used to uplift the FastScape surface, "
+      "while the horizontal components are used to advect the topography in the x-y plane. "
+      "\n"
+      "After solving its governing equations (this can be done in several timesteps "
+      "that are smaller than the ASPECT timestep), FastScape returns a new topography of the surface. "
+      "The difference in topography before and after the call to FastScape divided by the ASPECT "
+      "timestep provides the mesh velocity at the domain's surface that is used to displace the surface "
+      "and internal mesh nodes. "
+      "\n"
+      "FastScape can be used in both 2D and 3D ASPECT simulations. In 2D, one can think of the coupled "
+      "model as a T-model.The ASPECT domain spans the x - z plane, while FastScape acts on the horizontal "
+      "x-y plane. This means that to communicate ASPECT's material velocities to FastScape, "
+      "FastScape mesh nodes with the same x-coordinate (so lying along the y-direction) get the same velocities. "
+      "In turn, the FastScape topography is collapsed back onto the line of the ASPECT surface boundary "
+      "by averaging the topography over the y-direction. In 3D no such actions are necessary. "
+      "\n"
+      "The FastScape manual (https://fastscape.org/fastscapelib-fortran/) provides more information "
+      "on the input parameters. ")
 
   }
 

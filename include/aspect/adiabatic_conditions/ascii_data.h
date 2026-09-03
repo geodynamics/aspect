@@ -43,7 +43,7 @@ namespace aspect
         /**
          * Constructor. Initialize variables.
          */
-        AsciiData ();
+        AsciiData();
 
         /**
          * Initialization function. Because this function is called after
@@ -52,7 +52,8 @@ namespace aspect
          * adiabatic conditions along a vertical transect of the geometry
          * based on the given material model and other quantities.
          */
-        void initialize () override;
+        void
+        initialize() override;
 
         // avoid -Woverloaded-virtual:
         using Utilities::AsciiDataProfile<dim>::initialize;
@@ -67,44 +68,47 @@ namespace aspect
          * profile. This way the plugin behaves differently at initialization
          * time of the adiabatic conditions and during the main model run.
          */
-        bool is_initialized() const override;
+        bool
+        is_initialized() const override;
 
         /**
          * Return the adiabatic temperature at a given point of the domain.
          */
-        double temperature (const Point<dim> &p) const override;
+        double
+        temperature(const Point<dim> &p) const override;
 
         /**
          * Return the adiabatic pressure at a given point of the domain.
          */
-        double pressure (const Point<dim> &p) const override;
+        double
+        pressure(const Point<dim> &p) const override;
 
         /**
          * Return the reference density at a given point of the domain.
          */
-        double density (const Point<dim> &p) const override;
+        double
+        density(const Point<dim> &p) const override;
 
         /**
          * Return the derivative of the density with respect to depth
          * at the given point @p p.
          */
-        double density_derivative (const Point<dim> &p) const override;
+        double
+        density_derivative(const Point<dim> &p) const override;
 
         /**
          * Declare the parameters for the input files.
          */
-        static
-        void
-        declare_parameters (ParameterHandler  &prm);
+        static void
+        declare_parameters(ParameterHandler &prm);
 
         /**
          * Read the parameters from the parameter file.
          */
         void
-        parse_parameters (ParameterHandler &prm) override;
+        parse_parameters(ParameterHandler &prm) override;
 
       private:
-
         /**
          * Whether the adiabatic conditions are already calculated. This is
          * important for plugins that are used by the adiabatic conditions but

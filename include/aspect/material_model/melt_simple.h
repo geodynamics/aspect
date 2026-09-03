@@ -22,10 +22,10 @@
 #define _aspect_material_model_melt_simple_h
 
 #include <aspect/material_model/interface.h>
-#include <aspect/simulator_access.h>
-#include <aspect/postprocess/melt_statistics.h>
-#include <aspect/melt.h>
 #include <aspect/material_model/reaction_model/katz2003_mantle_melting.h>
+#include <aspect/melt.h>
+#include <aspect/postprocess/melt_statistics.h>
+#include <aspect/simulator_access.h>
 
 namespace aspect
 {
@@ -52,8 +52,8 @@ namespace aspect
      */
     template <int dim>
     class MeltSimple : public MaterialModel::MeltInterface<dim>,
-      public MaterialModel::MeltFractionModel<dim>,
-      public ::aspect::SimulatorAccess<dim>
+                       public MaterialModel::MeltFractionModel<dim>,
+                       public ::aspect::SimulatorAccess<dim>
     {
       public:
         /**
@@ -64,7 +64,8 @@ namespace aspect
          * equation as $\nabla \cdot (\rho \mathbf u)=0$ (compressible Stokes)
          * or as $\nabla \cdot \mathbf{u}=0$ (incompressible Stokes).
          */
-        bool is_compressible () const override;
+        bool
+        is_compressible() const override;
 
         /**
          * Initialization function. This function is called once at the
@@ -72,20 +73,22 @@ namespace aspect
          * the SimulatorAccess (if applicable) is initialized.
          */
         void
-        initialize () override;
+        initialize() override;
 
-        void evaluate(const typename Interface<dim>::MaterialModelInputs &in,
-                      typename Interface<dim>::MaterialModelOutputs &out) const override;
+        void
+        evaluate(const typename Interface<dim>::MaterialModelInputs &in, typename Interface<dim>::MaterialModelOutputs &out) const override;
 
-        void melt_fractions (const MaterialModel::MaterialModelInputs<dim> &in,
-                             std::vector<double> &melt_fractions,
-                             const MaterialModel::MaterialModelOutputs<dim> *out = nullptr) const override;
+        void
+        melt_fractions(const MaterialModel::MaterialModelInputs<dim>  &in,
+                       std::vector<double>                            &melt_fractions,
+                       const MaterialModel::MaterialModelOutputs<dim> *out = nullptr) const override;
 
         /**
          * @name Reference quantities
          * @{
          */
-        double reference_darcy_coefficient () const override;
+        double
+        reference_darcy_coefficient() const override;
 
         /**
          * @}
@@ -98,22 +101,21 @@ namespace aspect
         /**
          * Declare the parameters this class takes through input files.
          */
-        static
-        void
-        declare_parameters (ParameterHandler &prm);
+        static void
+        declare_parameters(ParameterHandler &prm);
 
         /**
          * Read the parameters this class declares from the parameter file.
          */
         void
-        parse_parameters (ParameterHandler &prm) override;
+        parse_parameters(ParameterHandler &prm) override;
 
         /**
          * @}
          */
 
         void
-        create_additional_named_outputs (MaterialModel::MaterialModelOutputs<dim> &out) const override;
+        create_additional_named_outputs(MaterialModel::MaterialModelOutputs<dim> &out) const override;
 
 
       private:
@@ -158,10 +160,9 @@ namespace aspect
 
 
         /*
-        * Object for computing the melt parameters
-        */
+         * Object for computing the melt parameters
+         */
         ReactionModel::Katz2003MantleMelting<dim> katz2003_model;
-
     };
 
   }

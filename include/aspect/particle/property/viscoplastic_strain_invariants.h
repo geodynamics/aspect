@@ -21,9 +21,9 @@
 #ifndef _aspect_particle_property_viscoplastic_strain_invariant_h
 #define _aspect_particle_property_viscoplastic_strain_invariant_h
 
+#include <aspect/material_model/visco_plastic.h>
 #include <aspect/particle/property/interface.h>
 #include <aspect/simulator_access.h>
-#include <aspect/material_model/visco_plastic.h>
 
 namespace aspect
 {
@@ -48,36 +48,36 @@ namespace aspect
           /**
            * Constructor.
            */
-          ViscoPlasticStrainInvariant ();
+          ViscoPlasticStrainInvariant();
 
-          void initialize () override;
+          void
+          initialize() override;
 
 
           /**
            * @copydoc aspect::Particle::Property::Interface::initialize_one_particle_property()
            */
           void
-          initialize_one_particle_property (const Point<dim> &position,
-                                            std::vector<double> &particle_properties) const override;
+          initialize_one_particle_property(const Point<dim> &position, std::vector<double> &particle_properties) const override;
 
           /**
            * @copydoc aspect::Particle::Property::Interface::update_particle_properties()
            */
           void
-          update_particle_properties (const ParticleUpdateInputs<dim> &inputs,
-                                      typename ParticleHandler<dim>::particle_iterator_range &particles) const override;
+          update_particle_properties(const ParticleUpdateInputs<dim>                        &inputs,
+                                     typename ParticleHandler<dim>::particle_iterator_range &particles) const override;
 
           /**
            * @copydoc aspect::Particle::Property::Interface::need_update()
            */
           UpdateTimeFlags
-          need_update () const override;
+          need_update() const override;
 
           /**
            * @copydoc aspect::Particle::Property::Interface::get_update_flags()
            */
           UpdateFlags
-          get_update_flags (const unsigned int component) const override;
+          get_update_flags(const unsigned int component) const override;
 
           /**
            * @copydoc aspect::Particle::Property::Interface::get_property_information()

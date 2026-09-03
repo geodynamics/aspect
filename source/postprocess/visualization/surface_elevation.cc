@@ -17,8 +17,8 @@
   along with ASPECT; see the file LICENSE.  If not see
   <http://www.gnu.org/licenses/>.
 */
-#include <aspect/simulator.h>
 #include <aspect/postprocess/visualization/surface_elevation.h>
+#include <aspect/simulator.h>
 
 namespace aspect
 {
@@ -27,21 +27,17 @@ namespace aspect
     namespace VisualizationPostprocessors
     {
       template <int dim>
-      SurfaceElevation<dim>::
-      SurfaceElevation ()
-        :
-        DataPostprocessorScalar<dim> ("surface_elevation",
-                                      update_quadrature_points),
-        Interface<dim>("m")
+      SurfaceElevation<dim>::SurfaceElevation()
+        : DataPostprocessorScalar<dim>("surface_elevation", update_quadrature_points)
+        , Interface<dim>("m")
       {}
 
 
 
       template <int dim>
       void
-      SurfaceElevation<dim>::
-      evaluate_vector_field(const DataPostprocessorInputs::Vector<dim> &input_data,
-                            std::vector<Vector<double>> &computed_quantities) const
+      SurfaceElevation<dim>::evaluate_vector_field(const DataPostprocessorInputs::Vector<dim> &input_data,
+                                                   std::vector<Vector<double>>                &computed_quantities) const
       {
         // Initialize everything to zero, so that we can ignore faces we are
         // not interested in (namely, those not labeled as 'top' or 'bottom')
@@ -53,12 +49,10 @@ namespace aspect
         // (because it is derived from SurfaceOnlyVisualization), so it is safe
         // to query both cell and face associated with the DataPostprocessorInputs
         // object.
-        const types::boundary_id boundary_id
-          = input_data.template get_cell<dim>()->face(input_data.get_face_number())->boundary_id();
-        if (this->get_geometry_model().translate_id_to_symbol_name (boundary_id) == "top")
-          for (unsigned int q=0; q<input_data.evaluation_points.size(); ++q)
-            computed_quantities[q](0)
-              = this->get_geometry_model().height_above_reference_surface(input_data.evaluation_points[q]);
+        const types::boundary_id boundary_id = input_data.template get_cell<dim>()->face(input_data.get_face_number())->boundary_id();
+        if (this->get_geometry_model().translate_id_to_symbol_name(boundary_id) == "top")
+          for (unsigned int q = 0; q < input_data.evaluation_points.size(); ++q)
+            computed_quantities[q](0) = this->get_geometry_model().height_above_reference_surface(input_data.evaluation_points[q]);
       }
     }
   }

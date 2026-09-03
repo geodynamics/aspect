@@ -42,7 +42,8 @@ namespace aspect
         /**
          * Return the initial temperature as a function of position.
          */
-        double initial_temperature (const Point<dim> &position) const override;
+        double
+        initial_temperature(const Point<dim> &position) const override;
     };
 
     /**
@@ -58,7 +59,8 @@ namespace aspect
         /**
          * Return the initial temperature as a function of position.
          */
-        double initial_temperature (const Point<dim> &position) const override;
+        double
+        initial_temperature(const Point<dim> &position) const override;
     };
 
     /**
@@ -73,7 +75,8 @@ namespace aspect
         /**
          * Return the initial temperature as a function of position.
          */
-        double initial_temperature (const Point<dim> &position) const override;
+        double
+        initial_temperature(const Point<dim> &position) const override;
     };
 
     /**
@@ -89,20 +92,20 @@ namespace aspect
         /**
          * Return the initial temperature as a function of position.
          */
-        double initial_temperature(const Point<dim> &position) const override;
+        double
+        initial_temperature(const Point<dim> &position) const override;
 
         /**
          * Declare the parameters this class takes through input files.
          */
-        static
-        void
-        declare_parameters (ParameterHandler &prm);
+        static void
+        declare_parameters(ParameterHandler &prm);
 
         /**
          * Read the parameters this class declares from the parameter file
          */
         void
-        parse_parameters (ParameterHandler &prm) override;
+        parse_parameters(ParameterHandler &prm) override;
 
       private:
         /**

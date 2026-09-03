@@ -18,10 +18,11 @@
   <http://www.gnu.org/licenses/>.
 */
 
-#include <aspect/material_model/melt_global.h>
-#include <aspect/simulator_access.h>
 #include <aspect/global.h>
+
+#include <aspect/material_model/melt_global.h>
 #include <aspect/melt.h>
+#include <aspect/simulator_access.h>
 
 namespace aspect
 {
@@ -31,21 +32,18 @@ namespace aspect
     class Compression : public MaterialModel::MeltGlobal<dim>
     {
       public:
-
-        virtual void evaluate(const MaterialModel::MaterialModelInputs<dim> &in,
-                              MaterialModel::MaterialModelOutputs<dim> &out) const;
+        virtual void
+        evaluate(const MaterialModel::MaterialModelInputs<dim> &in, MaterialModel::MaterialModelOutputs<dim> &out) const;
     };
 
 
     template <int dim>
     void
-    Compression<dim>::
-    evaluate(const MaterialModel::MaterialModelInputs<dim> &in,
-             MaterialModel::MaterialModelOutputs<dim> &out) const
+    Compression<dim>::evaluate(const MaterialModel::MaterialModelInputs<dim> &in, MaterialModel::MaterialModelOutputs<dim> &out) const
     {
       MeltGlobal<dim>::evaluate(in, out);
       const unsigned int porosity_idx = this->introspection().compositional_index_for_name("porosity");
-      for (unsigned int i=0; i < in.n_evaluation_points(); ++i)
+      for (unsigned int i = 0; i < in.n_evaluation_points(); ++i)
         {
           out.reaction_terms[i][porosity_idx] = 0.2;
         }

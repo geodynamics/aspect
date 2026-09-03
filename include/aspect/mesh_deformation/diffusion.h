@@ -22,9 +22,9 @@
 #ifndef _aspect_mesh_deformation_diffusion_h
 #define _aspect_mesh_deformation_diffusion_h
 
+#include <aspect/geometry_model/initial_topography_model/interface.h>
 #include <aspect/mesh_deformation/interface.h>
 #include <aspect/simulator_access.h>
-#include <aspect/geometry_model/initial_topography_model/interface.h>
 
 
 namespace aspect
@@ -48,13 +48,15 @@ namespace aspect
          * Initialize function, which sets the start time and
          * start timestep of diffusion.
          */
-        void initialize() override;
+        void
+        initialize() override;
 
         /**
          * The update function sets the current time and determines
          * whether diffusion should be applied in this timestep.
          */
-        void update() override;
+        void
+        update() override;
 
 
 
@@ -65,25 +67,27 @@ namespace aspect
          * these constraints when computing the new vertex positions.
          */
         void
-        compute_velocity_constraints_on_boundary(const DoFHandler<dim> &mesh_deformation_dof_handler,
-                                                 AffineConstraints<double> &mesh_velocity_constraints,
+        compute_velocity_constraints_on_boundary(const DoFHandler<dim>              &mesh_deformation_dof_handler,
+                                                 AffineConstraints<double>          &mesh_velocity_constraints,
                                                  const std::set<types::boundary_id> &boundary_ids) const override;
 
         /**
          * Returns whether or not the plugin requires surface stabilization
          */
-        bool needs_surface_stabilization () const override;
+        bool
+        needs_surface_stabilization() const override;
 
         /**
          * Declare parameters for the diffusion of the surface.
          */
-        static
-        void declare_parameters (ParameterHandler &prm);
+        static void
+        declare_parameters(ParameterHandler &prm);
 
         /**
          * Parse parameters for the diffusion of the surface.
          */
-        void parse_parameters (ParameterHandler &prm) override;
+        void
+        parse_parameters(ParameterHandler &prm) override;
 
       private:
         /**
@@ -91,11 +95,12 @@ namespace aspect
          * in surface height given by the solution of
          * the hillslope diffusion problem.
          */
-        void diffuse_boundary (const DoFHandler<dim> &free_surface_dof_handler,
-                               const IndexSet &mesh_locally_owned,
-                               const IndexSet &mesh_locally_relevant,
-                               LinearAlgebra::Vector &output,
-                               const std::set<types::boundary_id> &boundary_ids) const;
+        void
+        diffuse_boundary(const DoFHandler<dim>              &free_surface_dof_handler,
+                         const IndexSet                     &mesh_locally_owned,
+                         const IndexSet                     &mesh_locally_relevant,
+                         LinearAlgebra::Vector              &output,
+                         const std::set<types::boundary_id> &boundary_ids) const;
 
         /**
          * Check that the size of the next time step is not larger than the conduction
@@ -103,8 +108,9 @@ namespace aspect
          * surface. The computed time step has to satisfy the CFL
          * number chosen in the input parameter file on each cell of the mesh.
          */
-        void check_diffusion_time_step (const DoFHandler<dim> &mesh_deformation_dof_handler,
-                                        const std::set<types::boundary_id> &boundary_ids) const;
+        void
+        check_diffusion_time_step(const DoFHandler<dim>              &mesh_deformation_dof_handler,
+                                  const std::set<types::boundary_id> &boundary_ids) const;
 
         /**
          * The hillslope transport coefficient or diffusivity [m2/s]

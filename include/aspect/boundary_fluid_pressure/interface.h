@@ -23,6 +23,7 @@
 #define _aspect_boundary_fluid_pressure_interface_h
 
 #include <aspect/plugins.h>
+
 #include <aspect/material_model/interface.h>
 
 namespace aspect
@@ -65,14 +66,12 @@ namespace aspect
          * @param normal_vectors A normal vector for each point.
          * @param fluid_pressure_gradient_outputs Result to be filled.
          */
-        virtual
-        void fluid_pressure_gradient (
-          const types::boundary_id boundary_indicator,
-          const MaterialModel::MaterialModelInputs<dim> &material_model_inputs,
-          const MaterialModel::MaterialModelOutputs<dim> &material_model_outputs,
-          const std::vector<Tensor<1,dim>> &normal_vectors,
-          std::vector<double> &fluid_pressure_gradient_outputs
-        ) const = 0;
+        virtual void
+        fluid_pressure_gradient(const types::boundary_id                        boundary_indicator,
+                                const MaterialModel::MaterialModelInputs<dim>  &material_model_inputs,
+                                const MaterialModel::MaterialModelOutputs<dim> &material_model_outputs,
+                                const std::vector<Tensor<1, dim>>              &normal_vectors,
+                                std::vector<double>                            &fluid_pressure_gradient_outputs) const = 0;
     };
 
 
@@ -93,10 +92,10 @@ namespace aspect
      */
     template <int dim>
     void
-    register_boundary_fluid_pressure (const std::string &name,
-                                      const std::string &description,
-                                      void (*declare_parameters_function) (ParameterHandler &),
-                                      std::unique_ptr<Interface<dim>> (*factory_function) ());
+    register_boundary_fluid_pressure(const std::string &name,
+                                     const std::string &description,
+                                     void (*declare_parameters_function)(ParameterHandler &),
+                                     std::unique_ptr<Interface<dim>> (*factory_function)());
 
     /**
      * A function that given the name of a model returns a pointer to an
@@ -110,7 +109,7 @@ namespace aspect
      */
     template <int dim>
     std::unique_ptr<Interface<dim>>
-    create_boundary_fluid_pressure (ParameterHandler &prm);
+    create_boundary_fluid_pressure(ParameterHandler &prm);
 
 
     /**
@@ -121,7 +120,7 @@ namespace aspect
      */
     template <int dim>
     void
-    declare_parameters (ParameterHandler &prm);
+    declare_parameters(ParameterHandler &prm);
 
 
     /**
@@ -135,7 +134,7 @@ namespace aspect
      */
     template <int dim>
     void
-    write_plugin_graph (std::ostream &output_stream);
+    write_plugin_graph(std::ostream &output_stream);
 
 
     /**
@@ -148,14 +147,12 @@ namespace aspect
 #define ASPECT_REGISTER_BOUNDARY_FLUID_PRESSURE_MODEL(classname, name, description) \
   template class classname<2>; \
   template class classname<3>; \
-  namespace ASPECT_REGISTER_BOUNDARY_FLUID_PRESSURE_MODEL_ ## classname \
+  namespace ASPECT_REGISTER_BOUNDARY_FLUID_PRESSURE_MODEL_##classname \
   { \
-    aspect::internal::Plugins::RegisterHelper<aspect::BoundaryFluidPressure::Interface<2>,classname<2>> \
-    dummy_ ## classname ## _2d (&aspect::BoundaryFluidPressure::register_boundary_fluid_pressure<2>, \
-                                name, description); \
-    aspect::internal::Plugins::RegisterHelper<aspect::BoundaryFluidPressure::Interface<3>,classname<3>> \
-    dummy_ ## classname ## _3d (&aspect::BoundaryFluidPressure::register_boundary_fluid_pressure<3>, \
-                                name, description); \
+    aspect::internal::Plugins::RegisterHelper<aspect::BoundaryFluidPressure::Interface<2>, classname<2>> dummy_##classname##_2d( \
+      &aspect::BoundaryFluidPressure::register_boundary_fluid_pressure<2>, name, description); \
+    aspect::internal::Plugins::RegisterHelper<aspect::BoundaryFluidPressure::Interface<3>, classname<3>> dummy_##classname##_3d( \
+      &aspect::BoundaryFluidPressure::register_boundary_fluid_pressure<3>, name, description); \
   }
   }
 }

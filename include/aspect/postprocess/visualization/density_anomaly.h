@@ -37,35 +37,30 @@ namespace aspect
        * anomaly (temperature-depth average of temperature).
        */
       template <int dim>
-      class DensityAnomaly
-        :
-        public CellDataVectorCreator<dim>,
-        public SimulatorAccess<dim>
+      class DensityAnomaly : public CellDataVectorCreator<dim>, public SimulatorAccess<dim>
       {
         public:
-          DensityAnomaly ();
+          DensityAnomaly();
 
           /**
            * @copydoc CellDataVectorCreator<dim>::execute()
            */
           std::pair<std::string, std::unique_ptr<Vector<float>>>
-          execute () const override;
+          execute() const override;
 
           /**
            * Declare the parameters this class takes through input files.
            */
-          static
-          void
-          declare_parameters (ParameterHandler &prm);
+          static void
+          declare_parameters(ParameterHandler &prm);
 
           /**
            * Read the parameters this class declares from the parameter file.
            */
           void
-          parse_parameters (ParameterHandler &prm) override;
+          parse_parameters(ParameterHandler &prm) override;
 
         private:
-
           /**
            * Scheme chosen to define the average density as a
            * function of depth. Reference profile evaluates the material model
@@ -85,8 +80,6 @@ namespace aspect
            * This variable is read from the parameter file through a parameter called 'Number of depth slices'.
            */
           unsigned int n_slices;
-
-
       };
     }
   }

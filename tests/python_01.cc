@@ -27,7 +27,8 @@
 #include <aspect/python_helper.h>
 
 // create a function that is run upon loading the plugin
-int f()
+int
+f()
 {
   if (_import_array() < 0)
     {
@@ -43,8 +44,8 @@ int f()
       AssertThrow(false, dealii::ExcMessage("Failed to load Python module"));
     }
 
-  std::vector<double> x = {1.0, 2.0, 3.0};
-  auto arr = aspect::PythonHelper::vector_to_numpy_object(x);
+  std::vector<double> x   = {1.0, 2.0, 3.0};
+  auto                arr = aspect::PythonHelper::vector_to_numpy_object(x);
 
   PyObject *pFunc = PyObject_GetAttrString(pModule, "update");
   Assert(pFunc != nullptr, dealii::ExcMessage("update() function not found."));
@@ -63,12 +64,12 @@ int f()
 }
 
 template <int dim>
-void signal_connector (aspect::SimulatorSignals<dim> &/*signals*/)
+void
+signal_connector(aspect::SimulatorSignals<dim> & /*signals*/)
 {
   f();
   std::cout << "exiting..." << std::endl;
   std::exit(0); // let's exit and not actually run ASPECT...
 }
 
-ASPECT_REGISTER_SIGNALS_CONNECTOR(signal_connector<2>,
-                                  signal_connector<3>)
+ASPECT_REGISTER_SIGNALS_CONNECTOR(signal_connector<2>, signal_connector<3>)

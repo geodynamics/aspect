@@ -47,7 +47,7 @@ namespace aspect
         /**
          * Constructor.
          */
-        RepeatOnNonlinearFail ();
+        RepeatOnNonlinearFail();
 
         /**
          * @copydoc aspect::TimeStepping::Interface<dim>::execute()
@@ -59,7 +59,8 @@ namespace aspect
          * This function notifies the plugin that the nonlinear solver
          * failed.
          */
-        void nonlinear_solver_has_failed() const;
+        void
+        nonlinear_solver_has_failed() const;
 
         /**
          * The main execute() function.
@@ -67,12 +68,11 @@ namespace aspect
         std::pair<Reaction, double>
         determine_reaction(const TimeStepInfo &info) override;
 
-        static
-        void
-        declare_parameters (ParameterHandler &prm);
+        static void
+        declare_parameters(ParameterHandler &prm);
 
         void
-        parse_parameters (ParameterHandler &prm) override;
+        parse_parameters(ParameterHandler &prm) override;
 
       private:
         /**

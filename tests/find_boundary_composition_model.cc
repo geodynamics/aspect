@@ -19,14 +19,14 @@
 */
 
 
+#include <aspect/boundary_composition/box.h>
+#include <aspect/boundary_composition/initial_composition.h>
 #include <aspect/boundary_temperature/box.h>
 #include <aspect/geometry_model/box.h>
-#include <aspect/boundary_composition/initial_composition.h>
-#include <aspect/boundary_composition/box.h>
 #include <aspect/simulator.h>
 
-#include <utility>
 #include <limits>
+#include <utility>
 
 
 namespace aspect
@@ -37,17 +37,20 @@ namespace aspect
     class Box2 : public Box<dim>
     {
       public:
-        virtual void update();
+        virtual void
+        update();
     };
     template <int dim>
-    void Box2<dim>::update()
+    void
+    Box2<dim>::update()
     {
       if (this->get_boundary_composition_manager().template has_matching_active_plugin<const BoundaryComposition::Box<dim>>())
         std::cout << "Box is found!" << std::endl;
       else
         std::cout << "Box is not found!" << std::endl;
 
-      if (this->get_boundary_composition_manager().template has_matching_active_plugin<const BoundaryComposition::InitialComposition<dim>>())
+      if (this->get_boundary_composition_manager()
+            .template has_matching_active_plugin<const BoundaryComposition::InitialComposition<dim>>())
         std::cout << "InitialComposition is found!" << std::endl;
       else
         std::cout << "InitialComposition is not found!" << std::endl;
@@ -64,7 +67,8 @@ namespace aspect
 
       try
         {
-          this->get_boundary_composition_manager().template get_matching_active_plugin<const BoundaryComposition::InitialComposition<dim>>();
+          this->get_boundary_composition_manager()
+            .template get_matching_active_plugin<const BoundaryComposition::InitialComposition<dim>>();
           std::cout << "InitialComposition is found!" << std::endl;
         }
       catch (...)

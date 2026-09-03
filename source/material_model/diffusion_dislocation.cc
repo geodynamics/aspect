@@ -18,9 +18,9 @@
   <http://www.gnu.org/licenses/>.
 */
 
+#include <aspect/adiabatic_conditions/interface.h>
 #include <aspect/material_model/diffusion_dislocation.h>
 #include <aspect/utilities.h>
-#include <aspect/adiabatic_conditions/interface.h>
 
 namespace aspect
 {
@@ -28,32 +28,31 @@ namespace aspect
   {
     template <int dim>
     void
-    DiffusionDislocation<dim>::
-    evaluate(const MaterialModel::MaterialModelInputs<dim> &in,
-             MaterialModel::MaterialModelOutputs<dim> &out) const
+    DiffusionDislocation<dim>::evaluate(const MaterialModel::MaterialModelInputs<dim> &in,
+                                        MaterialModel::MaterialModelOutputs<dim>      &out) const
     {
       for (unsigned int i = 0; i < in.n_evaluation_points(); ++i)
         {
           // const Point<dim> position = in.position[i];
-          const double temperature = in.temperature[i];
-          const double pressure= in.pressure[i];
+          const double              temperature = in.temperature[i];
+          const double              pressure    = in.pressure[i];
           const std::vector<double> composition = in.composition[i];
-          const std::vector<double> volume_fractions = MaterialUtilities::compute_only_composition_fractions(composition,
-                                                       this->introspection().chemical_composition_field_indices());
+          const std::vector<double> volume_fractions =
+            MaterialUtilities::compute_only_composition_fractions(composition, this->introspection().chemical_composition_field_indices());
 
           // densities
           double density = 0.0;
-          for (unsigned int j=0; j < volume_fractions.size(); ++j)
+          for (unsigned int j = 0; j < volume_fractions.size(); ++j)
             {
               // not strictly correct if thermal expansivities are different, since we are interpreting
               // these compositions as volume fractions, but the error introduced should not be too bad.
-              const double temperature_factor= (1.0 - thermal_expansivities[j] * (temperature - reference_T));
+              const double temperature_factor = (1.0 - thermal_expansivities[j] * (temperature - reference_T));
               density += volume_fractions[j] * densities[j] * temperature_factor;
             }
 
           // thermal expansivities
           double thermal_expansivity = 0.0;
-          for (unsigned int j=0; j < volume_fractions.size(); ++j)
+          for (unsigned int j = 0; j < volume_fractions.size(); ++j)
             thermal_expansivity += volume_fractions[j] * thermal_expansivities[j];
 
           // calculate effective viscosity
@@ -65,7 +64,7 @@ namespace aspect
               out.viscosities[i] = diffusion_dislocation.compute_viscosity(pressure, temperature, volume_fractions, in.strain_rate[i]);
             }
 
-          out.densities[i] = density;
+          out.densities[i]                      = density;
           out.thermal_expansion_coefficients[i] = thermal_expansivity;
           // Specific heat at the given positions.
           out.specific_heat[i] = heat_capacity;
@@ -74,10 +73,9 @@ namespace aspect
           // calculate thermal conductivity. Otherwise, use the real density. If the adiabatic
           // conditions are not yet initialized, the real density will still be used.
           if (this->get_parameters().formulation_temperature_equation ==
-              Parameters<dim>::Formulation::TemperatureEquation::reference_density_profile &&
+                Parameters<dim>::Formulation::TemperatureEquation::reference_density_profile &&
               this->get_adiabatic_conditions().is_initialized())
-            out.thermal_conductivities[i] = thermal_diffusivity * heat_capacity *
-                                            this->get_adiabatic_conditions().density(in.position[i]);
+            out.thermal_conductivities[i] = thermal_diffusivity * heat_capacity * this->get_adiabatic_conditions().density(in.position[i]);
           else
             out.thermal_conductivities[i] = thermal_diffusivity * heat_capacity * density;
           // Compressibility at the given positions.
@@ -91,26 +89,25 @@ namespace aspect
           // Change in composition due to chemical reactions at the
           // given positions. The term reaction_terms[i][c] is the
           // change in compositional field c at point i.
-          for (unsigned int c=0; c<in.composition[i].size(); ++c)
+          for (unsigned int c = 0; c < in.composition[i].size(); ++c)
             out.reaction_terms[i][c] = 0.0;
         }
     }
 
     template <int dim>
     bool
-    DiffusionDislocation<dim>::
-    is_compressible () const
+    DiffusionDislocation<dim>::is_compressible() const
     {
       return false;
     }
 
     template <int dim>
     void
-    DiffusionDislocation<dim>::declare_parameters (ParameterHandler &prm)
+    DiffusionDislocation<dim>::declare_parameters(ParameterHandler &prm)
     {
       prm.enter_subsection("Material model");
       {
-        prm.enter_subsection ("Diffusion dislocation");
+        prm.enter_subsection("Diffusion dislocation");
         {
           Rheology::DiffusionDislocation<dim>::declare_parameters(prm);
         }
@@ -123,38 +120,38 @@ namespace aspect
 
     template <int dim>
     void
-    DiffusionDislocation<dim>::parse_parameters (ParameterHandler &prm)
+    DiffusionDislocation<dim>::parse_parameters(ParameterHandler &prm)
     {
       prm.enter_subsection("Material model");
       {
-        prm.enter_subsection ("Diffusion dislocation");
+        prm.enter_subsection("Diffusion dislocation");
         {
           reference_T = prm.get_double("Reference temperature");
 
           // Retrieve the list of composition names
           std::vector<std::string> compositional_field_names = this->introspection().get_composition_names();
           // Establish that a background field is required here
-          compositional_field_names.insert(compositional_field_names.begin(),"background");
+          compositional_field_names.insert(compositional_field_names.begin(), "background");
 
           // Make options file for parsing maps to double arrays
           std::vector<std::string> chemical_field_names = this->introspection().chemical_composition_field_names();
 
           // Establish that a background field is required here
-          chemical_field_names.insert(chemical_field_names.begin(),"background");
+          chemical_field_names.insert(chemical_field_names.begin(), "background");
 
           Utilities::MapParsing::Options options(chemical_field_names, "");
           options.list_of_allowed_keys = compositional_field_names;
-          options.property_name = "Densities";
-          densities = Utilities::MapParsing::parse_map_to_double_array (prm.get(options.property_name), options);
+          options.property_name        = "Densities";
+          densities                    = Utilities::MapParsing::parse_map_to_double_array(prm.get(options.property_name), options);
 
           options.property_name = "Thermal expansivities";
-          thermal_expansivities = Utilities::MapParsing::parse_map_to_double_array (prm.get(options.property_name), options);
+          thermal_expansivities = Utilities::MapParsing::parse_map_to_double_array(prm.get(options.property_name), options);
 
           // Phenomenological parameters
           thermal_diffusivity = prm.get_double("Thermal diffusivity");
-          heat_capacity = prm.get_double("Heat capacity");
+          heat_capacity       = prm.get_double("Heat capacity");
 
-          diffusion_dislocation.initialize_simulator (this->get_simulator());
+          diffusion_dislocation.initialize_simulator(this->get_simulator());
           diffusion_dislocation.parse_parameters(prm);
         }
         prm.leave_subsection();
@@ -162,11 +159,14 @@ namespace aspect
       prm.leave_subsection();
 
       // Declare dependencies on solution variables
-      this->model_dependence.viscosity = NonlinearDependence::temperature | NonlinearDependence::pressure | NonlinearDependence::strain_rate | NonlinearDependence::compositional_fields;
-      this->model_dependence.density = NonlinearDependence::temperature | NonlinearDependence::pressure | NonlinearDependence::compositional_fields;
+      this->model_dependence.viscosity = NonlinearDependence::temperature | NonlinearDependence::pressure |
+                                         NonlinearDependence::strain_rate | NonlinearDependence::compositional_fields;
+      this->model_dependence.density =
+        NonlinearDependence::temperature | NonlinearDependence::pressure | NonlinearDependence::compositional_fields;
       this->model_dependence.compressibility = NonlinearDependence::none;
-      this->model_dependence.specific_heat = NonlinearDependence::none;
-      this->model_dependence.thermal_conductivity = NonlinearDependence::temperature | NonlinearDependence::pressure | NonlinearDependence::compositional_fields;
+      this->model_dependence.specific_heat   = NonlinearDependence::none;
+      this->model_dependence.thermal_conductivity =
+        NonlinearDependence::temperature | NonlinearDependence::pressure | NonlinearDependence::compositional_fields;
     }
   }
 }

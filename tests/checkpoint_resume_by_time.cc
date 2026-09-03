@@ -20,11 +20,10 @@
 
 namespace
 {
-  int run_command(const std::string &command)
+  int
+  run_command(const std::string &command)
   {
-    std::cout << "Executing the following command:\n"
-              << command
-              << std::endl;
+    std::cout << "Executing the following command:\n" << command << std::endl;
 
     const int ret = system(command.c_str());
     if (ret != 0)
@@ -33,17 +32,19 @@ namespace
     return ret;
   }
 
-  double read_checkpoint_time(const std::string &file_name)
+  double
+  read_checkpoint_time(const std::string &file_name)
   {
     std::ifstream metadata(file_name);
-    std::string label;
-    double time;
+    std::string   label;
+    double        time;
     metadata >> label >> time;
     return time;
   }
 }
 
-int f()
+int
+f()
 {
   std::cout << "* starting from beginning:" << std::endl;
 
@@ -60,16 +61,14 @@ int f()
               " rm -rf output2.tmp ; cp -r output1.tmp output2.tmp ; "
               " rm -f output1.tmp/log.txt");
 
-  const double t3 = read_checkpoint_time("output-checkpoint_resume_by_time/output1.tmp/restart/03/metadata.txt");
-  const double t4 = read_checkpoint_time("output-checkpoint_resume_by_time/output1.tmp/restart/04/metadata.txt");
+  const double t3          = read_checkpoint_time("output-checkpoint_resume_by_time/output1.tmp/restart/03/metadata.txt");
+  const double t4          = read_checkpoint_time("output-checkpoint_resume_by_time/output1.tmp/restart/04/metadata.txt");
   const double resume_time = 0.75 * t3 + 0.25 * t4;
 
   std::ostringstream resume_time_stream;
   resume_time_stream << std::setprecision(17) << resume_time;
 
-  std::cout << "* now resuming near checkpoint 3 at time "
-            << resume_time_stream.str()
-            << ":" << std::endl;
+  std::cout << "* now resuming near checkpoint 3 at time " << resume_time_stream.str() << ":" << std::endl;
 
   run_command("cd output-checkpoint_resume_by_time ; "
               "(cat " ASPECT_SOURCE_DIR "/tests/checkpoint_resume_by_time.prm "
@@ -80,7 +79,9 @@ int f()
               " ; "
               " echo 'subsection Checkpointing' "
               " ; "
-              " echo '  set Resume time = " + resume_time_stream.str() + "' "
+              " echo '  set Resume time = " +
+              resume_time_stream.str() +
+              "' "
               " ; "
               " echo 'end' "
               ") "

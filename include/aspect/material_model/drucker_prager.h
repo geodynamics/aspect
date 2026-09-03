@@ -21,9 +21,9 @@
 #ifndef _aspect_material_model_drucker_prager_h
 #define _aspect_material_model_drucker_prager_h
 
+#include <aspect/material_model/equation_of_state/linearized_incompressible.h>
 #include <aspect/material_model/interface.h>
 #include <aspect/material_model/rheology/drucker_prager.h>
-#include <aspect/material_model/equation_of_state/linearized_incompressible.h>
 #include <aspect/simulator_access.h>
 
 namespace aspect
@@ -83,8 +83,8 @@ namespace aspect
          * @name Physical parameters used in the basic equations
          * @{
          */
-        void evaluate(const MaterialModel::MaterialModelInputs<dim> &in,
-                      MaterialModel::MaterialModelOutputs<dim> &out) const override;
+        void
+        evaluate(const MaterialModel::MaterialModelInputs<dim> &in, MaterialModel::MaterialModelOutputs<dim> &out) const override;
 
         /**
          * @}
@@ -103,7 +103,8 @@ namespace aspect
          * equation as $\nabla \cdot (\rho \mathbf u)=0$ (compressible Stokes)
          * or as $\nabla \cdot \mathbf{u}=0$ (incompressible Stokes).
          */
-        bool is_compressible () const override;
+        bool
+        is_compressible() const override;
         /**
          * @}
          */
@@ -115,21 +116,19 @@ namespace aspect
         /**
          * Declare the parameters this class takes through input files.
          */
-        static
-        void
-        declare_parameters (ParameterHandler &prm);
+        static void
+        declare_parameters(ParameterHandler &prm);
 
         /**
          * Read the parameters this class declares from the parameter file.
          */
         void
-        parse_parameters (ParameterHandler &prm) override;
+        parse_parameters(ParameterHandler &prm) override;
         /**
          * @}
          */
 
       private:
-
         /**
          *  This variable is read from the parameter file through a parameter called 'Reference temperature'.
          */

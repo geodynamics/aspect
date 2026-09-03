@@ -41,25 +41,26 @@ namespace aspect
         /**
          * Return the value of the topography for a point.
          */
-        double value (const Point<dim-1> &p) const override;
+        double
+        value(const Point<dim - 1> &p) const override;
 
         /**
          * Return the maximum value of the elevation.
          */
-        double max_topography () const override;
+        double
+        max_topography() const override;
 
         /**
          * Declare the parameters this class takes through input files.
          */
-        static
-        void
-        declare_parameters (ParameterHandler &prm);
+        static void
+        declare_parameters(ParameterHandler &prm);
 
         /**
          * Read the parameters this class declares from the parameter file.
          */
         void
-        parse_parameters (ParameterHandler &prm) override;
+        parse_parameters(ParameterHandler &prm) override;
 
       private:
         /**
@@ -76,7 +77,6 @@ namespace aspect
          * The polygons and their points are stored in this vector.
          */
         std::vector<std::vector<Point<2>>> point_lists;
-
     };
   }
 }

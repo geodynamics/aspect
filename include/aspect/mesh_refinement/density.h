@@ -39,8 +39,7 @@ namespace aspect
      * @ingroup MeshRefinement
      */
     template <int dim>
-    class Density : public Interface<dim>,
-      public SimulatorAccess<dim>
+    class Density : public Interface<dim>, public SimulatorAccess<dim>
     {
       public:
         /**
@@ -52,7 +51,7 @@ namespace aspect
          * correct size when the function is called.
          */
         void
-        execute (Vector<float> &error_indicators) const override;
+        execute(Vector<float> &error_indicators) const override;
     };
   }
 }

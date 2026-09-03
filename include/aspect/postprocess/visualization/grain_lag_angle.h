@@ -57,7 +57,7 @@ namespace aspect
        * often interested in GOL in a steady-state flow anyway.
        */
       template <int dim>
-      class GrainLagAngle: public CellDataVectorCreator<dim>, public SimulatorAccess<dim>
+      class GrainLagAngle : public CellDataVectorCreator<dim>, public SimulatorAccess<dim>
       {
         public:
           /**

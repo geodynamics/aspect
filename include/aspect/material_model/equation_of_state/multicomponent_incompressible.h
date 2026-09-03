@@ -21,9 +21,9 @@
 #ifndef _aspect_material_model_equation_of_state_multicomponent_incompressible_h
 #define _aspect_material_model_equation_of_state_multicomponent_incompressible_h
 
+#include <aspect/material_model/equation_of_state/interface.h>
 #include <aspect/material_model/interface.h>
 #include <aspect/simulator_access.h>
-#include <aspect/material_model/equation_of_state/interface.h>
 
 
 namespace aspect
@@ -49,7 +49,7 @@ namespace aspect
        * There is no pressure-dependence of the density.
        */
       template <int dim>
-      class MulticomponentIncompressible :  public ::aspect::SimulatorAccess<dim>
+      class MulticomponentIncompressible : public ::aspect::SimulatorAccess<dim>
       {
         public:
           /**
@@ -57,9 +57,10 @@ namespace aspect
            * for all compositions and phases, given the inputs in @p in and an
            * index input_index that determines which entry of the vector of inputs is used.
            */
-          void evaluate(const MaterialModel::MaterialModelInputs<dim> &in,
-                        const unsigned int input_index,
-                        MaterialModel::EquationOfStateOutputs<dim> &eos_outputs) const;
+          void
+          evaluate(const MaterialModel::MaterialModelInputs<dim> &in,
+                   const unsigned int                             input_index,
+                   MaterialModel::EquationOfStateOutputs<dim>    &eos_outputs) const;
 
           /**
            * Return whether the model is compressible or not. Incompressibility
@@ -69,7 +70,8 @@ namespace aspect
            * equation as $\nabla \cdot (\rho \mathbf u)=0$ (compressible Stokes)
            * or as $\nabla \cdot \mathbf{u}=0$ (incompressible Stokes).
            */
-          bool is_compressible () const;
+          bool
+          is_compressible() const;
 
           /**
            * Declare the parameters this class takes through input files.
@@ -77,10 +79,8 @@ namespace aspect
            * the default value of the thermal expansivity used in the
            * equation of state.
            */
-          static
-          void
-          declare_parameters (ParameterHandler &prm,
-                              const double default_thermal_expansion = 3.5e-5);
+          static void
+          declare_parameters(ParameterHandler &prm, const double default_thermal_expansion = 3.5e-5);
 
           /**
            * Read the parameters this class declares from the parameter file.
@@ -90,8 +90,8 @@ namespace aspect
            * parameters.
            */
           void
-          parse_parameters (ParameterHandler &prm,
-                            const std::unique_ptr<std::vector<unsigned int>> &expected_n_phases_per_composition = nullptr);
+          parse_parameters(ParameterHandler                                 &prm,
+                           const std::unique_ptr<std::vector<unsigned int>> &expected_n_phases_per_composition = nullptr);
 
         private:
           /**

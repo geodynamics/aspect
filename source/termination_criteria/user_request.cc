@@ -30,47 +30,48 @@ namespace aspect
     bool
     UserRequest<dim>::execute()
     {
-      return Utilities::fexists(this->get_output_directory()+filename_to_test, this->get_mpi_communicator());
+      return Utilities::fexists(this->get_output_directory() + filename_to_test, this->get_mpi_communicator());
     }
 
     template <int dim>
     void
-    UserRequest<dim>::declare_parameters (ParameterHandler &prm)
+    UserRequest<dim>::declare_parameters(ParameterHandler &prm)
     {
       prm.enter_subsection("Termination criteria");
       {
         prm.enter_subsection("User request");
         {
-          prm.declare_entry ("File name", "terminate-aspect",
-                             Patterns::FileName(Patterns::FileName::input),
-                             "The name of a file that, if it exists in the output "
-                             "directory (whose name is also specified in the input file) "
-                             "will lead to termination of the simulation. "
-                             "The file's location is chosen to be in the output directory, "
-                             "rather than in a generic location such as the ASPECT directory, "
-                             "so that one can run multiple simulations at the same time (which "
-                             "presumably write to different output directories) and can "
-                             "selectively terminate a particular one.");
+          prm.declare_entry("File name",
+                            "terminate-aspect",
+                            Patterns::FileName(Patterns::FileName::input),
+                            "The name of a file that, if it exists in the output "
+                            "directory (whose name is also specified in the input file) "
+                            "will lead to termination of the simulation. "
+                            "The file's location is chosen to be in the output directory, "
+                            "rather than in a generic location such as the ASPECT directory, "
+                            "so that one can run multiple simulations at the same time (which "
+                            "presumably write to different output directories) and can "
+                            "selectively terminate a particular one.");
         }
-        prm.leave_subsection ();
+        prm.leave_subsection();
       }
-      prm.leave_subsection ();
+      prm.leave_subsection();
     }
 
 
     template <int dim>
     void
-    UserRequest<dim>::parse_parameters (ParameterHandler &prm)
+    UserRequest<dim>::parse_parameters(ParameterHandler &prm)
     {
       prm.enter_subsection("Termination criteria");
       {
         prm.enter_subsection("User request");
         {
-          filename_to_test = prm.get ("File name");
+          filename_to_test = prm.get("File name");
         }
-        prm.leave_subsection ();
+        prm.leave_subsection();
       }
-      prm.leave_subsection ();
+      prm.leave_subsection();
     }
   }
 }

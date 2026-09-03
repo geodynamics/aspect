@@ -22,6 +22,7 @@
 #define _aspect_material_model_rheology_compositional_viscosity_prefactors_h
 
 #include <aspect/global.h>
+
 #include <aspect/material_model/interface.h>
 #include <aspect/simulator_access.h>
 
@@ -48,15 +49,14 @@ namespace aspect
           /**
            * Declare the parameters this function takes through input files.
            */
-          static
-          void
-          declare_parameters (ParameterHandler &prm);
+          static void
+          declare_parameters(ParameterHandler &prm);
 
           /**
            * Read the parameters from the parameter file.
            */
           void
-          parse_parameters (ParameterHandler &prm);
+          parse_parameters(ParameterHandler &prm);
 
           // The flow laws that can be
           // currently modified.
@@ -70,11 +70,11 @@ namespace aspect
            * Compute the viscosity.
            */
           double
-          compute_viscosity (const MaterialModel::MaterialModelInputs<dim> &in,
-                             const double base_viscosity,
-                             const unsigned int composition_index,
-                             const unsigned int q,
-                             const ModifiedFlowLaws &modified_flow_laws) const;
+          compute_viscosity(const MaterialModel::MaterialModelInputs<dim> &in,
+                            const double                                   base_viscosity,
+                            const unsigned int                             composition_index,
+                            const unsigned int                             q,
+                            const ModifiedFlowLaws                        &modified_flow_laws) const;
 
         private:
           /**
@@ -115,25 +115,26 @@ namespace aspect
            */
           std::vector<double> dislocation_water_fugacity_exponents;
           /**
-           *  This variable is read from the parameter file through a parameter called 'Minimum mass fraction bound water content for fugacity'.
+           *  This variable is read from the parameter file through a parameter called 'Minimum mass fraction bound water content for
+           * fugacity'.
            */
           std::vector<double> minimum_mass_fraction_water_for_dry_creep;
 
           // Variables for the interface weakening scheme
           std::vector<std::string> weakening_field_names;
-          std::vector<double> interface_weakening_factors;
-          double interface_weakening_threshold;
+          std::vector<double>      interface_weakening_factors;
+          double                   interface_weakening_threshold;
 
           // From Hirth & Kohlstedt 2004, equation 6
-          const double A_H2O = 2.6e-5; // 1/Pa
-          const double activation_energy_H2O = 40e3; // J/mol/K
-          const double activation_volume_H2O = 10e-6; // m^3/mol
+          const double A_H2O                 = 2.6e-5; // 1/Pa
+          const double activation_energy_H2O = 40e3;   // J/mol/K
+          const double activation_volume_H2O = 10e-6;  // m^3/mol
 
           // We calculate the molar mass of olivine using the molar mass of fayalite (0.20379 kg/mol)
           // and the molar mass of forsterite (0.140693 kg/mol), and a mole fraction of 90% forsterite
           // in olivine.
-          const double molar_mass_olivine = 0.1470027; // kg/mol
-          const double molar_mass_H2O = 0.01801528; // kg/mol
+          const double molar_mass_olivine = 0.1470027;  // kg/mol
+          const double molar_mass_H2O     = 0.01801528; // kg/mol
       };
     }
   }

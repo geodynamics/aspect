@@ -34,29 +34,31 @@ namespace aspect
      * equation for the current cell.
      */
     template <int dim>
-    class AdvectionSystem : public Assemblers::Interface<dim>, public Assemblers::AdvectionStabilizationInterface<dim>,
-      public SimulatorAccess<dim>
+    class AdvectionSystem : public Assemblers::Interface<dim>,
+                            public Assemblers::AdvectionStabilizationInterface<dim>,
+                            public SimulatorAccess<dim>
     {
       public:
         void
-        execute(internal::Assembly::Scratch::ScratchBase<dim>  &scratch_base,
+        execute(internal::Assembly::Scratch::ScratchBase<dim>   &scratch_base,
                 internal::Assembly::CopyData::CopyDataBase<dim> &data_base) const override;
 
         std::vector<double>
-        compute_residual(internal::Assembly::Scratch::ScratchBase<dim>  &scratch_base) const override;
+        compute_residual(internal::Assembly::Scratch::ScratchBase<dim> &scratch_base) const override;
     };
 
     template <int dim>
-    class DarcySystem : public Assemblers::Interface<dim>, public Assemblers::AdvectionStabilizationInterface<dim>,
-      public SimulatorAccess<dim>
+    class DarcySystem : public Assemblers::Interface<dim>,
+                        public Assemblers::AdvectionStabilizationInterface<dim>,
+                        public SimulatorAccess<dim>
     {
       public:
         void
-        execute(internal::Assembly::Scratch::ScratchBase<dim>  &scratch_base,
+        execute(internal::Assembly::Scratch::ScratchBase<dim>   &scratch_base,
                 internal::Assembly::CopyData::CopyDataBase<dim> &data_base) const override;
 
         std::vector<double>
-        compute_residual(internal::Assembly::Scratch::ScratchBase<dim>  &scratch_base) const override;
+        compute_residual(internal::Assembly::Scratch::ScratchBase<dim> &scratch_base) const override;
 
         void
         create_additional_material_model_outputs(MaterialModel::MaterialModelOutputs<dim> &outputs) const override;
@@ -67,23 +69,22 @@ namespace aspect
      * current cell in case we only want to solve the diffusion equation.
      */
     template <int dim>
-    class DiffusionSystem : public Assemblers::Interface<dim>, public Assemblers::AdvectionStabilizationInterface<dim>,
-      public SimulatorAccess<dim>
+    class DiffusionSystem : public Assemblers::Interface<dim>,
+                            public Assemblers::AdvectionStabilizationInterface<dim>,
+                            public SimulatorAccess<dim>
     {
       public:
         void
-        execute(internal::Assembly::Scratch::ScratchBase<dim>  &scratch_base,
+        execute(internal::Assembly::Scratch::ScratchBase<dim>   &scratch_base,
                 internal::Assembly::CopyData::CopyDataBase<dim> &data_base) const override;
 
         std::vector<double>
-        compute_residual(internal::Assembly::Scratch::ScratchBase<dim>  &scratch_base) const override;
+        compute_residual(internal::Assembly::Scratch::ScratchBase<dim> &scratch_base) const override;
 
-        virtual
-        std::vector<double>
+        virtual std::vector<double>
         advection_prefactors(internal::Assembly::Scratch::ScratchBase<dim> &scratch_base) const override;
 
-        virtual
-        std::vector<double>
+        virtual std::vector<double>
         diffusion_prefactors(internal::Assembly::Scratch::ScratchBase<dim> &scratch_base) const override;
     };
 
@@ -93,12 +94,11 @@ namespace aspect
      * Neumann boundary conditions are used (which allow to prescribe a heat flux).
      */
     template <int dim>
-    class AdvectionSystemBoundaryHeatFlux : public Assemblers::Interface<dim>,
-      public SimulatorAccess<dim>
+    class AdvectionSystemBoundaryHeatFlux : public Assemblers::Interface<dim>, public SimulatorAccess<dim>
     {
       public:
         void
-        execute(internal::Assembly::Scratch::ScratchBase<dim>  &scratch_base,
+        execute(internal::Assembly::Scratch::ScratchBase<dim>   &scratch_base,
                 internal::Assembly::CopyData::CopyDataBase<dim> &data_base) const override;
     };
 
@@ -108,12 +108,11 @@ namespace aspect
      * Robin boundary conditions are used (which allow to prescribe a heat flux and a temperature).
      */
     template <int dim>
-    class AdvectionSystemRobinBoundary : public Assemblers::Interface<dim>,
-      public SimulatorAccess<dim>
+    class AdvectionSystemRobinBoundary : public Assemblers::Interface<dim>, public SimulatorAccess<dim>
     {
       public:
         void
-        execute(internal::Assembly::Scratch::ScratchBase<dim>  &scratch_base,
+        execute(internal::Assembly::Scratch::ScratchBase<dim>   &scratch_base,
                 internal::Assembly::CopyData::CopyDataBase<dim> &data_base) const override;
     };
 
@@ -122,12 +121,11 @@ namespace aspect
      * the discontinuous advection equation for a face at the boundary of the domain.
      */
     template <int dim>
-    class AdvectionSystemBoundaryFace : public Assemblers::Interface<dim>,
-      public SimulatorAccess<dim>
+    class AdvectionSystemBoundaryFace : public Assemblers::Interface<dim>, public SimulatorAccess<dim>
     {
       public:
         void
-        execute(internal::Assembly::Scratch::ScratchBase<dim>  &scratch_base,
+        execute(internal::Assembly::Scratch::ScratchBase<dim>   &scratch_base,
                 internal::Assembly::CopyData::CopyDataBase<dim> &data_base) const override;
     };
 
@@ -136,12 +134,11 @@ namespace aspect
      * the discontinuous advection equation for a face in the interior of the domain.
      */
     template <int dim>
-    class AdvectionSystemInteriorFace : public Assemblers::Interface<dim>,
-      public SimulatorAccess<dim>
+    class AdvectionSystemInteriorFace : public Assemblers::Interface<dim>, public SimulatorAccess<dim>
     {
       public:
         void
-        execute(internal::Assembly::Scratch::ScratchBase<dim>  &scratch_base,
+        execute(internal::Assembly::Scratch::ScratchBase<dim>   &scratch_base,
                 internal::Assembly::CopyData::CopyDataBase<dim> &data_base) const override;
     };
   }

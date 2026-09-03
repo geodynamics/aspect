@@ -20,6 +20,7 @@
 
 
 #include <aspect/global.h>
+
 #include <aspect/time_stepping/repeat_on_cutback.h>
 
 namespace aspect
@@ -37,37 +38,34 @@ namespace aspect
 
     template <int dim>
     std::pair<Reaction, double>
-    RepeatOnCutback<dim>::determine_reaction (const TimeStepInfo &info)
+    RepeatOnCutback<dim>::determine_reaction(const TimeStepInfo &info)
     {
-      if (info.next_time_step_size < this->get_timestep()*this->repeat_threshold
-          && !info.reduced_by_termination_plugin)
-        return
-          std::make_pair<Reaction, double>(Reaction::repeat_step,
-                                           this->get_timestep()*this->cut_back_amount);
+      if (info.next_time_step_size < this->get_timestep() * this->repeat_threshold && !info.reduced_by_termination_plugin)
+        return std::make_pair<Reaction, double>(Reaction::repeat_step, this->get_timestep() * this->cut_back_amount);
       else
-        return
-          std::make_pair<Reaction, double>(Reaction::advance,
-                                           std::numeric_limits<double>::max());
+        return std::make_pair<Reaction, double>(Reaction::advance, std::numeric_limits<double>::max());
     }
 
 
 
     template <int dim>
     void
-    RepeatOnCutback<dim>::declare_parameters (ParameterHandler &prm)
+    RepeatOnCutback<dim>::declare_parameters(ParameterHandler &prm)
     {
       prm.enter_subsection("Time stepping");
       {
         prm.enter_subsection("Repeat on cutback");
 
-        prm.declare_entry("Relative repeat threshold", "0.2",
-                          Patterns::Double (0.),
+        prm.declare_entry("Relative repeat threshold",
+                          "0.2",
+                          Patterns::Double(0.),
                           "A factor that controls when a step is going to be repeated. If "
                           "the newly computed step size is smaller than the last step size "
                           "multiplied by this factor, the step is repeated.");
 
-        prm.declare_entry("Cut back amount", "0.5",
-                          Patterns::Double (0.),
+        prm.declare_entry("Cut back amount",
+                          "0.5",
+                          Patterns::Double(0.),
                           "A factor that controls the size of the time step when repeating. The "
                           "default of 0.5 corresponds to 50\\% of the original step taken.");
 
@@ -80,14 +78,14 @@ namespace aspect
 
     template <int dim>
     void
-    RepeatOnCutback<dim>::parse_parameters (ParameterHandler &prm)
+    RepeatOnCutback<dim>::parse_parameters(ParameterHandler &prm)
     {
       prm.enter_subsection("Time stepping");
       {
         prm.enter_subsection("Repeat on cutback");
 
         repeat_threshold = prm.get_double("Relative repeat threshold");
-        cut_back_amount = prm.get_double("Cut back amount");
+        cut_back_amount  = prm.get_double("Cut back amount");
 
         prm.leave_subsection();
       }

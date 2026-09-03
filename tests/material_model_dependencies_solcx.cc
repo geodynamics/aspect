@@ -18,5 +18,5 @@
   <http://www.gnu.org/licenses/>.
 */
 
-#include "material_model_dependencies.cc"
 #include "../benchmarks/solcx/solcx.cc"
+#include "material_model_dependencies.cc"

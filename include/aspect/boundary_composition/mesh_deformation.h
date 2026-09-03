@@ -22,8 +22,8 @@
 #ifndef _aspect_boundary_composition_mesh_deformation_h
 #define _aspect_boundary_composition_mesh_deformation_h
 
-#include <aspect/mesh_deformation/interface.h>
 #include <aspect/boundary_composition/interface.h>
+#include <aspect/mesh_deformation/interface.h>
 #include <aspect/simulator_access.h>
 
 
@@ -47,16 +47,17 @@ namespace aspect
          * beginning of the program after parse_parameters is run.
          */
         void
-        initialize () override;
+        initialize() override;
 
         /**
          * This function returns the composition value returned by the
          * mesh deformation interface, which is the sum of the boundary compositions
          * provided by the active mesh deformation objects.
          */
-        double boundary_composition (const types::boundary_id boundary_indicator,
-                                     const Point<dim> &position,
-                                     const unsigned int compositional_field) const override;
+        double
+        boundary_composition(const types::boundary_id boundary_indicator,
+                             const Point<dim>        &position,
+                             const unsigned int       compositional_field) const override;
     };
   }
 }

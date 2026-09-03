@@ -18,15 +18,15 @@
   <http://www.gnu.org/licenses/>.
 */
 
-#include <aspect/material_model/grain_size.h>
 #include <aspect/adiabatic_conditions/interface.h>
 #include <aspect/gravity_model/interface.h>
+#include <aspect/material_model/grain_size.h>
 
 #include <deal.II/base/parameter_handler.h>
-
-#include <iostream>
 #include <deal.II/base/quadrature_lib.h>
 #include <deal.II/fe/fe_values.h>
+
+#include <iostream>
 
 namespace aspect
 {
@@ -44,13 +44,15 @@ namespace aspect
     class GrainSizeLatentHeat : public MaterialModel::Interface<dim>, public SimulatorAccess<dim>
     {
       public:
-        bool is_compressible () const override
+        bool
+        is_compressible() const override
         {
           return false;
         }
 
-        void evaluate(const typename MaterialModel::Interface<dim>::MaterialModelInputs &in,
-                      typename MaterialModel::Interface<dim>::MaterialModelOutputs &out) const override
+        void
+        evaluate(const typename MaterialModel::Interface<dim>::MaterialModelInputs &in,
+                 typename MaterialModel::Interface<dim>::MaterialModelOutputs      &out) const override
         {
           base_model->evaluate(in, out);
 
@@ -63,67 +65,61 @@ namespace aspect
           if (in.current_cell.state() == IteratorState::valid)
             {
               const QTrapezoid<dim> quadrature_formula;
-              const unsigned int n_q_points = quadrature_formula.size();
+              const unsigned int    n_q_points = quadrature_formula.size();
 
-              FEValues<dim> fe_values (this->get_mapping(),
-                                       this->get_fe(),
-                                       quadrature_formula,
-                                       update_values);
+              FEValues<dim> fe_values(this->get_mapping(), this->get_fe(), quadrature_formula, update_values);
 
-              std::vector<double> temperatures(n_q_points), pressures(n_q_points);
-              std::vector<std::vector<double>> compositions (quadrature_formula.size(),std::vector<double> (this->n_compositional_fields()));
-              std::vector<std::vector<double>> composition_values (this->n_compositional_fields(),std::vector<double> (quadrature_formula.size()));
+              std::vector<double>              temperatures(n_q_points), pressures(n_q_points);
+              std::vector<std::vector<double>> compositions(quadrature_formula.size(), std::vector<double>(this->n_compositional_fields()));
+              std::vector<std::vector<double>> composition_values(this->n_compositional_fields(),
+                                                                  std::vector<double>(quadrature_formula.size()));
 
-              fe_values.reinit (in.current_cell);
+              fe_values.reinit(in.current_cell);
 
               // get the various components of the solution, then
               // evaluate the material properties there
-              fe_values[this->introspection().extractors.temperature]
-              .get_function_values (this->get_solution(), temperatures);
-              fe_values[this->introspection().extractors.pressure]
-              .get_function_values (this->get_solution(), pressures);
+              fe_values[this->introspection().extractors.temperature].get_function_values(this->get_solution(), temperatures);
+              fe_values[this->introspection().extractors.pressure].get_function_values(this->get_solution(), pressures);
 
-              unsigned int T_points(0),p_points(0);
+              unsigned int T_points(0), p_points(0);
 
-              for (unsigned int q=0; q<n_q_points; ++q)
+              for (unsigned int q = 0; q < n_q_points; ++q)
                 {
-                  const double own_enthalpy = base_model->enthalpy(temperatures[q],pressures[q],compositional_fields,Point<dim>());
-                  for (unsigned int p=0; p<n_q_points; ++p)
+                  const double own_enthalpy = base_model->enthalpy(temperatures[q], pressures[q], compositional_fields, Point<dim>());
+                  for (unsigned int p = 0; p < n_q_points; ++p)
                     {
-                      double enthalpy_p,enthalpy_T;
+                      double enthalpy_p, enthalpy_T;
                       if (std::fabs(temperatures[q] - temperatures[p]) > 1e-12 * temperatures[q])
                         {
-                          enthalpy_p = base_model->enthalpy(temperatures[p],pressures[q],compositional_fields,Point<dim>());
-                          const double point_contribution = (own_enthalpy-enthalpy_p)/(temperatures[q]-temperatures[p]);
+                          enthalpy_p = base_model->enthalpy(temperatures[p], pressures[q], compositional_fields, Point<dim>());
+                          const double point_contribution = (own_enthalpy - enthalpy_p) / (temperatures[q] - temperatures[p]);
                           dHdT += point_contribution;
                           T_points++;
                         }
                       if (std::fabs(pressures[q] - pressures[p]) > 1)
                         {
-                          enthalpy_T = base_model->enthalpy(temperatures[q],pressures[p],compositional_fields,Point<dim>());
-                          dHdp += (own_enthalpy-enthalpy_T)/(pressures[q]-pressures[p]);
+                          enthalpy_T = base_model->enthalpy(temperatures[q], pressures[p], compositional_fields, Point<dim>());
+                          dHdp += (own_enthalpy - enthalpy_T) / (pressures[q] - pressures[p]);
                           p_points++;
                         }
                     }
                 }
 
-              if ((T_points > 0)
-                  && (p_points > 0))
+              if ((T_points > 0) && (p_points > 0))
                 {
                   dHdT /= T_points;
                   dHdp /= p_points;
                 }
             }
 
-          for (unsigned int i=0; i<in.n_evaluation_points(); ++i)
+          for (unsigned int i = 0; i < in.n_evaluation_points(); ++i)
             {
               const double approximate_density = 3515.6;
 
               if (this->get_adiabatic_conditions().is_initialized())
                 {
-                  if ((in.current_cell.state() == IteratorState::valid)
-                      && (std::fabs(dHdp) > std::numeric_limits<double>::epsilon())
-                      && (std::fabs(dHdT) > std::numeric_limits<double>::epsilon()))
+                  if ((in.current_cell.state() == IteratorState::valid) && (std::fabs(dHdp) > std::numeric_limits<double>::epsilon()) &&
+                      (std::fabs(dHdT) > std::numeric_limits<double>::epsilon()))
                     {
                       out.thermal_expansion_coefficients[i] = (1 - approximate_density * dHdp) / in.temperature[i];
                     }
@@ -136,8 +132,9 @@ namespace aspect
                   const double delta_pressure = 8e8;
 
                   // compositional fields and position are not used for this test in the base model
-                  const double h = base_model->enthalpy(in.temperature[i],in.pressure[i],compositional_fields,Point<dim>());
-                  const double dh = base_model->enthalpy(in.temperature[i],in.pressure[i] + delta_pressure,compositional_fields,Point<dim>());
+                  const double h = base_model->enthalpy(in.temperature[i], in.pressure[i], compositional_fields, Point<dim>());
+                  const double dh =
+                    base_model->enthalpy(in.temperature[i], in.pressure[i] + delta_pressure, compositional_fields, Point<dim>());
                   dHdp = (dh - h) / delta_pressure;
 
                   out.thermal_expansion_coefficients[i] = (1 - approximate_density * dHdp) / in.temperature[i];
@@ -145,9 +142,8 @@ namespace aspect
             }
         }
 
-        static
-        void
-        declare_parameters (ParameterHandler &prm)
+        static void
+        declare_parameters(ParameterHandler &prm)
         {
           MaterialModel::GrainSize<dim>::declare_parameters(prm);
         }
@@ -156,7 +152,7 @@ namespace aspect
          * Read the parameters this class declares from the parameter file.
          */
         void
-        parse_parameters (ParameterHandler &prm) override
+        parse_parameters(ParameterHandler &prm) override
         {
           base_model = std::make_unique<MaterialModel::GrainSize<dim>>();
           base_model->initialize_simulator(this->get_simulator());
@@ -165,7 +161,7 @@ namespace aspect
         }
 
         void
-        create_additional_named_outputs (MaterialModel::MaterialModelOutputs<dim> &out) const override
+        create_additional_named_outputs(MaterialModel::MaterialModelOutputs<dim> &out) const override
         {
           base_model->create_additional_named_outputs(out);
         }

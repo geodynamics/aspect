@@ -54,7 +54,7 @@ namespace aspect
         /**
          * Constructor. Initialize variables.
          */
-        SAVANIPerturbation ();
+        SAVANIPerturbation();
 
 
         /**
@@ -62,36 +62,35 @@ namespace aspect
          * pointers.
          */
         void
-        initialize () override;
+        initialize() override;
 
         /**
          * Return the Vs as a function of position.
          */
-        //TODO
-        virtual
-        double get_Vs (const Point<dim> &position) const;
+        // TODO
+        virtual double
+        get_Vs(const Point<dim> &position) const;
 
         /**
          * Return the initial temperature as a function of position.
          */
-        double initial_temperature (const Point<dim> &position) const override;
+        double
+        initial_temperature(const Point<dim> &position) const override;
 
         /**
          * Declare the parameters this class takes through input files.
          */
-        static
-        void
-        declare_parameters (ParameterHandler &prm);
+        static void
+        declare_parameters(ParameterHandler &prm);
 
         /**
          * Read the parameters this class declares from the parameter file.
          */
         void
-        parse_parameters (ParameterHandler &prm) override;
+        parse_parameters(ParameterHandler &prm) override;
 
 
       private:
-
         /**
          * An enum to describe which method should be chosen to scale vs to density.
          */
@@ -138,11 +137,13 @@ namespace aspect
          */
         double vs_to_density_constant;
         /**
-         * This variable is read from the parameter file through a parameter called 'Thermal expansion coefficient in initial temperature scaling'.
+         * This variable is read from the parameter file through a parameter called 'Thermal expansion coefficient in initial temperature
+         * scaling'.
          */
         double thermal_alpha;
         /**
-         * This variable is read from the parameter file through a parameter called 'Remove temperature heterogeneity down to specified depth'.
+         * This variable is read from the parameter file through a parameter called 'Remove temperature heterogeneity down to specified
+         * depth'.
          */
         double no_perturbation_depth;
 
@@ -204,7 +205,6 @@ namespace aspect
          * This variable is read from the parameter file through a parameter called 'Use thermal expansion coefficient from material model'.
          */
         bool use_material_model_thermal_alpha;
-
     };
 
   }

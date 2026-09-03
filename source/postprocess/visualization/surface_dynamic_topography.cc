@@ -17,9 +17,9 @@
   along with ASPECT; see the file LICENSE.  If not see
   <http://www.gnu.org/licenses/>.
 */
-#include <aspect/simulator.h>
-#include <aspect/postprocess/visualization/surface_dynamic_topography.h>
 #include <aspect/postprocess/dynamic_topography.h>
+#include <aspect/postprocess/visualization/surface_dynamic_topography.h>
+#include <aspect/simulator.h>
 
 namespace aspect
 {
@@ -28,21 +28,17 @@ namespace aspect
     namespace VisualizationPostprocessors
     {
       template <int dim>
-      SurfaceDynamicTopography<dim>::
-      SurfaceDynamicTopography ()
-        :
-        DataPostprocessorScalar<dim> ("surface_dynamic_topography",
-                                      update_quadrature_points),
-        Interface<dim>("m")
+      SurfaceDynamicTopography<dim>::SurfaceDynamicTopography()
+        : DataPostprocessorScalar<dim>("surface_dynamic_topography", update_quadrature_points)
+        , Interface<dim>("m")
       {}
 
 
 
       template <int dim>
       void
-      SurfaceDynamicTopography<dim>::
-      evaluate_vector_field(const DataPostprocessorInputs::Vector<dim> &input_data,
-                            std::vector<Vector<double>> &computed_quantities) const
+      SurfaceDynamicTopography<dim>::evaluate_vector_field(const DataPostprocessorInputs::Vector<dim> &input_data,
+                                                           std::vector<Vector<double>>                &computed_quantities) const
       {
         // Initialize everything to zero, so that we can ignore faces we are
         // not interested in (namely, those not labeled as 'top' or 'bottom')
@@ -59,23 +55,19 @@ namespace aspect
         // a face at the top or bottom boundary.
         bool cell_at_top_or_bottom_boundary = false;
         for (const unsigned int f : cell->face_indices())
-          if (cell->at_boundary(f) &&
-              (this->get_geometry_model().translate_id_to_symbol_name (cell->face(f)->boundary_id()) == "top" ||
-               this->get_geometry_model().translate_id_to_symbol_name (cell->face(f)->boundary_id()) == "bottom"))
+          if (cell->at_boundary(f) && (this->get_geometry_model().translate_id_to_symbol_name(cell->face(f)->boundary_id()) == "top" ||
+                                       this->get_geometry_model().translate_id_to_symbol_name(cell->face(f)->boundary_id()) == "bottom"))
             cell_at_top_or_bottom_boundary = true;
 
         if (cell_at_top_or_bottom_boundary)
           {
             std::vector<Point<dim>> quadrature_points(input_data.evaluation_points.size());
-            for (unsigned int i=0; i<input_data.evaluation_points.size(); ++i)
-              quadrature_points[i] = this->get_mapping().transform_real_to_unit_cell(cell,input_data.evaluation_points[i]);
+            for (unsigned int i = 0; i < input_data.evaluation_points.size(); ++i)
+              quadrature_points[i] = this->get_mapping().transform_real_to_unit_cell(cell, input_data.evaluation_points[i]);
 
             const Quadrature<dim> quadrature_formula(quadrature_points);
 
-            FEValues<dim> fe_volume_values (this->get_mapping(),
-                                            this->get_fe(),
-                                            quadrature_formula,
-                                            update_values);
+            FEValues<dim> fe_volume_values(this->get_mapping(), this->get_fe(), quadrature_formula, update_values);
 
             fe_volume_values.reinit(cell);
 
@@ -85,9 +77,9 @@ namespace aspect
             // but that is where dynamic_topography.topography_vector() stores the values.
             // See the documentation of that function for more details.
             fe_volume_values[this->introspection().extractors.temperature].get_function_values(dynamic_topography.topography_vector(),
-                dynamic_topography_values);
+                                                                                               dynamic_topography_values);
 
-            for (unsigned int q=0; q<quadrature_formula.size(); ++q)
+            for (unsigned int q = 0; q < quadrature_formula.size(); ++q)
               computed_quantities[q](0) = dynamic_topography_values[q];
           }
       }

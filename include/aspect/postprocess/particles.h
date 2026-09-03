@@ -21,13 +21,12 @@
 #ifndef _aspect_postprocess_particle_h
 #define _aspect_postprocess_particle_h
 
-#include <aspect/postprocess/interface.h>
-
-#include <aspect/simulator_access.h>
 #include <aspect/particle/property/interface.h>
+#include <aspect/postprocess/interface.h>
+#include <aspect/simulator_access.h>
 
-#include <deal.II/particles/particle_handler.h>
 #include <deal.II/base/data_out_base.h>
+#include <deal.II/particles/particle_handler.h>
 
 #include <thread>
 #include <tuple>
@@ -47,7 +46,7 @@ namespace aspect
        * of dim (the dimension in which this zero-dimensional particle lives).
        */
       template <int dim>
-      class ParticleOutput : public dealii::DataOutInterface<0,dim>
+      class ParticleOutput : public dealii::DataOutInterface<0, dim>
       {
         public:
           /**
@@ -56,39 +55,36 @@ namespace aspect
            * internally until the destructor is called. This function needs to be called before one of the
            * write function of the base class can be called to write the output data.
            */
-          void build_patches(const Particles::ParticleHandler<dim> &particle_handler,
-                             const aspect::Particle::Property::ParticlePropertyInformation &property_information,
-                             const std::vector<std::string> &exclude_output_properties,
-                             const bool only_group_3d_vectors);
+          void
+          build_patches(const Particles::ParticleHandler<dim>                         &particle_handler,
+                        const aspect::Particle::Property::ParticlePropertyInformation &property_information,
+                        const std::vector<std::string>                                &exclude_output_properties,
+                        const bool                                                     only_group_3d_vectors);
 
         private:
           /**
            * Implementation of the corresponding function of the base class.
            */
-          const std::vector<DataOutBase::Patch<0,dim>> &
-          get_patches () const override;
+          const std::vector<DataOutBase::Patch<0, dim>> &
+          get_patches() const override;
 
           /**
            * Implementation of the corresponding function of the base class.
            */
           std::vector<std::string>
-          get_dataset_names () const override;
+          get_dataset_names() const override;
 
           /**
            * Implementation of the corresponding function of the base class.
            */
-          std::vector<
-          std::tuple<unsigned int,
-              unsigned int,
-              std::string,
-              DataComponentInterpretation::DataComponentInterpretation>>
-              get_nonscalar_data_ranges () const override;
+          std::vector<std::tuple<unsigned int, unsigned int, std::string, DataComponentInterpretation::DataComponentInterpretation>>
+          get_nonscalar_data_ranges() const override;
 
           /**
            * Output information that is filled by build_patches() and
            * written by the write function of the base class.
            */
-          std::vector<DataOutBase::Patch<0,dim>> patches;
+          std::vector<DataOutBase::Patch<0, dim>> patches;
 
           /**
            * A list of field names for all data components stored in patches.
@@ -98,12 +94,8 @@ namespace aspect
           /**
            * Store which of the data fields are vectors.
            */
-          std::vector<
-          std::tuple<unsigned int,
-              unsigned int,
-              std::string,
-              DataComponentInterpretation::DataComponentInterpretation>>
-              vector_datasets;
+          std::vector<std::tuple<unsigned int, unsigned int, std::string, DataComponentInterpretation::DataComponentInterpretation>>
+            vector_datasets;
       };
     }
 
@@ -147,37 +139,40 @@ namespace aspect
          * contains a numerical value of this data. If there is nothing to
          * print, simply return two empty strings.
          */
-        std::pair<std::string,std::string> execute (TableHandler &statistics) override;
+        std::pair<std::string, std::string>
+        execute(TableHandler &statistics) override;
 
         /**
          * Save the state of this object.
          */
-        void save (std::map<std::string, std::string> &status_strings) const override;
+        void
+        save(std::map<std::string, std::string> &status_strings) const override;
 
         /**
          * Restore the state of the object.
          */
-        void load (const std::map<std::string, std::string> &status_strings) override;
+        void
+        load(const std::map<std::string, std::string> &status_strings) override;
 
         /**
          * Serialize the contents of this class as far as they are not read
          * from input parameter files.
          */
         template <class Archive>
-        void serialize (Archive &ar, const unsigned int version);
+        void
+        serialize(Archive &ar, const unsigned int version);
 
         /**
          * Declare the parameters this class takes through input files.
          */
-        static
-        void
-        declare_parameters (ParameterHandler &prm);
+        static void
+        declare_parameters(ParameterHandler &prm);
 
         /**
          * Read the parameters this class declares from the parameter file.
          */
         void
-        parse_parameters (ParameterHandler &prm) override;
+        parse_parameters(ParameterHandler &prm) override;
 
       private:
         /**
@@ -202,8 +197,8 @@ namespace aspect
          * having to catch up once the time step becomes larger. This is done
          * after every output.
          */
-        void set_last_output_time (const unsigned int particle_manager,
-                                   const double current_time);
+        void
+        set_last_output_time(const unsigned int particle_manager, const double current_time);
 
         /**
          * Consecutively counted number indicating the how-manyth time we will
@@ -227,7 +222,7 @@ namespace aspect
          * per particle manager, because each particle manager will
          * have its own output directory and description file.
          */
-        std::map<std::string,std::vector<std::pair<double,std::string>>> times_and_pvtu_file_names;
+        std::map<std::string, std::vector<std::pair<double, std::string>>> times_and_pvtu_file_names;
 
         /**
          * A map between particle manager name and list of list of
@@ -238,7 +233,7 @@ namespace aspect
          * We store one list per particle manager, because each particle
          * manager will have its own output directory and description file.
          */
-        std::map<std::string,std::vector<std::vector<std::string>>> output_file_names_by_timestep;
+        std::map<std::string, std::vector<std::vector<std::string>>> output_file_names_by_timestep;
 
         /**
          * A map between particle manager name and a list of data for
@@ -248,7 +243,7 @@ namespace aspect
          * We store one list per particle manager, because each particle
          * manager will have its own output directory and description file.
          */
-        std::map<std::string,std::vector<XDMFEntry>> xdmf_entries;
+        std::map<std::string, std::vector<XDMFEntry>> xdmf_entries;
 
         /**
          * VTU file output supports grouping files from several CPUs into one
@@ -299,10 +294,8 @@ namespace aspect
          * writing data is still continuing. The function takes over ownership
          * of these arguments and deletes them at the end of its work.
          */
-        static
-        void writer (const std::string &filename,
-                     const std::string &temporary_filename,
-                     const std::string &file_contents);
+        static void
+        writer(const std::string &filename, const std::string &temporary_filename, const std::string &file_contents);
 
         /**
          * Write the various descriptive record files. These files are used by
@@ -323,11 +316,12 @@ namespace aspect
          * @param filenames List of filenames for the current output from all
          * processors.
          */
-        void write_description_files (const internal::ParticleOutput<dim> &data_out,
-                                      const std::string &description_file_prefix,
-                                      const std::string &solution_file_directory,
-                                      const std::string &solution_file_prefix,
-                                      const std::vector<std::string> &filenames);
+        void
+        write_description_files(const internal::ParticleOutput<dim> &data_out,
+                                const std::string                   &description_file_prefix,
+                                const std::string                   &solution_file_directory,
+                                const std::string                   &solution_file_prefix,
+                                const std::vector<std::string>      &filenames);
     };
   }
 }

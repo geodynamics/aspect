@@ -20,10 +20,10 @@
 
 
 #include <aspect/postprocess/ODE_statistics.h>
+#include <aspect/simulator.h>
 
 #include <deal.II/base/quadrature_lib.h>
 #include <deal.II/fe/fe_values.h>
-#include <aspect/simulator.h>
 
 
 
@@ -36,11 +36,9 @@ namespace aspect
     ODEStatistics<dim>::initialize()
     {
       this->get_signals().post_ARKode_solve.connect(
-        [&](const SimulatorAccess<dim> &/*simulator_access*/,
-            const unsigned int iteration_count)
-      {
-        this->store_ODE_solver_history(iteration_count);
-      });
+        [&](const SimulatorAccess<dim> & /*simulator_access*/, const unsigned int iteration_count) {
+          this->store_ODE_solver_history(iteration_count);
+        });
 
       this->clear_data();
     }
@@ -52,7 +50,7 @@ namespace aspect
     ODEStatistics<dim>::clear_data()
     {
       total_iteration_count = 0;
-      number_of_solves = 0;
+      number_of_solves      = 0;
     }
 
 
@@ -68,27 +66,23 @@ namespace aspect
 
 
     template <int dim>
-    std::pair<std::string,std::string>
-    ODEStatistics<dim>::execute (TableHandler &statistics)
+    std::pair<std::string, std::string>
+    ODEStatistics<dim>::execute(TableHandler &statistics)
     {
-      const double average_iteration_count = number_of_solves > 0
-                                             ?
-                                             total_iteration_count / number_of_solves
-                                             :
-                                             total_iteration_count;
-      statistics.add_value("Average iterations for ODE solver",
-                           average_iteration_count);
+      const double average_iteration_count = number_of_solves > 0 ? total_iteration_count / number_of_solves : total_iteration_count;
+      statistics.add_value("Average iterations for ODE solver", average_iteration_count);
 
       clear_data();
 
-      return std::make_pair (std::string(),std::string());
+      return std::make_pair(std::string(), std::string());
     }
 
 
 
     template <int dim>
     template <class Archive>
-    void ODEStatistics<dim>::serialize (Archive &ar, const unsigned int)
+    void
+    ODEStatistics<dim>::serialize(Archive &ar, const unsigned int)
     {
       ar &total_iteration_count;
       ar &number_of_solves;
@@ -97,7 +91,8 @@ namespace aspect
 
 
     template <int dim>
-    void ODEStatistics<dim>::save (std::map<std::string, std::string> &status_strings) const
+    void
+    ODEStatistics<dim>::save(std::map<std::string, std::string> &status_strings) const
     {
       // Serialize into a stringstream. Put the following into a code
       // block of its own to ensure the destruction of the 'oa'
@@ -105,7 +100,7 @@ namespace aspect
       // query the completed string below.
       std::ostringstream os;
       {
-        aspect::oarchive oa (os);
+        aspect::oarchive oa(os);
         oa << (*this);
       }
 
@@ -115,13 +110,14 @@ namespace aspect
 
 
     template <int dim>
-    void ODEStatistics<dim>::load (const std::map<std::string, std::string> &status_strings)
+    void
+    ODEStatistics<dim>::load(const std::map<std::string, std::string> &status_strings)
     {
       // see if something was saved
       if (status_strings.find("ODEStatistics") != status_strings.end())
         {
-          std::istringstream is (status_strings.find("ODEStatistics")->second);
-          aspect::iarchive ia (is);
+          std::istringstream is(status_strings.find("ODEStatistics")->second);
+          aspect::iarchive   ia(is);
           ia >> (*this);
         }
     }

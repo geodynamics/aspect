@@ -20,6 +20,7 @@
 
 
 #include <aspect/global.h>
+
 #include <aspect/initial_temperature/ascii_data.h>
 
 namespace aspect
@@ -27,13 +28,12 @@ namespace aspect
   namespace InitialTemperature
   {
     template <int dim>
-    AsciiData<dim>::AsciiData ()
-      = default;
+    AsciiData<dim>::AsciiData() = default;
 
 
     template <int dim>
     void
-    AsciiData<dim>::initialize ()
+    AsciiData<dim>::initialize()
     {
       Utilities::AsciiDataInitial<dim>::initialize(1);
     }
@@ -41,18 +41,17 @@ namespace aspect
 
     template <int dim>
     double
-    AsciiData<dim>::
-    initial_temperature (const Point<dim> &position) const
+    AsciiData<dim>::initial_temperature(const Point<dim> &position) const
     {
-      return Utilities::AsciiDataInitial<dim>::get_data_component(position,0);
+      return Utilities::AsciiDataInitial<dim>::get_data_component(position, 0);
     }
 
 
     template <int dim>
     void
-    AsciiData<dim>::declare_parameters (ParameterHandler &prm)
+    AsciiData<dim>::declare_parameters(ParameterHandler &prm)
     {
-      prm.enter_subsection ("Initial temperature model");
+      prm.enter_subsection("Initial temperature model");
       {
         Utilities::AsciiDataInitial<dim>::declare_parameters(prm,
                                                              "$ASPECT_SOURCE_DIR/data/initial-temperature/ascii-data/test/",
@@ -64,9 +63,9 @@ namespace aspect
 
     template <int dim>
     void
-    AsciiData<dim>::parse_parameters (ParameterHandler &prm)
+    AsciiData<dim>::parse_parameters(ParameterHandler &prm)
     {
-      prm.enter_subsection ("Initial temperature model");
+      prm.enter_subsection("Initial temperature model");
       {
         Utilities::AsciiDataInitial<dim>::parse_parameters(prm);
       }

@@ -19,9 +19,10 @@
 */
 
 
-#include <aspect/postprocess/velocity_statistics.h>
-#include <aspect/material_model/simple.h>
 #include <aspect/global.h>
+
+#include <aspect/material_model/simple.h>
+#include <aspect/postprocess/velocity_statistics.h>
 
 #include <deal.II/base/quadrature_lib.h>
 #include <deal.II/fe/fe_values.h>
@@ -32,80 +33,64 @@ namespace aspect
   namespace Postprocess
   {
     template <int dim>
-    std::pair<std::string,std::string>
-    VelocityStatistics<dim>::execute (TableHandler &statistics)
+    std::pair<std::string, std::string>
+    VelocityStatistics<dim>::execute(TableHandler &statistics)
     {
       // Use a Gauss-Lobatto quadrature rule so that we do not need to use two separate quadratures
       // for the maximum velocity (ideally we would use Trapezoidal quadrature) and the RMS velocity
       // (ideally we would use Gauss quadrature).
       const QGaussLobatto<dim> quadrature_formula(this->get_fe().base_element(this->introspection().base_elements.velocities).degree + 2);
-      const unsigned int n_q_points = quadrature_formula.size();
+      const unsigned int       n_q_points = quadrature_formula.size();
 
       FEValues<dim> fe_values(this->get_mapping(),
                               this->get_fe(),
                               quadrature_formula,
-                              update_values   |
-                              update_quadrature_points |
-                              update_JxW_values);
+                              update_values | update_quadrature_points | update_JxW_values);
 
-      std::vector<Tensor<1,dim>> velocity_values(n_q_points);
+      std::vector<Tensor<1, dim>> velocity_values(n_q_points);
 
       double local_velocity_square_integral = 0;
-      double local_max_velocity = 0;
+      double local_max_velocity             = 0;
 
       for (const auto &cell : this->get_dof_handler().active_cell_iterators())
         {
           if (cell->is_locally_owned())
             {
-              fe_values.reinit (cell);
-              fe_values[this->introspection().extractors.velocities].get_function_values (this->get_solution(),
-                                                                                          velocity_values);
+              fe_values.reinit(cell);
+              fe_values[this->introspection().extractors.velocities].get_function_values(this->get_solution(), velocity_values);
               for (unsigned int q = 0; q < n_q_points; ++q)
                 {
-                  local_velocity_square_integral += (velocity_values[q].norm_square() *
-                                                     fe_values.JxW(q));
-                  local_max_velocity = std::max (velocity_values[q].norm(),
-                                                 local_max_velocity);
+                  local_velocity_square_integral += (velocity_values[q].norm_square() * fe_values.JxW(q));
+                  local_max_velocity = std::max(velocity_values[q].norm(), local_max_velocity);
                 }
             }
         }
 
-      const double global_velocity_square_integral
-        = Utilities::MPI::sum (local_velocity_square_integral, this->get_mpi_communicator());
-      const double global_max_velocity
-        = Utilities::MPI::max (local_max_velocity, this->get_mpi_communicator());
+      const double global_velocity_square_integral = Utilities::MPI::sum(local_velocity_square_integral, this->get_mpi_communicator());
+      const double global_max_velocity             = Utilities::MPI::max(local_max_velocity, this->get_mpi_communicator());
 
-      const double vrms = std::sqrt(global_velocity_square_integral) /
-                          std::sqrt(this->get_volume());
+      const double vrms = std::sqrt(global_velocity_square_integral) / std::sqrt(this->get_volume());
 
-      const std::string units = (this->convert_output_to_years() == true) ? "m/year" : "m/s";
-      const double unit_scale_factor = (this->convert_output_to_years() == true) ? year_in_seconds : 1.0;
-      const std::vector<std::string> column_names = {"RMS velocity (" + units + ")",
-                                                     "Max. velocity (" + units + ")"
-                                                    };
+      const std::string              units             = (this->convert_output_to_years() == true) ? "m/year" : "m/s";
+      const double                   unit_scale_factor = (this->convert_output_to_years() == true) ? year_in_seconds : 1.0;
+      const std::vector<std::string> column_names      = {"RMS velocity (" + units + ")", "Max. velocity (" + units + ")"};
 
-      statistics.add_value (column_names[0],
-                            vrms * unit_scale_factor);
-      statistics.add_value (column_names[1],
-                            global_max_velocity * unit_scale_factor);
+      statistics.add_value(column_names[0], vrms * unit_scale_factor);
+      statistics.add_value(column_names[1], global_max_velocity * unit_scale_factor);
 
       // also make sure that the other columns filled by this object
       // all show up with sufficient accuracy and in scientific notation
       for (auto &column : column_names)
         {
-          statistics.set_precision (column, 8);
-          statistics.set_scientific (column, true);
+          statistics.set_precision(column, 8);
+          statistics.set_scientific(column, true);
         }
 
       std::ostringstream output;
       output.precision(3);
-      output << vrms *unit_scale_factor
-             << ' ' << units << ", "
-             << global_max_velocity *unit_scale_factor
-             << ' ' << units;
+      output << vrms * unit_scale_factor << ' ' << units << ", " << global_max_velocity * unit_scale_factor << ' ' << units;
 
-      return std::pair<std::string, std::string> ("RMS, max velocity:",
-                                                  output.str());
+      return std::pair<std::string, std::string>("RMS, max velocity:", output.str());
     }
   }
 }

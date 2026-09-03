@@ -20,12 +20,13 @@
 
 
 
+#include <aspect/geometry_model/interface.h>
 #include <aspect/mesh_refinement/minimum_refinement_function.h>
 #include <aspect/utilities.h>
-#include <aspect/geometry_model/interface.h>
 
 #include <deal.II/base/quadrature_lib.h>
 #include <deal.II/fe/fe_values.h>
+
 #include <cmath>
 
 namespace aspect
@@ -34,48 +35,42 @@ namespace aspect
   {
     template <int dim>
     void
-    MinimumRefinementFunction<dim>::update ()
+    MinimumRefinementFunction<dim>::update()
     {
-      const double time = this->get_time() /
-                          (this->convert_output_to_years()
-                           ?
-                           year_in_seconds
-                           :
-                           1.0);
+      const double time = this->get_time() / (this->convert_output_to_years() ? year_in_seconds : 1.0);
 
       min_refinement_level.set_time(time);
     }
 
     template <int dim>
     void
-    MinimumRefinementFunction<dim>::tag_additional_cells () const
+    MinimumRefinementFunction<dim>::tag_additional_cells() const
     {
       for (const auto &cell : this->get_triangulation().active_cell_iterators())
         {
           if (cell->is_locally_owned())
             {
-              const Point<dim> center = cell->center();
+              const Point<dim>                        center = cell->center();
               const Utilities::NaturalCoordinate<dim> point =
                 this->get_geometry_model().cartesian_to_other_coordinates(center, coordinate_system);
 
-              const double minimum_refinement_level = min_refinement_level.value(Utilities::convert_array_to_point<dim>(point.get_coordinates()));
+              const double minimum_refinement_level =
+                min_refinement_level.value(Utilities::convert_array_to_point<dim>(point.get_coordinates()));
 
               if (cell->level() <= static_cast<int>(std::round(minimum_refinement_level)))
-                cell->clear_coarsen_flag ();
+                cell->clear_coarsen_flag();
               if (cell->level() < static_cast<int>(std::round(minimum_refinement_level)))
-                cell->set_refine_flag ();
+                cell->set_refine_flag();
             }
         }
     }
 
     template <int dim>
     void
-    MinimumRefinementFunction<dim>::
-    declare_parameters (ParameterHandler &prm)
+    MinimumRefinementFunction<dim>::declare_parameters(ParameterHandler &prm)
     {
       prm.enter_subsection("Mesh refinement");
       {
-
         prm.enter_subsection("Minimum refinement function");
         {
           /**
@@ -85,23 +80,24 @@ namespace aspect
            * of spherical coordinates is r,phi,theta and not r,theta,phi, since
            * this allows for dimension independent expressions.
            */
-          prm.declare_entry ("Coordinate system", "depth",
-                             Patterns::Selection ("depth|cartesian|spherical"),
-                             "A selection that determines the assumed coordinate "
-                             "system for the function variables. Allowed values "
-                             "are `depth', `cartesian' and `spherical'. `depth' "
-                             "will create a function, in which only the first "
-                             "variable is non-zero, which is interpreted to "
-                             "be the depth of the point. `spherical' coordinates "
-                             "are interpreted as r,phi or r,phi,theta in 2d/3d "
-                             "respectively with theta being the polar angle.");
+          prm.declare_entry("Coordinate system",
+                            "depth",
+                            Patterns::Selection("depth|cartesian|spherical"),
+                            "A selection that determines the assumed coordinate "
+                            "system for the function variables. Allowed values "
+                            "are `depth', `cartesian' and `spherical'. `depth' "
+                            "will create a function, in which only the first "
+                            "variable is non-zero, which is interpreted to "
+                            "be the depth of the point. `spherical' coordinates "
+                            "are interpreted as r,phi or r,phi,theta in 2d/3d "
+                            "respectively with theta being the polar angle.");
           /**
            * Let the function that describes the minimal level of refinement
            * as a function of position declare its parameters.
            * This defines the minimum refinement level each cell should have,
            * and that can not be exceeded by coarsening.
            */
-          Functions::ParsedFunction<dim>::declare_parameters (prm, 1);
+          Functions::ParsedFunction<dim>::declare_parameters(prm, 1);
         }
         prm.leave_subsection();
       }
@@ -110,24 +106,24 @@ namespace aspect
 
     template <int dim>
     void
-    MinimumRefinementFunction<dim>::parse_parameters (ParameterHandler &prm)
+    MinimumRefinementFunction<dim>::parse_parameters(ParameterHandler &prm)
     {
       prm.enter_subsection("Mesh refinement");
       {
         prm.enter_subsection("Minimum refinement function");
         {
-          if (prm.get ("Coordinate system") == "depth")
+          if (prm.get("Coordinate system") == "depth")
             coordinate_system = Utilities::Coordinates::depth;
-          else if (prm.get ("Coordinate system") == "cartesian")
+          else if (prm.get("Coordinate system") == "cartesian")
             coordinate_system = Utilities::Coordinates::cartesian;
-          else if (prm.get ("Coordinate system") == "spherical")
+          else if (prm.get("Coordinate system") == "spherical")
             coordinate_system = Utilities::Coordinates::spherical;
           else
-            AssertThrow (false, ExcNotImplemented());
+            AssertThrow(false, ExcNotImplemented());
 
           try
             {
-              min_refinement_level.parse_parameters (prm);
+              min_refinement_level.parse_parameters(prm);
             }
           catch (...)
             {

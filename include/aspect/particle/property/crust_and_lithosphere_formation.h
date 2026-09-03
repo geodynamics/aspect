@@ -21,9 +21,9 @@
 #ifndef _aspect_particle_property_crust_and_lithosphere_formation_h
 #define _aspect_particle_property_crust_and_lithosphere_formation_h
 
+#include <aspect/material_model/reaction_model/crust_and_lithosphere_formation.h>
 #include <aspect/particle/property/interface.h>
 #include <aspect/simulator_access.h>
-#include <aspect/material_model/reaction_model/crust_and_lithosphere_formation.h>
 
 namespace aspect
 {
@@ -44,27 +44,27 @@ namespace aspect
           /**
            * Constructor.
            */
-          CrustLithosphereFormation ();
+          CrustLithosphereFormation();
 
           /**
            * Initialize variables that stay constant
            * during a model.
            */
-          void initialize () override;
+          void
+          initialize() override;
 
           /**
            * @copydoc aspect::Particle::Property::Interface::initialize_one_particle_property()
            */
           void
-          initialize_one_particle_property (const Point<dim> &position,
-                                            std::vector<double> &particle_properties) const override;
+          initialize_one_particle_property(const Point<dim> &position, std::vector<double> &particle_properties) const override;
 
           /**
            * @copydoc aspect::Particle::Property::Interface::update_particle_properties()
            */
           void
-          update_particle_properties (const ParticleUpdateInputs<dim> &inputs,
-                                      typename ParticleHandler<dim>::particle_iterator_range &particles) const override;
+          update_particle_properties(const ParticleUpdateInputs<dim>                        &inputs,
+                                     typename ParticleHandler<dim>::particle_iterator_range &particles) const override;
 
           /**
            * Returns an enum, which determines how this particle property is
@@ -75,7 +75,7 @@ namespace aspect
            * condition, in which case it uses the boundary condition value.
            */
           InitializationModeForLateParticles
-          late_initialization_mode () const override;
+          late_initialization_mode() const override;
 
           /**
            * A function that returns the advection field to be used
@@ -91,13 +91,13 @@ namespace aspect
            * @copydoc aspect::Particle::Property::Interface::need_update()
            */
           UpdateTimeFlags
-          need_update () const override;
+          need_update() const override;
 
           /**
            * @copydoc aspect::Particle::Property::Interface::get_needed_update_flags()
            */
           UpdateFlags
-          get_needed_update_flags () const override;
+          get_needed_update_flags() const override;
 
           /**
            * @copydoc aspect::Particle::Property::Interface::get_property_information()
@@ -108,15 +108,14 @@ namespace aspect
           /**
            * Declare the parameters this function takes through input files.
            */
-          static
-          void
-          declare_parameters (ParameterHandler &prm);
+          static void
+          declare_parameters(ParameterHandler &prm);
 
           /**
            * Read the parameters from the parameter file.
            */
           void
-          parse_parameters (ParameterHandler &prm) override;
+          parse_parameters(ParameterHandler &prm) override;
 
         private:
           /**
@@ -128,7 +127,7 @@ namespace aspect
            * that is not a problem. This implementation is not thread safe,
            * but it is currently not used in a threaded context.
            */
-          mutable MaterialModel::MaterialModelInputs<dim> material_inputs;
+          mutable MaterialModel::MaterialModelInputs<dim>  material_inputs;
           mutable MaterialModel::MaterialModelOutputs<dim> material_outputs;
 
           /**

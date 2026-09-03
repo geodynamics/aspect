@@ -43,8 +43,8 @@ namespace aspect
         /**
          * Evaluate the solution for some particle statistics.
          */
-        std::pair<std::string,std::string>
-        execute (TableHandler &statistics) override;
+        std::pair<std::string, std::string>
+        execute(TableHandler &statistics) override;
 
         /**
          * Let the postprocessor manager know about the other postprocessors

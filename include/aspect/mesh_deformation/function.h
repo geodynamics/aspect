@@ -50,7 +50,8 @@ namespace aspect
         /**
          *
          */
-        void update() override;
+        void
+        update() override;
 
         /**
          * A function that creates constraints for the velocity of certain mesh
@@ -59,25 +60,27 @@ namespace aspect
          * these constraints when computing the new vertex positions.
          */
         void
-        compute_velocity_constraints_on_boundary(const DoFHandler<dim> &mesh_deformation_dof_handler,
-                                                 AffineConstraints<double> &mesh_velocity_constraints,
+        compute_velocity_constraints_on_boundary(const DoFHandler<dim>              &mesh_deformation_dof_handler,
+                                                 AffineConstraints<double>          &mesh_velocity_constraints,
                                                  const std::set<types::boundary_id> &boundary_ids) const override;
 
         /**
          * Returns whether or not the plugin requires surface stabilization
          */
-        bool needs_surface_stabilization () const override;
+        bool
+        needs_surface_stabilization() const override;
 
         /**
          * Declare parameters for the free surface handling.
          */
-        static
-        void declare_parameters (ParameterHandler &prm);
+        static void
+        declare_parameters(ParameterHandler &prm);
 
         /**
          * Parse parameters for the free surface handling.
          */
-        void parse_parameters (ParameterHandler &prm) override;
+        void
+        parse_parameters(ParameterHandler &prm) override;
 
       private:
         /**

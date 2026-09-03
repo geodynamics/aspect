@@ -18,8 +18,9 @@
   <http://www.gnu.org/licenses/>.
 */
 
-#include <aspect/material_model/reaction_model/kinetics/cahn1956_interface_controlled_growth.h>
 #include <aspect/global.h>
+
+#include <aspect/material_model/reaction_model/kinetics/cahn1956_interface_controlled_growth.h>
 
 #include <deal.II/base/parameter_handler.h>
 #include <deal.II/base/patterns.h>
@@ -33,37 +34,40 @@ namespace aspect
     namespace ReactionModel
     {
       template <int dim>
-      double InterfaceControlledGrowth<dim>::
-      net_forward_reaction_rate(const double temperature,
-                                const double pressure,
-                                const double delta_forward_gibbs_energy,
-                                const double cumulative_forward_reaction_progress,
-                                const unsigned int reaction_index) const
+      double
+      InterfaceControlledGrowth<dim>::net_forward_reaction_rate(const double       temperature,
+                                                                const double       pressure,
+                                                                const double       delta_forward_gibbs_energy,
+                                                                const double       cumulative_forward_reaction_progress,
+                                                                const unsigned int reaction_index) const
       {
         AssertIndexRange(reaction_index, kinetic_prefactors.size());
 
         AssertThrow(temperature > 0.0,
                     ExcMessage("Temperature must be strictly positive in net_forward_reaction_rate(), "
-                               "but received " + std::to_string(temperature) + " K."));
+                               "but received " +
+                               std::to_string(temperature) + " K."));
 
         const double activation_enthalpy = activation_enthalpies[reaction_index];
         const double activation_volume   = activation_volumes[reaction_index];
         AssertThrow(activation_enthalpy >= 0.0,
                     ExcMessage("Activation enthalpy must be non-negative, "
-                               "but received " + std::to_string(activation_enthalpy) + " J/mol."));
+                               "but received " +
+                               std::to_string(activation_enthalpy) + " J/mol."));
 
-        const double arrhenius_factor     = std::exp(-(activation_enthalpy + (pressure * activation_volume)) / (constants::gas_constant * temperature));
+        const double arrhenius_factor =
+          std::exp(-(activation_enthalpy + (pressure * activation_volume)) / (constants::gas_constant * temperature));
         const double magnitude            = 1.0 - std::exp(-std::abs(delta_forward_gibbs_energy) / (constants::gas_constant * temperature));
         const double thermodynamic_factor = -std::copysign(1.0, delta_forward_gibbs_energy) * magnitude;
-        const double reaction_progress    = (delta_forward_gibbs_energy < 0.0) ?
-                                            (1.0 - cumulative_forward_reaction_progress) :
-                                            cumulative_forward_reaction_progress;
+        const double reaction_progress =
+          (delta_forward_gibbs_energy < 0.0) ? (1.0 - cumulative_forward_reaction_progress) : cumulative_forward_reaction_progress;
 
         return kinetic_prefactors[reaction_index] * temperature * arrhenius_factor * thermodynamic_factor * reaction_progress;
       }
 
       template <int dim>
-      void InterfaceControlledGrowth<dim>::declare_parameters(ParameterHandler &prm)
+      void
+      InterfaceControlledGrowth<dim>::declare_parameters(ParameterHandler &prm)
       {
         prm.enter_subsection("Interface controlled growth");
         {
@@ -84,7 +88,8 @@ namespace aspect
       }
 
       template <int dim>
-      void InterfaceControlledGrowth<dim>::parse_parameters(ParameterHandler &prm, const unsigned int n_reactions)
+      void
+      InterfaceControlledGrowth<dim>::parse_parameters(ParameterHandler &prm, const unsigned int n_reactions)
       {
         prm.enter_subsection("Interface controlled growth");
         {
@@ -93,9 +98,9 @@ namespace aspect
           activation_volumes    = Utilities::string_to_double(Utilities::split_string_list(prm.get("Activation volumes"), '|'));
 
           AssertThrow(kinetic_prefactors.size() == n_reactions && activation_enthalpies.size() == n_reactions &&
-                      activation_volumes.size() == n_reactions,
-                      ExcMessage("'Interface controlled growth' parameter lists must each have exactly " +
-                                 std::to_string(n_reactions) + " '|'-separated entries, matching the number of "
+                        activation_volumes.size() == n_reactions,
+                      ExcMessage("'Interface controlled growth' parameter lists must each have exactly " + std::to_string(n_reactions) +
+                                 " '|'-separated entries, matching the number of "
                                  "reactions assigned to this kinetics model."));
         }
         prm.leave_subsection();

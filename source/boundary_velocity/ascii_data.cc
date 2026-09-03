@@ -20,6 +20,7 @@
 
 
 #include <aspect/global.h>
+
 #include <aspect/boundary_velocity/ascii_data.h>
 
 #include <deal.II/base/parameter_handler.h>
@@ -30,15 +31,14 @@ namespace aspect
   namespace BoundaryVelocity
   {
     template <int dim>
-    AsciiData<dim>::AsciiData ()
-      = default;
+    AsciiData<dim>::AsciiData() = default;
 
 
     template <int dim>
     void
-    AsciiData<dim>::initialize ()
+    AsciiData<dim>::initialize()
     {
-      unsigned int i=0;
+      unsigned int i = 0;
       for (const auto &plugin : this->get_boundary_velocity_manager().get_active_plugins())
         {
           if (plugin.get() == this)
@@ -47,36 +47,30 @@ namespace aspect
           ++i;
         }
 
-      AssertThrow(boundary_ids.empty() == false,
-                  ExcMessage("Did not find the boundary indicator for the velocity ascii data plugin."));
+      AssertThrow(boundary_ids.empty() == false, ExcMessage("Did not find the boundary indicator for the velocity ascii data plugin."));
 
-      Utilities::AsciiDataBoundary<dim>::initialize(boundary_ids,
-                                                    dim);
+      Utilities::AsciiDataBoundary<dim>::initialize(boundary_ids, dim);
     }
 
 
 
     template <int dim>
     void
-    AsciiData<dim>::update ()
+    AsciiData<dim>::update()
     {
-      Interface<dim>::update ();
+      Interface<dim>::update();
 
       Utilities::AsciiDataBoundary<dim>::update();
     }
 
 
     template <int dim>
-    Tensor<1,dim>
-    AsciiData<dim>::
-    boundary_velocity (const types::boundary_id ,
-                       const Point<dim> &position) const
+    Tensor<1, dim>
+    AsciiData<dim>::boundary_velocity(const types::boundary_id, const Point<dim> &position) const
     {
-      Tensor<1,dim> velocity;
+      Tensor<1, dim> velocity;
       for (unsigned int i = 0; i < dim; ++i)
-        velocity[i] = Utilities::AsciiDataBoundary<dim>::get_data_component(*(boundary_ids.begin()),
-                                                                            position,
-                                                                            i);
+        velocity[i] = Utilities::AsciiDataBoundary<dim>::get_data_component(*(boundary_ids.begin()), position, i);
       if (use_spherical_unit_vectors)
         velocity = Utilities::Coordinates::spherical_to_cartesian_vector(velocity, position);
 
@@ -86,7 +80,7 @@ namespace aspect
 
     template <int dim>
     void
-    AsciiData<dim>::declare_parameters (ParameterHandler &prm)
+    AsciiData<dim>::declare_parameters(ParameterHandler &prm)
     {
       prm.enter_subsection("Boundary velocity model");
       {
@@ -95,13 +89,13 @@ namespace aspect
                                                               "box_2d_%s.%d.txt");
         prm.enter_subsection("Ascii data model");
         {
-          prm.declare_entry ("Use spherical unit vectors", "false",
-                             Patterns::Bool (),
-                             "Specify velocity as r, phi, and theta components "
-                             "instead of x, y, and z. Positive velocities point up, east, "
-                             "and north (in 3d) or out and clockwise (in 2d). "
-                             "This setting only makes sense for spherical geometries."
-                            );
+          prm.declare_entry("Use spherical unit vectors",
+                            "false",
+                            Patterns::Bool(),
+                            "Specify velocity as r, phi, and theta components "
+                            "instead of x, y, and z. Positive velocities point up, east, "
+                            "and north (in 3d) or out and clockwise (in 2d). "
+                            "This setting only makes sense for spherical geometries.");
         }
         prm.leave_subsection();
       }
@@ -111,7 +105,7 @@ namespace aspect
 
     template <int dim>
     void
-    AsciiData<dim>::parse_parameters (ParameterHandler &prm)
+    AsciiData<dim>::parse_parameters(ParameterHandler &prm)
     {
       prm.enter_subsection("Boundary velocity model");
       {
@@ -119,15 +113,15 @@ namespace aspect
 
         if (this->convert_output_to_years() == true)
           {
-            this->scale_factor               /= year_in_seconds;
+            this->scale_factor /= year_in_seconds;
           }
         prm.enter_subsection("Ascii data model");
         {
           use_spherical_unit_vectors = prm.get_bool("Use spherical unit vectors");
           if (use_spherical_unit_vectors)
-            AssertThrow (this->get_geometry_model().natural_coordinate_system() == Utilities::Coordinates::spherical,
-                         ExcMessage ("Spherical unit vectors should not be used "
-                                     "when geometry model is not spherical."));
+            AssertThrow(this->get_geometry_model().natural_coordinate_system() == Utilities::Coordinates::spherical,
+                        ExcMessage("Spherical unit vectors should not be used "
+                                   "when geometry model is not spherical."));
         }
         prm.leave_subsection();
       }

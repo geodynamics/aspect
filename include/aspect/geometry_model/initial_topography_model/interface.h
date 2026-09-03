@@ -23,6 +23,7 @@
 #define _aspect_geometry_model_initial_topography_model_interface_h
 
 #include <aspect/plugins.h>
+
 #include <deal.II/base/parameter_handler.h>
 #include <deal.II/base/point.h>
 
@@ -61,14 +62,14 @@ namespace aspect
          * on the surface, whereas spherical-type geometry models will generally
          * provide surface points in spherical coordinates.
          */
-        virtual
-        double value (const Point<dim-1> &surface_point) const = 0;
+        virtual double
+        value(const Point<dim - 1> &surface_point) const = 0;
 
         /**
          * Return the maximum value of the elevation.
          */
-        virtual
-        double max_topography () const = 0;
+        virtual double
+        max_topography() const = 0;
     };
 
 
@@ -90,10 +91,10 @@ namespace aspect
      */
     template <int dim>
     void
-    register_initial_topography_model (const std::string &name,
-                                       const std::string &description,
-                                       void (*declare_parameters_function) (ParameterHandler &),
-                                       std::unique_ptr<Interface<dim>> (*factory_function) ());
+    register_initial_topography_model(const std::string &name,
+                                      const std::string &description,
+                                      void (*declare_parameters_function)(ParameterHandler &),
+                                      std::unique_ptr<Interface<dim>> (*factory_function)());
 
     /**
      * A function that given the name of a model returns a pointer to an
@@ -107,7 +108,7 @@ namespace aspect
      */
     template <int dim>
     std::unique_ptr<Interface<dim>>
-    create_initial_topography_model (ParameterHandler &prm);
+    create_initial_topography_model(ParameterHandler &prm);
 
 
     /**
@@ -118,7 +119,7 @@ namespace aspect
      */
     template <int dim>
     void
-    declare_parameters (ParameterHandler &prm);
+    declare_parameters(ParameterHandler &prm);
 
 
     /**
@@ -132,7 +133,7 @@ namespace aspect
      */
     template <int dim>
     void
-    write_plugin_graph (std::ostream &output_stream);
+    write_plugin_graph(std::ostream &output_stream);
 
 
     /**
@@ -142,17 +143,15 @@ namespace aspect
      *
      * @ingroup InitialTopographyModels
      */
-#define ASPECT_REGISTER_INITIAL_TOPOGRAPHY_MODEL(classname,name,description) \
+#define ASPECT_REGISTER_INITIAL_TOPOGRAPHY_MODEL(classname, name, description) \
   template class classname<2>; \
   template class classname<3>; \
-  namespace ASPECT_REGISTER_INITIAL_TOPOGRAPHY_MODEL_ ## classname \
+  namespace ASPECT_REGISTER_INITIAL_TOPOGRAPHY_MODEL_##classname \
   { \
-    aspect::internal::Plugins::RegisterHelper<aspect::InitialTopographyModel::Interface<2>,classname<2>> \
-    dummy_ ## classname ## _2d (&aspect::InitialTopographyModel::register_initial_topography_model<2>, \
-                                name, description); \
-    aspect::internal::Plugins::RegisterHelper<aspect::InitialTopographyModel::Interface<3>,classname<3>> \
-    dummy_ ## classname ## _3d (&aspect::InitialTopographyModel::register_initial_topography_model<3>, \
-                                name, description); \
+    aspect::internal::Plugins::RegisterHelper<aspect::InitialTopographyModel::Interface<2>, classname<2>> dummy_##classname##_2d( \
+      &aspect::InitialTopographyModel::register_initial_topography_model<2>, name, description); \
+    aspect::internal::Plugins::RegisterHelper<aspect::InitialTopographyModel::Interface<3>, classname<3>> dummy_##classname##_3d( \
+      &aspect::InitialTopographyModel::register_initial_topography_model<3>, name, description); \
   }
   }
 }

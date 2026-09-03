@@ -22,6 +22,7 @@
 #include <aspect/heating_model/adiabatic_heating_of_melt.h>
 #include <aspect/melt.h>
 #include <aspect/simulator.h>
+
 #include <deal.II/numerics/fe_field_function.h>
 
 namespace aspect
@@ -30,49 +31,44 @@ namespace aspect
   {
     template <int dim>
     void
-    AdiabaticHeatingMelt<dim>::
-    evaluate (const MaterialModel::MaterialModelInputs<dim> &material_model_inputs,
-              const MaterialModel::MaterialModelOutputs<dim> &material_model_outputs,
-              HeatingModel::HeatingModelOutputs &heating_model_outputs) const
+    AdiabaticHeatingMelt<dim>::evaluate(const MaterialModel::MaterialModelInputs<dim>  &material_model_inputs,
+                                        const MaterialModel::MaterialModelOutputs<dim> &material_model_outputs,
+                                        HeatingModel::HeatingModelOutputs              &heating_model_outputs) const
     {
       Assert(heating_model_outputs.heating_source_terms.size() == material_model_inputs.n_evaluation_points(),
-             ExcMessage ("Heating outputs need to have the same number of entries as the material model inputs."));
+             ExcMessage("Heating outputs need to have the same number of entries as the material model inputs."));
 
       AssertThrow(this->include_melt_transport(),
-                  ExcMessage ("Heating model Adiabatic heating with melt only works if melt transport is enabled."));
+                  ExcMessage("Heating model Adiabatic heating with melt only works if melt transport is enabled."));
 
       // get the melt velocity
-      const std::shared_ptr<const MaterialModel::MeltInputs<dim>> melt_in
-        = material_model_inputs.template get_additional_input_object<MaterialModel::MeltInputs<dim>>();
-      AssertThrow(melt_in != nullptr,
-                  ExcMessage ("Need MeltInputs from the material model for adiabatic heating with melt!"));
+      const std::shared_ptr<const MaterialModel::MeltInputs<dim>> melt_in =
+        material_model_inputs.template get_additional_input_object<MaterialModel::MeltInputs<dim>>();
+      AssertThrow(melt_in != nullptr, ExcMessage("Need MeltInputs from the material model for adiabatic heating with melt!"));
 
-      for (unsigned int q=0; q<heating_model_outputs.heating_source_terms.size(); ++q)
+      for (unsigned int q = 0; q < heating_model_outputs.heating_source_terms.size(); ++q)
         {
           const double porosity = material_model_inputs.composition[q][this->introspection().compositional_index_for_name("porosity")];
 
           if (!simplified_adiabatic_heating)
-            heating_model_outputs.heating_source_terms[q] = ((-porosity * material_model_inputs.velocity[q] + porosity * melt_in->fluid_velocities[q])
-                                                             * material_model_inputs.pressure_gradient[q])
-                                                            * material_model_outputs.thermal_expansion_coefficients[q]
-                                                            * material_model_inputs.temperature[q];
+            heating_model_outputs.heating_source_terms[q] =
+              ((-porosity * material_model_inputs.velocity[q] + porosity * melt_in->fluid_velocities[q]) *
+               material_model_inputs.pressure_gradient[q]) *
+              material_model_outputs.thermal_expansion_coefficients[q] * material_model_inputs.temperature[q];
           else
             {
-              const std::shared_ptr<const MaterialModel::MeltOutputs<dim>> melt_outputs
-                = material_model_outputs.template get_additional_output_object<MaterialModel::MeltOutputs<dim>>();
+              const std::shared_ptr<const MaterialModel::MeltOutputs<dim>> melt_outputs =
+                material_model_outputs.template get_additional_output_object<MaterialModel::MeltOutputs<dim>>();
               Assert(melt_outputs != nullptr, ExcMessage("Need MeltOutputs from the material model for adiabatic heating with melt."));
 
-              heating_model_outputs.heating_source_terms[q] = (-porosity * material_model_inputs.velocity[q]
-                                                               * this->get_gravity_model().gravity_vector(material_model_inputs.position[q]))
-                                                              * material_model_outputs.thermal_expansion_coefficients[q]
-                                                              * material_model_inputs.temperature[q]
-                                                              * material_model_outputs.densities[q]
-                                                              +
-                                                              ((porosity * melt_in->fluid_velocities[q])
-                                                               * this->get_gravity_model().gravity_vector(material_model_inputs.position[q]))
-                                                              * material_model_outputs.thermal_expansion_coefficients[q]
-                                                              * material_model_inputs.temperature[q]
-                                                              * melt_outputs->fluid_densities[q];
+              heating_model_outputs.heating_source_terms[q] =
+                (-porosity * material_model_inputs.velocity[q] *
+                 this->get_gravity_model().gravity_vector(material_model_inputs.position[q])) *
+                  material_model_outputs.thermal_expansion_coefficients[q] * material_model_inputs.temperature[q] *
+                  material_model_outputs.densities[q] +
+                ((porosity * melt_in->fluid_velocities[q]) * this->get_gravity_model().gravity_vector(material_model_inputs.position[q])) *
+                  material_model_outputs.thermal_expansion_coefficients[q] * material_model_inputs.temperature[q] *
+                  melt_outputs->fluid_densities[q];
             }
 
           heating_model_outputs.lhs_latent_heat_terms[q] = 0.0;
@@ -83,10 +79,9 @@ namespace aspect
 
     template <int dim>
     MaterialModel::MaterialProperties::Property
-    AdiabaticHeatingMelt<dim>::get_required_properties () const
+    AdiabaticHeatingMelt<dim>::get_required_properties() const
     {
-      return MaterialModel::MaterialProperties::density |
-             MaterialModel::MaterialProperties::thermal_expansion_coefficient |
+      return MaterialModel::MaterialProperties::density | MaterialModel::MaterialProperties::thermal_expansion_coefficient |
              MaterialModel::MaterialProperties::additional_outputs;
     }
 
@@ -94,17 +89,18 @@ namespace aspect
 
     template <int dim>
     void
-    AdiabaticHeatingMelt<dim>::declare_parameters (ParameterHandler &prm)
+    AdiabaticHeatingMelt<dim>::declare_parameters(ParameterHandler &prm)
     {
       prm.enter_subsection("Heating model");
       {
         prm.enter_subsection("Adiabatic heating of melt");
         {
-          prm.declare_entry ("Use simplified adiabatic heating", "false",
-                             Patterns::Bool (),
-                             "A flag indicating whether the adiabatic heating should be simplified "
-                             "from $\\alpha T (\\mathbf u \\cdot \\nabla p)$ to "
-                             "$ \\alpha \\rho T (\\mathbf u \\cdot \\mathbf g) $.");
+          prm.declare_entry("Use simplified adiabatic heating",
+                            "false",
+                            Patterns::Bool(),
+                            "A flag indicating whether the adiabatic heating should be simplified "
+                            "from $\\alpha T (\\mathbf u \\cdot \\nabla p)$ to "
+                            "$ \\alpha \\rho T (\\mathbf u \\cdot \\mathbf g) $.");
         }
         prm.leave_subsection();
       }
@@ -115,13 +111,13 @@ namespace aspect
 
     template <int dim>
     void
-    AdiabaticHeatingMelt<dim>::parse_parameters (ParameterHandler &prm)
+    AdiabaticHeatingMelt<dim>::parse_parameters(ParameterHandler &prm)
     {
       prm.enter_subsection("Heating model");
       {
         prm.enter_subsection("Adiabatic heating of melt");
         {
-          simplified_adiabatic_heating = prm.get_bool ("Use simplified adiabatic heating");
+          simplified_adiabatic_heating = prm.get_bool("Use simplified adiabatic heating");
         }
         prm.leave_subsection();
       }
@@ -132,8 +128,7 @@ namespace aspect
 
     template <int dim>
     void
-    AdiabaticHeatingMelt<dim>::
-    create_additional_material_model_outputs(MaterialModel::MaterialModelOutputs<dim> &output) const
+    AdiabaticHeatingMelt<dim>::create_additional_material_model_outputs(MaterialModel::MaterialModelOutputs<dim> &output) const
     {
       MeltHandler<dim>::create_material_model_outputs(output);
     }
@@ -142,13 +137,11 @@ namespace aspect
 
     template <int dim>
     void
-    AdiabaticHeatingMelt<dim>::
-    create_additional_material_model_inputs(MaterialModel::MaterialModelInputs<dim> &inputs) const
+    AdiabaticHeatingMelt<dim>::create_additional_material_model_inputs(MaterialModel::MaterialModelInputs<dim> &inputs) const
     {
       // we need the melt inputs for this adiabatic heating of melt
       if (inputs.template has_additional_input_object<MaterialModel::MeltInputs<dim>>() == false)
-        inputs.additional_inputs.emplace_back(
-          std::make_unique<MaterialModel::MeltInputs<dim>> (inputs.n_evaluation_points()));
+        inputs.additional_inputs.emplace_back(std::make_unique<MaterialModel::MeltInputs<dim>>(inputs.n_evaluation_points()));
     }
   }
 }

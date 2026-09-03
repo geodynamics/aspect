@@ -44,14 +44,14 @@ namespace aspect
         /**
          * Empty Constructor.
          */
-        AsciiData ();
+        AsciiData();
 
         /**
          * Initialization function. This function is called once at the
          * beginning of the program. Checks preconditions.
          */
         void
-        initialize () override;
+        initialize() override;
 
         // avoid -Woverloaded-virtual:
         using Utilities::AsciiDataInitial<dim>::initialize;
@@ -61,20 +61,19 @@ namespace aspect
          * current class, this function returns value from the text files.
          */
         double
-        initial_temperature (const Point<dim> &position) const override;
+        initial_temperature(const Point<dim> &position) const override;
 
         /**
          * Declare the parameters this class takes through input files.
          */
-        static
-        void
-        declare_parameters (ParameterHandler &prm);
+        static void
+        declare_parameters(ParameterHandler &prm);
 
         /**
          * Read the parameters this class declares from the parameter file.
          */
         void
-        parse_parameters (ParameterHandler &prm) override;
+        parse_parameters(ParameterHandler &prm) override;
     };
   }
 }

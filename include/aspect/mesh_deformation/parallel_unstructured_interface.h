@@ -94,19 +94,17 @@ namespace aspect
         /**
          * Main routine handling the mesh deformation
          */
-        virtual
-        void
-        compute_velocity_constraints_on_boundary(const DoFHandler<dim> &mesh_deformation_dof_handler,
-                                                 AffineConstraints<double> &mesh_velocity_constraints,
+        virtual void
+        compute_velocity_constraints_on_boundary(const DoFHandler<dim>              &mesh_deformation_dof_handler,
+                                                 AffineConstraints<double>          &mesh_velocity_constraints,
                                                  const std::set<types::boundary_id> &boundary_ids) const override;
 
         /**
          * Given all solution variables at each surface point, compute velocities at these points.
          * This needs to be implemented by the derived class and implement the "surface evolution".
          */
-        virtual
-        std::vector<Tensor<1,dim>>
-        compute_updated_velocities_at_points (const std::vector<std::vector<double>> &current_solution_at_points) const = 0;
+        virtual std::vector<Tensor<1, dim>>
+        compute_updated_velocities_at_points(const std::vector<std::vector<double>> &current_solution_at_points) const = 0;
 
 
       protected:
@@ -140,7 +138,7 @@ namespace aspect
          *   step.
          */
         void
-        set_evaluation_points (const std::vector<Point<dim>> &evaluation_points);
+        set_evaluation_points(const std::vector<Point<dim>> &evaluation_points);
 
         /**
          * Return the value of the ASPECT solution at the set of points
@@ -150,7 +148,7 @@ namespace aspect
          * many components as there are ASPECT solution components.
          */
         std::vector<std::vector<double>>
-        evaluate_aspect_solution_at_points () const;
+        evaluate_aspect_solution_at_points() const;
 
         /**
          * Interpolate from velocities given in the evaluation points
@@ -169,7 +167,7 @@ namespace aspect
          * base class.
          */
         LinearAlgebra::Vector
-        interpolate_external_vector_field_to_surface_support_points (const std::vector<Tensor<1,dim>> &velocities) const;
+        interpolate_external_vector_field_to_surface_support_points(const std::vector<Tensor<1, dim>> &velocities) const;
 
         /**
          * The list of evaluation points owned by the current process. These are the points where the
@@ -187,22 +185,22 @@ namespace aspect
          */
         struct DofToEvalPointData
         {
-          types::global_dof_index dof_index;
-          unsigned int            evaluation_point_rank;
-          unsigned int            evaluation_point_index;
-          unsigned int            component;
-          double                  squared_distance;
+            types::global_dof_index dof_index;
+            unsigned int            evaluation_point_rank;
+            unsigned int            evaluation_point_index;
+            unsigned int            component;
+            double                  squared_distance;
 
-          template <class Archive>
-          void
-          serialize(Archive &ar, const unsigned int /*version*/)
-          {
-            ar &dof_index;
-            ar &evaluation_point_rank;
-            ar &evaluation_point_index;
-            ar &component;
-            ar &squared_distance;
-          }
+            template <class Archive>
+            void
+            serialize(Archive &ar, const unsigned int /*version*/)
+            {
+              ar &dof_index;
+              ar &evaluation_point_rank;
+              ar &evaluation_point_index;
+              ar &component;
+              ar &squared_distance;
+            }
         };
 
         /**

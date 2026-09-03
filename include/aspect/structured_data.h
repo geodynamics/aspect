@@ -23,6 +23,7 @@
 #define _aspect_structured_data_h
 
 #include <aspect/global.h>
+
 #include <aspect/simulator_access.h>
 
 #include <array>
@@ -80,8 +81,7 @@ namespace aspect
          * and instead reading them from the input file allows for more
          * flexible files.
          */
-        StructuredDataLookup(const unsigned int n_components,
-                             const double scale_factor);
+        StructuredDataLookup(const unsigned int n_components, const double scale_factor);
 
         /**
          * Constructor that explicitly prescribes the number of data columns
@@ -89,9 +89,7 @@ namespace aspect
          * data values, and a set of component indices for which to compute
          * and store the logarithm of the data values.
          */
-        StructuredDataLookup(const unsigned int n_components,
-                             const double scale_factor,
-                             const std::set<unsigned int> &log_components);
+        StructuredDataLookup(const unsigned int n_components, const double scale_factor, const std::set<unsigned int> &log_components);
 
         /**
          * This constructor relies on the list of column names at the beginning
@@ -136,11 +134,12 @@ namespace aspect
          * every process needs to pass data for all arguments and the
          * `mpi_communicator` argument is ignored.
          */
-        void reinit(const std::vector<std::string> &column_names,
-                    std::vector<std::vector<double>> &&coordinate_values,
-                    std::vector<Table<dim,double>> &&data_table,
-                    const MPI_Comm mpi_communicator = MPI_COMM_SELF,
-                    const unsigned int root_process = numbers::invalid_unsigned_int);
+        void
+        reinit(const std::vector<std::string>    &column_names,
+               std::vector<std::vector<double>> &&coordinate_values,
+               std::vector<Table<dim, double>>  &&data_table,
+               const MPI_Comm                     mpi_communicator = MPI_COMM_SELF,
+               const unsigned int                 root_process     = numbers::invalid_unsigned_int);
 
         /**
          * Loads a data text file replacing the current data.
@@ -160,8 +159,7 @@ namespace aspect
          * rank 0 and broadcasting the information to all other ranks.
          */
         void
-        load_ascii(const std::string &filename,
-                   const MPI_Comm communicator);
+        load_ascii(const std::string &filename, const MPI_Comm communicator);
 
         /**
          * Fill the current object with data read from a NetCDF file
@@ -194,8 +192,7 @@ namespace aspect
          * @param communicator The MPI communicator to use for loading the file.
          */
         void
-        load_file(const std::string &filename,
-                  const MPI_Comm communicator);
+        load_file(const std::string &filename, const MPI_Comm communicator);
 
         /**
          * Returns the computed data (velocity, temperature, etc. - according
@@ -211,9 +208,7 @@ namespace aspect
          * provided by the data file.
          */
         double
-        get_data(const Point<dim> &position,
-                 const unsigned int component,
-                 const bool crash_if_not_in_range = false) const;
+        get_data(const Point<dim> &position, const unsigned int component, const bool crash_if_not_in_range = false) const;
 
         /**
          * Returns the gradient of the function based on the bilinear
@@ -224,9 +219,8 @@ namespace aspect
          * temperature, etc.)
          * @param component The index of the data column to be returned.
          */
-        Tensor<1,dim>
-        get_gradients(const Point<dim> &position,
-                      const unsigned int component);
+        Tensor<1, dim>
+        get_gradients(const Point<dim> &position, const unsigned int component);
 
         /**
          * Returns a vector that contains the names of all data columns in the
@@ -279,7 +273,8 @@ namespace aspect
         /**
          * Return the maximum value of the component values.
          */
-        double get_maximum_component_value(const unsigned int component) const;
+        double
+        get_maximum_component_value(const unsigned int component) const;
 
         /**
          * Retrieve the number of table points for a given dimension.
@@ -288,7 +283,8 @@ namespace aspect
          * @param dimension The index of the dimension for which to get the number of table points.
          * @return The number of points along the specified dimension.
          */
-        unsigned int get_number_of_coordinates(const unsigned int dimension) const;
+        unsigned int
+        get_number_of_coordinates(const unsigned int dimension) const;
 
       private:
         /**
@@ -313,7 +309,7 @@ namespace aspect
         /**
          * The coordinate values in each direction as specified in the data file.
          */
-        std::array<std::vector<double>,dim> coordinate_values;
+        std::array<std::vector<double>, dim> coordinate_values;
 
         /**
          * The maximum value of each component
@@ -349,7 +345,6 @@ namespace aspect
          */
         TableIndices<dim>
         compute_table_indices(const TableIndices<dim> &sizes, const std::size_t idx) const;
-
     };
 
     /**
@@ -368,19 +363,17 @@ namespace aspect
         /**
          * Declare the parameters all derived classes take from input files.
          */
-        static
-        void
-        declare_parameters (ParameterHandler  &prm,
-                            const std::string &default_directory,
-                            const std::string &default_filename,
-                            const std::string &subsection_name = "Ascii data model");
+        static void
+        declare_parameters(ParameterHandler  &prm,
+                           const std::string &default_directory,
+                           const std::string &default_filename,
+                           const std::string &subsection_name = "Ascii data model");
 
         /**
          * Read the parameters from the parameter file.
          */
         void
-        parse_parameters (ParameterHandler &prm,
-                          const std::string &subsection_name = "Ascii data model");
+        parse_parameters(ParameterHandler &prm, const std::string &subsection_name = "Ascii data model");
 
         /**
          * Directory in which the data files are present.
@@ -420,10 +413,8 @@ namespace aspect
          * Initialization function. This function is called once at the
          * beginning of the program. Checks preconditions.
          */
-        virtual
-        void
-        initialize (const std::set<types::boundary_id> &boundary_ids,
-                    const unsigned int components);
+        virtual void
+        initialize(const std::set<types::boundary_id> &boundary_ids, const unsigned int components);
 
         /**
          * A function that is called at the beginning of each time step. For
@@ -438,24 +429,19 @@ namespace aspect
          * Returns the data component at the given position.
          */
         double
-        get_data_component (const types::boundary_id             boundary_indicator,
-                            const Point<dim>                    &position,
-                            const unsigned int                   component) const;
+        get_data_component(const types::boundary_id boundary_indicator, const Point<dim> &position, const unsigned int component) const;
 
         /**
          * Returns the maximum value of the given data component.
          */
         double
-        get_maximum_component_value (const types::boundary_id boundary_indicator,
-                                     const unsigned int       component) const;
+        get_maximum_component_value(const types::boundary_id boundary_indicator, const unsigned int component) const;
 
         /**
          * Return the gradients of the parameters from the parameter file.
          */
-        Tensor<1,dim-1>
-        vector_gradient(const types::boundary_id boundary_indicator,
-                        const Point<dim>        &p,
-                        const unsigned int       component) const;
+        Tensor<1, dim - 1>
+        vector_gradient(const types::boundary_id boundary_indicator, const Point<dim> &p, const unsigned int component) const;
 
         /**
          * Declare the parameters all derived classes take from input files.
@@ -473,13 +459,12 @@ namespace aspect
          * application, disabling this parameter avoids introducing these parameters
          * to the parameter handler.
          */
-        static
-        void
-        declare_parameters (ParameterHandler  &prm,
-                            const std::string &default_directory,
-                            const std::string &default_filename,
-                            const std::string &subsection_name = "Ascii data model",
-                            const bool declare_time_dependent_parameters = true);
+        static void
+        declare_parameters(ParameterHandler  &prm,
+                           const std::string &default_directory,
+                           const std::string &default_filename,
+                           const std::string &subsection_name                   = "Ascii data model",
+                           const bool         declare_time_dependent_parameters = true);
 
         /**
          * Read the parameters from the parameter file.
@@ -495,9 +480,9 @@ namespace aspect
          * to declare_parameters().
          */
         void
-        parse_parameters (ParameterHandler &prm,
-                          const std::string &subsection_name = "Ascii data model",
-                          const bool parse_time_dependent_parameters = true);
+        parse_parameters(ParameterHandler  &prm,
+                         const std::string &subsection_name                 = "Ascii data model",
+                         const bool         parse_time_dependent_parameters = true);
 
       protected:
         /**
@@ -543,35 +528,31 @@ namespace aspect
          * Map between the boundary id and an object that reads and processes
          * data we get from text files.
          */
-        std::map<types::boundary_id,
-            std::unique_ptr<aspect::Utilities::StructuredDataLookup<dim-1>>> lookups;
+        std::map<types::boundary_id, std::unique_ptr<aspect::Utilities::StructuredDataLookup<dim - 1>>> lookups;
 
         /**
          * Map between the boundary id and the old data objects.
          */
-        std::map<types::boundary_id,
-            std::unique_ptr<aspect::Utilities::StructuredDataLookup<dim-1>>> old_lookups;
+        std::map<types::boundary_id, std::unique_ptr<aspect::Utilities::StructuredDataLookup<dim - 1>>> old_lookups;
 
         /**
          * Handles the update of the data in lookup.
          */
         void
-        update_data (const types::boundary_id boundary_id,
-                     const bool reload_both_files);
+        update_data(const types::boundary_id boundary_id, const bool reload_both_files);
 
         /**
          * Handles settings and user notification in case the time-dependent
          * part of the boundary condition is over.
          */
         void
-        end_time_dependence ();
+        end_time_dependence();
 
         /**
          * Create a filename out of the name template.
          */
         std::string
-        create_filename (const int filenumber,
-                         const types::boundary_id boundary_id) const;
+        create_filename(const int filenumber, const types::boundary_id boundary_id) const;
     };
 
 
@@ -593,34 +574,30 @@ namespace aspect
          * Initialization function. This function is called once at the
          * beginning of the program. Checks preconditions.
          */
-        virtual
-        void
-        initialize (const unsigned int components);
+        virtual void
+        initialize(const unsigned int components);
 
 
         /**
          * Returns the data component at the given position.
          */
         double
-        get_data_component (const Point<dim> &position,
-                            const unsigned int component) const;
+        get_data_component(const Point<dim> &position, const unsigned int component) const;
 
         /**
          * Declare the parameters all derived classes take from input files.
          */
-        static
-        void
-        declare_parameters (ParameterHandler  &prm,
-                            const std::string &default_directory,
-                            const std::string &default_filename,
-                            const std::string &subsection_name = "Ascii data model");
+        static void
+        declare_parameters(ParameterHandler  &prm,
+                           const std::string &default_directory,
+                           const std::string &default_filename,
+                           const std::string &subsection_name = "Ascii data model");
 
         /**
          * Read the parameters from the parameter file.
          */
         void
-        parse_parameters (ParameterHandler &prm,
-                          const std::string &subsection_name = "Ascii data model");
+        parse_parameters(ParameterHandler &prm, const std::string &subsection_name = "Ascii data model");
 
       protected:
         /**
@@ -647,7 +624,7 @@ namespace aspect
          * needs to be transformed to a plane that contains the origin and
          * the two prescribed points given in the input.
          */
-        Tensor<2,3> rotation_matrix;
+        Tensor<2, 3> rotation_matrix;
     };
 
 
@@ -668,42 +645,38 @@ namespace aspect
          * Initialization function. This function is called once at the
          * beginning of the program. Checks preconditions.
          */
-        virtual
-        void
-        initialize (const unsigned int components);
+        virtual void
+        initialize(const unsigned int components);
 
 
         /**
          * Returns the data component at the given position.
          */
         double
-        get_data_component (const Point<dim> &position,
-                            const unsigned int component) const;
+        get_data_component(const Point<dim> &position, const unsigned int component) const;
 
 
         /**
          * Declare the parameters all derived classes take from input files.
          */
-        static
-        void
-        declare_parameters (ParameterHandler  &prm,
-                            const std::string &default_directory,
-                            const std::string &default_filename,
-                            const std::string &subsection_name = "Ascii data model");
+        static void
+        declare_parameters(ParameterHandler  &prm,
+                           const std::string &default_directory,
+                           const std::string &default_filename,
+                           const std::string &subsection_name = "Ascii data model");
 
         /**
          * Read the parameters from the parameter file.
          */
         void
-        parse_parameters (ParameterHandler &prm,
-                          const std::string &subsection_name = "Ascii data model");
+        parse_parameters(ParameterHandler &prm, const std::string &subsection_name = "Ascii data model");
 
       protected:
         /**
          * Pointer to an object that reads and processes data we get from text
          * files.
          */
-        std::vector<std::unique_ptr<aspect::Utilities::StructuredDataLookup<dim-1>>> lookups;
+        std::vector<std::unique_ptr<aspect::Utilities::StructuredDataLookup<dim - 1>>> lookups;
 
       private:
         /**
@@ -720,8 +693,6 @@ namespace aspect
          * Interpolation scheme for profile averaging.
          */
         std::string interpolation_scheme;
-
-
     };
 
 
@@ -741,17 +712,15 @@ namespace aspect
          * Initialization function. This function is called once at the
          * beginning of the program. Checks preconditions.
          */
-        virtual
-        void
-        initialize (const MPI_Comm communicator);
+        virtual void
+        initialize(const MPI_Comm communicator);
 
 
         /**
          * Returns the data component at the given position.
          */
         double
-        get_data_component (const Point<1>                      &position,
-                            const unsigned int                   component) const;
+        get_data_component(const Point<1> &position, const unsigned int component) const;
 
         /**
          * Returns a vector that contains the names of all data columns in the
@@ -802,6 +771,7 @@ namespace aspect
          */
         std::string
         get_column_name_from_index(const unsigned int column_index) const;
+
       protected:
         /**
          * Pointer to an object that reads and processes data we get from text

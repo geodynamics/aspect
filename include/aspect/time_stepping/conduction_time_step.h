@@ -42,7 +42,7 @@ namespace aspect
         /**
          * Constructor.
          */
-        ConductionTimeStep () = default;
+        ConductionTimeStep() = default;
 
 
         /**
@@ -50,7 +50,6 @@ namespace aspect
          */
         double
         execute() override;
-
     };
   }
 }

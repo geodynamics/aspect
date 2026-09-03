@@ -48,16 +48,16 @@ namespace aspect
          * Compute the heating model outputs for this class.
          */
         void
-        evaluate (const MaterialModel::MaterialModelInputs<dim> &material_model_inputs,
-                  const MaterialModel::MaterialModelOutputs<dim> &material_model_outputs,
-                  HeatingModel::HeatingModelOutputs &heating_model_outputs) const override;
+        evaluate(const MaterialModel::MaterialModelInputs<dim>  &material_model_inputs,
+                 const MaterialModel::MaterialModelOutputs<dim> &material_model_outputs,
+                 HeatingModel::HeatingModelOutputs              &heating_model_outputs) const override;
 
         /**
          * Specify which material model outputs the heating model requires
          * for computing the heating terms.
          */
         MaterialModel::MaterialProperties::Property
-        get_required_properties () const override;
+        get_required_properties() const override;
 
         /**
          * @name Functions used in dealing with run-time parameters
@@ -66,22 +66,20 @@ namespace aspect
         /**
          * Declare the parameters this class takes through input files.
          */
-        static
-        void
-        declare_parameters (ParameterHandler &prm);
+        static void
+        declare_parameters(ParameterHandler &prm);
 
         /**
          * Read the parameters this class declares from the parameter file.
          */
         void
-        parse_parameters (ParameterHandler &prm) override;
+        parse_parameters(ParameterHandler &prm) override;
 
         /**
          * @}
          */
 
-        virtual
-        void
+        virtual void
         create_additional_material_model_outputs(MaterialModel::MaterialModelOutputs<dim> &outputs) const override;
 
       private:
@@ -95,7 +93,7 @@ namespace aspect
         /**
          * This variable is read from the parameter file through a parameter called 'Retrieve entropy change from material model'.
          */
-        bool   retrieve_entropy_change_from_material_model;
+        bool retrieve_entropy_change_from_material_model;
     };
   }
 }

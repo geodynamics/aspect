@@ -47,7 +47,7 @@ namespace aspect
            * avoid repeated lookups.
            */
           void
-          initialize () override;
+          initialize() override;
 
           /**
            * Perform an integration step of moving the particles of one cell
@@ -70,9 +70,9 @@ namespace aspect
           void
           local_integrate_step(const typename ParticleHandler<dim>::particle_iterator &begin_particle,
                                const typename ParticleHandler<dim>::particle_iterator &end_particle,
-                               const std::vector<Tensor<1,dim>> &old_velocities,
-                               const std::vector<Tensor<1,dim>> &velocities,
-                               const double dt) override;
+                               const std::vector<Tensor<1, dim>>                      &old_velocities,
+                               const std::vector<Tensor<1, dim>>                      &velocities,
+                               const double                                            dt) override;
 
           /**
            * This function is called at the end of every integration step.
@@ -84,7 +84,8 @@ namespace aspect
            * another integration step. The particle integration will continue
            * to start new integration steps until this function returns false.
            */
-          bool new_integration_step() override;
+          bool
+          new_integration_step() override;
 
           /**
            * Return a list of boolean values indicating which solution vectors
@@ -101,7 +102,8 @@ namespace aspect
            * and third integration steps and the solution vector at the
            * new time (k+1) for the fourth integration step.
            */
-          std::array<bool, 3> required_solution_vectors() const override;
+          std::array<bool, 3>
+          required_solution_vectors() const override;
 
           /**
            * We need to tell the property manager how many intermediate properties this integrator requires,
@@ -114,7 +116,7 @@ namespace aspect
            *
            * The Runge-Kutta 4 integrator requires 4 tensors with dim components each.
            */
-          static constexpr unsigned int n_integrator_properties = 4*dim;
+          static constexpr unsigned int n_integrator_properties = 4 * dim;
 
         private:
           /**
@@ -126,7 +128,7 @@ namespace aspect
           /**
            * The location of the 4 RK4 data fields stored in the particle properties.
            */
-          std::array<unsigned int,4> property_indices;
+          std::array<unsigned int, 4> property_indices;
       };
     }
   }

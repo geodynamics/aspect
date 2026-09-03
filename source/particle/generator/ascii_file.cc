@@ -32,7 +32,7 @@ namespace aspect
       void
       AsciiFile<dim>::generate_particles(Particles::ParticleHandler<dim> &particle_handler)
       {
-        const std::string filename = data_directory+data_filename;
+        const std::string filename = data_directory + data_filename;
 
         // Read data from disk and distribute among processes
         std::istringstream in(Utilities::read_and_distribute_file_content(filename, this->get_mpi_communicator()));
@@ -41,12 +41,12 @@ namespace aspect
         while (in.peek() == '#')
           {
             std::string temp;
-            std::getline(in,temp);
+            std::getline(in, temp);
           }
 
         // Read data lines
         types::particle_index particle_index = 0;
-        Point<dim> particle_position;
+        Point<dim>            particle_position;
 
         while (in >> particle_position)
           {
@@ -59,25 +59,23 @@ namespace aspect
 
       template <int dim>
       void
-      AsciiFile<dim>::declare_parameters (ParameterHandler &prm)
+      AsciiFile<dim>::declare_parameters(ParameterHandler &prm)
       {
         prm.enter_subsection("Generator");
         {
           prm.enter_subsection("Ascii file");
           {
-            prm.declare_entry ("Data directory",
-                               "$ASPECT_SOURCE_DIR/data/particle/generator/ascii/",
-                               Patterns::DirectoryName (),
-                               "The name of a directory that contains the particle data. This path "
-                               "may either be absolute (if starting with a '/') or relative to "
-                               "the current directory. The path may also include the special "
-                               "text '$ASPECT_SOURCE_DIR' which will be interpreted as the path "
-                               "in which the ASPECT source files were located when ASPECT was "
-                               "compiled. This interpretation allows, for example, to reference "
-                               "files located in the `data/' subdirectory of ASPECT. ");
-            prm.declare_entry ("Data file name", "particle.dat",
-                               Patterns::Anything (),
-                               "The name of the particle file.");
+            prm.declare_entry("Data directory",
+                              "$ASPECT_SOURCE_DIR/data/particle/generator/ascii/",
+                              Patterns::DirectoryName(),
+                              "The name of a directory that contains the particle data. This path "
+                              "may either be absolute (if starting with a '/') or relative to "
+                              "the current directory. The path may also include the special "
+                              "text '$ASPECT_SOURCE_DIR' which will be interpreted as the path "
+                              "in which the ASPECT source files were located when ASPECT was "
+                              "compiled. This interpretation allows, for example, to reference "
+                              "files located in the `data/' subdirectory of ASPECT. ");
+            prm.declare_entry("Data file name", "particle.dat", Patterns::Anything(), "The name of the particle file.");
           }
           prm.leave_subsection();
         }
@@ -87,15 +85,15 @@ namespace aspect
 
       template <int dim>
       void
-      AsciiFile<dim>::parse_parameters (ParameterHandler &prm)
+      AsciiFile<dim>::parse_parameters(ParameterHandler &prm)
       {
         prm.enter_subsection("Generator");
         {
           prm.enter_subsection("Ascii file");
           {
-            data_directory = Utilities::expand_ASPECT_SOURCE_DIR(prm.get ("Data directory"));
+            data_directory = Utilities::expand_ASPECT_SOURCE_DIR(prm.get("Data directory"));
 
-            data_filename    = prm.get ("Data file name");
+            data_filename = prm.get("Data file name");
           }
           prm.leave_subsection();
         }

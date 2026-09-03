@@ -18,10 +18,10 @@
  <http://www.gnu.org/licenses/>.
  */
 
-#include <aspect/particle/property/pT_path.h>
-#include <aspect/simulator_signals.h>
 #include <aspect/adiabatic_conditions/interface.h>
 #include <aspect/initial_temperature/interface.h>
+#include <aspect/particle/property/pT_path.h>
+#include <aspect/simulator_signals.h>
 
 namespace aspect
 {
@@ -41,11 +41,9 @@ namespace aspect
 
 
 
-
       template <int dim>
       void
-      PTPath<dim>::initialize_one_particle_property(const Point<dim> &position,
-                                                    std::vector<double> &data) const
+      PTPath<dim>::initialize_one_particle_property(const Point<dim> &position, std::vector<double> &data) const
       {
         // The following is strictly only correct whenever a particle is
         // created in the first time step. After that, taking pressure and
@@ -65,14 +63,14 @@ namespace aspect
 
       template <int dim>
       void
-      PTPath<dim>::update_particle_properties(const ParticleUpdateInputs<dim> &inputs,
+      PTPath<dim>::update_particle_properties(const ParticleUpdateInputs<dim>                        &inputs,
                                               typename ParticleHandler<dim>::particle_iterator_range &particles) const
       {
         unsigned int p = 0;
-        for (auto &particle: particles)
+        for (auto &particle : particles)
           {
-            particle.get_properties()[this->data_position]   = inputs.solution[p][this->introspection().component_indices.pressure];
-            particle.get_properties()[this->data_position+1] = inputs.solution[p][this->introspection().component_indices.temperature];
+            particle.get_properties()[this->data_position]     = inputs.solution[p][this->introspection().component_indices.pressure];
+            particle.get_properties()[this->data_position + 1] = inputs.solution[p][this->introspection().component_indices.temperature];
             ++p;
           }
       }
@@ -90,7 +88,7 @@ namespace aspect
 
       template <int dim>
       UpdateFlags
-      PTPath<dim>::get_update_flags (const unsigned int component) const
+      PTPath<dim>::get_update_flags(const unsigned int component) const
       {
         if (this->introspection().component_masks.pressure[component] == true ||
             this->introspection().component_masks.temperature[component] == true)

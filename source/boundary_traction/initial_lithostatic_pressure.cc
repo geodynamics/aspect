@@ -19,23 +19,24 @@
 */
 
 
-#include <aspect/boundary_traction/initial_lithostatic_pressure.h>
-#include <aspect/initial_temperature/interface.h>
-#include <aspect/initial_composition/interface.h>
-#include <aspect/geometry_model/initial_topography_model/zero_topography.h>
-#include <aspect/geometry_model/initial_topography_model/interface.h>
-#include <aspect/gravity_model/interface.h>
 #include <aspect/global.h>
-#include <aspect/utilities.h>
-#include <array>
 
-#include <aspect/geometry_model/sphere.h>
-#include <aspect/geometry_model/spherical_shell.h>
+#include <aspect/boundary_traction/initial_lithostatic_pressure.h>
+#include <aspect/geometry_model/box.h>
 #include <aspect/geometry_model/chunk.h>
 #include <aspect/geometry_model/ellipsoidal_chunk.h>
-#include <aspect/geometry_model/box.h>
+#include <aspect/geometry_model/initial_topography_model/interface.h>
+#include <aspect/geometry_model/initial_topography_model/zero_topography.h>
+#include <aspect/geometry_model/sphere.h>
+#include <aspect/geometry_model/spherical_shell.h>
 #include <aspect/geometry_model/two_merged_boxes.h>
 #include <aspect/geometry_model/two_merged_chunks.h>
+#include <aspect/gravity_model/interface.h>
+#include <aspect/initial_composition/interface.h>
+#include <aspect/initial_temperature/interface.h>
+#include <aspect/utilities.h>
+
+#include <array>
 
 namespace aspect
 {
@@ -49,7 +50,7 @@ namespace aspect
       // Ensure the initial lithostatic pressure traction boundary conditions are used,
       // and register for which boundary indicators these conditions are set.
       std::set<types::boundary_id> traction_bi;
-      unsigned int i=0;
+      unsigned int                 i = 0;
       for (const auto &plugin : this->get_boundary_traction_manager().get_active_plugins())
         {
           if (plugin.get() == this)
@@ -64,8 +65,7 @@ namespace aspect
       // boundary and initial topography is applied.
       bottom_boundary_id = this->get_geometry_model().translate_symbolic_boundary_name_to_id("bottom");
       if (!Plugins::plugin_type_matches<const InitialTopographyModel::ZeroTopography<dim>>(this->get_initial_topography_model()) &&
-          traction_bi.size() == 1 &&
-          *traction_bi.begin() == bottom_boundary_id)
+          traction_bi.size() == 1 && *traction_bi.begin() == bottom_boundary_id)
         prescribe_constant_pressure_at_bottom_boundary = true;
       else
         prescribe_constant_pressure_at_bottom_boundary = false;
@@ -78,12 +78,12 @@ namespace aspect
       const unsigned int n_compositional_fields = this->n_compositional_fields();
 
       // The pressure at the surface
-      pressure[0]    = this->get_surface_pressure();
+      pressure[0] = this->get_surface_pressure();
 
       // For spherical(-like) domains, modify the representative point:
       // go from degrees to radians...
       std::array<double, dim> spherical_representative_point;
-      for (unsigned int d=0; d<dim; ++d)
+      for (unsigned int d = 0; d < dim; ++d)
         spherical_representative_point[d] = representative_point[d];
       spherical_representative_point[1] *= constants::degree_to_radians;
       // and go from latitude to colatitude.
@@ -95,8 +95,9 @@ namespace aspect
 
       // Check that the representative point lies in the domain.
       AssertThrow(((this->get_geometry_model().natural_coordinate_system() == Utilities::Coordinates::CoordinateSystem::cartesian) ?
-                   (this->get_geometry_model().point_is_in_domain(representative_point)) :
-                   (this->get_geometry_model().point_is_in_domain(Utilities::Coordinates::spherical_to_cartesian_coordinates<dim>(spherical_representative_point)))),
+                     (this->get_geometry_model().point_is_in_domain(representative_point)) :
+                     (this->get_geometry_model().point_is_in_domain(
+                       Utilities::Coordinates::spherical_to_cartesian_coordinates<dim>(spherical_representative_point)))),
                   ExcMessage("The reference point does not lie with the domain."));
 
       // Set the radius of the representative point to the surface radius for spherical domains
@@ -104,27 +105,31 @@ namespace aspect
       // Also get the depth extent without including initial topography, and the vertical coordinate
       // of the bottom boundary (radius for spherical and z-coordinate for Cartesian domains).
       double depth_extent = 0.;
-      if (Plugins::plugin_type_matches<const GeometryModel::SphericalShell<dim>> (this->get_geometry_model()))
+      if (Plugins::plugin_type_matches<const GeometryModel::SphericalShell<dim>>(this->get_geometry_model()))
         {
-          spherical_representative_point[0] = Plugins::get_plugin_as_type<const GeometryModel::SphericalShell<dim>>(this->get_geometry_model()).outer_radius();
+          spherical_representative_point[0] =
+            Plugins::get_plugin_as_type<const GeometryModel::SphericalShell<dim>>(this->get_geometry_model()).outer_radius();
           // Spherical shell cannot include initial topography
-          depth_extent =  Plugins::get_plugin_as_type<const GeometryModel::SphericalShell<dim>>(this->get_geometry_model()).maximal_depth();
+          depth_extent = Plugins::get_plugin_as_type<const GeometryModel::SphericalShell<dim>>(this->get_geometry_model()).maximal_depth();
         }
-      else if (Plugins::plugin_type_matches<const GeometryModel::Chunk<dim>> (this->get_geometry_model()))
+      else if (Plugins::plugin_type_matches<const GeometryModel::Chunk<dim>>(this->get_geometry_model()))
         {
           // Does not include initial topography
-          spherical_representative_point[0] =  Plugins::get_plugin_as_type<const GeometryModel::Chunk<dim>>(this->get_geometry_model()).outer_radius();
+          spherical_representative_point[0] =
+            Plugins::get_plugin_as_type<const GeometryModel::Chunk<dim>>(this->get_geometry_model()).outer_radius();
           depth_extent = Plugins::get_plugin_as_type<const GeometryModel::Chunk<dim>>(this->get_geometry_model()).maximal_depth();
         }
-      else if (Plugins::plugin_type_matches<const GeometryModel::TwoMergedChunks<dim>> (this->get_geometry_model()))
+      else if (Plugins::plugin_type_matches<const GeometryModel::TwoMergedChunks<dim>>(this->get_geometry_model()))
         {
           // Does not include initial topography
-          spherical_representative_point[0] =  Plugins::get_plugin_as_type<const GeometryModel::TwoMergedChunks<dim>>(this->get_geometry_model()).outer_radius();
+          spherical_representative_point[0] =
+            Plugins::get_plugin_as_type<const GeometryModel::TwoMergedChunks<dim>>(this->get_geometry_model()).outer_radius();
           depth_extent = Plugins::get_plugin_as_type<const GeometryModel::TwoMergedChunks<dim>>(this->get_geometry_model()).maximal_depth();
         }
-      else if (Plugins::plugin_type_matches<const GeometryModel::EllipsoidalChunk<dim>> (this->get_geometry_model()))
+      else if (Plugins::plugin_type_matches<const GeometryModel::EllipsoidalChunk<dim>>(this->get_geometry_model()))
         {
-          const GeometryModel::EllipsoidalChunk<dim> &gm = Plugins::get_plugin_as_type<const GeometryModel::EllipsoidalChunk<dim>> (this->get_geometry_model());
+          const GeometryModel::EllipsoidalChunk<dim> &gm =
+            Plugins::get_plugin_as_type<const GeometryModel::EllipsoidalChunk<dim>>(this->get_geometry_model());
           // TODO
           // If the eccentricity of the EllipsoidalChunk is non-zero, the radius can vary along a boundary,
           // but the maximal depth is the same everywhere and we could calculate a representative pressure
@@ -132,32 +137,39 @@ namespace aspect
           // coordinates, so for now we only allow eccentricity zero.
           // Using the EllipsoidalChunk with eccentricity zero can still be useful,
           // because the domain can be non-coordinate parallel.
-          AssertThrow(gm.get_eccentricity() == 0.0, ExcMessage("This initial lithospheric pressure plugin cannot be used with a non-zero eccentricity. "));
+          AssertThrow(gm.get_eccentricity() == 0.0,
+                      ExcMessage("This initial lithospheric pressure plugin cannot be used with a non-zero eccentricity. "));
 
           spherical_representative_point[0] = gm.get_semi_major_axis_a();
           // Does not include initial topography
           depth_extent = gm.maximal_depth();
         }
-      else if (Plugins::plugin_type_matches<const GeometryModel::Sphere<dim>> (this->get_geometry_model()))
+      else if (Plugins::plugin_type_matches<const GeometryModel::Sphere<dim>>(this->get_geometry_model()))
         {
           AssertThrow(false, ExcMessage("Using the initial lithospheric pressure plugin does not make sense for a Sphere geometry."));
-          spherical_representative_point[0] =  Plugins::get_plugin_as_type<const GeometryModel::Sphere<dim>>(this->get_geometry_model()).radius();
+          spherical_representative_point[0] =
+            Plugins::get_plugin_as_type<const GeometryModel::Sphere<dim>>(this->get_geometry_model()).radius();
           // Cannot include initial topography. Radius and maximum depth are the same.
           depth_extent = spherical_representative_point[0];
         }
-      else if (Plugins::plugin_type_matches<const GeometryModel::Box<dim>> (this->get_geometry_model()))
+      else if (Plugins::plugin_type_matches<const GeometryModel::Box<dim>>(this->get_geometry_model()))
         {
-          representative_point[dim-1]=  Plugins::get_plugin_as_type<const GeometryModel::Box<dim>>(this->get_geometry_model()).get_extents()[dim-1];
+          representative_point[dim - 1] =
+            Plugins::get_plugin_as_type<const GeometryModel::Box<dim>>(this->get_geometry_model()).get_extents()[dim - 1];
           // Maximal_depth includes the maximum topography, while we need the topography at the
           // representative point. Therefore, we only get the undeformed (uniform) depth.
-          depth_extent = representative_point[dim-1] - Plugins::get_plugin_as_type<const GeometryModel::Box<dim>>(this->get_geometry_model()).get_origin()[dim-1];
+          depth_extent = representative_point[dim - 1] -
+                         Plugins::get_plugin_as_type<const GeometryModel::Box<dim>>(this->get_geometry_model()).get_origin()[dim - 1];
         }
-      else if (Plugins::plugin_type_matches<const GeometryModel::TwoMergedBoxes<dim>> (this->get_geometry_model()))
+      else if (Plugins::plugin_type_matches<const GeometryModel::TwoMergedBoxes<dim>>(this->get_geometry_model()))
         {
-          representative_point[dim-1]=  Plugins::get_plugin_as_type<const GeometryModel::TwoMergedBoxes<dim>>(this->get_geometry_model()).get_extents()[dim-1];
+          representative_point[dim - 1] =
+            Plugins::get_plugin_as_type<const GeometryModel::TwoMergedBoxes<dim>>(this->get_geometry_model()).get_extents()[dim - 1];
           // Maximal_depth includes the maximum topography, while we need the topography at the
           // representative point. Therefore, we only get the undeformed (uniform) depth.
-          depth_extent = representative_point[dim-1] - Plugins::get_plugin_as_type<const GeometryModel::TwoMergedBoxes<dim>>(this->get_geometry_model()).get_origin()[dim-1];
+          depth_extent =
+            representative_point[dim - 1] -
+            Plugins::get_plugin_as_type<const GeometryModel::TwoMergedBoxes<dim>>(this->get_geometry_model()).get_origin()[dim - 1];
         }
       else
         AssertThrow(false, ExcNotImplemented());
@@ -167,30 +179,29 @@ namespace aspect
       if (!Plugins::plugin_type_matches<const InitialTopographyModel::ZeroTopography<dim>>(this->get_initial_topography_model()))
         {
           // Get the surface x (,y) point
-          Point<dim-1> surface_point;
-          for (unsigned int d=0; d<dim-1; d++)
+          Point<dim - 1> surface_point;
+          for (unsigned int d = 0; d < dim - 1; d++)
             {
               if (this->get_geometry_model().natural_coordinate_system() == Utilities::Coordinates::CoordinateSystem::cartesian)
                 surface_point[d] = representative_point[d];
               else
                 surface_point[d] = spherical_representative_point[d];
-
             }
           topo = this->get_initial_topography_model().value(surface_point);
         }
 
       // The spacing of the depth profile at the location of the representative point.
-      delta_z = (depth_extent + topo) / (n_points-1);
+      delta_z = (depth_extent + topo) / (n_points - 1);
 
       // Set up the input for the density function of the material model.
-      typename MaterialModel::Interface<dim>::MaterialModelInputs in(1, n_compositional_fields);
+      typename MaterialModel::Interface<dim>::MaterialModelInputs  in(1, n_compositional_fields);
       typename MaterialModel::Interface<dim>::MaterialModelOutputs out(1, n_compositional_fields);
       in.requested_properties = MaterialModel::MaterialProperties::density;
 
       // Where to calculate the density
       // for Cartesian domains
-      if (Plugins::plugin_type_matches<const GeometryModel::Box<dim>> (this->get_geometry_model()) ||
-          Plugins::plugin_type_matches<const GeometryModel::TwoMergedBoxes<dim>> (this->get_geometry_model()))
+      if (Plugins::plugin_type_matches<const GeometryModel::Box<dim>>(this->get_geometry_model()) ||
+          Plugins::plugin_type_matches<const GeometryModel::TwoMergedBoxes<dim>>(this->get_geometry_model()))
         in.position[0] = representative_point;
       // and for spherical domains
       else
@@ -203,14 +214,14 @@ namespace aspect
       in.pressure[0] = pressure[0];
 
       // Then the compositions at this point.
-      for (unsigned int c=0; c<n_compositional_fields; ++c)
+      for (unsigned int c = 0; c < n_compositional_fields; ++c)
         in.composition[0][c] = this->get_initial_composition_manager().initial_composition(in.position[0], c);
 
       // Hopefully the material model won't needed in.strain_rate, we
       // leave it as NaNs.
 
       // We set all entries of the velocity vector to zero since this is the lithostatic case.
-      in.velocity[0] = Tensor<1,dim> ();
+      in.velocity[0] = Tensor<1, dim>();
 
       // Evaluate the material model to get the density.
       this->get_material_model().evaluate(in, out);
@@ -226,20 +237,20 @@ namespace aspect
       // p'(z) = rho(p,c,T) * |g| * delta_z
       double sum = delta_z * 0.5 * density0 * gravity0;
 
-      for (unsigned int i=1; i<n_points; ++i)
+      for (unsigned int i = 1; i < n_points; ++i)
         {
-          AssertThrow (i < pressure.size(), ExcMessage(std::string("The current index ")
-                                                       + dealii::Utilities::int_to_string(i)
-                                                       + std::string(" is bigger than the size of the pressure vector ")
-                                                       + dealii::Utilities::int_to_string(pressure.size())));
+          AssertThrow(i < pressure.size(),
+                      ExcMessage(std::string("The current index ") + dealii::Utilities::int_to_string(i) +
+                                 std::string(" is bigger than the size of the pressure vector ") +
+                                 dealii::Utilities::int_to_string(pressure.size())));
 
           // Where to calculate the density:
           // for Cartesian domains
-          if (Plugins::plugin_type_matches<const GeometryModel::Box<dim>> (this->get_geometry_model()) ||
-              Plugins::plugin_type_matches<const GeometryModel::TwoMergedBoxes<dim>> (this->get_geometry_model()))
+          if (Plugins::plugin_type_matches<const GeometryModel::Box<dim>>(this->get_geometry_model()) ||
+              Plugins::plugin_type_matches<const GeometryModel::TwoMergedBoxes<dim>>(this->get_geometry_model()))
             {
               // decrease z coordinate with depth increment
-              representative_point[dim-1] -= delta_z;
+              representative_point[dim - 1] -= delta_z;
               in.position[0] = representative_point;
             }
           // and for spherical domains
@@ -253,14 +264,14 @@ namespace aspect
           // Retrieve the initial temperature at this point.
           in.temperature[0] = this->get_initial_temperature_manager().initial_temperature(in.position[0]);
           // and use the previous pressure
-          in.pressure[0] = pressure[i-1];
+          in.pressure[0] = pressure[i - 1];
 
           // Retrieve the compositions at this point.
-          for (unsigned int c=0; c<n_compositional_fields; ++c)
+          for (unsigned int c = 0; c < n_compositional_fields; ++c)
             in.composition[0][c] = this->get_initial_composition_manager().initial_composition(in.position[0], c);
 
           // We set all entries of the velocity vector to zero since this is the lithostatic case.
-          in.velocity[0] = Tensor<1,dim> ();
+          in.velocity[0] = Tensor<1, dim>();
 
           // Evaluate the material model to get the density at the current point.
           this->get_material_model().evaluate(in, out);
@@ -274,18 +285,15 @@ namespace aspect
           sum += delta_z * density * gravity;
         }
 
-      Assert (*std::min_element (pressure.begin(), pressure.end()) >=
-              -std::numeric_limits<double>::epsilon() * pressure.size(),
-              ExcInternalError());
-
+      Assert(*std::min_element(pressure.begin(), pressure.end()) >= -std::numeric_limits<double>::epsilon() * pressure.size(),
+             ExcInternalError());
     }
 
     template <int dim>
-    Tensor<1,dim>
-    InitialLithostaticPressure<dim>::
-    boundary_traction (const types::boundary_id boundary_indicator,
-                       const Point<dim> &position,
-                       const Tensor<1,dim> &normal_vector) const
+    Tensor<1, dim>
+    InitialLithostaticPressure<dim>::boundary_traction(const types::boundary_id boundary_indicator,
+                                                       const Point<dim>        &position,
+                                                       const Tensor<1, dim>    &normal_vector) const
     {
       // We want to set the normal component to the vertical boundary
       // to the lithostatic pressure, the rest of the traction
@@ -308,8 +316,7 @@ namespace aspect
 
     template <int dim>
     double
-    InitialLithostaticPressure<dim>::
-    interpolate_pressure (const Point<dim> &p) const
+    InitialLithostaticPressure<dim>::interpolate_pressure(const Point<dim> &p) const
     {
       // The depth at which we need the pressure.
       const double z = this->get_geometry_model().depth(p);
@@ -317,44 +324,45 @@ namespace aspect
       // Check that depth does not exceed the maximal depth.
       if (z >= this->get_geometry_model().maximal_depth())
         {
-          Assert (z <= this->get_geometry_model().maximal_depth() + delta_z,
-                  ExcInternalError());
+          Assert(z <= this->get_geometry_model().maximal_depth() + delta_z, ExcInternalError());
           // Return deepest (last) pressure
           return pressure.back();
         }
 
-      const unsigned int i = static_cast<unsigned int>(z/delta_z);
+      const unsigned int i = static_cast<unsigned int>(z / delta_z);
       // If mesh deformation is allowed, the depth can become
       // negative. However, the returned depth is capped at 0
       // by the geometry models and thus always positive.
-      Assert ((z/delta_z) >= 0, ExcInternalError());
-      Assert (i+1 < pressure.size(), ExcInternalError());
+      Assert((z / delta_z) >= 0, ExcInternalError());
+      Assert(i + 1 < pressure.size(), ExcInternalError());
 
       // Now do the linear interpolation.
-      const double d=1.0+i-z/delta_z;
-      Assert ((d>=0) && (d<=1), ExcInternalError());
+      const double d = 1.0 + i - z / delta_z;
+      Assert((d >= 0) && (d <= 1), ExcInternalError());
 
-      return d*pressure[i]+(1-d)*pressure[i+1];
+      return d * pressure[i] + (1 - d) * pressure[i + 1];
     }
 
 
     template <int dim>
     void
-    InitialLithostaticPressure<dim>::declare_parameters (ParameterHandler &prm)
+    InitialLithostaticPressure<dim>::declare_parameters(ParameterHandler &prm)
     {
       prm.enter_subsection("Boundary traction model");
       {
         prm.enter_subsection("Initial lithostatic pressure");
         {
-          prm.declare_entry ("Representative point", "",
-                             Patterns::List(Patterns::Double()),
-                             "The point where the pressure profile will be calculated. "
-                             "Cartesian coordinates $(x,y,z)$ when geometry is a box, otherwise enter radius, "
-                             "longitude, and in 3d latitude. Note that the coordinate related to the depth "
-                             "($y$ in 2d Cartesian, $z$ in 3d Cartesian and radius in spherical coordinates) is "
-                             "not used. "
-                             "Units: \\si{\\meter} or degrees.");
-          prm.declare_entry("Number of integration points", "1000",
+          prm.declare_entry("Representative point",
+                            "",
+                            Patterns::List(Patterns::Double()),
+                            "The point where the pressure profile will be calculated. "
+                            "Cartesian coordinates $(x,y,z)$ when geometry is a box, otherwise enter radius, "
+                            "longitude, and in 3d latitude. Note that the coordinate related to the depth "
+                            "($y$ in 2d Cartesian, $z$ in 3d Cartesian and radius in spherical coordinates) is "
+                            "not used. "
+                            "Units: \\si{\\meter} or degrees.");
+          prm.declare_entry("Number of integration points",
+                            "1000",
                             Patterns::Integer(0),
                             "The number of integration points over which we integrate the lithostatic pressure "
                             "downwards.");
@@ -367,7 +375,7 @@ namespace aspect
 
     template <int dim>
     void
-    InitialLithostaticPressure<dim>::parse_parameters (ParameterHandler &prm)
+    InitialLithostaticPressure<dim>::parse_parameters(ParameterHandler &prm)
     {
       unsigned int refinement;
       prm.enter_subsection("Mesh refinement");
@@ -384,7 +392,7 @@ namespace aspect
           const std::vector<double> rep_point =
             dealii::Utilities::string_to_double(dealii::Utilities::split_string_list(prm.get("Representative point")));
           AssertThrow(rep_point.size() == dim, ExcMessage("Representative point does not have the right dimensions."));
-          for (unsigned int d = 0; d<dim; ++d)
+          for (unsigned int d = 0; d < dim; ++d)
             representative_point[d] = rep_point[d];
           n_points = prm.get_integer("Number of integration points");
         }
@@ -393,9 +401,9 @@ namespace aspect
       prm.leave_subsection();
 
       // Check that we have enough integration points for this mesh.
-      AssertThrow(Utilities::pow(2u,refinement) <= n_points, ExcMessage("Not enough integration points for this resolution."));
+      AssertThrow(Utilities::pow(2u, refinement) <= n_points, ExcMessage("Not enough integration points for this resolution."));
 
-      pressure.resize(n_points,-1);
+      pressure.resize(n_points, -1);
     }
 
   }

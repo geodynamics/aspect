@@ -42,20 +42,20 @@ namespace aspect
         /**
          * Return the gravity vector as a function of position.
          */
-        Tensor<1,dim> gravity_vector (const Point<dim> &position) const override;
+        Tensor<1, dim>
+        gravity_vector(const Point<dim> &position) const override;
 
         /**
          * Declare the parameters this class takes through input files.
          */
-        static
-        void
-        declare_parameters (ParameterHandler &prm);
+        static void
+        declare_parameters(ParameterHandler &prm);
 
         /**
          * Read the parameters this class declares from the parameter file.
          */
         void
-        parse_parameters (ParameterHandler &prm) override;
+        parse_parameters(ParameterHandler &prm) override;
 
       private:
         /**
@@ -64,7 +64,6 @@ namespace aspect
          * This variable is read from the parameter file through a parameter called 'Magnitude'.
          */
         double gravity_magnitude;
-
     };
   }
 }

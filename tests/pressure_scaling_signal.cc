@@ -18,15 +18,15 @@
   <http://www.gnu.org/licenses/>.
 */
 
-#include "../benchmarks/inclusion/inclusion.cc"
-
 #include <aspect/simulator_signals.h>
 
+#include "../benchmarks/inclusion/inclusion.cc"
 
-double my_signal(const double pressure_scaling, const double reference_viscosity, const double length_scale)
+
+double
+my_signal(const double pressure_scaling, const double reference_viscosity, const double length_scale)
 {
-  std::cout << "pressure_scaling = " << pressure_scaling
-            << " reference_viscosity = " << reference_viscosity
+  std::cout << "pressure_scaling = " << pressure_scaling << " reference_viscosity = " << reference_viscosity
             << " length_scale = " << length_scale << std::endl;
   // Now change it to something different:
   return 42.0;
@@ -34,11 +34,11 @@ double my_signal(const double pressure_scaling, const double reference_viscosity
 
 
 template <int dim>
-void signal_connector (aspect::SimulatorSignals<dim> &signals)
+void
+signal_connector(aspect::SimulatorSignals<dim> &signals)
 {
   std::cout << "* Connecting signals" << std::endl;
   signals.modify_pressure_scaling.connect(&my_signal);
 }
 
-ASPECT_REGISTER_SIGNALS_CONNECTOR(signal_connector<2>,
-                                  signal_connector<3>)
+ASPECT_REGISTER_SIGNALS_CONNECTOR(signal_connector<2>, signal_connector<3>)

@@ -39,8 +39,7 @@ namespace aspect
      * @ingroup MeshRefinement
      */
     template <int dim>
-    class NonadiabaticTemperatureThreshold : public Interface<dim>,
-      public SimulatorAccess<dim>
+    class NonadiabaticTemperatureThreshold : public Interface<dim>, public SimulatorAccess<dim>
     {
       public:
         /**
@@ -48,20 +47,19 @@ namespace aspect
          * additional criteria independent of the error estimate.
          */
         void
-        tag_additional_cells () const override;
+        tag_additional_cells() const override;
 
         /**
          * Declare the parameters this class takes through input files.
          */
-        static
-        void
-        declare_parameters (ParameterHandler &prm);
+        static void
+        declare_parameters(ParameterHandler &prm);
 
         /**
          * Read the parameters this class declares from the parameter file.
          */
         void
-        parse_parameters (ParameterHandler &prm) override;
+        parse_parameters(ParameterHandler &prm) override;
 
       private:
         /**

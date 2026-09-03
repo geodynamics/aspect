@@ -19,15 +19,15 @@
 */
 
 
-#include <aspect/postprocess/topography.h>
-#include <aspect/geometry_model/box.h>
-#include <aspect/geometry_model/sphere.h>
-#include <aspect/geometry_model/spherical_shell.h>
-#include <aspect/geometry_model/chunk.h>
-#include <aspect/simulator.h>
 #include <aspect/global.h>
 
-#include <deal.II/fe/fe_values.h>
+#include <aspect/geometry_model/box.h>
+#include <aspect/geometry_model/chunk.h>
+#include <aspect/geometry_model/sphere.h>
+#include <aspect/geometry_model/spherical_shell.h>
+#include <aspect/postprocess/topography.h>
+#include <aspect/simulator.h>
+
 #include <deal.II/base/quadrature_lib.h>
 #include <deal.II/fe/fe_values.h>
 
@@ -43,28 +43,27 @@ namespace aspect
     template <int dim>
     Topography<dim>::Topography()
       : last_output_time(std::numeric_limits<double>::lowest())
-    {
-    }
+    {}
 
 
 
     template <int dim>
-    std::pair<std::string,std::string>
-    Topography<dim>::execute (TableHandler &statistics)
+    std::pair<std::string, std::string>
+    Topography<dim>::execute(TableHandler &statistics)
     {
-      //Disallow use of the plugin with sphere geometry model
+      // Disallow use of the plugin with sphere geometry model
       AssertThrow(!Plugins::plugin_type_matches<const GeometryModel::Sphere<dim>>(this->get_geometry_model()),
                   ExcMessage("Topography postprocessor is not yet implemented "
                              "for the sphere geometry model. "
-                             "Consider using a box, spherical shell, or chunk.") );
+                             "Consider using a box, spherical shell, or chunk."));
 
-      const types::boundary_id relevant_boundary = this->get_geometry_model().translate_symbolic_boundary_name_to_id ("top");
+      const types::boundary_id relevant_boundary = this->get_geometry_model().translate_symbolic_boundary_name_to_id("top");
 
       // Define a quadrature rule that has points only on the vertices of
       // a face, so that we can evaluate the solution at the surface
       // nodes.
-      const QTrapezoid<dim-1> face_corners;
-      FEFaceValues<dim> face_vals (this->get_mapping(), this->get_fe(), face_corners, update_quadrature_points);
+      const QTrapezoid<dim - 1> face_corners;
+      FEFaceValues<dim>         face_vals(this->get_mapping(), this->get_fe(), face_corners, update_quadrature_points);
 
       // have a stream into which we write the data. the text stream is then
       // later sent to processor 0
@@ -74,9 +73,7 @@ namespace aspect
       // On processor 0, write the file header
       if (Utilities::MPI::this_mpi_process(this->get_mpi_communicator()) == 0)
         {
-          output_file << "# "
-                      << ((dim==2)? "x y" : "x y z")
-                      << " topography" << std::endl;
+          output_file << "# " << ((dim == 2) ? "x y" : "x y z") << " topography" << std::endl;
         }
 
       // Choose stupidly large values for initialization
@@ -89,45 +86,40 @@ namespace aspect
           for (const unsigned int face_no : cell->face_indices())
             if (cell->face(face_no)->at_boundary())
               {
-                if ( cell->face(face_no)->boundary_id() != relevant_boundary)
+                if (cell->face(face_no)->boundary_id() != relevant_boundary)
                   continue;
 
-                face_vals.reinit( cell, face_no);
+                face_vals.reinit(cell, face_no);
 
                 for (unsigned int corner = 0; corner < face_corners.size(); ++corner)
                   {
-                    const Point<dim> vertex = face_vals.quadrature_point(corner);
-                    const double elevation = this->get_geometry_model().height_above_reference_surface(vertex);
+                    const Point<dim> vertex    = face_vals.quadrature_point(corner);
+                    const double     elevation = this->get_geometry_model().height_above_reference_surface(vertex);
                     if (write_to_file)
-                      output_file << vertex << ' '<< elevation << std::endl;
-                    if ( elevation > local_max_height)
+                      output_file << vertex << ' ' << elevation << std::endl;
+                    if (elevation > local_max_height)
                       local_max_height = elevation;
-                    if ( elevation < local_min_height)
+                    if (elevation < local_min_height)
                       local_min_height = elevation;
                   }
               }
 
-      //Calculate min/max topography across all processes
+      // Calculate min/max topography across all processes
       const double max_topography = Utilities::MPI::max(local_max_height, this->get_mpi_communicator());
       const double min_topography = Utilities::MPI::min(local_min_height, this->get_mpi_communicator());
 
-      //Write results to statistics file
-      statistics.add_value ("Minimum topography (m)",
-                            min_topography);
-      statistics.add_value ("Maximum topography (m)",
-                            max_topography);
-      const char *columns[] = { "Minimum topography (m)",
-                                "Maximum topography (m)"
-                              };
+      // Write results to statistics file
+      statistics.add_value("Minimum topography (m)", min_topography);
+      statistics.add_value("Maximum topography (m)", max_topography);
+      const char *columns[] = {"Minimum topography (m)", "Maximum topography (m)"};
       for (auto &column : columns)
         {
-          statistics.set_precision (column, 8);
-          statistics.set_scientific (column, true);
+          statistics.set_precision(column, 8);
+          statistics.set_scientific(column, true);
         }
 
       output_stats.precision(4);
-      output_stats << min_topography << " m, "
-                   << max_topography << " m";
+      output_stats << min_topography << " m, " << max_topography << " m";
 
       // Write the solution to file
 
@@ -138,25 +130,20 @@ namespace aspect
         last_output_time = this->get_time() - output_interval;
 
       // Just return stats if text output is not required at all or not needed at this time
-      if (!write_to_file || ((this->get_time() < last_output_time + output_interval)
-                             && (this->get_timestep_number() != 0)))
-        return std::pair<std::string, std::string> ("Topography min/max:",
-                                                    output_stats.str());
+      if (!write_to_file || ((this->get_time() < last_output_time + output_interval) && (this->get_timestep_number() != 0)))
+        return std::pair<std::string, std::string>("Topography min/max:", output_stats.str());
 
 
-      Utilities::create_directory (this->get_output_directory() + "topography/",
-                                   this->get_mpi_communicator(),
-                                   /* silent=*/true);
+      Utilities::create_directory(this->get_output_directory() + "topography/",
+                                  this->get_mpi_communicator(),
+                                  /* silent=*/true);
 
-      std::string filename = this->get_output_directory() +
-                             "topography/topography." +
-                             Utilities::int_to_string(this->get_timestep_number(), 5);
+      std::string filename =
+        this->get_output_directory() + "topography/topography." + Utilities::int_to_string(this->get_timestep_number(), 5);
       if (this->get_parameters().run_postprocessors_on_nonlinear_iterations)
-        filename.append("." + Utilities::int_to_string (this->get_nonlinear_iteration(), 4));
+        filename.append("." + Utilities::int_to_string(this->get_nonlinear_iteration(), 4));
 
-      Utilities::collect_and_write_file_content(filename,
-                                                output_file.str(),
-                                                this->get_mpi_communicator());
+      Utilities::collect_and_write_file_content(filename, output_file.str(), this->get_mpi_communicator());
 
       // if output_interval is positive, then update the last supposed output
       // time
@@ -168,38 +155,39 @@ namespace aspect
           // edge case where last_output_time+output_interval==current_time,
           // we did an output and std::floor sadly rounds to zero. This is done
           // by forcing std::floor to round 1.0-eps to 1.0.
-          const double magic = 1.0+2.0*std::numeric_limits<double>::epsilon();
-          last_output_time = last_output_time +
-                             std::floor((this->get_time()-last_output_time)/output_interval*magic) * output_interval/magic;
+          const double magic = 1.0 + 2.0 * std::numeric_limits<double>::epsilon();
+          last_output_time =
+            last_output_time + std::floor((this->get_time() - last_output_time) / output_interval * magic) * output_interval / magic;
         }
 
-      return std::pair<std::string, std::string> ("Topography min/max:",
-                                                  output_stats.str());
+      return std::pair<std::string, std::string>("Topography min/max:", output_stats.str());
     }
 
 
 
     template <int dim>
     void
-    Topography<dim>::declare_parameters (ParameterHandler &prm)
+    Topography<dim>::declare_parameters(ParameterHandler &prm)
     {
       prm.enter_subsection("Postprocess");
       {
         prm.enter_subsection("Topography");
         {
-          prm.declare_entry ("Output to file", "false",
-                             Patterns::Bool(),
-                             "Whether or not to write topography to a text file named named "
-                             "'topography.NNNNN' in the output directory");
+          prm.declare_entry("Output to file",
+                            "false",
+                            Patterns::Bool(),
+                            "Whether or not to write topography to a text file named named "
+                            "'topography.NNNNN' in the output directory");
 
-          prm.declare_entry ("Time between text output", "0.",
-                             Patterns::Double (0.),
-                             "The time interval between each generation of "
-                             "text output files. A value of zero indicates "
-                             "that output should be generated in each time step. "
-                             "Units: \\si{\\year} if the "
-                             "'Use years instead of seconds' parameter is set; "
-                             "\\si{\\second} otherwise.");
+          prm.declare_entry("Time between text output",
+                            "0.",
+                            Patterns::Double(0.),
+                            "The time interval between each generation of "
+                            "text output files. A value of zero indicates "
+                            "that output should be generated in each time step. "
+                            "Units: \\si{\\year} if the "
+                            "'Use years instead of seconds' parameter is set; "
+                            "\\si{\\second} otherwise.");
         }
         prm.leave_subsection();
       }
@@ -210,14 +198,14 @@ namespace aspect
 
     template <int dim>
     void
-    Topography<dim>::parse_parameters (ParameterHandler &prm)
+    Topography<dim>::parse_parameters(ParameterHandler &prm)
     {
       prm.enter_subsection("Postprocess");
       {
         prm.enter_subsection("Topography");
         {
-          write_to_file   = prm.get_bool ("Output to file");
-          output_interval = prm.get_double ("Time between text output");
+          write_to_file   = prm.get_bool("Output to file");
+          output_interval = prm.get_double("Time between text output");
           if (this->convert_output_to_years())
             output_interval *= year_in_seconds;
         }
@@ -230,7 +218,8 @@ namespace aspect
 
     template <int dim>
     template <class Archive>
-    void Topography<dim>::serialize (Archive &ar, const unsigned int)
+    void
+    Topography<dim>::serialize(Archive &ar, const unsigned int)
     {
       ar &last_output_time;
     }
@@ -238,7 +227,8 @@ namespace aspect
 
 
     template <int dim>
-    void Topography<dim>::save (std::map<std::string, std::string> &status_strings) const
+    void
+    Topography<dim>::save(std::map<std::string, std::string> &status_strings) const
     {
       // Serialize into a stringstream. Put the following into a code
       // block of its own to ensure the destruction of the 'oa'
@@ -246,7 +236,7 @@ namespace aspect
       // query the completed string below.
       std::ostringstream os;
       {
-        aspect::oarchive oa (os);
+        aspect::oarchive oa(os);
         oa << (*this);
       }
 
@@ -256,13 +246,14 @@ namespace aspect
 
 
     template <int dim>
-    void Topography<dim>::load (const std::map<std::string, std::string> &status_strings)
+    void
+    Topography<dim>::load(const std::map<std::string, std::string> &status_strings)
     {
       // see if something was saved
       if (status_strings.find("Topography") != status_strings.end())
         {
-          std::istringstream is (status_strings.find("Topography")->second);
-          aspect::iarchive ia (is);
+          std::istringstream is(status_strings.find("Topography")->second);
+          aspect::iarchive   ia(is);
           ia >> (*this);
         }
     }

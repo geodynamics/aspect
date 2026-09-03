@@ -22,7 +22,6 @@
 #define _aspect_heating_model_shear_heating_anisotropic_viscosity_h
 
 #include <aspect/heating_model/interface.h>
-
 #include <aspect/simulator_access.h>
 
 namespace aspect
@@ -45,9 +44,9 @@ namespace aspect
          * Compute the heating model outputs for this class.
          */
         void
-        evaluate (const MaterialModel::MaterialModelInputs<dim> &material_model_inputs,
-                  const MaterialModel::MaterialModelOutputs<dim> &material_model_outputs,
-                  HeatingModel::HeatingModelOutputs &heating_model_outputs) const override;
+        evaluate(const MaterialModel::MaterialModelInputs<dim>  &material_model_inputs,
+                 const MaterialModel::MaterialModelOutputs<dim> &material_model_outputs,
+                 HeatingModel::HeatingModelOutputs              &heating_model_outputs) const override;
 
         /**
          * Allow the heating model to attach additional material model outputs.

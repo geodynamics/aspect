@@ -22,8 +22,10 @@
 #define _aspect_material_model_reaction_model_kinetics_cahn1956_interface_h
 
 #include <aspect/plugins.h>
+
 #include <aspect/simulator_access.h>
 #include <aspect/utilities.h>
+
 #include <deal.II/base/parameter_handler.h>
 
 #include <memory>
@@ -37,10 +39,11 @@ namespace aspect
     namespace ReactionModel
     {
       /**
-       * Kinetic laws derived from Cahn (1956; https://doi.org/10.1016/0001-6160(56)90041-4) nucleation-and-growth theory in the limit of site
-       * saturation (all nucleation sites consumed early) with Avrami exponent n = 1 (interface-controlled growth on grain boundaries). In this
-       * limit the transformation kinetics reduce to a rate law that is first-order in the untransformed phase fraction and depends only on the
-       * instantaneous local thermodynamic driving force and temperature/pressure (no explicit time or nucleation-rate dependence is needed).
+       * Kinetic laws derived from Cahn (1956; https://doi.org/10.1016/0001-6160(56)90041-4) nucleation-and-growth theory in the limit of
+       * site saturation (all nucleation sites consumed early) with Avrami exponent n = 1 (interface-controlled growth on grain boundaries).
+       * In this limit the transformation kinetics reduce to a rate law that is first-order in the untransformed phase fraction and depends
+       * only on the instantaneous local thermodynamic driving force and temperature/pressure (no explicit time or nucleation-rate
+       * dependence is needed).
        *
        * @ingroup ReactionModel
        */
@@ -57,28 +60,31 @@ namespace aspect
            * Net forward reaction rate dX_B/dt for the transformation A -> B at @p reaction_index.
            */
           virtual double
-          net_forward_reaction_rate(const double temperature,
-                                    const double pressure,
-                                    const double delta_forward_gibbs_energy,
-                                    const double cumulative_forward_reaction_progress,
+          net_forward_reaction_rate(const double       temperature,
+                                    const double       pressure,
+                                    const double       delta_forward_gibbs_energy,
+                                    const double       cumulative_forward_reaction_progress,
                                     const unsigned int reaction_index) const = 0;
 
           /**
            * Declare kinetic parameters (e.g., activation energy, kinetic prefactor).
            */
-          static void declare_parameters(ParameterHandler &prm);
+          static void
+          declare_parameters(ParameterHandler &prm);
 
           /**
            * Read model-specific kinetic parameters for the @p n_reactions.
            */
-          virtual void parse_parameters(ParameterHandler &prm, const unsigned int n_reactions) = 0;
+          virtual void
+          parse_parameters(ParameterHandler &prm, const unsigned int n_reactions) = 0;
       };
 
       /**
        * Instantiate the reaction kinetics plugin named `model_name`.
        */
       template <int dim>
-      std::unique_ptr<Cahn1956Interface<dim>> create_reaction_model(const std::string &model_name);
+      std::unique_ptr<Cahn1956Interface<dim>>
+      create_reaction_model(const std::string &model_name);
 
       template <int dim>
       using ReactionModelPluginList = internal::Plugins::PluginList<Cahn1956Interface<dim>>;
@@ -86,12 +92,12 @@ namespace aspect
 #define ASPECT_REGISTER_REACTION_MODEL(classname, name, description) \
   template class classname<2>; \
   template class classname<3>; \
-  namespace ASPECT_REGISTER_REACTION_MODEL_ ## classname \
+  namespace ASPECT_REGISTER_REACTION_MODEL_##classname \
   { \
     aspect::internal::Plugins::RegisterHelper<aspect::MaterialModel::ReactionModel::Cahn1956Interface<2>, classname<2>> \
-    dummy_ ## classname ## _2d(&aspect::MaterialModel::ReactionModel::ReactionModelPluginList<2>::register_plugin, name, description); \
+      dummy_##classname##_2d(&aspect::MaterialModel::ReactionModel::ReactionModelPluginList<2>::register_plugin, name, description); \
     aspect::internal::Plugins::RegisterHelper<aspect::MaterialModel::ReactionModel::Cahn1956Interface<3>, classname<3>> \
-    dummy_ ## classname ## _3d(&aspect::MaterialModel::ReactionModel::ReactionModelPluginList<3>::register_plugin, name, description); \
+      dummy_##classname##_3d(&aspect::MaterialModel::ReactionModel::ReactionModelPluginList<3>::register_plugin, name, description); \
   }
     }
   }

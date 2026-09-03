@@ -41,9 +41,7 @@ namespace aspect
        * base class. See there for their meaning.
        */
       template <int dim>
-      class ParticleCount
-        : public CellDataVectorCreator<dim>,
-          public SimulatorAccess<dim>
+      class ParticleCount : public CellDataVectorCreator<dim>, public SimulatorAccess<dim>
       {
         public:
           /**
@@ -55,7 +53,7 @@ namespace aspect
            * @copydoc CellDataVectorCreator<dim>::execute()
            */
           std::pair<std::string, std::unique_ptr<Vector<float>>>
-          execute () const override;
+          execute() const override;
 
           /**
            * Let the postprocessor manager know about the other postprocessors

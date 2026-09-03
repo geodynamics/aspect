@@ -43,13 +43,14 @@ namespace aspect
         /**
          * Connect the callback functions to the respective signals.
          */
-        void initialize() override;
+        void
+        initialize() override;
 
         /**
          * Write the entropy statistics into the statistics file.
          */
-        std::pair<std::string,std::string>
-        execute (TableHandler &statistics) override;
+        std::pair<std::string, std::string>
+        execute(TableHandler &statistics) override;
 
       private:
         /**

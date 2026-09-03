@@ -19,25 +19,26 @@
 */
 
 #include <aspect/simulator.h>
-#include <aspect/simulator/solver/stokes_matrix_free.h>
 #include <aspect/simulator/solver/matrix_free_operators.h>
-#include <aspect/simulator/solver/stokes_matrix_free_local_smoothing.h>
+#include <aspect/simulator/solver/stokes_matrix_free.h>
 #include <aspect/simulator/solver/stokes_matrix_free_global_coarsening.h>
+#include <aspect/simulator/solver/stokes_matrix_free_local_smoothing.h>
 
 namespace aspect
 {
   template <int dim>
-  std::unique_ptr<StokesMatrixFreeHandler<dim>> create_matrix_free_solver(Simulator<dim> &simulator, const Parameters<dim> &parameters)
+  std::unique_ptr<StokesMatrixFreeHandler<dim>>
+  create_matrix_free_solver(Simulator<dim> &simulator, const Parameters<dim> &parameters)
   {
     if (parameters.stokes_gmg_type == Parameters<dim>::StokesGMGType::local_smoothing)
       {
         switch (parameters.stokes_velocity_degree)
           {
             case 2:
-              return std::make_unique<StokesMatrixFreeHandlerLocalSmoothingImplementation<dim,2>>(simulator, parameters);
+              return std::make_unique<StokesMatrixFreeHandlerLocalSmoothingImplementation<dim, 2>>(simulator, parameters);
               break;
             case 3:
-              return std::make_unique<StokesMatrixFreeHandlerLocalSmoothingImplementation<dim,3>>(simulator, parameters);
+              return std::make_unique<StokesMatrixFreeHandlerLocalSmoothingImplementation<dim, 3>>(simulator, parameters);
               break;
             default:
               AssertThrow(false, ExcMessage("The finite element degree for the Stokes system you selected is not supported yet."));
@@ -48,10 +49,10 @@ namespace aspect
         switch (parameters.stokes_velocity_degree)
           {
             case 2:
-              return std::make_unique<StokesMatrixFreeHandlerGlobalCoarseningImplementation<dim,2>>(simulator, parameters);
+              return std::make_unique<StokesMatrixFreeHandlerGlobalCoarseningImplementation<dim, 2>>(simulator, parameters);
               break;
             case 3:
-              return std::make_unique<StokesMatrixFreeHandlerGlobalCoarseningImplementation<dim,3>>(simulator, parameters);
+              return std::make_unique<StokesMatrixFreeHandlerGlobalCoarseningImplementation<dim, 3>>(simulator, parameters);
               break;
             default:
               AssertThrow(false, ExcMessage("The finite element degree for the Stokes system you selected is not supported yet."));
@@ -62,10 +63,11 @@ namespace aspect
   }
 
   template <int dim>
-  void StokesMatrixFreeHandler<dim>::declare_parameters(ParameterHandler &prm)
+  void
+  StokesMatrixFreeHandler<dim>::declare_parameters(ParameterHandler &prm)
   {
-    StokesMatrixFreeHandlerLocalSmoothingImplementation<dim,2>::declare_parameters(prm);
-    StokesMatrixFreeHandlerGlobalCoarseningImplementation<dim,2>::declare_parameters(prm);
+    StokesMatrixFreeHandlerLocalSmoothingImplementation<dim, 2>::declare_parameters(prm);
+    StokesMatrixFreeHandlerGlobalCoarseningImplementation<dim, 2>::declare_parameters(prm);
   }
 
 }

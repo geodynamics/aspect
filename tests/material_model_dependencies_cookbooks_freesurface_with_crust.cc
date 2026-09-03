@@ -18,5 +18,5 @@
   <http://www.gnu.org/licenses/>.
 */
 
-#include "material_model_dependencies.cc"
 #include "cookbooks/cookbook_simpler_with_crust.cc"
+#include "material_model_dependencies.cc"

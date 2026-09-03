@@ -38,33 +38,28 @@ namespace aspect
     SteadyRMSVelocity<dim>::execute()
     {
       const Quadrature<dim> &quadrature_formula = this->introspection().quadratures.velocities;
-      const unsigned int n_q_points = quadrature_formula.size();
+      const unsigned int     n_q_points         = quadrature_formula.size();
 
-      FEValues<dim> fe_values (this->get_mapping(),
-                               this->get_fe(),
-                               quadrature_formula,
-                               update_values   |
-                               update_quadrature_points |
-                               update_JxW_values);
-      std::vector<Tensor<1,dim>> velocity_values(n_q_points);
+      FEValues<dim>               fe_values(this->get_mapping(),
+                              this->get_fe(),
+                              quadrature_formula,
+                              update_values | update_quadrature_points | update_JxW_values);
+      std::vector<Tensor<1, dim>> velocity_values(n_q_points);
 
       double local_velocity_square_integral = 0;
 
       for (const auto &cell : this->get_dof_handler().active_cell_iterators())
         if (cell->is_locally_owned())
           {
-            fe_values.reinit (cell);
-            fe_values[this->introspection().extractors.velocities].get_function_values (this->get_solution(),
-                                                                                        velocity_values);
+            fe_values.reinit(cell);
+            fe_values[this->introspection().extractors.velocities].get_function_values(this->get_solution(), velocity_values);
             for (unsigned int q = 0; q < n_q_points; ++q)
               {
-                local_velocity_square_integral += ((velocity_values[q] * velocity_values[q]) *
-                                                   fe_values.JxW(q));
+                local_velocity_square_integral += ((velocity_values[q] * velocity_values[q]) * fe_values.JxW(q));
               }
           }
 
-      const double global_velocity_square_integral
-        = Utilities::MPI::sum (local_velocity_square_integral, this->get_mpi_communicator());
+      const double global_velocity_square_integral = Utilities::MPI::sum(local_velocity_square_integral, this->get_mpi_communicator());
 
       // Calculate the global root mean square velocity
       const double vrms = std::sqrt(global_velocity_square_integral) / std::sqrt(this->get_volume());
@@ -74,11 +69,8 @@ namespace aspect
 
       // If the length of the simulation time covered in the list is shorter than the
       // specified parameter, we must continue the simulation
-      const double adjusted_time
-        = time_length * (this->convert_output_to_years() ? year_in_seconds : 1);
-      if ((time_rmsvel.size() == 0)
-          ||
-          (time_rmsvel.back().first - time_rmsvel.front().first < adjusted_time))
+      const double adjusted_time = time_length * (this->convert_output_to_years() ? year_in_seconds : 1);
+      if ((time_rmsvel.size() == 0) || (time_rmsvel.back().first - time_rmsvel.front().first < adjusted_time))
         return false;
 
       // Remove old times until we're at the correct time period
@@ -89,24 +81,24 @@ namespace aspect
 
       // Scan through the list and calculate the min, mean and max of the RMS velocities
       // We assume a linear change of RMS velocity between times
-      double      rms_min, rms_max, rms_prev, time_prev, rms_sum=0, rms_mean, deviation_max;
+      double rms_min, rms_max, rms_prev, time_prev, rms_sum = 0, rms_mean, deviation_max;
       rms_min = rms_max = rms_prev = time_rmsvel.front().second;
-      time_prev = time_rmsvel.front().first;
-      for (it=time_rmsvel.begin(); it!=time_rmsvel.end(); ++it)
+      time_prev                    = time_rmsvel.front().first;
+      for (it = time_rmsvel.begin(); it != time_rmsvel.end(); ++it)
         {
           rms_min = std::min(rms_min, (*it).second);
           rms_max = std::max(rms_max, (*it).second);
-          rms_sum += (((*it).second + rms_prev)/2.0)*((*it).first-time_prev);
+          rms_sum += (((*it).second + rms_prev) / 2.0) * ((*it).first - time_prev);
           time_prev = (*it).first;
-          rms_prev = (*it).second;
+          rms_prev  = (*it).second;
         }
-      rms_mean = rms_sum/(time_rmsvel.back().first-time_rmsvel.front().first);
+      rms_mean = rms_sum / (time_rmsvel.back().first - time_rmsvel.front().first);
 
       // If the min and max are within the acceptable deviation of the mean,
       // we are in steady state and return true, otherwise return false
       deviation_max = std::max(rms_mean - rms_min, rms_max - rms_mean);
 
-      if (deviation_max/rms_mean > relative_deviation)
+      if (deviation_max / rms_mean > relative_deviation)
         return false;
 
       return true;
@@ -115,61 +107,61 @@ namespace aspect
 
     template <int dim>
     void
-    SteadyRMSVelocity<dim>::declare_parameters (ParameterHandler &prm)
+    SteadyRMSVelocity<dim>::declare_parameters(ParameterHandler &prm)
     {
       prm.enter_subsection("Termination criteria");
       {
         prm.enter_subsection("Steady state velocity");
         {
-          prm.declare_entry ("Maximum relative deviation", "0.05",
-                             Patterns::Double (0.),
-                             "The maximum relative deviation of the RMS in recent "
-                             "simulation time for the system to be considered in "
-                             "steady state. If the actual deviation is smaller "
-                             "than this number, then the simulation will be terminated.");
-          prm.declare_entry ("Time in steady state", "1e7",
-                             Patterns::Double (0.),
-                             "The minimum length of simulation time that the system "
-                             "should be in steady state before termination."
-                             "Units: \\si{\\year} if the "
-                             "'Use years instead of seconds' parameter is set; "
-                             "\\si{\\second} otherwise.");
+          prm.declare_entry("Maximum relative deviation",
+                            "0.05",
+                            Patterns::Double(0.),
+                            "The maximum relative deviation of the RMS in recent "
+                            "simulation time for the system to be considered in "
+                            "steady state. If the actual deviation is smaller "
+                            "than this number, then the simulation will be terminated.");
+          prm.declare_entry("Time in steady state",
+                            "1e7",
+                            Patterns::Double(0.),
+                            "The minimum length of simulation time that the system "
+                            "should be in steady state before termination."
+                            "Units: \\si{\\year} if the "
+                            "'Use years instead of seconds' parameter is set; "
+                            "\\si{\\second} otherwise.");
         }
-        prm.leave_subsection ();
+        prm.leave_subsection();
       }
-      prm.leave_subsection ();
+      prm.leave_subsection();
     }
 
 
     template <int dim>
     void
-    SteadyRMSVelocity<dim>::parse_parameters (ParameterHandler &prm)
+    SteadyRMSVelocity<dim>::parse_parameters(ParameterHandler &prm)
     {
       prm.enter_subsection("Termination criteria");
       {
         prm.enter_subsection("Steady state velocity");
         {
-          relative_deviation = prm.get_double ("Maximum relative deviation");
-          time_length = prm.get_double ("Time in steady state");
+          relative_deviation = prm.get_double("Maximum relative deviation");
+          time_length        = prm.get_double("Time in steady state");
         }
-        prm.leave_subsection ();
+        prm.leave_subsection();
       }
-      prm.leave_subsection ();
-      AssertThrow (relative_deviation >= 0,
-                   ExcMessage("Relative deviation must be greater than or equal to 0."));
-      AssertThrow (time_length > 0,
-                   ExcMessage("Steady state minimum time period must be greater than 0."));
+      prm.leave_subsection();
+      AssertThrow(relative_deviation >= 0, ExcMessage("Relative deviation must be greater than or equal to 0."));
+      AssertThrow(time_length > 0, ExcMessage("Steady state minimum time period must be greater than 0."));
     }
 
 
 
     template <int dim>
     void
-    SteadyRMSVelocity<dim>::save (std::map<std::string, std::string> &status_strings) const
+    SteadyRMSVelocity<dim>::save(std::map<std::string, std::string> &status_strings) const
     {
       std::ostringstream os;
       {
-        aspect::oarchive oa (os);
+        aspect::oarchive oa(os);
         oa << time_rmsvel;
       }
       status_strings["SteadyRMSVelocity"] = os.str();
@@ -179,13 +171,13 @@ namespace aspect
 
     template <int dim>
     void
-    SteadyRMSVelocity<dim>::load (const std::map<std::string, std::string> &status_strings)
+    SteadyRMSVelocity<dim>::load(const std::map<std::string, std::string> &status_strings)
     {
       const auto saved_state = status_strings.find("SteadyRMSVelocity");
       if (saved_state != status_strings.end())
         {
-          std::istringstream is (saved_state->second);
-          aspect::iarchive ia (is);
+          std::istringstream is(saved_state->second);
+          aspect::iarchive   ia(is);
           ia >> time_rmsvel;
         }
     }

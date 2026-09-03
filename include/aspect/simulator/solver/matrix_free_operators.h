@@ -22,26 +22,25 @@
 #define _aspect_simulator_stokes_matrix_free_operators_h
 
 #include <aspect/global.h>
-#include <aspect/simulator/solver/interface.h>
-#include <aspect/simulator.h>
 
+#include <aspect/simulator.h>
+#include <aspect/simulator/solver/interface.h>
+
+#include <deal.II/lac/block_vector.h>
+#include <deal.II/lac/la_parallel_block_vector.h>
+#include <deal.II/lac/la_parallel_vector.h>
+#include <deal.II/lac/vector.h>
+#include <deal.II/matrix_free/fe_evaluation.h>
 #include <deal.II/matrix_free/matrix_free.h>
 #include <deal.II/matrix_free/operators.h>
-#include <deal.II/matrix_free/fe_evaluation.h>
-
-#include <deal.II/multigrid/mg_constrained_dofs.h>
-#include <deal.II/multigrid/multigrid.h>
-#include <deal.II/multigrid/mg_transfer_matrix_free.h>
-#include <deal.II/multigrid/mg_transfer_global_coarsening.templates.h>
-#include <deal.II/multigrid/mg_tools.h>
 #include <deal.II/multigrid/mg_coarse.h>
-#include <deal.II/multigrid/mg_smoother.h>
+#include <deal.II/multigrid/mg_constrained_dofs.h>
 #include <deal.II/multigrid/mg_matrix.h>
-
-#include <deal.II/lac/vector.h>
-#include <deal.II/lac/block_vector.h>
-#include <deal.II/lac/la_parallel_vector.h>
-#include <deal.II/lac/la_parallel_block_vector.h>
+#include <deal.II/multigrid/mg_smoother.h>
+#include <deal.II/multigrid/mg_tools.h>
+#include <deal.II/multigrid/mg_transfer_global_coarsening.templates.h>
+#include <deal.II/multigrid/mg_transfer_matrix_free.h>
+#include <deal.II/multigrid/multigrid.h>
 
 namespace aspect
 {
@@ -54,21 +53,22 @@ namespace aspect
      */
     namespace ChangeVectorTypes
     {
-      void import(aspect::LinearAlgebra::Vector &out,
-                  const dealii::LinearAlgebra::ReadWriteVector<double> &rwv,
-                  const VectorOperation::values                 operation);
+      void
+      import(aspect::LinearAlgebra::Vector                        &out,
+             const dealii::LinearAlgebra::ReadWriteVector<double> &rwv,
+             const VectorOperation::values                         operation);
 
-      void copy(aspect::LinearAlgebra::Vector &out,
-                const dealii::LinearAlgebra::distributed::Vector<double> &in);
+      void
+      copy(aspect::LinearAlgebra::Vector &out, const dealii::LinearAlgebra::distributed::Vector<double> &in);
 
-      void copy(dealii::LinearAlgebra::distributed::Vector<double> &out,
-                const aspect::LinearAlgebra::Vector &in);
+      void
+      copy(dealii::LinearAlgebra::distributed::Vector<double> &out, const aspect::LinearAlgebra::Vector &in);
 
-      void copy(aspect::LinearAlgebra::BlockVector &out,
-                const dealii::LinearAlgebra::distributed::BlockVector<double> &in);
+      void
+      copy(aspect::LinearAlgebra::BlockVector &out, const dealii::LinearAlgebra::distributed::BlockVector<double> &in);
 
-      void copy(dealii::LinearAlgebra::distributed::BlockVector<double> &out,
-                const aspect::LinearAlgebra::BlockVector &in);
+      void
+      copy(dealii::LinearAlgebra::distributed::BlockVector<double> &out, const aspect::LinearAlgebra::BlockVector &in);
     }
   }
 
@@ -91,120 +91,118 @@ namespace aspect
     template <int dim, typename number>
     struct OperatorCellData
     {
-      /**
-       * Information on the compressibility of the flow.
-       */
-      bool is_compressible;
+        /**
+         * Information on the compressibility of the flow.
+         */
+        bool is_compressible;
 
-      /**
-       * Pressure scaling constant.
-       */
-      double pressure_scaling;
+        /**
+         * Pressure scaling constant.
+         */
+        double pressure_scaling;
 
-      /**
-       * If true, Newton terms are part of the operator.
-       */
-      bool enable_newton_derivatives;
+        /**
+         * If true, Newton terms are part of the operator.
+         */
+        bool enable_newton_derivatives;
 
-      /**
-       * If true, plastic dilation terms are part of the operator.
-       */
-      bool enable_prescribed_dilation;
+        /**
+         * If true, plastic dilation terms are part of the operator.
+         */
+        bool enable_prescribed_dilation;
 
-      /**
-       * Symmetrize the Newton system when it's true (i.e., the
-       * stabilization is symmetric or SPD).
-       */
-      bool symmetrize_newton_system;
+        /**
+         * Symmetrize the Newton system when it's true (i.e., the
+         * stabilization is symmetric or SPD).
+         */
+        bool symmetrize_newton_system;
 
-      /**
-       * If true, apply the stabilization on free surface faces.
-       */
-      bool apply_stabilization_free_surface_faces;
+        /**
+         * If true, apply the stabilization on free surface faces.
+         */
+        bool apply_stabilization_free_surface_faces;
 
-      /**
-       * If true, average the Newton factors in each cell.
-       */
-      bool average_newton_factors;
+        /**
+         * If true, average the Newton factors in each cell.
+         */
+        bool average_newton_factors;
 
-      /**
-       * Table which stores viscosity values for each cell.
-       *
-       * If the second dimension is of size 1, the viscosity is
-       * assumed to be constant per cell.
-       */
-      Table<2, VectorizedArray<number>> viscosity;
+        /**
+         * Table which stores viscosity values for each cell.
+         *
+         * If the second dimension is of size 1, the viscosity is
+         * assumed to be constant per cell.
+         */
+        Table<2, VectorizedArray<number>> viscosity;
 
-      /**
-       * Table which stores the strain rate for each cell to be used
-       * for the Newton terms.
-       */
-      Table<2, SymmetricTensor<2, dim, VectorizedArray<number>>> strain_rate_table;
+        /**
+         * Table which stores the strain rate for each cell to be used
+         * for the Newton terms.
+         */
+        Table<2, SymmetricTensor<2, dim, VectorizedArray<number>>> strain_rate_table;
 
-      /**
-       * Table which stores the product of the following three
-       * variables: viscosity derivative with respect to pressure,
-       * the Newton derivative scaling factor, and the averaging weight.
-       */
-      Table<2, VectorizedArray<number>> newton_factor_wrt_pressure_table;
+        /**
+         * Table which stores the product of the following three
+         * variables: viscosity derivative with respect to pressure,
+         * the Newton derivative scaling factor, and the averaging weight.
+         */
+        Table<2, VectorizedArray<number>> newton_factor_wrt_pressure_table;
 
-      /**
-       * Table which stores the product of the following four
-       * variables: viscosity derivative with respect to strain rate,
-       * newton derivative scaling factor, alpha, and the averaging
-       * weight. Here alpha is the spd factor when the stabilization
-       * is PD or SPD, otherwise, it is 1.
-       */
-      Table<2, SymmetricTensor<2, dim, VectorizedArray<number>>>
-      newton_factor_wrt_strain_rate_table;
+        /**
+         * Table which stores the product of the following four
+         * variables: viscosity derivative with respect to strain rate,
+         * newton derivative scaling factor, alpha, and the averaging
+         * weight. Here alpha is the spd factor when the stabilization
+         * is PD or SPD, otherwise, it is 1.
+         */
+        Table<2, SymmetricTensor<2, dim, VectorizedArray<number>>> newton_factor_wrt_strain_rate_table;
 
-      /**
-       * Table which stores the dilation LHS terms. For the definition of this
-       * term, see the comments of MaterialModel::PrescribedPlasticDilation::
-       * dilation_lhs_term.
-       */
-      Table<2, VectorizedArray<number>> dilation_lhs_term_table;
+        /**
+         * Table which stores the dilation LHS terms. For the definition of this
+         * term, see the comments of MaterialModel::PrescribedPlasticDilation::
+         * dilation_lhs_term.
+         */
+        Table<2, VectorizedArray<number>> dilation_lhs_term_table;
 
-      /**
-       * Table which stores the product of the plastic dilation derivative
-       * with respect to pressure and the Newton derivative scaling factor.
-       * Note that the plastic dilation derivative does not include the term
-       * $\bar\alpha\alpha / \eta^{ve}$, which is always on the left-hand
-       * side no matter if the Newton method is applied.
-       */
-      Table<2, VectorizedArray<number>>
-      dilation_derivative_wrt_pressure_table;
+        /**
+         * Table which stores the product of the plastic dilation derivative
+         * with respect to pressure and the Newton derivative scaling factor.
+         * Note that the plastic dilation derivative does not include the term
+         * $\bar\alpha\alpha / \eta^{ve}$, which is always on the left-hand
+         * side no matter if the Newton method is applied.
+         */
+        Table<2, VectorizedArray<number>> dilation_derivative_wrt_pressure_table;
 
-      /**
-       * Table which stores the product of the plastic dilation derivative
-       * with respect to strain-rate and the Newton derivative scaling factor.
-       */
-      Table<2, SymmetricTensor<2, dim, VectorizedArray<number>>>
-      dilation_derivative_wrt_strain_rate_table;
+        /**
+         * Table which stores the product of the plastic dilation derivative
+         * with respect to strain-rate and the Newton derivative scaling factor.
+         */
+        Table<2, SymmetricTensor<2, dim, VectorizedArray<number>>> dilation_derivative_wrt_strain_rate_table;
 
-      /**
-       * Table which stores the product of the pressure perturbation
-       * and the normalized gravity. The size is n_face_boundary * n_face_q_points,
-       * but only those on the free surface are computed and stored.
-       */
-      Table<2, Tensor<1, dim, VectorizedArray<number>>> free_surface_stabilization_term_table;
+        /**
+         * Table which stores the product of the pressure perturbation
+         * and the normalized gravity. The size is n_face_boundary * n_face_q_points,
+         * but only those on the free surface are computed and stored.
+         */
+        Table<2, Tensor<1, dim, VectorizedArray<number>>> free_surface_stabilization_term_table;
 
-      /**
-       * Boundary indicators of those boundaries with a free surface.
-       */
-      std::set<types::boundary_id> free_surface_boundary_indicators;
+        /**
+         * Boundary indicators of those boundaries with a free surface.
+         */
+        std::set<types::boundary_id> free_surface_boundary_indicators;
 
-      /**
-       * Determine an estimate for the memory consumption (in bytes) of this
-       * object.
-       */
-      std::size_t
-      memory_consumption() const;
+        /**
+         * Determine an estimate for the memory consumption (in bytes) of this
+         * object.
+         */
+        std::size_t
+        memory_consumption() const;
 
-      /**
-       * Reset the object and free all memory
-       */
-      void clear();
+        /**
+         * Reset the object and free all memory
+         */
+        void
+        clear();
     };
 
     /**
@@ -215,155 +213,163 @@ namespace aspect
      * only for DEBUG consistency checks of MatrixFree cell iteration order.
      */
     template <int dim, typename number>
-    void fill_active_cell_data(const DoFHandler<dim> &dof_handler,
-                               const DoFHandler<dim> &dof_handler_projection,
-                               const Introspection<dim> &introspection,
-                               const Quadrature<dim> &quadrature_formula,
-                               const MaterialModel::Interface<dim> &material_model,
-                               const MaterialModel::MaterialAveraging::AveragingOperation &material_averaging,
-                               const Mapping<dim> &mapping,
-                               const MatrixFree<dim, double> &matrix_free,
-                               const MatrixFree<dim, double> &matrix_free_schur,
-                               const MatrixFree<dim, double> &matrix_free_A,
-                               const LinearAlgebra::BlockVector &current_linearization_point,
-                               const MPI_Comm &mpi_comm,
-                               dealii::LinearAlgebra::distributed::Vector<double> &active_viscosity_vector,
-                               OperatorCellData<dim, number> &active_cell_data,
-                               double &minimum_viscosity,
-                               double &maximum_viscosity);
+    void
+    fill_active_cell_data(const DoFHandler<dim>                                      &dof_handler,
+                          const DoFHandler<dim>                                      &dof_handler_projection,
+                          const Introspection<dim>                                   &introspection,
+                          const Quadrature<dim>                                      &quadrature_formula,
+                          const MaterialModel::Interface<dim>                        &material_model,
+                          const MaterialModel::MaterialAveraging::AveragingOperation &material_averaging,
+                          const Mapping<dim>                                         &mapping,
+                          const MatrixFree<dim, double>                              &matrix_free,
+                          const MatrixFree<dim, double>                              &matrix_free_schur,
+                          const MatrixFree<dim, double>                              &matrix_free_A,
+                          const LinearAlgebra::BlockVector                           &current_linearization_point,
+                          const MPI_Comm                                             &mpi_comm,
+                          dealii::LinearAlgebra::distributed::Vector<double>         &active_viscosity_vector,
+                          OperatorCellData<dim, number>                              &active_cell_data,
+                          double                                                     &minimum_viscosity,
+                          double                                                     &maximum_viscosity);
 
     /**
      * Operator for the entire Stokes block.
      */
     template <int dim, int degree_v, typename number>
-    class StokesOperator
-      : public MatrixFreeOperators::Base<dim, dealii::LinearAlgebra::distributed::BlockVector<number>>
+    class StokesOperator : public MatrixFreeOperators::Base<dim, dealii::LinearAlgebra::distributed::BlockVector<number>>
     {
       public:
-
         /**
          * Constructor.
          */
-        StokesOperator ();
+        StokesOperator();
 
         /**
          * Reset object.
          */
-        void clear () override;
+        void
+        clear() override;
 
         /**
          * Pass in a reference to the problem data.
          */
-        void set_cell_data (const OperatorCellData<dim,number> &data);
+        void
+        set_cell_data(const OperatorCellData<dim, number> &data);
 
         /**
          * Computes the diagonal of the matrix. Since matrix-free operators have not access
          * to matrix elements, we must apply the matrix-free operator to the unit vectors to
          * recover the diagonal.
          */
-        void compute_diagonal () override;
+        void
+        compute_diagonal() override;
 
       private:
-
         /**
          * Performs the application of the matrix-free operator. This function is called by
          * vmult() functions MatrixFreeOperators::Base.
          */
-        void apply_add (dealii::LinearAlgebra::distributed::BlockVector<number> &dst,
-                        const dealii::LinearAlgebra::distributed::BlockVector<number> &src) const override;
+        void
+        apply_add(dealii::LinearAlgebra::distributed::BlockVector<number>       &dst,
+                  const dealii::LinearAlgebra::distributed::BlockVector<number> &src) const override;
 
         /**
          * Defines the application of the cell matrix.
          */
-        void local_apply (const dealii::MatrixFree<dim, number> &data,
-                          dealii::LinearAlgebra::distributed::BlockVector<number> &dst,
-                          const dealii::LinearAlgebra::distributed::BlockVector<number> &src,
-                          const std::pair<unsigned int, unsigned int> &cell_range) const;
+        void
+        local_apply(const dealii::MatrixFree<dim, number>                         &data,
+                    dealii::LinearAlgebra::distributed::BlockVector<number>       &dst,
+                    const dealii::LinearAlgebra::distributed::BlockVector<number> &src,
+                    const std::pair<unsigned int, unsigned int>                   &cell_range) const;
 
         /**
          * This function doesn't do anything, it's created to use the matrixfree loop.
          */
-        void local_apply_face (const dealii::MatrixFree<dim, number> &data,
-                               dealii::LinearAlgebra::distributed::BlockVector<number> &dst,
-                               const dealii::LinearAlgebra::distributed::BlockVector<number> &src,
-                               const std::pair<unsigned int, unsigned int> &face_range) const;
+        void
+        local_apply_face(const dealii::MatrixFree<dim, number>                         &data,
+                         dealii::LinearAlgebra::distributed::BlockVector<number>       &dst,
+                         const dealii::LinearAlgebra::distributed::BlockVector<number> &src,
+                         const std::pair<unsigned int, unsigned int>                   &face_range) const;
 
         /**
          * Apply the stabilization on free surface faces.
          */
-        void local_apply_boundary_face (const dealii::MatrixFree<dim, number> &data,
-                                        dealii::LinearAlgebra::distributed::BlockVector<number> &dst,
-                                        const dealii::LinearAlgebra::distributed::BlockVector<number> &src,
-                                        const std::pair<unsigned int, unsigned int> &face_range) const;
+        void
+        local_apply_boundary_face(const dealii::MatrixFree<dim, number>                         &data,
+                                  dealii::LinearAlgebra::distributed::BlockVector<number>       &dst,
+                                  const dealii::LinearAlgebra::distributed::BlockVector<number> &src,
+                                  const std::pair<unsigned int, unsigned int>                   &face_range) const;
 
         /**
          * A pointer to the current cell data that contains viscosity and other required parameters per cell.
          */
-        const OperatorCellData<dim,number> *cell_data;
+        const OperatorCellData<dim, number> *cell_data;
     };
 
 
 
     /**
-    * Operator for the B^T block.
-    */
+     * Operator for the B^T block.
+     */
     template <int dim, int degree_v, typename number>
-    class BTBlockOperator
-      : public MatrixFreeOperators::Base<dim, dealii::LinearAlgebra::distributed::BlockVector<number>>
+    class BTBlockOperator : public MatrixFreeOperators::Base<dim, dealii::LinearAlgebra::distributed::BlockVector<number>>
     {
       public:
-
         /**
          * Constructor.
          */
-        BTBlockOperator ();
+        BTBlockOperator();
 
         /**
          * Reset object.
          */
-        void clear () override;
+        void
+        clear() override;
 
         /**
          * Pass in a reference to the problem data.
          */
-        void set_cell_data (const OperatorCellData<dim,number> &data);
+        void
+        set_cell_data(const OperatorCellData<dim, number> &data);
 
         /**
          * Computes the diagonal of the matrix. Since matrix-free operators have not access
          * to matrix elements, we must apply the matrix-free operator to the unit vectors to
          * recover the diagonal.
          */
-        void compute_diagonal () override;
+        void
+        compute_diagonal() override;
 
       private:
-
         /**
          * Performs the application of the matrix-free operator. This function is called by
          * vmult() functions MatrixFreeOperators::Base.
          */
-        void apply_add (dealii::LinearAlgebra::distributed::BlockVector<number> &dst,
-                        const dealii::LinearAlgebra::distributed::BlockVector<number> &src) const override;
+        void
+        apply_add(dealii::LinearAlgebra::distributed::BlockVector<number>       &dst,
+                  const dealii::LinearAlgebra::distributed::BlockVector<number> &src) const override;
 
         /**
          * Defines the application of the cell matrix.
          */
-        void local_apply (const dealii::MatrixFree<dim, number> &data,
-                          dealii::LinearAlgebra::distributed::BlockVector<number> &dst,
-                          const dealii::LinearAlgebra::distributed::BlockVector<number> &src,
-                          const std::pair<unsigned int, unsigned int> &cell_range) const;
+        void
+        local_apply(const dealii::MatrixFree<dim, number>                         &data,
+                    dealii::LinearAlgebra::distributed::BlockVector<number>       &dst,
+                    const dealii::LinearAlgebra::distributed::BlockVector<number> &src,
+                    const std::pair<unsigned int, unsigned int>                   &cell_range) const;
 
         /**
          * This function doesn't do anything, it's created to use the matrixfree loop.
          */
-        void local_apply_face (const dealii::MatrixFree<dim, number> &data,
-                               dealii::LinearAlgebra::distributed::BlockVector<number> &dst,
-                               const dealii::LinearAlgebra::distributed::BlockVector<number> &src,
-                               const std::pair<unsigned int, unsigned int> &face_range) const;
+        void
+        local_apply_face(const dealii::MatrixFree<dim, number>                         &data,
+                         dealii::LinearAlgebra::distributed::BlockVector<number>       &dst,
+                         const dealii::LinearAlgebra::distributed::BlockVector<number> &src,
+                         const std::pair<unsigned int, unsigned int>                   &face_range) const;
 
         /**
          * A pointer to the current cell data that contains viscosity and other required parameters per cell.
          */
-        const OperatorCellData<dim,number> *cell_data;
+        const OperatorCellData<dim, number> *cell_data;
     };
 
 
@@ -372,75 +378,75 @@ namespace aspect
      * Operator for the pressure mass matrix used in the block preconditioner
      */
     template <int dim, int degree_p, typename number>
-    class MassMatrixOperator
-      : public MatrixFreeOperators::Base<dim, dealii::LinearAlgebra::distributed::Vector<number>>
+    class MassMatrixOperator : public MatrixFreeOperators::Base<dim, dealii::LinearAlgebra::distributed::Vector<number>>
     {
       public:
-
         /**
          * Constructor
          */
-        MassMatrixOperator ();
+        MassMatrixOperator();
 
         /**
          * Reset the object.
          */
-        void clear () override;
+        void
+        clear() override;
 
         /**
          * Initialize the MatrixFree object given in @p mf_storage and use that to
          * initialize this operator.
          */
-        void reinit(const Mapping<dim>              &mapping,
-                    const DoFHandler<dim>           &dof_handler_v,
-                    const DoFHandler<dim>           &dof_handler_p,
-                    const AffineConstraints<number> &constraints_v,
-                    const AffineConstraints<number> &constraints_p,
-                    std::shared_ptr<MatrixFree<dim,double>> mf_storage,
-                    const unsigned int level = numbers::invalid_unsigned_int);
+        void
+        reinit(const Mapping<dim>                      &mapping,
+               const DoFHandler<dim>                   &dof_handler_v,
+               const DoFHandler<dim>                   &dof_handler_p,
+               const AffineConstraints<number>         &constraints_v,
+               const AffineConstraints<number>         &constraints_p,
+               std::shared_ptr<MatrixFree<dim, double>> mf_storage,
+               const unsigned int                       level = numbers::invalid_unsigned_int);
 
         /**
          * Pass in a reference to the problem data.
          */
-        void set_cell_data (const OperatorCellData<dim,number> &data);
+        void
+        set_cell_data(const OperatorCellData<dim, number> &data);
 
         /**
          * Computes the diagonal of the matrix. Since matrix-free operators have not access
          * to matrix elements, we must apply the matrix-free operator to the unit vectors to
          * recover the diagonal.
          */
-        void compute_diagonal () override;
+        void
+        compute_diagonal() override;
 
       private:
-
         /**
          * Performs the application of the matrix-free operator. This function is called by
          * vmult() functions MatrixFreeOperators::Base.
          */
-        void apply_add (dealii::LinearAlgebra::distributed::Vector<number> &dst,
-                        const dealii::LinearAlgebra::distributed::Vector<number> &src) const override;
+        void
+        apply_add(dealii::LinearAlgebra::distributed::Vector<number>       &dst,
+                  const dealii::LinearAlgebra::distributed::Vector<number> &src) const override;
 
         /**
          * Defines the application of the cell matrix.
          */
-        void local_apply (const dealii::MatrixFree<dim, number> &data,
-                          dealii::LinearAlgebra::distributed::Vector<number> &dst,
-                          const dealii::LinearAlgebra::distributed::Vector<number> &src,
-                          const std::pair<unsigned int, unsigned int> &cell_range) const;
+        void
+        local_apply(const dealii::MatrixFree<dim, number>                    &data,
+                    dealii::LinearAlgebra::distributed::Vector<number>       &dst,
+                    const dealii::LinearAlgebra::distributed::Vector<number> &src,
+                    const std::pair<unsigned int, unsigned int>              &cell_range) const;
 
         /**
          * This function contains the inner-most operation done on a single cell
          */
-        void inner_cell_operation(FEEvaluation<dim,
-                                  degree_p,
-                                  degree_p+2,
-                                  1,
-                                  number> &pressure) const;
+        void
+        inner_cell_operation(FEEvaluation<dim, degree_p, degree_p + 2, 1, number> &pressure) const;
 
         /**
          * A pointer to the current cell data that contains viscosity and other required parameters per cell.
          */
-        const OperatorCellData<dim,number> *cell_data;
+        const OperatorCellData<dim, number> *cell_data;
     };
 
     /**
@@ -448,92 +454,91 @@ namespace aspect
      * active and level mesh operators.
      */
     template <int dim, int degree_v, typename number>
-    class ABlockOperator
-      : public MatrixFreeOperators::Base<dim, dealii::LinearAlgebra::distributed::Vector<number>>
+    class ABlockOperator : public MatrixFreeOperators::Base<dim, dealii::LinearAlgebra::distributed::Vector<number>>
     {
       public:
-
         /**
          * Constructor
          */
-        ABlockOperator ();
+        ABlockOperator();
 
         /**
          * Reset the operator.
          */
-        void clear () override;
+        void
+        clear() override;
 
         /**
          * Initialize the MatrixFree object given in @p mf_storage and use that to
          * initialize this operator.
          */
-        void reinit(const Mapping<dim>              &mapping,
-                    const DoFHandler<dim>           &dof_handler_v,
-                    const DoFHandler<dim>           &dof_handler_p,
-                    const AffineConstraints<number> &constraints_v,
-                    const AffineConstraints<number> &constraints_p,
-                    std::shared_ptr<MatrixFree<dim,double>> mf_storage,
-                    const unsigned int level = numbers::invalid_unsigned_int);
+        void
+        reinit(const Mapping<dim>                      &mapping,
+               const DoFHandler<dim>                   &dof_handler_v,
+               const DoFHandler<dim>                   &dof_handler_p,
+               const AffineConstraints<number>         &constraints_v,
+               const AffineConstraints<number>         &constraints_p,
+               std::shared_ptr<MatrixFree<dim, double>> mf_storage,
+               const unsigned int                       level = numbers::invalid_unsigned_int);
         /**
          * Pass in a reference to the problem data.
          */
-        void set_cell_data (const OperatorCellData<dim,number> &data);
+        void
+        set_cell_data(const OperatorCellData<dim, number> &data);
 
         /**
          * Computes the diagonal of the matrix. Since matrix-free operators have not access
          * to matrix elements, we must apply the matrix-free operator to the unit vectors to
          * recover the diagonal.
          */
-        void compute_diagonal () override;
+        void
+        compute_diagonal() override;
 
         /**
          * Manually set the diagonal inside the matrix-free object. This function is needed
          * when using tangential constraints as the function compute_diagonal() cannot handle
          * non-Dirichlet boundary conditions.
          */
-        void set_diagonal (const dealii::LinearAlgebra::distributed::Vector<number> &diag);
+        void
+        set_diagonal(const dealii::LinearAlgebra::distributed::Vector<number> &diag);
 
       private:
         /**
          * Defines the inner-most operator on a single cell batch with
          * the loop over quadrature points.
          */
-        void inner_cell_operation(FEEvaluation<dim,
-                                  degree_v,
-                                  degree_v+1,
-                                  dim,
-                                  number> &velocity) const;
+        void
+        inner_cell_operation(FEEvaluation<dim, degree_v, degree_v + 1, dim, number> &velocity) const;
 
         /**
          * Defines the operation on a single cell batch including
          * load/store and calls inner_cell_operation().
          */
-        void cell_operation(FEEvaluation<dim,
-                            degree_v,
-                            degree_v+1,
-                            dim,
-                            number> &velocity) const;
+        void
+        cell_operation(FEEvaluation<dim, degree_v, degree_v + 1, dim, number> &velocity) const;
 
         /**
          * Performs the application of the matrix-free operator. This
          * function is called by vmult() functions
          * MatrixFreeOperators::Base.
          */
-        void apply_add (dealii::LinearAlgebra::distributed::Vector<number> &dst,
-                        const dealii::LinearAlgebra::distributed::Vector<number> &src) const override;
+        void
+        apply_add(dealii::LinearAlgebra::distributed::Vector<number>       &dst,
+                  const dealii::LinearAlgebra::distributed::Vector<number> &src) const override;
 
         /**
          * Defines the application of the cell matrix.
          */
-        void local_apply (const dealii::MatrixFree<dim, number> &data,
-                          dealii::LinearAlgebra::distributed::Vector<number> &dst,
-                          const dealii::LinearAlgebra::distributed::Vector<number> &src,
-                          const std::pair<unsigned int, unsigned int> &cell_range) const;
+        void
+        local_apply(const dealii::MatrixFree<dim, number>                    &data,
+                    dealii::LinearAlgebra::distributed::Vector<number>       &dst,
+                    const dealii::LinearAlgebra::distributed::Vector<number> &src,
+                    const std::pair<unsigned int, unsigned int>              &cell_range) const;
 
         /**
          * A pointer to the current cell data that contains viscosity and other required parameters per cell.
          */
-        const OperatorCellData<dim,number> *cell_data;
+        const OperatorCellData<dim, number> *cell_data;
     };
   }
 

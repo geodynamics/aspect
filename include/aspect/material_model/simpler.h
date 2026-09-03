@@ -21,9 +21,9 @@
 #ifndef _aspect_material_model_simpler_h
 #define _aspect_material_model_simpler_h
 
+#include <aspect/material_model/equation_of_state/linearized_incompressible.h>
 #include <aspect/material_model/interface.h>
 #include <aspect/material_model/rheology/constant_viscosity.h>
-#include <aspect/material_model/equation_of_state/linearized_incompressible.h>
 #include <aspect/material_model/thermal_conductivity/constant.h>
 
 namespace aspect
@@ -44,11 +44,11 @@ namespace aspect
     class Simpler : public Interface<dim>
     {
       public:
+        bool
+        is_compressible() const override;
 
-        bool is_compressible () const override;
-
-        void evaluate(const MaterialModel::MaterialModelInputs<dim> &in,
-                      MaterialModel::MaterialModelOutputs<dim> &out) const override;
+        void
+        evaluate(const MaterialModel::MaterialModelInputs<dim> &in, MaterialModel::MaterialModelOutputs<dim> &out) const override;
 
 
         /**
@@ -58,23 +58,22 @@ namespace aspect
         /**
          * Declare the parameters this class takes through input files.
          */
-        static
-        void
-        declare_parameters (ParameterHandler &prm);
+        static void
+        declare_parameters(ParameterHandler &prm);
 
         /**
          * Read the parameters this class declares from the parameter file.
          */
         void
-        parse_parameters (ParameterHandler &prm) override;
+        parse_parameters(ParameterHandler &prm) override;
 
         /**
          * @}
          */
 
       private:
-        ThermalConductivity::Constant<dim> thermal_conductivity;
-        Rheology::ConstantViscosity constant_rheology;
+        ThermalConductivity::Constant<dim>             thermal_conductivity;
+        Rheology::ConstantViscosity                    constant_rheology;
         EquationOfState::LinearizedIncompressible<dim> equation_of_state;
     };
 

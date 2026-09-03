@@ -20,15 +20,17 @@
 
 
 #include <aspect/global.h>
-#include <aspect/geometry_model/initial_topography_model/ascii_data.h>
+
 #include <aspect/geometry_model/box.h>
-#include <aspect/geometry_model/two_merged_boxes.h>
+#include <aspect/geometry_model/chunk.h>
+#include <aspect/geometry_model/initial_topography_model/ascii_data.h>
 #include <aspect/geometry_model/sphere.h>
 #include <aspect/geometry_model/spherical_shell.h>
-#include <aspect/geometry_model/chunk.h>
+#include <aspect/geometry_model/two_merged_boxes.h>
 #include <aspect/geometry_model/two_merged_chunks.h>
 
 #include <deal.II/base/parameter_handler.h>
+
 #include <array>
 
 
@@ -38,26 +40,24 @@ namespace aspect
   namespace InitialTopographyModel
   {
     template <int dim>
-    AsciiData<dim>::AsciiData ()
-      :
-      surface_boundary_id(1)
+    AsciiData<dim>::AsciiData()
+      : surface_boundary_id(1)
     {}
 
 
     template <int dim>
     void
-    AsciiData<dim>::initialize ()
+    AsciiData<dim>::initialize()
     {
       surface_boundary_id = this->get_geometry_model().translate_symbolic_boundary_name_to_id("top");
 
-      Utilities::AsciiDataBoundary<dim>::initialize({surface_boundary_id},
-                                                    1);
+      Utilities::AsciiDataBoundary<dim>::initialize({surface_boundary_id}, 1);
     }
 
 
     template <int dim>
     double
-    AsciiData<dim>::value (const Point<dim-1> &surface_point) const
+    AsciiData<dim>::value(const Point<dim - 1> &surface_point) const
     {
       // In a first step, create a global 'dim'-dimensional point that we can pass to the
       // function expression as input -- because the function is a dim-dimensional
@@ -68,19 +68,19 @@ namespace aspect
       // point with a dummy vertical/radial coordinate that, one would hope,
       // the AsciiDataBoundary class will then simply ignore.
       Point<dim> global_point;
-      if (Plugins::plugin_type_matches<const GeometryModel::Box<dim>> (this->get_geometry_model()) ||
-          Plugins::plugin_type_matches<const GeometryModel::TwoMergedBoxes<dim>> (this->get_geometry_model()))
+      if (Plugins::plugin_type_matches<const GeometryModel::Box<dim>>(this->get_geometry_model()) ||
+          Plugins::plugin_type_matches<const GeometryModel::TwoMergedBoxes<dim>>(this->get_geometry_model()))
         {
-          for (unsigned int d=0; d<dim-1; ++d)
+          for (unsigned int d = 0; d < dim - 1; ++d)
             global_point[d] = surface_point[d];
 
           // Now for the vertical component:
-          global_point[dim-1] = 0;
+          global_point[dim - 1] = 0;
         }
-      else if (Plugins::plugin_type_matches<const GeometryModel::Sphere<dim>> (this->get_geometry_model()) ||
-               Plugins::plugin_type_matches<const GeometryModel::SphericalShell<dim>> (this->get_geometry_model()) ||
-               Plugins::plugin_type_matches<const GeometryModel::Chunk<dim>> (this->get_geometry_model()) ||
-               Plugins::plugin_type_matches<const GeometryModel::TwoMergedChunks<dim>> (this->get_geometry_model()))
+      else if (Plugins::plugin_type_matches<const GeometryModel::Sphere<dim>>(this->get_geometry_model()) ||
+               Plugins::plugin_type_matches<const GeometryModel::SphericalShell<dim>>(this->get_geometry_model()) ||
+               Plugins::plugin_type_matches<const GeometryModel::Chunk<dim>>(this->get_geometry_model()) ||
+               Plugins::plugin_type_matches<const GeometryModel::TwoMergedChunks<dim>>(this->get_geometry_model()))
         {
           // AsciiDataBoundary always expects to get the input
           // parameters for its functions in Cartesian
@@ -94,17 +94,15 @@ namespace aspect
           // be to convert what we have into Cartesian coordinates...
           std::array<double, dim> point;
           point[0] = 6371000.0;
-          for (unsigned int d=0; d<dim-1; ++d)
-            point[d+1] = surface_point[d];
+          for (unsigned int d = 0; d < dim - 1; ++d)
+            point[d + 1] = surface_point[d];
 
           global_point = Utilities::Coordinates::spherical_to_cartesian_coordinates<dim>(point);
         }
       else
         AssertThrow(false, ExcNotImplemented());
 
-      const double topo = this->Utilities::AsciiDataBoundary<dim>::get_data_component(surface_boundary_id,
-                                                                                      global_point,
-                                                                                      0);
+      const double topo = this->Utilities::AsciiDataBoundary<dim>::get_data_component(surface_boundary_id, global_point, 0);
 
       return topo;
     }
@@ -112,34 +110,33 @@ namespace aspect
 
 
     template <int dim>
-    Tensor<1,dim-1>
+    Tensor<1, dim - 1>
     AsciiData<dim>::vector_gradient(const Point<dim> &point) const
     {
-      return Utilities::AsciiDataBoundary<dim>::vector_gradient(surface_boundary_id, point,0);
+      return Utilities::AsciiDataBoundary<dim>::vector_gradient(surface_boundary_id, point, 0);
     }
 
 
 
     template <int dim>
     double
-    AsciiData<dim>::max_topography () const
+    AsciiData<dim>::max_topography() const
     {
-      return Utilities::AsciiDataBoundary<dim>::get_maximum_component_value(surface_boundary_id,0);
+      return Utilities::AsciiDataBoundary<dim>::get_maximum_component_value(surface_boundary_id, 0);
     }
 
 
 
     template <int dim>
     void
-    AsciiData<dim>::declare_parameters (ParameterHandler &prm)
+    AsciiData<dim>::declare_parameters(ParameterHandler &prm)
     {
       prm.enter_subsection("Geometry model");
       {
         prm.enter_subsection("Initial topography model");
         {
-          Utilities::AsciiDataBase<dim>::declare_parameters(prm,
-                                                            "$ASPECT_SOURCE_DIR/data/geometry-model/initial-topography-model/ascii-data/test/",
-                                                            "box_2d_%s.0.txt");
+          Utilities::AsciiDataBase<dim>::declare_parameters(
+            prm, "$ASPECT_SOURCE_DIR/data/geometry-model/initial-topography-model/ascii-data/test/", "box_2d_%s.0.txt");
         }
         prm.leave_subsection();
       }
@@ -149,7 +146,7 @@ namespace aspect
 
     template <int dim>
     void
-    AsciiData<dim>::parse_parameters (ParameterHandler &prm)
+    AsciiData<dim>::parse_parameters(ParameterHandler &prm)
     {
       prm.enter_subsection("Geometry model");
       {

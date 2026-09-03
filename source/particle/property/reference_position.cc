@@ -28,8 +28,7 @@ namespace aspect
     {
       template <int dim>
       void
-      ReferencePosition<dim>::initialize_one_particle_property(const Point<dim> &position,
-                                                               std::vector<double> &data) const
+      ReferencePosition<dim>::initialize_one_particle_property(const Point<dim> &position, std::vector<double> &data) const
       {
         for (unsigned int i = 0; i < dim; ++i)
           data.push_back(position[i]);
@@ -37,12 +36,12 @@ namespace aspect
 
       template <int dim>
       void
-      ReferencePosition<dim>::update_particle_properties(const ParticleUpdateInputs<dim> &/*inputs*/,
+      ReferencePosition<dim>::update_particle_properties(const ParticleUpdateInputs<dim> & /*inputs*/,
                                                          typename ParticleHandler<dim>::particle_iterator_range &particles) const
       {
-        for (auto &particle: particles)
+        for (auto &particle : particles)
           for (unsigned int i = 0; i < dim; ++i)
-            particle.get_properties()[this->data_position+i] = particle.get_reference_location()[i];
+            particle.get_properties()[this->data_position + i] = particle.get_reference_location()[i];
       }
 
       template <int dim>
@@ -56,7 +55,7 @@ namespace aspect
       std::vector<std::pair<std::string, unsigned int>>
       ReferencePosition<dim>::get_property_information() const
       {
-        const std::vector<std::pair<std::string,unsigned int>> property_information (1,std::make_pair("reference position",dim));
+        const std::vector<std::pair<std::string, unsigned int>> property_information(1, std::make_pair("reference position", dim));
         return property_information;
       }
     }

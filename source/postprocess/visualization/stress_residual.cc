@@ -19,8 +19,8 @@
 */
 
 
-#include <aspect/postprocess/visualization/stress_residual.h>
 #include <aspect/material_model/visco_plastic.h>
+#include <aspect/postprocess/visualization/stress_residual.h>
 
 namespace aspect
 {
@@ -29,20 +29,16 @@ namespace aspect
     namespace VisualizationPostprocessors
     {
       template <int dim>
-      StressResidual<dim>::
-      StressResidual ()
-        :
-        DataPostprocessorScalar<dim> ("stress_residual",
-                                      update_values | update_gradients | update_quadrature_points)
+      StressResidual<dim>::StressResidual()
+        : DataPostprocessorScalar<dim>("stress_residual", update_values | update_gradients | update_quadrature_points)
       {}
 
 
 
       template <int dim>
       void
-      StressResidual<dim>::
-      evaluate_vector_field(const DataPostprocessorInputs::Vector<dim> &input_data,
-                            std::vector<Vector<double>> &computed_quantities) const
+      StressResidual<dim>::evaluate_vector_field(const DataPostprocessorInputs::Vector<dim> &input_data,
+                                                 std::vector<Vector<double>>                &computed_quantities) const
       {
         AssertThrow(Plugins::plugin_type_matches<const MaterialModel::ViscoPlastic<dim>>(this->get_material_model()),
                     ExcMessage("This postprocessor only works with the viscoplastic material model. "));
@@ -53,15 +49,13 @@ namespace aspect
         Assert(input_data.solution_values[0].size() == this->introspection().n_components, ExcInternalError());
         Assert(input_data.solution_gradients[0].size() == this->introspection().n_components, ExcInternalError());
 
-        MaterialModel::MaterialModelInputs<dim> in(input_data,
-                                                   this->introspection());
-        MaterialModel::MaterialModelOutputs<dim> out(n_quadrature_points,
-                                                     this->n_compositional_fields());
+        MaterialModel::MaterialModelInputs<dim>  in(input_data, this->introspection());
+        MaterialModel::MaterialModelOutputs<dim> out(n_quadrature_points, this->n_compositional_fields());
 
         this->get_material_model().create_additional_named_outputs(out);
 
         in.requested_properties = MaterialModel::MaterialProperties::viscosity | MaterialModel::MaterialProperties::additional_outputs;
-        in.current_cell = input_data.template get_cell<dim>();
+        in.current_cell         = input_data.template get_cell<dim>();
 
         // Get the viscosity
         this->get_material_model().evaluate(in, out);
@@ -69,9 +63,9 @@ namespace aspect
         for (unsigned int q = 0; q < n_quadrature_points; ++q)
           {
             const SymmetricTensor<2, dim> strain_rate = in.strain_rate[q];
-            const SymmetricTensor<2, dim> deviatoric_strain_rate = (this->get_material_model().is_compressible()
-                                                                    ? strain_rate - 1. / 3 * trace(strain_rate) * unit_symmetric_tensor<dim>()
-                                                                    : strain_rate);
+            const SymmetricTensor<2, dim> deviatoric_strain_rate =
+              (this->get_material_model().is_compressible() ? strain_rate - 1. / 3 * trace(strain_rate) * unit_symmetric_tensor<dim>() :
+                                                              strain_rate);
 
             const double eta = out.viscosities[q];
 
@@ -81,20 +75,24 @@ namespace aspect
             if (this->get_parameters().enable_elasticity == true)
               {
                 // Get the total deviatoric stress from the material model.
-                const std::shared_ptr<const MaterialModel::ElasticAdditionalOutputs<dim>> elastic_additional_out
-                  = out.template get_additional_output_object<MaterialModel::ElasticAdditionalOutputs<dim>>();
+                const std::shared_ptr<const MaterialModel::ElasticAdditionalOutputs<dim>> elastic_additional_out =
+                  out.template get_additional_output_object<MaterialModel::ElasticAdditionalOutputs<dim>>();
 
-                Assert(elastic_additional_out != nullptr, ExcMessage("Elastic Additional Outputs are needed for the 'principal stress' postprocessor, but they have not been created."));
+                Assert(
+                  elastic_additional_out != nullptr,
+                  ExcMessage(
+                    "Elastic Additional Outputs are needed for the 'principal stress' postprocessor, but they have not been created."));
 
                 deviatoric_stress = -(elastic_additional_out->deviatoric_stress[q]);
               }
 
             // Compute the second moment invariant of the deviatoric stress
-            const double stress_invariant = std::sqrt(std::fabs(Utilities::Tensors::consistent_second_invariant_of_deviatoric_tensor(deviatoric_stress)));
+            const double stress_invariant =
+              std::sqrt(std::fabs(Utilities::Tensors::consistent_second_invariant_of_deviatoric_tensor(deviatoric_stress)));
 
             // Get the current yield_stress
-            const std::shared_ptr<const MaterialModel::PlasticAdditionalOutputs<dim>> plastic_output
-              = out.template get_additional_output_object<MaterialModel::PlasticAdditionalOutputs<dim>>();
+            const std::shared_ptr<const MaterialModel::PlasticAdditionalOutputs<dim>> plastic_output =
+              out.template get_additional_output_object<MaterialModel::PlasticAdditionalOutputs<dim>>();
             const double yield_stress = plastic_output->yield_stresses[q];
 
             // Compute the difference between the second stress invariant and the yield stress

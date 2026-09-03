@@ -18,15 +18,17 @@
   <http://www.gnu.org/licenses/>.
 */
 
-#include <aspect/material_model/simple.h>
+#include <aspect/global.h>
+
 #include <aspect/boundary_velocity/interface.h>
+#include <aspect/material_model/simple.h>
 #include <aspect/postprocess/interface.h>
 #include <aspect/simulator_access.h>
-#include <aspect/global.h>
+
+#include <deal.II/base/function_lib.h>
+#include <deal.II/base/quadrature_lib.h>
 #include <deal.II/dofs/dof_tools.h>
 #include <deal.II/numerics/data_out.h>
-#include <deal.II/base/quadrature_lib.h>
-#include <deal.II/base/function_lib.h>
 #include <deal.II/numerics/error_estimator.h>
 #include <deal.II/numerics/vector_tools.h>
 
@@ -36,9 +38,8 @@ namespace aspect
    * This is the "Burstedde" benchmark defined in the following paper:
    * @code
    *  @Article{busa13,
-   *    author =       {Burstedde, Carsten and Stadler, Georg and Alisic, Laura and Wilcox, Lucas C and Tan, Eh and Gurnis, Michael and Ghattas, Omar},
-   *    title =        {Large-scale adaptive mantle convection simulation},
-   *    journal =      {Geophysical Journal International},
+   *    author =       {Burstedde, Carsten and Stadler, Georg and Alisic, Laura and Wilcox, Lucas C and Tan, Eh and Gurnis, Michael and
+   * Ghattas, Omar}, title =        {Large-scale adaptive mantle convection simulation}, journal =      {Geophysical Journal International},
    *    year =         2013,
    *    volume =       192,
    *    number =       {3},
@@ -51,9 +52,8 @@ namespace aspect
   {
     namespace AnalyticSolutions
     {
-      Tensor<1,3>
-      burstedde_velocity (const Point<3> &pos,
-                          const double eta)
+      Tensor<1, 3>
+      burstedde_velocity(const Point<3> &pos, const double eta)
       {
         const double x = pos[0];
         const double y = pos[1];
@@ -62,14 +62,13 @@ namespace aspect
         // create a Point<3> (because it has a constructor that takes
         // three doubles) and return it (it automatically converts to
         // the necessary Tensor<1,3>).
-        return Point<3> (x+x*x+x*y+x*x*x*y,
-                         y+x*y+y*y+x*x*y*y,
-                         -2.*z-3.*x*z-3.*y*z-5.*x*x*y*z);
+        return Point<3>(x + x * x + x * y + x * x * x * y,
+                        y + x * y + y * y + x * x * y * y,
+                        -2. * z - 3. * x * z - 3. * y * z - 5. * x * x * y * z);
       }
 
       double
-      burstedde_pressure (const Point<3> &pos,
-                          const double eta)
+      burstedde_pressure(const Point<3> &pos, const double eta)
       {
         const double x = pos[0];
         const double y = pos[1];
@@ -77,9 +76,9 @@ namespace aspect
 
         const double min_eta = 1.0;
         const double max_eta = eta;
-        const double A(min_eta*(max_eta-min_eta)/(max_eta+min_eta));
+        const double A(min_eta * (max_eta - min_eta) / (max_eta + min_eta));
 
-        return x*y*z+x*x*x*y*y*y*z-5./32.;
+        return x * y * z + x * x * x * y * y * y * z - 5. / 32.;
       }
 
 
@@ -90,26 +89,25 @@ namespace aspect
       class FunctionBurstedde : public Function<dim>
       {
         public:
-          FunctionBurstedde (const double beta)
-            :
-            Function<dim>(dim+2),
-            beta_(beta)
+          FunctionBurstedde(const double beta)
+            : Function<dim>(dim + 2)
+            , beta_(beta)
           {}
 
-          virtual void vector_value (const Point<dim>   &pos,
-                                     Vector<double>   &values) const
+          virtual void
+          vector_value(const Point<dim> &pos, Vector<double> &values) const
           {
-            Assert (dim == 3, ExcNotImplemented());
-            Assert (values.size() >= 4, ExcInternalError());
+            Assert(dim == 3, ExcNotImplemented());
+            Assert(values.size() >= 4, ExcInternalError());
 
-            const Point<3> p (pos[0], pos[1], pos[2]);
+            const Point<3> p(pos[0], pos[1], pos[2]);
 
-            const Tensor<1,3> v = AnalyticSolutions::burstedde_velocity (p, beta_);
-            values[0] = v[0];
-            values[1] = v[1];
-            values[2] = v[2];
+            const Tensor<1, 3> v = AnalyticSolutions::burstedde_velocity(p, beta_);
+            values[0]            = v[0];
+            values[1]            = v[1];
+            values[2]            = v[2];
 
-            values[3] = AnalyticSolutions::burstedde_pressure (p, beta_);
+            values[3] = AnalyticSolutions::burstedde_pressure(p, beta_);
           }
 
         private:
@@ -131,44 +129,36 @@ namespace aspect
         /**
          * Return the boundary velocity as a function of position.
          */
-        virtual
-        Tensor<1,dim>
-        boundary_velocity (const types::boundary_id boundary_indicator,
-                           const Point<dim> &position) const;
+        virtual Tensor<1, dim>
+        boundary_velocity(const types::boundary_id boundary_indicator, const Point<dim> &position) const;
 
       private:
         const double beta;
     };
 
     template <int dim>
-    BursteddeBoundary<dim>::BursteddeBoundary ()
-      :
-      beta (0)
+    BursteddeBoundary<dim>::BursteddeBoundary()
+      : beta(0)
     {}
 
 
 
     template <>
-    Tensor<1,2>
-    BursteddeBoundary<2>::
-    boundary_velocity (const types::boundary_id ,
-                       const Point<2> &p) const
+    Tensor<1, 2>
+    BursteddeBoundary<2>::boundary_velocity(const types::boundary_id, const Point<2> &p) const
     {
-      Assert (false, ExcNotImplemented());
-      return Tensor<1,2>();
+      Assert(false, ExcNotImplemented());
+      return Tensor<1, 2>();
     }
 
 
 
     template <>
-    Tensor<1,3>
-    BursteddeBoundary<3>::
-    boundary_velocity (const types::boundary_id ,
-                       const Point<3> &p) const
+    Tensor<1, 3>
+    BursteddeBoundary<3>::boundary_velocity(const types::boundary_id, const Point<3> &p) const
     {
-      return AnalyticSolutions::burstedde_velocity (p, beta);
+      return AnalyticSolutions::burstedde_velocity(p, beta);
     }
-
 
 
 
@@ -183,27 +173,27 @@ namespace aspect
     class BursteddeMaterial : public MaterialModel::Interface<dim>
     {
       public:
-        virtual void evaluate(const MaterialModel::MaterialModelInputs<dim> &in,
-                              MaterialModel::MaterialModelOutputs<dim> &out) const
+        virtual void
+        evaluate(const MaterialModel::MaterialModelInputs<dim> &in, MaterialModel::MaterialModelOutputs<dim> &out) const
         {
-          const std::shared_ptr<MaterialModel::AdditionalMaterialOutputsStokesRHS<dim>> force
-            = out.template get_additional_output_object<MaterialModel::AdditionalMaterialOutputsStokesRHS<dim>>();
+          const std::shared_ptr<MaterialModel::AdditionalMaterialOutputsStokesRHS<dim>> force =
+            out.template get_additional_output_object<MaterialModel::AdditionalMaterialOutputsStokesRHS<dim>>();
 
-          for (unsigned int i=0; i < in.n_evaluation_points(); ++i)
+          for (unsigned int i = 0; i < in.n_evaluation_points(); ++i)
             {
               const Point<dim> &p = in.position[i];
 
-              const double x=p[0];
-              const double y=p[1];
-              const double z=p[2];
-              const double mu=std::exp(1. - beta * (x*(1.-x)+y*(1.-y) + z*(1.-z)));
+              const double x  = p[0];
+              const double y  = p[1];
+              const double z  = p[2];
+              const double mu = std::exp(1. - beta * (x * (1. - x) + y * (1. - y) + z * (1. - z)));
 
-              out.viscosities[i] = mu;
+              out.viscosities[i]            = mu;
               out.thermal_conductivities[i] = 0.0;
-              out.densities[i] = 1.0;
+              out.densities[i]              = 1.0;
 
               out.thermal_expansion_coefficients[i] = 0.0;
-              out.compressibilities[i] = 0.0;
+              out.compressibilities[i]              = 0.0;
 
               out.specific_heat[i] = 0.0;
 
@@ -214,40 +204,35 @@ namespace aspect
               // Change in composition due to chemical reactions at the
               // given positions. The term reaction_terms[i][c] is the
               // change in compositional field c at point i.
-              for (unsigned int c=0; c<in.composition[i].size(); ++c)
+              for (unsigned int c = 0; c < in.composition[i].size(); ++c)
                 out.reaction_terms[i][c] = 0.0;
 
               if (force)
                 {
-                  const double dmudx=-beta*(1.-2.*x)*mu;
-                  const double dmudy=-beta*(1.-2.*y)*mu;
-                  const double dmudz=-beta*(1.-2.*z)*mu;
+                  const double dmudx = -beta * (1. - 2. * x) * mu;
+                  const double dmudy = -beta * (1. - 2. * y) * mu;
+                  const double dmudz = -beta * (1. - 2. * z) * mu;
 
 
 
-                  force->rhs_u[i][0] = ((y*z+3.*Utilities::fixed_power<2>(x)*Utilities::fixed_power<3>(y)*z)- mu*(2.+6.*x*y))
-                                       -dmudx*(2.+4.*x+2.*y+6.*Utilities::fixed_power<2>(x)*y)
-                                       -dmudy*(x+Utilities::fixed_power<3>(x)+y+2.*x*Utilities::fixed_power<2>(y))
-                                       -dmudz*(-3.*z-10.*x*y*z);
+                  force->rhs_u[i][0] =
+                    ((y * z + 3. * Utilities::fixed_power<2>(x) * Utilities::fixed_power<3>(y) * z) - mu * (2. + 6. * x * y)) -
+                    dmudx * (2. + 4. * x + 2. * y + 6. * Utilities::fixed_power<2>(x) * y) -
+                    dmudy * (x + Utilities::fixed_power<3>(x) + y + 2. * x * Utilities::fixed_power<2>(y)) -
+                    dmudz * (-3. * z - 10. * x * y * z);
 
-                  force->rhs_u[i][1] = ((x*z+3.*Utilities::fixed_power<3>(x)*Utilities::fixed_power<2>(y)*z)- mu*(2.+2.*Utilities::fixed_power<2>(x)+2.*Utilities::fixed_power<2>(y)))
-                                       -dmudx*(x+Utilities::fixed_power<3>(x)+y+2.*x*Utilities::fixed_power<2>(y))
-                                       -dmudy*(2.+2.*x+4.*y+4.*Utilities::fixed_power<2>(x)*y)
-                                       -dmudz*(-3.*z-5.*Utilities::fixed_power<2>(x)*z);
+                  force->rhs_u[i][1] = ((x * z + 3. * Utilities::fixed_power<3>(x) * Utilities::fixed_power<2>(y) * z) -
+                                        mu * (2. + 2. * Utilities::fixed_power<2>(x) + 2. * Utilities::fixed_power<2>(y))) -
+                                       dmudx * (x + Utilities::fixed_power<3>(x) + y + 2. * x * Utilities::fixed_power<2>(y)) -
+                                       dmudy * (2. + 2. * x + 4. * y + 4. * Utilities::fixed_power<2>(x) * y) -
+                                       dmudz * (-3. * z - 5. * Utilities::fixed_power<2>(x) * z);
 
-                  force->rhs_u[i][2] = ((x*y+Utilities::fixed_power<3>(x)*Utilities::fixed_power<3>(y)) - mu*(-10.*y*z))
-                                       -dmudx*(-3.*z-10.*x*y*z)
-                                       -dmudy*(-3.*z-5.*Utilities::fixed_power<2>(x)*z)
-                                       -dmudz*(-4.-6.*x-6.*y-10.*Utilities::fixed_power<2>(x)*y);
+                  force->rhs_u[i][2] = ((x * y + Utilities::fixed_power<3>(x) * Utilities::fixed_power<3>(y)) - mu * (-10. * y * z)) -
+                                       dmudx * (-3. * z - 10. * x * y * z) - dmudy * (-3. * z - 5. * Utilities::fixed_power<2>(x) * z) -
+                                       dmudz * (-4. - 6. * x - 6. * y - 10. * Utilities::fixed_power<2>(x) * y);
                 }
-
             }
-
         }
-
-
-
-
 
 
 
@@ -265,28 +250,28 @@ namespace aspect
          * (compressible Stokes) or as $\nabla \cdot \mathbf{u}=0$
          * (incompressible Stokes).
          */
-        virtual bool is_compressible () const;
+        virtual bool
+        is_compressible() const;
         /**
          * @}
          */
         /**
          * Declare the parameters this class takes through input files.
          */
-        static
-        void
-        declare_parameters (ParameterHandler &prm);
+        static void
+        declare_parameters(ParameterHandler &prm);
 
         /**
          * Read the parameters this class declares from the parameter file.
          */
-        virtual
-        void
-        parse_parameters (ParameterHandler &prm);
+        virtual void
+        parse_parameters(ParameterHandler &prm);
 
         /**
          * Returns the viscosity value in the inclusion
          */
-        double get_beta() const;
+        double
+        get_beta() const;
 
         /**
          * viscosity value in the inclusion
@@ -298,15 +283,14 @@ namespace aspect
 
     template <int dim>
     bool
-    BursteddeMaterial<dim>::
-    is_compressible () const
+    BursteddeMaterial<dim>::is_compressible() const
     {
       return false;
     }
 
     template <int dim>
     void
-    BursteddeMaterial<dim>::declare_parameters (ParameterHandler &prm)
+    BursteddeMaterial<dim>::declare_parameters(ParameterHandler &prm)
     {
       // create a global section in the parameter file for parameters
       // that describe this benchmark. note that we declare them here
@@ -315,9 +299,7 @@ namespace aspect
       // declare them
       prm.enter_subsection("Burstedde benchmark");
       {
-        prm.declare_entry("Viscosity parameter", "20",
-                          Patterns::Double (0),
-                          "Viscosity in the Burstedde benchmark.");
+        prm.declare_entry("Viscosity parameter", "20", Patterns::Double(0), "Viscosity in the Burstedde benchmark.");
       }
       prm.leave_subsection();
     }
@@ -325,19 +307,19 @@ namespace aspect
 
     template <int dim>
     void
-    BursteddeMaterial<dim>::parse_parameters (ParameterHandler &prm)
+    BursteddeMaterial<dim>::parse_parameters(ParameterHandler &prm)
     {
       prm.enter_subsection("Burstedde benchmark");
       {
-        beta = prm.get_double ("Viscosity parameter");
+        beta = prm.get_double("Viscosity parameter");
       }
       prm.leave_subsection();
 
       // Declare dependencies on solution variables
-      this->model_dependence.viscosity = MaterialModel::NonlinearDependence::none;
-      this->model_dependence.density = MaterialModel::NonlinearDependence::none;
-      this->model_dependence.compressibility = MaterialModel::NonlinearDependence::none;
-      this->model_dependence.specific_heat = MaterialModel::NonlinearDependence::none;
+      this->model_dependence.viscosity            = MaterialModel::NonlinearDependence::none;
+      this->model_dependence.density              = MaterialModel::NonlinearDependence::none;
+      this->model_dependence.compressibility      = MaterialModel::NonlinearDependence::none;
+      this->model_dependence.specific_heat        = MaterialModel::NonlinearDependence::none;
       this->model_dependence.thermal_conductivity = MaterialModel::NonlinearDependence::none;
     }
 
@@ -351,15 +333,12 @@ namespace aspect
 
 
 
-
-
-
     /**
-      * A postprocessor that evaluates the accuracy of the solution.
-      *
-      * The implementation of error evaluators that correspond to the
-      * benchmarks defined in the paper Duretz et al. reference above.
-      */
+     * A postprocessor that evaluates the accuracy of the solution.
+     *
+     * The implementation of error evaluators that correspond to the
+     * benchmarks defined in the paper Duretz et al. reference above.
+     */
     template <int dim>
     class BursteddePostprocessor : public Postprocess::Interface<dim>, public ::aspect::SimulatorAccess<dim>
     {
@@ -367,63 +346,63 @@ namespace aspect
         /**
          * Generate graphical output from the current solution.
          */
-        virtual
-        std::pair<std::string,std::string>
-        execute (TableHandler &statistics);
+        virtual std::pair<std::string, std::string>
+        execute(TableHandler &statistics);
     };
 
     template <int dim>
-    std::pair<std::string,std::string>
-    BursteddePostprocessor<dim>::execute (TableHandler &statistics)
+    std::pair<std::string, std::string>
+    BursteddePostprocessor<dim>::execute(TableHandler &statistics)
     {
       std::unique_ptr<Function<dim>> ref_func;
       {
-        const BursteddeMaterial<dim> *
-        material_model
-          = dynamic_cast<const BursteddeMaterial<dim> *>(&this->get_material_model());
+        const BursteddeMaterial<dim> *material_model = dynamic_cast<const BursteddeMaterial<dim> *>(&this->get_material_model());
 
         ref_func = std::make_unique<AnalyticSolutions::FunctionBurstedde<dim>>(material_model->get_beta());
       }
 
-      const QGauss<dim> quadrature_formula (this->introspection().polynomial_degree.velocities+2);
+      const QGauss<dim> quadrature_formula(this->introspection().polynomial_degree.velocities + 2);
 
-      Vector<float> cellwise_errors_u (this->get_triangulation().n_active_cells());
-      Vector<float> cellwise_errors_p (this->get_triangulation().n_active_cells());
-      Vector<float> cellwise_errors_ul2 (this->get_triangulation().n_active_cells());
-      Vector<float> cellwise_errors_pl2 (this->get_triangulation().n_active_cells());
+      Vector<float> cellwise_errors_u(this->get_triangulation().n_active_cells());
+      Vector<float> cellwise_errors_p(this->get_triangulation().n_active_cells());
+      Vector<float> cellwise_errors_ul2(this->get_triangulation().n_active_cells());
+      Vector<float> cellwise_errors_pl2(this->get_triangulation().n_active_cells());
 
-      ComponentSelectFunction<dim> comp_u(std::pair<unsigned int, unsigned int>(0,dim),
-                                          dim+2);
-      ComponentSelectFunction<dim> comp_p(dim, dim+2);
+      ComponentSelectFunction<dim> comp_u(std::pair<unsigned int, unsigned int>(0, dim), dim + 2);
+      ComponentSelectFunction<dim> comp_p(dim, dim + 2);
 
-      VectorTools::integrate_difference (this->get_mapping(),this->get_dof_handler(),
-                                         this->get_solution(),
-                                         *ref_func,
-                                         cellwise_errors_u,
-                                         quadrature_formula,
-                                         VectorTools::L1_norm,
-                                         &comp_u);
-      VectorTools::integrate_difference (this->get_mapping(),this->get_dof_handler(),
-                                         this->get_solution(),
-                                         *ref_func,
-                                         cellwise_errors_p,
-                                         quadrature_formula,
-                                         VectorTools::L1_norm,
-                                         &comp_p);
-      VectorTools::integrate_difference (this->get_mapping(),this->get_dof_handler(),
-                                         this->get_solution(),
-                                         *ref_func,
-                                         cellwise_errors_ul2,
-                                         quadrature_formula,
-                                         VectorTools::L2_norm,
-                                         &comp_u);
-      VectorTools::integrate_difference (this->get_mapping(),this->get_dof_handler(),
-                                         this->get_solution(),
-                                         *ref_func,
-                                         cellwise_errors_pl2,
-                                         quadrature_formula,
-                                         VectorTools::L2_norm,
-                                         &comp_p);
+      VectorTools::integrate_difference(this->get_mapping(),
+                                        this->get_dof_handler(),
+                                        this->get_solution(),
+                                        *ref_func,
+                                        cellwise_errors_u,
+                                        quadrature_formula,
+                                        VectorTools::L1_norm,
+                                        &comp_u);
+      VectorTools::integrate_difference(this->get_mapping(),
+                                        this->get_dof_handler(),
+                                        this->get_solution(),
+                                        *ref_func,
+                                        cellwise_errors_p,
+                                        quadrature_formula,
+                                        VectorTools::L1_norm,
+                                        &comp_p);
+      VectorTools::integrate_difference(this->get_mapping(),
+                                        this->get_dof_handler(),
+                                        this->get_solution(),
+                                        *ref_func,
+                                        cellwise_errors_ul2,
+                                        quadrature_formula,
+                                        VectorTools::L2_norm,
+                                        &comp_u);
+      VectorTools::integrate_difference(this->get_mapping(),
+                                        this->get_dof_handler(),
+                                        this->get_solution(),
+                                        *ref_func,
+                                        cellwise_errors_pl2,
+                                        quadrature_formula,
+                                        VectorTools::L2_norm,
+                                        &comp_p);
 
       const double u_l1 = VectorTools::compute_global_error(this->get_triangulation(), cellwise_errors_u, VectorTools::L1_norm);
       const double p_l1 = VectorTools::compute_global_error(this->get_triangulation(), cellwise_errors_p, VectorTools::L1_norm);
@@ -431,10 +410,7 @@ namespace aspect
       const double p_l2 = VectorTools::compute_global_error(this->get_triangulation(), cellwise_errors_pl2, VectorTools::L2_norm);
 
       std::ostringstream os;
-      os << std::scientific <<  u_l1
-         << ", " << p_l1
-         << ", " << u_l2
-         << ", " << p_l2;
+      os << std::scientific << u_l1 << ", " << p_l1 << ", " << u_l2 << ", " << p_l2;
 
       return std::make_pair("Errors u_L1, p_L1, u_L2, p_L2:", os.str());
     }

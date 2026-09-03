@@ -22,6 +22,7 @@
 #define _aspect_material_model_rheology_grain_boundary_sliding_h
 
 #include <aspect/global.h>
+
 #include <aspect/material_model/interface.h>
 #include <aspect/material_model/utilities.h>
 #include <aspect/simulator_access.h>
@@ -37,20 +38,20 @@ namespace aspect
        */
       struct GrainBoundarySlidingParameters
       {
-        /**
-         * The grain boundary sliding prefactor, activation energy, activation volume
-         * and grain size exponent.
-         */
-        double prefactor;
-        double activation_energy;
-        double activation_volume;
-        double stress_exponent;
-        double grain_size_exponent;
+          /**
+           * The grain boundary sliding prefactor, activation energy, activation volume
+           * and grain size exponent.
+           */
+          double prefactor;
+          double activation_energy;
+          double activation_volume;
+          double stress_exponent;
+          double grain_size_exponent;
 
-        /**
-         * Constructor. Initializes all values to NaN.
-         */
-        GrainBoundarySlidingParameters();
+          /**
+           * Constructor. Initializes all values to NaN.
+           */
+          GrainBoundarySlidingParameters();
       };
 
       template <int dim>
@@ -65,9 +66,8 @@ namespace aspect
           /**
            * Declare the parameters this function takes through input files.
            */
-          static
-          void
-          declare_parameters (ParameterHandler &prm);
+          static void
+          declare_parameters(ParameterHandler &prm);
 
           /**
            * Read the parameters this class declares from the parameter file.
@@ -77,8 +77,8 @@ namespace aspect
            * parameters.
            */
           void
-          parse_parameters (ParameterHandler &prm,
-                            const std::unique_ptr<std::vector<unsigned int>> &expected_n_phases_per_composition = nullptr);
+          parse_parameters(ParameterHandler                                 &prm,
+                           const std::unique_ptr<std::vector<unsigned int>> &expected_n_phases_per_composition = nullptr);
 
 
           /**
@@ -89,25 +89,25 @@ namespace aspect
            * each phase and then averaged for each compositional field.
            */
           const GrainBoundarySlidingParameters
-          compute_slide_parameters (const unsigned int composition,
-                                    const std::vector<double> &phase_function_values = {},
-                                    const std::vector<unsigned int> &n_phase_transitions_per_composition = {}) const;
+          compute_slide_parameters(const unsigned int               composition,
+                                   const std::vector<double>       &phase_function_values               = {},
+                                   const std::vector<unsigned int> &n_phase_transitions_per_composition = {}) const;
 
           /**
-          * Compute the viscosity based on the grain boundary sliding law with
-          * the fixed grain size given in the input file.
-          * If @p n_phase_transitions_per_composition points to a vector of
-          * unsigned integers this is considered the number of phase transitions
-          * for each compositional field and viscosity will be first computed on
-          * each phase and then averaged for each compositional field.
-          */
+           * Compute the viscosity based on the grain boundary sliding law with
+           * the fixed grain size given in the input file.
+           * If @p n_phase_transitions_per_composition points to a vector of
+           * unsigned integers this is considered the number of phase transitions
+           * for each compositional field and viscosity will be first computed on
+           * each phase and then averaged for each compositional field.
+           */
           double
-          compute_viscosity (const double strain_rate,
-                             const double pressure,
-                             const double temperature,
-                             const unsigned int composition,
-                             const std::vector<double> &phase_function_values = {},
-                             const std::vector<unsigned int> &n_phase_transitions_per_composition = {}) const;
+          compute_viscosity(const double                     strain_rate,
+                            const double                     pressure,
+                            const double                     temperature,
+                            const unsigned int               composition,
+                            const std::vector<double>       &phase_function_values               = {},
+                            const std::vector<unsigned int> &n_phase_transitions_per_composition = {}) const;
 
           /**
            * Compute the viscosity based on the grain boundary sliding law for the given @p grain_size.
@@ -117,16 +117,15 @@ namespace aspect
            * each phase and then averaged for each compositional field.
            */
           double
-          compute_viscosity (const double strain_rate,
-                             const double pressure,
-                             const double temperature,
-                             const double grain_size,
-                             const unsigned int composition,
-                             const std::vector<double> &phase_function_values = {},
-                             const std::vector<unsigned int> &n_phase_transitions_per_composition = {}) const;
+          compute_viscosity(const double                     strain_rate,
+                            const double                     pressure,
+                            const double                     temperature,
+                            const double                     grain_size,
+                            const unsigned int               composition,
+                            const std::vector<double>       &phase_function_values               = {},
+                            const std::vector<unsigned int> &n_phase_transitions_per_composition = {}) const;
 
         private:
-
           /**
            * List of grain boundary sliding prefactors A.
            *

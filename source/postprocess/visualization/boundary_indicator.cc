@@ -19,8 +19,8 @@
 */
 
 
-#include <aspect/postprocess/visualization/boundary_indicator.h>
 #include <aspect/geometry_model/interface.h>
+#include <aspect/postprocess/visualization/boundary_indicator.h>
 
 
 
@@ -31,10 +31,8 @@ namespace aspect
     namespace VisualizationPostprocessors
     {
       template <int dim>
-      BoundaryIndicator<dim>::
-      BoundaryIndicator ()
-        :
-        CellDataVectorCreator<dim>("") // no physical units
+      BoundaryIndicator<dim>::BoundaryIndicator()
+        : CellDataVectorCreator<dim>("") // no physical units
       {}
 
 
@@ -43,14 +41,12 @@ namespace aspect
       std::pair<std::string, std::unique_ptr<Vector<float>>>
       BoundaryIndicator<dim>::execute() const
       {
-        std::pair<std::string, std::unique_ptr<Vector<float>>>
-        return_value ("boundary_indicator",
-                      std::make_unique<Vector<float>>(this->get_triangulation().n_active_cells()));
+        std::pair<std::string, std::unique_ptr<Vector<float>>> return_value(
+          "boundary_indicator", std::make_unique<Vector<float>>(this->get_triangulation().n_active_cells()));
 
         // retrieve the largest used boundary indicator and add one.
         // this value will be set for internal cells
-        const types::boundary_id largest_boundary_id_plus_one =
-          *this->get_geometry_model().get_used_boundary_indicators().rbegin() + 1;
+        const types::boundary_id largest_boundary_id_plus_one = *this->get_geometry_model().get_used_boundary_indicators().rbegin() + 1;
 
         // loop over all of the surface cells and extract boundary indicators
         for (const auto &cell : this->get_dof_handler().active_cell_iterators())
@@ -63,12 +59,11 @@ namespace aspect
                     {
                       if (cell->face(f)->at_boundary())
                         {
-                          boundary_id
-                            = cell->face(f)->boundary_id();
+                          boundary_id = cell->face(f)->boundary_id();
                           break;
                         }
                     }
-                  (*return_value.second)(cell->active_cell_index()) = static_cast<float> (boundary_id);
+                  (*return_value.second)(cell->active_cell_index()) = static_cast<float>(boundary_id);
                 }
               // internal cells are all set to the same boundary indicator value
               // of the largest boundary indicator used for the current geometry plus one.

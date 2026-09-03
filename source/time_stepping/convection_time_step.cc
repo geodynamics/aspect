@@ -19,9 +19,9 @@
 */
 
 
+#include <aspect/melt.h>
 #include <aspect/simulator.h>
 #include <aspect/time_stepping/convection_time_step.h>
-#include <aspect/melt.h>
 #include <aspect/utilities.h>
 
 namespace aspect
@@ -32,11 +32,10 @@ namespace aspect
     double
     ConvectionTimeStep<dim>::execute()
     {
-      const QIterated<dim> quadrature_formula (QTrapezoid<1>(),
-                                               this->get_parameters().stokes_velocity_degree);
+      const QIterated<dim> quadrature_formula(QTrapezoid<1>(), this->get_parameters().stokes_velocity_degree);
 
-      bool consider_darcy_timestep = false;
-      unsigned int porosity_idx = numbers::invalid_unsigned_int;
+      bool         consider_darcy_timestep = false;
+      unsigned int porosity_idx            = numbers::invalid_unsigned_int;
       if (this->introspection().composition_type_exists(CompositionalFieldDescription::porosity))
         {
           porosity_idx = this->introspection().find_composition_type(CompositionalFieldDescription::porosity);
@@ -44,27 +43,16 @@ namespace aspect
             consider_darcy_timestep = true;
         }
 
-      const UpdateFlags update_flags
-        = UpdateFlags(
-            consider_darcy_timestep
-            ?
-            update_values |
-            update_gradients |
-            update_quadrature_points |
-            update_JxW_values
-            :
-            update_values);
+      const UpdateFlags update_flags = UpdateFlags(
+        consider_darcy_timestep ? update_values | update_gradients | update_quadrature_points | update_JxW_values : update_values);
 
-      FEValues<dim> fe_values (this->get_mapping(),
-                               this->get_fe(),
-                               quadrature_formula,
-                               update_flags);
+      FEValues<dim> fe_values(this->get_mapping(), this->get_fe(), quadrature_formula, update_flags);
 
-      const unsigned int n_q_points = quadrature_formula.size();
-      std::vector<Tensor<1,dim>> velocity_values(n_q_points);
-      std::vector<Tensor<1,dim>> fluid_velocity_values(n_q_points);
+      const unsigned int          n_q_points = quadrature_formula.size();
+      std::vector<Tensor<1, dim>> velocity_values(n_q_points);
+      std::vector<Tensor<1, dim>> fluid_velocity_values(n_q_points);
 
-      MaterialModel::MaterialModelInputs<dim> in(fe_values.n_quadrature_points, this->n_compositional_fields());
+      MaterialModel::MaterialModelInputs<dim>  in(fe_values.n_quadrature_points, this->n_compositional_fields());
       MaterialModel::MaterialModelOutputs<dim> out(fe_values.n_quadrature_points, this->n_compositional_fields());
       MeltHandler<dim>::create_material_model_outputs(out);
       std::shared_ptr<const MaterialModel::MeltOutputs<dim>> fluid_out;
@@ -74,9 +62,8 @@ namespace aspect
       for (const auto &cell : this->get_dof_handler().active_cell_iterators())
         if (cell->is_locally_owned())
           {
-            fe_values.reinit (cell);
-            fe_values[this->introspection().extractors.velocities].get_function_values (this->get_solution(),
-                                                                                        velocity_values);
+            fe_values.reinit(cell);
+            fe_values[this->introspection().extractors.velocities].get_function_values(this->get_solution(), velocity_values);
 
             if (consider_darcy_timestep == true)
               {
@@ -86,51 +73,52 @@ namespace aspect
               }
 
             double max_local_velocity = 0;
-            for (unsigned int q=0; q<n_q_points; ++q)
+            for (unsigned int q = 0; q < n_q_points; ++q)
               {
                 if (consider_darcy_timestep)
                   {
-                    const Tensor<1,dim> gravity = this->get_gravity_model().gravity_vector(fe_values.quadrature_point(q));
-                    Tensor<1,dim> fluid_velocity =
-                      aspect::Utilities::calculate_approximate_darcy_velocity(in, out, fluid_out, velocity_values[q],
-                                                                              gravity, porosity_idx, q,
+                    const Tensor<1, dim> gravity = this->get_gravity_model().gravity_vector(fe_values.quadrature_point(q));
+                    Tensor<1, dim>       fluid_velocity =
+                      aspect::Utilities::calculate_approximate_darcy_velocity(in,
+                                                                              out,
+                                                                              fluid_out,
+                                                                              velocity_values[q],
+                                                                              gravity,
+                                                                              porosity_idx,
+                                                                              q,
                                                                               this->get_parameters().use_pressure_gradient_for_darcy_field);
 
                     max_local_velocity = std::max(max_local_velocity, fluid_velocity.norm());
                   }
-                max_local_velocity = std::max (max_local_velocity,
-                                               velocity_values[q].norm());
+                max_local_velocity = std::max(max_local_velocity, velocity_values[q].norm());
               }
 
             if (this->get_parameters().include_melt_transport)
               {
                 const FEValuesExtractors::Vector ex_u_f = this->introspection().variable("fluid velocity").extractor_vector();
-                fe_values[ex_u_f].get_function_values (this->get_solution(), fluid_velocity_values);
+                fe_values[ex_u_f].get_function_values(this->get_solution(), fluid_velocity_values);
 
-                for (unsigned int q=0; q<n_q_points; ++q)
-                  max_local_velocity = std::max (max_local_velocity,
-                                                 fluid_velocity_values[q].norm());
+                for (unsigned int q = 0; q < n_q_points; ++q)
+                  max_local_velocity = std::max(max_local_velocity, fluid_velocity_values[q].norm());
               }
 
-            max_local_speed_over_meshsize = std::max(max_local_speed_over_meshsize,
-                                                     max_local_velocity
-                                                     /
-                                                     cell->minimum_vertex_distance());
-
+            max_local_speed_over_meshsize = std::max(max_local_speed_over_meshsize, max_local_velocity / cell->minimum_vertex_distance());
           }
 
-      const double max_global_speed_over_meshsize
-        = Utilities::MPI::max (max_local_speed_over_meshsize, this->get_mpi_communicator());
+      const double max_global_speed_over_meshsize = Utilities::MPI::max(max_local_speed_over_meshsize, this->get_mpi_communicator());
 
       double min_convection_timestep = std::numeric_limits<double>::max();
 
       if (max_global_speed_over_meshsize != 0.0)
-        min_convection_timestep = this->get_parameters().CFL_number / (this->get_parameters().temperature_degree * max_global_speed_over_meshsize);
+        min_convection_timestep =
+          this->get_parameters().CFL_number / (this->get_parameters().temperature_degree * max_global_speed_over_meshsize);
 
-      AssertThrow (min_convection_timestep > 0,
-                   ExcMessage("The time step length for the each time step needs to be positive, "
-                              "but the computed step length was: " + std::to_string(min_convection_timestep) + ". "
-                              "Please check for non-positive material properties."));
+      AssertThrow(min_convection_timestep > 0,
+                  ExcMessage("The time step length for the each time step needs to be positive, "
+                             "but the computed step length was: " +
+                             std::to_string(min_convection_timestep) +
+                             ". "
+                             "Please check for non-positive material properties."));
 
       return min_convection_timestep;
     }

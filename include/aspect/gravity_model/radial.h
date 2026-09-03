@@ -32,7 +32,6 @@
 #include <aspect/gravity_model/radial_linear.h>
 
 namespace aspect
-{
-}
+{}
 
 #endif

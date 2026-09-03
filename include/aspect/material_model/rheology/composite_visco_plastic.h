@@ -22,12 +22,13 @@
 #define _aspect_material_model_rheology_composite_visco_plastic_h
 
 #include <aspect/global.h>
+
 #include <aspect/material_model/interface.h>
-#include <aspect/material_model/utilities.h>
 #include <aspect/material_model/rheology/diffusion_creep.h>
 #include <aspect/material_model/rheology/dislocation_creep.h>
-#include <aspect/material_model/rheology/peierls_creep.h>
 #include <aspect/material_model/rheology/drucker_prager_power.h>
+#include <aspect/material_model/rheology/peierls_creep.h>
+#include <aspect/material_model/utilities.h>
 #include <aspect/simulator_access.h>
 
 namespace aspect
@@ -58,8 +59,7 @@ namespace aspect
          * the enum that corresponds to this operation.
          */
         ViscosityAveraging::Kind
-        parse (const std::string &parameter_name,
-               const ParameterHandler &prm);
+        parse(const std::string &parameter_name, const ParameterHandler &prm);
       }
 
       template <int dim>
@@ -74,9 +74,8 @@ namespace aspect
           /**
            * Declare the parameters this function takes through input files.
            */
-          static
-          void
-          declare_parameters (ParameterHandler &prm);
+          static void
+          declare_parameters(ParameterHandler &prm);
 
           /**
            * Read the parameters this class declares from the parameter file.
@@ -86,8 +85,8 @@ namespace aspect
            * parameters.
            */
           void
-          parse_parameters (ParameterHandler &prm,
-                            const std::unique_ptr<std::vector<unsigned int>> &expected_n_phases_per_composition = nullptr);
+          parse_parameters(ParameterHandler                                 &prm,
+                           const std::unique_ptr<std::vector<unsigned int>> &expected_n_phases_per_composition = nullptr);
 
           /**
            * Compute the viscosity based on the composite viscous creep law.
@@ -97,14 +96,14 @@ namespace aspect
            * each phase and then averaged for each compositional field.
            */
           double
-          compute_viscosity (const double pressure,
-                             const double temperature,
-                             const double grain_size,
-                             const std::vector<double> &volume_fractions,
-                             const SymmetricTensor<2,dim> &strain_rate,
-                             std::vector<double> &partial_strain_rates,
-                             const std::vector<double> &phase_function_values = {},
-                             const std::vector<unsigned int> &n_phase_transitions_per_composition = {}) const;
+          compute_viscosity(const double                     pressure,
+                            const double                     temperature,
+                            const double                     grain_size,
+                            const std::vector<double>       &volume_fractions,
+                            const SymmetricTensor<2, dim>   &strain_rate,
+                            std::vector<double>             &partial_strain_rates,
+                            const std::vector<double>       &phase_function_values               = {},
+                            const std::vector<unsigned int> &n_phase_transitions_per_composition = {}) const;
 
         private:
           /**
@@ -116,14 +115,14 @@ namespace aspect
            * each phase and then averaged for each compositional field.
            */
           double
-          compute_isostress_viscosity (const double pressure,
-                                       const double temperature,
-                                       const double grain_size,
-                                       const std::vector<double> &volume_fractions,
-                                       const SymmetricTensor<2,dim> &strain_rate,
-                                       std::vector<double> &partial_strain_rates,
-                                       const std::vector<double> &phase_function_values = {},
-                                       const std::vector<unsigned int> &n_phase_transitions_per_composition = {}) const;
+          compute_isostress_viscosity(const double                     pressure,
+                                      const double                     temperature,
+                                      const double                     grain_size,
+                                      const std::vector<double>       &volume_fractions,
+                                      const SymmetricTensor<2, dim>   &strain_rate,
+                                      std::vector<double>             &partial_strain_rates,
+                                      const std::vector<double>       &phase_function_values               = {},
+                                      const std::vector<unsigned int> &n_phase_transitions_per_composition = {}) const;
 
           /**
            * Compute the total strain rate and the first derivative of log strain rate
@@ -131,9 +130,10 @@ namespace aspect
            * over all compositional fields. Also updates the partial_strain_rates vector.
            */
           std::pair<double, double>
-          calculate_isostress_log_strain_rate_and_derivative(const std::vector<std::array<std::pair<double, double>, 4>> &logarithmic_strain_rates_and_stress_derivatives,
-                                                             const double viscoplastic_stress,
-                                                             std::vector<double> &partial_strain_rates) const;
+          calculate_isostress_log_strain_rate_and_derivative(
+            const std::vector<std::array<std::pair<double, double>, 4>> &logarithmic_strain_rates_and_stress_derivatives,
+            const double                                                 viscoplastic_stress,
+            std::vector<double>                                         &partial_strain_rates) const;
 
           /**
            * Compute the isostrain viscosity over all compositional fields
@@ -144,14 +144,14 @@ namespace aspect
            * each phase and then averaged for each compositional field.
            */
           double
-          compute_isostrain_viscosity (const double pressure,
-                                       const double temperature,
-                                       const double grain_size,
-                                       const std::vector<double> &volume_fractions,
-                                       const SymmetricTensor<2,dim> &strain_rate,
-                                       std::vector<double> &partial_strain_rates,
-                                       const std::vector<double> &phase_function_values = {},
-                                       const std::vector<unsigned int> &n_phase_transitions_per_composition = {}) const;
+          compute_isostrain_viscosity(const double                     pressure,
+                                      const double                     temperature,
+                                      const double                     grain_size,
+                                      const std::vector<double>       &volume_fractions,
+                                      const SymmetricTensor<2, dim>   &strain_rate,
+                                      std::vector<double>             &partial_strain_rates,
+                                      const std::vector<double>       &phase_function_values               = {},
+                                      const std::vector<unsigned int> &n_phase_transitions_per_composition = {}) const;
 
 
           /**
@@ -163,14 +163,14 @@ namespace aspect
            * each phase and then averaged for each compositional field.
            */
           double
-          compute_composition_viscosity (const double pressure,
-                                         const double temperature,
-                                         const double grain_size,
-                                         const unsigned int composition,
-                                         const SymmetricTensor<2,dim> &strain_rate,
-                                         std::vector<double> &partial_strain_rates,
-                                         const std::vector<double> &phase_function_values = {},
-                                         const std::vector<unsigned int> &n_phase_transitions_per_composition = {}) const;
+          compute_composition_viscosity(const double                     pressure,
+                                        const double                     temperature,
+                                        const double                     grain_size,
+                                        const unsigned int               composition,
+                                        const SymmetricTensor<2, dim>   &strain_rate,
+                                        std::vector<double>             &partial_strain_rates,
+                                        const std::vector<double>       &phase_function_values               = {},
+                                        const std::vector<unsigned int> &n_phase_transitions_per_composition = {}) const;
 
           /**
            * Compute the total strain rate and the first derivative of log strain rate
@@ -179,9 +179,10 @@ namespace aspect
            * Also updates the partial_strain_rates vector.
            */
           std::pair<double, double>
-          calculate_composition_log_strain_rate_and_derivative(const std::array<std::pair<double, double>, 4> &logarithmic_strain_rates_and_stress_derivatives,
-                                                               const double viscoplastic_stress,
-                                                               std::vector<double> &partial_strain_rates) const;
+          calculate_composition_log_strain_rate_and_derivative(
+            const std::array<std::pair<double, double>, 4> &logarithmic_strain_rates_and_stress_derivatives,
+            const double                                    viscoplastic_stress,
+            std::vector<double>                            &partial_strain_rates) const;
 
           /**
            * Enumeration for selecting which type of viscosity averaging to use.
@@ -204,7 +205,8 @@ namespace aspect
            */
           bool use_peierls_creep;
           /**
-           *  This variable is read from the parameter file through a parameter called 'Include Drucker Prager plasticity in composite rheology'.
+           *  This variable is read from the parameter file through a parameter called 'Include Drucker Prager plasticity in composite
+           * rheology'.
            */
           bool use_drucker_prager;
 
@@ -225,9 +227,9 @@ namespace aspect
            * Pointers to objects for computing deformation mechanism
            * strain rates and effective viscosities.
            */
-          std::unique_ptr<Rheology::DiffusionCreep<dim>> diffusion_creep;
-          std::unique_ptr<Rheology::DislocationCreep<dim>> dislocation_creep;
-          std::unique_ptr<Rheology::PeierlsCreep<dim>> peierls_creep;
+          std::unique_ptr<Rheology::DiffusionCreep<dim>>     diffusion_creep;
+          std::unique_ptr<Rheology::DislocationCreep<dim>>   dislocation_creep;
+          std::unique_ptr<Rheology::PeierlsCreep<dim>>       peierls_creep;
           std::unique_ptr<Rheology::DruckerPragerPower<dim>> drucker_prager;
 
           /**

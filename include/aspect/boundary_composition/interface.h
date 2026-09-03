@@ -23,14 +23,16 @@
 #define _aspect_boundary_composition_interface_h
 
 #include <aspect/plugins.h>
+
 #include <aspect/geometry_model/interface.h>
-#include <aspect/utilities.h>
 #include <aspect/simulator_access.h>
+#include <aspect/utilities.h>
 
 #include <deal.II/base/parameter_handler.h>
 #include <deal.II/distributed/tria.h>
 
 #include <boost/core/demangle.hpp>
+
 #include <typeinfo>
 
 
@@ -67,11 +69,10 @@ namespace aspect
          * @return Boundary value of the compositional field @p
          * compositional_field at the position @p position.
          */
-        virtual
-        double
-        boundary_composition (const types::boundary_id boundary_indicator,
-                              const Point<dim> &position,
-                              const unsigned int compositional_field) const = 0;
+        virtual double
+        boundary_composition(const types::boundary_id boundary_indicator,
+                             const Point<dim>        &position,
+                             const unsigned int       compositional_field) const = 0;
     };
 
     /**
@@ -87,9 +88,8 @@ namespace aspect
          * Declare the parameters of all known boundary composition plugins, as
          * well as the ones this class has itself.
          */
-        static
-        void
-        declare_parameters (ParameterHandler &prm);
+        static void
+        declare_parameters(ParameterHandler &prm);
 
         /**
          * Read the parameters this class declares from the parameter file.
@@ -97,7 +97,7 @@ namespace aspect
          * then let these objects read their parameters as well.
          */
         void
-        parse_parameters (ParameterHandler &prm) override;
+        parse_parameters(ParameterHandler &prm) override;
 
         /**
          * A function that calls the boundary_composition functions of all the
@@ -105,9 +105,9 @@ namespace aspect
          * to combine them.
          */
         double
-        boundary_composition (const types::boundary_id boundary_indicator,
-                              const Point<dim> &position,
-                              const unsigned int compositional_field) const;
+        boundary_composition(const types::boundary_id boundary_indicator,
+                             const Point<dim>        &position,
+                             const unsigned int       compositional_field) const;
 
         /**
          * A function that is used to register boundary composition objects in such
@@ -126,12 +126,11 @@ namespace aspect
          * @param factory_function A pointer to a function that can create an
          * object of this boundary composition model.
          */
-        static
-        void
-        register_boundary_composition (const std::string &name,
-                                       const std::string &description,
-                                       void (*declare_parameters_function) (ParameterHandler &),
-                                       std::unique_ptr<Interface<dim>> (*factory_function) ());
+        static void
+        register_boundary_composition(const std::string &name,
+                                      const std::string &description,
+                                      void (*declare_parameters_function)(ParameterHandler &),
+                                      std::unique_ptr<Interface<dim>> (*factory_function)());
 
 
         /**
@@ -143,7 +142,7 @@ namespace aspect
          */
         DEAL_II_DEPRECATED
         const std::vector<std::string> &
-        get_active_boundary_composition_names () const;
+        get_active_boundary_composition_names() const;
 
         /**
          * Return a list of pointers to all boundary composition models
@@ -154,7 +153,7 @@ namespace aspect
          */
         DEAL_II_DEPRECATED
         const std::list<std::unique_ptr<Interface<dim>>> &
-        get_active_boundary_composition_conditions () const;
+        get_active_boundary_composition_conditions() const;
 
         /**
          * Go through the list of all boundary composition models that have been selected
@@ -171,10 +170,9 @@ namespace aspect
          *   class of the current class.
          */
         template <typename BoundaryCompositionType,
-                  typename = typename std::enable_if_t<std::is_base_of<Interface<dim>,BoundaryCompositionType>::value>>
-        DEAL_II_DEPRECATED
-        bool
-        has_matching_boundary_composition_model () const;
+                  typename = typename std::enable_if_t<std::is_base_of<Interface<dim>, BoundaryCompositionType>::value>>
+        DEAL_II_DEPRECATED bool
+        has_matching_boundary_composition_model() const;
 
         /**
          * Go through the list of all boundary composition models that have been selected
@@ -193,10 +191,9 @@ namespace aspect
          *   class of the current class.
          */
         template <typename BoundaryCompositionType,
-                  typename = typename std::enable_if_t<std::is_base_of<Interface<dim>,BoundaryCompositionType>::value>>
-        DEAL_II_DEPRECATED
-        const BoundaryCompositionType &
-        get_matching_boundary_composition_model () const;
+                  typename = typename std::enable_if_t<std::is_base_of<Interface<dim>, BoundaryCompositionType>::value>>
+        DEAL_II_DEPRECATED const BoundaryCompositionType &
+        get_matching_boundary_composition_model() const;
 
         /*
          * Return a set of boundary indicators for which boundary
@@ -221,19 +218,17 @@ namespace aspect
          *
          * @param output_stream The stream to write the output to.
          */
-        static
-        void
-        write_plugin_graph (std::ostream &output_stream);
+        static void
+        write_plugin_graph(std::ostream &output_stream);
 
 
         /**
          * Exception.
          */
-        DeclException1 (ExcBoundaryCompositionNameNotFound,
-                        std::string,
-                        << "Could not find entry <"
-                        << arg1
-                        << "> among the names of registered boundary composition objects.");
+        DeclException1(ExcBoundaryCompositionNameNotFound,
+                       std::string,
+                       << "Could not find entry <" << arg1 << "> among the names of registered boundary composition objects.");
+
       private:
         /**
          * A list of enums of boundary composition operators that have been
@@ -260,9 +255,8 @@ namespace aspect
 
     template <int dim>
     template <typename BoundaryCompositionType, typename>
-    inline
-    bool
-    Manager<dim>::has_matching_boundary_composition_model () const
+    inline bool
+    Manager<dim>::has_matching_boundary_composition_model() const
     {
       return this->template has_matching_active_plugin<BoundaryCompositionType>();
     }
@@ -271,9 +265,8 @@ namespace aspect
 
     template <int dim>
     template <typename BoundaryCompositionType, typename>
-    inline
-    const BoundaryCompositionType &
-    Manager<dim>::get_matching_boundary_composition_model () const
+    inline const BoundaryCompositionType &
+    Manager<dim>::get_matching_boundary_composition_model() const
     {
       return this->template get_matching_active_plugin<BoundaryCompositionType>();
     }
@@ -288,7 +281,7 @@ namespace aspect
      */
     template <int dim>
     std::string
-    get_valid_model_names_pattern ();
+    get_valid_model_names_pattern();
 
 
     /**
@@ -301,14 +294,12 @@ namespace aspect
 #define ASPECT_REGISTER_BOUNDARY_COMPOSITION_MODEL(classname, name, description) \
   template class classname<2>; \
   template class classname<3>; \
-  namespace ASPECT_REGISTER_BOUNDARY_COMPOSITION_MODEL_ ## classname \
+  namespace ASPECT_REGISTER_BOUNDARY_COMPOSITION_MODEL_##classname \
   { \
-    aspect::internal::Plugins::RegisterHelper<aspect::BoundaryComposition::Interface<2>,classname<2>> \
-    dummy_ ## classname ## _2d (&aspect::BoundaryComposition::Manager<2>::register_boundary_composition, \
-                                name, description); \
-    aspect::internal::Plugins::RegisterHelper<aspect::BoundaryComposition::Interface<3>,classname<3>> \
-    dummy_ ## classname ## _3d (&aspect::BoundaryComposition::Manager<3>::register_boundary_composition, \
-                                name, description); \
+    aspect::internal::Plugins::RegisterHelper<aspect::BoundaryComposition::Interface<2>, classname<2>> dummy_##classname##_2d( \
+      &aspect::BoundaryComposition::Manager<2>::register_boundary_composition, name, description); \
+    aspect::internal::Plugins::RegisterHelper<aspect::BoundaryComposition::Interface<3>, classname<3>> dummy_##classname##_3d( \
+      &aspect::BoundaryComposition::Manager<3>::register_boundary_composition, name, description); \
   }
   }
 }

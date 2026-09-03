@@ -19,10 +19,11 @@
 */
 
 #include <aspect/global.h>
-#include <aspect/utilities.h>
-#include <aspect/solution_evaluator.h>
-#include <aspect/simulator.h>
+
 #include <aspect/melt.h>
+#include <aspect/simulator.h>
+#include <aspect/solution_evaluator.h>
+#include <aspect/utilities.h>
 
 namespace aspect
 {
@@ -36,7 +37,8 @@ namespace aspect
     namespace convert
     {
       template <int dim>
-      Tensor<1,dim> to_tensor(const Tensor<1,dim> &in)
+      Tensor<1, dim>
+      to_tensor(const Tensor<1, dim> &in)
       {
         return in;
       }
@@ -44,9 +46,10 @@ namespace aspect
 
 
       template <int dim>
-      Tensor<1,1> to_tensor(const double in)
+      Tensor<1, 1>
+      to_tensor(const double in)
       {
-        Tensor<1,1> result;
+        Tensor<1, 1> result;
         result[0] = in;
         return result;
       }
@@ -54,7 +57,8 @@ namespace aspect
 
 
       template <int dim, int n_components>
-      Tensor<1,n_components,Tensor<1,dim>> to_tensor2(const Tensor<1,n_components,Tensor<1,dim>> &in)
+      Tensor<1, n_components, Tensor<1, dim>>
+      to_tensor2(const Tensor<1, n_components, Tensor<1, dim>> &in)
       {
         return in;
       }
@@ -62,9 +66,10 @@ namespace aspect
 
 
       template <int dim, int n_components>
-      Tensor<1,1,Tensor<1,dim>> to_tensor2(const Tensor<1,dim> &in)
+      Tensor<1, 1, Tensor<1, dim>>
+      to_tensor2(const Tensor<1, dim> &in)
       {
-        Tensor<1,1,Tensor<1,dim>> result;
+        Tensor<1, 1, Tensor<1, dim>> result;
         result[0] = in;
         return result;
       }
@@ -77,18 +82,18 @@ namespace aspect
      * an FEPointEvaluation object.
      */
     template <int dim, int n_components>
-    class DynamicFEPointEvaluationImpl: public DynamicFEPointEvaluation<dim>
+    class DynamicFEPointEvaluationImpl : public DynamicFEPointEvaluation<dim>
     {
       public:
         DynamicFEPointEvaluationImpl(NonMatching::MappingInfo<dim> &mapping,
-                                     const FiniteElement<dim> &fe,
-                                     const unsigned int        first_selected_component)
-          : DynamicFEPointEvaluation<dim>(first_selected_component, n_components),
-            evaluation(mapping, fe, first_selected_component)
+                                     const FiniteElement<dim>      &fe,
+                                     const unsigned int             first_selected_component)
+          : DynamicFEPointEvaluation<dim>(first_selected_component, n_components)
+          , evaluation(mapping, fe, first_selected_component)
         {}
 
-        void evaluate(const ArrayView<double> &solution_values,
-                      const EvaluationFlags::EvaluationFlags flags) override
+        void
+        evaluate(const ArrayView<double> &solution_values, const EvaluationFlags::EvaluationFlags flags) override
         {
           evaluation.evaluate(solution_values, flags);
         }
@@ -96,42 +101,42 @@ namespace aspect
         small_vector<double>
         get_value(const unsigned int evaluation_point) const override
         {
-          const Tensor<1,n_components> x = convert::to_tensor<n_components>(evaluation.get_value(evaluation_point));
-          small_vector<double> result (n_components);
-          for (int c=0; c<n_components; ++c)
+          const Tensor<1, n_components> x = convert::to_tensor<n_components>(evaluation.get_value(evaluation_point));
+          small_vector<double>          result(n_components);
+          for (int c = 0; c < n_components; ++c)
             result[c] = x[c];
           return result;
         }
 
         void
-        get_value(const unsigned int evaluation_point,
-                  const ArrayView<double> &solution) const override
+        get_value(const unsigned int evaluation_point, const ArrayView<double> &solution) const override
         {
           Assert(solution.size() == n_components, ExcMessage("The size of the solution vector does not match the number of components."));
 
-          const Tensor<1,n_components> x = convert::to_tensor<n_components>(evaluation.get_value(evaluation_point));
-          for (int c=0; c<n_components; ++c)
+          const Tensor<1, n_components> x = convert::to_tensor<n_components>(evaluation.get_value(evaluation_point));
+          for (int c = 0; c < n_components; ++c)
             solution[c] = x[c];
         }
 
-        small_vector<Tensor<1,dim>>
+        small_vector<Tensor<1, dim>>
         get_gradient(const unsigned int evaluation_point) const override
         {
-          const Tensor<1,n_components,Tensor<1,dim>> x = convert::to_tensor2<dim,n_components>(evaluation.get_gradient(evaluation_point));
-          small_vector<Tensor<1,dim>> result (n_components);
-          for (int c=0; c<n_components; ++c)
+          const Tensor<1, n_components, Tensor<1, dim>> x =
+            convert::to_tensor2<dim, n_components>(evaluation.get_gradient(evaluation_point));
+          small_vector<Tensor<1, dim>> result(n_components);
+          for (int c = 0; c < n_components; ++c)
             result[c] = x[c];
           return result;
         }
 
         void
-        get_gradient(const unsigned int evaluation_point,
-                     const ArrayView<Tensor<1,dim>> &gradients) const override
+        get_gradient(const unsigned int evaluation_point, const ArrayView<Tensor<1, dim>> &gradients) const override
         {
           Assert(gradients.size() == n_components, ExcMessage("The size of the gradient vector does not match the number of components."));
 
-          const Tensor<1,n_components,Tensor<1,dim>> x = convert::to_tensor2<dim,n_components>(evaluation.get_gradient(evaluation_point));
-          for (int c=0; c<n_components; ++c)
+          const Tensor<1, n_components, Tensor<1, dim>> x =
+            convert::to_tensor2<dim, n_components>(evaluation.get_gradient(evaluation_point));
+          for (int c = 0; c < n_components; ++c)
             gradients[c] = x[c];
         }
 
@@ -141,63 +146,51 @@ namespace aspect
 
 
 
-
     template <int dim>
-    static std::unique_ptr<DynamicFEPointEvaluation<dim>> make(NonMatching::MappingInfo<dim> &mapping,
-                                                                const FiniteElement<dim> &fe,
-                                                                const unsigned int        first_selected_component,
-                                                                int n_fields)
+    static std::unique_ptr<DynamicFEPointEvaluation<dim>>
+    make(NonMatching::MappingInfo<dim> &mapping, const FiniteElement<dim> &fe, const unsigned int first_selected_component, int n_fields)
     {
       switch (n_fields)
         {
           case 1:
-            return std::make_unique<DynamicFEPointEvaluationImpl<dim,1>>(mapping, fe, first_selected_component);
+            return std::make_unique<DynamicFEPointEvaluationImpl<dim, 1>>(mapping, fe, first_selected_component);
           case 2:
-            return std::make_unique<DynamicFEPointEvaluationImpl<dim,2>>(mapping, fe, first_selected_component);
+            return std::make_unique<DynamicFEPointEvaluationImpl<dim, 2>>(mapping, fe, first_selected_component);
           case 3:
-            return std::make_unique<DynamicFEPointEvaluationImpl<dim,3>>(mapping, fe, first_selected_component);
+            return std::make_unique<DynamicFEPointEvaluationImpl<dim, 3>>(mapping, fe, first_selected_component);
           case 4:
-            return std::make_unique<DynamicFEPointEvaluationImpl<dim,4>>(mapping, fe, first_selected_component);
+            return std::make_unique<DynamicFEPointEvaluationImpl<dim, 4>>(mapping, fe, first_selected_component);
           case 5:
-            return std::make_unique<DynamicFEPointEvaluationImpl<dim,5>>(mapping, fe, first_selected_component);
+            return std::make_unique<DynamicFEPointEvaluationImpl<dim, 5>>(mapping, fe, first_selected_component);
           case 6:
-            return std::make_unique<DynamicFEPointEvaluationImpl<dim,6>>(mapping, fe, first_selected_component);
+            return std::make_unique<DynamicFEPointEvaluationImpl<dim, 6>>(mapping, fe, first_selected_component);
           case 7:
-            return std::make_unique<DynamicFEPointEvaluationImpl<dim,7>>(mapping, fe, first_selected_component);
+            return std::make_unique<DynamicFEPointEvaluationImpl<dim, 7>>(mapping, fe, first_selected_component);
           case 8:
-            return std::make_unique<DynamicFEPointEvaluationImpl<dim,8>>(mapping, fe, first_selected_component);
+            return std::make_unique<DynamicFEPointEvaluationImpl<dim, 8>>(mapping, fe, first_selected_component);
           case 9:
-            return std::make_unique<DynamicFEPointEvaluationImpl<dim,9>>(mapping, fe, first_selected_component);
+            return std::make_unique<DynamicFEPointEvaluationImpl<dim, 9>>(mapping, fe, first_selected_component);
           case 10:
-            return std::make_unique<DynamicFEPointEvaluationImpl<dim,10>>(mapping, fe, first_selected_component);
+            return std::make_unique<DynamicFEPointEvaluationImpl<dim, 10>>(mapping, fe, first_selected_component);
 
           default:
             Assert(false, ExcNotImplemented());
             return std::unique_ptr<DynamicFEPointEvaluation<dim>>();
         }
-
     }
   }
 
 
 
   template <int dim>
-  SolutionEvaluator<dim>::SolutionEvaluator(const SimulatorAccess<dim> &simulator,
-                                            const UpdateFlags update_flags)
-    :
-    mapping_info(simulator.get_mapping(),
-                 update_flags),
-    velocity(mapping_info,
-             simulator.get_fe(),
-             simulator.introspection().component_indices.velocities[0]),
-    pressure(std::make_unique<FEPointEvaluation<1, dim>>(mapping_info,
-                                                          simulator.get_fe(),
-                                                          simulator.introspection().component_indices.pressure)),
-    temperature(mapping_info,
-                simulator.get_fe(),
-                simulator.introspection().component_indices.temperature),
-    melt_component_indices(),
-    simulator_access(simulator)
+  SolutionEvaluator<dim>::SolutionEvaluator(const SimulatorAccess<dim> &simulator, const UpdateFlags update_flags)
+    : mapping_info(simulator.get_mapping(), update_flags)
+    , velocity(mapping_info, simulator.get_fe(), simulator.introspection().component_indices.velocities[0])
+    , pressure(
+        std::make_unique<FEPointEvaluation<1, dim>>(mapping_info, simulator.get_fe(), simulator.introspection().component_indices.pressure))
+    , temperature(mapping_info, simulator.get_fe(), simulator.introspection().component_indices.temperature)
+    , melt_component_indices()
+    , simulator_access(simulator)
   {
     // Create the evaluators for all compositional fields
     {
@@ -207,27 +200,21 @@ namespace aspect
       // than evaluating each one individually.
       for (const unsigned int base_element_index : simulator.introspection().get_composition_base_element_indices())
         {
-          std::vector<unsigned int> indices = simulator.introspection().get_compositional_field_indices_with_base_element(base_element_index);
+          std::vector<unsigned int> indices =
+            simulator.introspection().get_compositional_field_indices_with_base_element(base_element_index);
 
           // We can evaluate at most N at a time, if we have more than that of the same type, we tackle
           // them in groups of N:
           const unsigned int N = 10;
-          while (indices.size()>N)
+          while (indices.size() > N)
             {
-              compositions.emplace_back(internal::make<dim>(mapping_info,
-                                                            simulator_access.get_fe(),
-                                                            component_indices[indices[0]],
-                                                            N
-                                                           ));
+              compositions.emplace_back(internal::make<dim>(mapping_info, simulator_access.get_fe(), component_indices[indices[0]], N));
 
               indices.erase(indices.begin(), indices.begin() + N);
             }
 
-          compositions.emplace_back(internal::make<dim>(mapping_info,
-                                                        simulator_access.get_fe(),
-                                                        component_indices[indices[0]],
-                                                        indices.size()
-                                                       ));
+          compositions.emplace_back(
+            internal::make<dim>(mapping_info, simulator_access.get_fe(), component_indices[indices[0]], indices.size()));
         }
     }
 
@@ -235,9 +222,9 @@ namespace aspect
     // supported by the fast path of FEPointEvaluation. Replace with slow path.
     if (simulator_access.get_parameters().use_locally_conservative_discretization == true)
       pressure = std::make_unique<FEPointEvaluation<1, dim>>(simulator_access.get_mapping(),
-                                                              simulator_access.get_fe(),
-                                                              update_flags,
-                                                              simulator.introspection().component_indices.pressure);
+                                                             simulator_access.get_fe(),
+                                                             update_flags,
+                                                             simulator.introspection().component_indices.pressure);
 
     // Create the melt evaluators, but only if we use melt transport in the model
     if (simulator_access.include_melt_transport())
@@ -247,32 +234,25 @@ namespace aspect
         melt_component_indices[1] = simulator_access.introspection().variable("fluid pressure").first_component_index;
         melt_component_indices[2] = simulator_access.introspection().variable("compaction pressure").first_component_index;
 
-        fluid_velocity = std::make_unique<FEPointEvaluation<dim, dim>>(mapping_info,
-                                                                        simulator_access.get_fe(),
-                                                                        melt_component_indices[0]);
+        fluid_velocity = std::make_unique<FEPointEvaluation<dim, dim>>(mapping_info, simulator_access.get_fe(), melt_component_indices[0]);
         if (simulator_access.get_parameters().use_locally_conservative_discretization == false)
-          fluid_pressure = std::make_unique<FEPointEvaluation<1, dim>>(mapping_info,
-                                                                        simulator_access.get_fe(),
-                                                                        melt_component_indices[1]);
+          fluid_pressure = std::make_unique<FEPointEvaluation<1, dim>>(mapping_info, simulator_access.get_fe(), melt_component_indices[1]);
         else
           {
             fluid_pressure = std::make_unique<FEPointEvaluation<1, dim>>(simulator_access.get_mapping(),
-                                                                          simulator_access.get_fe(),
-                                                                          update_flags,
-                                                                          melt_component_indices[1]);
+                                                                         simulator_access.get_fe(),
+                                                                         update_flags,
+                                                                         melt_component_indices[1]);
           }
 
         if (simulator_access.get_melt_handler().melt_parameters.use_discontinuous_p_c == false)
-          compaction_pressure = std::make_unique<FEPointEvaluation<1, dim>>(mapping_info,
-                                                                             simulator_access.get_fe(),
-                                                                             melt_component_indices[2]);
+          compaction_pressure =
+            std::make_unique<FEPointEvaluation<1, dim>>(mapping_info, simulator_access.get_fe(), melt_component_indices[2]);
         else
           compaction_pressure = std::make_unique<FEPointEvaluation<1, dim>>(simulator_access.get_mapping(),
-                                                                             simulator_access.get_fe(),
-                                                                             update_flags,
-                                                                             melt_component_indices[2]);
-
-
+                                                                            simulator_access.get_fe(),
+                                                                            update_flags,
+                                                                            melt_component_indices[2]);
       }
   }
 
@@ -280,10 +260,9 @@ namespace aspect
 
   template <int dim>
   void
-  SolutionEvaluator<dim>::reinit(const typename DoFHandler<dim>::active_cell_iterator &cell,
-                                 const ArrayView<Point<dim>> &positions)
+  SolutionEvaluator<dim>::reinit(const typename DoFHandler<dim>::active_cell_iterator &cell, const ArrayView<Point<dim>> &positions)
   {
-    mapping_info.reinit(cell,positions);
+    mapping_info.reinit(cell, positions);
 
     if (simulator_access.get_parameters().use_locally_conservative_discretization == true)
       {
@@ -291,14 +270,13 @@ namespace aspect
 
         if (simulator_access.include_melt_transport())
           {
-            fluid_pressure->reinit (cell, positions);
+            fluid_pressure->reinit(cell, positions);
           }
       }
 
-    if (simulator_access.include_melt_transport()
-        && simulator_access.get_melt_handler().melt_parameters.use_discontinuous_p_c == true)
+    if (simulator_access.include_melt_transport() && simulator_access.get_melt_handler().melt_parameters.use_discontinuous_p_c == true)
       {
-        compaction_pressure->reinit (cell, positions);
+        compaction_pressure->reinit(cell, positions);
       }
   }
 
@@ -306,50 +284,50 @@ namespace aspect
 
   template <int dim>
   void
-  SolutionEvaluator<dim>::evaluate(const ArrayView<double> &solution_values,
+  SolutionEvaluator<dim>::evaluate(const ArrayView<double>                             &solution_values,
                                    const std::vector<EvaluationFlags::EvaluationFlags> &evaluation_flags)
   {
     const auto &component_indices = simulator_access.introspection().component_indices;
 
-    for (unsigned int i=1; i<dim; ++i)
+    for (unsigned int i = 1; i < dim; ++i)
       Assert(evaluation_flags[component_indices.velocities[i]] == evaluation_flags[component_indices.velocities[0]],
              ExcMessage("The evaluation flags for the velocity components are not the same."));
 
-    for (unsigned int i=1; i<simulator_access.n_compositional_fields(); ++i)
+    for (unsigned int i = 1; i < simulator_access.n_compositional_fields(); ++i)
       Assert(evaluation_flags[component_indices.compositional_fields[i]] == evaluation_flags[component_indices.compositional_fields[0]],
              ExcMessage("The evaluation flags for the compositional fields are not the same."));
 
     if (evaluation_flags[component_indices.velocities[0]] & EvaluationFlags::values ||
         evaluation_flags[component_indices.velocities[0]] & EvaluationFlags::gradients)
-      velocity.evaluate (solution_values, evaluation_flags[component_indices.velocities[0]]);
+      velocity.evaluate(solution_values, evaluation_flags[component_indices.velocities[0]]);
 
     if (evaluation_flags[component_indices.pressure] & EvaluationFlags::values ||
         evaluation_flags[component_indices.pressure] & EvaluationFlags::gradients)
-      pressure->evaluate (solution_values, evaluation_flags[component_indices.pressure]);
+      pressure->evaluate(solution_values, evaluation_flags[component_indices.pressure]);
 
     if (evaluation_flags[component_indices.temperature] & EvaluationFlags::values ||
         evaluation_flags[component_indices.temperature] & EvaluationFlags::gradients)
-      temperature.evaluate (solution_values, evaluation_flags[component_indices.temperature]);
+      temperature.evaluate(solution_values, evaluation_flags[component_indices.temperature]);
 
     if (component_indices.compositional_fields.size() > 0)
       {
         if (evaluation_flags[component_indices.compositional_fields[0]] & EvaluationFlags::values ||
             evaluation_flags[component_indices.compositional_fields[0]] & EvaluationFlags::gradients)
-          for (auto &eval: compositions)
-            eval->evaluate (solution_values, evaluation_flags[eval->get_first_component()]);
+          for (auto &eval : compositions)
+            eval->evaluate(solution_values, evaluation_flags[eval->get_first_component()]);
       }
 
     if (simulator_access.include_melt_transport())
       {
         if (evaluation_flags[melt_component_indices[0]] & EvaluationFlags::values ||
             evaluation_flags[melt_component_indices[0]] & EvaluationFlags::gradients)
-          fluid_velocity->evaluate (solution_values, evaluation_flags[melt_component_indices[0]]);
+          fluid_velocity->evaluate(solution_values, evaluation_flags[melt_component_indices[0]]);
         if (evaluation_flags[melt_component_indices[1]] & EvaluationFlags::values ||
             evaluation_flags[melt_component_indices[1]] & EvaluationFlags::gradients)
-          fluid_pressure->evaluate (solution_values, evaluation_flags[melt_component_indices[1]]);
+          fluid_pressure->evaluate(solution_values, evaluation_flags[melt_component_indices[1]]);
         if (evaluation_flags[melt_component_indices[2]] & EvaluationFlags::values ||
             evaluation_flags[melt_component_indices[2]] & EvaluationFlags::gradients)
-          compaction_pressure->evaluate (solution_values, evaluation_flags[melt_component_indices[2]]);
+          compaction_pressure->evaluate(solution_values, evaluation_flags[melt_component_indices[2]]);
       }
   }
 
@@ -359,8 +337,7 @@ namespace aspect
   {
     template <int n_compositional_fields>
     double
-    get_value(const Tensor<1,n_compositional_fields> &solution,
-              const unsigned int component_index)
+    get_value(const Tensor<1, n_compositional_fields> &solution, const unsigned int component_index)
     {
       AssertIndexRange(component_index, n_compositional_fields);
       return solution[component_index];
@@ -368,18 +345,16 @@ namespace aspect
 
     template <int n_compositional_fields>
     double
-    get_value(const double &solution,
-              const unsigned int component_index)
+    get_value(const double &solution, const unsigned int component_index)
     {
-      (void) component_index;
+      (void)component_index;
       AssertIndexRange(component_index, 1);
       return solution;
     }
 
     template <int dim, int n_compositional_fields>
-    Tensor<1,dim>
-    get_gradient(const Tensor<1,n_compositional_fields,Tensor<1,dim>> &gradient,
-                 const unsigned int component_index)
+    Tensor<1, dim>
+    get_gradient(const Tensor<1, n_compositional_fields, Tensor<1, dim>> &gradient, const unsigned int component_index)
     {
       AssertIndexRange(component_index, n_compositional_fields);
       return gradient[component_index];
@@ -387,11 +362,10 @@ namespace aspect
 
 
     template <int dim, int n_compositional_fields>
-    Tensor<1,dim>
-    get_gradient(const Tensor<1,dim> &gradient,
-                 const unsigned int component_index)
+    Tensor<1, dim>
+    get_gradient(const Tensor<1, dim> &gradient, const unsigned int component_index)
     {
-      (void) component_index;
+      (void)component_index;
       AssertIndexRange(component_index, 1);
       return gradient;
     }
@@ -400,8 +374,8 @@ namespace aspect
 
   template <int dim>
   void
-  SolutionEvaluator<dim>::get_solution(const unsigned int evaluation_point,
-                                       const ArrayView<double> &solution,
+  SolutionEvaluator<dim>::get_solution(const unsigned int                                   evaluation_point,
+                                       const ArrayView<double>                             &solution,
                                        const std::vector<EvaluationFlags::EvaluationFlags> &evaluation_flags) const
   {
     Assert(solution.size() == simulator_access.introspection().n_components,
@@ -411,8 +385,8 @@ namespace aspect
 
     if (evaluation_flags[component_indices.velocities[0]] & EvaluationFlags::values)
       {
-        const Tensor<1,dim> velocity_value = velocity.get_value(evaluation_point);
-        for (unsigned int j=0; j<dim; ++j)
+        const Tensor<1, dim> velocity_value = velocity.get_value(evaluation_point);
+        for (unsigned int j = 0; j < dim; ++j)
           solution[component_indices.velocities[j]] = velocity_value[j];
       }
 
@@ -430,8 +404,7 @@ namespace aspect
         if (evaluation_flags[start_index] & EvaluationFlags::values)
           {
             const unsigned int n_components = eval->get_n_components();
-            eval->get_value(evaluation_point,
-            {&solution[start_index],n_components});
+            eval->get_value(evaluation_point, {&solution[start_index], n_components});
           }
       }
 
@@ -439,9 +412,9 @@ namespace aspect
       {
         if (evaluation_flags[melt_component_indices[0]] & EvaluationFlags::values)
           {
-            const Tensor<1,dim> fluid_velocity_value = fluid_velocity->get_value(evaluation_point);
-            for (unsigned int j=0; j<dim; ++j)
-              solution[melt_component_indices[0]+j] = fluid_velocity_value[j];
+            const Tensor<1, dim> fluid_velocity_value = fluid_velocity->get_value(evaluation_point);
+            for (unsigned int j = 0; j < dim; ++j)
+              solution[melt_component_indices[0] + j] = fluid_velocity_value[j];
           }
 
         if (evaluation_flags[melt_component_indices[1]] & EvaluationFlags::values)
@@ -456,8 +429,8 @@ namespace aspect
 
   template <int dim>
   void
-  SolutionEvaluator<dim>::get_gradients(const unsigned int evaluation_point,
-                                        const ArrayView<Tensor<1,dim>> &gradients,
+  SolutionEvaluator<dim>::get_gradients(const unsigned int                                   evaluation_point,
+                                        const ArrayView<Tensor<1, dim>>                     &gradients,
                                         const std::vector<EvaluationFlags::EvaluationFlags> &evaluation_flags) const
   {
     Assert(gradients.size() == simulator_access.introspection().n_components,
@@ -467,8 +440,8 @@ namespace aspect
 
     if (evaluation_flags[component_indices.velocities[0]] & EvaluationFlags::gradients)
       {
-        const Tensor<2,dim> velocity_gradient = velocity.get_gradient(evaluation_point);
-        for (unsigned int j=0; j<dim; ++j)
+        const Tensor<2, dim> velocity_gradient = velocity.get_gradient(evaluation_point);
+        for (unsigned int j = 0; j < dim; ++j)
           gradients[component_indices.velocities[j]] = velocity_gradient[j];
       }
 
@@ -480,21 +453,20 @@ namespace aspect
 
     for (const auto &eval : compositions)
       {
-        const unsigned int start_index = eval->get_first_component();
+        const unsigned int start_index  = eval->get_first_component();
         const unsigned int n_components = eval->get_n_components();
 
         if (evaluation_flags[start_index] & EvaluationFlags::gradients)
-          eval->get_gradient(evaluation_point,
-          {&gradients[start_index],n_components});
+          eval->get_gradient(evaluation_point, {&gradients[start_index], n_components});
       }
 
     if (simulator_access.include_melt_transport())
       {
         if (evaluation_flags[melt_component_indices[0]] & EvaluationFlags::gradients)
           {
-            const Tensor<2,dim> fluid_velocity_gradient = fluid_velocity->get_gradient(evaluation_point);
-            for (unsigned int j=0; j<dim; ++j)
-              gradients[melt_component_indices[0]+j] = fluid_velocity_gradient[j];
+            const Tensor<2, dim> fluid_velocity_gradient = fluid_velocity->get_gradient(evaluation_point);
+            for (unsigned int j = 0; j < dim; ++j)
+              gradients[melt_component_indices[0] + j] = fluid_velocity_gradient[j];
           }
 
         if (evaluation_flags[melt_component_indices[1]] & EvaluationFlags::gradients)
@@ -541,8 +513,7 @@ namespace aspect
 
   template <int dim>
   std::unique_ptr<SolutionEvaluator<dim>>
-  construct_solution_evaluator (const SimulatorAccess<dim> &simulator_access,
-                                const UpdateFlags update_flags)
+  construct_solution_evaluator(const SimulatorAccess<dim> &simulator_access, const UpdateFlags update_flags)
   {
     return std::make_unique<SolutionEvaluator<dim>>(simulator_access, update_flags);
   }
@@ -554,8 +525,8 @@ namespace aspect
 {
 #define INSTANTIATE(dim) \
   template class SolutionEvaluator<dim>; \
-  template std::unique_ptr<SolutionEvaluator<dim>> construct_solution_evaluator (const SimulatorAccess<dim> &simulator_access, \
-                                                                                  const UpdateFlags update_flags);
+  template std::unique_ptr<SolutionEvaluator<dim>> construct_solution_evaluator(const SimulatorAccess<dim> &simulator_access, \
+                                                                                const UpdateFlags           update_flags);
 
   ASPECT_INSTANTIATE(INSTANTIATE)
 

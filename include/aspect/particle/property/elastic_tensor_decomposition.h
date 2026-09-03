@@ -56,16 +56,16 @@ namespace aspect
          * defines the stress needed to cause an isotropic strain in the
          * material.
          */
-        SymmetricTensor<2,3>
-        compute_voigt_stiffness_tensor(const SymmetricTensor<2,6> &elastic_tensor);
+        SymmetricTensor<2, 3>
+        compute_voigt_stiffness_tensor(const SymmetricTensor<2, 6> &elastic_tensor);
 
         /**
          * Computes the dilatation stiffness tensor from the elastic tensor
          * The dilatational stiffness tensor (see Browaeys and Chevrot, 2004)
          * defines the stress to cause isotropic dilatation in the material.
          */
-        SymmetricTensor<2,3>
-        compute_dilatation_stiffness_tensor(const SymmetricTensor<2,6> &elastic_tensor);
+        SymmetricTensor<2, 3>
+        compute_dilatation_stiffness_tensor(const SymmetricTensor<2, 6> &elastic_tensor);
 
         /**
          * Computes the Symmetry Cartesian Coordinate System (SCCS).
@@ -85,8 +85,9 @@ namespace aspect
          * The dilatation_stiffness_tensor defines the stress to cause isotropic dilatation in the material.
          * The voigt_stiffness_tensor defines the stress needed to cause an isotropic strain in the material
          */
-        Tensor<2,3> compute_unpermutated_SCCS(const SymmetricTensor<2,3> &dilatation_stiffness_tensor,
-                                              const SymmetricTensor<2,3> &voigt_stiffness_tensor);
+        Tensor<2, 3>
+        compute_unpermutated_SCCS(const SymmetricTensor<2, 3> &dilatation_stiffness_tensor,
+                                  const SymmetricTensor<2, 3> &voigt_stiffness_tensor);
 
         /**
          * Uses the Symmetry Cartesian Coordinate System (SCCS) to try the different permutations to
@@ -99,102 +100,94 @@ namespace aspect
          * vectors has a finite dimension [...], i.e. using a different norm from eq. 2.3 will change distances
          * but not the resulting decomposition.".
          */
-        std::array<std::array<double,3>,7>
-        compute_elastic_tensor_SCCS_decompositions(
-          const Tensor<2,3> &unpermutated_SCCS,
-          const SymmetricTensor<2,6> &elastic_matrix);
+        std::array<std::array<double, 3>, 7>
+        compute_elastic_tensor_SCCS_decompositions(const Tensor<2, 3> &unpermutated_SCCS, const SymmetricTensor<2, 6> &elastic_matrix);
 
 
         /**
          * The tensors below can be used to project matrices to different symmetries.
          * See Browaeys and Chevrot, 2004.
          */
-        const SymmetricTensor<2,21> projection_matrix_triclinic_to_monoclinic(
-          Tensor<2,21>(
-        {
-          {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-          {0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-          {0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-          {0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-          {0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-          {0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-          {0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-          {0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0},
-          {0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0},
-          {0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0},
-          {0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0},
-          {0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0},
-          {0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0},
-          {0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0},
-          {0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0},
-          {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0},
-          {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0},
-          {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0},
-          {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0},
-          {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0},
-          {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-        })
-        );
+        const SymmetricTensor<2, 21> projection_matrix_triclinic_to_monoclinic(Tensor<2, 21>({
+          {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+          {0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+          {0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+          {0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+          {0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+          {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+          {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0},
+          {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0},
+          {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0},
+          {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0},
+          {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+        }));
 
-        const SymmetricTensor<2,9> projection_matrix_monoclinic_to_orthorhombic(
-          Tensor<2,9>(
-        {
-          {1,0,0,0,0,0,0,0,0},
-          {0,1,0,0,0,0,0,0,0},
-          {0,0,1,0,0,0,0,0,0},
-          {0,0,0,1,0,0,0,0,0},
-          {0,0,0,0,1,0,0,0,0},
-          {0,0,0,0,0,1,0,0,0},
-          {0,0,0,0,0,0,1,0,0},
-          {0,0,0,0,0,0,0,1,0},
-          {0,0,0,0,0,0,0,0,1}
-        })
-        );
+        const SymmetricTensor<2, 9> projection_matrix_monoclinic_to_orthorhombic(Tensor<2, 9>({{1, 0, 0, 0, 0, 0, 0, 0, 0},
+                                                                                               {0, 1, 0, 0, 0, 0, 0, 0, 0},
+                                                                                               {0, 0, 1, 0, 0, 0, 0, 0, 0},
+                                                                                               {0, 0, 0, 1, 0, 0, 0, 0, 0},
+                                                                                               {0, 0, 0, 0, 1, 0, 0, 0, 0},
+                                                                                               {0, 0, 0, 0, 0, 1, 0, 0, 0},
+                                                                                               {0, 0, 0, 0, 0, 0, 1, 0, 0},
+                                                                                               {0, 0, 0, 0, 0, 0, 0, 1, 0},
+                                                                                               {0, 0, 0, 0, 0, 0, 0, 0, 1}}));
 
-        const SymmetricTensor<2,9> projection_matrix_orthorhombic_to_tetragonal(
-          Tensor<2,9>(
-        {
-          {0.5,0.5,0.0,0.0,0.0,0.0,0.0,0.0,0.0},
-          {0.5,0.5,0.0,0.0,0.0,0.0,0.0,0.0,0.0},
-          {0.0,0.0,1.0,0.0,0.0,0.0,0.0,0.0,0.0},
-          {0.0,0.0,0.0,0.5,0.5,0.0,0.0,0.0,0.0},
-          {0.0,0.0,0.0,0.5,0.5,0.0,0.0,0.0,0.0},
-          {0.0,0.0,0.0,0.0,0.0,1.0,0.0,0.0,0.0},
-          {0.0,0.0,0.0,0.0,0.0,0.0,0.5,0.5,0.0},
-          {0.0,0.0,0.0,0.0,0.0,0.0,0.5,0.5,0.0},
-          {0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,1.0}
-        })
-        );
+        const SymmetricTensor<2, 9>
+          projection_matrix_orthorhombic_to_tetragonal(Tensor<2, 9>({{0.5, 0.5, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0},
+                                                                     {0.5, 0.5, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0},
+                                                                     {0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0},
+                                                                     {0.0, 0.0, 0.0, 0.5, 0.5, 0.0, 0.0, 0.0, 0.0},
+                                                                     {0.0, 0.0, 0.0, 0.5, 0.5, 0.0, 0.0, 0.0, 0.0},
+                                                                     {0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0},
+                                                                     {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.5, 0.5, 0.0},
+                                                                     {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.5, 0.5, 0.0},
+                                                                     {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0}}));
 
-        const SymmetricTensor<2,9> projection_matrix_tetragonal_to_hexagonal(
-          Tensor<2,9>(
-        {
-          {3./8.                , 3./8.                , 0.0, 0.0, 0.0, 1./(4.*std::sqrt(2.))  , 0.0, 0.0, 1./4.                 },
-          {3./8.                , 3./8.                , 0.0, 0.0, 0.0, 1./(4.*std::sqrt(2.))  , 0.0, 0.0, 1./4.                 },
-          {0.0                  , 0.0                  , 1.0, 0.0, 0.0, 0.0                    , 0.0, 0.0, 0.0                   },
-          {0.0                  , 0.0                  , 0.0, 0.5, 0.5, 0.0                    , 0.0, 0.0, 0.0                   },
-          {0.0                  , 0.0                  , 0.0, 0.5, 0.5, 0.0                    , 0.0, 0.0, 0.0                   },
-          {1./(4.*std::sqrt(2.)), 1./(4.*std::sqrt(2.)), 0.0, 0.0, 0.0, 3./4.                  , 0.0, 0.0, -1./(2.*std::sqrt(2.))},
-          {0.0                  , 0.0                  , 0.0, 0.0, 0.0, 0.0                    , 0.5, 0.5, 0.0                   },
-          {0.0                  , 0.0                  , 0.0, 0.0, 0.0, 0.0                    , 0.5, 0.5, 0.0                   },
-          {1./4.                , 1./4.                , 0.0, 0.0, 0.0, -1./(2.*std::sqrt(2.)) , 0.0, 0.0, 0.5                   }
-        })
-        );
+        const SymmetricTensor<2, 9> projection_matrix_tetragonal_to_hexagonal(Tensor<2, 9>(
+          {{3. / 8., 3. / 8., 0.0, 0.0, 0.0, 1. / (4. * std::sqrt(2.)), 0.0, 0.0, 1. / 4.},
+           {3. / 8., 3. / 8., 0.0, 0.0, 0.0, 1. / (4. * std::sqrt(2.)), 0.0, 0.0, 1. / 4.},
+           {0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0},
+           {0.0, 0.0, 0.0, 0.5, 0.5, 0.0, 0.0, 0.0, 0.0},
+           {0.0, 0.0, 0.0, 0.5, 0.5, 0.0, 0.0, 0.0, 0.0},
+           {1. / (4. * std::sqrt(2.)), 1. / (4. * std::sqrt(2.)), 0.0, 0.0, 0.0, 3. / 4., 0.0, 0.0, -1. / (2. * std::sqrt(2.))},
+           {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.5, 0.5, 0.0},
+           {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.5, 0.5, 0.0},
+           {1. / 4., 1. / 4., 0.0, 0.0, 0.0, -1. / (2. * std::sqrt(2.)), 0.0, 0.0, 0.5}}));
 
-        const SymmetricTensor<2,9> projection_matrix_hexagonal_to_isotropic(
-          Tensor<2,9>(
-        {
-          {3./15.           , 3./15.           , 3./15.           , std::sqrt(2.)/15. , std::sqrt(2.)/15. , std::sqrt(2.)/15. , 2./15.            , 2./15.            , 2./15.             },
-          {3./15.           , 3./15.           , 3./15.           , std::sqrt(2.)/15. , std::sqrt(2.)/15. , std::sqrt(2.)/15. , 2./15.            , 2./15.            , 2./15.             },
-          {3./15.           , 3./15.           , 3./15.           , std::sqrt(2.)/15. , std::sqrt(2.)/15. , std::sqrt(2.)/15. , 2./15.            , 2./15.            , 2./15.             },
-          {std::sqrt(2.)/15., std::sqrt(2.)/15., std::sqrt(2.)/15., 4./15.            , 4./15.            , 4./15.            , -std::sqrt(2.)/15., -std::sqrt(2.)/15., -std::sqrt(2.)/15. },
-          {std::sqrt(2.)/15., std::sqrt(2.)/15., std::sqrt(2.)/15., 4./15.            , 4./15.            , 4./15.            , -std::sqrt(2.)/15., -std::sqrt(2.)/15., -std::sqrt(2.)/15. },
-          {std::sqrt(2.)/15., std::sqrt(2.)/15., std::sqrt(2.)/15., 4./15.            , 4./15.            , 4./15.            , -std::sqrt(2.)/15., -std::sqrt(2.)/15., -std::sqrt(2.)/15. },
-          {2./15.           , 2./15.           , 2./15.           , -std::sqrt(2.)/15., -std::sqrt(2.)/15., -std::sqrt(2.)/15., 1./5.             , 1./5.             , 1./5.         },
-          {2./15.           , 2./15.           , 2./15.           , -std::sqrt(2.)/15., -std::sqrt(2.)/15., -std::sqrt(2.)/15., 1./5.             , 1./5.             , 1./5.              },
-          {2./15.           , 2./15.           , 2./15.           , -std::sqrt(2.)/15., -std::sqrt(2.)/15., -std::sqrt(2.)/15., 1./5.             , 1./5.             , 1./5.              }
-        })
-        );
+        const SymmetricTensor<2, 9> projection_matrix_hexagonal_to_isotropic(Tensor<2, 9>(
+          {{3. / 15., 3. / 15., 3. / 15., std::sqrt(2.) / 15., std::sqrt(2.) / 15., std::sqrt(2.) / 15., 2. / 15., 2. / 15., 2. / 15.},
+           {3. / 15., 3. / 15., 3. / 15., std::sqrt(2.) / 15., std::sqrt(2.) / 15., std::sqrt(2.) / 15., 2. / 15., 2. / 15., 2. / 15.},
+           {3. / 15., 3. / 15., 3. / 15., std::sqrt(2.) / 15., std::sqrt(2.) / 15., std::sqrt(2.) / 15., 2. / 15., 2. / 15., 2. / 15.},
+           {std::sqrt(2.) / 15.,
+            std::sqrt(2.) / 15.,
+            std::sqrt(2.) / 15.,
+            4. / 15.,
+            4. / 15.,
+            4. / 15.,
+            -std::sqrt(2.) / 15.,
+            -std::sqrt(2.) / 15.,
+            -std::sqrt(2.) / 15.},
+           {std::sqrt(2.) / 15.,
+            std::sqrt(2.) / 15.,
+            std::sqrt(2.) / 15.,
+            4. / 15.,
+            4. / 15.,
+            4. / 15.,
+            -std::sqrt(2.) / 15.,
+            -std::sqrt(2.) / 15.,
+            -std::sqrt(2.) / 15.},
+           {std::sqrt(2.) / 15.,
+            std::sqrt(2.) / 15.,
+            std::sqrt(2.) / 15.,
+            4. / 15.,
+            4. / 15.,
+            4. / 15.,
+            -std::sqrt(2.) / 15.,
+            -std::sqrt(2.) / 15.,
+            -std::sqrt(2.) / 15.},
+           {2. / 15., 2. / 15., 2. / 15., -std::sqrt(2.) / 15., -std::sqrt(2.) / 15., -std::sqrt(2.) / 15., 1. / 5., 1. / 5., 1. / 5.},
+           {2. / 15., 2. / 15., 2. / 15., -std::sqrt(2.) / 15., -std::sqrt(2.) / 15., -std::sqrt(2.) / 15., 1. / 5., 1. / 5., 1. / 5.},
+           {2. / 15., 2. / 15., 2. / 15., -std::sqrt(2.) / 15., -std::sqrt(2.) / 15., -std::sqrt(2.) / 15., 1. / 5., 1. / 5., 1. / 5.}}));
       }
 
       /**
@@ -217,7 +210,7 @@ namespace aspect
            * beginning of the program after parse_parameters is run.
            */
           void
-          initialize () override;
+          initialize() override;
 
           /**
            * Initialization function. This function is called once at the
@@ -231,22 +224,21 @@ namespace aspect
            * properties.
            */
           void
-          initialize_one_particle_property (const Point<dim> &position,
-                                            std::vector<double> &particle_properties) const override;
+          initialize_one_particle_property(const Point<dim> &position, std::vector<double> &particle_properties) const override;
 
           /**
            * @copydoc aspect::Particle::Property::Interface::update_particle_properties()
            */
           void
-          update_particle_properties (const ParticleUpdateInputs<dim> &inputs,
-                                      typename ParticleHandler<dim>::particle_iterator_range &particles) const override;
+          update_particle_properties(const ParticleUpdateInputs<dim>                        &inputs,
+                                     typename ParticleHandler<dim>::particle_iterator_range &particles) const override;
 
           /**
            * This function tells the particle manager that
            * we need to update particle properties.
            */
           UpdateTimeFlags
-          need_update () const override;
+          need_update() const override;
 
           /**
            * Set up the information about the names and number of components

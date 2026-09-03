@@ -47,8 +47,8 @@ namespace aspect
         /**
          * Evaluate the melt fraction in the material model.
          */
-        std::pair<std::string,std::string>
-        execute (TableHandler &statistics) override;
+        std::pair<std::string, std::string>
+        execute(TableHandler &statistics) override;
     };
   }
 }

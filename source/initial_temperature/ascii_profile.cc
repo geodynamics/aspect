@@ -20,9 +20,10 @@
 
 
 #include <aspect/global.h>
+
+#include <aspect/geometry_model/interface.h>
 #include <aspect/initial_temperature/ascii_profile.h>
 #include <aspect/utilities.h>
-#include <aspect/geometry_model/interface.h>
 
 
 namespace aspect
@@ -30,13 +31,12 @@ namespace aspect
   namespace InitialTemperature
   {
     template <int dim>
-    AsciiProfile<dim>::AsciiProfile ()
-      = default;
+    AsciiProfile<dim>::AsciiProfile() = default;
 
 
     template <int dim>
     void
-    AsciiProfile<dim>::initialize ()
+    AsciiProfile<dim>::initialize()
     {
       this->initialize(this->get_mpi_communicator());
       temperature_index = this->get_column_index_from_name("temperature");
@@ -45,18 +45,19 @@ namespace aspect
 
 
     template <int dim>
-    double AsciiProfile<dim>::initial_temperature (const Point<dim> &p) const
+    double
+    AsciiProfile<dim>::initial_temperature(const Point<dim> &p) const
     {
       const double depth = this->get_geometry_model().depth(p);
-      return this->get_data_component(Point<1>(depth),temperature_index);
+      return this->get_data_component(Point<1>(depth), temperature_index);
     }
 
 
     template <int dim>
     void
-    AsciiProfile<dim>::declare_parameters (ParameterHandler &prm)
+    AsciiProfile<dim>::declare_parameters(ParameterHandler &prm)
     {
-      prm.enter_subsection ("Initial temperature model");
+      prm.enter_subsection("Initial temperature model");
       {
         Utilities::AsciiDataBase<dim>::declare_parameters(prm,
                                                           "$ASPECT_SOURCE_DIR/data/initial-temperature/ascii-profile/tests/",
@@ -69,12 +70,11 @@ namespace aspect
 
     template <int dim>
     void
-    AsciiProfile<dim>::parse_parameters (ParameterHandler &prm)
+    AsciiProfile<dim>::parse_parameters(ParameterHandler &prm)
     {
-      prm.enter_subsection ("Initial temperature model");
+      prm.enter_subsection("Initial temperature model");
       {
-        Utilities::AsciiDataBase<dim>::parse_parameters(prm,
-                                                        "Ascii profile");
+        Utilities::AsciiDataBase<dim>::parse_parameters(prm, "Ascii profile");
       }
       prm.leave_subsection();
     }

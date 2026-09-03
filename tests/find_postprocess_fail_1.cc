@@ -25,8 +25,8 @@
 #include <aspect/postprocess/pressure_statistics.h>
 #include <aspect/simulator.h>
 
-#include <utility>
 #include <limits>
+#include <utility>
 
 
 namespace aspect
@@ -37,10 +37,12 @@ namespace aspect
     class Box2 : public Box<dim>
     {
       public:
-        virtual void update();
+        virtual void
+        update();
     };
     template <int dim>
-    void Box2<dim>::update()
+    void
+    Box2<dim>::update()
     {
       this->get_postprocess_manager().template get_matching_postprocessor<Postprocess::PressureStatistics<dim>>();
       std::cout << "PressureStatistics is found!" << std::endl;

@@ -34,32 +34,31 @@ namespace aspect
     {
 
       /**
-      * A simplified model to calculate the change in composition upon melting
-      * of average mantle as it approaches the surface to produce a basaltic crust
-      * and a harzburgitic lithosphere. The model assumes that the crust is
-      * generated at a constant depth, and that the lithosphere is generated
-      * below the crust at a constant depth. The reaction producing crust and
-      * lithosphere only occurs in material that is upwelling, but does not take
-      * into account the temperature of the upwelling material.
-      *
-      * @ingroup ReactionModel
-      */
+       * A simplified model to calculate the change in composition upon melting
+       * of average mantle as it approaches the surface to produce a basaltic crust
+       * and a harzburgitic lithosphere. The model assumes that the crust is
+       * generated at a constant depth, and that the lithosphere is generated
+       * below the crust at a constant depth. The reaction producing crust and
+       * lithosphere only occurs in material that is upwelling, but does not take
+       * into account the temperature of the upwelling material.
+       *
+       * @ingroup ReactionModel
+       */
       template <int dim>
       class CrustLithosphereFormation : public ::aspect::SimulatorAccess<dim>
       {
         public:
           /**
-          * Declare the parameters this function takes through input files.
-          */
-          static
-          void
-          declare_parameters (ParameterHandler &prm);
+           * Declare the parameters this function takes through input files.
+           */
+          static void
+          declare_parameters(ParameterHandler &prm);
 
           /**
            * Read the parameters from the parameter file.
            */
           void
-          parse_parameters (ParameterHandler &prm);
+          parse_parameters(ParameterHandler &prm);
 
           /**
            * Compute the change in composition for the basalt and harzburgite chemical
@@ -70,8 +69,8 @@ namespace aspect
            * in the material model outputs object @p out.
            */
           void
-          calculate_reaction_terms (const typename Interface<dim>::MaterialModelInputs  &in,
-                                    typename Interface<dim>::MaterialModelOutputs       &out) const;
+          calculate_reaction_terms(const typename Interface<dim>::MaterialModelInputs &in,
+                                   typename Interface<dim>::MaterialModelOutputs      &out) const;
 
         private:
           /**
@@ -117,8 +116,8 @@ namespace aspect
           };
 
           /**
-          * Selected option to compute the reference profile for composition.
-          */
+           * Selected option to compute the reference profile for composition.
+           */
           HarzburgiteProfile harzburgite_profile;
 
           /**

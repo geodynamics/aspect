@@ -37,7 +37,7 @@ namespace aspect
           indicators *= temperature_scaling_factor;
         }
 
-      for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
+      for (unsigned int c = 0; c < this->n_compositional_fields(); ++c)
         {
           this_indicator = 0;
           this->get_artificial_viscosity_composition(this_indicator, c);
@@ -49,8 +49,7 @@ namespace aspect
 
     template <int dim>
     void
-    ArtificialViscosity<dim>::
-    declare_parameters (ParameterHandler &prm)
+    ArtificialViscosity<dim>::declare_parameters(ParameterHandler &prm)
     {
       prm.enter_subsection("Mesh refinement");
       {
@@ -58,12 +57,12 @@ namespace aspect
         {
           prm.declare_entry("Temperature scaling factor",
                             "0.0",
-                            Patterns::Double (0.),
+                            Patterns::Double(0.),
                             "A scaling factor for the artificial viscosity "
                             " of the temperature equation. Use 0.0 to disable.");
           prm.declare_entry("Compositional field scaling factors",
                             "",
-                            Patterns::List (Patterns::Double (0.)),
+                            Patterns::List(Patterns::Double(0.)),
                             "A list of scaling factors by which every individual compositional "
                             "field will be multiplied. These "
                             "factors are used to weigh the various indicators relative to "
@@ -81,7 +80,7 @@ namespace aspect
 
     template <int dim>
     void
-    ArtificialViscosity<dim>::parse_parameters (ParameterHandler &prm)
+    ArtificialViscosity<dim>::parse_parameters(ParameterHandler &prm)
     {
       prm.enter_subsection("Mesh refinement");
       {
@@ -89,22 +88,18 @@ namespace aspect
         {
           temperature_scaling_factor = prm.get_double("Temperature scaling factor");
 
-          composition_scaling_factors
-            = Utilities::string_to_double(
-                Utilities::split_string_list(prm.get("Compositional field scaling factors")));
+          composition_scaling_factors =
+            Utilities::string_to_double(Utilities::split_string_list(prm.get("Compositional field scaling factors")));
 
-          AssertThrow (composition_scaling_factors.size() == this->n_compositional_fields()
-                       ||
-                       composition_scaling_factors.size() == 0,
-                       ExcMessage ("The number of scaling factors given here must either be "
-                                   "zero or equal to the number of chosen refinement criteria."));
+          AssertThrow(composition_scaling_factors.size() == this->n_compositional_fields() || composition_scaling_factors.size() == 0,
+                      ExcMessage("The number of scaling factors given here must either be "
+                                 "zero or equal to the number of chosen refinement criteria."));
 
           if (composition_scaling_factors.size() == 0)
-            composition_scaling_factors.resize (this->n_compositional_fields(), 0.0);
+            composition_scaling_factors.resize(this->n_compositional_fields(), 0.0);
 
           const double sum_composition_factors =
-            std::accumulate (composition_scaling_factors.begin(),
-                             composition_scaling_factors.end(), 0.0);
+            std::accumulate(composition_scaling_factors.begin(), composition_scaling_factors.end(), 0.0);
 
           AssertThrow(sum_composition_factors + temperature_scaling_factor > 0.0,
                       ExcMessage("You need to have a positive scaling factor "

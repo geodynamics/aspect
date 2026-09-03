@@ -42,8 +42,8 @@ namespace aspect
         /**
          * Evaluate the solution for the geoid in spherical harmonics and then transfer it to grid output.
          */
-        std::pair<std::string,std::string>
-        execute (TableHandler &statistics) override;
+        std::pair<std::string, std::string>
+        execute(TableHandler &statistics) override;
 
         /**
          * Register with the simulator the other postprocessors that we need
@@ -55,20 +55,20 @@ namespace aspect
         /**
          * Declare the parameters this class takes through input files.
          */
-        static
-        void
-        declare_parameters (ParameterHandler &prm);
+        static void
+        declare_parameters(ParameterHandler &prm);
 
         /**
          * Read the parameters this class declares from the parameter file.
          */
         void
-        parse_parameters (ParameterHandler &prm) override;
+        parse_parameters(ParameterHandler &prm) override;
 
         /**
          * Find if the top or bottom boundaries are free surfaces.
          */
-        void initialize() override;
+        void
+        initialize() override;
 
         /**
          * Evaluate the geoid solution at a point. The evaluation point
@@ -76,7 +76,7 @@ namespace aspect
          * after execute().
          */
         double
-        evaluate (const Point<dim> &) const;
+        evaluate(const Point<dim> &) const;
 
       private:
         /**
@@ -170,33 +170,34 @@ namespace aspect
          * The inner vector stores theta, phi, spherical infinitesimal, and function value on a spherical surface.
          * The outer vector stores the inner vector associated with each quadrature point on a spherical surface.
          */
-        std::pair<std::vector<double>,std::vector<double>>
+        std::pair<std::vector<double>, std::vector<double>>
         to_spherical_harmonic_coefficients(const std::vector<std::vector<double>> &spherical_function) const;
 
         /**
          * Function to compute the density contribution in spherical harmonic expansion throughout the mantle
          * The input outer radius is needed to evaluate the density integral contribution of whole model domain at the surface
-         * This function returns a pair containing real spherical harmonics of density integral (cos and sin part) from min degree to max degree.
+         * This function returns a pair containing real spherical harmonics of density integral (cos and sin part) from min degree to max
+         * degree.
          */
-        std::pair<std::vector<double>,std::vector<double>>
-        density_contribution (const double &outer_radius) const;
+        std::pair<std::vector<double>, std::vector<double>>
+        density_contribution(const double &outer_radius) const;
 
         /**
          * Function to compute the surface and CMB topography contribution in spherical harmonic expansion
          * The input inner and outer radius are used to calculate spherical infinitesimal area, i.e., sin(theta)*d_theta*d_phi
          * associated with each quadrature point on surface and bottom respectively.
          * This function returns a pair containing surface and CMB topography's real spherical harmonic coefficients (cos and sin part)
-         * from min degree to max degree. The surface and CMB average density are also included as the first single element of each subpair respectively.
-         * The topography is based on the dynamic topography postprocessor in case of no free surface,
-         * and based on the real surface from the geometry model in case of a free surface.
+         * from min degree to max degree. The surface and CMB average density are also included as the first single element of each subpair
+         * respectively. The topography is based on the dynamic topography postprocessor in case of no free surface, and based on the real
+         * surface from the geometry model in case of a free surface.
          */
-        std::pair<std::pair<double, std::pair<std::vector<double>,std::vector<double>>>, std::pair<double, std::pair<std::vector<double>,std::vector<double>>>>
-        topography_contribution(const double &outer_radius,
-                                const double &inner_radius) const;
+        std::pair<std::pair<double, std::pair<std::vector<double>, std::vector<double>>>,
+                  std::pair<double, std::pair<std::vector<double>, std::vector<double>>>>
+        topography_contribution(const double &outer_radius, const double &inner_radius) const;
 
         /**
          * A vector to store the cosine terms of the geoid anomaly spherical harmonic coefficients.
-        *
+         *
          * These coefficients are computed afresh by execute() and are subsequently
          * accessed through evaluate(), for example by the sea level postprocessor.
          * Consequently, they do not need to be serialized for checkpoint/restart:

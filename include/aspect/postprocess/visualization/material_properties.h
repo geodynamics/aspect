@@ -47,40 +47,36 @@ namespace aspect
        * base class. See there for their meaning.
        */
       template <int dim>
-      class MaterialProperties
-        : public DataPostprocessor<dim>,
-          public SimulatorAccess<dim>,
-          public Interface<dim>
+      class MaterialProperties : public DataPostprocessor<dim>, public SimulatorAccess<dim>, public Interface<dim>
       {
         public:
-          MaterialProperties ();
+          MaterialProperties();
 
           std::vector<std::string>
-          get_names () const override;
+          get_names() const override;
 
           std::vector<DataComponentInterpretation::DataComponentInterpretation>
-          get_data_component_interpretation () const override;
+          get_data_component_interpretation() const override;
 
           UpdateFlags
-          get_needed_update_flags () const override;
+          get_needed_update_flags() const override;
 
           void
           evaluate_vector_field(const DataPostprocessorInputs::Vector<dim> &input_data,
-                                std::vector<Vector<double>> &computed_quantities) const override;
+                                std::vector<Vector<double>>                &computed_quantities) const override;
 
 
           /**
            * Declare the parameters this class takes through input files.
            */
-          static
-          void
-          declare_parameters (ParameterHandler &prm);
+          static void
+          declare_parameters(ParameterHandler &prm);
 
           /**
            * Read the parameters this class declares from the parameter file.
            */
           void
-          parse_parameters (ParameterHandler &prm) override;
+          parse_parameters(ParameterHandler &prm) override;
 
         private:
           /**

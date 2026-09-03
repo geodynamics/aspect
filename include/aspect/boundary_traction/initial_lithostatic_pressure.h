@@ -40,14 +40,14 @@ namespace aspect
     class InitialLithostaticPressure : public Interface<dim>, public SimulatorAccess<dim>
     {
       public:
-
         /**
          * Initialization function. Because this function is called after
          * initializing the SimulatorAccess, all of the necessary information
          * is available to calculate the pressure profile based on the initial
          * temperature and pressure conditions.
          */
-        void initialize () override;
+        void
+        initialize() override;
 
 
         /**
@@ -55,28 +55,26 @@ namespace aspect
          * (outward) normal vector to the domain is also provided as
          * a second argument.
          */
-        Tensor<1,dim>
-        boundary_traction (const types::boundary_id boundary_indicator,
-                           const Point<dim> &position,
-                           const Tensor<1,dim> &normal_vector) const override;
+        Tensor<1, dim>
+        boundary_traction(const types::boundary_id boundary_indicator,
+                          const Point<dim>        &position,
+                          const Tensor<1, dim>    &normal_vector) const override;
 
 
         /**
          * Declare the parameters this class takes through input files.
          */
-        static
-        void
-        declare_parameters (ParameterHandler &prm);
+        static void
+        declare_parameters(ParameterHandler &prm);
 
 
         /**
          * Read the parameters this class declares from the parameter file.
          */
         void
-        parse_parameters (ParameterHandler &prm) override;
+        parse_parameters(ParameterHandler &prm) override;
 
       private:
-
         /**
          * The number of integration points.
          *
@@ -104,7 +102,8 @@ namespace aspect
          * Return the lithostatic pressure at a given point of the domain
          * based on depth interpolation between computed pressure values.
          */
-        double interpolate_pressure (const Point<dim> &p) const;
+        double
+        interpolate_pressure(const Point<dim> &p) const;
 
         /**
          * The id of the bottom boundary.

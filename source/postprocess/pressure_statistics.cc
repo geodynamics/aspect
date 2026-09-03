@@ -30,21 +30,19 @@ namespace aspect
   namespace Postprocess
   {
     template <int dim>
-    std::pair<std::string,std::string>
-    PressureStatistics<dim>::execute (TableHandler &statistics)
+    std::pair<std::string, std::string>
+    PressureStatistics<dim>::execute(TableHandler &statistics)
     {
       // Use a Gauss-Lobatto quadrature formula based on the pressure
       // degree for computing the min/max, both of which may lie on the
       // boundaries of the cell.
       const QGaussLobatto<dim> quadrature_formula(this->get_fe().base_element(this->introspection().base_elements.pressure).degree + 2);
-      const unsigned int n_q_points = quadrature_formula.size();
+      const unsigned int       n_q_points = quadrature_formula.size();
 
-      FEValues<dim> fe_values (this->get_mapping(),
-                               this->get_fe(),
-                               quadrature_formula,
-                               update_values   |
-                               update_quadrature_points |
-                               update_JxW_values);
+      FEValues<dim> fe_values(this->get_mapping(),
+                              this->get_fe(),
+                              quadrature_formula,
+                              update_values | update_quadrature_points | update_JxW_values);
 
       std::vector<double> pressure_values(n_q_points);
 
@@ -60,22 +58,20 @@ namespace aspect
       for (const auto &cell : this->get_dof_handler().active_cell_iterators())
         if (cell->is_locally_owned())
           {
-            fe_values.reinit (cell);
-            fe_values[this->introspection().extractors.pressure].get_function_values (this->get_solution(),
-                                                                                      pressure_values);
-            for (unsigned int q=0; q<n_q_points; ++q)
+            fe_values.reinit(cell);
+            fe_values[this->introspection().extractors.pressure].get_function_values(this->get_solution(), pressure_values);
+            for (unsigned int q = 0; q < n_q_points; ++q)
               {
                 const double value = pressure_values[q];
 
-                local_min_pressure = std::min (local_min_pressure, value);
-                local_max_pressure = std::max (local_max_pressure, value);
+                local_min_pressure = std::min(local_min_pressure, value);
+                local_max_pressure = std::max(local_max_pressure, value);
 
-                local_pressure_integral += value*fe_values.JxW(q);
+                local_pressure_integral += value * fe_values.JxW(q);
               }
           }
 
-      const double global_pressure_integral
-        = Utilities::MPI::sum (local_pressure_integral, this->get_mpi_communicator());
+      const double global_pressure_integral = Utilities::MPI::sum(local_pressure_integral, this->get_mpi_communicator());
 
       // now do the reductions that are
       // min/max operations. do them in
@@ -84,45 +80,36 @@ namespace aspect
       double global_min_pressure = 0;
       double global_max_pressure = 0;
       {
-        double local_values[2] = { -local_min_pressure, local_max_pressure };
+        double local_values[2] = {-local_min_pressure, local_max_pressure};
         double global_values[2];
 
-        Utilities::MPI::max (local_values, this->get_mpi_communicator(), global_values);
+        Utilities::MPI::max(local_values, this->get_mpi_communicator(), global_values);
 
         global_min_pressure = -global_values[0];
         global_max_pressure = global_values[1];
       }
 
       double global_mean_pressure = global_pressure_integral / this->get_volume();
-      statistics.add_value ("Minimal pressure (Pa)",
-                            global_min_pressure);
-      statistics.add_value ("Average pressure (Pa)",
-                            global_mean_pressure);
-      statistics.add_value ("Maximal pressure (Pa)",
-                            global_max_pressure);
+      statistics.add_value("Minimal pressure (Pa)", global_min_pressure);
+      statistics.add_value("Average pressure (Pa)", global_mean_pressure);
+      statistics.add_value("Maximal pressure (Pa)", global_max_pressure);
 
       // also make sure that the other columns filled by this object
       // all show up with sufficient accuracy and in scientific notation
       {
-        const char *columns[] = { "Minimal pressure (Pa)",
-                                  "Average pressure (Pa)",
-                                  "Maximal pressure (Pa)"
-                                };
+        const char *columns[] = {"Minimal pressure (Pa)", "Average pressure (Pa)", "Maximal pressure (Pa)"};
         for (auto &column : columns)
           {
-            statistics.set_precision (column, 8);
-            statistics.set_scientific (column, true);
+            statistics.set_precision(column, 8);
+            statistics.set_scientific(column, true);
           }
       }
 
       std::ostringstream output;
       output.precision(4);
-      output << global_min_pressure << " Pa, "
-             << global_pressure_integral / this->get_volume() << " Pa, "
-             << global_max_pressure << " Pa";
+      output << global_min_pressure << " Pa, " << global_pressure_integral / this->get_volume() << " Pa, " << global_max_pressure << " Pa";
 
-      return std::pair<std::string, std::string> ("Pressure min/avg/max:",
-                                                  output.str());
+      return std::pair<std::string, std::string>("Pressure min/avg/max:", output.str());
     }
   }
 }

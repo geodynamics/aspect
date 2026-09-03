@@ -22,8 +22,8 @@
 #ifndef _aspect_initial_temperature_patch_on_S40RTS_h
 #define _aspect_initial_temperature_patch_on_S40RTS_h
 
-#include <aspect/initial_temperature/interface.h>
 #include <aspect/initial_temperature/S40RTS_perturbation.h>
+#include <aspect/initial_temperature/interface.h>
 #include <aspect/simulator_access.h>
 #include <aspect/utilities.h>
 
@@ -46,14 +46,14 @@ namespace aspect
         /**
          * Empty Constructor.
          */
-        PatchOnS40RTS ();
+        PatchOnS40RTS();
 
         /**
          * Initialization function. This function is called once at the
          * beginning of the program. Checks preconditions.
          */
         void
-        initialize () override;
+        initialize() override;
 
         // avoid -Woverloaded-virtual:
         using Utilities::AsciiDataInitial<dim>::initialize;
@@ -63,7 +63,7 @@ namespace aspect
          * current class, this function returns value from the text files.
          */
         double
-        ascii_grid_vs (const Point<dim> &position) const;
+        ascii_grid_vs(const Point<dim> &position) const;
 
         /**
          * This parameter gives the maximum depth of the Vs ascii grid. The
@@ -87,20 +87,19 @@ namespace aspect
          * above max_grid_depth and S40RTS Vs data below max_grid_depth.
          */
         double
-        initial_temperature (const Point<dim> &position) const override;
+        initial_temperature(const Point<dim> &position) const override;
 
         /**
          * Declare the parameters this class takes through input files.
          */
-        static
-        void
-        declare_parameters (ParameterHandler &prm);
+        static void
+        declare_parameters(ParameterHandler &prm);
 
         /**
          * Read the parameters this class declares from the parameter file.
          */
         void
-        parse_parameters (ParameterHandler &prm) override;
+        parse_parameters(ParameterHandler &prm) override;
 
       private:
         /**
@@ -113,10 +112,10 @@ namespace aspect
          * This parameter is the depth down to which shear wave perturbations are
          * zeroed out.
          *
-         * This variable is read from the parameter file through a parameter called 'Remove temperature heterogeneity down to specified depth'.
+         * This variable is read from the parameter file through a parameter called 'Remove temperature heterogeneity down to specified
+         * depth'.
          */
         double no_perturbation_depth_patch;
-
     };
   }
 }

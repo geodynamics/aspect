@@ -18,8 +18,10 @@
   <http://www.gnu.org/licenses/>.
 */
 
-#include <aspect/material_model/reaction_model/reaction_chain.h>
 #include <aspect/global.h>
+
+#include <aspect/material_model/reaction_model/reaction_chain.h>
+
 #include <algorithm>
 #include <map>
 
@@ -71,22 +73,24 @@ namespace aspect
 
         // Sanity check: reaction progress values should be close to monotonic
         for (unsigned int i = 1; i < reaction_progress_values.size(); ++i)
-          AssertThrow(reaction_progress_values[i] < reaction_progress_values[i-1] + tolerance_in_reaction_progress,
-                      ExcMessage("'reaction_progress_values[" + std::to_string(i) + "]' = " +
-                                 std::to_string(reaction_progress_values[i]) + " exceeds "
-                                 "'reaction_progress_values[" + std::to_string(i-1) + "]' = " +
-                                 std::to_string(reaction_progress_values[i-1]) + " by more than the "
-                                 "allowed excursion (" + std::to_string(tolerance_in_reaction_progress) + "). Reaction " +
-                                 std::to_string(i) + " should not have progressed further than reaction " +
-                                 std::to_string(i-1) + " in a sequential chain."));
+          AssertThrow(reaction_progress_values[i] < reaction_progress_values[i - 1] + tolerance_in_reaction_progress,
+                      ExcMessage("'reaction_progress_values[" + std::to_string(i) + "]' = " + std::to_string(reaction_progress_values[i]) +
+                                 " exceeds "
+                                 "'reaction_progress_values[" +
+                                 std::to_string(i - 1) + "]' = " + std::to_string(reaction_progress_values[i - 1]) +
+                                 " by more than the "
+                                 "allowed excursion (" +
+                                 std::to_string(tolerance_in_reaction_progress) + "). Reaction " + std::to_string(i) +
+                                 " should not have progressed further than reaction " + std::to_string(i - 1) + " in a sequential chain."));
 
         if (!reaction_progress_values.empty())
           reaction_progress_values[0] = std::clamp(reaction_progress_values[0], 0.0, 1.0);
 
         for (unsigned int i = 1; i < reaction_progress_values.size(); ++i)
           {
-            reaction_progress_values[i] = std::clamp(reaction_progress_values[i], 0.0, 1.0);  // Clamp to valid physical range [0, 1]
-            reaction_progress_values[i] = std::min(reaction_progress_values[i], reaction_progress_values[i-1]);  // Enforce monotonicity xi[i] <= xi[i-1]
+            reaction_progress_values[i] = std::clamp(reaction_progress_values[i], 0.0, 1.0); // Clamp to valid physical range [0, 1]
+            reaction_progress_values[i] =
+              std::min(reaction_progress_values[i], reaction_progress_values[i - 1]); // Enforce monotonicity xi[i] <= xi[i-1]
           }
 
         return reaction_progress_values;
@@ -94,10 +98,10 @@ namespace aspect
 
       template <int dim>
       std::vector<double>
-      ReactionChain<dim>::compute_phase_mass_fractions(const std::vector<double> &reaction_progress_values, const std::vector<double> &phase_densities) const
+      ReactionChain<dim>::compute_phase_mass_fractions(const std::vector<double> &reaction_progress_values,
+                                                       const std::vector<double> &phase_densities) const
       {
-        AssertThrow(!reaction_progress_values.empty(),
-                    ExcMessage("'reaction_progress_values' cannot be empty."));
+        AssertThrow(!reaction_progress_values.empty(), ExcMessage("'reaction_progress_values' cannot be empty."));
         AssertThrow(reaction_progress_values.size() == reactions.size(),
                     ExcMessage("Size of 'reaction_progress_values' (" + std::to_string(reaction_progress_values.size()) +
                                ") does not match number of reactions (" + std::to_string(reactions.size()) + ")."));
@@ -118,7 +122,7 @@ namespace aspect
         // Derive (N+1) volume fractions from (N) cumulative reaction progress fields
         volume_fraction_values[0] = 1.0 - reaction_progress_values_clamped[0];
         for (unsigned int i = 1; i < reaction_progress_values_clamped.size(); ++i)
-          volume_fraction_values[i] = std::max(0.0, reaction_progress_values_clamped[i-1] - reaction_progress_values_clamped[i]);
+          volume_fraction_values[i] = std::max(0.0, reaction_progress_values_clamped[i - 1] - reaction_progress_values_clamped[i]);
         volume_fraction_values.back() = std::max(0.0, reaction_progress_values_clamped.back());
 
         // Sanity check: by construction these should sum to 1 and be non-negative
@@ -141,18 +145,16 @@ namespace aspect
 
       template <int dim>
       double
-      ReactionChain<dim>::net_forward_reaction_rate(const double temperature,
-                                                    const double pressure,
-                                                    const double delta_forward_gibbs_energy,
-                                                    const double cumulative_forward_reaction_progress,
+      ReactionChain<dim>::net_forward_reaction_rate(const double       temperature,
+                                                    const double       pressure,
+                                                    const double       delta_forward_gibbs_energy,
+                                                    const double       cumulative_forward_reaction_progress,
                                                     const unsigned int reaction_index) const
       {
         AssertIndexRange(reaction_index, reactions.size());
         const ReactionStep<dim> &reaction = reactions[reaction_index];
-        return reaction.kinetics->net_forward_reaction_rate(temperature, pressure,
-                                                            delta_forward_gibbs_energy,
-                                                            cumulative_forward_reaction_progress,
-                                                            reaction.local_reaction_index);
+        return reaction.kinetics->net_forward_reaction_rate(
+          temperature, pressure, delta_forward_gibbs_energy, cumulative_forward_reaction_progress, reaction.local_reaction_index);
       }
 
       template <int dim>
@@ -161,12 +163,13 @@ namespace aspect
       {
         prm.enter_subsection("Reaction chain");
         {
-          prm.declare_entry("Kinetic models",
-                            "Interface controlled growth",
-                            Patterns::List(Patterns::Selection(ReactionModelPluginList<dim>::get_pattern_of_names()),
-                                           1, Patterns::List::max_int_value, "|"),
-                            "'|'-separated list of registered reaction kinetics model names, one per reaction in the chain. The number of entries "
-                            "sets the number of reactions N, which must equal the number of compositional fields tracking reaction progress.");
+          prm.declare_entry(
+            "Kinetic models",
+            "Interface controlled growth",
+            Patterns::List(
+              Patterns::Selection(ReactionModelPluginList<dim>::get_pattern_of_names()), 1, Patterns::List::max_int_value, "|"),
+            "'|'-separated list of registered reaction kinetics model names, one per reaction in the chain. The number of entries "
+            "sets the number of reactions N, which must equal the number of compositional fields tracking reaction progress.");
 
           prm.declare_entry("Tolerance in reaction progress",
                             "0.1",
@@ -189,19 +192,20 @@ namespace aspect
 
           AssertThrow(tolerance_in_reaction_progress >= 0.0 && tolerance_in_reaction_progress < 1.0,
                       ExcMessage("The 'Tolerance in reaction progress' must be between [0, 1), "
-                                 "but was set to " + std::to_string(tolerance_in_reaction_progress) + "."));
+                                 "but was set to " +
+                                 std::to_string(tolerance_in_reaction_progress) + "."));
 
           const std::vector<std::string> kinetic_model_names = Utilities::split_string_list(prm.get("Kinetic models"), '|');
-          const unsigned int n_reactions = kinetic_model_names.size();
+          const unsigned int             n_reactions         = kinetic_model_names.size();
 
           AssertThrow(n_reactions > 0, ExcMessage("'Reaction chain/Kinetic models' must contain at least one entry."));
 
           reactions.resize(n_reactions);
           kinetics_models.clear();
 
-          // Group global reaction indices by model name, preserving first-appearance order, so reactions sharing a model name get consecutive
-          // local indices matching the order that name appears in Kinetic models.
-          std::vector<std::string> unique_model_names;
+          // Group global reaction indices by model name, preserving first-appearance order, so reactions sharing a model name get
+          // consecutive local indices matching the order that name appears in Kinetic models.
+          std::vector<std::string>                         unique_model_names;
           std::map<std::string, std::vector<unsigned int>> global_indices_by_model;
           for (unsigned int global_index = 0; global_index < n_reactions; ++global_index)
             {
@@ -238,7 +242,9 @@ namespace aspect
   {
     namespace ReactionModel
     {
-#define INSTANTIATE(dim) template struct ReactionStep<dim>; template class ReactionChain<dim>;
+#define INSTANTIATE(dim) \
+  template struct ReactionStep<dim>; \
+  template class ReactionChain<dim>;
       ASPECT_INSTANTIATE(INSTANTIATE)
 #undef INSTANTIATE
     }

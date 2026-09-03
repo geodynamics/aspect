@@ -24,27 +24,28 @@
 
 #include <aspect/global.h>
 
-#include <deal.II/base/utilities.h>
 #include <deal.II/base/parameter_handler.h>
+#include <deal.II/base/utilities.h>
 #include <deal.II/fe/component_mask.h>
 
 #include <boost/core/demangle.hpp>
 
-#include <tuple>
-#include <string>
-#include <list>
-#include <set>
-#include <map>
-#include <iostream>
-#include <typeinfo>
-#include <type_traits>
-
 #include <mpi.h>
+
+#include <iostream>
+#include <list>
+#include <map>
+#include <set>
+#include <string>
+#include <tuple>
+#include <type_traits>
+#include <typeinfo>
 
 
 namespace aspect
 {
-  template <int dim> class SimulatorAccess;
+  template <int dim>
+  class SimulatorAccess;
 
   namespace Plugins
   {
@@ -66,13 +67,11 @@ namespace aspect
      * class is *also* derived from a second base class `PluginType`. For these
      * cases, use a `dynamic_cast`.
      */
-    template <typename TestType, typename PluginType,
-              typename = typename std::enable_if_t<std::is_base_of<PluginType,TestType>::value>>
-    inline
-    bool
-    plugin_type_matches (const PluginType &object)
+    template <typename TestType, typename PluginType, typename = typename std::enable_if_t<std::is_base_of<PluginType, TestType>::value>>
+    inline bool
+    plugin_type_matches(const PluginType &object)
     {
-      return (dynamic_cast<const TestType *> (&object) != nullptr);
+      return (dynamic_cast<const TestType *>(&object) != nullptr);
     }
 
     /**
@@ -92,23 +91,18 @@ namespace aspect
      * from an interface base class is *also* derived from a second base
      * class `PluginType`. For these cases, use a `dynamic_cast`.
      */
-    template <typename TestType, typename PluginType,
-              typename = typename std::enable_if_t<std::is_base_of<PluginType,TestType>::value>>
-    inline
-    TestType &
-    get_plugin_as_type (PluginType &object)
+    template <typename TestType, typename PluginType, typename = typename std::enable_if_t<std::is_base_of<PluginType, TestType>::value>>
+    inline TestType &
+    get_plugin_as_type(PluginType &object)
     {
       AssertThrow(plugin_type_matches<TestType>(object),
-                  ExcMessage("You have requested to convert a plugin of type <"
-                             + boost::core::demangle(typeid(PluginType).name())
-                             + "> into type <"
-                             + boost::core::demangle(typeid(TestType).name()) +
-                             ">, but this cast cannot be performed."));
+                  ExcMessage("You have requested to convert a plugin of type <" + boost::core::demangle(typeid(PluginType).name()) +
+                             "> into type <" + boost::core::demangle(typeid(TestType).name()) + ">, but this cast cannot be performed."));
 
       // We can safely dereference the pointer, because we checked above that
       // the object is actually of type TestType, and so the result
       // is not a nullptr.
-      return *dynamic_cast<TestType *> (&object);
+      return *dynamic_cast<TestType *>(&object);
     }
   }
 
@@ -144,9 +138,8 @@ namespace aspect
          * if they want something to happen upon startup of the
          * Simulator object to which the plugin contributes.
          */
-        virtual
-        void
-        initialize ();
+        virtual void
+        initialize();
 
         /**
          * A function that is called at the beginning of each time step.
@@ -157,9 +150,8 @@ namespace aspect
          * if they want something to happen at the start of each time
          * step.
          */
-        virtual
-        void
-        update ();
+        virtual void
+        update();
 
         /**
          * Declare the parameters the plugin takes through input files. The
@@ -169,9 +161,8 @@ namespace aspect
          * the other hand, most plugins do have run-time parameters, and
          * they may then overload this function.
          */
-        static
-        void
-        declare_parameters (ParameterHandler &prm);
+        static void
+        declare_parameters(ParameterHandler &prm);
 
         /**
          * Read the parameters this class declares from the parameter file.
@@ -181,9 +172,8 @@ namespace aspect
          * the other hand, most plugins do have run-time parameters, and
          * they may then overload this function.
          */
-        virtual
-        void
-        parse_parameters (ParameterHandler &prm);
+        virtual void
+        parse_parameters(ParameterHandler &prm);
 
         /**
          * Save the state of this object to the argument given to this
@@ -206,8 +196,8 @@ namespace aspect
          * in derived classes can place their status under a key that they can
          * use to retrieve the data.
          */
-        virtual
-        void save (std::map<std::string, std::string> &status_strings) const;
+        virtual void
+        save(std::map<std::string, std::string> &status_strings) const;
 
         /**
          * Restore the state of the object by looking up a description of the
@@ -220,8 +210,8 @@ namespace aspect
          * restored by looking up the value for a key specific to this derived
          * class.
          */
-        virtual
-        void load (const std::map<std::string, std::string> &status_strings);
+        virtual void
+        load(const std::map<std::string, std::string> &status_strings);
     };
 
 
@@ -251,14 +241,14 @@ namespace aspect
         /**
          * Destructor.
          */
-        ~ManagerBase () override;
+        ~ManagerBase() override;
 
         /**
          * A function that is called at the beginning of each time step,
          * calling the update function of the individual plugins.
          */
         void
-        update () override;
+        update() override;
 
         /**
          * Go through the list of all plugins that have been selected
@@ -269,10 +259,9 @@ namespace aspect
          * This function can only be called if the given template type (the first template
          * argument) is a class derived from the Interface class in this namespace.
          */
-        template <typename PluginType,
-                  typename = typename std::enable_if_t<std::is_base_of<InterfaceType,PluginType>::value>>
+        template <typename PluginType, typename = typename std::enable_if_t<std::is_base_of<InterfaceType, PluginType>::value>>
         bool
-        has_matching_active_plugin () const;
+        has_matching_active_plugin() const;
 
         /**
          * Go through the list of all plugins that have been selected
@@ -288,10 +277,9 @@ namespace aspect
          * This function can only be called if the given template type (the first template
          * argument) is a class derived from the Interface class in this namespace.
          */
-        template <typename PluginType,
-                  typename = typename std::enable_if_t<std::is_base_of<InterfaceType,PluginType>::value>>
+        template <typename PluginType, typename = typename std::enable_if_t<std::is_base_of<InterfaceType, PluginType>::value>>
         const PluginType &
-        get_matching_active_plugin () const;
+        get_matching_active_plugin() const;
 
         /**
          * Return a list of plugin objects that have been requested in the
@@ -299,7 +287,7 @@ namespace aspect
          * manager object.
          */
         const std::list<std::unique_ptr<InterfaceType>> &
-        get_active_plugins () const;
+        get_active_plugins() const;
 
         /**
          * Return a list of names used in the input file to select plugins,
@@ -308,15 +296,15 @@ namespace aspect
          * by `get_active_plugins()`.
          */
         const std::vector<std::string> &
-        get_active_plugin_names () const;
+        get_active_plugin_names() const;
 
         /**
          * Write the data of this object to a stream for the purpose of
          * serialization.
          */
         template <class Archive>
-        void save (Archive &ar,
-                   const unsigned int version) const;
+        void
+        save(Archive &ar, const unsigned int version) const;
 
         /**
          * Manager classes are also plugins. The InterfaceBase class
@@ -327,12 +315,12 @@ namespace aspect
         using InterfaceBase::save;
 
         /**
-           * Read the data of this object from a stream for the purpose of
-           * serialization.
-           */
+         * Read the data of this object from a stream for the purpose of
+         * serialization.
+         */
         template <class Archive>
-        void load (Archive &ar,
-                   const unsigned int version);
+        void
+        load(Archive &ar, const unsigned int version);
 
         /**
          * Manager classes are also plugins. The InterfaceBase class
@@ -371,20 +359,21 @@ namespace aspect
       if (std::uncaught_exception() == false)
 #endif
         {
-          Assert (plugin_names.size() == plugin_objects.size(), ExcInternalError());
+          Assert(plugin_names.size() == plugin_objects.size(), ExcInternalError());
         }
     }
 
 
     template <typename InterfaceType>
-    void ManagerBase<InterfaceType>::update()
+    void
+    ManagerBase<InterfaceType>::update()
     {
       // call the update() functions of all plugins:
       for (const auto &p : plugin_objects)
         {
           try
             {
-              p->update ();
+              p->update();
             }
 
           // plugins that throw exceptions usually do not result in
@@ -395,39 +384,27 @@ namespace aspect
           // and abort the program
           catch (std::exception &exc)
             {
-              std::cerr << std::endl << std::endl
-                        << "----------------------------------------------------"
-                        << std::endl;
-              std::cerr << "Exception on MPI process <"
-                        << dealii::Utilities::MPI::this_mpi_process(MPI_COMM_WORLD)
-                        << "> while running plugin <"
-                        << typeid(*p).name()
-                        << ">: " << std::endl
+              std::cerr << std::endl << std::endl << "----------------------------------------------------" << std::endl;
+              std::cerr << "Exception on MPI process <" << dealii::Utilities::MPI::this_mpi_process(MPI_COMM_WORLD)
+                        << "> while running plugin <" << typeid(*p).name() << ">: " << std::endl
                         << exc.what() << std::endl
                         << "Aborting!" << std::endl
-                        << "----------------------------------------------------"
-                        << std::endl;
+                        << "----------------------------------------------------" << std::endl;
 
               // terminate the program!
-              MPI_Abort (MPI_COMM_WORLD, 1);
+              MPI_Abort(MPI_COMM_WORLD, 1);
             }
           catch (...)
             {
-              std::cerr << std::endl << std::endl
-                        << "----------------------------------------------------"
-                        << std::endl;
-              std::cerr << "Exception on MPI process <"
-                        << dealii::Utilities::MPI::this_mpi_process(MPI_COMM_WORLD)
-                        << "> while running plugin <"
-                        << typeid(*p).name()
-                        << ">: " << std::endl;
+              std::cerr << std::endl << std::endl << "----------------------------------------------------" << std::endl;
+              std::cerr << "Exception on MPI process <" << dealii::Utilities::MPI::this_mpi_process(MPI_COMM_WORLD)
+                        << "> while running plugin <" << typeid(*p).name() << ">: " << std::endl;
               std::cerr << "Unknown exception!" << std::endl
                         << "Aborting!" << std::endl
-                        << "----------------------------------------------------"
-                        << std::endl;
+                        << "----------------------------------------------------" << std::endl;
 
               // terminate the program!
-              MPI_Abort (MPI_COMM_WORLD, 1);
+              MPI_Abort(MPI_COMM_WORLD, 1);
             }
         }
     }
@@ -436,14 +413,14 @@ namespace aspect
 
     template <typename InterfaceType>
     template <class Archive>
-    void ManagerBase<InterfaceType>::save (Archive &ar,
-                                           const unsigned int) const
+    void
+    ManagerBase<InterfaceType>::save(Archive &ar, const unsigned int) const
     {
       // let all the postprocessors save their data in a map and then
       // serialize that
-      std::map<std::string,std::string> saved_text;
+      std::map<std::string, std::string> saved_text;
       for (const auto &p : plugin_objects)
-        p->save (saved_text);
+        p->save(saved_text);
 
       ar &saved_text;
     }
@@ -451,27 +428,26 @@ namespace aspect
 
     template <typename InterfaceType>
     template <class Archive>
-    void ManagerBase<InterfaceType>::load (Archive &ar,
-                                           const unsigned int)
+    void
+    ManagerBase<InterfaceType>::load(Archive &ar, const unsigned int)
     {
       // get the map back out of the stream; then let the postprocessors
       // that we currently have get their data from there. note that this
       // may not be the same set of postprocessors we had when we saved
       // their data
-      std::map<std::string,std::string> saved_text;
-      ar &saved_text;
+      std::map<std::string, std::string> saved_text;
+      ar                                &saved_text;
 
       for (auto &p : plugin_objects)
-        p->load (saved_text);
+        p->load(saved_text);
     }
 
 
 
     template <typename InterfaceType>
     template <typename PluginType, typename>
-    inline
-    bool
-    ManagerBase<InterfaceType>::has_matching_active_plugin () const
+    inline bool
+    ManagerBase<InterfaceType>::has_matching_active_plugin() const
     {
       for (const auto &p : plugin_objects)
         if (Plugins::plugin_type_matches<PluginType>(*p))
@@ -482,13 +458,14 @@ namespace aspect
 
     template <typename InterfaceType>
     template <typename PluginType, typename>
-    inline
-    const PluginType &
-    ManagerBase<InterfaceType>::get_matching_active_plugin () const
+    inline const PluginType &
+    ManagerBase<InterfaceType>::get_matching_active_plugin() const
     {
-      AssertThrow(has_matching_active_plugin<PluginType> (),
+      AssertThrow(has_matching_active_plugin<PluginType>(),
                   ExcMessage("You asked the object managing a collection of plugins for a "
-                             "plugin object of type <" + boost::core::demangle(typeid(PluginType).name()) + "> "
+                             "plugin object of type <" +
+                             boost::core::demangle(typeid(PluginType).name()) +
+                             "> "
                              "that could not be found in the current model. You need to "
                              "activate this plugin in the input file for it to be "
                              "available."));
@@ -505,7 +482,7 @@ namespace aspect
 
     template <typename InterfaceType>
     const std::list<std::unique_ptr<InterfaceType>> &
-    ManagerBase<InterfaceType>::get_active_plugins () const
+    ManagerBase<InterfaceType>::get_active_plugins() const
     {
       return plugin_objects;
     }
@@ -514,7 +491,7 @@ namespace aspect
 
     template <typename InterfaceType>
     const std::vector<std::string> &
-    ManagerBase<InterfaceType>::get_active_plugin_names () const
+    ManagerBase<InterfaceType>::get_active_plugin_names() const
     {
       return plugin_names;
     }
@@ -539,37 +516,33 @@ namespace aspect
        * this function is thus the creation of a dummy object in some
        * otherwise unused namespace.
        */
-      template <typename InterfaceClass,
-                typename ModelClass>
+      template <typename InterfaceClass, typename ModelClass>
       struct RegisterHelper
       {
-        /**
-         * Constructor. Given a pointer to a registration function and name
-         * and description of the class, this constructor registers the class
-         * passed as second template argument.
-         */
-        RegisterHelper (void (*register_function) (const std::string &,
+          /**
+           * Constructor. Given a pointer to a registration function and name
+           * and description of the class, this constructor registers the class
+           * passed as second template argument.
+           */
+          RegisterHelper(void (*register_function)(const std::string &,
                                                    const std::string &,
-                                                   void ( *)(ParameterHandler &),
-                                                   std::unique_ptr<InterfaceClass> ( *)()),
-                        const char *name,
-                        const char *description)
-        {
-          register_function (name,
-                             description,
-                             &ModelClass::declare_parameters,
-                             &factory);
-        }
+                                                   void (*)(ParameterHandler &),
+                                                   std::unique_ptr<InterfaceClass> (*)()),
+                         const char *name,
+                         const char *description)
+          {
+            register_function(name, description, &ModelClass::declare_parameters, &factory);
+          }
 
-        /**
-         * A factory object that just creates object of the type registered by
-         * this class.
-         */
-        static
-        std::unique_ptr<InterfaceClass> factory ()
-        {
-          return std::make_unique<ModelClass>();
-        }
+          /**
+           * A factory object that just creates object of the type registered by
+           * this class.
+           */
+          static std::unique_ptr<InterfaceClass>
+          factory()
+          {
+            return std::make_unique<ModelClass>();
+          }
       };
 
 
@@ -580,151 +553,139 @@ namespace aspect
       template <typename InterfaceClass>
       struct PluginList
       {
-        /**
-         * A type describing everything we need to know about a plugin.
-         *
-         * The entries in the tuple are:
-         * - The name by which it can be selected.
-         * - A description of this plugin that will show up in the
-         *   documentation in the parameter file.
-         * - A function that can declare the run-time parameters this
-         *   plugin takes from the parameter file.
-         * - A function that can produce objects of this plugin type.
-         */
-        using PluginInfo
-        = std::tuple<std::string,
-        std::string,
-        void ( *) (ParameterHandler &),
-        std::unique_ptr<InterfaceClass>( *) ()>;
+          /**
+           * A type describing everything we need to know about a plugin.
+           *
+           * The entries in the tuple are:
+           * - The name by which it can be selected.
+           * - A description of this plugin that will show up in the
+           *   documentation in the parameter file.
+           * - A function that can declare the run-time parameters this
+           *   plugin takes from the parameter file.
+           * - A function that can produce objects of this plugin type.
+           */
+          using PluginInfo = std::tuple<std::string, std::string, void (*)(ParameterHandler &), std::unique_ptr<InterfaceClass> (*)()>;
 
-        /**
-         * A pointer to a list of all registered plugins.
-         *
-         * The object is a pointer rather than an object for the following
-         * reason: objects with static initializers (such as =0) are
-         * initialized before any objects for which one needs to run
-         * constructors. Consequently, we can be sure that this pointer is set
-         * to zero before we ever try to register a plugin, and
-         * consequently whenever we run register_plugin(), we
-         * need not worry whether we try to add something to this list before
-         * the lists's constructor has successfully run.
-         */
-        static std::list<PluginInfo> *plugins;
+          /**
+           * A pointer to a list of all registered plugins.
+           *
+           * The object is a pointer rather than an object for the following
+           * reason: objects with static initializers (such as =0) are
+           * initialized before any objects for which one needs to run
+           * constructors. Consequently, we can be sure that this pointer is set
+           * to zero before we ever try to register a plugin, and
+           * consequently whenever we run register_plugin(), we
+           * need not worry whether we try to add something to this list before
+           * the lists's constructor has successfully run.
+           */
+          static std::list<PluginInfo> *plugins;
 
-        /**
-         * Destructor.
-         */
-        ~PluginList ();
+          /**
+           * Destructor.
+           */
+          ~PluginList();
 
-        /**
-         * Register a plugin by name, description, parameter declaration
-         * function, and factory function. See the discussion for the
-         * PluginInfo type above for more information on their meaning.
-         */
-        static
-        void register_plugin (const std::string &name,
-                              const std::string &description,
-                              void (*declare_parameters_function) (ParameterHandler &),
-                              std::unique_ptr<InterfaceClass> (*factory_function) ());
+          /**
+           * Register a plugin by name, description, parameter declaration
+           * function, and factory function. See the discussion for the
+           * PluginInfo type above for more information on their meaning.
+           */
+          static void
+          register_plugin(const std::string &name,
+                          const std::string &description,
+                          void (*declare_parameters_function)(ParameterHandler &),
+                          std::unique_ptr<InterfaceClass> (*factory_function)());
 
-        /**
-         * Generate a list of names of the registered plugins separated by '|'
-         * so that they can be taken as the input for Patterns::Selection.
-         *
-         * To make it easier to visually scan through the list of plugins,
-         * names are sorted alphabetically.
-         */
-        static
-        std::string get_pattern_of_names ();
+          /**
+           * Generate a list of names of the registered plugins separated by '|'
+           * so that they can be taken as the input for Patterns::Selection.
+           *
+           * To make it easier to visually scan through the list of plugins,
+           * names are sorted alphabetically.
+           */
+          static std::string
+          get_pattern_of_names();
 
-        /**
-         * Return a string that describes all registered plugins using the
-         * descriptions that have been provided at the time of registration.
-         *
-         * To make it easier to visually scan through the list of plugins,
-         * names are sorted alphabetically.
-         */
-        static
-        std::string get_description_string ();
+          /**
+           * Return a string that describes all registered plugins using the
+           * descriptions that have been provided at the time of registration.
+           *
+           * To make it easier to visually scan through the list of plugins,
+           * names are sorted alphabetically.
+           */
+          static std::string
+          get_description_string();
 
-        /**
-         * Let all registered plugins define their parameters.
-         */
-        static
-        void declare_parameters (ParameterHandler &prm);
+          /**
+           * Let all registered plugins define their parameters.
+           */
+          static void
+          declare_parameters(ParameterHandler &prm);
 
-        /**
-         * Given the name of one plugin, create a corresponding object and
-         * return a pointer to it. The second argument provides a hint where
-         * this function was called from, to be printed in case there is an
-         * error.
-         *
-         * Ownership of the object is handed over to the caller of this
-         * function.
-         */
-        static
-        std::unique_ptr<InterfaceClass>
-        create_plugin (const std::string  &name,
-                       const std::string &documentation);
+          /**
+           * Given the name of one plugin, create a corresponding object and
+           * return a pointer to it. The second argument provides a hint where
+           * this function was called from, to be printed in case there is an
+           * error.
+           *
+           * Ownership of the object is handed over to the caller of this
+           * function.
+           */
+          static std::unique_ptr<InterfaceClass>
+          create_plugin(const std::string &name, const std::string &documentation);
 
-        /**
-         * Given the name of one plugin, create a corresponding object and
-         * return a pointer to it. The second argument provides a hint where
-         * this function was called from, to be printed in case there is an
-         * error. Before returning, let the newly created object read its
-         * run-time parameters from the parameter object.
-         *
-         * Ownership of the object is handed over to the caller of this
-         * function.
-         */
-        static
-        std::unique_ptr<InterfaceClass>
-        create_plugin (const std::string  &name,
-                       const std::string &documentation,
-                       ParameterHandler &prm);
+          /**
+           * Given the name of one plugin, create a corresponding object and
+           * return a pointer to it. The second argument provides a hint where
+           * this function was called from, to be printed in case there is an
+           * error. Before returning, let the newly created object read its
+           * run-time parameters from the parameter object.
+           *
+           * Ownership of the object is handed over to the caller of this
+           * function.
+           */
+          static std::unique_ptr<InterfaceClass>
+          create_plugin(const std::string &name, const std::string &documentation, ParameterHandler &prm);
 
-        /**
-         * For the current plugin subsystem, write a connection graph of all of the
-         * plugins we know about, in the format that the
-         * programs dot and neato understand. This allows for a visualization of
-         * how all of the plugins that ASPECT knows about are interconnected, and
-         * connect to other parts of the ASPECT code.
-         *
-         * @param plugin_system_name The name to be used for the current
-         *   plugin system. This name will be used for the "Interface"
-         *   class to which all plugins connect.
-         * @param output_stream The stream to write the output to.
-         * @param attachment_point The point to which a plugin subsystem
-         *   feeds information. By default, this is the Simulator class,
-         *   but some plugin systems (most notably the visualization
-         *   postprocessors, which feeds to one of the postprocessor
-         *   classes) hook into other places. If other than the
-         *   "Simulator" default, the attachment point should be of
-         *   the form <code>typeid(ClassName).name()</code> as this is
-         *   the form used by this function to identify nodes in the
-         *   plugin graph.
-         */
-        static
-        void
-        write_plugin_graph (const std::string &plugin_system_name,
-                            std::ostream      &output_stream,
-                            const std::string &attachment_point = "Simulator");
+          /**
+           * For the current plugin subsystem, write a connection graph of all of the
+           * plugins we know about, in the format that the
+           * programs dot and neato understand. This allows for a visualization of
+           * how all of the plugins that ASPECT knows about are interconnected, and
+           * connect to other parts of the ASPECT code.
+           *
+           * @param plugin_system_name The name to be used for the current
+           *   plugin system. This name will be used for the "Interface"
+           *   class to which all plugins connect.
+           * @param output_stream The stream to write the output to.
+           * @param attachment_point The point to which a plugin subsystem
+           *   feeds information. By default, this is the Simulator class,
+           *   but some plugin systems (most notably the visualization
+           *   postprocessors, which feeds to one of the postprocessor
+           *   classes) hook into other places. If other than the
+           *   "Simulator" default, the attachment point should be of
+           *   the form <code>typeid(ClassName).name()</code> as this is
+           *   the form used by this function to identify nodes in the
+           *   plugin graph.
+           */
+          static void
+          write_plugin_graph(const std::string &plugin_system_name,
+                             std::ostream      &output_stream,
+                             const std::string &attachment_point = "Simulator");
 
-        /**
-         * Exception.
-         */
-        DeclException1 (ExcUnknownPlugin,
-                        std::string,
-                        << "Can't create a plugin of name <" << arg1
-                        << "> because such a plugin hasn't been declared.");
+          /**
+           * Exception.
+           */
+          DeclException1(ExcUnknownPlugin,
+                         std::string,
+                         << "Can't create a plugin of name <" << arg1 << "> because such a plugin hasn't been declared.");
       };
 
 
       /* ------------------------ template and inline functions --------------------- */
 
       template <typename InterfaceClass>
-      PluginList<InterfaceClass>::
-      ~PluginList ()
+      PluginList<InterfaceClass>::~PluginList()
       {
         // if any plugins have been registered, then delete
         // the list
@@ -737,11 +698,10 @@ namespace aspect
 
       template <typename InterfaceClass>
       void
-      PluginList<InterfaceClass>::
-      register_plugin (const std::string &name,
-                       const std::string &description,
-                       void (*declare_parameters_function) (ParameterHandler &),
-                       std::unique_ptr<InterfaceClass> (*factory_function) ())
+      PluginList<InterfaceClass>::register_plugin(const std::string &name,
+                                                  const std::string &description,
+                                                  void (*declare_parameters_function)(ParameterHandler &),
+                                                  std::unique_ptr<InterfaceClass> (*factory_function)())
       {
         // see if this is the first time we get into this
         // function and if so initialize the static member variable
@@ -753,37 +713,31 @@ namespace aspect
         // longer be able to identify the plugin
         for (const auto &p : *plugins)
           {
-            Assert (std::get<0>(p) != name,
-                    ExcMessage ("A plugin with name <" + name + "> has "
-                                "already been registered!"));
+            Assert(std::get<0>(p) != name,
+                   ExcMessage("A plugin with name <" + name +
+                              "> has "
+                              "already been registered!"));
             (void)p;
           }
 
 
         // now add one record to the list
-        plugins->emplace_back (name,
-                               description,
-                               declare_parameters_function,
-                               factory_function);
+        plugins->emplace_back(name, description, declare_parameters_function, factory_function);
       }
 
 
 
       template <typename InterfaceClass>
       std::string
-      PluginList<InterfaceClass>::
-      get_pattern_of_names ()
+      PluginList<InterfaceClass>::get_pattern_of_names()
       {
-        Assert (plugins != nullptr,
-                ExcMessage ("No plugins registered!?"));
+        Assert(plugins != nullptr, ExcMessage("No plugins registered!?"));
 
         // get all names and put them into a data structure that keeps
         // them sorted
         std::set<std::string> names;
-        for (typename std::list<PluginInfo>::const_iterator
-             p = plugins->begin();
-             p != plugins->end(); ++p)
-          names.insert (std::get<0>(*p));
+        for (typename std::list<PluginInfo>::const_iterator p = plugins->begin(); p != plugins->end(); ++p)
+          names.insert(std::get<0>(*p));
 
         // now create a pattern from all of these sorted names
         std::string pattern_of_names;
@@ -801,22 +755,18 @@ namespace aspect
 
       template <typename InterfaceClass>
       std::string
-      PluginList<InterfaceClass>::
-      get_description_string ()
+      PluginList<InterfaceClass>::get_description_string()
       {
         std::string description;
 
         // get all names_and_descriptions and put them into a data structure that keeps
         // them sorted
-        std::map<std::string,std::string> names_and_descriptions;
-        for (typename std::list<PluginInfo>::const_iterator
-             p = plugins->begin();
-             p != plugins->end(); ++p)
+        std::map<std::string, std::string> names_and_descriptions;
+        for (typename std::list<PluginInfo>::const_iterator p = plugins->begin(); p != plugins->end(); ++p)
           names_and_descriptions[std::get<0>(*p)] = std::get<1>(*p);
 
         // then output it all
-        std::map<std::string,std::string>::const_iterator
-        p = names_and_descriptions.begin();
+        std::map<std::string, std::string>::const_iterator p = names_and_descriptions.begin();
         while (true)
           {
             // write the name and
@@ -843,18 +793,13 @@ namespace aspect
 
 
 
-
       template <typename InterfaceClass>
       void
-      PluginList<InterfaceClass>::
-      declare_parameters (ParameterHandler &prm)
+      PluginList<InterfaceClass>::declare_parameters(ParameterHandler &prm)
       {
-        Assert (plugins != nullptr,
-                ExcMessage ("No postprocessors registered!?"));
+        Assert(plugins != nullptr, ExcMessage("No postprocessors registered!?"));
 
-        for (typename std::list<PluginInfo>::const_iterator
-             p = plugins->begin();
-             p != plugins->end(); ++p)
+        for (typename std::list<PluginInfo>::const_iterator p = plugins->begin(); p != plugins->end(); ++p)
           (std::get<2>(*p))(prm);
       }
 
@@ -862,39 +807,35 @@ namespace aspect
 
       template <typename InterfaceClass>
       std::unique_ptr<InterfaceClass>
-      PluginList<InterfaceClass>::
-      create_plugin (const std::string &name,
-                     const std::string &documentation)
+      PluginList<InterfaceClass>::create_plugin(const std::string &name, const std::string &documentation)
       {
         (void)documentation;
-        Assert (plugins != nullptr,
-                ExcMessage ("No postprocessors registered!?"));
-        AssertThrow (name != "unspecified",
-                     ExcMessage(std::string("A plugin must have a name!\n\n"
-                                            "This function was asked to create a plugin but no name for the "
-                                            "plugin was provided. This may be due to the fact that you did not "
-                                            "explicitly specify a name for this plugin in your input file and "
-                                            "ASPECT does not provide a default for this kind of plugin, for "
-                                            "example because no generally useful plugin exists. An example "
-                                            "is that there is no default geometry: You need to explicitly "
-                                            "provide one in the input file, and it seems like you have not "
-                                            "done so.\n\n"
-                                            "To find out which kind of plugin this function tries to create, "
-                                            "take a look at the backtrace of this error message.\n\n"
-                                            "The place that called this function also provided as "
-                                            "additional information this:\n\n"
-                                            "   <")
-                                + documentation + ">"));
+        Assert(plugins != nullptr, ExcMessage("No postprocessors registered!?"));
+        AssertThrow(name != "unspecified",
+                    ExcMessage(std::string("A plugin must have a name!\n\n"
+                                           "This function was asked to create a plugin but no name for the "
+                                           "plugin was provided. This may be due to the fact that you did not "
+                                           "explicitly specify a name for this plugin in your input file and "
+                                           "ASPECT does not provide a default for this kind of plugin, for "
+                                           "example because no generally useful plugin exists. An example "
+                                           "is that there is no default geometry: You need to explicitly "
+                                           "provide one in the input file, and it seems like you have not "
+                                           "done so.\n\n"
+                                           "To find out which kind of plugin this function tries to create, "
+                                           "take a look at the backtrace of this error message.\n\n"
+                                           "The place that called this function also provided as "
+                                           "additional information this:\n\n"
+                                           "   <") +
+                               documentation + ">"));
 
-        for (typename std::list<PluginInfo>::const_iterator p = plugins->begin();
-             p != plugins->end(); ++p)
+        for (typename std::list<PluginInfo>::const_iterator p = plugins->begin(); p != plugins->end(); ++p)
           if (std::get<0>(*p) == name)
             {
               std::unique_ptr<InterfaceClass> i = std::get<3>(*p)();
               return i;
             }
 
-        AssertThrow (false, ExcUnknownPlugin(name));
+        AssertThrow(false, ExcUnknownPlugin(name));
         return nullptr;
       }
 
@@ -902,13 +843,10 @@ namespace aspect
 
       template <typename InterfaceClass>
       std::unique_ptr<InterfaceClass>
-      PluginList<InterfaceClass>::
-      create_plugin (const std::string &name,
-                     const std::string &documentation,
-                     ParameterHandler  &prm)
+      PluginList<InterfaceClass>::create_plugin(const std::string &name, const std::string &documentation, ParameterHandler &prm)
       {
         std::unique_ptr<InterfaceClass> i = create_plugin(name, documentation);
-        i->parse_parameters (prm);
+        i->parse_parameters(prm);
         return i;
       }
 
@@ -916,10 +854,9 @@ namespace aspect
 
       template <typename InterfaceClass>
       void
-      PluginList<InterfaceClass>::
-      write_plugin_graph (const std::string &plugin_system_name,
-                          std::ostream      &output_stream,
-                          const std::string &attachment_point)
+      PluginList<InterfaceClass>::write_plugin_graph(const std::string &plugin_system_name,
+                                                     std::ostream      &output_stream,
+                                                     const std::string &attachment_point)
       {
         // first output a graph node for the interface class as the central
         // hub of this plugin system, plotted as a square.
@@ -927,11 +864,8 @@ namespace aspect
         // we use the typeid name of the interface class to label
         // nodes within this plugin system, as they are unique among
         // all other plugin systems
-        output_stream << std::string(typeid(InterfaceClass).name())
-                      << " [label=\""
-                      << plugin_system_name
-                      << "\", height=.8,width=.8,shape=\"rect\",fillcolor=\"lightgreen\"]"
-                      << std::endl;
+        output_stream << std::string(typeid(InterfaceClass).name()) << " [label=\"" << plugin_system_name
+                      << "\", height=.8,width=.8,shape=\"rect\",fillcolor=\"lightgreen\"]" << std::endl;
 
         // then output the graph nodes for each plugin, with links to the
         // interface class and, as appropriate, from the SimulatorAccess class
@@ -942,59 +876,46 @@ namespace aspect
         // loop over all plugins first and put pointers to them into a
         // map with deterministic keys. as key, we use the declared name
         // of the plugin by which it is referred in the .prm file
-        std::map<std::string, typename std::list<PluginInfo>::const_iterator>
-        plugin_map;
-        for (typename std::list<PluginInfo>::const_iterator p = plugins->begin();
-             p != plugins->end(); ++p)
+        std::map<std::string, typename std::list<PluginInfo>::const_iterator> plugin_map;
+        for (typename std::list<PluginInfo>::const_iterator p = plugins->begin(); p != plugins->end(); ++p)
           plugin_map[std::get<0>(*p)] = p;
 
         // now output the information sorted by the plugin names
-        for (typename std::map<std::string, typename std::list<PluginInfo>::const_iterator>::const_iterator
-             p = plugin_map.begin();
-             p != plugin_map.end(); ++p)
+        for (typename std::map<std::string, typename std::list<PluginInfo>::const_iterator>::const_iterator p = plugin_map.begin();
+             p != plugin_map.end();
+             ++p)
           {
             // take the name of the plugin and split it into strings of
             // 15 characters at most; then combine them
             // again using \n to make dot/neato show these parts of
             // the name on separate lines
-            const std::vector<std::string> plugin_label_parts
-              = dealii::Utilities::break_text_into_lines(p->first, 15);
-            Assert (plugin_label_parts.size()>0, ExcInternalError());
+            const std::vector<std::string> plugin_label_parts = dealii::Utilities::break_text_into_lines(p->first, 15);
+            Assert(plugin_label_parts.size() > 0, ExcInternalError());
             std::string plugin_name = plugin_label_parts[0];
-            for (unsigned int i=1; i<plugin_label_parts.size(); ++i)
+            for (unsigned int i = 1; i < plugin_label_parts.size(); ++i)
               plugin_name += "\\n" + plugin_label_parts[i];
 
             // next create a (symbolic) node name for this plugin. because
             // each plugin corresponds to a particular class, use the mangled
             // name of the class
-            std::unique_ptr<InterfaceClass> instance (create_plugin (p->first, ""));
-            const std::string node_name = typeid(*instance).name();
+            std::unique_ptr<InterfaceClass> instance(create_plugin(p->first, ""));
+            const std::string               node_name = typeid(*instance).name();
 
             // then output the whole shebang describing this node
-            output_stream << node_name
-                          << " [label=\""
-                          << plugin_name
-                          << "\", height=.8,width=.8,shape=\"circle\",fillcolor=\"lightblue\"];"
+            output_stream << node_name << " [label=\"" << plugin_name << "\", height=.8,width=.8,shape=\"circle\",fillcolor=\"lightblue\"];"
                           << std::endl;
 
             // next build connections from this plugin to the
             // interface class
-            output_stream << node_name
-                          << " -> "
-                          << std::string(typeid(InterfaceClass).name())
-                          << " [len=3, weight=50]"
-                          << ';'
-                          << std::endl;
+            output_stream << node_name << " -> " << std::string(typeid(InterfaceClass).name()) << " [len=3, weight=50]" << ';' << std::endl;
 
             // finally see if this plugin is derived from
             // SimulatorAccess; if so, draw an arrow from SimulatorAccess
             // also to the plugin's name
-            if (dynamic_cast<const SimulatorAccess<2>*>(instance.get()) != nullptr
-                ||
-                dynamic_cast<const SimulatorAccess<3>*>(instance.get()) != nullptr)
+            if (dynamic_cast<const SimulatorAccess<2> *>(instance.get()) != nullptr ||
+                dynamic_cast<const SimulatorAccess<3> *>(instance.get()) != nullptr)
               output_stream << "SimulatorAccess"
-                            << " -> "
-                            << node_name
+                            << " -> " << node_name
                             << " [style=\"dotted\", arrowhead=\"empty\", constraint=false, color=\"gray\", len=20, weight=0.1];"
                             << std::endl;
           }
@@ -1002,11 +923,7 @@ namespace aspect
         // as a last step, also draw a connection from the interface class
         // to the Simulator class, or whatever the calling function indicates
         // as the attachment point
-        output_stream << std::string(typeid(InterfaceClass).name())
-                      << " -> "
-                      << attachment_point
-                      << " [len=15, weight=50]"
-                      << ';'
+        output_stream << std::string(typeid(InterfaceClass).name()) << " -> " << attachment_point << " [len=15, weight=50]" << ';'
                       << std::endl;
 
         // end it with an empty line to make things easier to
@@ -1027,7 +944,8 @@ namespace aspect
        * for `dim==0` and `dim==1`, which of course are not dimensions we
        * support in ASPECT.
        */
-      class UnusablePluginList {};
+      class UnusablePluginList
+      {};
     }
   }
 }

@@ -18,10 +18,10 @@
  <http://www.gnu.org/licenses/>.
  */
 
-#include <aspect/particle/integrator/rk_2.h>
-#include <aspect/particle/property/interface.h>
-#include <aspect/particle/manager.h>
 #include <aspect/geometry_model/interface.h>
+#include <aspect/particle/integrator/rk_2.h>
+#include <aspect/particle/manager.h>
+#include <aspect/particle/property/interface.h>
 
 namespace aspect
 {
@@ -31,17 +31,17 @@ namespace aspect
     {
       template <int dim>
       RK2<dim>::RK2()
-        :
-        integrator_substep(0)
+        : integrator_substep(0)
       {}
 
 
 
       template <int dim>
       void
-      RK2<dim>::initialize ()
+      RK2<dim>::initialize()
       {
-        const auto &property_information = this->get_particle_manager(this->get_particle_manager_index()).get_property_manager().get_data_info();
+        const auto &property_information =
+          this->get_particle_manager(this->get_particle_manager_index()).get_property_manager().get_data_info();
         property_index_old_location = property_information.get_position_by_field_name("internal: integrator properties");
       }
 
@@ -51,11 +51,11 @@ namespace aspect
       void
       RK2<dim>::local_integrate_step(const typename ParticleHandler<dim>::particle_iterator &begin_particle,
                                      const typename ParticleHandler<dim>::particle_iterator &end_particle,
-                                     const std::vector<Tensor<1,dim>> &old_velocities,
-                                     const std::vector<Tensor<1,dim>> &velocities,
-                                     const double dt)
+                                     const std::vector<Tensor<1, dim>>                      &old_velocities,
+                                     const std::vector<Tensor<1, dim>>                      &velocities,
+                                     const double                                            dt)
       {
-        Assert(static_cast<unsigned int> (std::distance(begin_particle, end_particle)) == old_velocities.size(),
+        Assert(static_cast<unsigned int>(std::distance(begin_particle, end_particle)) == old_velocities.size(),
                ExcMessage("The particle integrator expects the old velocity vector to be of equal size "
                           "to the number of particles to advect. For some unknown reason they are different, "
                           "most likely something went wrong in the calling function."));
@@ -66,10 +66,10 @@ namespace aspect
                             "to the number of particles to advect. For some unknown reason they are different, "
                             "most likely something went wrong in the calling function."));
 
-        const auto cell = begin_particle->get_surrounding_cell();
-        bool at_periodic_boundary = false;
+        const auto cell                 = begin_particle->get_surrounding_cell();
+        bool       at_periodic_boundary = false;
         if (this->get_triangulation().get_periodic_face_map().empty() == false)
-          for (const auto &face_index: cell->face_indices())
+          for (const auto &face_index : cell->face_indices())
             if (cell->at_boundary(face_index))
               if (cell->has_periodic_neighbor(face_index))
                 {
@@ -77,8 +77,8 @@ namespace aspect
                   break;
                 }
 
-        typename std::vector<Tensor<1,dim>>::const_iterator old_velocity = old_velocities.begin();
-        typename std::vector<Tensor<1,dim>>::const_iterator velocity = velocities.begin();
+        typename std::vector<Tensor<1, dim>>::const_iterator old_velocity = old_velocities.begin();
+        typename std::vector<Tensor<1, dim>>::const_iterator velocity     = velocities.begin();
 
         for (auto it = begin_particle; it != end_particle; ++it)
           {
@@ -86,44 +86,37 @@ namespace aspect
 
             if (integrator_substep == 0)
               {
-                const Tensor<1,dim> k1 = dt * (*old_velocity);
+                const Tensor<1, dim> k1 = dt * (*old_velocity);
                 // Get a reference to the particle location, so that we can update it in-place
-                Point<dim> &location = it->get_location();
-                Point<dim> new_location = location + 0.5 * k1;
+                Point<dim> &location     = it->get_location();
+                Point<dim>  new_location = location + 0.5 * k1;
 
                 // Check if we crossed a periodic boundary and if necessary adjust positions
                 if (at_periodic_boundary)
-                  this->get_geometry_model().adjust_positions_for_periodicity(new_location,
-                                                                              ArrayView<Point<dim>>(location));
+                  this->get_geometry_model().adjust_positions_for_periodicity(new_location, ArrayView<Point<dim>>(location));
 
-                for (unsigned int i=0; i<dim; ++i)
+                for (unsigned int i = 0; i < dim; ++i)
                   {
                     properties[property_index_old_location + i] = location[i];
-                    location[i] = new_location[i];
+                    location[i]                                 = new_location[i];
                   }
               }
             else if (integrator_substep == 1)
               {
-                const Tensor<1,dim> k2 = (higher_order_in_time == true)
-                                         ?
-                                         dt * (*old_velocity + *velocity) * 0.5
-                                         :
-                                         dt * (*old_velocity);
+                const Tensor<1, dim> k2 = (higher_order_in_time == true) ? dt * (*old_velocity + *velocity) * 0.5 : dt * (*old_velocity);
 
                 Point<dim> &location = it->get_location();
 
-                for (unsigned int i=0; i<dim; ++i)
+                for (unsigned int i = 0; i < dim; ++i)
                   location[i] = properties[property_index_old_location + i] + k2[i];
 
                 // no need to adjust old location, because this is the last integrator step
                 if (at_periodic_boundary)
                   this->get_geometry_model().adjust_positions_for_periodicity(location);
-
               }
             else
               {
-                Assert(false,
-                       ExcMessage("The RK2 integrator should never continue after two integration steps."));
+                Assert(false, ExcMessage("The RK2 integrator should never continue after two integration steps."));
               }
 
             ++old_velocity;
@@ -154,15 +147,14 @@ namespace aspect
             case 0:
               return {{false, true, false}};
             case 1:
-            {
-              if (higher_order_in_time)
-                return {{false, true, true}};
-              else
-                return {{false, true, false}};
-            }
+              {
+                if (higher_order_in_time)
+                  return {{false, true, true}};
+                else
+                  return {{false, true, false}};
+              }
             default:
-              Assert(false,
-                     ExcMessage("The RK4 integrator should never continue after four integration steps."));
+              Assert(false, ExcMessage("The RK4 integrator should never continue after four integration steps."));
 
               return {{false, false, false}};
           }
@@ -172,19 +164,20 @@ namespace aspect
 
       template <int dim>
       void
-      RK2<dim>::declare_parameters (ParameterHandler &prm)
+      RK2<dim>::declare_parameters(ParameterHandler &prm)
       {
         prm.enter_subsection("Integrator");
         {
           prm.enter_subsection("RK2");
           {
-            prm.declare_entry ("Higher order accurate in time", "true",
-                               Patterns::Bool(),
-                               "Whether to correctly evaluate old and current velocity "
-                               "solution to reach higher-order accuracy in time. If set to "
-                               "'false' only the old velocity solution is evaluated to "
-                               "simulate a first order method in time. This is only "
-                               "recommended for benchmark purposes.");
+            prm.declare_entry("Higher order accurate in time",
+                              "true",
+                              Patterns::Bool(),
+                              "Whether to correctly evaluate old and current velocity "
+                              "solution to reach higher-order accuracy in time. If set to "
+                              "'false' only the old velocity solution is evaluated to "
+                              "simulate a first order method in time. This is only "
+                              "recommended for benchmark purposes.");
           }
           prm.leave_subsection();
         }
@@ -194,7 +187,7 @@ namespace aspect
 
       template <int dim>
       void
-      RK2<dim>::parse_parameters (ParameterHandler &prm)
+      RK2<dim>::parse_parameters(ParameterHandler &prm)
       {
         prm.enter_subsection("Integrator");
         {

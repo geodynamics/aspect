@@ -43,8 +43,8 @@ namespace aspect
         /**
          * Evaluate the solution to compute the RMS velocity for each composition.
          */
-        std::pair<std::string,std::string>
-        execute (TableHandler &statistics) override;
+        std::pair<std::string, std::string>
+        execute(TableHandler &statistics) override;
 
         /**
          * @name Functions used in dealing with run-time parameters

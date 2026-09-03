@@ -23,6 +23,7 @@
 
 #include <aspect/particle/property/interface.h>
 #include <aspect/simulator_access.h>
+
 #include <array>
 
 DEAL_II_DISABLE_EXTRA_DIAGNOSTICS
@@ -40,31 +41,51 @@ namespace aspect
        *
        * passive: Only to be used with the spin tensor CPO Derivative algorithm.
        * olivine_a_fabric to olivine_e_fabric: Only to be used with the D-Rex CPO Derivative algorithm.
-       *  Sets the deformation type of the mineral to a Olivine A-E Fabric, which influences the relative strength of the slip planes. See table 1 in Fraters and Billen (2021).
-       * enstatite: Only to be used with the D-Rex CPO Derivative algorithm. Sets the deformation type of the mineral to a enstatite Fabric, which influences the relative strength of the slip planes.
+       *  Sets the deformation type of the mineral to a Olivine A-E Fabric, which influences the relative strength of the slip planes. See
+       * table 1 in Fraters and Billen (2021). enstatite: Only to be used with the D-Rex CPO Derivative algorithm. Sets the deformation type
+       * of the mineral to a enstatite Fabric, which influences the relative strength of the slip planes.
        */
       enum class DeformationType
       {
-        passive, olivine_a_fabric, olivine_b_fabric, olivine_c_fabric, olivine_d_fabric, olivine_e_fabric, enstatite, clinopyroxene, olivine_d_0kl
+        passive,
+        olivine_a_fabric,
+        olivine_b_fabric,
+        olivine_c_fabric,
+        olivine_d_fabric,
+        olivine_e_fabric,
+        enstatite,
+        clinopyroxene,
+        olivine_d_0kl
       };
 
 
       /**
        * @brief The type of deformation selector used by the CPO code.
        *
-       * The selector is a input parameter and it can either set a deformation type directly or determine the deformation type through an algorithm.
-       * The deformation type selector is used to determine/select the deformation type. It can be a fixed deformation type, for example,
-       * by setting it to olivine_a_fabric, or it can be dynamically chosen, which is what the olivine_karato_2008 option does.
+       * The selector is a input parameter and it can either set a deformation type directly or determine the deformation type through an
+       * algorithm. The deformation type selector is used to determine/select the deformation type. It can be a fixed deformation type, for
+       * example, by setting it to olivine_a_fabric, or it can be dynamically chosen, which is what the olivine_karato_2008 option does.
        *
        * passive: Only to be used with the spin tensor CPO Derivative algorithm.
        * olivine_a_fabric to olivine_e_fabric: Only to be used with the D-Rex CPO Derivative algorithm.
-       *  Sets the deformation type of the mineral to a Olivine A-E Fabric, which influences the relative strength of the slip planes. See table 1 in Fraters and Billen (2021).
-       * enstatite: Only to be used with the D-Rex CPO Derivative algorithm. Sets the deformation type of the mineral to a enstatite Fabric, which influences the relative strength of the slip planes.
-       * olivine_karato_2008: Only to be used with the D-Rex CPO Derivative algorithm. Sets the deformation type of the mineral to a olivine fabric based on the table in Karato 2008.
+       *  Sets the deformation type of the mineral to a Olivine A-E Fabric, which influences the relative strength of the slip planes. See
+       * table 1 in Fraters and Billen (2021). enstatite: Only to be used with the D-Rex CPO Derivative algorithm. Sets the deformation type
+       * of the mineral to a enstatite Fabric, which influences the relative strength of the slip planes. olivine_karato_2008: Only to be
+       * used with the D-Rex CPO Derivative algorithm. Sets the deformation type of the mineral to a olivine fabric based on the table in
+       * Karato 2008.
        */
       enum class DeformationTypeSelector
       {
-        passive, olivine_a_fabric, olivine_b_fabric, olivine_c_fabric, olivine_d_fabric, olivine_e_fabric, enstatite, olivine_karato_2008, clinopyroxene, olivine_d_0kl
+        passive,
+        olivine_a_fabric,
+        olivine_b_fabric,
+        olivine_c_fabric,
+        olivine_d_fabric,
+        olivine_e_fabric,
+        enstatite,
+        olivine_karato_2008,
+        clinopyroxene,
+        olivine_d_0kl
       };
 
       /**
@@ -72,7 +93,8 @@ namespace aspect
        */
       enum class AdvectionMethod
       {
-        forward_euler, backward_euler
+        forward_euler,
+        backward_euler
       };
 
       /**
@@ -83,7 +105,8 @@ namespace aspect
        */
       enum class CPODerivativeAlgorithm
       {
-        spin_tensor, drex_2004
+        spin_tensor,
+        drex_2004
       };
 
       /**
@@ -94,7 +117,8 @@ namespace aspect
        */
       enum class CPOInitialGrainsModel
       {
-        uniform_grains_and_random_uniform_rotations, world_builder
+        uniform_grains_and_random_uniform_rotations,
+        world_builder
       };
 
       /**
@@ -140,7 +164,7 @@ namespace aspect
            * beginning of the program after parse_parameters is run.
            */
           void
-          initialize () override;
+          initialize() override;
 
           /**
            * Initialization function. This function is called once at the
@@ -154,34 +178,33 @@ namespace aspect
            * properties.
            */
           void
-          initialize_one_particle_property (const Point<dim> &position,
-                                            std::vector<double> &particle_properties) const override;
+          initialize_one_particle_property(const Point<dim> &position, std::vector<double> &particle_properties) const override;
 
           /**
            * @copydoc aspect::Particle::Property::Interface::update_particle_properties()
            */
           void
-          update_particle_properties (const ParticleUpdateInputs<dim> &inputs,
-                                      typename ParticleHandler<dim>::particle_iterator_range &particles) const override;
+          update_particle_properties(const ParticleUpdateInputs<dim>                        &inputs,
+                                     typename ParticleHandler<dim>::particle_iterator_range &particles) const override;
 
           /**
            * This implementation tells the particle manager that
            * we need to update particle properties every time step.
            */
           UpdateTimeFlags
-          need_update () const override;
+          need_update() const override;
 
           /**
            * The CPO of late particles is initialized by interpolating from existing particles.
            */
           InitializationModeForLateParticles
-          late_initialization_mode () const override;
+          late_initialization_mode() const override;
 
           /**
            * @copydoc aspect::Particle::Property::Interface::get_update_flags()
            */
           UpdateFlags
-          get_update_flags (const unsigned int component) const override;
+          get_update_flags(const unsigned int component) const override;
 
           /**
            * Set up the information about the names and number of components
@@ -211,21 +234,21 @@ namespace aspect
            * @param deviatoric_strain_rate The deviatoric strain-rate at the location where the derivative is requested.
            * @param water_content The water content at the location where the derivative is requested.
            */
-          std::pair<std::vector<double>, std::vector<Tensor<2,3>>>
-          compute_derivatives(const unsigned int cpo_index,
-                              const ArrayView<double> &data,
-                              const unsigned int mineral_i,
-                              const SymmetricTensor<2,3> &strain_rate_3d,
-                              const Tensor<2,3> &velocity_gradient_tensor,
-                              const Point<dim> &position,
+          std::pair<std::vector<double>, std::vector<Tensor<2, 3>>>
+          compute_derivatives(const unsigned int                                    cpo_index,
+                              const ArrayView<double>                              &data,
+                              const unsigned int                                    mineral_i,
+                              const SymmetricTensor<2, 3>                          &strain_rate_3d,
+                              const Tensor<2, 3>                                   &velocity_gradient_tensor,
+                              const Point<dim>                                     &position,
                               const typename DoFHandler<dim>::active_cell_iterator &cell,
-                              const double temperature,
-                              const double pressure,
-                              const Tensor<1,dim> &velocity,
-                              const std::vector<double> &compositions,
-                              const SymmetricTensor<2,dim> &strain_rate,
-                              const SymmetricTensor<2,dim> &deviatoric_strain_rate,
-                              const double water_content) const;
+                              const double                                          temperature,
+                              const double                                          pressure,
+                              const Tensor<1, dim>                                 &velocity,
+                              const std::vector<double>                            &compositions,
+                              const SymmetricTensor<2, dim>                        &strain_rate,
+                              const SymmetricTensor<2, dim>                        &deviatoric_strain_rate,
+                              const double                                          water_content) const;
 
           /**
            * @brief Computes the CPO derivatives with the D-Rex 2004 algorithm.
@@ -243,35 +266,34 @@ namespace aspect
            * @param prevent_nondimensionalization Prevent nondimensializing values internally.
            * Only for unit testing purposes.
            */
-          std::pair<std::vector<double>, std::vector<Tensor<2,3>>>
-          compute_derivatives_drex_2004(const DeformationType deformation_type,
-                                        const unsigned int cpo_index,
-                                        const ArrayView<double> &data,
-                                        const unsigned int mineral_i,
-                                        const SymmetricTensor<2,3> &strain_rate_3d,
-                                        const Tensor<2,3> &velocity_gradient_tensor,
-                                        const std::array<double,4> ref_resolved_shear_stress,
-                                        const bool prevent_nondimensionalization = false) const;
+          std::pair<std::vector<double>, std::vector<Tensor<2, 3>>>
+          compute_derivatives_drex_2004(const DeformationType        deformation_type,
+                                        const unsigned int           cpo_index,
+                                        const ArrayView<double>     &data,
+                                        const unsigned int           mineral_i,
+                                        const SymmetricTensor<2, 3> &strain_rate_3d,
+                                        const Tensor<2, 3>          &velocity_gradient_tensor,
+                                        const std::array<double, 4>  ref_resolved_shear_stress,
+                                        const bool                   prevent_nondimensionalization = false) const;
 
 
           /**
            * Declare the parameters this class takes through input files.
            */
-          static
-          void
-          declare_parameters (ParameterHandler &prm);
+          static void
+          declare_parameters(ParameterHandler &prm);
 
           /**
            * Read the parameters this class declares from the parameter file.
            */
           void
-          parse_parameters (ParameterHandler &prm) override;
+          parse_parameters(ParameterHandler &prm) override;
 
           void
-          save (std::map<std::string, std::string> &status_strings) const override;
+          save(std::map<std::string, std::string> &status_strings) const override;
 
           void
-          load (const std::map<std::string, std::string> &status_strings) override;
+          load(const std::map<std::string, std::string> &status_strings) override;
 
           /**
            * Return the number of grains per particle
@@ -295,24 +317,23 @@ namespace aspect
            * and returns the compute deformation type.
            */
           DeformationType
-          determine_deformation_type(const DeformationTypeSelector deformation_type_selector,
-                                     const Point<dim> &position,
+          determine_deformation_type(const DeformationTypeSelector                         deformation_type_selector,
+                                     const Point<dim>                                     &position,
                                      const typename DoFHandler<dim>::active_cell_iterator &cell,
-                                     const double temperature,
-                                     const double pressure,
-                                     const Tensor<1,dim> &velocity,
-                                     const std::vector<double> &compositions,
-                                     const SymmetricTensor<2,dim> &strain_rate,
-                                     const SymmetricTensor<2,dim> &deviatoric_strain_rate,
-                                     const double water_content) const;
+                                     const double                                          temperature,
+                                     const double                                          pressure,
+                                     const Tensor<1, dim>                                 &velocity,
+                                     const std::vector<double>                            &compositions,
+                                     const SymmetricTensor<2, dim>                        &strain_rate,
+                                     const SymmetricTensor<2, dim>                        &deviatoric_strain_rate,
+                                     const double                                          water_content) const;
 
           /**
            * @brief Computes the deformation type given the stress and water content according to the
            * table in Karato 2008.
            */
           DeformationType
-          determine_deformation_type_karato_2008(const double stress,
-                                                 const double water_content) const;
+          determine_deformation_type_karato_2008(const double stress, const double water_content) const;
 
           /**
            * @brief Computes the reference resolved shear stress (RRSS) based on the selected deformation type.
@@ -323,9 +344,8 @@ namespace aspect
            * It is currently designed to return the relative strength of the slip planes for olivine, which are are 4,
            * but this could be generalized.
            */
-          std::array<double,4>
-          reference_resolved_shear_stress_from_deformation_type(DeformationType deformation_type,
-                                                                double max_value = 1e60) const;
+          std::array<double, 4>
+          reference_resolved_shear_stress_from_deformation_type(DeformationType deformation_type, double max_value = 1e60) const;
 
           /**
            * @brief Returns the value in the data array representing the deformation type.
@@ -334,10 +354,8 @@ namespace aspect
            * @param data The particle data vector.
            * @param mineral_i The mineral to get the value of the deformation type for.
            */
-          inline
-          DeformationType get_deformation_type(const unsigned int cpo_data_position,
-                                               const ArrayView<double> &data,
-                                               const unsigned int mineral_i) const
+          inline DeformationType
+          get_deformation_type(const unsigned int cpo_data_position, const ArrayView<double> &data, const unsigned int mineral_i) const
           {
             return static_cast<DeformationType>(data[cpo_data_position + 0 + mineral_i * (n_grains * 10 + 2)]);
           }
@@ -350,11 +368,11 @@ namespace aspect
            * @param mineral_i The mineral to set the value deformation type for.
            * @param deformation_type The value of the deformation type to set.
            */
-          inline
-          void set_deformation_type(const unsigned int cpo_data_position,
-                                    const ArrayView<double> &data,
-                                    const unsigned int mineral_i,
-                                    const DeformationType deformation_type) const
+          inline void
+          set_deformation_type(const unsigned int       cpo_data_position,
+                               const ArrayView<double> &data,
+                               const unsigned int       mineral_i,
+                               const DeformationType    deformation_type) const
           {
             data[cpo_data_position + 0 + mineral_i * (n_grains * 10 + 2)] = static_cast<double>(deformation_type);
           }
@@ -366,12 +384,12 @@ namespace aspect
            * @param data The particle data vector.
            * @param mineral_i The mineral to get the value of the volume fraction of a mineral for.
            */
-          inline
-          double get_volume_fraction_mineral(const unsigned int cpo_data_position,
-                                             const ArrayView<double> &data,
-                                             const unsigned int mineral_i) const
+          inline double
+          get_volume_fraction_mineral(const unsigned int       cpo_data_position,
+                                      const ArrayView<double> &data,
+                                      const unsigned int       mineral_i) const
           {
-            return data[cpo_data_position + 1 + mineral_i *(n_grains * 10 + 2)];
+            return data[cpo_data_position + 1 + mineral_i * (n_grains * 10 + 2)];
           }
 
           /**
@@ -382,13 +400,13 @@ namespace aspect
            * @param mineral_i The mineral to set the value of the volume fraction of a mineral for.
            * @param volume_fraction_mineral The value of the volume fraction of a mineral to set.
            */
-          inline
-          void set_volume_fraction_mineral(const unsigned int cpo_data_position,
-                                           const ArrayView<double> &data,
-                                           const unsigned int mineral_i,
-                                           const double volume_fraction_mineral) const
+          inline void
+          set_volume_fraction_mineral(const unsigned int       cpo_data_position,
+                                      const ArrayView<double> &data,
+                                      const unsigned int       mineral_i,
+                                      const double             volume_fraction_mineral) const
           {
-            data[cpo_data_position + 1 + mineral_i *(n_grains * 10 + 2)] = volume_fraction_mineral;
+            data[cpo_data_position + 1 + mineral_i * (n_grains * 10 + 2)] = volume_fraction_mineral;
           }
 
           /**
@@ -399,11 +417,11 @@ namespace aspect
            * @param mineral_i The mineral to get the value of the volume fraction of a grain for.
            * @param grain_i The grain to get the value of the volume fraction of.
            */
-          inline
-          double get_volume_fractions_grains(const unsigned int cpo_data_position,
-                                             const ArrayView<const double> &data,
-                                             const unsigned int mineral_i,
-                                             const unsigned int grain_i) const
+          inline double
+          get_volume_fractions_grains(const unsigned int             cpo_data_position,
+                                      const ArrayView<const double> &data,
+                                      const unsigned int             mineral_i,
+                                      const unsigned int             grain_i) const
           {
             return data[cpo_data_position + 2 + grain_i * 10 + mineral_i * (n_grains * 10 + 2)];
           }
@@ -417,12 +435,12 @@ namespace aspect
            * @param grain_i The grain to set the value of the volume fraction of.
            * @param volume_fractions_grains The value of the volume fraction of a grain to set.
            */
-          inline
-          void set_volume_fractions_grains(const unsigned int cpo_data_position,
-                                           const ArrayView<double> &data,
-                                           const unsigned int mineral_i,
-                                           const unsigned int grain_i,
-                                           const double volume_fractions_grains) const
+          inline void
+          set_volume_fractions_grains(const unsigned int       cpo_data_position,
+                                      const ArrayView<double> &data,
+                                      const unsigned int       mineral_i,
+                                      const unsigned int       grain_i,
+                                      const double             volume_fractions_grains) const
           {
             data[cpo_data_position + 2 + grain_i * 10 + mineral_i * (n_grains * 10 + 2)] = volume_fractions_grains;
           }
@@ -436,17 +454,17 @@ namespace aspect
            * @param grain_i The grain to get the value of the rotation matrix of.
            * @return Tensor<2,3> The rotation matrix of a grain in a mineral
            */
-          inline
-          Tensor<2,3> get_rotation_matrix_grains(const unsigned int cpo_data_position,
-                                                 const ArrayView<const double> &data,
-                                                 const unsigned int mineral_i,
-                                                 const unsigned int grain_i) const
+          inline Tensor<2, 3>
+          get_rotation_matrix_grains(const unsigned int             cpo_data_position,
+                                     const ArrayView<const double> &data,
+                                     const unsigned int             mineral_i,
+                                     const unsigned int             grain_i) const
           {
-            Tensor<2,3> rotation_matrix;
-            for (unsigned int i = 0; i < Tensor<2,3>::n_independent_components ; ++i)
+            Tensor<2, 3> rotation_matrix;
+            for (unsigned int i = 0; i < Tensor<2, 3>::n_independent_components; ++i)
               {
-                const dealii::TableIndices<2> index = Tensor<2,3>::unrolled_to_component_indices(i);
-                rotation_matrix[index] = data[cpo_data_position + 3 + grain_i * 10 + mineral_i * (n_grains * 10 + 2) + i];
+                const dealii::TableIndices<2> index = Tensor<2, 3>::unrolled_to_component_indices(i);
+                rotation_matrix[index]              = data[cpo_data_position + 3 + grain_i * 10 + mineral_i * (n_grains * 10 + 2) + i];
               }
             return rotation_matrix;
           }
@@ -460,16 +478,16 @@ namespace aspect
            * @param grain_i The grain to get the value of the rotation matrix of.
            * @param rotation_matrix The rotation matrix to set for the grain in the mineral.
            */
-          inline
-          void set_rotation_matrix_grains(const unsigned int cpo_data_position,
-                                          const ArrayView<double> &data,
-                                          const unsigned int mineral_i,
-                                          const unsigned int grain_i,
-                                          const Tensor<2,3> &rotation_matrix) const
+          inline void
+          set_rotation_matrix_grains(const unsigned int       cpo_data_position,
+                                     const ArrayView<double> &data,
+                                     const unsigned int       mineral_i,
+                                     const unsigned int       grain_i,
+                                     const Tensor<2, 3>      &rotation_matrix) const
           {
-            for (unsigned int i = 0; i < Tensor<2,3>::n_independent_components ; ++i)
+            for (unsigned int i = 0; i < Tensor<2, 3>::n_independent_components; ++i)
               {
-                const dealii::TableIndices<2> index = Tensor<2,3>::unrolled_to_component_indices(i);
+                const dealii::TableIndices<2> index = Tensor<2, 3>::unrolled_to_component_indices(i);
                 data[cpo_data_position + 3 + grain_i * 10 + mineral_i * (n_grains * 10 + 2) + i] = rotation_matrix[index];
               }
           }
@@ -480,7 +498,7 @@ namespace aspect
            * Computes a random rotation matrix.
            */
           void
-          compute_random_rotation_matrix(Tensor<2,3> &rotation_matrix) const;
+          compute_random_rotation_matrix(Tensor<2, 3> &rotation_matrix) const;
 
           /**
            * @brief Updates the volume fractions and rotation matrices with a Forward Euler scheme.
@@ -498,11 +516,11 @@ namespace aspect
            * @return double The sum of all volume fractions.
            */
           double
-          advect_forward_euler(const unsigned int cpo_data_position,
-                               const ArrayView<double> &data,
-                               const unsigned int mineral_i,
-                               const double dt,
-                               const std::pair<std::vector<double>, std::vector<Tensor<2,3>>> &derivatives) const;
+          advect_forward_euler(const unsigned int                                               cpo_data_position,
+                               const ArrayView<double>                                         &data,
+                               const unsigned int                                               mineral_i,
+                               const double                                                     dt,
+                               const std::pair<std::vector<double>, std::vector<Tensor<2, 3>>> &derivatives) const;
 
           /**
            * @brief Updates the volume fractions and rotation matrices with a Backward Euler scheme.
@@ -520,11 +538,11 @@ namespace aspect
            * @return double The sum of all volume fractions.
            */
           double
-          advect_backward_euler(const unsigned int cpo_data_position,
-                                const ArrayView<double> &data,
-                                const unsigned int mineral_i,
-                                const double dt,
-                                const std::pair<std::vector<double>, std::vector<Tensor<2,3>>> &derivatives) const;
+          advect_backward_euler(const unsigned int                                               cpo_data_position,
+                                const ArrayView<double>                                         &data,
+                                const unsigned int                                               mineral_i,
+                                const double                                                     dt,
+                                const std::pair<std::vector<double>, std::vector<Tensor<2, 3>>> &derivatives) const;
 
 
           /**
@@ -533,8 +551,8 @@ namespace aspect
            *
            * @param velocity_gradient_tensor is the velocity gradient tensor at the location of the particle.
            */
-          std::pair<std::vector<double>, std::vector<Tensor<2,3>>>
-          compute_derivatives_spin_tensor(const Tensor<2,3> &velocity_gradient_tensor) const;
+          std::pair<std::vector<double>, std::vector<Tensor<2, 3>>>
+          compute_derivatives_spin_tensor(const Tensor<2, 3> &velocity_gradient_tensor) const;
 
           /**
            * Random number generator used for initialization of particles
@@ -686,7 +704,6 @@ namespace aspect
           std::vector<double> OlivineD_RRSS;
 
           /** @} */
-
       };
     }
   }

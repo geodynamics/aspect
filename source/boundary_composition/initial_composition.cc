@@ -27,7 +27,7 @@ namespace aspect
 {
   namespace BoundaryComposition
   {
-// ------------------------------ InitialComposition -------------------
+    // ------------------------------ InitialComposition -------------------
 
     template <int dim>
     void
@@ -43,10 +43,9 @@ namespace aspect
 
     template <int dim>
     double
-    InitialComposition<dim>::
-    boundary_composition (const types::boundary_id /*boundary_indicator*/,
-                          const Point<dim> &position,
-                          const unsigned int compositional_field) const
+    InitialComposition<dim>::boundary_composition(const types::boundary_id /*boundary_indicator*/,
+                                                  const Point<dim>  &position,
+                                                  const unsigned int compositional_field) const
     {
       return initial_composition->initial_composition(position, compositional_field);
     }
@@ -54,8 +53,7 @@ namespace aspect
 
     template <int dim>
     double
-    InitialComposition<dim>::
-    minimal_composition (const std::set<types::boundary_id> &) const
+    InitialComposition<dim>::minimal_composition(const std::set<types::boundary_id> &) const
     {
       return min_composition;
     }
@@ -64,8 +62,7 @@ namespace aspect
 
     template <int dim>
     double
-    InitialComposition<dim>::
-    maximal_composition (const std::set<types::boundary_id> &) const
+    InitialComposition<dim>::maximal_composition(const std::set<types::boundary_id> &) const
     {
       return max_composition;
     }
@@ -74,39 +71,35 @@ namespace aspect
 
     template <int dim>
     void
-    InitialComposition<dim>::declare_parameters (ParameterHandler &prm)
+    InitialComposition<dim>::declare_parameters(ParameterHandler &prm)
     {
       prm.enter_subsection("Boundary composition model");
       {
         prm.enter_subsection("Initial composition");
         {
-          prm.declare_entry ("Minimal composition", "0.",
-                             Patterns::Double (),
-                             "Minimal composition. Units: none.");
-          prm.declare_entry ("Maximal composition", "1.",
-                             Patterns::Double (),
-                             "Maximal composition. Units: none.");
+          prm.declare_entry("Minimal composition", "0.", Patterns::Double(), "Minimal composition. Units: none.");
+          prm.declare_entry("Maximal composition", "1.", Patterns::Double(), "Maximal composition. Units: none.");
         }
-        prm.leave_subsection ();
+        prm.leave_subsection();
       }
-      prm.leave_subsection ();
+      prm.leave_subsection();
     }
 
 
     template <int dim>
     void
-    InitialComposition<dim>::parse_parameters (ParameterHandler &prm)
+    InitialComposition<dim>::parse_parameters(ParameterHandler &prm)
     {
       prm.enter_subsection("Boundary composition model");
       {
         prm.enter_subsection("Initial composition");
         {
-          min_composition = prm.get_double ("Minimal composition");
-          max_composition = prm.get_double ("Maximal composition");
+          min_composition = prm.get_double("Minimal composition");
+          max_composition = prm.get_double("Maximal composition");
         }
-        prm.leave_subsection ();
+        prm.leave_subsection();
       }
-      prm.leave_subsection ();
+      prm.leave_subsection();
     }
   }
 }

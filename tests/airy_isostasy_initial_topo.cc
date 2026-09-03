@@ -18,8 +18,8 @@
   <http://www.gnu.org/licenses/>.
 */
 
-#include <aspect/postprocess/interface.h>
 #include <aspect/geometry_model/interface.h>
+#include <aspect/postprocess/interface.h>
 #include <aspect/simulator_access.h>
 
 
@@ -31,9 +31,8 @@ namespace aspect
     class PointIsInDomain : public Interface<dim>, public ::aspect::SimulatorAccess<dim>
     {
       public:
-        virtual
-        std::pair<std::string,std::string>
-        execute (TableHandler &);
+        virtual std::pair<std::string, std::string>
+        execute(TableHandler &);
     };
   }
 }
@@ -44,7 +43,7 @@ namespace aspect
   namespace Postprocess
   {
     template <int dim>
-    std::pair<std::string,std::string>
+    std::pair<std::string, std::string>
     PointIsInDomain<dim>::execute(TableHandler &)
     {
       // The airy isostasy box domain is 1x1 with max 0.05 topography.
@@ -57,8 +56,7 @@ namespace aspect
       screen_text << std::boolalpha << this->get_geometry_model().point_is_in_domain(point_not_in_domain) << " ";
       screen_text << std::boolalpha << this->get_geometry_model().point_is_in_domain(point_not_in_domain_2);
 
-      return std::pair<std::string, std::string> ("Points lie in domain: ",
-                                                  screen_text.str());
+      return std::pair<std::string, std::string>("Points lie in domain: ", screen_text.str());
     }
   }
 }

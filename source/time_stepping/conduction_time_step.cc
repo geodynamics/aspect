@@ -20,8 +20,9 @@
 
 
 #include <aspect/global.h>
-#include <aspect/time_stepping/conduction_time_step.h>
+
 #include <aspect/adiabatic_conditions/interface.h>
+#include <aspect/time_stepping/conduction_time_step.h>
 
 namespace aspect
 {
@@ -33,46 +34,38 @@ namespace aspect
     {
       double min_local_conduction_timestep = std::numeric_limits<double>::max();
 
-      const QIterated<dim> quadrature_formula (QTrapezoid<1>(),
-                                               this->get_parameters().stokes_velocity_degree);
+      const QIterated<dim> quadrature_formula(QTrapezoid<1>(), this->get_parameters().stokes_velocity_degree);
 
-      FEValues<dim> fe_values (this->get_mapping(),
-                               this->get_fe(),
-                               quadrature_formula,
-                               update_values |
-                               update_gradients |
-                               update_quadrature_points);
+      FEValues<dim> fe_values(this->get_mapping(),
+                              this->get_fe(),
+                              quadrature_formula,
+                              update_values | update_gradients | update_quadrature_points);
 
       const unsigned int n_q_points = quadrature_formula.size();
 
-      MaterialModel::MaterialModelInputs<dim> in(n_q_points,
-                                                 this->introspection().n_compositional_fields);
-      MaterialModel::MaterialModelOutputs<dim> out(n_q_points,
-                                                   this->introspection().n_compositional_fields);
-      in.requested_properties = MaterialModel::MaterialProperties::equation_of_state_properties |
-                                MaterialModel::MaterialProperties::thermal_conductivity;
+      MaterialModel::MaterialModelInputs<dim>  in(n_q_points, this->introspection().n_compositional_fields);
+      MaterialModel::MaterialModelOutputs<dim> out(n_q_points, this->introspection().n_compositional_fields);
+      in.requested_properties =
+        MaterialModel::MaterialProperties::equation_of_state_properties | MaterialModel::MaterialProperties::thermal_conductivity;
 
       for (const auto &cell : this->get_dof_handler().active_cell_iterators())
         if (cell->is_locally_owned())
           {
-            fe_values.reinit (cell);
-            in.reinit(fe_values,
-                      cell,
-                      this->introspection(),
-                      this->get_solution());
+            fe_values.reinit(cell);
+            in.reinit(fe_values, cell, this->introspection(), this->get_solution());
 
             this->get_material_model().evaluate(in, out);
 
-            if (this->get_parameters().formulation_temperature_equation
-                == Parameters<dim>::Formulation::TemperatureEquation::reference_density_profile)
+            if (this->get_parameters().formulation_temperature_equation ==
+                Parameters<dim>::Formulation::TemperatureEquation::reference_density_profile)
               {
                 // Overwrite the density by the reference density coming from the
                 // adiabatic conditions as required by the formulation
-                for (unsigned int q=0; q<n_q_points; ++q)
+                for (unsigned int q = 0; q < n_q_points; ++q)
                   out.densities[q] = this->get_adiabatic_conditions().density(in.position[q]);
               }
-            else if (this->get_parameters().formulation_temperature_equation
-                     == Parameters<dim>::Formulation::TemperatureEquation::real_density)
+            else if (this->get_parameters().formulation_temperature_equation ==
+                     Parameters<dim>::Formulation::TemperatureEquation::real_density)
               {
                 // use real density
               }
@@ -81,33 +74,35 @@ namespace aspect
 
             // Evaluate thermal diffusivity at each quadrature point and
             // calculate the corresponding conduction timestep, if applicable
-            for (unsigned int q=0; q<n_q_points; ++q)
+            for (unsigned int q = 0; q < n_q_points; ++q)
               {
-                const double k = out.thermal_conductivities[q];
+                const double k   = out.thermal_conductivities[q];
                 const double rho = out.densities[q];
                 const double c_p = out.specific_heat[q];
 
                 Assert(rho * c_p > 0,
-                       ExcMessage ("The product of density and c_P needs to be a "
-                                   "non-negative quantity."));
+                       ExcMessage("The product of density and c_P needs to be a "
+                                  "non-negative quantity."));
 
-                const double thermal_diffusivity = k/(rho*c_p);
+                const double thermal_diffusivity = k / (rho * c_p);
 
                 if (thermal_diffusivity > 0)
                   {
-                    min_local_conduction_timestep = std::min(min_local_conduction_timestep,
-                                                             this->get_parameters().CFL_number*std::pow(cell->minimum_vertex_distance(),2.)
-                                                             / thermal_diffusivity);
+                    min_local_conduction_timestep =
+                      std::min(min_local_conduction_timestep,
+                               this->get_parameters().CFL_number * std::pow(cell->minimum_vertex_distance(), 2.) / thermal_diffusivity);
                   }
               }
           }
 
-      const double min_conduction_timestep = Utilities::MPI::min (min_local_conduction_timestep, this->get_mpi_communicator());
+      const double min_conduction_timestep = Utilities::MPI::min(min_local_conduction_timestep, this->get_mpi_communicator());
 
-      AssertThrow (min_conduction_timestep > 0,
-                   ExcMessage("The time step length for the each time step needs to be positive, "
-                              "but the computed step length was: " + std::to_string(min_conduction_timestep) + ". "
-                              "Please check for non-positive material properties."));
+      AssertThrow(min_conduction_timestep > 0,
+                  ExcMessage("The time step length for the each time step needs to be positive, "
+                             "but the computed step length was: " +
+                             std::to_string(min_conduction_timestep) +
+                             ". "
+                             "Please check for non-positive material properties."));
 
       return min_conduction_timestep;
     }

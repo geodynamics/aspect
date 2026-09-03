@@ -34,17 +34,17 @@ namespace aspect
     {
       indicators = 0;
 
-      const Quadrature<dim-1> &quadrature = this->introspection().face_quadratures.velocities;
-      KellyErrorEstimator<dim>::estimate (this->get_mapping(),
-                                          this->get_dof_handler(),
-                                          quadrature,
-                                          std::map<types::boundary_id,const Function<dim>*>(),
-                                          this->get_solution(),
-                                          indicators,
-                                          this->introspection().component_masks.velocities,
-                                          nullptr,
-                                          0,
-                                          this->get_triangulation().locally_owned_subdomain());
+      const Quadrature<dim - 1> &quadrature = this->introspection().face_quadratures.velocities;
+      KellyErrorEstimator<dim>::estimate(this->get_mapping(),
+                                         this->get_dof_handler(),
+                                         quadrature,
+                                         std::map<types::boundary_id, const Function<dim> *>(),
+                                         this->get_solution(),
+                                         indicators,
+                                         this->introspection().component_masks.velocities,
+                                         nullptr,
+                                         0,
+                                         this->get_triangulation().locally_owned_subdomain());
     }
   }
 }

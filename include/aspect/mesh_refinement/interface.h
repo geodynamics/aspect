@@ -23,19 +23,24 @@
 #define _aspect_mesh_refinement_interface_h
 
 #include <aspect/global.h>
+
 #include <aspect/plugins.h>
+
 #include <aspect/simulator_access.h>
 
-#include <memory>
-#include <deal.II/base/table_handler.h>
 #include <deal.II/base/parameter_handler.h>
+#include <deal.II/base/table_handler.h>
 #include <deal.II/distributed/tria.h>
+
+#include <memory>
 
 
 namespace aspect
 {
-  template <int dim> class Simulator;
-  template <int dim> class SimulatorAccess;
+  template <int dim>
+  class Simulator;
+  template <int dim>
+  class SimulatorAccess;
 
 
   /**
@@ -81,9 +86,8 @@ namespace aspect
          * provides an error indicator. This vector will already have the
          * correct size when the function is called.
          */
-        virtual
-        void
-        execute (Vector<float> &error_indicators) const;
+        virtual void
+        execute(Vector<float> &error_indicators) const;
 
         /**
          * After cells have been marked for coarsening/refinement, apply
@@ -95,13 +99,9 @@ namespace aspect
          * DoFHandlers, or finite element spaces. You can check if this is the
          * case by querying this->get_dof_handler().n_dofs() == 0.
          */
-        virtual
-        void
-        tag_additional_cells () const;
+        virtual void
+        tag_additional_cells() const;
     };
-
-
-
 
 
 
@@ -121,26 +121,23 @@ namespace aspect
          * normalized and merged according to the operation specified in the
          * input file (e.g., via a plus, a maximum operation, etc).
          */
-        virtual
-        void
-        execute (Vector<float> &error_indicators) const;
+        virtual void
+        execute(Vector<float> &error_indicators) const;
 
         /**
          * Apply additional refinement criteria independent of the error
          * estimate for all of the mesh refinement objects that have been
          * requested in the input file.
          */
-        virtual
-        void
-        tag_additional_cells () const;
+        virtual void
+        tag_additional_cells() const;
 
         /**
          * Declare the parameters of all known mesh refinement plugins, as
          * well as of ones this class has itself.
          */
-        static
-        void
-        declare_parameters (ParameterHandler &prm);
+        static void
+        declare_parameters(ParameterHandler &prm);
 
         /**
          * Read the parameters this class declares from the parameter file.
@@ -148,7 +145,7 @@ namespace aspect
          * let these objects read their parameters as well.
          */
         void
-        parse_parameters (ParameterHandler &prm) override;
+        parse_parameters(ParameterHandler &prm) override;
 
         /**
          * Go through the list of all mesh refinement strategies that have been selected
@@ -165,10 +162,9 @@ namespace aspect
          *   class of the current class.
          */
         template <typename MeshRefinementType,
-                  typename = typename std::enable_if_t<std::is_base_of<Interface<dim>,MeshRefinementType>::value>>
-        DEAL_II_DEPRECATED
-        bool
-        has_matching_mesh_refinement_strategy () const;
+                  typename = typename std::enable_if_t<std::is_base_of<Interface<dim>, MeshRefinementType>::value>>
+        DEAL_II_DEPRECATED bool
+        has_matching_mesh_refinement_strategy() const;
 
         /**
          * Go through the list of all mesh refinement strategies that have been selected
@@ -187,10 +183,9 @@ namespace aspect
          *   class of the current class.
          */
         template <typename MeshRefinementType,
-                  typename = typename std::enable_if_t<std::is_base_of<Interface<dim>,MeshRefinementType>::value>>
-        DEAL_II_DEPRECATED
-        const MeshRefinementType &
-        get_matching_mesh_refinement_strategy () const;
+                  typename = typename std::enable_if_t<std::is_base_of<Interface<dim>, MeshRefinementType>::value>>
+        DEAL_II_DEPRECATED const MeshRefinementType &
+        get_matching_mesh_refinement_strategy() const;
 
         /**
          * A function that is used to register mesh refinement objects in such
@@ -209,12 +204,11 @@ namespace aspect
          * @param factory_function A pointer to a function that creates such a
          * mesh refinement object and returns a pointer to it.
          */
-        static
-        void
-        register_mesh_refinement_criterion (const std::string &name,
-                                            const std::string &description,
-                                            void (*declare_parameters_function) (ParameterHandler &),
-                                            std::unique_ptr<Interface<dim>> (*factory_function) ());
+        static void
+        register_mesh_refinement_criterion(const std::string &name,
+                                           const std::string &description,
+                                           void (*declare_parameters_function)(ParameterHandler &),
+                                           std::unique_ptr<Interface<dim>> (*factory_function)());
 
         /**
          * For the current plugin subsystem, write a connection graph of all of the
@@ -225,25 +219,26 @@ namespace aspect
          *
          * @param output_stream The stream to write the output to.
          */
-        static
-        void
-        write_plugin_graph (std::ostream &output_stream);
+        static void
+        write_plugin_graph(std::ostream &output_stream);
 
         /**
          * Exception.
          */
-        DeclException1 (ExcMeshRefinementNameNotFound,
-                        std::string,
-                        << "Could not find entry <"
-                        << arg1
-                        << "> among the names of registered mesh refinement objects.");
+        DeclException1(ExcMeshRefinementNameNotFound,
+                       std::string,
+                       << "Could not find entry <" << arg1 << "> among the names of registered mesh refinement objects.");
+
       private:
         /**
          * An enum that describes the different ways in which we can merge the
          * results of multiple mesh refinement criteria.
          */
         enum MergeOperation
-        { plus, max };
+        {
+          plus,
+          max
+        };
 
         /**
          * How to merge the results of multiple mesh refinement criteria.
@@ -272,9 +267,8 @@ namespace aspect
 
     template <int dim>
     template <typename MeshRefinementType, typename>
-    inline
-    bool
-    Manager<dim>::has_matching_mesh_refinement_strategy () const
+    inline bool
+    Manager<dim>::has_matching_mesh_refinement_strategy() const
     {
       return this->template has_matching_active_plugin<MeshRefinementType>();
     }
@@ -283,9 +277,8 @@ namespace aspect
 
     template <int dim>
     template <typename MeshRefinementType, typename>
-    inline
-    const MeshRefinementType &
-    Manager<dim>::get_matching_mesh_refinement_strategy () const
+    inline const MeshRefinementType &
+    Manager<dim>::get_matching_mesh_refinement_strategy() const
     {
       return this->template get_matching_active_plugin<MeshRefinementType>();
     }
@@ -299,17 +292,15 @@ namespace aspect
      *
      * @ingroup MeshRefinement
      */
-#define ASPECT_REGISTER_MESH_REFINEMENT_CRITERION(classname,name,description) \
+#define ASPECT_REGISTER_MESH_REFINEMENT_CRITERION(classname, name, description) \
   template class classname<2>; \
   template class classname<3>; \
-  namespace ASPECT_REGISTER_MESH_REFINEMENT_CRITERION_ ## classname \
+  namespace ASPECT_REGISTER_MESH_REFINEMENT_CRITERION_##classname \
   { \
-    aspect::internal::Plugins::RegisterHelper<aspect::MeshRefinement::Interface<2>,classname<2>> \
-    dummy_ ## classname ## _2d (&aspect::MeshRefinement::Manager<2>::register_mesh_refinement_criterion, \
-                                name, description); \
-    aspect::internal::Plugins::RegisterHelper<aspect::MeshRefinement::Interface<3>,classname<3>> \
-    dummy_ ## classname ## _3d (&aspect::MeshRefinement::Manager<3>::register_mesh_refinement_criterion, \
-                                name, description); \
+    aspect::internal::Plugins::RegisterHelper<aspect::MeshRefinement::Interface<2>, classname<2>> dummy_##classname##_2d( \
+      &aspect::MeshRefinement::Manager<2>::register_mesh_refinement_criterion, name, description); \
+    aspect::internal::Plugins::RegisterHelper<aspect::MeshRefinement::Interface<3>, classname<3>> dummy_##classname##_3d( \
+      &aspect::MeshRefinement::Manager<3>::register_mesh_refinement_criterion, name, description); \
   }
   }
 }

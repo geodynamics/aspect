@@ -19,9 +19,10 @@
 */
 
 
-#include <aspect/postprocess/rotation_statistics.h>
-#include <aspect/material_model/simple.h>
 #include <aspect/global.h>
+
+#include <aspect/material_model/simple.h>
+#include <aspect/postprocess/rotation_statistics.h>
 #include <aspect/simulator.h>
 
 #include <deal.II/base/quadrature_lib.h>
@@ -34,32 +35,27 @@ namespace aspect
   {
     namespace
     {
-      void add_scientific_column(const std::string &name,
-                                 const double value,
-                                 TableHandler &statistics)
+      void
+      add_scientific_column(const std::string &name, const double value, TableHandler &statistics)
       {
-        statistics.add_value(name,value);
-        statistics.set_precision (name, 8);
-        statistics.set_scientific (name, true);
+        statistics.add_value(name, value);
+        statistics.set_precision(name, 8);
+        statistics.set_scientific(name, true);
       }
     }
 
 
 
     template <int dim>
-    std::pair<std::string,std::string>
-    RotationStatistics<dim>::execute (TableHandler &statistics)
+    std::pair<std::string, std::string>
+    RotationStatistics<dim>::execute(TableHandler &statistics)
     {
-      RotationProperties<dim> rotation = this->compute_net_angular_momentum(use_constant_density,
-                                                                            this->get_solution(),
-                                                                            false);
+      RotationProperties<dim> rotation = this->compute_net_angular_momentum(use_constant_density, this->get_solution(), false);
 
-      RotationProperties<dim> surface_rotation = this->compute_net_angular_momentum(true,
-                                                                                    this->get_solution(),
-                                                                                    true);
+      RotationProperties<dim> surface_rotation = this->compute_net_angular_momentum(true, this->get_solution(), true);
 
       const std::vector<std::string> names = {"Angular momentum", "Moment of inertia", "Angular velocity", "Surface angular velocity"};
-      std::vector<std::string> units;
+      std::vector<std::string>       units;
 
       if (this->convert_output_to_years() == true)
         {
@@ -88,67 +84,66 @@ namespace aspect
 
       if (dim == 2)
         {
-          add_scientific_column(names[0] + " (" + units[0] +")", rotation.scalar_angular_momentum, statistics);
-          add_scientific_column(names[1] + " (" + units[1] +")", rotation.scalar_moment_of_inertia, statistics);
-          add_scientific_column(names[2] + " (" + units[2] +")", rotation.scalar_rotation, statistics);
-          add_scientific_column(names[3] + " (" + units[3] +")", surface_rotation.scalar_rotation, statistics);
+          add_scientific_column(names[0] + " (" + units[0] + ")", rotation.scalar_angular_momentum, statistics);
+          add_scientific_column(names[1] + " (" + units[1] + ")", rotation.scalar_moment_of_inertia, statistics);
+          add_scientific_column(names[2] + " (" + units[2] + ")", rotation.scalar_rotation, statistics);
+          add_scientific_column(names[3] + " (" + units[3] + ")", surface_rotation.scalar_rotation, statistics);
 
-          output << rotation.scalar_angular_momentum << ' ' << units[0] << ", "
-                 << rotation.scalar_moment_of_inertia << ' ' << units[1] << ", "
-                 << rotation.scalar_rotation << ' ' << units[2] << ", "
-                 << surface_rotation.scalar_rotation << ' ' << units[3];
+          output << rotation.scalar_angular_momentum << ' ' << units[0] << ", " << rotation.scalar_moment_of_inertia << ' ' << units[1]
+                 << ", " << rotation.scalar_rotation << ' ' << units[2] << ", " << surface_rotation.scalar_rotation << ' ' << units[3];
         }
       else if (dim == 3)
         {
-          add_scientific_column(names[0] + " (" + units[0] +")", rotation.tensor_angular_momentum.norm(), statistics);
+          add_scientific_column(names[0] + " (" + units[0] + ")", rotation.tensor_angular_momentum.norm(), statistics);
 
-          const double scalar_moment_of_inertia = (rotation.tensor_moment_of_inertia * rotation.tensor_rotation / rotation.tensor_rotation.norm()).norm();
+          const double scalar_moment_of_inertia =
+            (rotation.tensor_moment_of_inertia * rotation.tensor_rotation / rotation.tensor_rotation.norm()).norm();
 
           if (output_full_tensor == false)
             {
-              add_scientific_column(names[1] + " (" + units[1] +")", scalar_moment_of_inertia, statistics);
+              add_scientific_column(names[1] + " (" + units[1] + ")", scalar_moment_of_inertia, statistics);
             }
           else
             {
-              add_scientific_column(names[1] + "_xx (" + units[1] +")", rotation.tensor_moment_of_inertia[0][0], statistics);
-              add_scientific_column(names[1] + "_yy (" + units[1] +")", rotation.tensor_moment_of_inertia[1][1], statistics);
-              add_scientific_column(names[1] + "_zz (" + units[1] +")", rotation.tensor_moment_of_inertia[2][2], statistics);
-              add_scientific_column(names[1] + "_xy (" + units[1] +")", rotation.tensor_moment_of_inertia[0][1], statistics);
-              add_scientific_column(names[1] + "_xz (" + units[1] +")", rotation.tensor_moment_of_inertia[0][2], statistics);
-              add_scientific_column(names[1] + "_yz (" + units[1] +")", rotation.tensor_moment_of_inertia[1][2], statistics);
+              add_scientific_column(names[1] + "_xx (" + units[1] + ")", rotation.tensor_moment_of_inertia[0][0], statistics);
+              add_scientific_column(names[1] + "_yy (" + units[1] + ")", rotation.tensor_moment_of_inertia[1][1], statistics);
+              add_scientific_column(names[1] + "_zz (" + units[1] + ")", rotation.tensor_moment_of_inertia[2][2], statistics);
+              add_scientific_column(names[1] + "_xy (" + units[1] + ")", rotation.tensor_moment_of_inertia[0][1], statistics);
+              add_scientific_column(names[1] + "_xz (" + units[1] + ")", rotation.tensor_moment_of_inertia[0][2], statistics);
+              add_scientific_column(names[1] + "_yz (" + units[1] + ")", rotation.tensor_moment_of_inertia[1][2], statistics);
             }
 
-          add_scientific_column(names[2] + " (" + units[2] +")", rotation.tensor_rotation.norm(), statistics);
-          add_scientific_column(names[3] + " (" + units[3] +")", surface_rotation.tensor_rotation.norm(), statistics);
+          add_scientific_column(names[2] + " (" + units[2] + ")", rotation.tensor_rotation.norm(), statistics);
+          add_scientific_column(names[3] + " (" + units[3] + ")", surface_rotation.tensor_rotation.norm(), statistics);
 
-          output << rotation.tensor_angular_momentum.norm() << ' ' << units[0] << ", "
-                 << scalar_moment_of_inertia << ' ' << units[1] << ", "
-                 << rotation.tensor_rotation.norm() << ' ' << units[2] << ", "
-                 << surface_rotation.tensor_rotation.norm() << ' ' << units[3];
+          output << rotation.tensor_angular_momentum.norm() << ' ' << units[0] << ", " << scalar_moment_of_inertia << ' ' << units[1]
+                 << ", " << rotation.tensor_rotation.norm() << ' ' << units[2] << ", " << surface_rotation.tensor_rotation.norm() << ' '
+                 << units[3];
         }
 
-      return std::pair<std::string, std::string> (names[0]+ ", " + names[1] + ", " + names[2] + ", " + names[3] + ":",
-                                                  output.str());
+      return std::pair<std::string, std::string>(names[0] + ", " + names[1] + ", " + names[2] + ", " + names[3] + ":", output.str());
     }
 
 
 
     template <int dim>
     void
-    RotationStatistics<dim>::declare_parameters (ParameterHandler &prm)
+    RotationStatistics<dim>::declare_parameters(ParameterHandler &prm)
     {
       prm.enter_subsection("Postprocess");
       {
         prm.enter_subsection("Rotation statistics");
         {
-          prm.declare_entry("Use constant density of one","false",
+          prm.declare_entry("Use constant density of one",
+                            "false",
                             Patterns::Bool(),
                             "Whether to use a constant density of one for the computation of the "
                             "angular momentum and moment of inertia. This is an approximation "
                             "that assumes that the 'volumetric' rotation is equal to the 'mass' "
                             "rotation. If this parameter is true this postprocessor computes "
                             "'net rotation' instead of 'angular momentum'.");
-          prm.declare_entry("Output full moment of inertia tensor","false",
+          prm.declare_entry("Output full moment of inertia tensor",
+                            "false",
                             Patterns::Bool(),
                             "Whether to write the full moment of inertia tensor into the "
                             "statistics output instead of its norm for the current rotation "
@@ -166,14 +161,14 @@ namespace aspect
 
     template <int dim>
     void
-    RotationStatistics<dim>::parse_parameters (ParameterHandler &prm)
+    RotationStatistics<dim>::parse_parameters(ParameterHandler &prm)
     {
       prm.enter_subsection("Postprocess");
       {
         prm.enter_subsection("Rotation statistics");
         {
           use_constant_density = prm.get_bool("Use constant density of one");
-          output_full_tensor = prm.get_bool("Output full moment of inertia tensor");
+          output_full_tensor   = prm.get_bool("Output full moment of inertia tensor");
         }
         prm.leave_subsection();
       }

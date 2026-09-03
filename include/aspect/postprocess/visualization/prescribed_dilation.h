@@ -38,17 +38,14 @@ namespace aspect
        * A class derived from DataPostprocessor that outputs the prescribed dilation
        */
       template <int dim>
-      class PrescribedDilation
-        : public DataPostprocessorScalar<dim>,
-          public SimulatorAccess<dim>,
-          public Interface<dim>
+      class PrescribedDilation : public DataPostprocessorScalar<dim>, public SimulatorAccess<dim>, public Interface<dim>
       {
         public:
-          PrescribedDilation ();
+          PrescribedDilation();
 
           void
           evaluate_vector_field(const DataPostprocessorInputs::Vector<dim> &input_data,
-                                std::vector<Vector<double>> &computed_quantities) const override;
+                                std::vector<Vector<double>>                &computed_quantities) const override;
       };
     }
   }

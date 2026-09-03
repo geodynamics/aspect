@@ -21,13 +21,12 @@
 #ifndef _aspect_postprocess_crystal_preferred_orientation_h
 #define _aspect_postprocess_crystal_preferred_orientation_h
 
-#include <aspect/postprocess/interface.h>
 #include <aspect/particle/manager.h>
-
+#include <aspect/postprocess/interface.h>
 #include <aspect/simulator_access.h>
 
-#include <deal.II/particles/particle_handler.h>
 #include <deal.II/base/data_out_base.h>
+#include <deal.II/particles/particle_handler.h>
 
 #include <random>
 #include <tuple>
@@ -62,7 +61,8 @@ namespace aspect
         /**
          * Initialize function.
          */
-        void initialize () override;
+        void
+        initialize() override;
 
         /**
          * A Postprocessor that writes out CPO specific particle data.
@@ -71,44 +71,47 @@ namespace aspect
          * is recommended for plotting against real data. For both representations
          * the specific output fields and their order can be set.
          */
-        std::pair<std::string,std::string> execute (TableHandler &statistics) override;
+        std::pair<std::string, std::string>
+        execute(TableHandler &statistics) override;
 
         /**
          * This function ensures that the particle postprocessor is run before
          * this postprocessor.
          */
         std::list<std::string>
-        required_other_postprocessors () const override;
+        required_other_postprocessors() const override;
 
         /**
          * Save the state of this object.
          */
-        void save (std::map<std::string, std::string> &status_strings) const override;
+        void
+        save(std::map<std::string, std::string> &status_strings) const override;
 
         /**
          * Restore the state of the object.
          */
-        void load (const std::map<std::string, std::string> &status_strings) override;
+        void
+        load(const std::map<std::string, std::string> &status_strings) override;
 
         /**
          * Serialize the contents of this class as far as they are not read
          * from input parameter files.
          */
         template <class Archive>
-        void serialize (Archive &ar, const unsigned int version);
+        void
+        serialize(Archive &ar, const unsigned int version);
 
         /**
          * Declare the parameters this class takes through input files.
          */
-        static
-        void
-        declare_parameters (ParameterHandler &prm);
+        static void
+        declare_parameters(ParameterHandler &prm);
 
         /**
          * Read the parameters this class declares from the parameter file.
          */
         void
-        parse_parameters (ParameterHandler &prm) override;
+        parse_parameters(ParameterHandler &prm) override;
 
       private:
         /**
@@ -121,13 +124,17 @@ namespace aspect
          */
         enum class Output
         {
-          VolumeFraction, RotationMatrix, EulerAngles, not_found
+          VolumeFraction,
+          RotationMatrix,
+          EulerAngles,
+          not_found
         };
 
         /**
          * Converts a string to an Output enum.
          */
-        Output string_to_output_enum(const std::string &string);
+        Output
+        string_to_output_enum(const std::string &string);
 
         /**
          * Random number generator used for random draw volume weighting.
@@ -161,7 +168,8 @@ namespace aspect
          * falling behind with last_output_time and having to catch up once
          * the time step becomes larger. This is done after every output.
          */
-        void set_last_output_time (const double current_time);
+        void
+        set_last_output_time(const double current_time);
 
         /**
          * Consecutively counted number indicating the how-manyth time we will
@@ -182,14 +190,14 @@ namespace aspect
          * is done because there is no way to store the simulation
          * time inside the .pvtu or .vtu files).
          */
-        std::vector<std::pair<double,std::string>> times_and_pvtu_file_names;
+        std::vector<std::pair<double, std::string>> times_and_pvtu_file_names;
 
         /**
          * A corresponding variable that we use for the .visit files created
          * by DataOutInterface::write_visit_record. The second part of a
          * pair contains all files that together form a time step.
          */
-        std::vector<std::pair<double,std::vector<std::string>>> times_and_vtu_file_names;
+        std::vector<std::pair<double, std::vector<std::string>>> times_and_vtu_file_names;
 
         /**
          * A list of list of filenames, sorted by timestep, that correspond to
@@ -204,7 +212,7 @@ namespace aspect
          * dimensions and names of data written at all steps during the
          * simulation.
          */
-        std::vector<XDMFEntry>  xdmf_entries;
+        std::vector<XDMFEntry> xdmf_entries;
 
         /**
          * VTU file output supports grouping files from several CPUs into one
@@ -242,7 +250,7 @@ namespace aspect
         /**
          * What "raw" CPO data to write out.
          */
-        std::vector<std::pair<unsigned int,Output>> write_raw_cpo;
+        std::vector<std::pair<unsigned int, Output>> write_raw_cpo;
 
         /**
          * Whether computing raw Euler angles is needed.
@@ -260,7 +268,7 @@ namespace aspect
          * the grain properties (size and rotation) are put in a list sorted based by volume
          * and picked randomly, with large volumes having a higher chance of being picked.
          */
-        std::vector<std::pair<unsigned int,Output>> write_draw_volume_weighted_cpo;
+        std::vector<std::pair<unsigned int, Output>> write_draw_volume_weighted_cpo;
 
         /**
          * Whether computing weighted A matrix is needed.
@@ -287,11 +295,11 @@ namespace aspect
          * writing data is still continuing. The function takes over ownership
          * of these arguments and deletes them at the end of its work.
          */
-        static
-        void writer (const std::string &filename,
-                     const std::string &temporary_filename,
-                     const std::string &file_contents,
-                     const bool compress_contents);
+        static void
+        writer(const std::string &filename,
+               const std::string &temporary_filename,
+               const std::string &file_contents,
+               const bool         compress_contents);
     };
   }
 }

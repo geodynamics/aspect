@@ -29,10 +29,8 @@ namespace aspect
     namespace VisualizationPostprocessors
     {
       template <int dim>
-      ErrorIndicator<dim>::
-      ErrorIndicator ()
-        :
-        CellDataVectorCreator<dim>("")
+      ErrorIndicator<dim>::ErrorIndicator()
+        : CellDataVectorCreator<dim>("")
       {}
 
 
@@ -41,9 +39,8 @@ namespace aspect
       std::pair<std::string, std::unique_ptr<Vector<float>>>
       ErrorIndicator<dim>::execute() const
       {
-        std::pair<std::string, std::unique_ptr<Vector<float>>>
-        return_value ("error_indicator",
-                      std::make_unique<Vector<float>>(this->get_triangulation().n_active_cells()));
+        std::pair<std::string, std::unique_ptr<Vector<float>>> return_value(
+          "error_indicator", std::make_unique<Vector<float>>(this->get_triangulation().n_active_cells()));
         this->get_refinement_criteria(*return_value.second);
 
         return return_value;

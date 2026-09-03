@@ -18,13 +18,14 @@
   <http://www.gnu.org/licenses/>.
 */
 
-#include <algorithm>
-#include <aspect/geometry_model/sphere.h>
 #include <aspect/geometry_model/initial_topography_model/zero_topography.h>
+#include <aspect/geometry_model/sphere.h>
+#include <aspect/utilities.h>
 
 #include <deal.II/grid/grid_generator.h>
 #include <deal.II/grid/manifold_lib.h>
-#include <aspect/utilities.h>
+
+#include <algorithm>
 
 namespace aspect
 {
@@ -32,12 +33,9 @@ namespace aspect
   {
     template <int dim>
     void
-    Sphere<dim>::
-    create_coarse_mesh (parallel::distributed::Triangulation<dim> &coarse_grid) const
+    Sphere<dim>::create_coarse_mesh(parallel::distributed::Triangulation<dim> &coarse_grid) const
     {
-      GridGenerator::hyper_ball (coarse_grid,
-                                 Point<dim>(),
-                                 R);
+      GridGenerator::hyper_ball(coarse_grid, Point<dim>(), R);
 
       coarse_grid.set_manifold(0, SphericalManifold<dim>());
       coarse_grid.set_all_manifold_ids_on_boundary(0);
@@ -46,18 +44,16 @@ namespace aspect
 
     template <int dim>
     std::set<types::boundary_id>
-    Sphere<dim>::
-    get_used_boundary_indicators () const
+    Sphere<dim>::get_used_boundary_indicators() const
     {
-      const types::boundary_id s[] = { 0 };
+      const types::boundary_id s[] = {0};
       return std::set<types::boundary_id>(std::begin(s), std::end(s));
     }
 
 
     template <int dim>
-    std::map<std::string,types::boundary_id>
-    Sphere<dim>::
-    get_symbolic_boundary_names_map () const
+    std::map<std::string, types::boundary_id>
+    Sphere<dim>::get_symbolic_boundary_names_map() const
     {
       return {{"top", 0}};
     }
@@ -65,15 +61,14 @@ namespace aspect
 
     template <int dim>
     double
-    Sphere<dim>::
-    length_scale () const
+    Sphere<dim>::length_scale() const
     {
       // as described in the first ASPECT paper, a length scale of
       // 10km = 1e4m works well for the pressure scaling for earth
       // sized spherical shells. use a length scale that
       // yields this value for the R0,R1 corresponding to earth
       // but otherwise scales like (R1-R0)
-      return 1e4 * maximal_depth() / (6336000.-3481000.);
+      return 1e4 * maximal_depth() / (6336000. - 3481000.);
     }
 
 
@@ -89,7 +84,7 @@ namespace aspect
     double
     Sphere<dim>::height_above_reference_surface(const Point<dim> &position) const
     {
-      return position.norm()-radius();
+      return position.norm() - radius();
     }
 
 
@@ -98,7 +93,7 @@ namespace aspect
     Sphere<dim>::representative_point(const double depth) const
     {
       Point<dim> p;
-      p(dim-1) = std::clamp(R - depth, 0., maximal_depth());
+      p(dim - 1) = std::clamp(R - depth, 0., maximal_depth());
       return p;
     }
 
@@ -112,14 +107,15 @@ namespace aspect
     }
 
     template <int dim>
-    double Sphere<dim>::radius () const
+    double
+    Sphere<dim>::radius() const
     {
       return R;
     }
 
     template <int dim>
     bool
-    Sphere<dim>::has_curved_elements () const
+    Sphere<dim>::has_curved_elements() const
     {
       return true;
     }
@@ -130,16 +126,18 @@ namespace aspect
     bool
     Sphere<dim>::point_is_in_domain(const Point<dim> &point) const
     {
-      AssertThrow(!this->get_parameters().mesh_deformation_enabled ||
-                  this->get_timestep_number() == 0,
-                  ExcMessage("After displacement of the mesh, this function can no longer be used to determine whether a point lies in the domain or not."));
+      AssertThrow(
+        !this->get_parameters().mesh_deformation_enabled || this->get_timestep_number() == 0,
+        ExcMessage(
+          "After displacement of the mesh, this function can no longer be used to determine whether a point lies in the domain or not."));
 
-      AssertThrow(Plugins::plugin_type_matches<const InitialTopographyModel::ZeroTopography<dim>>(this->get_initial_topography_model()),
-                  ExcMessage("After adding topography, this function can no longer be used to determine whether a point lies in the domain or not."));
+      AssertThrow(
+        Plugins::plugin_type_matches<const InitialTopographyModel::ZeroTopography<dim>>(this->get_initial_topography_model()),
+        ExcMessage("After adding topography, this function can no longer be used to determine whether a point lies in the domain or not."));
 
       const double radius = point.norm();
 
-      if (radius > R+std::numeric_limits<double>::epsilon()*R)
+      if (radius > R + std::numeric_limits<double>::epsilon() * R)
         return false;
 
       return true;
@@ -148,7 +146,7 @@ namespace aspect
 
 
     template <int dim>
-    std::array<double,dim>
+    std::array<double, dim>
     Sphere<dim>::cartesian_to_natural_coordinates(const Point<dim> &position) const
     {
       return Utilities::Coordinates::cartesian_to_spherical_coordinates<dim>(position);
@@ -167,7 +165,7 @@ namespace aspect
 
     template <int dim>
     Point<dim>
-    Sphere<dim>::natural_to_cartesian_coordinates(const std::array<double,dim> &position) const
+    Sphere<dim>::natural_to_cartesian_coordinates(const std::array<double, dim> &position) const
     {
       return Utilities::Coordinates::spherical_to_cartesian_coordinates<dim>(position);
     }
@@ -176,15 +174,13 @@ namespace aspect
 
     template <int dim>
     void
-    Sphere<dim>::declare_parameters (ParameterHandler &prm)
+    Sphere<dim>::declare_parameters(ParameterHandler &prm)
     {
       prm.enter_subsection("Geometry model");
       {
         prm.enter_subsection("Sphere");
         {
-          prm.declare_entry ("Radius", "6371000.",
-                             Patterns::Double (0.),
-                             "Radius of the sphere. Units: \\si{\\meter}.");
+          prm.declare_entry("Radius", "6371000.", Patterns::Double(0.), "Radius of the sphere. Units: \\si{\\meter}.");
         }
         prm.leave_subsection();
       }
@@ -195,13 +191,13 @@ namespace aspect
 
     template <int dim>
     void
-    Sphere<dim>::parse_parameters (ParameterHandler &prm)
+    Sphere<dim>::parse_parameters(ParameterHandler &prm)
     {
       prm.enter_subsection("Geometry model");
       {
         prm.enter_subsection("Sphere");
         {
-          R            = prm.get_double ("Radius");
+          R = prm.get_double("Radius");
         }
         prm.leave_subsection();
       }

@@ -59,7 +59,7 @@ namespace aspect
        */
       template <int dim>
       LinearAlgebra::BlockVector
-      compute_dirichlet_boundary_heat_flux_solution_vector (const SimulatorAccess<dim> &simulator_access);
+      compute_dirichlet_boundary_heat_flux_solution_vector(const SimulatorAccess<dim> &simulator_access);
 
       /**
        * This function computes the combined heat flux through each boundary face (conductive + advective).
@@ -78,7 +78,7 @@ namespace aspect
        */
       template <int dim>
       std::vector<std::vector<std::pair<double, double>>>
-      compute_heat_flux_through_boundary_faces (const SimulatorAccess<dim> &simulator_access);
+      compute_heat_flux_through_boundary_faces(const SimulatorAccess<dim> &simulator_access);
     }
 
     /**
@@ -99,8 +99,8 @@ namespace aspect
         /**
          * Evaluate the solution for the heat flux.
          */
-        std::pair<std::string,std::string>
-        execute (TableHandler &statistics) override;
+        std::pair<std::string, std::string>
+        execute(TableHandler &statistics) override;
 
       private:
         /**
@@ -112,8 +112,8 @@ namespace aspect
          * only the values at the faces of the given @p boundary_id are
          * written to the file.
          */
-        void output_to_file(const types::boundary_id boundary_id,
-                            const std::vector<std::vector<std::pair<double, double>>> &heat_flux_and_area);
+        void
+        output_to_file(const types::boundary_id boundary_id, const std::vector<std::vector<std::pair<double, double>>> &heat_flux_and_area);
     };
   }
 }

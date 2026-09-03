@@ -18,16 +18,17 @@
   <http://www.gnu.org/licenses/>.
 */
 
-#include <aspect/material_model/simple.h>
-#include <aspect/boundary_velocity/interface.h>
-#include <aspect/postprocess/interface.h>
-#include <aspect/simulator_access.h>
 #include <aspect/global.h>
 
+#include <aspect/boundary_velocity/interface.h>
+#include <aspect/material_model/simple.h>
+#include <aspect/postprocess/interface.h>
+#include <aspect/simulator_access.h>
+
+#include <deal.II/base/function_lib.h>
+#include <deal.II/base/quadrature_lib.h>
 #include <deal.II/dofs/dof_tools.h>
 #include <deal.II/numerics/data_out.h>
-#include <deal.II/base/quadrature_lib.h>
-#include <deal.II/base/function_lib.h>
 #include <deal.II/numerics/error_estimator.h>
 #include <deal.II/numerics/vector_tools.h>
 
@@ -41,23 +42,22 @@ namespace aspect
       /**
        * Generate graphical output from the current solution.
        */
-      virtual
-      std::pair<std::string,std::string>
-      execute (TableHandler &statistics);
+      virtual std::pair<std::string, std::string>
+      execute(TableHandler &statistics);
   };
 
   template <int dim>
-  std::pair<std::string,std::string>
-  EVPostprocessor<dim>::execute (TableHandler &statistics)
+  std::pair<std::string, std::string>
+  EVPostprocessor<dim>::execute(TableHandler &statistics)
   {
     std::ostringstream os;
-    Vector<float> ev(this->get_triangulation().n_active_cells());
+    Vector<float>      ev(this->get_triangulation().n_active_cells());
     this->get_artificial_viscosity(ev);
     std::cout << "EV temperature: " << std::endl;
     ev.print(std::cout);
     os << ev.l2_norm() << ' ';
 
-    for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
+    for (unsigned int c = 0; c < this->n_compositional_fields(); ++c)
       {
         ev = 0.0;
         this->get_artificial_viscosity_composition(ev, c);
@@ -75,7 +75,5 @@ namespace aspect
 // explicit instantiations
 namespace aspect
 {
-  ASPECT_REGISTER_POSTPROCESSOR(EVPostprocessor,
-                                "EVPostprocessor",
-                                "")
+  ASPECT_REGISTER_POSTPROCESSOR(EVPostprocessor, "EVPostprocessor", "")
 }

@@ -21,8 +21,8 @@
 #ifndef _aspect_particle_property_cpo_elastic_tensor_h
 #define _aspect_particle_property_cpo_elastic_tensor_h
 
-#include <aspect/particle/property/interface.h>
 #include <aspect/particle/property/crystal_preferred_orientation.h>
+#include <aspect/particle/property/interface.h>
 #include <aspect/simulator_access.h>
 
 namespace aspect
@@ -57,7 +57,7 @@ namespace aspect
            * beginning of the program after parse_parameters is run.
            */
           void
-          initialize () override;
+          initialize() override;
 
           /**
            * This implements the Voigt averaging as described in the equation at the
@@ -68,10 +68,10 @@ namespace aspect
            * Mainprice (1990): $C_{ijkl} = R_{ip} R_{jg} R_{kr} R_{is} C_{pgrs}$, where
            * R_{ij} is the cpo orientation matrix.
            */
-          SymmetricTensor<2,6>
-          voigt_average_elastic_tensor (const Particle::Property::CrystalPreferredOrientation<dim> &cpo_particle_property,
-                                        const unsigned int cpo_data_position,
-                                        const ArrayView<double> &data) const;
+          SymmetricTensor<2, 6>
+          voigt_average_elastic_tensor(const Particle::Property::CrystalPreferredOrientation<dim> &cpo_particle_property,
+                                       const unsigned int                                          cpo_data_position,
+                                       const ArrayView<double>                                    &data) const;
 
           /**
            * Initialization function. This function is called once at the
@@ -85,28 +85,27 @@ namespace aspect
            * properties.
            */
           void
-          initialize_one_particle_property (const Point<dim> &position,
-                                            std::vector<double> &particle_properties) const override;
+          initialize_one_particle_property(const Point<dim> &position, std::vector<double> &particle_properties) const override;
 
           /**
            * @copydoc aspect::Particle::Property::Interface::update_particle_properties()
            */
           void
-          update_particle_properties (const ParticleUpdateInputs<dim> &inputs,
-                                      typename ParticleHandler<dim>::particle_iterator_range &particles) const override;
+          update_particle_properties(const ParticleUpdateInputs<dim>                        &inputs,
+                                     typename ParticleHandler<dim>::particle_iterator_range &particles) const override;
 
           /**
            * This function tells the particle manager that
            * we need to update particle properties every time step.
            */
           UpdateTimeFlags
-          need_update () const override;
+          need_update() const override;
 
           /**
            * @copydoc aspect::Particle::Property::Interface::get_update_flags()
            */
           UpdateFlags
-          get_update_flags (const unsigned int component) const override;
+          get_update_flags(const unsigned int component) const override;
 
           /**
            * Set up the information about the names and number of components
@@ -121,32 +120,26 @@ namespace aspect
           /**
            * returns the elastic tensor from the particle data
            */
-          static
-          SymmetricTensor<2,6>
-          get_elastic_tensor(unsigned int cpo_index,
-                             const ArrayView<double> &data);
+          static SymmetricTensor<2, 6>
+          get_elastic_tensor(unsigned int cpo_index, const ArrayView<double> &data);
 
           /**
            * Stores the elastic tensor into the particle data array
            */
-          static
-          void
-          set_elastic_tensor(unsigned int cpo_data_position,
-                             const ArrayView<double> &data,
-                             const SymmetricTensor<2,6> &elastic_tensor);
+          static void
+          set_elastic_tensor(unsigned int cpo_data_position, const ArrayView<double> &data, const SymmetricTensor<2, 6> &elastic_tensor);
 
           /**
            * Declare the parameters this class takes through input files.
            */
-          static
-          void
-          declare_parameters (ParameterHandler &prm);
+          static void
+          declare_parameters(ParameterHandler &prm);
 
           /**
            * Parses the parameters this class declares from the parameter file.
            */
           void
-          parse_parameters (ParameterHandler &prm) override;
+          parse_parameters(ParameterHandler &prm) override;
 
         private:
           /**
@@ -158,9 +151,9 @@ namespace aspect
            * The stiffness tensors for olivine and enstatite.
            * Todo: generalize this into a vector.
            */
-          SymmetricTensor<2,6> stiffness_matrix_olivine;
-          SymmetricTensor<2,6> stiffness_matrix_enstatite;
-          SymmetricTensor<2,6> stiffness_matrix_clinopyroxene;
+          SymmetricTensor<2, 6> stiffness_matrix_olivine;
+          SymmetricTensor<2, 6> stiffness_matrix_enstatite;
+          SymmetricTensor<2, 6> stiffness_matrix_clinopyroxene;
 
           /**
            * The number of grains per particle.
@@ -177,7 +170,6 @@ namespace aspect
            * called 'Minerals'.
            */
           unsigned int n_minerals;
-
       };
     }
   }

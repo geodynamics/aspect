@@ -19,8 +19,8 @@
 */
 
 
-#include <aspect/postprocess/particle_count_statistics.h>
 #include <aspect/particle/manager.h>
+#include <aspect/postprocess/particle_count_statistics.h>
 
 #include <deal.II/base/quadrature_lib.h>
 #include <deal.II/fe/fe_values.h>
@@ -31,8 +31,8 @@ namespace aspect
   namespace Postprocess
   {
     template <int dim>
-    std::pair<std::string,std::string>
-    ParticleCountStatistics<dim>::execute (TableHandler &statistics)
+    std::pair<std::string, std::string>
+    ParticleCountStatistics<dim>::execute(TableHandler &statistics)
     {
       unsigned int local_min_particles = std::numeric_limits<unsigned int>::max();
       unsigned int local_max_particles = 0;
@@ -49,28 +49,24 @@ namespace aspect
             for (unsigned int particle_manager_index = 0; particle_manager_index < this->n_particle_managers(); ++particle_manager_index)
               particles_in_cell += this->get_particle_manager(particle_manager_index).get_particle_handler().n_particles_in_cell(cell);
 
-            local_min_particles = std::min(local_min_particles,particles_in_cell);
-            local_max_particles = std::max(local_max_particles,particles_in_cell);
+            local_min_particles = std::min(local_min_particles, particles_in_cell);
+            local_max_particles = std::max(local_max_particles, particles_in_cell);
           }
 
       // now do the reductions over all processors
-      const unsigned int global_min_particles = Utilities::MPI::min (local_min_particles,
-                                                                     this->get_mpi_communicator());
-      const unsigned int global_max_particles = Utilities::MPI::max (local_max_particles,
-                                                                     this->get_mpi_communicator());
+      const unsigned int global_min_particles = Utilities::MPI::min(local_min_particles, this->get_mpi_communicator());
+      const unsigned int global_max_particles = Utilities::MPI::max(local_max_particles, this->get_mpi_communicator());
 
       // finally produce something for the statistics file
-      statistics.add_value ("Minimal particles per cell: ", global_min_particles);
-      statistics.add_value ("Average particles per cell: ", global_particles / this->get_triangulation().n_global_active_cells());
-      statistics.add_value ("Maximal particles per cell: ", global_max_particles);
+      statistics.add_value("Minimal particles per cell: ", global_min_particles);
+      statistics.add_value("Average particles per cell: ", global_particles / this->get_triangulation().n_global_active_cells());
+      statistics.add_value("Maximal particles per cell: ", global_max_particles);
 
       std::ostringstream output;
-      output << global_min_particles << ", "
-             << global_particles / this->get_triangulation().n_global_active_cells() << ", "
+      output << global_min_particles << ", " << global_particles / this->get_triangulation().n_global_active_cells() << ", "
              << global_max_particles;
 
-      return std::pair<std::string, std::string> ("Particle count per cell min/avg/max:",
-                                                  output.str());
+      return std::pair<std::string, std::string>("Particle count per cell min/avg/max:", output.str());
     }
 
 

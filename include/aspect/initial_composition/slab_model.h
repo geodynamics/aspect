@@ -23,7 +23,6 @@
 #define _aspect_initial_composition_slab_model_h
 
 #include <aspect/initial_composition/interface.h>
-
 #include <aspect/simulator_access.h>
 #include <aspect/structured_data.h>
 
@@ -53,34 +52,33 @@ namespace aspect
          * beginning of the program. Checks preconditions.
          */
         void
-        initialize () override;
+        initialize() override;
 
         /**
          * Return the initial composition as a function of position. For the
          * current class, this function returns 1.0 inside subducted slabs and 0.0 outside.
          */
         double
-        initial_composition (const Point<dim> &position,
-                             const unsigned int n_comp) const override;
+        initial_composition(const Point<dim> &position, const unsigned int n_comp) const override;
 
         /**
          * Declare the parameters this class takes through input files.
          */
-        static
-        void
-        declare_parameters (ParameterHandler &prm);
+        static void
+        declare_parameters(ParameterHandler &prm);
 
         /**
          * Read the parameters this class declares from the parameter file.
          */
         void
-        parse_parameters (ParameterHandler &prm) override;
+        parse_parameters(ParameterHandler &prm) override;
 
         /**
          * A function that returns the slab_boundary object to allow access
          * in other places.
          */
-        const Utilities::AsciiDataBoundary<dim> &get_slab_boundary() const;
+        const Utilities::AsciiDataBoundary<dim> &
+        get_slab_boundary() const;
 
       private:
         /**

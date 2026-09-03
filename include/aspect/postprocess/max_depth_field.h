@@ -42,8 +42,8 @@ namespace aspect
          * Evaluate the solution for the biggest depth of the
          * compositional field indicated by the user.
          */
-        std::pair<std::string,std::string>
-        execute (TableHandler &statistics) override;
+        std::pair<std::string, std::string>
+        execute(TableHandler &statistics) override;
     };
   }
 }

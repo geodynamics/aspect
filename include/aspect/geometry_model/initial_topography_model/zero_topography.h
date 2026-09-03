@@ -44,12 +44,13 @@ namespace aspect
          * value.
          */
         double
-        value (const Point<dim-1> &p) const override;
+        value(const Point<dim - 1> &p) const override;
 
         /**
          * Return the maximum value of the elevation.
          */
-        double max_topography () const override;
+        double
+        max_topography() const override;
     };
   }
 }

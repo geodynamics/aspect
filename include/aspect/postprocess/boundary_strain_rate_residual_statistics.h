@@ -47,33 +47,33 @@ namespace aspect
         /**
          * This function reads the specified input surface strain rate data files as an ascii data file.
          */
-        void initialize () override;
+        void
+        initialize() override;
 
         /**
          * This function returns the reference surface strain rate read from the data file at the given point @p p.
          */
         double
-        get_data_surface_strain_rate (const Point<dim> &p) const;
+        get_data_surface_strain_rate(const Point<dim> &p) const;
 
         /**
          * Evaluate the solution to compute statistics about the residual of the second invariant of strain rate
          * residual at the top boundary.
          */
-        std::pair<std::string,std::string>
-        execute (TableHandler &statistics) override;
+        std::pair<std::string, std::string>
+        execute(TableHandler &statistics) override;
 
         /**
          * Declare the parameters this class takes through input files.
          */
-        static
-        void
-        declare_parameters (ParameterHandler &prm);
+        static void
+        declare_parameters(ParameterHandler &prm);
 
         /**
          * Read the parameters this class declares from the parameter file.
          */
         void
-        parse_parameters (ParameterHandler &prm) override;
+        parse_parameters(ParameterHandler &prm) override;
 
       private:
         /**

@@ -18,23 +18,22 @@
   <http://www.gnu.org/licenses/>.
 */
 
-#include <aspect/gravity_model/ascii_data.h>
 #include <aspect/geometry_model/interface.h>
+#include <aspect/gravity_model/ascii_data.h>
 
 namespace aspect
 {
   namespace GravityModel
   {
     template <int dim>
-    AsciiData<dim>::AsciiData ()
-      :
-      gravity_index(numbers::invalid_unsigned_int)
+    AsciiData<dim>::AsciiData()
+      : gravity_index(numbers::invalid_unsigned_int)
     {}
 
 
     template <int dim>
     void
-    AsciiData<dim>::initialize ()
+    AsciiData<dim>::initialize()
     {
       this->initialize(this->get_mpi_communicator());
       gravity_index = this->get_column_index_from_name("gravity");
@@ -42,41 +41,38 @@ namespace aspect
 
 
     template <int dim>
-    Tensor<1,dim>
-    AsciiData<dim>::
-    gravity_vector (const Point<dim> &position) const
+    Tensor<1, dim>
+    AsciiData<dim>::gravity_vector(const Point<dim> &position) const
     {
-      const double depth = this->get_geometry_model().depth(position);
-      const double magnitude = this->get_data_component(Point<1>(depth),gravity_index);
+      const double depth     = this->get_geometry_model().depth(position);
+      const double magnitude = this->get_data_component(Point<1>(depth), gravity_index);
 
       // in dependence of what the geometry model is, gravity points in a different direction
       if (this->get_geometry_model().natural_coordinate_system() == Utilities::Coordinates::spherical ||
           this->get_geometry_model().natural_coordinate_system() == Utilities::Coordinates::ellipsoidal)
-        return - magnitude * position/position.norm();
+        return -magnitude * position / position.norm();
       else if (this->get_geometry_model().natural_coordinate_system() == Utilities::Coordinates::cartesian)
         {
-          Tensor<1,dim> g;
-          g[dim-1] = -magnitude;
+          Tensor<1, dim> g;
+          g[dim - 1] = -magnitude;
           return g;
         }
       else
-        AssertThrow (false,
-                     ExcMessage ("Not a valid geometry model for the gravity model"
-                                 "ascii data."));
-      return Tensor<1,dim>();
+        AssertThrow(false,
+                    ExcMessage("Not a valid geometry model for the gravity model"
+                               "ascii data."));
+      return Tensor<1, dim>();
     }
 
     template <int dim>
     void
-    AsciiData<dim>::declare_parameters (ParameterHandler &prm)
+    AsciiData<dim>::declare_parameters(ParameterHandler &prm)
     {
       // we use the same file that is used for the adiabatic conditions model,
       // as it also contains gravity
       prm.enter_subsection("Gravity model");
       {
-        Utilities::AsciiDataBase<dim>::declare_parameters(prm,
-                                                          "$ASPECT_SOURCE_DIR/data/gravity-model/",
-                                                          "prem.txt");
+        Utilities::AsciiDataBase<dim>::declare_parameters(prm, "$ASPECT_SOURCE_DIR/data/gravity-model/", "prem.txt");
       }
       prm.leave_subsection();
     }
@@ -84,7 +80,7 @@ namespace aspect
 
     template <int dim>
     void
-    AsciiData<dim>::parse_parameters (ParameterHandler &prm)
+    AsciiData<dim>::parse_parameters(ParameterHandler &prm)
     {
       prm.enter_subsection("Gravity model");
       {

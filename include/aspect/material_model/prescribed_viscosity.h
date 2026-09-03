@@ -23,6 +23,7 @@
 
 #include <aspect/material_model/interface.h>
 #include <aspect/simulator_access.h>
+
 #include <deal.II/base/parsed_function.h>
 
 
@@ -46,13 +47,15 @@ namespace aspect
         /**
          * Initialize the base model at the beginning of the run.
          */
-        void initialize() override;
+        void
+        initialize() override;
 
         /**
          * Update the base model and viscosity function at the beginning of
          * each timestep.
          */
-        void update() override;
+        void
+        update() override;
 
         /**
          * Compute the material properties by evaluating the base model and
@@ -60,32 +63,31 @@ namespace aspect
          * in the locations set by the indicator function.
          */
         void
-        evaluate (const typename Interface<dim>::MaterialModelInputs &in,
-                  typename Interface<dim>::MaterialModelOutputs &out) const override;
+        evaluate(const typename Interface<dim>::MaterialModelInputs &in, typename Interface<dim>::MaterialModelOutputs &out) const override;
 
         /**
          * Method to declare parameters related to prescribed viscosity model
          */
         static void
-        declare_parameters (ParameterHandler &prm);
+        declare_parameters(ParameterHandler &prm);
 
         /**
          * Method to parse parameters related to prescribed viscosity model
          */
         void
-        parse_parameters (ParameterHandler &prm) override;
+        parse_parameters(ParameterHandler &prm) override;
 
         /**
          * Method that indicates whether material is compressible. Prescribed viscosity model is compressible
          * if and only if base model is compressible.
          */
-        bool is_compressible () const override;
+        bool
+        is_compressible() const override;
 
         void
-        create_additional_named_outputs (MaterialModel::MaterialModelOutputs<dim> &out) const override;
+        create_additional_named_outputs(MaterialModel::MaterialModelOutputs<dim> &out) const override;
 
       private:
-
         /**
          * Parsed function that specifies where the viscosity is prescribed.
          */

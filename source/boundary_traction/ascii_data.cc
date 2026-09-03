@@ -19,23 +19,23 @@
 */
 
 
-#include <aspect/boundary_traction/ascii_data.h>
 #include <aspect/global.h>
+
+#include <aspect/boundary_traction/ascii_data.h>
 
 namespace aspect
 {
   namespace BoundaryTraction
   {
     template <int dim>
-    AsciiData<dim>::AsciiData ()
-      = default;
+    AsciiData<dim>::AsciiData() = default;
 
 
     template <int dim>
     void
-    AsciiData<dim>::initialize ()
+    AsciiData<dim>::initialize()
     {
-      unsigned int i=0;
+      unsigned int i = 0;
       for (const auto &plugin : this->get_boundary_traction_manager().get_active_plugins())
         {
           if (plugin.get() == this)
@@ -44,8 +44,7 @@ namespace aspect
           ++i;
         }
 
-      AssertThrow(boundary_ids.empty() == false,
-                  ExcMessage("Did not find the boundary indicator for the traction ascii data plugin."));
+      AssertThrow(boundary_ids.empty() == false, ExcMessage("Did not find the boundary indicator for the traction ascii data plugin."));
 
       const unsigned int n_components = prescribe_pressure_instead_of_full_traction ? 1 : dim;
       Utilities::AsciiDataBoundary<dim>::initialize(boundary_ids, n_components);
@@ -53,28 +52,22 @@ namespace aspect
 
 
     template <int dim>
-    Tensor<1,dim>
-    AsciiData<dim>::
-    boundary_traction (const types::boundary_id boundary_indicator,
-                       const Point<dim> &position,
-                       const Tensor<1,dim> &normal_vector) const
+    Tensor<1, dim>
+    AsciiData<dim>::boundary_traction(const types::boundary_id boundary_indicator,
+                                      const Point<dim>        &position,
+                                      const Tensor<1, dim>    &normal_vector) const
     {
-      Tensor<1,dim> traction;
+      Tensor<1, dim> traction;
 
       if (prescribe_pressure_instead_of_full_traction)
         {
-
-          const double pressure = Utilities::AsciiDataBoundary<dim>::get_data_component(boundary_indicator,
-                                                                                        position,
-                                                                                        0);
-          traction = -pressure * normal_vector;
+          const double pressure = Utilities::AsciiDataBoundary<dim>::get_data_component(boundary_indicator, position, 0);
+          traction              = -pressure * normal_vector;
         }
       else
         {
-          for (unsigned int i=0; i<dim; ++i)
-            traction[i] = Utilities::AsciiDataBoundary<dim>::get_data_component(boundary_indicator,
-                                                                                position,
-                                                                                i);
+          for (unsigned int i = 0; i < dim; ++i)
+            traction[i] = Utilities::AsciiDataBoundary<dim>::get_data_component(boundary_indicator, position, i);
 
           if (use_spherical_unit_vectors)
             traction = Utilities::Coordinates::spherical_to_cartesian_vector(traction, position);
@@ -88,14 +81,14 @@ namespace aspect
     void
     AsciiData<dim>::update()
     {
-      Interface<dim>::update ();
+      Interface<dim>::update();
       Utilities::AsciiDataBoundary<dim>::update();
     }
 
 
     template <int dim>
     void
-    AsciiData<dim>::declare_parameters (ParameterHandler &prm)
+    AsciiData<dim>::declare_parameters(ParameterHandler &prm)
     {
       prm.enter_subsection("Boundary traction model");
       {
@@ -104,18 +97,18 @@ namespace aspect
                                                               "box_2d_%s.%d.txt");
         prm.enter_subsection("Ascii data model");
         {
-          prm.declare_entry ("Use spherical unit vectors", "false",
-                             Patterns::Bool (),
-                             "Specify traction as r, phi, and theta components "
-                             "instead of x, y, and z. Positive tractions point up, east, "
-                             "and north (in 3d) or out and clockwise (in 2d). "
-                             "This setting only makes sense for spherical geometries."
-                            );
-          prm.declare_entry ("Prescribe pressure instead of full traction", "true",
-                             Patterns::Bool (),
-                             "Whether to prescribe pressure (true) or full traction vector (false) "
-                             "at the boundary. If true, only 1 component will be used for the boundary condition."
-                            );
+          prm.declare_entry("Use spherical unit vectors",
+                            "false",
+                            Patterns::Bool(),
+                            "Specify traction as r, phi, and theta components "
+                            "instead of x, y, and z. Positive tractions point up, east, "
+                            "and north (in 3d) or out and clockwise (in 2d). "
+                            "This setting only makes sense for spherical geometries.");
+          prm.declare_entry("Prescribe pressure instead of full traction",
+                            "true",
+                            Patterns::Bool(),
+                            "Whether to prescribe pressure (true) or full traction vector (false) "
+                            "at the boundary. If true, only 1 component will be used for the boundary condition.");
         }
         prm.leave_subsection();
       }
@@ -125,7 +118,7 @@ namespace aspect
 
     template <int dim>
     void
-    AsciiData<dim>::parse_parameters (ParameterHandler &prm)
+    AsciiData<dim>::parse_parameters(ParameterHandler &prm)
     {
       prm.enter_subsection("Boundary traction model");
       {
@@ -134,9 +127,9 @@ namespace aspect
         {
           use_spherical_unit_vectors = prm.get_bool("Use spherical unit vectors");
           if (use_spherical_unit_vectors)
-            AssertThrow (this->get_geometry_model().natural_coordinate_system() == Utilities::Coordinates::spherical,
-                         ExcMessage ("Spherical unit vectors should not be used "
-                                     "when geometry model is not spherical."));
+            AssertThrow(this->get_geometry_model().natural_coordinate_system() == Utilities::Coordinates::spherical,
+                        ExcMessage("Spherical unit vectors should not be used "
+                                   "when geometry model is not spherical."));
           prescribe_pressure_instead_of_full_traction = prm.get_bool("Prescribe pressure instead of full traction");
         }
         prm.leave_subsection();

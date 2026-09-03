@@ -21,9 +21,9 @@
 #ifndef _aspect_material_model_equation_of_state_linearized_incompressible_h
 #define _aspect_material_model_equation_of_state_linearized_incompressible_h
 
+#include <aspect/material_model/equation_of_state/interface.h>
 #include <aspect/material_model/interface.h>
 #include <aspect/simulator_access.h>
-#include <aspect/material_model/equation_of_state/interface.h>
 
 
 namespace aspect
@@ -59,9 +59,10 @@ namespace aspect
            * number of vectors, one for each output property, with each vector
            * containing the separate outputs for each composition.
            */
-          void evaluate(const MaterialModel::MaterialModelInputs<dim> &in,
-                        const unsigned int q,
-                        MaterialModel::EquationOfStateOutputs<dim> &eos_outputs) const;
+          void
+          evaluate(const MaterialModel::MaterialModelInputs<dim> &in,
+                   const unsigned int                             q,
+                   MaterialModel::EquationOfStateOutputs<dim>    &eos_outputs) const;
 
           /**
            * Return whether the model is compressible or not. Incompressibility
@@ -71,7 +72,8 @@ namespace aspect
            * equation as $\nabla \cdot (\rho \mathbf u)=0$ (compressible Stokes)
            * or as $\nabla \cdot \mathbf{u}=0$ (incompressible Stokes).
            */
-          bool is_compressible () const;
+          bool
+          is_compressible() const;
 
           /**
            * Declare the parameters this class takes through input files.
@@ -80,10 +82,8 @@ namespace aspect
            * in other words, how many compositional fields influence the
            * density.
            */
-          static
-          void
-          declare_parameters (ParameterHandler &prm,
-                              const unsigned int n_compositions = 0);
+          static void
+          declare_parameters(ParameterHandler &prm, const unsigned int n_compositions = 0);
 
           /**
            * Read the parameters this class declares from the parameter file.
@@ -93,8 +93,7 @@ namespace aspect
            * name in the declare_parameters() function.
            */
           void
-          parse_parameters (ParameterHandler &prm,
-                            const unsigned int n_compositions = 0);
+          parse_parameters(ParameterHandler &prm, const unsigned int n_compositions = 0);
 
 
         private:

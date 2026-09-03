@@ -19,8 +19,8 @@
 */
 
 
-#include <aspect/postprocess/visualization/surface_stress.h>
 #include <aspect/material_model/rheology/elasticity.h>
+#include <aspect/postprocess/visualization/surface_stress.h>
 
 namespace aspect
 {
@@ -29,33 +29,26 @@ namespace aspect
     namespace VisualizationPostprocessors
     {
       template <int dim>
-      SurfaceStress<dim>::
-      SurfaceStress ()
-        :
-        DataPostprocessorTensor<dim> ("surface_stress",
-                                      update_values | update_gradients | update_quadrature_points),
-        Interface<dim>("Pa")
+      SurfaceStress<dim>::SurfaceStress()
+        : DataPostprocessorTensor<dim>("surface_stress", update_values | update_gradients | update_quadrature_points)
+        , Interface<dim>("Pa")
       {}
 
 
 
       template <int dim>
       void
-      SurfaceStress<dim>::
-      evaluate_vector_field(const DataPostprocessorInputs::Vector<dim> &input_data,
-                            std::vector<Vector<double>> &computed_quantities) const
+      SurfaceStress<dim>::evaluate_vector_field(const DataPostprocessorInputs::Vector<dim> &input_data,
+                                                std::vector<Vector<double>>                &computed_quantities) const
       {
         const unsigned int n_quadrature_points = input_data.solution_values.size();
-        Assert (computed_quantities.size() == n_quadrature_points,    ExcInternalError());
-        Assert ((computed_quantities[0].size() == Tensor<2,dim>::n_independent_components),
-                ExcInternalError());
-        Assert (input_data.solution_values[0].size() == this->introspection().n_components,   ExcInternalError());
-        Assert (input_data.solution_gradients[0].size() == this->introspection().n_components,  ExcInternalError());
+        Assert(computed_quantities.size() == n_quadrature_points, ExcInternalError());
+        Assert((computed_quantities[0].size() == Tensor<2, dim>::n_independent_components), ExcInternalError());
+        Assert(input_data.solution_values[0].size() == this->introspection().n_components, ExcInternalError());
+        Assert(input_data.solution_gradients[0].size() == this->introspection().n_components, ExcInternalError());
 
-        MaterialModel::MaterialModelInputs<dim> in(input_data,
-                                                   this->introspection());
-        MaterialModel::MaterialModelOutputs<dim> out(n_quadrature_points,
-                                                     this->n_compositional_fields());
+        MaterialModel::MaterialModelInputs<dim>  in(input_data, this->introspection());
+        MaterialModel::MaterialModelOutputs<dim> out(n_quadrature_points, this->n_compositional_fields());
 
         this->get_material_model().create_additional_named_outputs(out);
 
@@ -66,14 +59,14 @@ namespace aspect
         this->get_material_model().evaluate(in, out);
 
         // ...and use it to compute the stresses
-        for (unsigned int q=0; q<n_quadrature_points; ++q)
+        for (unsigned int q = 0; q < n_quadrature_points; ++q)
           {
             // Compressive stress is negative by the sign convention
             // used by the engineering community, and as input and used
             // internally by ASPECT.
             // Here, we change the sign of the stress to match the
             // sign convention used by the geoscience community.
-            SymmetricTensor<2,dim> stress = in.pressure[q] * unit_symmetric_tensor<dim>();
+            SymmetricTensor<2, dim> stress = in.pressure[q] * unit_symmetric_tensor<dim>();
 
             // If elasticity is enabled, the deviatoric visco-elastic stress is stored
             // in compositional fields and we can retrieve the deviatoric stress
@@ -82,29 +75,30 @@ namespace aspect
             if (this->get_parameters().enable_elasticity == true)
               {
                 // Get the total deviatoric stress from the material model.
-                const std::shared_ptr<const MaterialModel::ElasticAdditionalOutputs<dim>> elastic_additional_out
-                  = out.template get_additional_output_object<MaterialModel::ElasticAdditionalOutputs<dim>>();
+                const std::shared_ptr<const MaterialModel::ElasticAdditionalOutputs<dim>> elastic_additional_out =
+                  out.template get_additional_output_object<MaterialModel::ElasticAdditionalOutputs<dim>>();
 
-                Assert(elastic_additional_out != nullptr, ExcMessage("Elastic Additional Outputs are needed for the 'principal stress' postprocessor, but they have not been created."));
+                Assert(
+                  elastic_additional_out != nullptr,
+                  ExcMessage(
+                    "Elastic Additional Outputs are needed for the 'principal stress' postprocessor, but they have not been created."));
 
                 stress -= elastic_additional_out->deviatoric_stress[q];
               }
             else
               {
-
                 const SymmetricTensor<2, dim> strain_rate = in.strain_rate[q];
-                const SymmetricTensor<2, dim> deviatoric_strain_rate = (this->get_material_model().is_compressible()
-                                                                        ? strain_rate - 1. / 3 * trace(strain_rate) * unit_symmetric_tensor<dim>()
-                                                                        : strain_rate);
+                const SymmetricTensor<2, dim> deviatoric_strain_rate =
+                  (this->get_material_model().is_compressible() ? strain_rate - 1. / 3 * trace(strain_rate) * unit_symmetric_tensor<dim>() :
+                                                                  strain_rate);
 
                 const double eta = out.viscosities[q];
                 stress -= 2. * eta * deviatoric_strain_rate;
               }
 
-            for (unsigned int d=0; d<dim; ++d)
-              for (unsigned int e=0; e<dim; ++e)
-                computed_quantities[q][Tensor<2,dim>::component_to_unrolled_index(TableIndices<2>(d,e))]
-                  = stress[d][e];
+            for (unsigned int d = 0; d < dim; ++d)
+              for (unsigned int e = 0; e < dim; ++e)
+                computed_quantities[q][Tensor<2, dim>::component_to_unrolled_index(TableIndices<2>(d, e))] = stress[d][e];
           }
 
         // average the values if requested

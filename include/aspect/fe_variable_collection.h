@@ -22,9 +22,10 @@
 #define _aspect_fe_variable_system_h
 
 #include <aspect/global.h>
+
 #include <deal.II/fe/component_mask.h>
-#include <deal.II/fe/fe_values_extractors.h>
 #include <deal.II/fe/fe.h>
+#include <deal.II/fe/fe_values_extractors.h>
 
 namespace aspect
 {
@@ -46,58 +47,59 @@ namespace aspect
   template <int dim>
   struct VariableDeclaration
   {
-    /**
-     * Constructor.
-     *
-     * @param name A user-friendly and unique string representation of the variable.
-     *
-     * @param fe The FiniteElement class to use. Currently, this needs to be a scalar
-     * finite element class (with exactly one component).
-     *
-     * @param multiplicity Number of copies of the @p fe to create.
-     *
-     * @param n_blocks Number of blocks this variable represents inside the
-     * linear system. A value of 0 will add the next variable (in the std::vector<VariableDeclaration>
-     * that is used to construct the FEVariableCollection) to the current
-     * block, while 1 will put the next variable into a new block. A value
-     * that is equal to the number of components will create a block for each
-     * component.
-     */
-    VariableDeclaration(const std::string &name,
-                        const std::shared_ptr<FiniteElement<dim>> &fe,
-                        const unsigned int multiplicity,
-                        const unsigned int n_blocks);
+      /**
+       * Constructor.
+       *
+       * @param name A user-friendly and unique string representation of the variable.
+       *
+       * @param fe The FiniteElement class to use. Currently, this needs to be a scalar
+       * finite element class (with exactly one component).
+       *
+       * @param multiplicity Number of copies of the @p fe to create.
+       *
+       * @param n_blocks Number of blocks this variable represents inside the
+       * linear system. A value of 0 will add the next variable (in the std::vector<VariableDeclaration>
+       * that is used to construct the FEVariableCollection) to the current
+       * block, while 1 will put the next variable into a new block. A value
+       * that is equal to the number of components will create a block for each
+       * component.
+       */
+      VariableDeclaration(const std::string                         &name,
+                          const std::shared_ptr<FiniteElement<dim>> &fe,
+                          const unsigned int                         multiplicity,
+                          const unsigned int                         n_blocks);
 
-    /**
-     * Default constructor.
-     */
-    VariableDeclaration();
+      /**
+       * Default constructor.
+       */
+      VariableDeclaration();
 
-    /**
-     * Return the total number of components of this variable.
-     */
-    unsigned int n_components() const;
+      /**
+       * Return the total number of components of this variable.
+       */
+      unsigned int
+      n_components() const;
 
-    /**
-     * Name of the variable used in FEVariableCollection to identify it.
-     */
-    std::string name;
+      /**
+       * Name of the variable used in FEVariableCollection to identify it.
+       */
+      std::string name;
 
-    /**
-     * The FiniteElement space.
-     */
-    std::shared_ptr<FiniteElement<dim>> fe;
+      /**
+       * The FiniteElement space.
+       */
+      std::shared_ptr<FiniteElement<dim>> fe;
 
-    /**
-     * The multiplicity used in FESystem: how many copies of @p fe are there?
-     */
-    unsigned int multiplicity;
+      /**
+       * The multiplicity used in FESystem: how many copies of @p fe are there?
+       */
+      unsigned int multiplicity;
 
-    /**
-     * Number of linear algebra blocks occupied by this variable. See
-     * constructor for details.
-     */
-    unsigned int n_blocks;
+      /**
+       * Number of linear algebra blocks occupied by this variable. See
+       * constructor for details.
+       */
+      unsigned int n_blocks;
   };
 
   /**
@@ -106,16 +108,16 @@ namespace aspect
    * information that can be queried.
    */
   template <int dim>
-  struct FEVariable: public VariableDeclaration<dim>
+  struct FEVariable : public VariableDeclaration<dim>
   {
       /**
        * Initialize this variable as part of a FESystem with the given
        * indices for @p component, @p block, and @p base.
        */
       FEVariable(const VariableDeclaration<dim> &fe_variable,
-                 const unsigned int component_index,
-                 const unsigned int block_index,
-                 const unsigned int base_index);
+                 const unsigned int              component_index,
+                 const unsigned int              block_index,
+                 const unsigned int              base_index);
 
       /**
        * The first component index of this variable within the
@@ -143,12 +145,14 @@ namespace aspect
       /**
        * Return a scalar FeValuesExtractor if this variable is scalar.
        */
-      const FEValuesExtractors::Scalar &extractor_scalar() const;
+      const FEValuesExtractors::Scalar &
+      extractor_scalar() const;
 
       /**
        * Return a vector FeValuesExtractor if this variable is a vector.
        */
-      const FEValuesExtractors::Vector &extractor_vector() const;
+      const FEValuesExtractors::Vector &
+      extractor_vector() const;
 
     private:
       /**
@@ -188,7 +192,8 @@ namespace aspect
       /**
        * Fill this object with the given list of @p variables.
        */
-      void initialize(const std::vector<VariableDeclaration<dim>> &variable_definitions);
+      void
+      initialize(const std::vector<VariableDeclaration<dim>> &variable_definitions);
 
       /**
        * Return the variable with name @p name. Throws an exception if this
@@ -196,51 +201,60 @@ namespace aspect
        * exists, return the first one. Use variables_with_name() if you want
        * to access all of them.
        */
-      const FEVariable<dim> &variable(const std::string &name) const;
+      const FEVariable<dim> &
+      variable(const std::string &name) const;
 
       /**
        * Return a vector of pointers of all variables with name @p name.
        */
-      std::vector<const FEVariable<dim>*> variables_with_name(const std::string &name) const;
+      std::vector<const FEVariable<dim> *>
+      variables_with_name(const std::string &name) const;
 
       /**
        * Returns true if the variable with @p name exists in the list of
        * variables.
        */
-      bool variable_exists(const std::string &name) const;
+      bool
+      variable_exists(const std::string &name) const;
 
       /**
        * Return the list of all variables.
        */
-      const std::vector<FEVariable<dim>> &get_variables() const;
+      const std::vector<FEVariable<dim>> &
+      get_variables() const;
 
       /**
        * Return the total number of components in the system.
        */
-      unsigned int n_components() const;
+      unsigned int
+      n_components() const;
 
       /**
        * Return the total number of block of the system.
        */
-      unsigned int n_blocks() const;
+      unsigned int
+      n_blocks() const;
 
       /**
        * Return the vector of finite element spaces used for the construction
        * of the FESystem.
        */
-      const std::vector<const FiniteElement<dim> *> &get_fes() const;
+      const std::vector<const FiniteElement<dim> *> &
+      get_fes() const;
 
       /**
        * Return the vector of multiplicities used for the construction of the
        * FESystem.
        */
-      const std::vector<unsigned int> &get_multiplicities() const;
+      const std::vector<unsigned int> &
+      get_multiplicities() const;
 
       /**
        * Return a variable that describes for each vector component which
        * vector block it corresponds to.
        */
-      const std::vector<unsigned int> &get_components_to_blocks() const;
+      const std::vector<unsigned int> &
+      get_components_to_blocks() const;
 
     protected:
       /**

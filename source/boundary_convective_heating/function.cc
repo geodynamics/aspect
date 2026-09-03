@@ -19,9 +19,11 @@
 */
 
 
-#include <aspect/boundary_convective_heating/function.h>
 #include <aspect/global.h>
+
+#include <aspect/boundary_convective_heating/function.h>
 #include <aspect/geometry_model/interface.h>
+
 #include <deal.II/base/signaling_nan.h>
 
 namespace aspect
@@ -30,16 +32,14 @@ namespace aspect
   {
     template <int dim>
     std::vector<double>
-    Function<dim>::
-    heat_transfer_coefficient
-    (const types::boundary_id /*boundary_indicator*/,
-     const MaterialModel::MaterialModelInputs<dim> &material_model_inputs,
-     const MaterialModel::MaterialModelOutputs<dim> &/*material_model_outputs*/) const
+    Function<dim>::heat_transfer_coefficient(const types::boundary_id /*boundary_indicator*/,
+                                             const MaterialModel::MaterialModelInputs<dim> &material_model_inputs,
+                                             const MaterialModel::MaterialModelOutputs<dim> & /*material_model_outputs*/) const
     {
-      const unsigned int n_evaluation_points = material_model_inputs.n_evaluation_points();
+      const unsigned int  n_evaluation_points = material_model_inputs.n_evaluation_points();
       std::vector<double> heat_transfer_coefficients(n_evaluation_points);
 
-      for (unsigned int i=0; i<n_evaluation_points; ++i)
+      for (unsigned int i = 0; i < n_evaluation_points; ++i)
         {
           const Point<dim> position = material_model_inputs.position[i];
           if (coordinate_system == Utilities::Coordinates::cartesian)
@@ -48,11 +48,11 @@ namespace aspect
             }
           else if (coordinate_system == Utilities::Coordinates::spherical)
             {
-              const std::array<double,dim> spherical_coordinates =
+              const std::array<double, dim> spherical_coordinates =
                 aspect::Utilities::Coordinates::cartesian_to_spherical_coordinates(position);
               Point<dim> point;
 
-              for (unsigned int d=0; d<dim; ++d)
+              for (unsigned int d = 0; d < dim; ++d)
                 point[d] = spherical_coordinates[d];
 
               heat_transfer_coefficients[i] = boundary_convective_heating_function.value(point);
@@ -60,7 +60,7 @@ namespace aspect
           else if (coordinate_system == Utilities::Coordinates::depth)
             {
               const double depth = this->get_geometry_model().depth(position);
-              Point<dim> point;
+              Point<dim>   point;
               point(0) = depth;
 
               heat_transfer_coefficients[i] = boundary_convective_heating_function.value(point);
@@ -83,33 +83,34 @@ namespace aspect
       // we get time passed as seconds (always) but may want
       // to reinterpret it in years
       if (this->convert_output_to_years())
-        boundary_convective_heating_function.set_time (this->get_time() / year_in_seconds);
+        boundary_convective_heating_function.set_time(this->get_time() / year_in_seconds);
       else
-        boundary_convective_heating_function.set_time (this->get_time());
+        boundary_convective_heating_function.set_time(this->get_time());
     }
 
 
 
     template <int dim>
     void
-    Function<dim>::declare_parameters (ParameterHandler &prm)
+    Function<dim>::declare_parameters(ParameterHandler &prm)
     {
       prm.enter_subsection("Boundary convective heating model");
       {
         prm.enter_subsection("Function");
         {
-          prm.declare_entry ("Coordinate system", "cartesian",
-                             Patterns::Selection ("cartesian|spherical|depth"),
-                             "A selection that determines the assumed coordinate "
-                             "system for the function variables. Allowed values "
-                             "are `cartesian', `spherical', and `depth'. `spherical' coordinates "
-                             "are interpreted as r,phi or r,phi,theta in 2d/3d "
-                             "respectively with theta being the polar angle. `depth' "
-                             "will create a function, in which only the first "
-                             "parameter is non-zero, which is interpreted to "
-                             "be the depth of the point.");
+          prm.declare_entry("Coordinate system",
+                            "cartesian",
+                            Patterns::Selection("cartesian|spherical|depth"),
+                            "A selection that determines the assumed coordinate "
+                            "system for the function variables. Allowed values "
+                            "are `cartesian', `spherical', and `depth'. `spherical' coordinates "
+                            "are interpreted as r,phi or r,phi,theta in 2d/3d "
+                            "respectively with theta being the polar angle. `depth' "
+                            "will create a function, in which only the first "
+                            "parameter is non-zero, which is interpreted to "
+                            "be the depth of the point.");
 
-          Functions::ParsedFunction<dim>::declare_parameters (prm, 1);
+          Functions::ParsedFunction<dim>::declare_parameters(prm, 1);
         }
         prm.leave_subsection();
       }
@@ -120,7 +121,7 @@ namespace aspect
 
     template <int dim>
     void
-    Function<dim>::parse_parameters (ParameterHandler &prm)
+    Function<dim>::parse_parameters(ParameterHandler &prm)
     {
       prm.enter_subsection("Boundary convective heating model");
       {
@@ -130,7 +131,7 @@ namespace aspect
         }
         try
           {
-            boundary_convective_heating_function.parse_parameters (prm);
+            boundary_convective_heating_function.parse_parameters(prm);
           }
         catch (...)
           {

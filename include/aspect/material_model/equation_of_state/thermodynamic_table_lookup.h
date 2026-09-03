@@ -21,9 +21,9 @@
 #ifndef _aspect_material_model_equation_of_state_thermodynamic_table_lookup_h
 #define _aspect_material_model_equation_of_state_thermodynamic_table_lookup_h
 
+#include <aspect/material_model/equation_of_state/interface.h>
 #include <aspect/material_model/interface.h>
 #include <aspect/simulator_access.h>
-#include <aspect/material_model/equation_of_state/interface.h>
 
 
 namespace aspect
@@ -46,12 +46,13 @@ namespace aspect
            * pointers.
            */
           void
-          initialize ();
+          initialize();
 
           /**
            * Returns the number of lookups
            */
-          virtual unsigned int number_of_lookups() const;
+          virtual unsigned int
+          number_of_lookups() const;
 
           /**
            * Return whether the model is compressible or not.  Incompressibility
@@ -61,7 +62,8 @@ namespace aspect
            * equation as $\nabla \cdot (\rho \mathbf u)=0$ (compressible Stokes)
            * or as $\nabla \cdot \mathbf{u}=0$ (incompressible Stokes).
            */
-          bool is_compressible () const;
+          bool
+          is_compressible() const;
 
           /**
            * Function to compute the thermodynamic properties in @p out given the
@@ -69,7 +71,7 @@ namespace aspect
            * This function also fills the mass_fraction and volume_fraction vectors.
            */
           void
-          evaluate(const MaterialModel::MaterialModelInputs<dim> &in,
+          evaluate(const MaterialModel::MaterialModelInputs<dim>           &in,
                    std::vector<MaterialModel::EquationOfStateOutputs<dim>> &eos_outputs) const;
 
           /**
@@ -77,27 +79,26 @@ namespace aspect
            */
           void
           fill_additional_outputs(const MaterialModel::MaterialModelInputs<dim> &in,
-                                  const std::vector<std::vector<double>> &volume_fractions,
-                                  MaterialModel::MaterialModelOutputs<dim> &out) const;
+                                  const std::vector<std::vector<double>>        &volume_fractions,
+                                  MaterialModel::MaterialModelOutputs<dim>      &out) const;
 
           /**
            * Declare the parameters this class takes through input files.
            */
-          static
-          void
-          declare_parameters (ParameterHandler &prm);
+          static void
+          declare_parameters(ParameterHandler &prm);
 
           /**
            * Read the parameters this class declares from the parameter file.
            */
           void
-          parse_parameters (ParameterHandler &prm);
+          parse_parameters(ParameterHandler &prm);
 
           void
-          create_additional_named_outputs (MaterialModel::MaterialModelOutputs<dim> &out) const;
+          create_additional_named_outputs(MaterialModel::MaterialModelOutputs<dim> &out) const;
 
           const MaterialModel::MaterialUtilities::Lookup::MaterialLookup &
-          get_material_lookup (unsigned int lookup_index) const;
+          get_material_lookup(unsigned int lookup_index) const;
 
 
         private:
@@ -196,8 +197,9 @@ namespace aspect
            * and temperature derivatives of the specific enthalpy.
            * This evaluation incorporates the effects of latent heat production.
            */
-          void evaluate_thermal_enthalpy_derivatives(const MaterialModel::MaterialModelInputs<dim> &in,
-                                                     std::vector<MaterialModel::EquationOfStateOutputs<dim>> &eos_outputs) const;
+          void
+          evaluate_thermal_enthalpy_derivatives(const MaterialModel::MaterialModelInputs<dim>           &in,
+                                                std::vector<MaterialModel::EquationOfStateOutputs<dim>> &eos_outputs) const;
 
           /**
            * Returns the cell-wise averaged enthalpy derivatives for the evaluate
@@ -210,13 +212,14 @@ namespace aspect
            * if the temperature and pressure on all vertices of the current
            * cell is identical.
            */
-          std::array<std::pair<double, unsigned int>,2>
-          enthalpy_derivatives (const typename Interface<dim>::MaterialModelInputs &in) const;
+          std::array<std::pair<double, unsigned int>, 2>
+          enthalpy_derivatives(const typename Interface<dim>::MaterialModelInputs &in) const;
 
-          void fill_seismic_velocities (const MaterialModel::MaterialModelInputs<dim> &in,
-                                        const std::vector<double> &composite_densities,
-                                        const std::vector<std::vector<double>> &volume_fractions,
-                                        SeismicAdditionalOutputs<dim> &seismic_out) const;
+          void
+          fill_seismic_velocities(const MaterialModel::MaterialModelInputs<dim> &in,
+                                  const std::vector<double>                     &composite_densities,
+                                  const std::vector<std::vector<double>>        &volume_fractions,
+                                  SeismicAdditionalOutputs<dim>                 &seismic_out) const;
 
           /**
            * This function uses the MaterialModelInputs &in to fill the output_values
@@ -229,9 +232,10 @@ namespace aspect
            * of unique phases, the inner vector is expected to have a size that
            * equals the number of evaluation points.
            */
-          void fill_phase_volume_fractions (const MaterialModel::MaterialModelInputs<dim> &in,
-                                            const std::vector<std::vector<double>> &volume_fractions,
-                                            NamedAdditionalMaterialOutputs<dim> &phase_volume_fractions_out) const;
+          void
+          fill_phase_volume_fractions(const MaterialModel::MaterialModelInputs<dim> &in,
+                                      const std::vector<std::vector<double>>        &volume_fractions,
+                                      NamedAdditionalMaterialOutputs<dim>           &phase_volume_fractions_out) const;
 
           /**
            * This function uses the MaterialModelInputs &in to fill the output_values
@@ -243,9 +247,10 @@ namespace aspect
            * the outer vector is expected to have a size of 1, the inner vector is
            * expected to have a size that equals the number of evaluation points.
            */
-          void fill_dominant_phases (const MaterialModel::MaterialModelInputs<dim> &in,
-                                     const std::vector<std::vector<double>> &volume_fractions,
-                                     PhaseOutputs<dim> &dominant_phases_out) const;
+          void
+          fill_dominant_phases(const MaterialModel::MaterialModelInputs<dim> &in,
+                               const std::vector<std::vector<double>>        &volume_fractions,
+                               PhaseOutputs<dim>                             &dominant_phases_out) const;
       };
     }
   }

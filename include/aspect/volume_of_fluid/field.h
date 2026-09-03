@@ -34,20 +34,20 @@ namespace aspect
      */
     struct VolumeOfFluidInputType
     {
-      enum Kind
-      {
-        /**
-         * Input data is a value between 0 and 1 at all points.
-         */
-        composition,
-        /**
-         * Input data is an interface defined by a signed distance level set
-         * with positive value indicating fluid presence. IE the function has
-         * gradient 1 almost everywhere, is positive where the fluid is, and is
-         * zero on the fluid interface
-         */
-        level_set
-      };
+        enum Kind
+        {
+          /**
+           * Input data is a value between 0 and 1 at all points.
+           */
+          composition,
+          /**
+           * Input data is an interface defined by a signed distance level set
+           * with positive value indicating fluid presence. IE the function has
+           * gradient 1 almost everywhere, is positive where the fluid is, and is
+           * zero on the fluid interface
+           */
+          level_set
+        };
     };
   }
 
@@ -58,36 +58,35 @@ namespace aspect
   template <int dim>
   struct VolumeOfFluidField
   {
-    /**
-     * Initialize the structure with FEVariables to hold the required
-     * information that must be available on all cells.
-     */
-    VolumeOfFluidField(const FEVariable<dim> &volume_fraction,
-                       const FEVariable<dim> &reconstruction,
-                       const FEVariable<dim> &level_set,
-                       const unsigned int composition_index);
+      /**
+       * Initialize the structure with FEVariables to hold the required
+       * information that must be available on all cells.
+       */
+      VolumeOfFluidField(const FEVariable<dim> &volume_fraction,
+                         const FEVariable<dim> &reconstruction,
+                         const FEVariable<dim> &level_set,
+                         const unsigned int     composition_index);
 
-    /**
-     * Field to hold the current volume fraction.
-     */
-    const FEVariable<dim> &volume_fraction;
+      /**
+       * Field to hold the current volume fraction.
+       */
+      const FEVariable<dim> &volume_fraction;
 
-    /**
-     * Field to hold the cached interface reconstruction.
-     */
-    const FEVariable<dim> &reconstruction;
+      /**
+       * Field to hold the cached interface reconstruction.
+       */
+      const FEVariable<dim> &reconstruction;
 
-    /**
-     * Field to expose reconstructed interface as a zero-contour to output in
-     * visualization plugin.
-     */
-    const FEVariable<dim> &level_set;
+      /**
+       * Field to expose reconstructed interface as a zero-contour to output in
+       * visualization plugin.
+       */
+      const FEVariable<dim> &level_set;
 
-    /**
-     * Field index of the associated composition field
-     */
-    const unsigned int composition_index;
-
+      /**
+       * Field index of the associated composition field
+       */
+      const unsigned int composition_index;
   };
 }
 

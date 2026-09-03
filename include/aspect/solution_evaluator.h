@@ -23,13 +23,12 @@
 
 #include <aspect/global.h>
 
-
 #include <aspect/simulator_access.h>
 
 #include <deal.II/base/array_view.h>
+#include <deal.II/dofs/dof_handler.h>
 #include <deal.II/matrix_free/fe_point_evaluation.h>
 #include <deal.II/non_matching/mapping_info.h>
-#include <deal.II/dofs/dof_handler.h>
 
 namespace aspect
 {
@@ -47,8 +46,8 @@ namespace aspect
          * Constructor which allows to select at run time the @p first_component and the @p n_components.
          */
         DynamicFEPointEvaluation(const unsigned int first_component, const unsigned int n_components)
-          : first_component (first_component),
-            n_components (n_components)
+          : first_component(first_component)
+          , n_components(n_components)
         {}
 
         /**
@@ -62,46 +61,39 @@ namespace aspect
          * @p solution_values contains the values of the degrees of freedom.
          * @p flags controls which values should be computed.
          */
-        virtual void evaluate(const ArrayView<double> &solution_values,
-                              const EvaluationFlags::EvaluationFlags flags) = 0;
+        virtual void
+        evaluate(const ArrayView<double> &solution_values, const EvaluationFlags::EvaluationFlags flags) = 0;
 
         /**
          * Return the gradient of the solution at the given @p evaluation_point.
          */
-        virtual
-        small_vector<Tensor<1,dim>>
+        virtual small_vector<Tensor<1, dim>>
         get_gradient(const unsigned int evaluation_point) const = 0;
 
         /**
          * Copy the gradient of the solution at the given @p evaluation_point
          * into the array @p gradients.
          */
-        virtual
-        void
-        get_gradient(const unsigned int evaluation_point,
-                     const ArrayView<Tensor<1,dim>> &gradients) const = 0;
+        virtual void
+        get_gradient(const unsigned int evaluation_point, const ArrayView<Tensor<1, dim>> &gradients) const = 0;
 
         /**
          * Return the value of the solution at the given @p evaluation_point.
          */
-        virtual
-        small_vector<double>
+        virtual small_vector<double>
         get_value(const unsigned int evaluation_point) const = 0;
 
         /**
          * Copy the value of the solution at the given @p evaluation_point.
          * into the array @p solution.
          */
-        virtual
-        void
-        get_value(const unsigned int evaluation_point,
-                  const ArrayView<double> &solution) const = 0;
+        virtual void
+        get_value(const unsigned int evaluation_point, const ArrayView<double> &solution) const = 0;
 
         /**
          * Return the first component of the solution vector.
          */
-        virtual
-        unsigned int
+        virtual unsigned int
         get_first_component() const final
         {
           return first_component;
@@ -110,8 +102,7 @@ namespace aspect
         /**
          * Return the number of components of the solution vector.
          */
-        virtual
-        unsigned int
+        virtual unsigned int
         get_n_components() const final
         {
           return n_components;
@@ -144,16 +135,14 @@ namespace aspect
        * update flags @p update_flags. The @p update_flags control if only the solution or also the gradients
        * should be evaluated.
        */
-      SolutionEvaluator(const SimulatorAccess<dim> &simulator,
-                        const UpdateFlags update_flags);
+      SolutionEvaluator(const SimulatorAccess<dim> &simulator, const UpdateFlags update_flags);
 
       /**
        * Reinitialize all variables to prepare for evaluation for the given @p cell
        * and at the given @p positions in the reference coordinate system of that cell.
        */
       void
-      reinit(const typename DoFHandler<dim>::active_cell_iterator &cell,
-             const ArrayView<Point<dim>> &positions);
+      reinit(const typename DoFHandler<dim>::active_cell_iterator &cell, const ArrayView<Point<dim>> &positions);
 
       /**
        * Evaluate all variables in the cell and at the positions controlled by a previous
@@ -165,8 +154,7 @@ namespace aspect
        * n_components().
        */
       void
-      evaluate(const ArrayView<double> &solution_values,
-               const std::vector<EvaluationFlags::EvaluationFlags> &evaluation_flags);
+      evaluate(const ArrayView<double> &solution_values, const std::vector<EvaluationFlags::EvaluationFlags> &evaluation_flags);
 
       /**
        * Fill @p solution with all solution components at the given @p evaluation_point. Note
@@ -180,9 +168,10 @@ namespace aspect
        * @param evaluation_flags The flags that indicate which values should be copied into the
        *                        solution array. This vector has to be of size n_components().
        */
-      void get_solution(const unsigned int evaluation_point,
-                        const ArrayView<double> &solution,
-                        const std::vector<EvaluationFlags::EvaluationFlags> &evaluation_flags) const;
+      void
+      get_solution(const unsigned int                                   evaluation_point,
+                   const ArrayView<double>                             &solution,
+                   const std::vector<EvaluationFlags::EvaluationFlags> &evaluation_flags) const;
 
       /**
        * Fill @p gradients with all solution gradients at the given @p evaluation_point. Note
@@ -196,9 +185,10 @@ namespace aspect
        * @param evaluation_flags The flags that indicate which gradients should be copied into the
        *                        solution array. This vector has to be of size n_components().
        */
-      void get_gradients(const unsigned int evaluation_point,
-                         const ArrayView<Tensor<1, dim>> &gradients,
-                         const std::vector<EvaluationFlags::EvaluationFlags> &evaluation_flags) const;
+      void
+      get_gradients(const unsigned int                                   evaluation_point,
+                    const ArrayView<Tensor<1, dim>>                     &gradients,
+                    const std::vector<EvaluationFlags::EvaluationFlags> &evaluation_flags) const;
 
       /**
        * Return the evaluator for velocity or fluid velocity. This is the only
@@ -230,9 +220,9 @@ namespace aspect
        * components of ASPECT's finite element solution.
        * These objects are used inside of the member functions of this class.
        */
-      FEPointEvaluation<dim, dim> velocity;
+      FEPointEvaluation<dim, dim>                velocity;
       std::unique_ptr<FEPointEvaluation<1, dim>> pressure;
-      FEPointEvaluation<1, dim> temperature;
+      FEPointEvaluation<1, dim>                  temperature;
 
       /**
        * We group compositions by type (FiniteElement) and evaluate
@@ -247,8 +237,8 @@ namespace aspect
        * documentation like for the objects directly above.
        */
       std::unique_ptr<FEPointEvaluation<dim, dim>> fluid_velocity;
-      std::unique_ptr<FEPointEvaluation<1, dim>> compaction_pressure;
-      std::unique_ptr<FEPointEvaluation<1, dim>> fluid_pressure;
+      std::unique_ptr<FEPointEvaluation<1, dim>>   compaction_pressure;
+      std::unique_ptr<FEPointEvaluation<1, dim>>   fluid_pressure;
 
       /**
        * The component indices for the three melt formulation
@@ -270,8 +260,7 @@ namespace aspect
    */
   template <int dim>
   std::unique_ptr<SolutionEvaluator<dim>>
-  construct_solution_evaluator(const SimulatorAccess<dim> &simulator_access,
-                               const UpdateFlags update_flags);
+  construct_solution_evaluator(const SimulatorAccess<dim> &simulator_access, const UpdateFlags update_flags);
 }
 
 #endif

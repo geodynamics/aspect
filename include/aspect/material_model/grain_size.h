@@ -24,10 +24,9 @@
 
 #include <aspect/material_model/interface.h>
 #include <aspect/material_model/reaction_model/grain_size_evolution.h>
-
+#include <aspect/material_model/rheology/drucker_prager.h>
 #include <aspect/material_model/utilities.h>
 #include <aspect/simulator_access.h>
-#include <aspect/material_model/rheology/drucker_prager.h>
 
 #include <deal.II/matrix_free/fe_point_evaluation.h>
 
@@ -48,7 +47,8 @@ namespace aspect
       public:
         DislocationViscosityOutputs(const unsigned int n_points);
 
-        std::vector<double> get_nth_output(const unsigned int idx) const override;
+        std::vector<double>
+        get_nth_output(const unsigned int idx) const override;
 
         /**
          * Dislocation viscosities at the evaluation points passed to
@@ -97,7 +97,7 @@ namespace aspect
          * pointers.
          */
         void
-        initialize () override;
+        initialize() override;
 
         /**
          * Return whether the model is compressible or not.  Incompressibility
@@ -107,13 +107,14 @@ namespace aspect
          * equation as $\nabla \cdot (\rho \mathbf u)=0$ (compressible Stokes)
          * or as $\nabla \cdot \mathbf{u}=0$ (incompressible Stokes).
          */
-        bool is_compressible () const override;
+        bool
+        is_compressible() const override;
 
         /**
          * Evaluate the material model at the given input points.
          */
-        void evaluate(const typename Interface<dim>::MaterialModelInputs &in,
-                      typename Interface<dim>::MaterialModelOutputs &out) const override;
+        void
+        evaluate(const typename Interface<dim>::MaterialModelInputs &in, typename Interface<dim>::MaterialModelOutputs &out) const override;
 
         /**
          * @name Functions used in dealing with run-time parameters
@@ -122,30 +123,30 @@ namespace aspect
         /**
          * Declare the parameters this class takes through input files.
          */
-        static
-        void
-        declare_parameters (ParameterHandler &prm);
+        static void
+        declare_parameters(ParameterHandler &prm);
 
         /**
          * Read the parameters this class declares from the parameter file.
          */
         void
-        parse_parameters (ParameterHandler &prm) override;
+        parse_parameters(ParameterHandler &prm) override;
 
         /**
          * @}
          */
 
         void
-        create_additional_named_outputs (MaterialModel::MaterialModelOutputs<dim> &out) const override;
+        create_additional_named_outputs(MaterialModel::MaterialModelOutputs<dim> &out) const override;
 
         /**
          * Returns the enthalpy as calculated by HeFESTo.
          */
-        double enthalpy (const double      temperature,
-                         const double      pressure,
-                         const std::vector<double> &compositional_fields,
-                         const Point<dim> &position) const;
+        double
+        enthalpy(const double               temperature,
+                 const double               pressure,
+                 const std::vector<double> &compositional_fields,
+                 const Point<dim>          &position) const;
 
         /**
          * Returns the cell-wise averaged enthalpy derivatives for the evaluate
@@ -158,8 +159,8 @@ namespace aspect
          * if the temperature and pressure on all vertices of the current
          * cell is identical.
          */
-        std::array<std::pair<double, unsigned int>,2>
-        enthalpy_derivative (const typename Interface<dim>::MaterialModelInputs &in) const;
+        std::array<std::pair<double, unsigned int>, 2>
+        enthalpy_derivative(const typename Interface<dim>::MaterialModelInputs &in) const;
 
       private:
         /**
@@ -286,12 +287,13 @@ namespace aspect
          * Calculate the diffusion viscosity in dependence of temperature,
          * pressure, grain size, and phase.
          */
-        double diffusion_viscosity (const double temperature,
-                                    const double adiabatic_temperature,
-                                    const double adiabatic_pressure,
-                                    const double grain_size,
-                                    const double second_strain_rate_invariant,
-                                    const unsigned int phase_index) const;
+        double
+        diffusion_viscosity(const double       temperature,
+                            const double       adiabatic_temperature,
+                            const double       adiabatic_pressure,
+                            const double       grain_size,
+                            const double       second_strain_rate_invariant,
+                            const unsigned int phase_index) const;
 
         /**
          * This function calculates the dislocation viscosity. For this purpose
@@ -304,49 +306,56 @@ namespace aspect
          * unless a guess for the viscosity is provided, which can reduce the
          * number of iterations significantly.
          */
-        double dislocation_viscosity (const double temperature,
-                                      const double adiabatic_temperature,
-                                      const double adiabatic_pressure,
-                                      const SymmetricTensor<2,dim> &strain_rate,
-                                      const unsigned int phase_index,
-                                      const double diffusion_viscosity,
-                                      const double viscosity_guess = 0) const;
+        double
+        dislocation_viscosity(const double                   temperature,
+                              const double                   adiabatic_temperature,
+                              const double                   adiabatic_pressure,
+                              const SymmetricTensor<2, dim> &strain_rate,
+                              const unsigned int             phase_index,
+                              const double                   diffusion_viscosity,
+                              const double                   viscosity_guess = 0) const;
 
-        double density (const double temperature,
-                        const double pressure,
+        double
+        density(const double               temperature,
+                const double               pressure,
+                const std::vector<double> &compositional_fields,
+                const Point<dim>          &position) const;
+
+        double
+        compressibility(const double               temperature,
+                        const double               pressure,
                         const std::vector<double> &compositional_fields,
-                        const Point<dim> &position) const;
+                        const Point<dim>          &position) const;
 
-        double compressibility (const double temperature,
-                                const double pressure,
-                                const std::vector<double> &compositional_fields,
-                                const Point<dim> &position) const;
+        double
+        specific_heat(const double               temperature,
+                      const double               pressure,
+                      const std::vector<double> &compositional_fields,
+                      const Point<dim>          &position) const;
 
-        double specific_heat (const double temperature,
-                              const double pressure,
-                              const std::vector<double> &compositional_fields,
-                              const Point<dim> &position) const;
-
-        double thermal_expansion_coefficient (const double      temperature,
-                                              const double      pressure,
-                                              const std::vector<double> &compositional_fields,
-                                              const Point<dim> &position) const;
+        double
+        thermal_expansion_coefficient(const double               temperature,
+                                      const double               pressure,
+                                      const std::vector<double> &compositional_fields,
+                                      const Point<dim>          &position) const;
 
         /**
          * Returns the p-wave velocity as calculated by HeFESTo.
          */
-        double seismic_Vp (const double      temperature,
-                           const double      pressure,
-                           const std::vector<double> &compositional_fields,
-                           const Point<dim> &position) const;
+        double
+        seismic_Vp(const double               temperature,
+                   const double               pressure,
+                   const std::vector<double> &compositional_fields,
+                   const Point<dim>          &position) const;
 
         /**
          * Returns the s-wave velocity as calculated by HeFESTo.
          */
-        double seismic_Vs (const double      temperature,
-                           const double      pressure,
-                           const std::vector<double> &compositional_fields,
-                           const Point<dim> &position) const;
+        double
+        seismic_Vs(const double               temperature,
+                   const double               pressure,
+                   const std::vector<double> &compositional_fields,
+                   const Point<dim>          &position) const;
 
 
         /**
@@ -358,7 +367,7 @@ namespace aspect
          * material model (they have a zero width).
          */
         unsigned int
-        get_phase_index (const MaterialUtilities::PhaseFunctionInputs<dim> &in) const;
+        get_phase_index(const MaterialUtilities::PhaseFunctionInputs<dim> &in) const;
 
 
         /**
@@ -393,7 +402,7 @@ namespace aspect
          *  This variable is read from the parameter file through a parameter called 'Derivatives file names'.
          */
         std::vector<std::string> derivatives_file_names;
-        unsigned int n_material_data;
+        unsigned int             n_material_data;
         /**
          *  This variable is read from the parameter file through a parameter called 'Use table properties'.
          */
@@ -448,8 +457,8 @@ namespace aspect
         /**
          *  This variable is read from the parameter file through a parameter called 'Use adiabatic pressure for yield stress'.
          */
-        bool use_adiabatic_pressure_for_yielding;
-        Rheology::DruckerPrager<dim> drucker_prager_plasticity;
+        bool                              use_adiabatic_pressure_for_yielding;
+        Rheology::DruckerPrager<dim>      drucker_prager_plasticity;
         Rheology::DruckerPragerParameters drucker_prager_parameters;
 
         /**

@@ -21,12 +21,12 @@
 #ifndef _aspect_material_model_visco_plastic_h
 #define _aspect_material_model_visco_plastic_h
 
-#include <aspect/simulator_access.h>
-#include <aspect/material_model/interface.h>
 #include <aspect/material_model/equation_of_state/multicomponent_incompressible.h>
+#include <aspect/material_model/interface.h>
 #include <aspect/material_model/rheology/visco_plastic.h>
+#include <aspect/simulator_access.h>
 
-#include<deal.II/fe/component_mask.h>
+#include <deal.II/fe/component_mask.h>
 
 namespace aspect
 {
@@ -189,10 +189,10 @@ namespace aspect
          * pointers if it is required.
          */
         void
-        initialize () override;
+        initialize() override;
 
-        void evaluate(const MaterialModel::MaterialModelInputs<dim> &in,
-                      MaterialModel::MaterialModelOutputs<dim> &out) const override;
+        void
+        evaluate(const MaterialModel::MaterialModelInputs<dim> &in, MaterialModel::MaterialModelOutputs<dim> &out) const override;
 
         /**
          * Return whether the model is compressible or not.  Incompressibility
@@ -204,19 +204,20 @@ namespace aspect
          *
          * This material model is incompressible.
          */
-        bool is_compressible () const override;
+        bool
+        is_compressible() const override;
 
-        static
-        void
-        declare_parameters (ParameterHandler &prm);
-
-        void
-        parse_parameters (ParameterHandler &prm) override;
+        static void
+        declare_parameters(ParameterHandler &prm);
 
         void
-        create_additional_named_outputs (MaterialModel::MaterialModelOutputs<dim> &out) const override;
+        parse_parameters(ParameterHandler &prm) override;
 
-        double get_min_strain_rate() const;
+        void
+        create_additional_named_outputs(MaterialModel::MaterialModelOutputs<dim> &out) const override;
+
+        double
+        get_min_strain_rate() const;
 
         /**
          * A function that returns whether the material is plastically
@@ -224,10 +225,9 @@ namespace aspect
          * composition, strain rate, and so on).
          */
         bool
-        is_yielding (const MaterialModelInputs<dim> &in) const;
+        is_yielding(const MaterialModelInputs<dim> &in) const;
 
       private:
-
         /**
          * Pointer to the object used to compute the rheological properties.
          * In this case, the rheology in question is visco(elasto)plastic. The
@@ -294,7 +294,6 @@ namespace aspect
          * Record the mapping of reaction progress to phase transitions used in the material model
          */
         std::vector<unsigned int> reaction_progress_mapping;
-
     };
 
   }

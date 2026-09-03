@@ -30,7 +30,8 @@ namespace aspect
   {
     std::set<std::string> citation_ids;
 
-    const std::string get_url_part ()
+    const std::string
+    get_url_part()
     {
       // version:
       std::string url = "citing.html?ver=";
@@ -50,7 +51,8 @@ namespace aspect
       return url;
     }
 
-    void add (const std::string &id)
+    void
+    add(const std::string &id)
     {
       citation_ids.insert(id);
     }

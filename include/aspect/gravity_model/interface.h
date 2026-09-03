@@ -23,8 +23,9 @@
 #define _aspect_gravity_model_interface_h
 
 #include <aspect/plugins.h>
-#include <deal.II/base/point.h>
+
 #include <deal.II/base/parameter_handler.h>
+#include <deal.II/base/point.h>
 
 namespace aspect
 {
@@ -48,9 +49,9 @@ namespace aspect
         /**
          * Return the gravity vector as a function of position.
          */
-        virtual Tensor<1,dim> gravity_vector (const Point<dim> &position) const = 0;
+        virtual Tensor<1, dim>
+        gravity_vector(const Point<dim> &position) const = 0;
     };
-
 
 
 
@@ -71,10 +72,10 @@ namespace aspect
      */
     template <int dim>
     void
-    register_gravity_model (const std::string &name,
-                            const std::string &description,
-                            void (*declare_parameters_function) (ParameterHandler &),
-                            std::unique_ptr<Interface<dim>> (*factory_function) ());
+    register_gravity_model(const std::string &name,
+                           const std::string &description,
+                           void (*declare_parameters_function)(ParameterHandler &),
+                           std::unique_ptr<Interface<dim>> (*factory_function)());
 
     /**
      * A function that given the name of a model returns a pointer to an
@@ -88,7 +89,7 @@ namespace aspect
      */
     template <int dim>
     std::unique_ptr<Interface<dim>>
-    create_gravity_model (ParameterHandler &prm);
+    create_gravity_model(ParameterHandler &prm);
 
 
     /**
@@ -98,7 +99,7 @@ namespace aspect
      */
     template <int dim>
     void
-    declare_parameters (ParameterHandler &prm);
+    declare_parameters(ParameterHandler &prm);
 
 
     /**
@@ -112,7 +113,7 @@ namespace aspect
      */
     template <int dim>
     void
-    write_plugin_graph (std::ostream &output_stream);
+    write_plugin_graph(std::ostream &output_stream);
 
 
     /**
@@ -122,17 +123,15 @@ namespace aspect
      *
      * @ingroup GravityModels
      */
-#define ASPECT_REGISTER_GRAVITY_MODEL(classname,name,description) \
+#define ASPECT_REGISTER_GRAVITY_MODEL(classname, name, description) \
   template class classname<2>; \
   template class classname<3>; \
-  namespace ASPECT_REGISTER_GRAVITY_MODEL_ ## classname \
+  namespace ASPECT_REGISTER_GRAVITY_MODEL_##classname \
   { \
-    aspect::internal::Plugins::RegisterHelper<aspect::GravityModel::Interface<2>,classname<2>> \
-    dummy_ ## classname ## _2d (&aspect::GravityModel::register_gravity_model<2>, \
-                                name, description); \
-    aspect::internal::Plugins::RegisterHelper<aspect::GravityModel::Interface<3>,classname<3>> \
-    dummy_ ## classname ## _3d (&aspect::GravityModel::register_gravity_model<3>, \
-                                name, description); \
+    aspect::internal::Plugins::RegisterHelper<aspect::GravityModel::Interface<2>, classname<2>> dummy_##classname##_2d( \
+      &aspect::GravityModel::register_gravity_model<2>, name, description); \
+    aspect::internal::Plugins::RegisterHelper<aspect::GravityModel::Interface<3>, classname<3>> dummy_##classname##_3d( \
+      &aspect::GravityModel::register_gravity_model<3>, name, description); \
   }
   }
 }

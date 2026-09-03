@@ -18,16 +18,17 @@
   <http://www.gnu.org/licenses/>.
 */
 
-#include <algorithm>
-#include <aspect/material_model/reaction_model/grain_size_evolution.h>
-#include <aspect/utilities.h>
-#include <aspect/gravity_model/interface.h>
 #include <aspect/adiabatic_conditions/interface.h>
+#include <aspect/gravity_model/interface.h>
 #include <aspect/heating_model/shear_heating.h>
+#include <aspect/material_model/reaction_model/grain_size_evolution.h>
 #include <aspect/simulator_signals.h>
+#include <aspect/utilities.h>
 
 #include <deal.II/base/parameter_handler.h>
 #include <deal.II/sundials/arkode.h>
+
+#include <algorithm>
 
 
 namespace aspect
@@ -41,7 +42,8 @@ namespace aspect
       {
         // Compute the nth moment of the log-normal distribution as used in
         // Bercovici and Ricard (2012; F6) using mean = 0 and variance = 0.8.
-        double nth_moment_of_lognormal_distribution (const unsigned int n)
+        double
+        nth_moment_of_lognormal_distribution(const unsigned int n)
         {
           const double sigma = 0.8;
           return std::exp(n * n * sigma * sigma / 2.);
@@ -51,7 +53,8 @@ namespace aspect
 
         // Computes the product of two phase fractions (assuming exactly two phases)
         // as used in Bercovici and Ricard (2012).
-        double phase_distribution_function (const double volume_fraction_phase_one)
+        double
+        phase_distribution_function(const double volume_fraction_phase_one)
         {
           const double volume_fraction_phase_two = 1. - volume_fraction_phase_one;
           return (volume_fraction_phase_one * volume_fraction_phase_two);
@@ -63,10 +66,10 @@ namespace aspect
         // to a mean grain size. See Appendix H.1, Eqs. 8 and F.28 in
         // Bercovici and Ricard (2012) for more details.
         double
-        roughness_to_grain_size_factor (const double volume_fraction_phase_one)
+        roughness_to_grain_size_factor(const double volume_fraction_phase_one)
         {
-          const double b1 = 1./20 ;
-          const double c1 = 3.0 * b1 * nth_moment_of_lognormal_distribution(4) / (8.0 * nth_moment_of_lognormal_distribution (2));
+          const double b1 = 1. / 20;
+          const double c1 = 3.0 * b1 * nth_moment_of_lognormal_distribution(4) / (8.0 * nth_moment_of_lognormal_distribution(2));
 
           const double volume_fraction_phase_two = 1. - volume_fraction_phase_one;
 
@@ -75,7 +78,7 @@ namespace aspect
 
           const double one_over_sqrt_h = volume_fraction_phase_one / std::sqrt(h1) + volume_fraction_phase_two / std::sqrt(h2);
 
-          return (1./one_over_sqrt_h);
+          return (1. / one_over_sqrt_h);
         }
       }
 
@@ -87,7 +90,7 @@ namespace aspect
       {
         CitationInfo::add("grainsize");
 
-        phase_function = phase_function_;
+        phase_function      = phase_function_;
         n_phase_transitions = phase_function->n_phases_for_each_composition()[0] - 1;
       }
 
@@ -95,23 +98,20 @@ namespace aspect
 
       template <int dim>
       double
-      GrainSizeEvolution<dim>::
-      compute_partitioning_fraction (const double temperature) const
+      GrainSizeEvolution<dim>::compute_partitioning_fraction(const double temperature) const
       {
-        const double power_term_base = maximum_grain_size_reduction_work_fraction/minimum_grain_size_reduction_work_fraction;
+        const double power_term_base = maximum_grain_size_reduction_work_fraction / minimum_grain_size_reduction_work_fraction;
 
-        const double power_term_numerator    =  temperature_minimum_partitioning_power -
-                                                std::pow (temperature, grain_size_reduction_work_fraction_exponent);
+        const double power_term_numerator =
+          temperature_minimum_partitioning_power - std::pow(temperature, grain_size_reduction_work_fraction_exponent);
 
-        const double power_term_denominator  =  temperature_minimum_partitioning_power -
-                                                temperature_maximum_partitioning_power;
+        const double power_term_denominator = temperature_minimum_partitioning_power - temperature_maximum_partitioning_power;
 
         // We have to ensure the power term exponent is between 0 and 1, otherwise the partitioning fraction
         // will be outside the set bounds for the work fraction.
         const double power_term_exponent = std::clamp(power_term_numerator / power_term_denominator, 0.0, 1.0);
 
-        const double power_term = std::pow(power_term_base,
-                                           power_term_exponent);
+        const double power_term = std::pow(power_term_base, power_term_exponent);
 
         return minimum_grain_size_reduction_work_fraction * power_term;
       }
@@ -120,17 +120,18 @@ namespace aspect
 
       template <int dim>
       void
-      GrainSizeEvolution<dim>::
-      calculate_reaction_terms (const typename Interface<dim>::MaterialModelInputs  &in,
-                                const std::vector<double>                           &pressures,
-                                const std::vector<unsigned int>                     &phase_indices,
-                                const std::function<double(const double, const double,
-                                                           const double,const SymmetricTensor<2,dim> &,const unsigned int,const double,const double)>          &dislocation_viscosity,
-                                const std::function<double(
-                                  const double,const double,const double,const double,const double,const unsigned int)> &diffusion_viscosity,
-                                const double                                         min_eta,
-                                const double                                         max_eta,
-                                typename Interface<dim>::MaterialModelOutputs       &out) const
+      GrainSizeEvolution<dim>::calculate_reaction_terms(
+        const typename Interface<dim>::MaterialModelInputs &in,
+        const std::vector<double>                          &pressures,
+        const std::vector<unsigned int>                    &phase_indices,
+        const std::function<
+          double(const double, const double, const double, const SymmetricTensor<2, dim> &, const unsigned int, const double, const double)>
+          &dislocation_viscosity,
+        const std::function<double(const double, const double, const double, const double, const double, const unsigned int)>
+                                                      &diffusion_viscosity,
+        const double                                   min_eta,
+        const double                                   max_eta,
+        typename Interface<dim>::MaterialModelOutputs &out) const
       {
         // We want to iterate over the grain size evolution here, as we solve in fact an ordinary differential equation
         // and it is not correct to use the starting grain size (which also introduces instabilities).
@@ -141,38 +142,34 @@ namespace aspect
         std::vector<std::vector<double>> &reaction_terms = out.reaction_terms;
 
         const unsigned int n_evaluation_points = in.n_evaluation_points();
-        const unsigned int grain_size_index = this->introspection().get_indices_for_fields_of_type(CompositionalFieldDescription::grain_size)[0];
+        const unsigned int grain_size_index =
+          this->introspection().get_indices_for_fields_of_type(CompositionalFieldDescription::grain_size)[0];
 
         // Set up a vector that tells us which phase transition has been crossed for each point we are evaluating.
-        std::vector<int> crossed_transitions (n_evaluation_points, -1);
+        std::vector<int> crossed_transitions(n_evaluation_points, -1);
 
         // Copy grain sizes into a VectorType for the ODE solver.
         // While there also limit grain sizes to be larger than the minimum grain size.
         using VectorType = Vector<double>;
         VectorType grain_sizes(n_evaluation_points);
-        for (unsigned int i=0; i<n_evaluation_points; ++i)
+        for (unsigned int i = 0; i < n_evaluation_points; ++i)
           grain_sizes[i] = std::max(minimum_grain_size, in.composition[i][grain_size_index]);
 
-        const double timestep = this->simulator_is_past_initialization()
-                                ?
-                                this->get_timestep()
-                                :
-                                0.0;
+        const double timestep = this->simulator_is_past_initialization() ? this->get_timestep() : 0.0;
 
         // If the grain sizes are not valid, we are in initialization, or the time
         // step size is zero, we do not solve the ODE.
-        if (std::all_of(grain_sizes.begin(), grain_sizes.end(), [](double gs)
-        {
-          return gs != gs || gs < std::numeric_limits<double>::min();
-          })
-        || timestep == 0.0)
-        return;
+        if (std::all_of(grain_sizes.begin(),
+                        grain_sizes.end(),
+                        [](double gs) { return gs != gs || gs < std::numeric_limits<double>::min(); }) ||
+            timestep == 0.0)
+          return;
 
         SUNDIALS::ARKode<VectorType>::AdditionalData ode_data;
-        ode_data.initial_time = 0.0;
-        ode_data.final_time = this->get_timestep();
+        ode_data.initial_time      = 0.0;
+        ode_data.final_time        = this->get_timestep();
         ode_data.initial_step_size = arkode_initial_step_size * this->get_timestep();
-        ode_data.output_period = this->get_timestep();
+        ode_data.output_period     = this->get_timestep();
         ode_data.minimum_step_size = arkode_minimum_step_size * this->get_timestep();
 
         // Because both tolerances are added, we set the absolute
@@ -180,82 +177,88 @@ namespace aspect
         ode_data.relative_tolerance = 1e-3;
         ode_data.absolute_tolerance = 0;
 
-        const auto explicit_function = [&] (const double     /*time*/,
-                                            const VectorType &y,
-                                            VectorType       &grain_size_rates_of_change)
-        {
-          for (unsigned int i=0; i<n_evaluation_points; ++i)
+        const auto explicit_function = [&](const double /*time*/, const VectorType &y, VectorType &grain_size_rates_of_change) {
+          for (unsigned int i = 0; i < n_evaluation_points; ++i)
             {
               const double grain_size = std::max(minimum_grain_size, y[i]);
 
               // Precompute the partitioning_fraction since it is constant during the evolution.
               // This is only used for the pinned_grain_damage formulation.
-              const double partitioning_fraction = (grain_size_evolution_formulation == Formulation::pinned_grain_damage)
-                                                   ?
-                                                   compute_partitioning_fraction(in.temperature[i])
-                                                   :
-                                                   0.0;
+              const double partitioning_fraction = (grain_size_evolution_formulation == Formulation::pinned_grain_damage) ?
+                                                     compute_partitioning_fraction(in.temperature[i]) :
+                                                     0.0;
 
               // We keep the dislocation viscosity of the last iteration as guess
               // for the next one.
               double current_dislocation_viscosity = 0.0;
 
-              const double adiabatic_temperature = this->get_adiabatic_conditions().is_initialized()
-                                                   ?
-                                                   this->get_adiabatic_conditions().temperature(in.position[i])
-                                                   :
-                                                   in.temperature[i];
+              const double adiabatic_temperature = this->get_adiabatic_conditions().is_initialized() ?
+                                                     this->get_adiabatic_conditions().temperature(in.position[i]) :
+                                                     in.temperature[i];
 
 
 
               // grain size growth due to Ostwald ripening
               const double m = grain_growth_exponent[phase_indices[i]];
 
-              double grain_size_growth_rate = grain_growth_rate_constant[phase_indices[i]] / (m * std::pow(grain_size,m-1))
-                                              * std::exp(- (grain_growth_activation_energy[phase_indices[i]] + pressures[i] * grain_growth_activation_volume[phase_indices[i]])
-                                                         / (constants::gas_constant * in.temperature[i]));
+              double grain_size_growth_rate = grain_growth_rate_constant[phase_indices[i]] / (m * std::pow(grain_size, m - 1)) *
+                                              std::exp(-(grain_growth_activation_energy[phase_indices[i]] +
+                                                         pressures[i] * grain_growth_activation_volume[phase_indices[i]]) /
+                                                       (constants::gas_constant * in.temperature[i]));
 
               // in the two-phase damage model grain growth depends on the proportion of the two phases
               if (grain_size_evolution_formulation == Formulation::pinned_grain_damage)
-                grain_size_growth_rate *= geometric_constant[phase_indices[i]] * phase_distribution /
-                                          std::pow(roughness_to_grain_size, m);
+                grain_size_growth_rate *= geometric_constant[phase_indices[i]] * phase_distribution / std::pow(roughness_to_grain_size, m);
 
               // grain size reduction in dislocation creep regime
-              const SymmetricTensor<2,dim> shear_strain_rate = Utilities::Tensors::consistent_deviator(in.strain_rate[i]);
-              const double second_strain_rate_invariant = std::sqrt(std::max(-Utilities::Tensors::consistent_second_invariant_of_deviatoric_tensor(shear_strain_rate), 0.));
+              const SymmetricTensor<2, dim> shear_strain_rate = Utilities::Tensors::consistent_deviator(in.strain_rate[i]);
+              const double                  second_strain_rate_invariant =
+                std::sqrt(std::max(-Utilities::Tensors::consistent_second_invariant_of_deviatoric_tensor(shear_strain_rate), 0.));
 
-              const double current_diffusion_viscosity   = diffusion_viscosity(in.temperature[i], adiabatic_temperature, pressures[i], grain_size, second_strain_rate_invariant, phase_indices[i]);
-              current_dislocation_viscosity = dislocation_viscosity(in.temperature[i], adiabatic_temperature, pressures[i], in.strain_rate[i], phase_indices[i], current_diffusion_viscosity, current_dislocation_viscosity);
+              const double current_diffusion_viscosity = diffusion_viscosity(
+                in.temperature[i], adiabatic_temperature, pressures[i], grain_size, second_strain_rate_invariant, phase_indices[i]);
+              current_dislocation_viscosity = dislocation_viscosity(in.temperature[i],
+                                                                    adiabatic_temperature,
+                                                                    pressures[i],
+                                                                    in.strain_rate[i],
+                                                                    phase_indices[i],
+                                                                    current_diffusion_viscosity,
+                                                                    current_dislocation_viscosity);
 
               double current_viscosity;
               if (std::abs(second_strain_rate_invariant) > 1e-30)
-                current_viscosity = current_dislocation_viscosity * current_diffusion_viscosity / (current_dislocation_viscosity + current_diffusion_viscosity);
+                current_viscosity = current_dislocation_viscosity * current_diffusion_viscosity /
+                                    (current_dislocation_viscosity + current_diffusion_viscosity);
               else
                 current_viscosity = current_diffusion_viscosity;
 
-              const double dislocation_strain_rate = second_strain_rate_invariant
-                                                     * current_viscosity / current_dislocation_viscosity;
+              const double dislocation_strain_rate = second_strain_rate_invariant * current_viscosity / current_dislocation_viscosity;
 
               double grain_size_reduction_rate = 0.0;
 
               if (grain_size_evolution_formulation == Formulation::paleowattmeter)
                 {
-                  // paleowattmeter: Austin and Evans (2007): Paleowattmeters: A scaling relation for dynamically recrystallized grain size. Geology 35, 343-346
-                  const double stress = 2.0 * second_strain_rate_invariant * std::clamp(current_viscosity, min_eta, max_eta);
-                  grain_size_reduction_rate = 2.0 * stress * boundary_area_change_work_fraction[phase_indices[i]] * dislocation_strain_rate * grain_size * grain_size
-                                              / (geometric_constant[phase_indices[i]] * grain_boundary_energy[phase_indices[i]]);
+                  // paleowattmeter: Austin and Evans (2007): Paleowattmeters: A scaling relation for dynamically recrystallized grain size.
+                  // Geology 35, 343-346
+                  const double stress       = 2.0 * second_strain_rate_invariant * std::clamp(current_viscosity, min_eta, max_eta);
+                  grain_size_reduction_rate = 2.0 * stress * boundary_area_change_work_fraction[phase_indices[i]] *
+                                              dislocation_strain_rate * grain_size * grain_size /
+                                              (geometric_constant[phase_indices[i]] * grain_boundary_energy[phase_indices[i]]);
                 }
               else if (grain_size_evolution_formulation == Formulation::pinned_grain_damage)
                 {
-                  // pinned_grain_damage: Mulyukova and Bercovici (2018) Collapse of passive margins by lithospheric damage and plunging grain size. Earth and Planetary Science Letters, 484, 341-352.
+                  // pinned_grain_damage: Mulyukova and Bercovici (2018) Collapse of passive margins by lithospheric damage and plunging
+                  // grain size. Earth and Planetary Science Letters, 484, 341-352.
                   const double stress = 2.0 * second_strain_rate_invariant * std::clamp(current_viscosity, min_eta, max_eta);
-                  grain_size_reduction_rate = 2.0 * stress * partitioning_fraction * second_strain_rate_invariant * grain_size * grain_size
-                                              * roughness_to_grain_size
-                                              / (geometric_constant[phase_indices[i]] * grain_boundary_energy[phase_indices[i]] * phase_distribution);
+                  grain_size_reduction_rate =
+                    2.0 * stress * partitioning_fraction * second_strain_rate_invariant * grain_size * grain_size *
+                    roughness_to_grain_size /
+                    (geometric_constant[phase_indices[i]] * grain_boundary_energy[phase_indices[i]] * phase_distribution);
                 }
               else if (grain_size_evolution_formulation == Formulation::paleopiezometer)
                 {
-                  // paleopiezometer: Hall and Parmentier (2003): Influence of grain size evolution on convective instability. Geochem. Geophys. Geosyst., 4(3).
+                  // paleopiezometer: Hall and Parmentier (2003): Influence of grain size evolution on convective instability. Geochem.
+                  // Geophys. Geosyst., 4(3).
                   grain_size_reduction_rate = reciprocal_required_strain[phase_indices[i]] * dislocation_strain_rate * grain_size;
                 }
               else
@@ -265,16 +268,16 @@ namespace aspect
             }
         };
 
-#if DEAL_II_VERSION_GTE(9,8,0)
+#if DEAL_II_VERSION_GTE(9, 8, 0)
         SUNDIALS::ARKStepper<VectorType>::AdditionalData stepper_data;
-        stepper_data.order = 3;
+        stepper_data.order                         = 3;
         stepper_data.maximum_non_linear_iterations = 30;
 
         SUNDIALS::ARKStepper<VectorType> stepper(stepper_data);
         stepper.explicit_function = explicit_function;
         SUNDIALS::ARKode<VectorType> ode(stepper, ode_data);
 #else
-        ode_data.maximum_order = 3;
+        ode_data.maximum_order                 = 3;
         ode_data.maximum_non_linear_iterations = 30;
         SUNDIALS::ARKode<VectorType> ode(ode_data);
         ode.explicit_function = explicit_function;
@@ -283,7 +286,7 @@ namespace aspect
         const unsigned int iteration_count = ode.solve_ode(grain_sizes);
         this->get_signals().post_ARKode_solve(*this, iteration_count);
 
-        for (unsigned int i=0; i<n_evaluation_points; ++i)
+        for (unsigned int i = 0; i < n_evaluation_points; ++i)
           {
             Assert(grain_sizes[i] > 0,
                    ExcMessage("The grain size became smaller than zero. This is not valid, "
@@ -298,22 +301,21 @@ namespace aspect
             // phase transition, if we crossed one.
             int crossed_transition = -1;
 
-            const double gravity_norm = this->get_gravity_model().gravity_vector(in.position[i]).norm();
-            Tensor<1,dim> vertical_direction = this->get_gravity_model().gravity_vector(in.position[i]);
+            const double   gravity_norm       = this->get_gravity_model().gravity_vector(in.position[i]).norm();
+            Tensor<1, dim> vertical_direction = this->get_gravity_model().gravity_vector(in.position[i]);
             if (gravity_norm > 0.0)
               vertical_direction /= gravity_norm;
 
-            for (unsigned int phase=0; phase<n_phase_transitions; ++phase)
+            for (unsigned int phase = 0; phase < n_phase_transitions; ++phase)
               {
                 // Both distances are positive when they are downward from the transition (since gravity points down)
-                const double distance_from_transition = this->get_geometry_model().depth(in.position[i]) - phase_function->get_transition_depth(phase);
+                const double distance_from_transition =
+                  this->get_geometry_model().depth(in.position[i]) - phase_function->get_transition_depth(phase);
                 const double distance_moved = in.velocity[i] * vertical_direction * timestep;
 
                 // To make sure we actually reset the grain size of all the material passing through
                 // the transition, we take 110% of the distance a grain has moved for the check.
-                if (std::abs(distance_moved) * 1.1 > std::abs(distance_from_transition)
-                    &&
-                    distance_moved * distance_from_transition >= 0)
+                if (std::abs(distance_moved) * 1.1 > std::abs(distance_from_transition) && distance_moved * distance_from_transition >= 0)
                   crossed_transition = phase;
               }
 
@@ -340,132 +342,147 @@ namespace aspect
 
 
 
-
       template <int dim>
       void
-      GrainSizeEvolution<dim>::declare_parameters (ParameterHandler &prm)
+      GrainSizeEvolution<dim>::declare_parameters(ParameterHandler &prm)
       {
-        prm.declare_entry ("Grain growth activation energy", "3.5e5",
-                           Patterns::List (Patterns::Double (0.)),
-                           "The activation energy for grain growth $E_g$. "
-                           "List must have one more entry than the Phase transition depths. "
-                           "Units: \\si{\\joule\\per\\mole}.");
-        prm.declare_entry ("Grain growth activation volume", "8e-6",
-                           Patterns::List (Patterns::Double (0.)),
-                           "The activation volume for grain growth $V_g$. "
-                           "List must have one more entry than the Phase transition depths. "
-                           "Units: \\si{\\meter\\cubed\\per\\mole}.");
-        prm.declare_entry ("Grain growth exponent", "3.",
-                           Patterns::List (Patterns::Double (0.)),
-                           "The exponent of the grain growth law $p_g$. This is an experimentally determined "
-                           "grain growth constant. "
-                           "List must have one more entry than the Phase transition depths. "
-                           "Units: none.");
-        prm.declare_entry ("Grain growth rate constant", "1.5e-5",
-                           Patterns::List (Patterns::Double (0.)),
-                           "The prefactor for the Ostwald ripening grain growth law $G_0$. "
-                           "This is dependent on water content, which is assumed to be "
-                           "50 H/$10^6$ Si for the default value. "
-                           "List must have one more entry than the Phase transition depths. "
-                           "Units: \\si{\\meter}$^{p_g}$\\si{\\per\\second}.");
-        prm.declare_entry ("Reciprocal required strain", "10.",
-                           Patterns::List (Patterns::Double (0.)),
-                           "This parameter ($\\lambda$) gives an estimate of the strain necessary "
-                           "to achieve a new grain size. "
-                           "List must have one more entry than the Phase transition depths.");
-        prm.declare_entry ("Recrystallized grain size", "",
-                           Patterns::List (Patterns::Double (0.)),
-                           "The grain size $d_{ph}$ to that a phase will be reduced to when crossing a phase transition. "
-                           "When set to zero, grain size will not be reduced. "
-                           "List must have the same number of entries as Phase transition depths. "
-                           "Units: \\si{\\meter}.");
-        prm.declare_entry ("Phase volume fraction", "0.4",
-                           Patterns::Double (0., 1.),
-                           "The volume fraction of one of the phases in the two-phase damage model of Bercovici and Ricard (2012). "
-                           "The volume fraction of the other phase can be simply calculated by subtracting from one. "
-                           "This parameter is only used in the pinned state grain damage formulation."
-                           "Units: none.");
-        prm.declare_entry ("Grain size evolution formulation", "paleowattmeter",
-                           Patterns::Selection ("paleowattmeter|paleopiezometer|pinned grain damage"),
-                           "A flag indicating whether the material model should use the "
-                           "paleowattmeter approach of Austin and Evans (2007) for grain size reduction "
-                           "in the dislocation creep regime, the paleopiezometer approach "
-                           "from Hall and Parmetier (2003), or the pinned grain damage approach "
-                           "from Mulyukova and Bercovici (2018).");
-        prm.declare_entry ("Use paleowattmeter", "default",
-                           Patterns::Selection ("true|false|default"),
-                           "A flag indicating whether the computation should use the "
-                           "paleowattmeter approach of Austin and Evans (2007) for grain size reduction "
-                           "in the dislocation creep regime (if true) or the paleopiezometer approach "
-                           "from Hall and Parmetier (2003) (if false). This parameter has been removed. "
-                           "Use 'Grain size evolution formulation' instead.");
-        prm.declare_entry ("Average specific grain boundary energy", "1.0",
-                           Patterns::List (Patterns::Double (0.)),
-                           "The average specific grain boundary energy $\\gamma$. "
-                           "List must have one more entry than the Phase transition depths. "
-                           "Units: \\si{\\joule\\per\\meter\\squared}.");
-        prm.declare_entry ("Work fraction for boundary area change", "0.1",
-                           Patterns::List (Patterns::Double (0.)),
-                           "The fraction $\\chi$ of work done by dislocation creep to change the grain boundary area. "
-                           "List must have one more entry than the Phase transition depths. "
-                           "Units: \\si{\\joule\\per\\meter\\squared}.");
-        prm.declare_entry ("Geometric constant", "3.",
-                           Patterns::List (Patterns::Double (0.)),
-                           "The geometric constant $c$ used in the paleowattmeter grain size reduction law. "
-                           "List must have one more entry than the Phase transition depths. "
-                           "Units: none.");
-        prm.declare_entry ("Minimum grain size", "1e-5",
-                           Patterns::Double (0.),
-                           "The minimum grain size that is used for the material model. This parameter "
-                           "is introduced to limit local viscosity contrasts, but still allows for a widely "
-                           "varying viscosity over the whole mantle range. "
-                           "Units: \\si{\\meter}.");
-        prm.declare_entry ("Lower mantle grain size scaling", "1.0",
-                           Patterns::Double (0.),
-                           "This option does not exist any more.");
-        prm.declare_entry ("Advect logarithm of grain size", "false",
-                           Patterns::Bool (),
-                           "This option does not exist any more.");
-        prm.declare_entry ("ARKode initial step size", "1e-3",
-                           Patterns::Double (1e-12, 1.0),
-                           "The initial step size that the ODE solver uses when solving the grain "
-                           "size evolution equation. The step size is relative to the ASPECT time step, i.e. "
-                           "the default value of 1e-3 means the initial step size will be 1e-3 times the "
-                           "current ASPECT time step.");
-        prm.declare_entry ("ARKode minimum step size", "1e-6",
-                           Patterns::Double (1e-12, 1.0),
-                           "The minimum step size that the ODE solver uses when solving the grain "
-                           "size evolution equation. The step size is relative to the ASPECT time step, i.e. "
-                           "the default value of 1e-6 means the step size will never be smaller than 1e-6 "
-                           "times the current ASPECT time step.");
+        prm.declare_entry("Grain growth activation energy",
+                          "3.5e5",
+                          Patterns::List(Patterns::Double(0.)),
+                          "The activation energy for grain growth $E_g$. "
+                          "List must have one more entry than the Phase transition depths. "
+                          "Units: \\si{\\joule\\per\\mole}.");
+        prm.declare_entry("Grain growth activation volume",
+                          "8e-6",
+                          Patterns::List(Patterns::Double(0.)),
+                          "The activation volume for grain growth $V_g$. "
+                          "List must have one more entry than the Phase transition depths. "
+                          "Units: \\si{\\meter\\cubed\\per\\mole}.");
+        prm.declare_entry("Grain growth exponent",
+                          "3.",
+                          Patterns::List(Patterns::Double(0.)),
+                          "The exponent of the grain growth law $p_g$. This is an experimentally determined "
+                          "grain growth constant. "
+                          "List must have one more entry than the Phase transition depths. "
+                          "Units: none.");
+        prm.declare_entry("Grain growth rate constant",
+                          "1.5e-5",
+                          Patterns::List(Patterns::Double(0.)),
+                          "The prefactor for the Ostwald ripening grain growth law $G_0$. "
+                          "This is dependent on water content, which is assumed to be "
+                          "50 H/$10^6$ Si for the default value. "
+                          "List must have one more entry than the Phase transition depths. "
+                          "Units: \\si{\\meter}$^{p_g}$\\si{\\per\\second}.");
+        prm.declare_entry("Reciprocal required strain",
+                          "10.",
+                          Patterns::List(Patterns::Double(0.)),
+                          "This parameter ($\\lambda$) gives an estimate of the strain necessary "
+                          "to achieve a new grain size. "
+                          "List must have one more entry than the Phase transition depths.");
+        prm.declare_entry("Recrystallized grain size",
+                          "",
+                          Patterns::List(Patterns::Double(0.)),
+                          "The grain size $d_{ph}$ to that a phase will be reduced to when crossing a phase transition. "
+                          "When set to zero, grain size will not be reduced. "
+                          "List must have the same number of entries as Phase transition depths. "
+                          "Units: \\si{\\meter}.");
+        prm.declare_entry("Phase volume fraction",
+                          "0.4",
+                          Patterns::Double(0., 1.),
+                          "The volume fraction of one of the phases in the two-phase damage model of Bercovici and Ricard (2012). "
+                          "The volume fraction of the other phase can be simply calculated by subtracting from one. "
+                          "This parameter is only used in the pinned state grain damage formulation."
+                          "Units: none.");
+        prm.declare_entry("Grain size evolution formulation",
+                          "paleowattmeter",
+                          Patterns::Selection("paleowattmeter|paleopiezometer|pinned grain damage"),
+                          "A flag indicating whether the material model should use the "
+                          "paleowattmeter approach of Austin and Evans (2007) for grain size reduction "
+                          "in the dislocation creep regime, the paleopiezometer approach "
+                          "from Hall and Parmetier (2003), or the pinned grain damage approach "
+                          "from Mulyukova and Bercovici (2018).");
+        prm.declare_entry("Use paleowattmeter",
+                          "default",
+                          Patterns::Selection("true|false|default"),
+                          "A flag indicating whether the computation should use the "
+                          "paleowattmeter approach of Austin and Evans (2007) for grain size reduction "
+                          "in the dislocation creep regime (if true) or the paleopiezometer approach "
+                          "from Hall and Parmetier (2003) (if false). This parameter has been removed. "
+                          "Use 'Grain size evolution formulation' instead.");
+        prm.declare_entry("Average specific grain boundary energy",
+                          "1.0",
+                          Patterns::List(Patterns::Double(0.)),
+                          "The average specific grain boundary energy $\\gamma$. "
+                          "List must have one more entry than the Phase transition depths. "
+                          "Units: \\si{\\joule\\per\\meter\\squared}.");
+        prm.declare_entry("Work fraction for boundary area change",
+                          "0.1",
+                          Patterns::List(Patterns::Double(0.)),
+                          "The fraction $\\chi$ of work done by dislocation creep to change the grain boundary area. "
+                          "List must have one more entry than the Phase transition depths. "
+                          "Units: \\si{\\joule\\per\\meter\\squared}.");
+        prm.declare_entry("Geometric constant",
+                          "3.",
+                          Patterns::List(Patterns::Double(0.)),
+                          "The geometric constant $c$ used in the paleowattmeter grain size reduction law. "
+                          "List must have one more entry than the Phase transition depths. "
+                          "Units: none.");
+        prm.declare_entry("Minimum grain size",
+                          "1e-5",
+                          Patterns::Double(0.),
+                          "The minimum grain size that is used for the material model. This parameter "
+                          "is introduced to limit local viscosity contrasts, but still allows for a widely "
+                          "varying viscosity over the whole mantle range. "
+                          "Units: \\si{\\meter}.");
+        prm.declare_entry("Lower mantle grain size scaling", "1.0", Patterns::Double(0.), "This option does not exist any more.");
+        prm.declare_entry("Advect logarithm of grain size", "false", Patterns::Bool(), "This option does not exist any more.");
+        prm.declare_entry("ARKode initial step size",
+                          "1e-3",
+                          Patterns::Double(1e-12, 1.0),
+                          "The initial step size that the ODE solver uses when solving the grain "
+                          "size evolution equation. The step size is relative to the ASPECT time step, i.e. "
+                          "the default value of 1e-3 means the initial step size will be 1e-3 times the "
+                          "current ASPECT time step.");
+        prm.declare_entry("ARKode minimum step size",
+                          "1e-6",
+                          Patterns::Double(1e-12, 1.0),
+                          "The minimum step size that the ODE solver uses when solving the grain "
+                          "size evolution equation. The step size is relative to the ASPECT time step, i.e. "
+                          "the default value of 1e-6 means the step size will never be smaller than 1e-6 "
+                          "times the current ASPECT time step.");
 
         prm.enter_subsection("Grain damage partitioning");
         {
-          prm.declare_entry ("Temperature for minimum grain damage partitioning", "1600",
-                             Patterns::Double (0.),
-                             "This parameter determines the temperature at which the computed coefficient of shear energy "
-                             "partitioned into grain damage is minimum. This is used in the pinned state limit of the grain "
-                             "size evolution. One choice of this parameter is the mantle temperature at the ridge axis, "
-                             "see Mulyukova and Bercovici (2018) for details.");
-          prm.declare_entry ("Temperature for maximum grain damage partitioning", "283",
-                             Patterns::Double (0.),
-                             "This parameter determines the temperature at which the computed coefficient of shear energy "
-                             "partitioned into grain damage is maximum. This is used in the pinned state limit of the grain "
-                             "size evolution. One choice of this parameter is the surface temperature of the seafloor, see "
-                             "Mulyukova and Bercovici (2018) for details.");
-          prm.declare_entry ("Minimum grain size reduction work fraction", "1e-12",
-                             Patterns::Double (0., 1.),
-                             "This parameter determines the minimum value of the partitioning coefficient, which governs "
-                             "the amount of shear heating partitioned into grain damage in the pinned state limit.");
-          prm.declare_entry ("Maximum grain size reduction work fraction", "1e-1",
-                             Patterns::Double (0., 1.),
-                             "This parameter determines the maximum value of the partitioning coefficient, which governs "
-                             "the amount of shear heating partitioned into grain damage in the pinned state limit.");
-          prm.declare_entry ("Grain size reduction work fraction exponent", "10",
-                             Patterns::Double (0.),
-                             "This parameter determines the variability in how much shear heating is partitioned into "
-                             "grain damage. A higher value suggests a wider temperature range over which the partitioning "
-                             "coefficient is high.");
+          prm.declare_entry("Temperature for minimum grain damage partitioning",
+                            "1600",
+                            Patterns::Double(0.),
+                            "This parameter determines the temperature at which the computed coefficient of shear energy "
+                            "partitioned into grain damage is minimum. This is used in the pinned state limit of the grain "
+                            "size evolution. One choice of this parameter is the mantle temperature at the ridge axis, "
+                            "see Mulyukova and Bercovici (2018) for details.");
+          prm.declare_entry("Temperature for maximum grain damage partitioning",
+                            "283",
+                            Patterns::Double(0.),
+                            "This parameter determines the temperature at which the computed coefficient of shear energy "
+                            "partitioned into grain damage is maximum. This is used in the pinned state limit of the grain "
+                            "size evolution. One choice of this parameter is the surface temperature of the seafloor, see "
+                            "Mulyukova and Bercovici (2018) for details.");
+          prm.declare_entry("Minimum grain size reduction work fraction",
+                            "1e-12",
+                            Patterns::Double(0., 1.),
+                            "This parameter determines the minimum value of the partitioning coefficient, which governs "
+                            "the amount of shear heating partitioned into grain damage in the pinned state limit.");
+          prm.declare_entry("Maximum grain size reduction work fraction",
+                            "1e-1",
+                            Patterns::Double(0., 1.),
+                            "This parameter determines the maximum value of the partitioning coefficient, which governs "
+                            "the amount of shear heating partitioned into grain damage in the pinned state limit.");
+          prm.declare_entry("Grain size reduction work fraction exponent",
+                            "10",
+                            Patterns::Double(0.),
+                            "This parameter determines the variability in how much shear heating is partitioned into "
+                            "grain damage. A higher value suggests a wider temperature range over which the partitioning "
+                            "coefficient is high.");
         }
         prm.leave_subsection();
       }
@@ -474,87 +491,88 @@ namespace aspect
 
       template <int dim>
       void
-      GrainSizeEvolution<dim>::parse_parameters (ParameterHandler &prm)
+      GrainSizeEvolution<dim>::parse_parameters(ParameterHandler &prm)
       {
-        AssertThrow (this->introspection().get_number_of_fields_of_type(CompositionalFieldDescription::grain_size) == 1,
-                     ExcMessage("The 'grain size' material model only works if exactly one compositional "
-                                "field with type 'grain size' is present. It looks like there are " +
-                                std::to_string(this->introspection().get_number_of_fields_of_type(CompositionalFieldDescription::grain_size))
-                                + " fields of this type."));
+        AssertThrow(this->introspection().get_number_of_fields_of_type(CompositionalFieldDescription::grain_size) == 1,
+                    ExcMessage(
+                      "The 'grain size' material model only works if exactly one compositional "
+                      "field with type 'grain size' is present. It looks like there are " +
+                      std::to_string(this->introspection().get_number_of_fields_of_type(CompositionalFieldDescription::grain_size)) +
+                      " fields of this type."));
 
-        recrystallized_grain_size = Utilities::string_to_double
-                                    (Utilities::split_string_list(prm.get ("Recrystallized grain size")));
+        recrystallized_grain_size = Utilities::string_to_double(Utilities::split_string_list(prm.get("Recrystallized grain size")));
 
         if (recrystallized_grain_size.size() != n_phase_transitions)
-          AssertThrow(false,
-                      ExcMessage("Error: The list of recrystallized grain sizes has to have as many entries as there are phases."));
+          AssertThrow(false, ExcMessage("Error: The list of recrystallized grain sizes has to have as many entries as there are phases."));
 
-        for (unsigned int i=1; i<n_phase_transitions; ++i)
-          AssertThrow(phase_function->get_transition_depth(i-1) < phase_function->get_transition_depth(i),
+        for (unsigned int i = 1; i < n_phase_transitions; ++i)
+          AssertThrow(phase_function->get_transition_depth(i - 1) < phase_function->get_transition_depth(i),
                       ExcMessage("Error: Phase transition depths have to be sorted in ascending order!"));
 
         // grain evolution parameters
-        grain_growth_activation_energy        = Utilities::string_to_double
-                                                (Utilities::split_string_list(prm.get ("Grain growth activation energy")));
-        grain_growth_activation_volume        = Utilities::string_to_double
-                                                (Utilities::split_string_list(prm.get ("Grain growth activation volume")));
-        grain_growth_rate_constant            = Utilities::string_to_double
-                                                (Utilities::split_string_list(prm.get ("Grain growth rate constant")));
-        grain_growth_exponent                 = Utilities::string_to_double
-                                                (Utilities::split_string_list(prm.get ("Grain growth exponent")));
-        minimum_grain_size                    = prm.get_double("Minimum grain size");
-        reciprocal_required_strain            = Utilities::string_to_double
-                                                (Utilities::split_string_list(prm.get ("Reciprocal required strain")));
+        grain_growth_activation_energy =
+          Utilities::string_to_double(Utilities::split_string_list(prm.get("Grain growth activation energy")));
+        grain_growth_activation_volume =
+          Utilities::string_to_double(Utilities::split_string_list(prm.get("Grain growth activation volume")));
+        grain_growth_rate_constant = Utilities::string_to_double(Utilities::split_string_list(prm.get("Grain growth rate constant")));
+        grain_growth_exponent      = Utilities::string_to_double(Utilities::split_string_list(prm.get("Grain growth exponent")));
+        minimum_grain_size         = prm.get_double("Minimum grain size");
+        reciprocal_required_strain = Utilities::string_to_double(Utilities::split_string_list(prm.get("Reciprocal required strain")));
 
-        grain_size_evolution_formulation      = Formulation::parse(prm.get("Grain size evolution formulation"));
+        grain_size_evolution_formulation = Formulation::parse(prm.get("Grain size evolution formulation"));
 
-        AssertThrow((grain_size_evolution_formulation != Formulation::paleopiezometer || !this->get_heating_model_manager().shear_heating_enabled()),
+        AssertThrow((grain_size_evolution_formulation != Formulation::paleopiezometer ||
+                     !this->get_heating_model_manager().shear_heating_enabled()),
                     ExcMessage("Shear heating output should not be used with the Paleopiezometer grain damage formulation."));
 
-        const double volume_fraction_phase_one = prm.get_double ("Phase volume fraction");
+        const double volume_fraction_phase_one = prm.get_double("Phase volume fraction");
 
         AssertThrow(volume_fraction_phase_one != 0. && volume_fraction_phase_one != 1.,
                     ExcMessage("Volume fraction must be between (0, 1) to use two phase damage in the pinned state!"));
 
-        phase_distribution = phase_distribution_function(volume_fraction_phase_one);
+        phase_distribution      = phase_distribution_function(volume_fraction_phase_one);
         roughness_to_grain_size = roughness_to_grain_size_factor(volume_fraction_phase_one);
 
-        grain_boundary_energy                 = Utilities::string_to_double
-                                                (Utilities::split_string_list(prm.get ("Average specific grain boundary energy")));
-        boundary_area_change_work_fraction    = Utilities::string_to_double
-                                                (Utilities::split_string_list(prm.get ("Work fraction for boundary area change")));
-        geometric_constant                    = Utilities::string_to_double
-                                                (Utilities::split_string_list(prm.get ("Geometric constant")));
+        grain_boundary_energy =
+          Utilities::string_to_double(Utilities::split_string_list(prm.get("Average specific grain boundary energy")));
+        boundary_area_change_work_fraction =
+          Utilities::string_to_double(Utilities::split_string_list(prm.get("Work fraction for boundary area change")));
+        geometric_constant = Utilities::string_to_double(Utilities::split_string_list(prm.get("Geometric constant")));
 
         if (grain_size_evolution_formulation == Formulation::pinned_grain_damage)
           {
             prm.enter_subsection("Grain damage partitioning");
             {
-              grain_size_reduction_work_fraction_exponent = prm.get_double ("Grain size reduction work fraction exponent");
-              maximum_grain_size_reduction_work_fraction  = prm.get_double ("Maximum grain size reduction work fraction");
-              minimum_grain_size_reduction_work_fraction  = prm.get_double ("Minimum grain size reduction work fraction");
+              grain_size_reduction_work_fraction_exponent = prm.get_double("Grain size reduction work fraction exponent");
+              maximum_grain_size_reduction_work_fraction  = prm.get_double("Maximum grain size reduction work fraction");
+              minimum_grain_size_reduction_work_fraction  = prm.get_double("Minimum grain size reduction work fraction");
 
               AssertThrow(maximum_grain_size_reduction_work_fraction > 0. && maximum_grain_size_reduction_work_fraction < 1.,
-                          ExcMessage("Maximum grain size reduction work fraction cannot be smaller or equal to 0 or larger or equal to 1."));
+                          ExcMessage(
+                            "Maximum grain size reduction work fraction cannot be smaller or equal to 0 or larger or equal to 1."));
               AssertThrow(minimum_grain_size_reduction_work_fraction > 0. && minimum_grain_size_reduction_work_fraction < 1.,
-                          ExcMessage("Minimum grain size reduction work fraction cannot be smaller or equal to 0 or larger or equal to 1."));
+                          ExcMessage(
+                            "Minimum grain size reduction work fraction cannot be smaller or equal to 0 or larger or equal to 1."));
               AssertThrow(maximum_grain_size_reduction_work_fraction >= minimum_grain_size_reduction_work_fraction,
-                          ExcMessage("Maximum grain size reduction work fraction must be larger than minimum grain size reduction work fraction."));
+                          ExcMessage(
+                            "Maximum grain size reduction work fraction must be larger than minimum grain size reduction work fraction."));
 
-              const double temperature_minimum_partition  = prm.get_double ("Temperature for minimum grain damage partitioning");
-              const double temperature_maximum_partition  = prm.get_double ("Temperature for maximum grain damage partitioning");
+              const double temperature_minimum_partition = prm.get_double("Temperature for minimum grain damage partitioning");
+              const double temperature_maximum_partition = prm.get_double("Temperature for maximum grain damage partitioning");
 
-              AssertThrow(temperature_minimum_partition > temperature_maximum_partition,
-                          ExcMessage("Temperature for minimum grain damage partitioning must be larger than Temperature for maximum grain damage partitioning."));
+              AssertThrow(
+                temperature_minimum_partition > temperature_maximum_partition,
+                ExcMessage(
+                  "Temperature for minimum grain damage partitioning must be larger than Temperature for maximum grain damage partitioning."));
 
-              temperature_minimum_partitioning_power = std::pow(temperature_minimum_partition,grain_size_reduction_work_fraction_exponent);
-              temperature_maximum_partitioning_power = std::pow(temperature_maximum_partition,grain_size_reduction_work_fraction_exponent);
+              temperature_minimum_partitioning_power = std::pow(temperature_minimum_partition, grain_size_reduction_work_fraction_exponent);
+              temperature_maximum_partitioning_power = std::pow(temperature_maximum_partition, grain_size_reduction_work_fraction_exponent);
             }
             prm.leave_subsection();
           }
 
-        arkode_initial_step_size = prm.get_double ("ARKode initial step size");
-        arkode_minimum_step_size = prm.get_double ("ARKode minimum step size");
+        arkode_initial_step_size = prm.get_double("ARKode initial step size");
+        arkode_minimum_step_size = prm.get_double("ARKode minimum step size");
 
         if (grain_growth_activation_energy.size() != grain_growth_activation_volume.size() ||
             grain_growth_activation_energy.size() != grain_growth_rate_constant.size() ||
@@ -567,7 +585,7 @@ namespace aspect
           {
             if (grain_growth_activation_energy.size() != grain_boundary_energy.size() ||
                 grain_growth_activation_energy.size() != boundary_area_change_work_fraction.size() ||
-                grain_growth_activation_energy.size() != geometric_constant.size() )
+                grain_growth_activation_energy.size() != geometric_constant.size())
               AssertThrow(false,
                           ExcMessage("Error: One of the lists of grain size evolution parameters "
                                      "given for the paleowattmeter does not have the correct length!"));
@@ -589,7 +607,7 @@ namespace aspect
                                  "should follow either of the 'paleowattmeter|paleopiezometer|pinned grain damage' "
                                  "formulations!"));
 
-        AssertThrow(grain_growth_activation_energy.size() == n_phase_transitions+1,
+        AssertThrow(grain_growth_activation_energy.size() == n_phase_transitions + 1,
                     ExcMessage("Error: The lists of grain size evolution and flow law parameters need to "
                                "have exactly one more entry than the number of phase transitions "
                                "(which is defined by the length of the lists of phase transition depths, ...)!"));
@@ -599,15 +617,14 @@ namespace aspect
 
       template <int dim>
       void
-      GrainSizeEvolution<dim>::create_additional_named_outputs (MaterialModel::MaterialModelOutputs<dim> &out) const
+      GrainSizeEvolution<dim>::create_additional_named_outputs(MaterialModel::MaterialModelOutputs<dim> &out) const
       {
         // These properties will be used by the heating model to reduce
         // shear heating by the amount of work done to reduce grain size.
         if (out.template has_additional_output_object<HeatingModel::ShearHeatingOutputs<dim>>() == false)
           {
             const unsigned int n_points = out.n_evaluation_points();
-            out.additional_outputs.push_back(
-              std::make_unique<HeatingModel::ShearHeatingOutputs<dim>> (n_points));
+            out.additional_outputs.push_back(std::make_unique<HeatingModel::ShearHeatingOutputs<dim>>(n_points));
           }
       }
 
@@ -615,17 +632,19 @@ namespace aspect
 
       template <int dim>
       void
-      GrainSizeEvolution<dim>::fill_additional_outputs (const typename MaterialModel::MaterialModelInputs<dim> &in,
-                                                        const typename MaterialModel::MaterialModelOutputs<dim> &out,
-                                                        const std::vector<unsigned int> &phase_indices,
-                                                        const std::vector<double> &dislocation_viscosities,
-                                                        std::vector<std::shared_ptr<MaterialModel::AdditionalMaterialOutputs<dim>>> &additional_outputs) const
+      GrainSizeEvolution<dim>::fill_additional_outputs(
+        const typename MaterialModel::MaterialModelInputs<dim>                      &in,
+        const typename MaterialModel::MaterialModelOutputs<dim>                     &out,
+        const std::vector<unsigned int>                                             &phase_indices,
+        const std::vector<double>                                                   &dislocation_viscosities,
+        std::vector<std::shared_ptr<MaterialModel::AdditionalMaterialOutputs<dim>>> &additional_outputs) const
       {
-        for (auto &additional_output: additional_outputs)
-          if (HeatingModel::ShearHeatingOutputs<dim> *shear_heating_out = dynamic_cast<HeatingModel::ShearHeatingOutputs<dim> *>(additional_output.get()))
+        for (auto &additional_output : additional_outputs)
+          if (HeatingModel::ShearHeatingOutputs<dim> *shear_heating_out =
+                dynamic_cast<HeatingModel::ShearHeatingOutputs<dim> *>(additional_output.get()))
             if (in.requests_property(MaterialProperties::additional_outputs))
               {
-                for (unsigned int i=0; i<in.n_evaluation_points(); ++i)
+                for (unsigned int i = 0; i < in.n_evaluation_points(); ++i)
                   {
                     if (grain_size_evolution_formulation == Formulation::paleowattmeter)
                       {
@@ -641,7 +660,7 @@ namespace aspect
                       }
                     else if (grain_size_evolution_formulation == Formulation::pinned_grain_damage)
                       {
-                        const double f = compute_partitioning_fraction(in.temperature[i]);
+                        const double f                                     = compute_partitioning_fraction(in.temperature[i]);
                         shear_heating_out->shear_heating_work_fractions[i] = 1. - f;
                       }
                     else
@@ -661,8 +680,7 @@ namespace aspect
   {
     namespace ReactionModel
     {
-#define INSTANTIATE(dim) \
-  template class GrainSizeEvolution<dim>;
+#define INSTANTIATE(dim) template class GrainSizeEvolution<dim>;
 
       ASPECT_INSTANTIATE(INSTANTIATE)
 #undef INSTANTIATE

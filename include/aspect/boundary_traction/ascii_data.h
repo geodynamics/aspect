@@ -63,14 +63,14 @@ namespace aspect
         /**
          * Constructor.
          */
-        AsciiData ();
+        AsciiData();
 
         /**
          * Initialization function. This function is called once at the
          * beginning of the program. Checks preconditions.
          */
         void
-        initialize () override;
+        initialize() override;
 
         // avoid -Woverloaded-virtual:
         using Utilities::AsciiDataBoundary<dim>::initialize;
@@ -80,10 +80,10 @@ namespace aspect
          * (outward) normal vector to the domain is also provided as
          * a second argument.
          */
-        Tensor<1,dim>
-        boundary_traction (const types::boundary_id boundary_indicator,
-                           const Point<dim> &position,
-                           const Tensor<1,dim> &normal_vector) const override;
+        Tensor<1, dim>
+        boundary_traction(const types::boundary_id boundary_indicator,
+                          const Point<dim>        &position,
+                          const Tensor<1, dim>    &normal_vector) const override;
 
         /**
          * A function that is called at the beginning of each time step to
@@ -92,20 +92,19 @@ namespace aspect
          * the parsed function what the current time is.
          */
         void
-        update () override;
+        update() override;
 
         /**
          * Declare the parameters this class takes through input files.
          */
-        static
-        void
-        declare_parameters (ParameterHandler &prm);
+        static void
+        declare_parameters(ParameterHandler &prm);
 
         /**
          * Read the parameters this class declares from the parameter file.
          */
         void
-        parse_parameters (ParameterHandler &prm) override;
+        parse_parameters(ParameterHandler &prm) override;
 
       private:
         std::set<types::boundary_id> boundary_ids;
@@ -119,13 +118,12 @@ namespace aspect
         bool use_spherical_unit_vectors;
 
         /**
-        * Whether to prescribe pressure (default: true) or full traction vector (false)
-        * at the boundary. If true, only 1 component will be used for the boundary condition.
-        *
-        * This variable is read from the parameter file through a parameter called 'Prescribe pressure instead of full traction'.
-        */
+         * Whether to prescribe pressure (default: true) or full traction vector (false)
+         * at the boundary. If true, only 1 component will be used for the boundary condition.
+         *
+         * This variable is read from the parameter file through a parameter called 'Prescribe pressure instead of full traction'.
+         */
         bool prescribe_pressure_instead_of_full_traction;
-
     };
   }
 }

@@ -22,24 +22,25 @@
 #include <aspect/simulator.h>
 #include <aspect/utilities.h>
 
-#include <deal.II/base/utilities.h>
 #include <deal.II/base/mpi.h>
 #include <deal.II/base/multithread_info.h>
 #include <deal.II/base/revision.h>
 #include <deal.II/base/scope_exit.h>
+#include <deal.II/base/utilities.h>
+
 #include <csignal>
+#include <regex>
 #include <string>
 #include <thread>
-#include <regex>
 #include <utility>
 
 #ifdef DEBUG
-#ifdef ASPECT_USE_FP_EXCEPTIONS
-#include <cfenv>
-#endif
+#  ifdef ASPECT_USE_FP_EXCEPTIONS
+#    include <cfenv>
+#  endif
 #endif
 
-#if ASPECT_USE_SHARED_LIBS==1
+#if ASPECT_USE_SHARED_LIBS == 1
 #  include <dlfcn.h>
 #  ifdef ASPECT_HAVE_LINK_H
 #    include <link.h>
@@ -64,11 +65,10 @@
 namespace
 {
 
-// get the value of a particular parameter from the contents of the input
-// file. return an empty string if not found
+  // get the value of a particular parameter from the contents of the input
+  // file. return an empty string if not found
   std::string
-  get_last_value_of_parameter(const std::string &parameters,
-                              const std::string &parameter_name)
+  get_last_value_of_parameter(const std::string &parameters, const std::string &parameter_name)
   {
     std::string return_value;
 
@@ -81,7 +81,7 @@ namespace
     // We will deal with the presence of Windows line endings on Unix systems
     // in the places where we call this function, and so include the \r
     // in the second match group.
-    const std::regex regex ("set[ \t]+" + parameter_name + "[ \t]*=[ \t]*(.*\r?)");
+    const std::regex regex("set[ \t]+" + parameter_name + "[ \t]*=[ \t]*(.*\r?)");
 
     std::istringstream x_file(parameters);
     while (x_file)
@@ -94,8 +94,7 @@ namespace
 
         while ((line.size() > 0) && (line[0] == ' ' || line[0] == '\t'))
           line.erase(0, 1);
-        while ((line.size() > 0)
-               && (line[line.size() - 1] == ' ' || line[line.size() - 1] == '\t'))
+        while ((line.size() > 0) && (line[line.size() - 1] == ' ' || line[line.size() - 1] == '\t'))
           line.erase(line.size() - 1, std::string::npos);
 
         std::match_results<std::string::const_iterator> matches;
@@ -104,7 +103,7 @@ namespace
             // Since the line as a whole matched, the 'matches' variable needs to
             // contain two entries: [0] denotes the whole string, and [1] the
             // one that was matched by the '(.*)' expression.
-            Assert (matches.size() == 2, dealii::ExcInternalError());
+            Assert(matches.size() == 2, dealii::ExcInternalError());
             return_value = std::string(matches[1].first, matches[1].second);
           }
       }
@@ -113,15 +112,15 @@ namespace
   }
 
 
-// Extract the dimension in which to run ASPECT from the
-// the contents of the parameter file. This is something that
-// we need to do before processing the parameter file since we
-// need to know whether to use the dim=2 or dim=3 instantiation
-// of the main classes.
-//
-// This function is essentially the first part of ASPECT to look at the input
-// file, so if something is wrong with it, this is the place to generate good
-// error messages.
+  // Extract the dimension in which to run ASPECT from the
+  // the contents of the parameter file. This is something that
+  // we need to do before processing the parameter file since we
+  // need to know whether to use the dim=2 or dim=3 instantiation
+  // of the main classes.
+  //
+  // This function is essentially the first part of ASPECT to look at the input
+  // file, so if something is wrong with it, this is the place to generate good
+  // error messages.
   unsigned int
   get_dimension(const std::string &parameters)
   {
@@ -148,23 +147,24 @@ namespace
         // getline command we have used in finding 'dimension' would have
         // filtered it out. So its presence points to a problem.
 
-        AssertThrow (dimension.find('\r') == std::string::npos,
-                     dealii::ExcMessage ("It appears that your input file uses Windows-style "
-                                         "line endings ('\\r\\n') but you are running on a system where "
-                                         "the C++ run time environment expects input files to have "
-                                         "Unix-style line endings ('\\n'). You need to convert your "
-                                         "input file to use the correct line endings before running "
-                                         "ASPECT with it."));
+        AssertThrow(dimension.find('\r') == std::string::npos,
+                    dealii::ExcMessage("It appears that your input file uses Windows-style "
+                                       "line endings ('\\r\\n') but you are running on a system where "
+                                       "the C++ run time environment expects input files to have "
+                                       "Unix-style line endings ('\\n'). You need to convert your "
+                                       "input file to use the correct line endings before running "
+                                       "ASPECT with it."));
         try
           {
-            return dealii::Utilities::string_to_int (dimension);
+            return dealii::Utilities::string_to_int(dimension);
           }
         catch (...)
           {
-            AssertThrow (false,
-                         dealii::ExcMessage("While reading the dimension from the input file, "
-                                            "ASPECT found a string that can not be converted to "
-                                            "an integer: <" + dimension + ">."));
+            AssertThrow(false,
+                        dealii::ExcMessage("While reading the dimension from the input file, "
+                                           "ASPECT found a string that can not be converted to "
+                                           "an integer: <" +
+                                           dimension + ">."));
             return 0; // we should never get here.
           }
       }
@@ -174,26 +174,26 @@ namespace
 
 
 
-#if ASPECT_USE_SHARED_LIBS==1
+#if ASPECT_USE_SHARED_LIBS == 1
 
-#ifdef ASPECT_HAVE_LINK_H
-// collect the names of the shared libraries linked to by this program. this
-// function is a callback for the dl_iterate_phdr() function we call below
-  int get_names_of_shared_libs (struct dl_phdr_info *info,
-                                size_t,
-                                void *data)
+#  ifdef ASPECT_HAVE_LINK_H
+  // collect the names of the shared libraries linked to by this program. this
+  // function is a callback for the dl_iterate_phdr() function we call below
+  int
+  get_names_of_shared_libs(struct dl_phdr_info *info, size_t, void *data)
   {
-    reinterpret_cast<std::set<std::string>*>(data)->insert (info->dlpi_name);
+    reinterpret_cast<std::set<std::string> *>(data)->insert(info->dlpi_name);
     return 0;
   }
-#endif
+#  endif
 
 
-// make sure the list of shared libraries we currently link with
-// has deal.II only once
-  void validate_shared_lib_list (const bool before_loading_shared_libs)
+  // make sure the list of shared libraries we currently link with
+  // has deal.II only once
+  void
+  validate_shared_lib_list(const bool before_loading_shared_libs)
   {
-#ifdef ASPECT_HAVE_LINK_H
+#  ifdef ASPECT_HAVE_LINK_H
     // get the list of all shared libs we currently link against
     std::set<std::string> shared_lib_names;
     dl_iterate_phdr(get_names_of_shared_libs, &shared_lib_names);
@@ -201,9 +201,8 @@ namespace
     // find everything that is interesting
     std::set<std::string> dealii_shared_lib_names;
     for (const auto &p : shared_lib_names)
-      if (p.find ("libdeal_II") != std::string::npos ||
-          p.find ("libdeal.ii") != std::string::npos)
-        dealii_shared_lib_names.insert (p);
+      if (p.find("libdeal_II") != std::string::npos || p.find("libdeal.ii") != std::string::npos)
+        dealii_shared_lib_names.insert(p);
 
     // produce an error if we load deal.II more than once
     if (dealii_shared_lib_names.size() != 1)
@@ -232,43 +231,41 @@ namespace
 
         // if not success, then throw an exception: ExcMessage on processor 0,
         // QuietException on the others
-        if (dealii::Utilities::MPI::this_mpi_process (MPI_COMM_WORLD) == 0)
+        if (dealii::Utilities::MPI::this_mpi_process(MPI_COMM_WORLD) == 0)
           {
-            AssertThrow (false, dealii::ExcMessage (error.str()));
+            AssertThrow(false, dealii::ExcMessage(error.str()));
           }
         else
           throw aspect::QuietException();
       }
-#else
+#  else
     // simply mark the argument as read, to avoid compiler warnings
     (void)before_loading_shared_libs;
-#endif
+#  endif
   }
 
 
 #endif
 
 
-// retrieve a list of shared libraries from the parameter file and
-// dlopen them so that we can load plugins declared in them
-  void possibly_load_shared_libs (const std::string &parameters)
+  // retrieve a list of shared libraries from the parameter file and
+  // dlopen them so that we can load plugins declared in them
+  void
+  possibly_load_shared_libs(const std::string &parameters)
   {
     using namespace dealii;
 
 
-    const std::string shared_libs
-      = get_last_value_of_parameter(parameters,
-                                    "Additional shared libraries");
+    const std::string shared_libs = get_last_value_of_parameter(parameters, "Additional shared libraries");
     if (shared_libs.size() > 0)
       {
-#if ASPECT_USE_SHARED_LIBS==1
+#if ASPECT_USE_SHARED_LIBS == 1
         // check up front whether the list of shared libraries is internally
         // consistent or whether we link, for whatever reason, with both the
         // debug and release versions of deal.II
-        validate_shared_lib_list (true);
+        validate_shared_lib_list(true);
 
-        const std::vector<std::string>
-        shared_libs_list = Utilities::split_string_list (shared_libs);
+        const std::vector<std::string> shared_libs_list = Utilities::split_string_list(shared_libs);
 
         for (const auto &shared_lib : shared_libs_list)
           {
@@ -277,42 +274,37 @@ namespace
             // it work regardless of what the users specified:
             std::string filename = shared_lib;
 
-            auto delete_if_ends_with = [](std::string &a, const std::string &b)
-            {
-              if (a.size()<b.size())
+            auto delete_if_ends_with = [](std::string &a, const std::string &b) {
+              if (a.size() < b.size())
                 return;
-              if (0==a.compare(a.size()-b.size(), b.size(), b))
-                a.erase(a.size()-b.size(), std::string::npos);
+              if (0 == a.compare(a.size() - b.size(), b.size(), b))
+                a.erase(a.size() - b.size(), std::string::npos);
             };
 
             delete_if_ends_with(filename, ".debug.so");
             delete_if_ends_with(filename, ".release.so");
             delete_if_ends_with(filename, ".so");
 
-#ifdef DEBUG
+#  ifdef DEBUG
             filename.append(".debug.so");
-#else
+#  else
             filename.append(".release.so");
-#endif
+#  endif
 
-            if (Utilities::MPI::this_mpi_process (MPI_COMM_WORLD) == 0)
-              std::cout << "Loading shared library <"
-                        << filename
-                        << '>' << std::endl;
+            if (Utilities::MPI::this_mpi_process(MPI_COMM_WORLD) == 0)
+              std::cout << "Loading shared library <" << filename << '>' << std::endl;
 
 
-            void *handle = dlopen (filename.c_str(), RTLD_LAZY);
-            AssertThrow (handle != nullptr,
-                         ExcMessage (std::string("Could not successfully load shared library <")
-                                     + filename + ">. The operating system reports "
-                                     + "that the error is this: <"
-                                     + dlerror() +
-                                     ">. Did you call 'cmake' and then compile "
-                                     "the plugin library you are trying to load, and did "
-                                     "you check the spelling of the library's name? "
-                                     "Are you running ASPECT in a directory so that the path "
-                                     "to the library in question is as specified in the "
-                                     ".prm file?"));
+            void *handle = dlopen(filename.c_str(), RTLD_LAZY);
+            AssertThrow(handle != nullptr,
+                        ExcMessage(std::string("Could not successfully load shared library <") + filename +
+                                   ">. The operating system reports " + "that the error is this: <" + dlerror() +
+                                   ">. Did you call 'cmake' and then compile "
+                                   "the plugin library you are trying to load, and did "
+                                   "you check the spelling of the library's name? "
+                                   "Are you running ASPECT in a directory so that the path "
+                                   "to the library in question is as specified in the "
+                                   ".prm file?"));
 
             // check again whether the list of shared libraries is
             // internally consistent or whether we link with both the
@@ -320,7 +312,7 @@ namespace
             // the plugin was compiled against the debug version of
             // deal.II but aspect itself against the release version, or
             // the other way around
-            validate_shared_lib_list (false);
+            validate_shared_lib_list(false);
 
             // on systems where we can detect that both libdeal_II.so and
             // libdeal_II.g.so is loaded, the test above function above will
@@ -332,21 +324,17 @@ namespace
             deallog.depth_console(0);
           }
 
-        if (Utilities::MPI::this_mpi_process (MPI_COMM_WORLD) == 0)
+        if (Utilities::MPI::this_mpi_process(MPI_COMM_WORLD) == 0)
           std::cout << std::endl;
 #else
-        if (Utilities::MPI::this_mpi_process (MPI_COMM_WORLD) == 0)
+        if (Utilities::MPI::this_mpi_process(MPI_COMM_WORLD) == 0)
           {
-            std::cerr << std::endl << std::endl
-                      << "----------------------------------------------------"
-                      << std::endl;
+            std::cerr << std::endl << std::endl << "----------------------------------------------------" << std::endl;
             std::cerr << "You can not load plugins through additional shared libraries " << std::endl
-                      << "on systems where you link ASPECT as a static executable."
-                      << std::endl
-                      << "----------------------------------------------------"
-                      << std::endl;
+                      << "on systems where you link ASPECT as a static executable." << std::endl
+                      << "----------------------------------------------------" << std::endl;
           }
-        std::exit (1);
+        std::exit(1);
 #endif
       }
   }
@@ -358,7 +346,7 @@ namespace
    * lines read separated by `\n` characters.
    */
   std::string
-  read_until_end (std::istream &input)
+  read_until_end(std::istream &input)
   {
     std::string result;
     while (input)
@@ -379,20 +367,17 @@ namespace
    * std::cin instead.
    */
   std::string
-  read_parameter_file(const std::string &parameter_file_name,
-                      MPI_Comm comm)
+  read_parameter_file(const std::string &parameter_file_name, MPI_Comm comm)
   {
     using namespace dealii;
 
     std::string input_as_string;
-    const bool i_am_proc_0 = (Utilities::MPI::this_mpi_process(MPI_COMM_WORLD) == 0);
+    const bool  i_am_proc_0 = (Utilities::MPI::this_mpi_process(MPI_COMM_WORLD) == 0);
 
     if (parameter_file_name != "--")
       {
-        if (i_am_proc_0 == true &&
-            aspect::Utilities::fexists(parameter_file_name) == false &&
-            (parameter_file_name=="parameter-file.prm"
-             || parameter_file_name=="parameter_file.prm"))
+        if (i_am_proc_0 == true && aspect::Utilities::fexists(parameter_file_name) == false &&
+            (parameter_file_name == "parameter-file.prm" || parameter_file_name == "parameter_file.prm"))
           {
             std::cerr << "***          You should not take everything literally!          ***\n"
                       << "*** Please pass the name of an existing parameter file instead. ***" << std::endl;
@@ -410,15 +395,16 @@ namespace
         // then only MPI process 0 gets the data. so we have to
         // read it there, then broadcast it to the other processors
         if (i_am_proc_0)
-          input_as_string = read_until_end (std::cin);
-        input_as_string = Utilities::MPI::broadcast(MPI_COMM_WORLD, input_as_string,
+          input_as_string = read_until_end(std::cin);
+        input_as_string = Utilities::MPI::broadcast(MPI_COMM_WORLD,
+                                                    input_as_string,
                                                     /*root=*/0);
       }
 
     // Now search for and replace include directives in the input string.
     std::match_results<std::string::const_iterator> matches;
-    const std::regex search_regex ("(?:^|\n)[ \t]*include[ \t]+(.*?)[ \t]*(?:#|\n|$)");
-    const std::regex replace_regex ("(?:^|\n)[ \t]*include[ \t]+.*");
+    const std::regex                                search_regex("(?:^|\n)[ \t]*include[ \t]+(.*?)[ \t]*(?:#|\n|$)");
+    const std::regex                                replace_regex("(?:^|\n)[ \t]*include[ \t]+.*");
 
     unsigned int n_included_files = 0;
 
@@ -434,7 +420,7 @@ namespace
         // Since the line as a whole matched, the 'matches' variable needs to
         // contain two entries: [0] denotes the whole line, and [1] the
         // part that was matched by the '(.*?)' expression.
-        Assert (matches.size() == 2, dealii::ExcInternalError());
+        Assert(matches.size() == 2, dealii::ExcInternalError());
 
         const std::string included_filename(matches.str(1));
         const std::string prefix = "\n# Included content from " + included_filename + ":\n\n";
@@ -450,10 +436,8 @@ namespace
 
         // Replace the include line with the content of the included file. Note that we only replace the first
         // include line we find (there may be several, which we will replace in subsequent iterations).
-        input_as_string = std::regex_replace(input_as_string,
-                                             replace_regex,
-                                             prefix + included_file_content,
-                                             std::regex_constants::format_first_only);
+        input_as_string =
+          std::regex_replace(input_as_string, replace_regex, prefix + included_file_content, std::regex_constants::format_first_only);
 
         ++n_included_files;
       }
@@ -478,12 +462,11 @@ namespace
    * the program quietly without generating other output.
    */
   void
-  parse_parameters (const std::string &input_as_string,
-                    dealii::ParameterHandler  &prm)
+  parse_parameters(const std::string &input_as_string, dealii::ParameterHandler &prm)
   {
     // If we are on one process, just read the file -- if that fails, it will
     // result in an exception that we can simply let propagate to main():
-    if (dealii::Utilities::MPI::n_mpi_processes (MPI_COMM_WORLD) == 1)
+    if (dealii::Utilities::MPI::n_mpi_processes(MPI_COMM_WORLD) == 1)
       prm.parse_input_from_string(input_as_string);
     else
       {
@@ -494,7 +477,7 @@ namespace
         // block to let all other processes know that reading failed; once
         // we sent the 'false', we just re-throw the exception.
         const unsigned int root_process = 0;
-        if (dealii::Utilities::MPI::this_mpi_process (MPI_COMM_WORLD) == root_process)
+        if (dealii::Utilities::MPI::this_mpi_process(MPI_COMM_WORLD) == root_process)
           {
             try
               {
@@ -502,21 +485,20 @@ namespace
               }
             catch (const dealii::ExceptionBase &e)
               {
-                std::ignore = dealii::Utilities::MPI::broadcast (MPI_COMM_WORLD,
-                                                                 /* reading failed: */ false,
-                                                                 root_process);
+                std::ignore = dealii::Utilities::MPI::broadcast(MPI_COMM_WORLD,
+                                                                /* reading failed: */ false,
+                                                                root_process);
                 throw;
               }
-            std::ignore = dealii::Utilities::MPI::broadcast (MPI_COMM_WORLD, true, root_process);
+            std::ignore = dealii::Utilities::MPI::broadcast(MPI_COMM_WORLD, true, root_process);
           }
         else
           {
             // We have multiple processes, and this is not the root. First listen
             // to what process 0 had to say:
-            const bool success
-              = dealii::Utilities::MPI::broadcast (MPI_COMM_WORLD,
-                                                   /* dummy value, since we are not the sender: */ false,
-                                                   /* sender: */ root_process);
+            const bool success = dealii::Utilities::MPI::broadcast(MPI_COMM_WORLD,
+                                                                   /* dummy value, since we are not the sender: */ false,
+                                                                   /* sender: */ root_process);
 
             // If the root failed, terminate the current non-root process.
             // Otherwise, we can assume that reading the program will
@@ -534,7 +516,8 @@ namespace
   /**
    * Print help text
    */
-  void print_help()
+  void
+  print_help()
   {
     std::cout << "Usage: ./aspect [args] <parameter_file.prm>   (to read from an input file)\n"
               << "    or ./aspect [args] --                     (to read parameters from stdin)\n"
@@ -553,8 +536,9 @@ namespace
 
 
 
-// hook into SIGABRT/SIGFPE and kill off the program
-  void signal_handler(int signal)
+  // hook into SIGABRT/SIGFPE and kill off the program
+  void
+  signal_handler(int signal)
   {
     if (signal == SIGABRT)
       {
@@ -580,23 +564,23 @@ namespace
   void
   run_simulator(const std::string &raw_input_as_string,
                 const std::string &input_as_string,
-                const bool output_json,
-                const bool output_xml,
-                const bool output_plugin_graph,
-                const bool validate_only)
+                const bool         output_json,
+                const bool         output_xml,
+                const bool         output_plugin_graph,
+                const bool         validate_only)
   {
     using namespace dealii;
 
-    ParameterHandler prm;
-    const unsigned int mpi_rank = Utilities::MPI::this_mpi_process(MPI_COMM_WORLD);
-    const bool i_am_proc_0 = (mpi_rank == 0);
+    ParameterHandler   prm;
+    const unsigned int mpi_rank    = Utilities::MPI::this_mpi_process(MPI_COMM_WORLD);
+    const bool         i_am_proc_0 = (mpi_rank == 0);
     aspect::Simulator<dim>::declare_parameters(prm, mpi_rank);
 
     if (validate_only)
       {
         try
           {
-            parse_parameters (input_as_string, prm);
+            parse_parameters(input_as_string, prm);
           }
         catch (const std::exception &exc)
           {
@@ -607,21 +591,21 @@ namespace
           }
         if (i_am_proc_0)
           std::cout << "The provided parameter file is valid."
-                    "\n\n"
-                    "Note: This validation only checks parameter file syntax errors, like typos\n"
-                    "in keywords or parameter names, and that each parameter value satisfies a\n"
-                    "basic check by itself. However, it may miss more nuanced errors that\n"
-                    "are only checked when the model actually begins running. In particular,\n"
-                    "checks that involve two or more parameters can not be verified at this\n"
-                    "stage of an ASPECT run. Examples for such errors that can not already\n"
-                    "be reported here are: (i) That every boundary is assigned exactly one type\n"
-                    "of boundary condition; (ii) that parameters that take a list with values for\n"
-                    "each composition field receive a list of the correct size."
+                       "\n\n"
+                       "Note: This validation only checks parameter file syntax errors, like typos\n"
+                       "in keywords or parameter names, and that each parameter value satisfies a\n"
+                       "basic check by itself. However, it may miss more nuanced errors that\n"
+                       "are only checked when the model actually begins running. In particular,\n"
+                       "checks that involve two or more parameters can not be verified at this\n"
+                       "stage of an ASPECT run. Examples for such errors that can not already\n"
+                       "be reported here are: (i) That every boundary is assigned exactly one type\n"
+                       "of boundary condition; (ii) that parameters that take a list with values for\n"
+                       "each composition field receive a list of the correct size."
                     << std::endl;
         return;
       }
 
-    parse_parameters (input_as_string, prm);
+    parse_parameters(input_as_string, prm);
 
     if (output_json)
       {
@@ -637,7 +621,7 @@ namespace
       {
         aspect::Simulator<dim> simulator(MPI_COMM_WORLD, prm);
         if (i_am_proc_0)
-          simulator.write_plugin_graph (std::cout);
+          simulator.write_plugin_graph(std::cout);
       }
     else
       {
@@ -646,10 +630,10 @@ namespace
           {
             // write create output/original.prm containing exactly what we got
             // started with:
-            std::string output_directory = prm.get ("Output directory");
+            std::string output_directory = prm.get("Output directory");
             if (output_directory.size() == 0)
               output_directory = "./";
-            else if (output_directory[output_directory.size()-1] != '/')
+            else if (output_directory[output_directory.size() - 1] != '/')
               output_directory += "/";
 
             std::ofstream file(output_directory + "original.prm");
@@ -663,8 +647,8 @@ namespace
                 // TODO: We just want to make a copy of the file, but to do this
                 // platform-independently we need the C++17 filesystem header.
                 // Update this when we require C++17
-                std::ifstream  wb_source(world_builder_file, std::ios::binary);
-                std::ofstream  wb_destination(output_directory + "original.wb",   std::ios::binary);
+                std::ifstream wb_source(world_builder_file, std::ios::binary);
+                std::ofstream wb_destination(output_directory + "original.wb", std::ios::binary);
 
                 wb_destination << wb_source.rdbuf();
               }
@@ -683,32 +667,24 @@ namespace
         catch (ExceptionBase &exc)
           {
             // report name of the deal.II exception:
-            std::cerr << std::endl << std::endl
-                      << "----------------------------------------------------"
-                      << std::endl;
+            std::cerr << std::endl << std::endl << "----------------------------------------------------" << std::endl;
             std::cerr << "Exception '" << exc.get_exc_name() << "'"
-                      << " on rank " << Utilities::MPI::this_mpi_process(MPI_COMM_WORLD)
-                      << " on processing: " << std::endl
+                      << " on rank " << Utilities::MPI::this_mpi_process(MPI_COMM_WORLD) << " on processing: " << std::endl
                       << exc.what() << std::endl
                       << "Aborting!" << std::endl
-                      << "----------------------------------------------------"
-                      << std::endl;
+                      << "----------------------------------------------------" << std::endl;
 
             MPI_Abort(MPI_COMM_WORLD, 1);
             return;
           }
         catch (std::exception &exc)
           {
-            std::cerr << std::endl << std::endl
-                      << "----------------------------------------------------"
-                      << std::endl;
+            std::cerr << std::endl << std::endl << "----------------------------------------------------" << std::endl;
             std::cerr << "Exception"
-                      << " on rank " << Utilities::MPI::this_mpi_process(MPI_COMM_WORLD)
-                      << " on processing: " << std::endl
+                      << " on rank " << Utilities::MPI::this_mpi_process(MPI_COMM_WORLD) << " on processing: " << std::endl
                       << exc.what() << std::endl
                       << "Aborting!" << std::endl
-                      << "----------------------------------------------------"
-                      << std::endl;
+                      << "----------------------------------------------------" << std::endl;
 
             MPI_Abort(MPI_COMM_WORLD, 1);
             return;
@@ -732,13 +708,10 @@ namespace
           }
         catch (...)
           {
-            std::cerr << std::endl << std::endl
-                      << "----------------------------------------------------"
-                      << std::endl;
+            std::cerr << std::endl << std::endl << "----------------------------------------------------" << std::endl;
             std::cerr << "Unknown exception!" << std::endl
                       << "Aborting!" << std::endl
-                      << "----------------------------------------------------"
-                      << std::endl;
+                      << "----------------------------------------------------" << std::endl;
 
             MPI_Abort(MPI_COMM_WORLD, 1);
             return;
@@ -749,29 +722,26 @@ namespace
 
 
 
-int main (int argc, char *argv[])
+int
+main(int argc, char *argv[])
 {
   using namespace dealii;
 
 #ifdef DEBUG
-#ifdef ASPECT_USE_FP_EXCEPTIONS
+#  ifdef ASPECT_USE_FP_EXCEPTIONS
   // Some implementations seem to not initialize the floating point exception
   // bits to zero. Make sure we start from a clean state.
-  feclearexcept(FE_DIVBYZERO|FE_INVALID);
+  feclearexcept(FE_DIVBYZERO | FE_INVALID);
 
   // enable floating point exceptions
-  feenableexcept(FE_DIVBYZERO|FE_INVALID);
+  feenableexcept(FE_DIVBYZERO | FE_INVALID);
 
   // Make sure that at the end of the program run, we
   // disable floating exceptions again. This fixes an issue
   // of CGAL checking floating points exceptions during
   // finalization and throwing an error:
-  ScopeExit fp_except_cleanup(
-    []()
-  {
-    fedisableexcept(FE_DIVBYZERO|FE_INVALID);
-  });
-#endif
+  ScopeExit fp_except_cleanup([]() { fedisableexcept(FE_DIVBYZERO | FE_INVALID); });
+#  endif
 #endif
 
 #ifdef ASPECT_WITH_PYTHON
@@ -780,17 +750,16 @@ int main (int argc, char *argv[])
   // Add VIRTUAL_ENV site-packages so embedded Python finds numpy, landlab, mpi4py, etc.
   // site.addsitedir() processes .pth files (needed for uv editable/workspace installs).
   // Append PYTHONPATH so users can point to a custom landlab install.
-  PyRun_SimpleString(
-    "import sys, os, site\n"
-    "venv = os.environ.get('VIRTUAL_ENV')\n"
-    "if venv:\n"
-    "    ver = '%d.%d' % (sys.version_info.major, sys.version_info.minor)\n"
-    "    sp = os.path.join(venv, 'lib', 'python' + ver, 'site-packages')\n"
-    "    if os.path.isdir(sp):\n"
-    "        site.addsitedir(sp)\n"
-    "for p in os.environ.get('PYTHONPATH', '').split(os.pathsep):\n"
-    "    if p and os.path.isdir(p):\n"
-    "        sys.path.append(p)\n");
+  PyRun_SimpleString("import sys, os, site\n"
+                     "venv = os.environ.get('VIRTUAL_ENV')\n"
+                     "if venv:\n"
+                     "    ver = '%d.%d' % (sys.version_info.major, sys.version_info.minor)\n"
+                     "    sp = os.path.join(venv, 'lib', 'python' + ver, 'site-packages')\n"
+                     "    if os.path.isdir(sp):\n"
+                     "        site.addsitedir(sp)\n"
+                     "for p in os.environ.get('PYTHONPATH', '').split(os.pathsep):\n"
+                     "    if p and os.path.isdir(p):\n"
+                     "        sys.path.append(p)\n");
 
   // Required for Numpy interop:
   if (_import_array() < 0)
@@ -799,29 +768,25 @@ int main (int argc, char *argv[])
       AssertThrow(false, ExcMessage("Numpy init failed!"));
     }
 
-  ScopeExit python_cleanup(
-    []()
-  {
-    Py_FinalizeEx();
-  });
+  ScopeExit python_cleanup([]() { Py_FinalizeEx(); });
 #endif
 
-  std::string prm_name = "";
-  bool output_json         = false;
-  bool output_xml          = false;
-  bool output_plugin_graph = false;
-  bool output_version      = false;
-  bool output_help         = false;
-  bool use_threads         = false;
-  bool run_unittests       = false;
-  bool validate_only       = false;
-  int current_argument = 1;
+  std::string prm_name            = "";
+  bool        output_json         = false;
+  bool        output_xml          = false;
+  bool        output_plugin_graph = false;
+  bool        output_version      = false;
+  bool        output_help         = false;
+  bool        use_threads         = false;
+  bool        run_unittests       = false;
+  bool        validate_only       = false;
+  int         current_argument    = 1;
 
   // Loop over all command line arguments. Handle a number of special ones
   // starting with a dash, and then take the first non-special one as the
   // name of the input file. We will later check that there are no further
   // arguments left after that.
-  while (current_argument<argc)
+  while (current_argument < argc)
     {
       const std::string arg = argv[current_argument];
       ++current_argument;
@@ -837,15 +802,15 @@ int main (int argc, char *argv[])
         {
           output_plugin_graph = true;
         }
-      else if (arg=="-h" || arg =="--help")
+      else if (arg == "-h" || arg == "--help")
         {
           output_help = true;
         }
-      else if (arg=="-v" || arg =="--version")
+      else if (arg == "-v" || arg == "--version")
         {
           output_version = true;
         }
-      else if (arg=="-j" || arg =="--threads")
+      else if (arg == "-j" || arg == "--threads")
         {
           use_threads = true;
         }
@@ -870,8 +835,8 @@ int main (int argc, char *argv[])
 
   // There might be remaining arguments for PETSc, only hand those over to
   // the MPI initialization, but not the ones we parsed above.
-  int n_remaining_arguments = argc - current_argument;
-  char **remaining_arguments = (n_remaining_arguments > 0) ? &argv[current_argument] : nullptr;
+  int    n_remaining_arguments = argc - current_argument;
+  char **remaining_arguments   = (n_remaining_arguments > 0) ? &argv[current_argument] : nullptr;
 
   try
     {
@@ -881,9 +846,7 @@ int main (int argc, char *argv[])
       // thrown to avoid MPI deadlocks.
       Utilities::MPI::MPI_InitFinalize mpi_initialization(n_remaining_arguments,
                                                           remaining_arguments,
-                                                          (use_threads ?
-                                                           numbers::invalid_unsigned_int :
-                                                           1));
+                                                          (use_threads ? numbers::invalid_unsigned_int : 1));
 
       if (run_unittests)
         {
@@ -891,11 +854,11 @@ int main (int argc, char *argv[])
           // the "--test" arg, so we can control catch from the command
           // line. It turns out catch needs argv[0] to be the executable name
           // so we can not use remaining_arguments from above.
-          int new_argc = n_remaining_arguments + 1;
+          int                 new_argc = n_remaining_arguments + 1;
           std::vector<char *> args; // use to construct a new argv of type char **
           args.emplace_back(argv[0]);
-          for (int i=0; i<n_remaining_arguments; ++i)
-            args.emplace_back(argv[i+current_argument]);
+          for (int i = 0; i < n_remaining_arguments; ++i)
+            args.emplace_back(argv[i + current_argument]);
           char **new_argv = args.data();
 
           // Finally run catch
@@ -970,56 +933,48 @@ int main (int argc, char *argv[])
       // available as part of the possible parameters of the input
       // file, so they need to be loaded before we even start processing
       // the parameter file.
-      possibly_load_shared_libs (input_as_string);
+      possibly_load_shared_libs(input_as_string);
 
       // Now switch between the templates that start the model for 2d or 3d.
       switch (dim)
         {
           case 2:
-          {
-            run_simulator<2>(raw_input_as_string,input_as_string,output_json,output_xml,output_plugin_graph,validate_only);
-            break;
-          }
+            {
+              run_simulator<2>(raw_input_as_string, input_as_string, output_json, output_xml, output_plugin_graph, validate_only);
+              break;
+            }
           case 3:
-          {
-            run_simulator<3>(raw_input_as_string,input_as_string,output_json,output_xml,output_plugin_graph,validate_only);
-            break;
-          }
+            {
+              run_simulator<3>(raw_input_as_string, input_as_string, output_json, output_xml, output_plugin_graph, validate_only);
+              break;
+            }
           default:
             AssertThrow((dim >= 2) && (dim <= 3),
-                        ExcMessage ("ASPECT can only be run in 2d and 3d but a "
-                                    "different space dimension is given in the parameter file."));
+                        ExcMessage("ASPECT can only be run in 2d and 3d but a "
+                                   "different space dimension is given in the parameter file."));
         }
     }
   catch (ExceptionBase &exc)
     {
       // report name of the deal.II exception:
-      std::cerr << std::endl << std::endl
-                << "----------------------------------------------------"
-                << std::endl;
+      std::cerr << std::endl << std::endl << "----------------------------------------------------" << std::endl;
       std::cerr << "Exception '" << exc.get_exc_name() << "'"
-                << " on rank " << Utilities::MPI::this_mpi_process(MPI_COMM_WORLD)
-                << " on processing: " << std::endl
+                << " on rank " << Utilities::MPI::this_mpi_process(MPI_COMM_WORLD) << " on processing: " << std::endl
                 << exc.what() << std::endl
                 << "Aborting!" << std::endl
-                << "----------------------------------------------------"
-                << std::endl;
+                << "----------------------------------------------------" << std::endl;
 
       MPI_Abort(MPI_COMM_WORLD, 1);
       return 1;
     }
   catch (std::exception &exc)
     {
-      std::cerr << std::endl << std::endl
-                << "----------------------------------------------------"
-                << std::endl;
+      std::cerr << std::endl << std::endl << "----------------------------------------------------" << std::endl;
       std::cerr << "Exception"
-                << " on rank " << Utilities::MPI::this_mpi_process(MPI_COMM_WORLD)
-                << " on processing: " << std::endl
+                << " on rank " << Utilities::MPI::this_mpi_process(MPI_COMM_WORLD) << " on processing: " << std::endl
                 << exc.what() << std::endl
                 << "Aborting!" << std::endl
-                << "----------------------------------------------------"
-                << std::endl;
+                << "----------------------------------------------------" << std::endl;
 
       MPI_Abort(MPI_COMM_WORLD, 1);
       return 1;
@@ -1043,13 +998,10 @@ int main (int argc, char *argv[])
     }
   catch (...)
     {
-      std::cerr << std::endl << std::endl
-                << "----------------------------------------------------"
-                << std::endl;
+      std::cerr << std::endl << std::endl << "----------------------------------------------------" << std::endl;
       std::cerr << "Unknown exception!" << std::endl
                 << "Aborting!" << std::endl
-                << "----------------------------------------------------"
-                << std::endl;
+                << "----------------------------------------------------" << std::endl;
 
       MPI_Abort(MPI_COMM_WORLD, 1);
       return 1;

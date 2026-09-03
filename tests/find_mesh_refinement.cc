@@ -21,12 +21,12 @@
 
 #include <aspect/boundary_temperature/box.h>
 #include <aspect/geometry_model/box.h>
-#include <aspect/mesh_refinement/density.h>
 #include <aspect/mesh_refinement/boundary.h>
+#include <aspect/mesh_refinement/density.h>
 #include <aspect/simulator.h>
 
-#include <utility>
 #include <limits>
+#include <utility>
 
 
 namespace aspect
@@ -37,10 +37,12 @@ namespace aspect
     class Box2 : public Box<dim>
     {
       public:
-        virtual void update();
+        virtual void
+        update();
     };
     template <int dim>
-    void Box2<dim>::update()
+    void
+    Box2<dim>::update()
     {
       if (this->get_mesh_refinement_manager().template has_matching_mesh_refinement_strategy<MeshRefinement::Density<dim>>())
         std::cout << "Density is found!" << std::endl;

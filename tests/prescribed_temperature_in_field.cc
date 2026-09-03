@@ -18,64 +18,66 @@
   <http://www.gnu.org/licenses/>.
 */
 
+#include <aspect/global.h>
+
+#include <aspect/initial_temperature/interface.h>
+#include <aspect/simulator_signals.h>
+#include <aspect/utilities.h>
+
 #include <deal.II/base/parameter_handler.h>
 #include <deal.II/base/parsed_function.h>
 #include <deal.II/fe/fe_values.h>
-#include <aspect/global.h>
-#include <aspect/utilities.h>
-#include <aspect/simulator_signals.h>
-#include <aspect/initial_temperature/interface.h>
 
 namespace aspect
 {
   // Declare and parse additional parameters
-  bool prescribe_internal_temperature;
-  std::vector <std::string> fixed_compositional_fields;
-  double max_isotherm;
+  bool                     prescribe_internal_temperature;
+  std::vector<std::string> fixed_compositional_fields;
+  double                   max_isotherm;
 
 
-  void declare_parameters(const unsigned int /*dim*/,
-                          ParameterHandler &prm)
+  void
+  declare_parameters(const unsigned int /*dim*/, ParameterHandler &prm)
   {
-    prm.enter_subsection ("Prescribed internal temperature model");
+    prm.enter_subsection("Prescribed internal temperature model");
     {
-      prm.declare_entry ("Prescribe internal temperature", "false",
-                         Patterns::Bool (),
-                         "Whether or not to use any prescribed internal temperatures. "
-                         "Locations in which to prescribe temperature are defined "
-                         "based on the values of the compositional fields specified by "
-                         "the parameter ``Names of compositional fields with fixed temperature'' "
-                         "and the temperature is fixed to its initial state. Indicators are evaluated "
-                         "separately at each support point."
-                        );
-      prm.declare_entry ("Maximum fixed temperature isosurface", "0",
-                         Patterns::Double (),
-                         "The maximum temperature that will remain fixed. Temperatures above this "
-                         "value will be treated normally."
-                        );
-      prm.declare_entry ("Names of compositional fields with fixed temperature", "",
-                         Patterns::List(Patterns::Anything ()),
-                         "The names of compositional fields that determine the location where the "
-                         "temperature is fixed to the values it was initialized with. The temperature "
-                         "will be fixed if any of the fields listed here is above 0.5."
-                        );
+      prm.declare_entry("Prescribe internal temperature",
+                        "false",
+                        Patterns::Bool(),
+                        "Whether or not to use any prescribed internal temperatures. "
+                        "Locations in which to prescribe temperature are defined "
+                        "based on the values of the compositional fields specified by "
+                        "the parameter ``Names of compositional fields with fixed temperature'' "
+                        "and the temperature is fixed to its initial state. Indicators are evaluated "
+                        "separately at each support point.");
+      prm.declare_entry("Maximum fixed temperature isosurface",
+                        "0",
+                        Patterns::Double(),
+                        "The maximum temperature that will remain fixed. Temperatures above this "
+                        "value will be treated normally.");
+      prm.declare_entry("Names of compositional fields with fixed temperature",
+                        "",
+                        Patterns::List(Patterns::Anything()),
+                        "The names of compositional fields that determine the location where the "
+                        "temperature is fixed to the values it was initialized with. The temperature "
+                        "will be fixed if any of the fields listed here is above 0.5.");
     }
-    prm.leave_subsection ();
+    prm.leave_subsection();
   }
 
 
 
   template <int dim>
-  void parse_parameters(const Parameters<dim> &,
-                        ParameterHandler &prm)
+  void
+  parse_parameters(const Parameters<dim> &, ParameterHandler &prm)
   {
-    prm.enter_subsection ("Prescribed internal temperature model");
+    prm.enter_subsection("Prescribed internal temperature model");
     {
-      prescribe_internal_temperature = prm.get_bool ("Prescribe internal temperature");
-      fixed_compositional_fields = Utilities::split_string_list (prm.get("Names of compositional fields with fixed temperature"));
-      max_isotherm = prm.get_double ("Maximum fixed temperature isosurface");
+      prescribe_internal_temperature = prm.get_bool("Prescribe internal temperature");
+      fixed_compositional_fields     = Utilities::split_string_list(prm.get("Names of compositional fields with fixed temperature"));
+      max_isotherm                   = prm.get_double("Maximum fixed temperature isosurface");
     }
-    prm.leave_subsection ();
+    prm.leave_subsection();
   }
 
   /**
@@ -84,8 +86,8 @@ namespace aspect
    * matrix on any arbitrary degree of freedom in the model space.
    */
   template <int dim>
-  void constrain_internal_temperature (const SimulatorAccess<dim> &simulator_access,
-                                       AffineConstraints<double> &current_constraints)
+  void
+  constrain_internal_temperature(const SimulatorAccess<dim> &simulator_access, AffineConstraints<double> &current_constraints)
   {
     // Save access to the initial temperature manager the first time
     // we get here so that we can access it past the first time step
@@ -97,36 +99,31 @@ namespace aspect
     if (prescribe_internal_temperature)
       {
         const std::vector<Point<dim>> points = aspect::Utilities::get_unit_support_points(simulator_access);
-        const Quadrature<dim> quadrature (points);
-        FEValues<dim> fe_values (simulator_access.get_fe(), quadrature, update_quadrature_points | update_values | update_gradients);
+        const Quadrature<dim>         quadrature(points);
+        FEValues<dim> fe_values(simulator_access.get_fe(), quadrature, update_quadrature_points | update_values | update_gradients);
         typename DoFHandler<dim>::active_cell_iterator cell;
-        MaterialModel::MaterialModelInputs<dim> in(quadrature.size(), simulator_access.introspection().n_compositional_fields);
+        MaterialModel::MaterialModelInputs<dim>        in(quadrature.size(), simulator_access.introspection().n_compositional_fields);
 
         // Loop over all cells
-        for (cell = simulator_access.get_dof_handler().begin_active();
-             cell != simulator_access.get_dof_handler().end();
-             ++cell)
+        for (cell = simulator_access.get_dof_handler().begin_active(); cell != simulator_access.get_dof_handler().end(); ++cell)
 
-          if (! cell->is_artificial())
+          if (!cell->is_artificial())
             {
-              fe_values.reinit (cell);
+              fe_values.reinit(cell);
               in.reinit(fe_values, cell, simulator_access.introspection(), simulator_access.get_solution());
 
               std::vector<types::global_dof_index> local_dof_indices(simulator_access.get_fe().dofs_per_cell);
-              cell->get_dof_indices (local_dof_indices);
-              for (unsigned int q=0; q<quadrature.size(); q++)
+              cell->get_dof_indices(local_dof_indices);
+              for (unsigned int q = 0; q < quadrature.size(); q++)
                 {
-
                   // If it's okay to constrain this DOF
-                  if (current_constraints.can_store_line(local_dof_indices[q]) &&
-                      !current_constraints.is_constrained(local_dof_indices[q]))
+                  if (current_constraints.can_store_line(local_dof_indices[q]) && !current_constraints.is_constrained(local_dof_indices[q]))
                     {
-
                       bool constrain_temperature = false;
-                      for (unsigned int c=0; c < fixed_compositional_fields.size(); ++c)
+                      for (unsigned int c = 0; c < fixed_compositional_fields.size(); ++c)
                         {
-
-                          const unsigned int composition_idx = simulator_access.introspection().compositional_index_for_name(fixed_compositional_fields[c]);
+                          const unsigned int composition_idx =
+                            simulator_access.introspection().compositional_index_for_name(fixed_compositional_fields[c]);
                           if (in.composition[q][composition_idx] >= 0.5 || in.temperature[q] <= max_isotherm)
                             {
                               constrain_temperature = true;
@@ -141,15 +138,12 @@ namespace aspect
                           // If we're on one of the temperature DOFs
                           if (c_idx == simulator_access.introspection().component_indices.temperature)
                             {
-
                               // Set the temperature to be equal to the initial temperature
                               in.temperature[q] = initial_temperature_manager->initial_temperature(in.position[q]);
                               // Update the constraints
-                              current_constraints.add_line (local_dof_indices[q]);
-                              current_constraints.set_inhomogeneity (local_dof_indices[q], in.temperature[q]);
+                              current_constraints.add_line(local_dof_indices[q]);
+                              current_constraints.set_inhomogeneity(local_dof_indices[q], in.temperature[q]);
                             }
-
-
                         }
                     }
                 }
@@ -158,20 +152,22 @@ namespace aspect
   }
 
   // Connect declare_parameters and parse_parameters to appropriate signals.
-  void parameter_connector ()
+  void
+  parameter_connector()
   {
-    SimulatorSignals<2>::declare_additional_parameters.connect (&declare_parameters);
-    SimulatorSignals<3>::declare_additional_parameters.connect (&declare_parameters);
+    SimulatorSignals<2>::declare_additional_parameters.connect(&declare_parameters);
+    SimulatorSignals<3>::declare_additional_parameters.connect(&declare_parameters);
 
-    SimulatorSignals<2>::parse_additional_parameters.connect (&parse_parameters<2>);
-    SimulatorSignals<3>::parse_additional_parameters.connect (&parse_parameters<3>);
+    SimulatorSignals<2>::parse_additional_parameters.connect(&parse_parameters<2>);
+    SimulatorSignals<3>::parse_additional_parameters.connect(&parse_parameters<3>);
   }
 
   // Connect constraints function to correct signal.
   template <int dim>
-  void signal_connector (SimulatorSignals<dim> &signals)
+  void
+  signal_connector(SimulatorSignals<dim> &signals)
   {
-    signals.post_constraints_creation.connect (&constrain_internal_temperature<dim>);
+    signals.post_constraints_creation.connect(&constrain_internal_temperature<dim>);
   }
 
   // Tell ASPECT to send signals to the connector functions

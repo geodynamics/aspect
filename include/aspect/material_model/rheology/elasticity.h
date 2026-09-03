@@ -22,6 +22,7 @@
 #define _aspect_material_model_rheology_elasticity_h
 
 #include <aspect/global.h>
+
 #include <aspect/material_model/interface.h>
 #include <aspect/simulator_access.h>
 
@@ -42,7 +43,8 @@ namespace aspect
       public:
         explicit ElasticAdditionalOutputs(const unsigned int n_points);
 
-        std::vector<double> get_nth_output(const unsigned int idx) const override;
+        std::vector<double>
+        get_nth_output(const unsigned int idx) const override;
 
         /**
          * Elastic shear moduli at the evaluation points passed to
@@ -54,19 +56,19 @@ namespace aspect
         std::vector<double> elastic_shear_moduli;
 
         /**
-        * Elastic viscosity at the evaluation points passed to
-        * the instance of MaterialModel::Interface::evaluate() that fills
-        * the current object.
-        */
+         * Elastic viscosity at the evaluation points passed to
+         * the instance of MaterialModel::Interface::evaluate() that fills
+         * the current object.
+         */
         std::vector<double> elastic_viscosity;
 
         /**
-        * The deviatoric stress of the current timestep, so including
-        * the rotation, advection and stress update, at the evaluation points
-        * passed to the instance of MaterialModel::Interface::evaluate()
-        * that fills the current object.
-        */
-        std::vector<SymmetricTensor<2,dim>> deviatoric_stress;
+         * The deviatoric stress of the current timestep, so including
+         * the rotation, advection and stress update, at the evaluation points
+         * passed to the instance of MaterialModel::Interface::evaluate()
+         * that fills the current object.
+         */
+        std::vector<SymmetricTensor<2, dim>> deviatoric_stress;
     };
 
 
@@ -80,15 +82,14 @@ namespace aspect
           /**
            * Declare the parameters this function takes through input files.
            */
-          static
-          void
-          declare_parameters (ParameterHandler &prm);
+          static void
+          declare_parameters(ParameterHandler &prm);
 
           /**
            * Read the parameters from the parameter file.
            */
           void
-          parse_parameters (ParameterHandler &prm);
+          parse_parameters(ParameterHandler &prm);
 
           /**
            * Create the two additional material model output objects that contain the
@@ -96,7 +97,7 @@ namespace aspect
            * and deviatoric stress of the current timestep and the reaction rates.
            */
           void
-          create_elastic_additional_outputs (MaterialModel::MaterialModelOutputs<dim> &out) const;
+          create_elastic_additional_outputs(MaterialModel::MaterialModelOutputs<dim> &out) const;
 
           /**
            * Given the stress of the previous time step in the material model inputs @p in,
@@ -119,9 +120,9 @@ namespace aspect
            * the Stokes system, the stresses in @p in have thus been rotated and/or advected.
            */
           void
-          fill_elastic_outputs (const MaterialModel::MaterialModelInputs<dim> &in,
-                                const std::vector<double> &average_elastic_shear_moduli,
-                                MaterialModel::MaterialModelOutputs<dim> &out) const;
+          fill_elastic_outputs(const MaterialModel::MaterialModelInputs<dim> &in,
+                               const std::vector<double>                     &average_elastic_shear_moduli,
+                               MaterialModel::MaterialModelOutputs<dim>      &out) const;
 
           /**
            * Given the stress of the previous time step in the material model inputs @p in,
@@ -143,9 +144,9 @@ namespace aspect
            * during postprocessing of timestep $t+\Delta t_c$, this function computes it.
            */
           void
-          fill_elastic_additional_outputs (const MaterialModel::MaterialModelInputs<dim> &in,
-                                           const std::vector<double> &average_elastic_shear_moduli,
-                                           MaterialModel::MaterialModelOutputs<dim> &out) const;
+          fill_elastic_additional_outputs(const MaterialModel::MaterialModelInputs<dim> &in,
+                                          const std::vector<double>                     &average_elastic_shear_moduli,
+                                          MaterialModel::MaterialModelOutputs<dim>      &out) const;
 
           /**
            * Given the stress of the previous time step in the material model inputs @p in,
@@ -167,9 +168,9 @@ namespace aspect
            * full deviatoric stress of the last timestep.
            */
           void
-          fill_reaction_outputs (const MaterialModel::MaterialModelInputs<dim> &in,
-                                 const std::vector<double> &average_elastic_shear_moduli,
-                                 MaterialModel::MaterialModelOutputs<dim> &out) const;
+          fill_reaction_outputs(const MaterialModel::MaterialModelInputs<dim> &in,
+                                const std::vector<double>                     &average_elastic_shear_moduli,
+                                MaterialModel::MaterialModelOutputs<dim>      &out) const;
 
           /**
            * Given the stress of the previous time step in the material model inputs @p in,
@@ -185,31 +186,30 @@ namespace aspect
            * 'old_solution', which at the time of operator splitting are the same.
            */
           void
-          fill_reaction_rates (const MaterialModel::MaterialModelInputs<dim> &in,
-                               const std::vector<double> &average_elastic_shear_moduli,
-                               MaterialModel::MaterialModelOutputs<dim> &out) const;
+          fill_reaction_rates(const MaterialModel::MaterialModelInputs<dim> &in,
+                              const std::vector<double>                     &average_elastic_shear_moduli,
+                              MaterialModel::MaterialModelOutputs<dim>      &out) const;
 
           /**
            * Return the values of the elastic shear moduli for each composition used in the
            * rheology model.
            */
           const std::vector<double> &
-          get_elastic_shear_moduli () const;
+          get_elastic_shear_moduli() const;
 
           /**
            * Calculate the effective elastic viscosity (this is the equivalent viscosity of
            * a material which was unstressed at the end of the previous timestep).
            */
           double
-          calculate_elastic_viscosity (const double shear_modulus) const;
+          calculate_elastic_viscosity(const double shear_modulus) const;
 
           /**
            * Given the (viscous or visco-plastic) viscosity and the shear modulus, compute the viscoelastic
            * viscosity (eqn 28 in Moresi et al., 2003, J. Comp. Phys.).
            */
           double
-          calculate_viscoelastic_viscosity (const double viscosity,
-                                            const double shear_modulus) const;
+          calculate_viscoelastic_viscosity(const double viscosity, const double shear_modulus) const;
 
           /**
            * Calculate the effective deviatoric strain rate tensor,
@@ -228,18 +228,18 @@ namespace aspect
            * By the time the viscoelastic strain rate is required to assemble
            * the Stokes system, the stresses have already been rotated and/or advected.
            */
-          SymmetricTensor<2,dim>
-          calculate_viscoelastic_strain_rate (const SymmetricTensor<2,dim> &strain_rate,
-                                              const SymmetricTensor<2, dim> &stress_0_advected,
-                                              const SymmetricTensor<2, dim> &stress_old,
-                                              const double viscosity_pre_yield,
-                                              const double shear_modulus) const;
+          SymmetricTensor<2, dim>
+          calculate_viscoelastic_strain_rate(const SymmetricTensor<2, dim> &strain_rate,
+                                             const SymmetricTensor<2, dim> &stress_0_advected,
+                                             const SymmetricTensor<2, dim> &stress_old,
+                                             const double                   viscosity_pre_yield,
+                                             const double                   shear_modulus) const;
 
           /**
            * Compute the elastic time step.
            */
           double
-          elastic_timestep () const;
+          elastic_timestep() const;
 
           /**
            * Calculate the ratio between the computational timestep and
@@ -258,8 +258,8 @@ namespace aspect
            * particle location instead.
            */
           std::vector<SymmetricTensor<2, dim>>
-          retrieve_stress_previous_timestep (const MaterialModel::MaterialModelInputs<dim> &in,
-                                             const std::vector<Point<dim>> &quadrature_positions) const;
+          retrieve_stress_previous_timestep(const MaterialModel::MaterialModelInputs<dim> &in,
+                                            const std::vector<Point<dim>>                 &quadrature_positions) const;
 
           /**
            * Viscosity of a damper used to stabilize elasticity.
@@ -306,9 +306,8 @@ namespace aspect
            * By caching the evaluators, we can avoid recreating them every time we need them.
            */
           mutable std::unique_ptr<FEPointEvaluation<dim, dim>> evaluator;
-          static constexpr unsigned int n_independent_components = SymmetricTensor<2, dim>::n_independent_components;
+          static constexpr unsigned int                        n_independent_components = SymmetricTensor<2, dim>::n_independent_components;
           mutable std::unique_ptr<FEPointEvaluation<n_independent_components, dim>> evaluator_composition;
-
       };
     }
   }

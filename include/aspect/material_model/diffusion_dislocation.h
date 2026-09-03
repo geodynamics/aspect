@@ -22,8 +22,8 @@
 #define _aspect_material_model_diffusion_dislocation_h
 
 #include <aspect/material_model/interface.h>
-#include <aspect/simulator_access.h>
 #include <aspect/material_model/rheology/diffusion_dislocation.h>
+#include <aspect/simulator_access.h>
 
 namespace aspect
 {
@@ -78,9 +78,8 @@ namespace aspect
     class DiffusionDislocation : public MaterialModel::Interface<dim>, public ::aspect::SimulatorAccess<dim>
     {
       public:
-
-        void evaluate(const MaterialModel::MaterialModelInputs<dim> &in,
-                      MaterialModel::MaterialModelOutputs<dim> &out) const override;
+        void
+        evaluate(const MaterialModel::MaterialModelInputs<dim> &in, MaterialModel::MaterialModelOutputs<dim> &out) const override;
 
         /**
          * Return whether the model is compressible or not.  Incompressibility
@@ -93,14 +92,14 @@ namespace aspect
          *
          * This material model is incompressible.
          */
-        bool is_compressible () const override;
+        bool
+        is_compressible() const override;
 
-        static
-        void
-        declare_parameters (ParameterHandler &prm);
+        static void
+        declare_parameters(ParameterHandler &prm);
 
         void
-        parse_parameters (ParameterHandler &prm) override;
+        parse_parameters(ParameterHandler &prm) override;
 
       private:
         /**
@@ -132,7 +131,6 @@ namespace aspect
         std::vector<double> thermal_expansivities;
 
         MaterialUtilities::CompositionalAveragingOperation viscosity_averaging;
-
     };
 
   }

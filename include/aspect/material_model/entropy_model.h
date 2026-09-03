@@ -22,14 +22,13 @@
 #define _aspect_material_model_entropy_model_h
 
 #include <aspect/material_model/interface.h>
-
-#include <aspect/utilities.h>
-#include <aspect/simulator_access.h>
-#include <aspect/material_model/thermal_conductivity/interface.h>
 #include <aspect/material_model/rheology/ascii_depth_profile.h>
 #include <aspect/material_model/rheology/drucker_prager.h>
 #include <aspect/material_model/steinberger.h>
+#include <aspect/material_model/thermal_conductivity/interface.h>
 #include <aspect/material_model/utilities.h>
+#include <aspect/simulator_access.h>
+#include <aspect/utilities.h>
 
 namespace aspect
 {
@@ -48,7 +47,7 @@ namespace aspect
      */
 
     template <int dim>
-    class EntropyModel: public MaterialModel::Interface<dim>, public ::aspect::SimulatorAccess<dim>
+    class EntropyModel : public MaterialModel::Interface<dim>, public ::aspect::SimulatorAccess<dim>
     {
       public:
         /**
@@ -56,7 +55,7 @@ namespace aspect
          * pointers.
          */
         void
-        initialize () override;
+        initialize() override;
 
         /**
          * @name Qualitative properties one can ask a material model
@@ -66,7 +65,8 @@ namespace aspect
         /**
          * Return whether the model is compressible or not.
          */
-        bool is_compressible () const override;
+        bool
+        is_compressible() const override;
         /**
          * @}
          */
@@ -76,8 +76,7 @@ namespace aspect
          * inputs in @p in.
          */
         void
-        evaluate(const MaterialModel::MaterialModelInputs<dim> &in,
-                 MaterialModel::MaterialModelOutputs<dim> &out) const override;
+        evaluate(const MaterialModel::MaterialModelInputs<dim> &in, MaterialModel::MaterialModelOutputs<dim> &out) const override;
 
         /**
          * @name Functions used in dealing with run-time parameters
@@ -86,15 +85,14 @@ namespace aspect
         /**
          * Declare the parameters this class takes through input files.
          */
-        static
-        void
-        declare_parameters (ParameterHandler &prm);
+        static void
+        declare_parameters(ParameterHandler &prm);
 
         /**
          * Read the parameters this class declares from the parameter file.
          */
         void
-        parse_parameters (ParameterHandler &prm) override;
+        parse_parameters(ParameterHandler &prm) override;
         /**
          * @}
          */
@@ -109,7 +107,7 @@ namespace aspect
          * postprocessing purposes.
          */
         void
-        create_additional_named_outputs (MaterialModel::MaterialModelOutputs<dim> &out) const override;
+        create_additional_named_outputs(MaterialModel::MaterialModelOutputs<dim> &out) const override;
 
         /**
          * A signal that is triggered when a multicomponent equilibrium is done
@@ -117,11 +115,10 @@ namespace aspect
          * An iteration count describing how many iterations were required
          * to solve the equilibrium.
          */
-        mutable boost::signals2::signal<void (const SimulatorAccess<dim> &,
-                                              const unsigned int iteration_count)> post_multicomponent_equilibrium;
+        mutable boost::signals2::signal<void(const SimulatorAccess<dim> &, const unsigned int iteration_count)>
+          post_multicomponent_equilibrium;
 
       private:
-
         /**
          *  This variable is read from the parameter file through a parameter called 'Angle of internal friction'.
          */
@@ -185,12 +182,13 @@ namespace aspect
          * components at given pressure.
          * The calculation is based on their entropies, mass fractions, and specific heat capacities.
          */
-        double  equilibrate_temperature (const std::vector<double> &temperature,
-                                         const std::vector<double> &chemical_composition,
-                                         const std::vector<double> &entropy,
-                                         const std::vector<double> &specific_heat,
-                                         const double pressure,
-                                         std::vector<double> &composition_equilibrated_S) const;
+        double
+        equilibrate_temperature(const std::vector<double> &temperature,
+                                const std::vector<double> &chemical_composition,
+                                const std::vector<double> &entropy,
+                                const std::vector<double> &specific_heat,
+                                const double               pressure,
+                                std::vector<double>       &composition_equilibrated_S) const;
         /**
          * Information about the location of data files.
          *

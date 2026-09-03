@@ -23,14 +23,16 @@
 #define _aspect_boundary_convective_heating_interface_h
 
 #include <aspect/plugins.h>
-#include <aspect/material_model/interface.h>
-#include <aspect/boundary_temperature/interface.h>
+
 #include <aspect/boundary_heat_flux/interface.h>
+#include <aspect/boundary_temperature/interface.h>
+#include <aspect/material_model/interface.h>
 #include <aspect/utilities.h>
 
 namespace aspect
 {
-  template <int dim> class SimulatorAccess;
+  template <int dim>
+  class SimulatorAccess;
 
   /**
    * A namespace for the definition of things that have to do with describing
@@ -77,11 +79,10 @@ namespace aspect
          *
          * @return A vector of heat transfer coefficients at the evaluation points.
          */
-        virtual
-        std::vector<double>
-        heat_transfer_coefficient (const types::boundary_id boundary_indicator,
-                                   const MaterialModel::MaterialModelInputs<dim> &material_model_inputs,
-                                   const MaterialModel::MaterialModelOutputs<dim> &material_model_outputs) const = 0;
+        virtual std::vector<double>
+        heat_transfer_coefficient(const types::boundary_id                        boundary_indicator,
+                                  const MaterialModel::MaterialModelInputs<dim>  &material_model_inputs,
+                                  const MaterialModel::MaterialModelOutputs<dim> &material_model_outputs) const = 0;
     };
 
 
@@ -104,9 +105,8 @@ namespace aspect
          * Declare the parameters of all known boundary convective heating plugins, as
          * well as the ones this class has itself.
          */
-        static
-        void
-        declare_parameters (ParameterHandler &prm);
+        static void
+        declare_parameters(ParameterHandler &prm);
 
         /**
          * Read the parameters this class declares from the parameter file.
@@ -115,34 +115,33 @@ namespace aspect
          * then let these objects read their parameters as well.
          */
         void
-        parse_parameters (ParameterHandler &prm) override;
+        parse_parameters(ParameterHandler &prm) override;
 
         /**
          * A function that calls the boundary_temperature function of the
          * boundary temperature object.
          */
         double
-        boundary_temperature (const types::boundary_id boundary_indicator,
-                              const Point<dim> &position) const;
+        boundary_temperature(const types::boundary_id boundary_indicator, const Point<dim> &position) const;
 
         /**
          * A function that calls the heat_flux function of the
          * boundary heat flux object.
          */
-        std::vector<Tensor<1,dim>>
-        heat_flux (const types::boundary_id boundary_indicator,
-                   const MaterialModel::MaterialModelInputs<dim> &material_model_inputs,
-                   const MaterialModel::MaterialModelOutputs<dim> &material_model_outputs,
-                   const std::vector<Tensor<1,dim>> &normal_vectors) const;
+        std::vector<Tensor<1, dim>>
+        heat_flux(const types::boundary_id                        boundary_indicator,
+                  const MaterialModel::MaterialModelInputs<dim>  &material_model_inputs,
+                  const MaterialModel::MaterialModelOutputs<dim> &material_model_outputs,
+                  const std::vector<Tensor<1, dim>>              &normal_vectors) const;
 
         /**
          * A function that calls the heat_transfer_coefficient function of the
          * boundary convection heating object.
          */
         std::vector<double>
-        heat_transfer_coefficient (const types::boundary_id boundary_indicator,
-                                   const MaterialModel::MaterialModelInputs<dim> &material_model_inputs,
-                                   const MaterialModel::MaterialModelOutputs<dim> &material_model_outputs) const;
+        heat_transfer_coefficient(const types::boundary_id                        boundary_indicator,
+                                  const MaterialModel::MaterialModelInputs<dim>  &material_model_inputs,
+                                  const MaterialModel::MaterialModelOutputs<dim> &material_model_outputs) const;
 
         /**
          * Functions that are used to register boundary convective heating/
@@ -163,26 +162,23 @@ namespace aspect
          * @param factory_function A pointer to a function that can create an
          * object of this boundary model.
          */
-        static
-        void
-        register_boundary_convective_heating (const std::string &name,
-                                              const std::string &description,
-                                              void (*declare_parameters_function) (ParameterHandler &),
-                                              std::unique_ptr<Interface<dim>> (*factory_function) ());
+        static void
+        register_boundary_convective_heating(const std::string &name,
+                                             const std::string &description,
+                                             void (*declare_parameters_function)(ParameterHandler &),
+                                             std::unique_ptr<Interface<dim>> (*factory_function)());
 
-        static
-        void
-        register_boundary_temperature (const std::string &name,
-                                       const std::string &description,
-                                       void (*declare_parameters_function) (ParameterHandler &),
-                                       std::unique_ptr<BoundaryTemperature::Interface<dim>> (*factory_function) ());
+        static void
+        register_boundary_temperature(const std::string &name,
+                                      const std::string &description,
+                                      void (*declare_parameters_function)(ParameterHandler &),
+                                      std::unique_ptr<BoundaryTemperature::Interface<dim>> (*factory_function)());
 
-        static
-        void
-        register_boundary_heat_flux (const std::string &name,
-                                     const std::string &description,
-                                     void (*declare_parameters_function) (ParameterHandler &),
-                                     std::unique_ptr<BoundaryHeatFlux::Interface<dim>> (*factory_function) ());
+        static void
+        register_boundary_heat_flux(const std::string &name,
+                                    const std::string &description,
+                                    void (*declare_parameters_function)(ParameterHandler &),
+                                    std::unique_ptr<BoundaryHeatFlux::Interface<dim>> (*factory_function)());
 
         /*
          * Return a set of boundary indicators for which convective heating
@@ -200,18 +196,16 @@ namespace aspect
          *
          * @param output_stream The stream to write the output to.
          */
-        static
-        void
-        write_plugin_graph (std::ostream &output_stream);
+        static void
+        write_plugin_graph(std::ostream &output_stream);
 
         /**
          * Exception.
          */
-        DeclException1 (ExcBoundaryConvectiveHeatingNameNotFound,
-                        std::string,
-                        << "Could not find entry <"
-                        << arg1
-                        << "> among the names of registered boundary convective heating objects.");
+        DeclException1(ExcBoundaryConvectiveHeatingNameNotFound,
+                       std::string,
+                       << "Could not find entry <" << arg1 << "> among the names of registered boundary convective heating objects.");
+
       private:
         /**
          * A set of boundary ids on which the boundary_convective_heating_objects
@@ -220,10 +214,10 @@ namespace aspect
         std::set<types::boundary_id> convective_heating_boundary_indicators;
 
         /**
-        * Names of temperature plugins.
-        *
-        * This variable is read from the parameter file through a parameter called 'List of boundary temperature model names'.
-        */
+         * Names of temperature plugins.
+         *
+         * This variable is read from the parameter file through a parameter called 'List of boundary temperature model names'.
+         */
         std::vector<std::string> temperature_plugin_names;
 
         /**
@@ -246,23 +240,21 @@ namespace aspect
 
 
     /**
-    * Given a class name, a name, and a description for the parameter file
-    * for a boundary convective heating model, register it with the functions that
-    * can declare their parameters and create these objects.
-    *
-    * @ingroup BoundaryConvectiveHeating
-    */
+     * Given a class name, a name, and a description for the parameter file
+     * for a boundary convective heating model, register it with the functions that
+     * can declare their parameters and create these objects.
+     *
+     * @ingroup BoundaryConvectiveHeating
+     */
 #define ASPECT_REGISTER_BOUNDARY_CONVECTIVE_HEATING_MODEL(classname, name, description) \
   template class classname<2>; \
   template class classname<3>; \
-  namespace ASPECT_REGISTER_BOUNDARY_CONVECTIVE_HEATING_MODEL_ ## classname \
+  namespace ASPECT_REGISTER_BOUNDARY_CONVECTIVE_HEATING_MODEL_##classname \
   { \
-    aspect::internal::Plugins::RegisterHelper<aspect::BoundaryConvectiveHeating::Interface<2>,classname<2>> \
-    dummy_ ## classname ## _2d (&aspect::BoundaryConvectiveHeating::Manager<2>::register_boundary_convective_heating, \
-                                name, description); \
-    aspect::internal::Plugins::RegisterHelper<aspect::BoundaryConvectiveHeating::Interface<3>,classname<3>> \
-    dummy_ ## classname ## _3d (&aspect::BoundaryConvectiveHeating::Manager<3>::register_boundary_convective_heating, \
-                                name, description); \
+    aspect::internal::Plugins::RegisterHelper<aspect::BoundaryConvectiveHeating::Interface<2>, classname<2>> dummy_##classname##_2d( \
+      &aspect::BoundaryConvectiveHeating::Manager<2>::register_boundary_convective_heating, name, description); \
+    aspect::internal::Plugins::RegisterHelper<aspect::BoundaryConvectiveHeating::Interface<3>, classname<3>> dummy_##classname##_3d( \
+      &aspect::BoundaryConvectiveHeating::Manager<3>::register_boundary_convective_heating, name, description); \
   }
   }
 }

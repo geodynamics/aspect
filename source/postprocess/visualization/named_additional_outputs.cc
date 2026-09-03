@@ -19,8 +19,8 @@
 */
 
 
-#include <aspect/postprocess/visualization/named_additional_outputs.h>
 #include <aspect/material_model/interface.h>
+#include <aspect/postprocess/visualization/named_additional_outputs.h>
 #include <aspect/utilities.h>
 
 #include <algorithm>
@@ -33,32 +33,28 @@ namespace aspect
     namespace VisualizationPostprocessors
     {
       template <int dim>
-      NamedAdditionalOutputs<dim>::
-      NamedAdditionalOutputs ()
-        :
-        DataPostprocessor<dim> (),
-        Interface<dim>("")  // physical units depend on run-time parameters
+      NamedAdditionalOutputs<dim>::NamedAdditionalOutputs()
+        : DataPostprocessor<dim>()
+        , Interface<dim>("") // physical units depend on run-time parameters
       {}
 
 
 
       template <int dim>
       void
-      NamedAdditionalOutputs<dim>::
-      initialize ()
+      NamedAdditionalOutputs<dim>::initialize()
       {
-        MaterialModel::MaterialModelOutputs<dim> out(0,
-                                                     this->n_compositional_fields());
+        MaterialModel::MaterialModelOutputs<dim> out(0, this->n_compositional_fields());
         this->get_material_model().create_additional_named_outputs(out);
 
         AssertThrow(out.additional_outputs.size() > 0,
                     ExcMessage("You activated the postprocessor <named additional outputs>, but there are no additional outputs "
                                "provided by the material model. Either remove the postprocessor, or check why no output is provided."));
 
-        for (unsigned int k=0; k<out.additional_outputs.size(); ++k)
+        for (unsigned int k = 0; k < out.additional_outputs.size(); ++k)
           {
-            const MaterialModel::NamedAdditionalMaterialOutputs<dim> *result
-              = dynamic_cast<const MaterialModel::NamedAdditionalMaterialOutputs<dim> *> (out.additional_outputs[k].get());
+            const MaterialModel::NamedAdditionalMaterialOutputs<dim> *result =
+              dynamic_cast<const MaterialModel::NamedAdditionalMaterialOutputs<dim> *>(out.additional_outputs[k].get());
 
             if (result)
               {
@@ -75,15 +71,14 @@ namespace aspect
                                "named output is provided."));
 
         for (auto &property_name : property_names)
-          std::replace(property_name.begin(),property_name.end(),' ', '_');
+          std::replace(property_name.begin(), property_name.end(), ' ', '_');
       }
 
 
 
       template <int dim>
       std::vector<std::string>
-      NamedAdditionalOutputs<dim>::
-      get_names () const
+      NamedAdditionalOutputs<dim>::get_names() const
       {
         return property_names;
       }
@@ -92,41 +87,34 @@ namespace aspect
 
       template <int dim>
       std::vector<DataComponentInterpretation::DataComponentInterpretation>
-      NamedAdditionalOutputs<dim>::
-      get_data_component_interpretation () const
+      NamedAdditionalOutputs<dim>::get_data_component_interpretation() const
       {
-        return std::vector<DataComponentInterpretation::DataComponentInterpretation> (get_names().size(),
-                                                                                      DataComponentInterpretation::component_is_scalar);
+        return std::vector<DataComponentInterpretation::DataComponentInterpretation>(get_names().size(),
+                                                                                     DataComponentInterpretation::component_is_scalar);
       }
 
 
 
       template <int dim>
       UpdateFlags
-      NamedAdditionalOutputs<dim>::
-      get_needed_update_flags () const
+      NamedAdditionalOutputs<dim>::get_needed_update_flags() const
       {
-        return update_gradients | update_values  | update_quadrature_points;
+        return update_gradients | update_values | update_quadrature_points;
       }
 
 
 
       template <int dim>
       void
-      NamedAdditionalOutputs<dim>::
-      evaluate_vector_field(const DataPostprocessorInputs::Vector<dim> &input_data,
-                            std::vector<Vector<double>> &computed_quantities) const
+      NamedAdditionalOutputs<dim>::evaluate_vector_field(const DataPostprocessorInputs::Vector<dim> &input_data,
+                                                         std::vector<Vector<double>>                &computed_quantities) const
       {
         const unsigned int n_quadrature_points = input_data.solution_values.size();
-        Assert (computed_quantities.size() == n_quadrature_points,
-                ExcInternalError());
-        Assert (input_data.solution_values[0].size() == this->introspection().n_components,
-                ExcInternalError());
+        Assert(computed_quantities.size() == n_quadrature_points, ExcInternalError());
+        Assert(input_data.solution_values[0].size() == this->introspection().n_components, ExcInternalError());
 
-        MaterialModel::MaterialModelInputs<dim> in(input_data,
-                                                   this->introspection());
-        MaterialModel::MaterialModelOutputs<dim> out(n_quadrature_points,
-                                                     this->n_compositional_fields());
+        MaterialModel::MaterialModelInputs<dim>  in(input_data, this->introspection());
+        MaterialModel::MaterialModelOutputs<dim> out(n_quadrature_points, this->n_compositional_fields());
 
         in.requested_properties = MaterialModel::MaterialProperties::additional_outputs;
 
@@ -134,19 +122,19 @@ namespace aspect
         this->get_material_model().evaluate(in, out);
 
         unsigned int field_index = 0;
-        for (unsigned int k=0; k<out.additional_outputs.size(); ++k)
+        for (unsigned int k = 0; k < out.additional_outputs.size(); ++k)
           {
-            const MaterialModel::NamedAdditionalMaterialOutputs<dim> *result
-              = dynamic_cast<const MaterialModel::NamedAdditionalMaterialOutputs<dim> *> (out.additional_outputs[k].get());
+            const MaterialModel::NamedAdditionalMaterialOutputs<dim> *result =
+              dynamic_cast<const MaterialModel::NamedAdditionalMaterialOutputs<dim> *>(out.additional_outputs[k].get());
 
             if (result)
               {
                 std::vector<double> outputs(n_quadrature_points);
-                for (unsigned int i=0; i<result->get_names().size(); ++i, ++field_index)
+                for (unsigned int i = 0; i < result->get_names().size(); ++i, ++field_index)
                   {
                     outputs = result->get_nth_output(i);
 
-                    for (unsigned int q=0; q<n_quadrature_points; ++q)
+                    for (unsigned int q = 0; q < n_quadrature_points; ++q)
                       computed_quantities[q][field_index] = outputs[q];
                   }
               }

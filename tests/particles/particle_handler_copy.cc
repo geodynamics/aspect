@@ -28,24 +28,21 @@
 using namespace aspect;
 
 template <int dim>
-void duplicate_particle_handler(const SimulatorAccess<dim> &simulator_access,
-                                const bool,
-                                const unsigned int,
-                                const SolverControl &)
+void
+duplicate_particle_handler(const SimulatorAccess<dim> &simulator_access, const bool, const unsigned int, const SolverControl &)
 {
   // On purpose use the old class name here to test that backwards compatibility works.
-  const Particle::World<dim> &particle_manager = simulator_access.get_particle_manager(0);
+  const Particle::World<dim>             &particle_manager = simulator_access.get_particle_manager(0);
   dealii::Particles::ParticleHandler<dim> particle_handler;
   std::cout << "duplicating particle handler" << std::endl;
 
-  particle_manager.copy_particle_handler(particle_manager.get_particle_handler(),
-                                         particle_handler);
+  particle_manager.copy_particle_handler(particle_manager.get_particle_handler(), particle_handler);
 
   auto copied_particle = particle_handler.begin();
-  for (const auto &particle: particle_manager.get_particle_handler())
+  for (const auto &particle : particle_manager.get_particle_handler())
     {
-      std::cout << "Original position: " << particle.get_location()
-                << ". Copied position: " << copied_particle->get_location() << std::endl;
+      std::cout << "Original position: " << particle.get_location() << ". Copied position: " << copied_particle->get_location()
+                << std::endl;
       std::cout << "Original properties: " << particle.get_properties()[0]
                 << ". Copied properties: " << copied_particle->get_properties()[0] << std::endl;
       ++copied_particle;
@@ -57,14 +54,13 @@ void duplicate_particle_handler(const SimulatorAccess<dim> &simulator_access,
 
   auto &non_const_particle_handler = const_cast<dealii::Particles::ParticleHandler<dim> &>(particle_manager.get_particle_handler());
 
-  particle_manager.copy_particle_handler(particle_handler,
-                                         non_const_particle_handler);
+  particle_manager.copy_particle_handler(particle_handler, non_const_particle_handler);
 
   copied_particle = particle_handler.begin();
-  for (const auto &particle: particle_manager.get_particle_handler())
+  for (const auto &particle : particle_manager.get_particle_handler())
     {
-      std::cout << "Original position: " << particle.get_location()
-                << ". Copied position: " << copied_particle->get_location() << std::endl;
+      std::cout << "Original position: " << particle.get_location() << ". Copied position: " << copied_particle->get_location()
+                << std::endl;
       std::cout << "Original properties: " << particle.get_properties()[0]
                 << ". Copied properties: " << copied_particle->get_properties()[0] << std::endl;
       ++copied_particle;
@@ -73,12 +69,12 @@ void duplicate_particle_handler(const SimulatorAccess<dim> &simulator_access,
 
 
 template <int dim>
-void signal_connector (SimulatorSignals<dim> &signals)
+void
+signal_connector(SimulatorSignals<dim> &signals)
 {
   std::cout << "Connecting signals" << std::endl;
-  signals.post_advection_solver.connect (&duplicate_particle_handler<dim>);
+  signals.post_advection_solver.connect(&duplicate_particle_handler<dim>);
 }
 
 
-ASPECT_REGISTER_SIGNALS_CONNECTOR(signal_connector<2>,
-                                  signal_connector<3>)
+ASPECT_REGISTER_SIGNALS_CONNECTOR(signal_connector<2>, signal_connector<3>)

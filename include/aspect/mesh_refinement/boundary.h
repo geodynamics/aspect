@@ -40,11 +40,9 @@ namespace aspect
      * @ingroup MeshRefinement
      */
     template <int dim>
-    class Boundary : public Interface<dim>,
-      public SimulatorAccess<dim>
+    class Boundary : public Interface<dim>, public SimulatorAccess<dim>
     {
       public:
-
         /**
          * Execute this mesh refinement criterion.
          *
@@ -54,20 +52,19 @@ namespace aspect
          * correct size when the function is called.
          */
         void
-        execute (Vector<float> &error_indicators) const override;
+        execute(Vector<float> &error_indicators) const override;
 
         /**
          * Declare the parameters this class takes through input files.
          */
-        static
-        void
-        declare_parameters (ParameterHandler &prm);
+        static void
+        declare_parameters(ParameterHandler &prm);
 
         /**
          * Read the parameters this class declares from the parameter file.
          */
         void
-        parse_parameters (ParameterHandler &prm) override;
+        parse_parameters(ParameterHandler &prm) override;
 
       private:
         /**

@@ -19,9 +19,8 @@
 */
 
 
-#include <aspect/initial_composition/adiabatic_density.h>
-
 #include <aspect/adiabatic_conditions/interface.h>
+#include <aspect/initial_composition/adiabatic_density.h>
 
 namespace aspect
 {
@@ -29,8 +28,7 @@ namespace aspect
   {
     template <int dim>
     double
-    AdiabaticDensity<dim>::
-    initial_composition (const Point<dim> &position, const unsigned int n_comp) const
+    AdiabaticDensity<dim>::initial_composition(const Point<dim> &position, const unsigned int n_comp) const
     {
       if (n_comp == this->introspection().find_composition_type(CompositionalFieldDescription::density) &&
           this->get_adiabatic_conditions().is_initialized())

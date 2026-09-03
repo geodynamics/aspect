@@ -24,8 +24,8 @@
 #include <aspect/mesh_refinement/boundary.h>
 #include <aspect/simulator.h>
 
-#include <utility>
 #include <limits>
+#include <utility>
 
 
 namespace aspect
@@ -36,10 +36,12 @@ namespace aspect
     class Box2 : public Box<dim>
     {
       public:
-        virtual void update();
+        virtual void
+        update();
     };
     template <int dim>
-    void Box2<dim>::update()
+    void
+    Box2<dim>::update()
     {
       this->get_mesh_refinement_manager().template get_matching_mesh_refinement_strategy<MeshRefinement::Boundary<dim>>();
       std::cout << "Boundary is found!" << std::endl;

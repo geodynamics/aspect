@@ -18,5 +18,5 @@
   <http://www.gnu.org/licenses/>.
 */
 
-#include "material_model_dependencies.cc"
 #include "../benchmarks/inclusion/inclusion.cc"
+#include "material_model_dependencies.cc"

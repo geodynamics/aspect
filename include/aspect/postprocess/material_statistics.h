@@ -44,8 +44,8 @@ namespace aspect
         /**
          * Evaluate the solution for some material property statistics.
          */
-        std::pair<std::string,std::string>
-        execute (TableHandler &statistics) override;
+        std::pair<std::string, std::string>
+        execute(TableHandler &statistics) override;
     };
   }
 }

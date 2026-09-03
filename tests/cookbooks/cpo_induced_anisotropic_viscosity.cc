@@ -19,6 +19,7 @@
 */
 
 #include "../cookbooks/CPO_induced_anisotropic_viscosity/plugin/cpo_induced_anisotropic_viscosity.cc"
+
 #include "../cookbooks/CPO_induced_anisotropic_viscosity/plugin/anisotropic_stress.cc"
-#include "../cookbooks/CPO_induced_anisotropic_viscosity/plugin/cpo_induced_anisotropic_viscosity.h"
 #include "../cookbooks/CPO_induced_anisotropic_viscosity/plugin/anisotropic_stress.h"
+#include "../cookbooks/CPO_induced_anisotropic_viscosity/plugin/cpo_induced_anisotropic_viscosity.h"

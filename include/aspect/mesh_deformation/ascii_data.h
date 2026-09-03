@@ -44,14 +44,14 @@ namespace aspect
         /**
          * Empty Constructor.
          */
-        AsciiData ();
+        AsciiData();
 
         /**
          * Initialization function. This function is called once at the
          * beginning of the program. Sets the boundary id of the surface boundary.
          */
         void
-        initialize () override;
+        initialize() override;
 
         // avoid -Woverloaded-virtual:
         using Utilities::AsciiDataBoundary<dim>::initialize;
@@ -62,27 +62,26 @@ namespace aspect
          *
          * @copydoc aspect::InitialTopographyModel::Interface::value()
          */
-        Tensor<1,dim>
-        compute_initial_deformation_on_boundary(const types::boundary_id boundary_indicator,
-                                                const Point<dim> &position) const override;
+        Tensor<1, dim>
+        compute_initial_deformation_on_boundary(const types::boundary_id boundary_indicator, const Point<dim> &position) const override;
 
         /**
          * Returns whether or not the plugin requires surface stabilization
          */
-        bool needs_surface_stabilization () const override;
+        bool
+        needs_surface_stabilization() const override;
 
         /**
          * Declare the parameters this class takes through input files.
          */
-        static
-        void
-        declare_parameters (ParameterHandler &prm);
+        static void
+        declare_parameters(ParameterHandler &prm);
 
         /**
          * Read the parameters this class declares from the parameter file.
          */
         void
-        parse_parameters (ParameterHandler &prm) override;
+        parse_parameters(ParameterHandler &prm) override;
 
       private:
         types::boundary_id surface_boundary_id;

@@ -20,6 +20,7 @@
 
 #include <aspect/particle/distribution.h>
 #include <aspect/particle/manager.h>
+
 #include <deal.II/fe/mapping.h>
 
 namespace aspect
@@ -27,21 +28,18 @@ namespace aspect
   namespace Particle
   {
     template <int dim>
-    ParticlePDF<dim>::ParticlePDF(const unsigned int granularity,
-                                  const double bandwidth,
-                                  KernelFunction kernel_function)
-      :
-      bandwidth (bandwidth),
-      kernel_function (kernel_function),
-      granularity (granularity),
-      max (std::numeric_limits<double>::min()),
-      min (std::numeric_limits<double>::max()),
-      standard_deviation (numbers::signaling_nan<double>()),
-      mean (numbers::signaling_nan<double>()),
-      is_defined_per_particle (false)
+    ParticlePDF<dim>::ParticlePDF(const unsigned int granularity, const double bandwidth, KernelFunction kernel_function)
+      : bandwidth(bandwidth)
+      , kernel_function(kernel_function)
+      , granularity(granularity)
+      , max(std::numeric_limits<double>::min())
+      , min(std::numeric_limits<double>::max())
+      , standard_deviation(numbers::signaling_nan<double>())
+      , mean(numbers::signaling_nan<double>())
+      , is_defined_per_particle(false)
     {
       TableIndices<dim> bucket_sizes;
-      for (unsigned int i=0; i<dim; ++i)
+      for (unsigned int i = 0; i < dim; ++i)
         {
           bucket_sizes[i] = granularity;
         }
@@ -51,56 +49,56 @@ namespace aspect
 
 
     template <int dim>
-    ParticlePDF<dim>::ParticlePDF(const double bandwidth,
-                                  KernelFunction kernel_function)
-      :
-      bandwidth (bandwidth),
-      kernel_function (kernel_function),
-      granularity (1),
-      max (std::numeric_limits<double>::min()),
-      min (std::numeric_limits<double>::max()),
-      standard_deviation (numbers::signaling_nan<double>()),
-      mean (numbers::signaling_nan<double>()),
-      is_defined_per_particle (true)
+    ParticlePDF<dim>::ParticlePDF(const double bandwidth, KernelFunction kernel_function)
+      : bandwidth(bandwidth)
+      , kernel_function(kernel_function)
+      , granularity(1)
+      , max(std::numeric_limits<double>::min())
+      , min(std::numeric_limits<double>::max())
+      , standard_deviation(numbers::signaling_nan<double>())
+      , mean(numbers::signaling_nan<double>())
+      , is_defined_per_particle(true)
     {}
 
 
 
     template <int dim>
     void
-    ParticlePDF<dim>::fill_from_particle_range(const typename Particles::ParticleHandler<dim>::particle_iterator_range &particle_range,
-                                               const std::vector<typename Particles::ParticleHandler<dim>::particle_iterator_range> &particle_ranges_to_sum_over,
-                                               const unsigned int n_particles_in_cell,
-                                               const typename dealii::Mapping<dim> &mapping,
-                                               const typename Triangulation<dim>::active_cell_iterator &cell)
+    ParticlePDF<dim>::fill_from_particle_range(
+      const typename Particles::ParticleHandler<dim>::particle_iterator_range              &particle_range,
+      const std::vector<typename Particles::ParticleHandler<dim>::particle_iterator_range> &particle_ranges_to_sum_over,
+      const unsigned int                                                                    n_particles_in_cell,
+      const typename dealii::Mapping<dim>                                                  &mapping,
+      const typename Triangulation<dim>::active_cell_iterator                              &cell)
     {
       if (is_defined_per_particle == false)
         {
-          for (unsigned int x=0; x<granularity; ++x)
+          for (unsigned int x = 0; x < granularity; ++x)
             {
-              for (unsigned int y=0; y<granularity; ++y)
+              for (unsigned int y = 0; y < granularity; ++y)
                 {
-                  const double spacing = 1./granularity;
+                  const double spacing = 1. / granularity;
 
                   if (dim == 3)
                     {
-                      for (unsigned int z=0; z<granularity; ++z)
+                      for (unsigned int z = 0; z < granularity; ++z)
                         {
-                          const Point<dim> reference_point = Point<dim>(x*spacing + spacing/2., y*spacing + spacing/2., z*spacing + spacing/2.);
-                          std::array<unsigned int,dim> table_index;
+                          const Point<dim> reference_point =
+                            Point<dim>(x * spacing + spacing / 2., y * spacing + spacing / 2., z * spacing + spacing / 2.);
+                          std::array<unsigned int, dim> table_index;
                           table_index[0] = x;
                           table_index[1] = y;
                           table_index[2] = z;
-                          insert_kernel_sum_from_particle_range(reference_point,table_index,cell,particle_ranges_to_sum_over,mapping);
+                          insert_kernel_sum_from_particle_range(reference_point, table_index, cell, particle_ranges_to_sum_over, mapping);
                         }
                     }
                   else
                     {
-                      const Point<dim> reference_point = Point<dim>(x*spacing + spacing/2., y*spacing + spacing/2.);
-                      std::array<unsigned int,dim> table_index;
+                      const Point<dim>              reference_point = Point<dim>(x * spacing + spacing / 2., y * spacing + spacing / 2.);
+                      std::array<unsigned int, dim> table_index;
                       table_index[0] = x;
                       table_index[1] = y;
-                      insert_kernel_sum_from_particle_range(reference_point,table_index,cell,particle_ranges_to_sum_over,mapping);
+                      insert_kernel_sum_from_particle_range(reference_point, table_index, cell, particle_ranges_to_sum_over, mapping);
                     }
                 }
             }
@@ -108,42 +106,40 @@ namespace aspect
       else if (is_defined_per_particle == true)
         {
           // Sum the value of the kernel function on that position from every other particle.
-          for (const auto &reference_particle: particle_range)
+          for (const auto &reference_particle : particle_range)
             {
               // Cell diameter is used to normalize the distance value by the size of the cell containing the
               // particle whose PDF value is being calculated.
               const double cell_diameter_scaled_to_dimensions = cell->diameter() / std::sqrt(dim);
-              const auto &particle_coordinates = reference_particle.get_location();
-              double function_value = 0;
+              const auto  &particle_coordinates               = reference_particle.get_location();
+              double       function_value                     = 0;
 
-              for (const auto &particle_range_to_sum: particle_ranges_to_sum_over)
+              for (const auto &particle_range_to_sum : particle_ranges_to_sum_over)
                 {
-                  for (const auto &kernel_position_particle: particle_range_to_sum)
+                  for (const auto &kernel_position_particle : particle_range_to_sum)
                     {
-                      const auto &kernel_coordinates = kernel_position_particle.get_location();
-                      const double distance = particle_coordinates.distance(kernel_coordinates);
-                      const double distance_normalized = distance/cell_diameter_scaled_to_dimensions;
+                      const auto  &kernel_coordinates  = kernel_position_particle.get_location();
+                      const double distance            = particle_coordinates.distance(kernel_coordinates);
+                      const double distance_normalized = distance / cell_diameter_scaled_to_dimensions;
                       function_value += apply_selected_kernel_function(distance_normalized);
                     }
                 }
 
-              add_value_to_function_table(function_value/n_particles_in_cell,reference_particle.get_id());
+              add_value_to_function_table(function_value / n_particles_in_cell, reference_particle.get_id());
             }
-
         }
-
-
     }
 
 
 
     template <int dim>
     void
-    ParticlePDF<dim>::insert_kernel_sum_from_particle_range(const Point<dim> &reference_point,
-                                                            const std::array<unsigned int, dim> &table_index,
-                                                            const typename Triangulation<dim>::active_cell_iterator &cell,
-                                                            const std::vector<typename Particles::ParticleHandler<dim>::particle_iterator_range> &particle_ranges_to_sum_over,
-                                                            const typename dealii::Mapping<dim> &mapping)
+    ParticlePDF<dim>::insert_kernel_sum_from_particle_range(
+      const Point<dim>                                                                     &reference_point,
+      const std::array<unsigned int, dim>                                                  &table_index,
+      const typename Triangulation<dim>::active_cell_iterator                              &cell,
+      const std::vector<typename Particles::ParticleHandler<dim>::particle_iterator_range> &particle_ranges_to_sum_over,
+      const typename dealii::Mapping<dim>                                                  &mapping)
     {
       Assert(is_defined_per_particle == false,
              ExcMessage("This function can only be called if the ParticlePDF is computed on a regular grid."));
@@ -157,28 +153,27 @@ namespace aspect
       unsigned int n_particles_in_ranges = 0;
 
       // The reference point is in coordinates relative to the cell, we need it in real coordinates.
-      const Point<dim> reference_point_real_coordinates = mapping.transform_unit_to_real_cell(cell,reference_point);
+      const Point<dim> reference_point_real_coordinates = mapping.transform_unit_to_real_cell(cell, reference_point);
 
-      for (const auto &particle_range_to_sum: particle_ranges_to_sum_over)
+      for (const auto &particle_range_to_sum : particle_ranges_to_sum_over)
         {
-          for (const auto &particle: particle_range_to_sum)
+          for (const auto &particle : particle_range_to_sum)
             {
               ++n_particles_in_ranges;
               const double cell_diameter_scaled_to_dimensions = cell->diameter() / std::sqrt(dim);
-              const double distance = reference_point_real_coordinates.distance(particle.get_location());
-              const double distance_normalized = distance/cell_diameter_scaled_to_dimensions;
-              const double kernel_function_value = apply_selected_kernel_function(distance_normalized);
-              add_value_to_function_table(table_index,kernel_function_value);
+              const double distance                           = reference_point_real_coordinates.distance(particle.get_location());
+              const double distance_normalized                = distance / cell_diameter_scaled_to_dimensions;
+              const double kernel_function_value              = apply_selected_kernel_function(distance_normalized);
+              add_value_to_function_table(table_index, kernel_function_value);
             }
         }
 
-      if (n_particles_in_ranges>0)
+      if (n_particles_in_ranges > 0)
         {
           // Scale KDE value by number of particle contributions
           function_output_table(entry_index) /= static_cast<double>(n_particles_in_ranges);
         }
       // else: do nothing as the initial PDF value of 0.0 is correct
-
     }
 
 
@@ -188,7 +183,7 @@ namespace aspect
     ParticlePDF<dim>::add_value_to_function_table(const unsigned int x_index,
                                                   const unsigned int y_index,
                                                   const unsigned int z_index,
-                                                  const double input_value)
+                                                  const double       input_value)
     {
       Assert(is_defined_per_particle == false,
              ExcMessage("This function can only be called if the ParticlePDF is computed on a regular grid."));
@@ -206,20 +201,19 @@ namespace aspect
 
     template <int dim>
     void
-    ParticlePDF<dim>::add_value_to_function_table(const double input_value,
-                                                  const types::particle_index reference_particle_id)
+    ParticlePDF<dim>::add_value_to_function_table(const double input_value, const types::particle_index reference_particle_id)
     {
       Assert(is_defined_per_particle == true,
              ExcMessage("This function can only be called if the ParticlePDF is computed per particle location."));
 
       if (input_value > max)
         {
-          max = input_value;
+          max                = input_value;
           max_particle_index = reference_particle_id;
         }
       if (input_value < min)
         {
-          min = input_value;
+          min                = input_value;
           min_particle_index = reference_particle_id;
         }
 
@@ -230,8 +224,7 @@ namespace aspect
 
     template <int dim>
     void
-    ParticlePDF<dim>::add_value_to_function_table(const std::array<unsigned int,dim> &index_point,
-                                                  const double input_value)
+    ParticlePDF<dim>::add_value_to_function_table(const std::array<unsigned int, dim> &index_point, const double input_value)
     {
       Assert(is_defined_per_particle == false,
              ExcMessage("This function can only be called if the ParticlePDF is computed on a regular grid."));
@@ -249,9 +242,7 @@ namespace aspect
 
     template <int dim>
     double
-    ParticlePDF<dim>::evaluate_function_at_index(const unsigned int x_index,
-                                                 const unsigned int y_index,
-                                                 const unsigned int z_index) const
+    ParticlePDF<dim>::evaluate_function_at_index(const unsigned int x_index, const unsigned int y_index, const unsigned int z_index) const
     {
       Assert(is_defined_per_particle == false,
              ExcMessage("This function can only be called if the ParticlePDF is computed on a regular grid."));
@@ -272,24 +263,25 @@ namespace aspect
     ParticlePDF<dim>::compute_statistical_values()
     {
       standard_deviation = 0.0;
-      mean = 0.0;
+      mean               = 0.0;
 
       if (!is_defined_per_particle)
         {
-          const double spacing = 1./granularity;
+          const double spacing = 1. / granularity;
 
           // Loop through all values of the function to set initial stats
-          for (unsigned int x=0; x<granularity; ++x)
+          for (unsigned int x = 0; x < granularity; ++x)
             {
-              for (unsigned int y=0; y<granularity; ++y)
+              for (unsigned int y = 0; y < granularity; ++y)
                 {
                   if (dim == 3)
                     {
-                      for (unsigned int z=0; z<granularity; ++z)
+                      for (unsigned int z = 0; z < granularity; ++z)
                         {
-                          const double this_value = evaluate_function_at_index(x,y,z);
+                          const double this_value = evaluate_function_at_index(x, y, z);
 
-                          const Point<dim> position_in_cell = Point<dim>(x*spacing + spacing/2., y*spacing + spacing/2., z*spacing +spacing/2);
+                          const Point<dim> position_in_cell =
+                            Point<dim>(x * spacing + spacing / 2., y * spacing + spacing / 2., z * spacing + spacing / 2);
 
                           // Record the positions of max and min values as well. These are useful for adding particles.
                           if (this_value > max)
@@ -317,10 +309,10 @@ namespace aspect
                     }
                   else
                     {
-                      const double this_value = evaluate_function_at_index(x,y,0);
-                      const Point<dim> position_in_cell = Point<dim>(x*spacing + spacing/2., y*spacing + spacing/2.);
+                      const double     this_value       = evaluate_function_at_index(x, y, 0);
+                      const Point<dim> position_in_cell = Point<dim>(x * spacing + spacing / 2., y * spacing + spacing / 2.);
 
-                      //record the positions of max and min values as well. These are useful for adding particles.
+                      // record the positions of max and min values as well. These are useful for adding particles.
                       if (this_value > max)
                         {
                           max_position = position_in_cell;
@@ -350,30 +342,30 @@ namespace aspect
           double squared_deviation_sum = 0;
 
           // Then sum all the squared deviations for standard deviation
-          for (unsigned int x=0; x<granularity; ++x)
+          for (unsigned int x = 0; x < granularity; ++x)
             {
-              for (unsigned int y=0; y<granularity; ++y)
+              for (unsigned int y = 0; y < granularity; ++y)
                 {
                   if (dim == 3)
                     {
-                      for (unsigned int z=0; z<granularity; ++z)
+                      for (unsigned int z = 0; z < granularity; ++z)
                         {
                           TableIndices<dim> entry_index;
-                          entry_index[0] = x;
-                          entry_index[1] = y;
-                          entry_index[2] = z;
-                          const double this_value = function_output_table(entry_index);
-                          const double deviation_squared = (this_value-mean)*(this_value-mean);
+                          entry_index[0]                 = x;
+                          entry_index[1]                 = y;
+                          entry_index[2]                 = z;
+                          const double this_value        = function_output_table(entry_index);
+                          const double deviation_squared = (this_value - mean) * (this_value - mean);
                           squared_deviation_sum += deviation_squared;
                         }
                     }
                   else
                     {
                       TableIndices<dim> entry_index;
-                      entry_index[0] = x;
-                      entry_index[1] = y;
-                      const double this_value = function_output_table(entry_index);
-                      const double deviation_squared = (this_value-mean)*(this_value-mean);
+                      entry_index[0]                 = x;
+                      entry_index[1]                 = y;
+                      const double this_value        = function_output_table(entry_index);
+                      const double deviation_squared = (this_value - mean) * (this_value - mean);
                       squared_deviation_sum += deviation_squared;
                     }
                 }
@@ -381,7 +373,7 @@ namespace aspect
 
           // Standard deviation of all the defined points in the density function
           const double squared_deviation_mean = squared_deviation_sum / Utilities::fixed_power<dim>(granularity);
-          standard_deviation = std::sqrt(squared_deviation_mean);
+          standard_deviation                  = std::sqrt(squared_deviation_mean);
         }
       else
         {
@@ -396,11 +388,11 @@ namespace aspect
           // Sum all the squared deviations for standard deviation
           for (const double this_value : function_output_vector)
             {
-              const double deviation_squared = (this_value-mean)*(this_value-mean);
+              const double deviation_squared = (this_value - mean) * (this_value - mean);
               squared_deviation_sum += deviation_squared;
             }
           const double squared_deviation_mean = squared_deviation_sum / function_output_vector.size();
-          standard_deviation = std::sqrt(squared_deviation_mean);
+          standard_deviation                  = std::sqrt(squared_deviation_mean);
         }
     }
 
@@ -452,7 +444,8 @@ namespace aspect
 
 
     template <int dim>
-    types::particle_index ParticlePDF<dim>::get_max_particle() const
+    types::particle_index
+    ParticlePDF<dim>::get_max_particle() const
     {
       return max_particle_index;
     }
@@ -460,7 +453,8 @@ namespace aspect
 
 
     template <int dim>
-    types::particle_index ParticlePDF<dim>::get_min_particle() const
+    types::particle_index
+    ParticlePDF<dim>::get_min_particle() const
     {
       return min_particle_index;
     }
@@ -528,7 +522,7 @@ namespace aspect
     {
       if (distance < bandwidth)
         {
-          return (bandwidth-distance)/bandwidth;
+          return (bandwidth - distance) / bandwidth;
         }
       else
         {
@@ -548,8 +542,8 @@ namespace aspect
       // infinity
       if (distance < bandwidth)
         {
-          const double exponent = distance * distance / (2.*bandwidth*bandwidth);
-          const double gaussian = (1 / (bandwidth * std::sqrt(2*numbers::PI))) * std::exp(-exponent);
+          const double exponent = distance * distance / (2. * bandwidth * bandwidth);
+          const double gaussian = (1 / (bandwidth * std::sqrt(2 * numbers::PI))) * std::exp(-exponent);
           return gaussian;
         }
       else
@@ -566,7 +560,7 @@ namespace aspect
     {
       if (distance < bandwidth)
         {
-          return (0.75)*(1.0-(distance*distance)/(bandwidth*bandwidth));
+          return (0.75) * (1.0 - (distance * distance) / (bandwidth * bandwidth));
         }
       else
         {
@@ -581,8 +575,7 @@ namespace aspect
 {
   namespace Particle
   {
-#define INSTANTIATE(dim) \
-  template class ParticlePDF<dim>;
+#define INSTANTIATE(dim) template class ParticlePDF<dim>;
 
     ASPECT_INSTANTIATE(INSTANTIATE)
 

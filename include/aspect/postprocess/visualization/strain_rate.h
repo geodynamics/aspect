@@ -45,20 +45,17 @@ namespace aspect
        * base class. See there for their meaning.
        */
       template <int dim>
-      class StrainRate
-        : public DataPostprocessorScalar<dim>,
-          public SimulatorAccess<dim>,
-          public Interface<dim>
+      class StrainRate : public DataPostprocessorScalar<dim>, public SimulatorAccess<dim>, public Interface<dim>
       {
         public:
           /**
            * Constructor.
            */
-          StrainRate ();
+          StrainRate();
 
           void
           evaluate_vector_field(const DataPostprocessorInputs::Vector<dim> &input_data,
-                                std::vector<Vector<double>> &computed_quantities) const override;
+                                std::vector<Vector<double>>                &computed_quantities) const override;
       };
     }
   }

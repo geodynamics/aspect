@@ -19,10 +19,10 @@
 */
 
 
-#include <aspect/postprocess/visualization/darcy_velocity.h>
-#include <aspect/utilities.h>
 #include <aspect/melt.h>
+#include <aspect/postprocess/visualization/darcy_velocity.h>
 #include <aspect/simulator.h>
+#include <aspect/utilities.h>
 
 namespace aspect
 {
@@ -31,20 +31,16 @@ namespace aspect
     namespace VisualizationPostprocessors
     {
       template <int dim>
-      DarcyVelocity<dim>::
-      DarcyVelocity ()
-        :
-        DataPostprocessorVector<dim> ("darcy_velocity",
-                                      update_values | update_quadrature_points | update_gradients),
-        Interface<dim>()
+      DarcyVelocity<dim>::DarcyVelocity()
+        : DataPostprocessorVector<dim>("darcy_velocity", update_values | update_quadrature_points | update_gradients)
+        , Interface<dim>()
       {}
 
 
 
       template <int dim>
       std::string
-      DarcyVelocity<dim>::
-      get_physical_units () const
+      DarcyVelocity<dim>::get_physical_units() const
       {
         if (this->convert_output_to_years())
           return "m/year";
@@ -56,9 +52,8 @@ namespace aspect
 
       template <int dim>
       void
-      DarcyVelocity<dim>::
-      evaluate_vector_field(const DataPostprocessorInputs::Vector<dim> &input_data,
-                            std::vector<Vector<double>> &computed_quantities) const
+      DarcyVelocity<dim>::evaluate_vector_field(const DataPostprocessorInputs::Vector<dim> &input_data,
+                                                std::vector<Vector<double>>                &computed_quantities) const
       {
         AssertThrow(this->introspection().compositional_name_exists("porosity"),
                     ExcMessage("The 'darcy velocity' postprocessor requires a compositional "
@@ -66,31 +61,26 @@ namespace aspect
 
         const unsigned int porosity_idx = this->introspection().find_composition_type(CompositionalFieldDescription::porosity);
 
-        const double velocity_scaling_factor =
-          this->convert_output_to_years() ? year_in_seconds : 1.0;
+        const double velocity_scaling_factor = this->convert_output_to_years() ? year_in_seconds : 1.0;
 
-        MaterialModel::MaterialModelInputs<dim> in(input_data, this->introspection());
+        MaterialModel::MaterialModelInputs<dim>  in(input_data, this->introspection());
         MaterialModel::MaterialModelOutputs<dim> out(in.n_evaluation_points(), this->n_compositional_fields());
         MeltHandler<dim>::create_material_model_outputs(out);
         this->get_material_model().evaluate(in, out);
-        const std::shared_ptr<const MaterialModel::MeltOutputs<dim>> fluid_out
-          = out.template get_additional_output_object<MaterialModel::MeltOutputs<dim>>();
+        const std::shared_ptr<const MaterialModel::MeltOutputs<dim>> fluid_out =
+          out.template get_additional_output_object<MaterialModel::MeltOutputs<dim>>();
         AssertThrow(std::isfinite(fluid_out->fluid_viscosities[0]),
                     ExcMessage("To compute the Darcy velocity the material model needs to provide the melt material model "
                                "outputs. At least the fluid viscosity was not computed, or is not a number."));
 
-        for (unsigned int q=0; q<in.n_evaluation_points(); ++q)
+        for (unsigned int q = 0; q < in.n_evaluation_points(); ++q)
           {
-            const Tensor<1,dim> gravity = this->get_gravity_model().gravity_vector(in.position[q]);
-            const Tensor<1,dim> solid_velocity = in.velocity[q];
+            const Tensor<1, dim> gravity        = this->get_gravity_model().gravity_vector(in.position[q]);
+            const Tensor<1, dim> solid_velocity = in.velocity[q];
 
-            Tensor<1,dim> darcy_velocity =
-              aspect::Utilities::calculate_approximate_darcy_velocity(in,
-                                                                      out,
-                                                                      fluid_out, solid_velocity,
-                                                                      gravity, porosity_idx, q,
-                                                                      this->get_parameters().use_pressure_gradient_for_darcy_field);
-            for (unsigned int k=0; k<dim; ++k)
+            Tensor<1, dim> darcy_velocity = aspect::Utilities::calculate_approximate_darcy_velocity(
+              in, out, fluid_out, solid_velocity, gravity, porosity_idx, q, this->get_parameters().use_pressure_gradient_for_darcy_field);
+            for (unsigned int k = 0; k < dim; ++k)
               computed_quantities[q](k) = darcy_velocity[k] * velocity_scaling_factor;
           }
       }

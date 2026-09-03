@@ -23,6 +23,7 @@
 #define _aspect_time_stepping_function_h
 
 #include <aspect/time_stepping/interface.h>
+
 #include <deal.II/base/parsed_function.h>
 
 namespace aspect
@@ -42,7 +43,7 @@ namespace aspect
         /**
          * Constructor.
          */
-        Function () = default;
+        Function() = default;
 
         /**
          * The main execute() function.
@@ -50,12 +51,11 @@ namespace aspect
         double
         execute() override;
 
-        static
-        void
-        declare_parameters (ParameterHandler &prm);
+        static void
+        declare_parameters(ParameterHandler &prm);
 
         void
-        parse_parameters (ParameterHandler &prm) override;
+        parse_parameters(ParameterHandler &prm) override;
 
       private:
         /**

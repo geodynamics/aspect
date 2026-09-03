@@ -24,6 +24,7 @@
 #include <aspect/global.h>
 
 #include <aspect/mesh_deformation/interface.h>
+
 #include <deal.II/base/parsed_function.h>
 
 namespace aspect
@@ -50,12 +51,14 @@ namespace aspect
         /**
          * Initialize variables for FastScape.
          */
-        virtual void initialize () override;
+        virtual void
+        initialize() override;
 
         /**
          * Update input variables for FastScape.
          */
-        void update() override;
+        void
+        update() override;
 
         /**
          * A function that creates constraints for the velocity of certain mesh
@@ -63,10 +66,9 @@ namespace aspect
          * The calling class will respect
          * these constraints when computing the new vertex positions.
          */
-        virtual
-        void
-        compute_velocity_constraints_on_boundary(const DoFHandler<dim> &mesh_deformation_dof_handler,
-                                                 AffineConstraints<double> &mesh_velocity_constraints,
+        virtual void
+        compute_velocity_constraints_on_boundary(const DoFHandler<dim>              &mesh_deformation_dof_handler,
+                                                 AffineConstraints<double>          &mesh_velocity_constraints,
                                                  const std::set<types::boundary_id> &boundary_ids) const override;
 
         /**
@@ -78,25 +80,28 @@ namespace aspect
          *
          * @copydoc aspect::MeshDeformation::Interface::boundary_composition()
          */
-        double boundary_composition (const types::boundary_id boundary_indicator,
-                                     const Point<dim> &position,
-                                     const unsigned int compositional_field) const override;
+        double
+        boundary_composition(const types::boundary_id boundary_indicator,
+                             const Point<dim>        &position,
+                             const unsigned int       compositional_field) const override;
 
         /**
          * Returns whether or not the plugin requires surface stabilization
          */
-        bool needs_surface_stabilization () const override;
+        bool
+        needs_surface_stabilization() const override;
 
         /**
          * Declare parameters for the FastScape plugin.
          */
-        static
-        void declare_parameters (ParameterHandler &prm);
+        static void
+        declare_parameters(ParameterHandler &prm);
 
         /**
          * Parse parameters for the FastScape plugin.
          */
-        void parse_parameters (ParameterHandler &prm) override;
+        void
+        parse_parameters(ParameterHandler &prm) override;
 
         /**
          * Enumeration for selecting which type of additional output to use in Fastscape vtk.
@@ -116,17 +121,20 @@ namespace aspect
          * from input parameter files.
          */
         template <class Archive>
-        void serialize (Archive &ar, const unsigned int version);
+        void
+        serialize(Archive &ar, const unsigned int version);
 
         /**
          * Save the state of this object.
          */
-        void save (std::map<std::string, std::string> &status_strings) const override;
+        void
+        save(std::map<std::string, std::string> &status_strings) const override;
 
         /**
          * Restore the state of the object.
          */
-        void load (const std::map<std::string, std::string> &status_strings) override;
+        void
+        load(const std::map<std::string, std::string> &status_strings) override;
 
       private:
         /**
@@ -139,71 +147,78 @@ namespace aspect
          * the parameters on the other side (vx, vy, vz, h). This is done every ASPECT timestep
          * before running FastScape.
          */
-        void set_ghost_nodes(std::vector<double> &elevation,
-                             std::vector<double> &velocity_x,
-                             std::vector<double> &velocity_y,
-                             std::vector<double> &velocity_z,
-                             std::vector<double> &bedrock_transport_coefficient_array,
-                             const double &fastscape_timestep_in_years,
-                             const bool init) const;
+        void
+        set_ghost_nodes(std::vector<double> &elevation,
+                        std::vector<double> &velocity_x,
+                        std::vector<double> &velocity_y,
+                        std::vector<double> &velocity_z,
+                        std::vector<double> &bedrock_transport_coefficient_array,
+                        const double        &fastscape_timestep_in_years,
+                        const bool           init) const;
 
         /**
          * Function to determine whether the current index is a ghost node
          */
-        bool is_ghost_node(const unsigned int &index,
-                           const bool &exclude_boundaries) const;
+        bool
+        is_ghost_node(const unsigned int &index, const bool &exclude_boundaries) const;
 
         /**
          * Function to fill the Fastscape arrays (height and velocities) with the data received from ASPECT in the correct index order.
          */
-        void fill_fastscape_arrays(std::vector<double> &elevation,
-                                   std::vector<double> &bedrock_transport_coefficient_array,
-                                   std::vector<double> &bedrock_river_incision_rate_array,
-                                   std::vector<double> &velocity_x,
-                                   std::vector<double> &velocity_y,
-                                   std::vector<double> &velocity_z,
-                                   std::vector<std::vector<double>> &temporary_variables) const;
+        void
+        fill_fastscape_arrays(std::vector<double>              &elevation,
+                              std::vector<double>              &bedrock_transport_coefficient_array,
+                              std::vector<double>              &bedrock_river_incision_rate_array,
+                              std::vector<double>              &velocity_x,
+                              std::vector<double>              &velocity_y,
+                              std::vector<double>              &velocity_z,
+                              std::vector<std::vector<double>> &temporary_variables) const;
 
         /**
          * Function to get the ASPECT topography and velocities at the surface, and an index for transferring these to FastScape.
          */
-        std::vector<std::vector<double>> get_aspect_values() const;
+        std::vector<std::vector<double>>
+        get_aspect_values() const;
 
         /**
          * Function to initialize or restart FastScape
          */
-        void initialize_fastscape(std::vector<double> &elevation,
-                                  std::vector<double> &basement,
-                                  std::vector<double> &silt_fraction,
-                                  bool restart) const;
+        void
+        initialize_fastscape(std::vector<double> &elevation,
+                             std::vector<double> &basement,
+                             std::vector<double> &silt_fraction,
+                             bool                 restart) const;
 
         /**
          * Execute FastScape
          */
-        void execute_fastscape(std::vector<double> &elevation,
-                               std::vector<double> &extra_vtk_field,
-                               std::vector<double> &velocity_x,
-                               std::vector<double> &velocity_y,
-                               std::vector<double> &velocity_z,
-                               std::vector<double> &bedrock_transport_coefficient_array,
-                               const double &fastscape_timestep_in_years,
-                               const unsigned int &fastscape_iterations) const;
+        void
+        execute_fastscape(std::vector<double> &elevation,
+                          std::vector<double> &extra_vtk_field,
+                          std::vector<double> &velocity_x,
+                          std::vector<double> &velocity_y,
+                          std::vector<double> &velocity_z,
+                          std::vector<double> &bedrock_transport_coefficient_array,
+                          const double        &fastscape_timestep_in_years,
+                          const unsigned int  &fastscape_iterations) const;
 
         /**
          * Function to apply orographic (mountain related, e.g., wind or elevation)
          * controls to the FastScape model.
          */
-        void apply_orographic_controls(const std::vector<double> &elevation,
-                                       std::vector<double> &bedrock_river_incision_rate_array,
-                                       std::vector<double> &bedrock_transport_coefficient_array) const;
+        void
+        apply_orographic_controls(const std::vector<double> &elevation,
+                                  std::vector<double>       &bedrock_river_incision_rate_array,
+                                  std::vector<double>       &bedrock_transport_coefficient_array) const;
 
         /**
          * Fill velocity data table to be interpolated back onto the ASPECT mesh.
          */
-        Table<dim,double> fill_data_table(const std::vector<double> &values,
-                                          const TableIndices<dim> &size_idx,
-                                          const unsigned int &fastscape_nx,
-                                          const unsigned int &fastscape_ny) const;
+        Table<dim, double>
+        fill_data_table(const std::vector<double> &values,
+                        const TableIndices<dim>   &size_idx,
+                        const unsigned int        &fastscape_nx,
+                        const unsigned int        &fastscape_ny) const;
 
         /**
          * Suggestion for the number of FastScape steps to run for every ASPECT timestep,
@@ -308,7 +323,7 @@ namespace aspect
         /**
          * Variable to hold ASPECT domain extents.
          */
-        std::array<std::pair<double,double>,dim> grid_extent;
+        std::array<std::pair<double, double>, dim> grid_extent;
 
         /**
          * Table for interpolating FastScape surface velocities back to ASPECT.

@@ -22,8 +22,9 @@
 #define _aspect_postprocess_particle_distribution_statistics_h
 
 #include <aspect/particle/distribution.h>
-#include <deal.II/base/function_lib.h>
 #include <aspect/particle/manager.h>
+
+#include <deal.II/base/function_lib.h>
 
 namespace aspect
 {
@@ -45,13 +46,14 @@ namespace aspect
         /**
          * Initialize function. Called once at the beginning of the model.
          */
-        void initialize() override;
+        void
+        initialize() override;
 
         /**
          * Evaluate the solution for some particle statistics.
          */
-        std::pair<std::string,std::string>
-        execute (TableHandler &statistics) override;
+        std::pair<std::string, std::string>
+        execute(TableHandler &statistics) override;
 
         /**
          * Let the postprocessor manager know about the other postprocessors
@@ -63,15 +65,14 @@ namespace aspect
         /**
          * Declare the parameters this class takes through input files.
          */
-        static
-        void
-        declare_parameters (ParameterHandler &prm);
+        static void
+        declare_parameters(ParameterHandler &prm);
 
         /**
          * Read the parameters this class declares from the parameter file.
          */
         void
-        parse_parameters (ParameterHandler &prm) override;
+        parse_parameters(ParameterHandler &prm) override;
 
       private:
         /**
@@ -120,7 +121,7 @@ namespace aspect
          */
         std::vector<typename Particles::ParticleHandler<dim>::particle_iterator_range>
         get_neighboring_particle_ranges(const typename Triangulation<dim>::active_cell_iterator &cell,
-                                        const typename Particles::ParticleHandler<dim> &particle_handler);
+                                        const typename Particles::ParticleHandler<dim>          &particle_handler);
 
         /**
          * Cached information that stores information about the grid so that we

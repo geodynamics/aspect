@@ -32,14 +32,12 @@ namespace aspect
       void
       QuadraturePoints<dim>::generate_particles(Particles::ParticleHandler<dim> &particle_handler)
       {
-        const Quadrature<dim> &quadrature_formula
-          = this->introspection().quadratures.velocities;
+        const Quadrature<dim> &quadrature_formula = this->introspection().quadratures.velocities;
 
-        Particles::Generators::regular_reference_locations(
-          this->get_triangulation(),
-          quadrature_formula.get_points(),
-          particle_handler,
-          this->get_mapping());
+        Particles::Generators::regular_reference_locations(this->get_triangulation(),
+                                                           quadrature_formula.get_points(),
+                                                           particle_handler,
+                                                           this->get_mapping());
       }
     }
   }

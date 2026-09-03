@@ -18,10 +18,10 @@
  <http://www.gnu.org/licenses/>.
  */
 
-#include <aspect/particle/integrator/rk_4.h>
-#include <aspect/particle/property/interface.h>
-#include <aspect/particle/manager.h>
 #include <aspect/geometry_model/interface.h>
+#include <aspect/particle/integrator/rk_4.h>
+#include <aspect/particle/manager.h>
+#include <aspect/particle/property/interface.h>
 
 namespace aspect
 {
@@ -31,17 +31,17 @@ namespace aspect
     {
       template <int dim>
       RK4<dim>::RK4()
-        :
-        integrator_substep(0)
+        : integrator_substep(0)
       {}
 
 
 
       template <int dim>
       void
-      RK4<dim>::initialize ()
+      RK4<dim>::initialize()
       {
-        const auto &property_information = this->get_particle_manager(this->get_particle_manager_index()).get_property_manager().get_data_info();
+        const auto &property_information =
+          this->get_particle_manager(this->get_particle_manager_index()).get_property_manager().get_data_info();
 
         property_indices[0] = property_information.get_position_by_field_name("internal: integrator properties");
         property_indices[1] = property_indices[0] + dim;
@@ -55,13 +55,13 @@ namespace aspect
       void
       RK4<dim>::local_integrate_step(const typename ParticleHandler<dim>::particle_iterator &begin_particle,
                                      const typename ParticleHandler<dim>::particle_iterator &end_particle,
-                                     const std::vector<Tensor<1,dim>> &old_velocities,
-                                     const std::vector<Tensor<1,dim>> &velocities,
-                                     const double dt)
+                                     const std::vector<Tensor<1, dim>>                      &old_velocities,
+                                     const std::vector<Tensor<1, dim>>                      &velocities,
+                                     const double                                            dt)
       {
         if (integrator_substep < 3)
           {
-            Assert(static_cast<unsigned int> (std::distance(begin_particle, end_particle)) == old_velocities.size(),
+            Assert(static_cast<unsigned int>(std::distance(begin_particle, end_particle)) == old_velocities.size(),
                    ExcMessage("The particle integrator expects the old velocity vector to be of equal size "
                               "to the number of particles to advect. For some unknown reason they are different, "
                               "most likely something went wrong in the calling function."));
@@ -69,16 +69,16 @@ namespace aspect
 
         if (integrator_substep >= 1 && integrator_substep < 4)
           {
-            Assert(static_cast<unsigned int> (std::distance(begin_particle, end_particle)) == velocities.size(),
+            Assert(static_cast<unsigned int>(std::distance(begin_particle, end_particle)) == velocities.size(),
                    ExcMessage("The particle integrator expects the velocity vector to be of equal size "
                               "to the number of particles to advect. For some unknown reason they are different, "
                               "most likely something went wrong in the calling function."));
           }
 
-        const auto cell = begin_particle->get_surrounding_cell();
-        bool at_periodic_boundary = false;
+        const auto cell                 = begin_particle->get_surrounding_cell();
+        bool       at_periodic_boundary = false;
         if (this->get_triangulation().get_periodic_face_map().empty() == false)
-          for (const auto &face_index: cell->face_indices())
+          for (const auto &face_index : cell->face_indices())
             if (cell->at_boundary(face_index))
               if (cell->has_periodic_neighbor(face_index))
                 {
@@ -86,11 +86,11 @@ namespace aspect
                   break;
                 }
 
-        typename std::vector<Tensor<1,dim>>::const_iterator old_velocity = old_velocities.begin();
-        typename std::vector<Tensor<1,dim>>::const_iterator velocity = velocities.begin();
+        typename std::vector<Tensor<1, dim>>::const_iterator old_velocity = old_velocities.begin();
+        typename std::vector<Tensor<1, dim>>::const_iterator velocity     = velocities.begin();
 
-        std::array<Tensor<1,dim>,4> k;
-        for (auto &p : typename ParticleHandler<dim>::particle_iterator_range (begin_particle, end_particle))
+        std::array<Tensor<1, dim>, 4> k;
+        for (auto &p : typename ParticleHandler<dim>::particle_iterator_range(begin_particle, end_particle))
           {
             ArrayView<double> properties = p.get_properties();
 
@@ -98,44 +98,43 @@ namespace aspect
               {
                 // Get a reference to the particle location, so that we can update it in-place
                 Point<dim> &location = p.get_location();
-                k[0] = dt * (*old_velocity);
+                k[0]                 = dt * (*old_velocity);
 
                 Point<dim> new_location = location + 0.5 * k[0];
 
                 // Check if we crossed a periodic boundary and if necessary adjust positions
                 if (at_periodic_boundary)
                   this->get_geometry_model().adjust_positions_for_periodicity(new_location,
-                                                                              ArrayView<Point<dim>>(&location,1),
-                                                                              ArrayView<Tensor<1,dim>>(&k[0],1));
+                                                                              ArrayView<Point<dim>>(&location, 1),
+                                                                              ArrayView<Tensor<1, dim>>(&k[0], 1));
 
-                for (unsigned int i=0; i<dim; ++i)
+                for (unsigned int i = 0; i < dim; ++i)
                   {
                     properties[property_indices[0] + i] = location[i];
                     properties[property_indices[1] + i] = k[0][i];
-                    location[i] = new_location[i];
+                    location[i]                         = new_location[i];
                   }
-
               }
             else if (integrator_substep == 1)
               {
                 k[1] = dt * ((*old_velocity) + (*velocity)) * 0.5;
 
                 Point<dim> old_location;
-                for (unsigned int i=0; i<dim; ++i)
+                for (unsigned int i = 0; i < dim; ++i)
                   old_location[i] = properties[property_indices[0] + i];
 
                 Point<dim> new_location = old_location + 0.5 * k[1];
 
                 if (at_periodic_boundary)
                   {
-                    for (unsigned int i=0; i<dim; ++i)
+                    for (unsigned int i = 0; i < dim; ++i)
                       k[0][i] = properties[property_indices[1] + i];
 
                     this->get_geometry_model().adjust_positions_for_periodicity(new_location,
-                                                                                ArrayView<Point<dim>>(&old_location,1),
-                                                                                ArrayView<Tensor<1,dim>>(&k[0],2));
+                                                                                ArrayView<Point<dim>>(&old_location, 1),
+                                                                                ArrayView<Tensor<1, dim>>(&k[0], 2));
 
-                    for (unsigned int i=0; i<dim; ++i)
+                    for (unsigned int i = 0; i < dim; ++i)
                       {
                         properties[property_indices[0] + i] = old_location[i];
                         properties[property_indices[1] + i] = k[0][i];
@@ -143,7 +142,7 @@ namespace aspect
                       }
                   }
 
-                for (unsigned int i=0; i<dim; ++i)
+                for (unsigned int i = 0; i < dim; ++i)
                   properties[property_indices[2] + i] = k[1][i];
 
                 p.set_location(new_location);
@@ -153,24 +152,24 @@ namespace aspect
                 k[2] = dt * (*old_velocity + *velocity) * 0.5;
 
                 Point<dim> old_location;
-                for (unsigned int i=0; i<dim; ++i)
+                for (unsigned int i = 0; i < dim; ++i)
                   old_location[i] = properties[property_indices[0] + i];
 
                 Point<dim> new_location = old_location + k[2];
 
                 if (at_periodic_boundary)
                   {
-                    for (unsigned int i=0; i<dim; ++i)
+                    for (unsigned int i = 0; i < dim; ++i)
                       {
                         k[0][i] = properties[property_indices[1] + i];
                         k[1][i] = properties[property_indices[2] + i];
                       }
 
                     this->get_geometry_model().adjust_positions_for_periodicity(new_location,
-                                                                                ArrayView<Point<dim>>(&old_location,1),
-                                                                                ArrayView<Tensor<1,dim>>(&k[0],3));
+                                                                                ArrayView<Point<dim>>(&old_location, 1),
+                                                                                ArrayView<Tensor<1, dim>>(&k[0], 3));
 
-                    for (unsigned int i=0; i<dim; ++i)
+                    for (unsigned int i = 0; i < dim; ++i)
                       {
                         properties[property_indices[0] + i] = old_location[i];
                         properties[property_indices[1] + i] = k[0][i];
@@ -178,7 +177,7 @@ namespace aspect
                       }
                   }
 
-                for (unsigned int i=0; i<dim; ++i)
+                for (unsigned int i = 0; i < dim; ++i)
                   properties[property_indices[3] + i] = k[2][i];
 
                 p.set_location(new_location);
@@ -188,17 +187,17 @@ namespace aspect
                 k[3] = dt * (*velocity);
 
                 Point<dim> old_location;
-                for (unsigned int i=0; i<dim; ++i)
+                for (unsigned int i = 0; i < dim; ++i)
                   old_location[i] = properties[property_indices[0] + i];
 
-                for (unsigned int i=0; i<dim; ++i)
+                for (unsigned int i = 0; i < dim; ++i)
                   {
                     k[0][i] = properties[property_indices[1] + i];
                     k[1][i] = properties[property_indices[2] + i];
                     k[2][i] = properties[property_indices[3] + i];
                   }
 
-                Point<dim> new_location = old_location + (k[0] + 2.0*k[1] + 2.0*k[2] + k[3])/6.0;
+                Point<dim> new_location = old_location + (k[0] + 2.0 * k[1] + 2.0 * k[2] + k[3]) / 6.0;
 
                 // No need to fix intermediate values, this is the last integrator step
                 if (at_periodic_boundary)
@@ -208,8 +207,7 @@ namespace aspect
               }
             else
               {
-                Assert(false,
-                       ExcMessage("The RK4 integrator should never continue after four integration stages."));
+                Assert(false, ExcMessage("The RK4 integrator should never continue after four integration stages."));
               }
 
             ++old_velocity;
@@ -223,7 +221,7 @@ namespace aspect
       bool
       RK4<dim>::new_integration_step()
       {
-        integrator_substep = (integrator_substep+1)%4;
+        integrator_substep = (integrator_substep + 1) % 4;
 
         // Continue until we're at the last step
         return (integrator_substep != 0);
@@ -245,8 +243,7 @@ namespace aspect
             case 3:
               return {{false, false, true}};
             default:
-              Assert(false,
-                     ExcMessage("The RK4 integrator should never continue after four integration steps."));
+              Assert(false, ExcMessage("The RK4 integrator should never continue after four integration steps."));
           }
 
         return {{false, false, false}};

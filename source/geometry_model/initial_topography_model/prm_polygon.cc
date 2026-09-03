@@ -21,6 +21,7 @@
 
 #include <aspect/geometry_model/initial_topography_model/prm_polygon.h>
 #include <aspect/utilities.h>
+
 #include <boost/lexical_cast.hpp>
 
 namespace aspect
@@ -29,10 +30,9 @@ namespace aspect
   {
     template <int dim>
     double
-    PrmPolygon<dim>::
-    value (const Point<dim-1> &p) const
+    PrmPolygon<dim>::value(const Point<dim - 1> &p) const
     {
-      const Point<2> p1 = (dim == 2 ? Point<2>(p[0],0) : Point<2>(p[0],p[1]));
+      const Point<2> p1 = (dim == 2 ? Point<2>(p[0], 0) : Point<2>(p[0], p[1]));
 
       /**
        * We go through the loop in the reverse order, because we
@@ -40,9 +40,9 @@ namespace aspect
        */
       for (unsigned int i = point_lists.size(); i > 0; i--)
         {
-          if (aspect::Utilities::polygon_contains_point<dim>(point_lists[i-1],p1))
+          if (aspect::Utilities::polygon_contains_point<dim>(point_lists[i - 1], p1))
             {
-              return topography_values[i-1];
+              return topography_values[i - 1];
             }
         }
 
@@ -54,8 +54,7 @@ namespace aspect
 
     template <int dim>
     double
-    PrmPolygon<dim>::
-    max_topography () const
+    PrmPolygon<dim>::max_topography() const
     {
       return maximum_topography;
     }
@@ -64,8 +63,7 @@ namespace aspect
 
     template <int dim>
     void
-    PrmPolygon<dim>::
-    declare_parameters (ParameterHandler &prm)
+    PrmPolygon<dim>::declare_parameters(ParameterHandler &prm)
     {
       prm.enter_subsection("Geometry model");
       {
@@ -98,7 +96,7 @@ namespace aspect
 
     template <int dim>
     void
-    PrmPolygon<dim>::parse_parameters (ParameterHandler &prm)
+    PrmPolygon<dim>::parse_parameters(ParameterHandler &prm)
     {
       prm.enter_subsection("Geometry model");
       {
@@ -110,41 +108,44 @@ namespace aspect
              * we need to fill the point lists and topography values. They
              * are stored in the Topography subsection in the Topography parameter.
              */
-            maximum_topography = std::numeric_limits<double>::lowest();
-            const std::string temptopo = prm.get("Topography parameters");
-            const std::vector<std::string> temp_topographies = Utilities::split_string_list(temptopo,'&');
-            const unsigned int temp_topographies_size = temp_topographies.size();
+            maximum_topography                                    = std::numeric_limits<double>::lowest();
+            const std::string              temptopo               = prm.get("Topography parameters");
+            const std::vector<std::string> temp_topographies      = Utilities::split_string_list(temptopo, '&');
+            const unsigned int             temp_topographies_size = temp_topographies.size();
 
-            topography_values.resize(temp_topographies_size,0);
+            topography_values.resize(temp_topographies_size, 0);
             point_lists.resize(temp_topographies_size);
             for (unsigned int i_topo = 0; i_topo < temp_topographies_size; ++i_topo)
               {
-                const std::vector<std::string> temp_topography = Utilities::split_string_list(temp_topographies[i_topo],'>');
-                Assert(temp_topography.size() == 2,ExcMessage ("The given line '" + temp_topographies[i_topo]
-                                                               + "' is not correct. It consists of "
-                                                               + boost::lexical_cast<std::string>(temp_topography.size())
-                                                               + " parts separated by >, but it should only contain "
-                                                               "two parts: the height and the list of point coordinates,"
-                                                               " separated by a >.'"));
+                const std::vector<std::string> temp_topography = Utilities::split_string_list(temp_topographies[i_topo], '>');
+                Assert(temp_topography.size() == 2,
+                       ExcMessage("The given line '" + temp_topographies[i_topo] + "' is not correct. It consists of " +
+                                  boost::lexical_cast<std::string>(temp_topography.size()) +
+                                  " parts separated by >, but it should only contain "
+                                  "two parts: the height and the list of point coordinates,"
+                                  " separated by a >.'"));
 
                 topography_values[i_topo] = Utilities::string_to_double(temp_topography[0]);
-                maximum_topography = std::max(topography_values[i_topo],maximum_topography);
+                maximum_topography        = std::max(topography_values[i_topo], maximum_topography);
 
-                const std::vector<std::string> temp_coordinates = Utilities::split_string_list(temp_topography[1],';');
-                const unsigned int temp_coordinate_size = temp_coordinates.size();
+                const std::vector<std::string> temp_coordinates     = Utilities::split_string_list(temp_topography[1], ';');
+                const unsigned int             temp_coordinate_size = temp_coordinates.size();
                 point_lists[i_topo].resize(temp_coordinate_size);
                 for (unsigned int i_coord = 0; i_coord < temp_coordinate_size; ++i_coord)
                   {
-                    const std::vector<double> temp_point = Utilities::string_to_double(Utilities::split_string_list(temp_coordinates[i_coord],','));
-                    Assert(temp_point.size() == 2,ExcMessage ("The given coordinate '" + temp_coordinates[i_coord] + "' is not correct. "
-                                                              "It consists of " + boost::lexical_cast<std::string>(temp_topography.size())
-                                                              + " parts separated by :, but it should only contain 2 parts: "
-                                                              "the two coordinates of the polygon points, separated by a ','."));
+                    const std::vector<double> temp_point =
+                      Utilities::string_to_double(Utilities::split_string_list(temp_coordinates[i_coord], ','));
+                    Assert(temp_point.size() == 2,
+                           ExcMessage("The given coordinate '" + temp_coordinates[i_coord] +
+                                      "' is not correct. "
+                                      "It consists of " +
+                                      boost::lexical_cast<std::string>(temp_topography.size()) +
+                                      " parts separated by :, but it should only contain 2 parts: "
+                                      "the two coordinates of the polygon points, separated by a ','."));
 
 
                     point_lists[i_topo][i_coord] = Point<2>(temp_point[0], temp_point[1]);
                   }
-
               }
           }
           prm.leave_subsection();

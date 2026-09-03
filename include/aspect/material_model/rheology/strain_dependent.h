@@ -22,10 +22,11 @@
 #define _aspect_material_model_rheology_strain_dependent_h
 
 #include <aspect/global.h>
+
 #include <aspect/material_model/interface.h>
 #include <aspect/simulator_access.h>
 
-#include<deal.II/fe/component_mask.h>
+#include <deal.II/fe/component_mask.h>
 #include <deal.II/matrix_free/fe_point_evaluation.h>
 
 namespace aspect
@@ -75,15 +76,14 @@ namespace aspect
           /**
            * Declare the parameters this function takes through input files.
            */
-          static
-          void
-          declare_parameters (ParameterHandler &prm);
+          static void
+          declare_parameters(ParameterHandler &prm);
 
           /**
            * Read the parameters from the parameter file.
            */
           void
-          parse_parameters (ParameterHandler &prm);
+          parse_parameters(ParameterHandler &prm);
 
           /**
            * A function that computes by how much the rheologic parameters change
@@ -95,8 +95,7 @@ namespace aspect
            * different measures of previously applied strain.
            */
           std::array<double, 3>
-          compute_strain_weakening_factors(const std::vector<double> &composition,
-                                           const unsigned int j) const;
+          compute_strain_weakening_factors(const std::vector<double> &composition, const unsigned int j) const;
 
           /**
            * @deprecated: Deprecated version of the function of the same
@@ -104,8 +103,7 @@ namespace aspect
            */
           DEAL_II_DEPRECATED
           std::array<double, 3>
-          compute_strain_weakening_factors(const unsigned int j,
-                                           const std::vector<double> &composition) const;
+          compute_strain_weakening_factors(const unsigned int j, const std::vector<double> &composition) const;
 
           /**
            * A function that alters the viscous weakening factor based on the
@@ -113,15 +111,14 @@ namespace aspect
            */
           std::array<double, 3>
           apply_temperature_dependence_to_strain_weakening_factors(const std::array<double, 3> &weakening_factors,
-                                                                   const double temperature,
-                                                                   const unsigned int j) const;
+                                                                   const double                 temperature,
+                                                                   const unsigned int           j) const;
 
           /**
            * A function that computes the strain healing (reduction in accumulated strain)
            */
           double
-          calculate_strain_healing (const MaterialModel::MaterialModelInputs<dim> &in,
-                                    const unsigned int j) const;
+          calculate_strain_healing(const MaterialModel::MaterialModelInputs<dim> &in, const unsigned int j) const;
 
           /**
            * A function that computes by how much the cohesion and internal friction
@@ -129,8 +126,7 @@ namespace aspect
            * of a given strain.
            */
           std::pair<double, double>
-          calculate_plastic_weakening (const double strain_ii,
-                                       const unsigned int j) const;
+          calculate_plastic_weakening(const double strain_ii, const unsigned int j) const;
 
           /**
            * A function that computes by how much the diffusion and dislocation
@@ -138,8 +134,7 @@ namespace aspect
            * influence of a given strain.
            */
           double
-          calculate_viscous_weakening (const double strain_ii,
-                                       const unsigned int j) const;
+          calculate_viscous_weakening(const double strain_ii, const unsigned int j) const;
 
           /**
            * Whether to use the temperature-activated viscous strain weakening.
@@ -154,38 +149,40 @@ namespace aspect
            * component of the finite strain tensor is named 's11' and all other
            * components follow this compositional field.
            */
-          void compute_finite_strain_reaction_terms (const MaterialModel::MaterialModelInputs<dim> &in,
-                                                     MaterialModel::MaterialModelOutputs<dim> &out) const;
+          void
+          compute_finite_strain_reaction_terms(const MaterialModel::MaterialModelInputs<dim> &in,
+                                               MaterialModel::MaterialModelOutputs<dim>      &out) const;
           /**
            * A function that fills the reaction terms for the finite strain invariant(s) in
            * MaterialModelOutputs object that is handed over.
            */
-          void fill_reaction_outputs (const MaterialModel::MaterialModelInputs<dim> &in,
-                                      const int i,
-                                      const double min_strain_rate,
-                                      const bool plastic_yielding,
-                                      MaterialModel::MaterialModelOutputs<dim> &out) const;
+          void
+          fill_reaction_outputs(const MaterialModel::MaterialModelInputs<dim> &in,
+                                const int                                      i,
+                                const double                                   min_strain_rate,
+                                const bool                                     plastic_yielding,
+                                MaterialModel::MaterialModelOutputs<dim>      &out) const;
 
           /**
            * A function that returns a ComponentMask, which indicates that components
            * associated with strain should be excluded during the volume fraction computation.
            */
-          ComponentMask get_strain_composition_mask() const;
+          ComponentMask
+          get_strain_composition_mask() const;
 
           /**
            * A function that returns the selected type of strain weakening mechanism.
            */
           WeakeningMechanism
-          get_weakening_mechanism () const;
+          get_weakening_mechanism() const;
 
           /**
            * A function that returns the selected type of strain healing mechanism.
            */
           HealingMechanism
-          get_healing_mechanism () const;
+          get_healing_mechanism() const;
 
         private:
-
           /**
            *  This variable is read from the parameter file through a parameter called 'Strain weakening mechanism'.
            */
@@ -291,7 +288,7 @@ namespace aspect
            * By caching the evaluator, we can avoid recreating them
            * every time we need it.
            */
-          mutable std::unique_ptr<FEPointEvaluation<dim, dim>> evaluator;
+          mutable std::unique_ptr<FEPointEvaluation<dim, dim>>            evaluator;
           mutable std::vector<std::unique_ptr<FEPointEvaluation<1, dim>>> composition_evaluators;
       };
     }

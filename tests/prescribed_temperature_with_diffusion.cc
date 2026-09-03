@@ -29,13 +29,11 @@ namespace aspect
     class PrescribedTemperatureMaterial : public MaterialModel::Simple<dim>
     {
       public:
+        virtual void
+        evaluate(const MaterialModel::MaterialModelInputs<dim> &in, MaterialModel::MaterialModelOutputs<dim> &out) const;
 
-        virtual void evaluate(const MaterialModel::MaterialModelInputs<dim> &in,
-                              MaterialModel::MaterialModelOutputs<dim> &out) const;
-
-        virtual
-        void
-        create_additional_named_outputs (MaterialModel::MaterialModelOutputs<dim> &out) const;
+        virtual void
+        create_additional_named_outputs(MaterialModel::MaterialModelOutputs<dim> &out) const;
     };
 
   }
@@ -48,34 +46,32 @@ namespace aspect
 
     template <int dim>
     void
-    PrescribedTemperatureMaterial<dim>::
-    evaluate(const MaterialModel::MaterialModelInputs<dim> &in,
-             MaterialModel::MaterialModelOutputs<dim> &out) const
+    PrescribedTemperatureMaterial<dim>::evaluate(const MaterialModel::MaterialModelInputs<dim> &in,
+                                                 MaterialModel::MaterialModelOutputs<dim>      &out) const
     {
       Simple<dim>::evaluate(in, out);
 
       // set up variable to interpolate prescribed field outputs onto compositional fields
-      const std::shared_ptr<PrescribedTemperatureOutputs<dim>> prescribed_temperature_out
-        = out.template get_additional_output_object<PrescribedTemperatureOutputs<dim>>();
+      const std::shared_ptr<PrescribedTemperatureOutputs<dim>> prescribed_temperature_out =
+        out.template get_additional_output_object<PrescribedTemperatureOutputs<dim>>();
 
       if (prescribed_temperature_out != nullptr)
-        for (unsigned int i=0; i < in.n_evaluation_points(); ++i)
+        for (unsigned int i = 0; i < in.n_evaluation_points(); ++i)
           {
-            const double y = in.position[i](1);
-            prescribed_temperature_out->prescribed_temperature_outputs[i] = std::exp(-y*y/2.0);
+            const double y                                                = in.position[i](1);
+            prescribed_temperature_out->prescribed_temperature_outputs[i] = std::exp(-y * y / 2.0);
           }
     }
 
 
     template <int dim>
     void
-    PrescribedTemperatureMaterial<dim>::create_additional_named_outputs (MaterialModel::MaterialModelOutputs<dim> &out) const
+    PrescribedTemperatureMaterial<dim>::create_additional_named_outputs(MaterialModel::MaterialModelOutputs<dim> &out) const
     {
       if (out.template has_additional_output_object<PrescribedTemperatureOutputs<dim>>() == false)
         {
           const unsigned int n_points = out.n_evaluation_points();
-          out.additional_outputs.push_back(
-            std::make_unique<MaterialModel::PrescribedTemperatureOutputs<dim>> (n_points));
+          out.additional_outputs.push_back(std::make_unique<MaterialModel::PrescribedTemperatureOutputs<dim>>(n_points));
         }
     }
   }

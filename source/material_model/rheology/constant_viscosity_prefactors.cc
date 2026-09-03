@@ -22,8 +22,8 @@
 #include <aspect/material_model/rheology/constant_viscosity_prefactors.h>
 #include <aspect/utilities.h>
 
-#include <deal.II/base/signaling_nan.h>
 #include <deal.II/base/parameter_handler.h>
+#include <deal.II/base/signaling_nan.h>
 
 
 namespace aspect
@@ -33,15 +33,13 @@ namespace aspect
     namespace Rheology
     {
       template <int dim>
-      ConstantViscosityPrefactors<dim>::ConstantViscosityPrefactors ()
-        = default;
+      ConstantViscosityPrefactors<dim>::ConstantViscosityPrefactors() = default;
 
 
 
       template <int dim>
       double
-      ConstantViscosityPrefactors<dim>::compute_viscosity (const double base_viscosity,
-                                                           const unsigned int composition_index) const
+      ConstantViscosityPrefactors<dim>::compute_viscosity(const double base_viscosity, const unsigned int composition_index) const
       {
         return base_viscosity * constant_viscosity_prefactors[composition_index];
       }
@@ -50,21 +48,22 @@ namespace aspect
 
       template <int dim>
       void
-      ConstantViscosityPrefactors<dim>::declare_parameters (ParameterHandler &prm)
+      ConstantViscosityPrefactors<dim>::declare_parameters(ParameterHandler &prm)
       {
-        prm.declare_entry ("Constant viscosity prefactors", "1.0",
-                           Patterns::List(Patterns::Double(0)),
-                           "List of constant viscosity prefactors (i.e., multiplicative factors) "
-                           "for background material and compositional fields, for a total of N+1 "
-                           "where N is the number of all compositional fields or only those "
-                           "corresponding to chemical compositions. Units: none.");
+        prm.declare_entry("Constant viscosity prefactors",
+                          "1.0",
+                          Patterns::List(Patterns::Double(0)),
+                          "List of constant viscosity prefactors (i.e., multiplicative factors) "
+                          "for background material and compositional fields, for a total of N+1 "
+                          "where N is the number of all compositional fields or only those "
+                          "corresponding to chemical compositions. Units: none.");
       }
 
 
 
       template <int dim>
       void
-      ConstantViscosityPrefactors<dim>::parse_parameters (ParameterHandler &prm)
+      ConstantViscosityPrefactors<dim>::parse_parameters(ParameterHandler &prm)
       {
         // Retrieve the list of composition names
         std::vector<std::string> compositional_field_names = this->introspection().get_composition_names();
@@ -75,13 +74,12 @@ namespace aspect
 
         // Establish that a background field is required here
         compositional_field_names.insert(compositional_field_names.begin(), "background");
-        chemical_field_names.insert(chemical_field_names.begin(),"background");
+        chemical_field_names.insert(chemical_field_names.begin(), "background");
 
         Utilities::MapParsing::Options options(chemical_field_names, "Constant viscosity prefactors");
         options.list_of_allowed_keys = compositional_field_names;
 
-        constant_viscosity_prefactors = Utilities::MapParsing::parse_map_to_double_array (prm.get("Constant viscosity prefactors"),
-                                        options);
+        constant_viscosity_prefactors = Utilities::MapParsing::parse_map_to_double_array(prm.get("Constant viscosity prefactors"), options);
       }
     }
   }
@@ -94,8 +92,7 @@ namespace aspect
   {
     namespace Rheology
     {
-#define INSTANTIATE(dim) \
-  template class ConstantViscosityPrefactors<dim>;
+#define INSTANTIATE(dim) template class ConstantViscosityPrefactors<dim>;
 
       ASPECT_INSTANTIATE(INSTANTIATE)
 

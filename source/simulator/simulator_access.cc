@@ -19,12 +19,12 @@
 */
 
 
-#include <aspect/simulator.h>
 #include <aspect/advection_field.h>
 #include <aspect/mesh_deformation/free_surface.h>
 #include <aspect/mesh_deformation/interface.h>
-#include <aspect/simulator/solver/stokes_matrix_free.h>
 #include <aspect/particle/manager.h>
+#include <aspect/simulator.h>
+#include <aspect/simulator/solver/stokes_matrix_free.h>
 
 namespace WorldBuilder
 {
@@ -35,17 +35,15 @@ namespace WorldBuilder
 namespace aspect
 {
   template <int dim>
-  SimulatorAccess<dim>::SimulatorAccess ()
-    :
-    simulator (nullptr)
+  SimulatorAccess<dim>::SimulatorAccess()
+    : simulator(nullptr)
   {}
 
 
 
   template <int dim>
-  SimulatorAccess<dim>::SimulatorAccess (const Simulator<dim> &simulator_object)
-    :
-    simulator (&simulator_object)
+  SimulatorAccess<dim>::SimulatorAccess(const Simulator<dim> &simulator_object)
+    : simulator(&simulator_object)
   {}
 
 
@@ -55,13 +53,13 @@ namespace aspect
   // types (in particular, the Simulator class), which is not the casein the
   // .h file.
   template <int dim>
-  SimulatorAccess<dim>::~SimulatorAccess () = default;
+  SimulatorAccess<dim>::~SimulatorAccess() = default;
 
 
 
   template <int dim>
   void
-  SimulatorAccess<dim>::initialize_simulator (const Simulator<dim> &simulator_object)
+  SimulatorAccess<dim>::initialize_simulator(const Simulator<dim> &simulator_object)
   {
     simulator = &simulator_object;
   }
@@ -91,14 +89,14 @@ namespace aspect
   {
     // Our reference to the Simulator is const, but we need to
     // be able to connect to the signals so a cast is required.
-    return const_cast<SimulatorSignals<dim>&>(simulator->signals);
+    return const_cast<SimulatorSignals<dim> &>(simulator->signals);
   }
 
 
 
   template <int dim>
   const Introspection<dim> &
-  SimulatorAccess<dim>::introspection () const
+  SimulatorAccess<dim>::introspection() const
   {
     return simulator->introspection;
   }
@@ -107,7 +105,7 @@ namespace aspect
 
   template <int dim>
   MPI_Comm
-  SimulatorAccess<dim>::get_mpi_communicator () const
+  SimulatorAccess<dim>::get_mpi_communicator() const
   {
     return simulator->mpi_communicator;
   }
@@ -116,7 +114,7 @@ namespace aspect
 
   template <int dim>
   TimerOutput &
-  SimulatorAccess<dim>::get_computing_timer () const
+  SimulatorAccess<dim>::get_computing_timer() const
   {
     return simulator->computing_timer;
   }
@@ -125,7 +123,7 @@ namespace aspect
 
   template <int dim>
   const ConditionalOStream &
-  SimulatorAccess<dim>::get_pcout () const
+  SimulatorAccess<dim>::get_pcout() const
   {
     return simulator->pcout;
   }
@@ -133,7 +131,8 @@ namespace aspect
 
 
   template <int dim>
-  double SimulatorAccess<dim>::get_time () const
+  double
+  SimulatorAccess<dim>::get_time() const
   {
     return simulator->time;
   }
@@ -141,7 +140,8 @@ namespace aspect
 
 
   template <int dim>
-  double SimulatorAccess<dim>::get_timestep () const
+  double
+  SimulatorAccess<dim>::get_timestep() const
   {
     return simulator->time_step;
   }
@@ -149,7 +149,8 @@ namespace aspect
 
 
   template <int dim>
-  double SimulatorAccess<dim>::get_old_timestep () const
+  double
+  SimulatorAccess<dim>::get_old_timestep() const
   {
     return simulator->old_time_step;
   }
@@ -157,7 +158,8 @@ namespace aspect
 
 
   template <int dim>
-  unsigned int SimulatorAccess<dim>::get_timestep_number () const
+  unsigned int
+  SimulatorAccess<dim>::get_timestep_number() const
   {
     return simulator->timestep_number;
   }
@@ -174,7 +176,8 @@ namespace aspect
 
 
   template <int dim>
-  unsigned int SimulatorAccess<dim>::get_nonlinear_iteration () const
+  unsigned int
+  SimulatorAccess<dim>::get_nonlinear_iteration() const
   {
     return simulator->nonlinear_iteration;
   }
@@ -183,7 +186,7 @@ namespace aspect
 
   template <int dim>
   const parallel::distributed::Triangulation<dim> &
-  SimulatorAccess<dim>::get_triangulation () const
+  SimulatorAccess<dim>::get_triangulation() const
   {
     return simulator->triangulation;
   }
@@ -192,7 +195,7 @@ namespace aspect
 
   template <int dim>
   double
-  SimulatorAccess<dim>::get_volume () const
+  SimulatorAccess<dim>::get_volume() const
   {
     return simulator->global_volume;
   }
@@ -201,7 +204,7 @@ namespace aspect
 
   template <int dim>
   const Mapping<dim> &
-  SimulatorAccess<dim>::get_mapping () const
+  SimulatorAccess<dim>::get_mapping() const
   {
     return *(simulator->mapping);
   }
@@ -210,7 +213,7 @@ namespace aspect
 
   template <int dim>
   std::string
-  SimulatorAccess<dim>::get_output_directory () const
+  SimulatorAccess<dim>::get_output_directory() const
   {
     return simulator->parameters.output_directory;
   }
@@ -219,7 +222,7 @@ namespace aspect
 
   template <int dim>
   unsigned int
-  SimulatorAccess<dim>::get_checkpoint_id () const
+  SimulatorAccess<dim>::get_checkpoint_id() const
   {
     return simulator->last_checkpoint_id;
   }
@@ -228,7 +231,7 @@ namespace aspect
 
   template <int dim>
   bool
-  SimulatorAccess<dim>::convert_output_to_years () const
+  SimulatorAccess<dim>::convert_output_to_years() const
   {
     return simulator->parameters.convert_to_years;
   }
@@ -237,7 +240,7 @@ namespace aspect
 
   template <int dim>
   double
-  SimulatorAccess<dim>::get_end_time () const
+  SimulatorAccess<dim>::get_end_time() const
   {
     return simulator->parameters.end_time;
   }
@@ -245,7 +248,7 @@ namespace aspect
 
   template <int dim>
   unsigned int
-  SimulatorAccess<dim>::get_pre_refinement_step () const
+  SimulatorAccess<dim>::get_pre_refinement_step() const
   {
     return simulator->pre_refinement_step;
   }
@@ -254,7 +257,7 @@ namespace aspect
 
   template <int dim>
   unsigned int
-  SimulatorAccess<dim>::n_compositional_fields () const
+  SimulatorAccess<dim>::n_compositional_fields() const
   {
     return simulator->introspection.n_compositional_fields;
   }
@@ -263,7 +266,7 @@ namespace aspect
 
   template <int dim>
   bool
-  SimulatorAccess<dim>::include_adiabatic_heating () const
+  SimulatorAccess<dim>::include_adiabatic_heating() const
   {
     return simulator->heating_model_manager.adiabatic_heating_enabled();
   }
@@ -272,7 +275,7 @@ namespace aspect
 
   template <int dim>
   bool
-  SimulatorAccess<dim>::include_latent_heat () const
+  SimulatorAccess<dim>::include_latent_heat() const
   {
     const std::vector<std::string> &heating_models = simulator->heating_model_manager.get_active_plugin_names();
     return (std::find(heating_models.begin(), heating_models.end(), "latent heat") != heating_models.end());
@@ -282,7 +285,7 @@ namespace aspect
 
   template <int dim>
   bool
-  SimulatorAccess<dim>::include_melt_transport () const
+  SimulatorAccess<dim>::include_melt_transport() const
   {
     return simulator->parameters.include_melt_transport;
   }
@@ -291,7 +294,7 @@ namespace aspect
 
   template <int dim>
   int
-  SimulatorAccess<dim>::get_stokes_velocity_degree () const
+  SimulatorAccess<dim>::get_stokes_velocity_degree() const
   {
     return simulator->parameters.stokes_velocity_degree;
   }
@@ -300,7 +303,7 @@ namespace aspect
 
   template <int dim>
   double
-  SimulatorAccess<dim>::get_adiabatic_surface_temperature () const
+  SimulatorAccess<dim>::get_adiabatic_surface_temperature() const
   {
     return simulator->parameters.adiabatic_surface_temperature;
   }
@@ -309,7 +312,7 @@ namespace aspect
 
   template <int dim>
   double
-  SimulatorAccess<dim>::get_surface_pressure () const
+  SimulatorAccess<dim>::get_surface_pressure() const
   {
     return simulator->parameters.surface_pressure;
   }
@@ -318,17 +321,16 @@ namespace aspect
 
   template <int dim>
   void
-  SimulatorAccess<dim>::get_refinement_criteria (Vector<float> &estimated_error_per_cell) const
+  SimulatorAccess<dim>::get_refinement_criteria(Vector<float> &estimated_error_per_cell) const
   {
-    simulator->mesh_refinement_manager.execute (estimated_error_per_cell);
+    simulator->mesh_refinement_manager.execute(estimated_error_per_cell);
   }
 
 
 
   template <int dim>
   void
-  SimulatorAccess<dim>::get_artificial_viscosity (Vector<float> &viscosity_per_cell,
-                                                  const bool skip_interior_cells) const
+  SimulatorAccess<dim>::get_artificial_viscosity(Vector<float> &viscosity_per_cell, const bool skip_interior_cells) const
   {
     const AdvectionField advection_field = AdvectionField::temperature();
     simulator->get_artificial_viscosity(viscosity_per_cell, advection_field, skip_interior_cells);
@@ -338,8 +340,8 @@ namespace aspect
 
   template <int dim>
   void
-  SimulatorAccess<dim>::get_artificial_viscosity_composition (Vector<float> &viscosity_per_cell,
-                                                              const unsigned int compositional_variable) const
+  SimulatorAccess<dim>::get_artificial_viscosity_composition(Vector<float>     &viscosity_per_cell,
+                                                             const unsigned int compositional_variable) const
   {
     const AdvectionField advection_field = AdvectionField::composition(compositional_variable);
     simulator->get_artificial_viscosity(viscosity_per_cell, advection_field);
@@ -349,7 +351,7 @@ namespace aspect
 
   template <int dim>
   const LinearAlgebra::BlockVector &
-  SimulatorAccess<dim>::get_current_linearization_point () const
+  SimulatorAccess<dim>::get_current_linearization_point() const
   {
     return simulator->current_linearization_point;
   }
@@ -358,7 +360,7 @@ namespace aspect
 
   template <int dim>
   const LinearAlgebra::BlockVector &
-  SimulatorAccess<dim>::get_solution () const
+  SimulatorAccess<dim>::get_solution() const
   {
     return simulator->solution;
   }
@@ -367,7 +369,7 @@ namespace aspect
 
   template <int dim>
   const LinearAlgebra::BlockVector &
-  SimulatorAccess<dim>::get_old_solution () const
+  SimulatorAccess<dim>::get_old_solution() const
   {
     return simulator->old_solution;
   }
@@ -376,7 +378,7 @@ namespace aspect
 
   template <int dim>
   const LinearAlgebra::BlockVector &
-  SimulatorAccess<dim>::get_old_old_solution () const
+  SimulatorAccess<dim>::get_old_old_solution() const
   {
     return simulator->old_old_solution;
   }
@@ -385,7 +387,7 @@ namespace aspect
 
   template <int dim>
   const LinearAlgebra::BlockVector &
-  SimulatorAccess<dim>::get_reaction_vector () const
+  SimulatorAccess<dim>::get_reaction_vector() const
   {
     return simulator->operator_split_reaction_vector;
   }
@@ -394,10 +396,10 @@ namespace aspect
 
   template <int dim>
   const LinearAlgebra::BlockVector &
-  SimulatorAccess<dim>::get_mesh_velocity () const
+  SimulatorAccess<dim>::get_mesh_velocity() const
   {
-    Assert( simulator->parameters.mesh_deformation_enabled,
-            ExcMessage("You cannot get the mesh velocity if mesh deformation is not enabled."));
+    Assert(simulator->parameters.mesh_deformation_enabled,
+           ExcMessage("You cannot get the mesh velocity if mesh deformation is not enabled."));
     return simulator->mesh_deformation->mesh_velocity;
   }
 
@@ -405,7 +407,7 @@ namespace aspect
 
   template <int dim>
   const DoFHandler<dim> &
-  SimulatorAccess<dim>::get_dof_handler () const
+  SimulatorAccess<dim>::get_dof_handler() const
   {
     return simulator->dof_handler;
   }
@@ -414,7 +416,7 @@ namespace aspect
 
   template <int dim>
   const FiniteElement<dim> &
-  SimulatorAccess<dim>::get_fe () const
+  SimulatorAccess<dim>::get_fe() const
   {
     return simulator->finite_element;
   }
@@ -423,7 +425,7 @@ namespace aspect
 
   template <int dim>
   const LinearAlgebra::BlockSparseMatrix &
-  SimulatorAccess<dim>::get_system_matrix () const
+  SimulatorAccess<dim>::get_system_matrix() const
   {
     return simulator->system_matrix;
   }
@@ -432,7 +434,7 @@ namespace aspect
 
   template <int dim>
   const LinearAlgebra::BlockSparseMatrix &
-  SimulatorAccess<dim>::get_system_preconditioner_matrix () const
+  SimulatorAccess<dim>::get_system_preconditioner_matrix() const
   {
     return simulator->system_preconditioner_matrix;
   }
@@ -441,10 +443,10 @@ namespace aspect
 
   template <int dim>
   const MaterialModel::Interface<dim> &
-  SimulatorAccess<dim>::get_material_model () const
+  SimulatorAccess<dim>::get_material_model() const
   {
-    Assert (simulator->material_model.get() != nullptr,
-            ExcMessage("You can not call this function if no such model is actually available."));
+    Assert(simulator->material_model.get() != nullptr,
+           ExcMessage("You can not call this function if no such model is actually available."));
     return *simulator->material_model.get();
   }
 
@@ -452,7 +454,7 @@ namespace aspect
 
   template <int dim>
   const BoundaryTraction::Manager<dim> &
-  SimulatorAccess<dim>::get_boundary_traction_manager () const
+  SimulatorAccess<dim>::get_boundary_traction_manager() const
   {
     return simulator->boundary_traction_manager;
   }
@@ -461,7 +463,7 @@ namespace aspect
 
   template <int dim>
   bool
-  SimulatorAccess<dim>::has_boundary_temperature () const
+  SimulatorAccess<dim>::has_boundary_temperature() const
   {
     return (get_boundary_temperature_manager().get_fixed_temperature_boundary_indicators().size() > 0);
   }
@@ -470,7 +472,7 @@ namespace aspect
 
   template <int dim>
   const BoundaryTemperature::Manager<dim> &
-  SimulatorAccess<dim>::get_boundary_temperature_manager () const
+  SimulatorAccess<dim>::get_boundary_temperature_manager() const
   {
     return simulator->boundary_temperature_manager;
   }
@@ -479,7 +481,7 @@ namespace aspect
 
   template <int dim>
   const BoundaryConvectiveHeating::Manager<dim> &
-  SimulatorAccess<dim>::get_boundary_convective_heating_manager () const
+  SimulatorAccess<dim>::get_boundary_convective_heating_manager() const
   {
     return simulator->boundary_convective_heating_manager;
   }
@@ -488,10 +490,10 @@ namespace aspect
 
   template <int dim>
   const BoundaryHeatFlux::Interface<dim> &
-  SimulatorAccess<dim>::get_boundary_heat_flux () const
+  SimulatorAccess<dim>::get_boundary_heat_flux() const
   {
-    Assert (simulator->boundary_heat_flux.get() != nullptr,
-            ExcMessage("You can not call this function if no such model is actually available."));
+    Assert(simulator->boundary_heat_flux.get() != nullptr,
+           ExcMessage("You can not call this function if no such model is actually available."));
     return *simulator->boundary_heat_flux.get();
   }
 
@@ -499,7 +501,7 @@ namespace aspect
 
   template <int dim>
   bool
-  SimulatorAccess<dim>::has_boundary_composition () const
+  SimulatorAccess<dim>::has_boundary_composition() const
   {
     return (get_boundary_composition_manager().get_fixed_composition_boundary_indicators().size() > 0);
   }
@@ -508,7 +510,7 @@ namespace aspect
 
   template <int dim>
   const BoundaryComposition::Manager<dim> &
-  SimulatorAccess<dim>::get_boundary_composition_manager () const
+  SimulatorAccess<dim>::get_boundary_composition_manager() const
   {
     return simulator->boundary_composition_manager;
   }
@@ -517,7 +519,7 @@ namespace aspect
 
   template <int dim>
   const std::set<types::boundary_id> &
-  SimulatorAccess<dim>::get_fixed_temperature_boundary_indicators () const
+  SimulatorAccess<dim>::get_fixed_temperature_boundary_indicators() const
   {
     return get_boundary_temperature_manager().get_fixed_temperature_boundary_indicators();
   }
@@ -526,7 +528,7 @@ namespace aspect
 
   template <int dim>
   const std::set<types::boundary_id> &
-  SimulatorAccess<dim>::get_fixed_convective_heating_boundary_indicators () const
+  SimulatorAccess<dim>::get_fixed_convective_heating_boundary_indicators() const
   {
     return get_boundary_convective_heating_manager().get_convective_heating_boundary_indicators();
   }
@@ -535,7 +537,7 @@ namespace aspect
 
   template <int dim>
   const std::set<types::boundary_id> &
-  SimulatorAccess<dim>::get_fixed_heat_flux_boundary_indicators () const
+  SimulatorAccess<dim>::get_fixed_heat_flux_boundary_indicators() const
   {
     return simulator->parameters.fixed_heat_flux_boundary_indicators;
   }
@@ -544,7 +546,7 @@ namespace aspect
 
   template <int dim>
   const std::set<types::boundary_id> &
-  SimulatorAccess<dim>::get_fixed_composition_boundary_indicators () const
+  SimulatorAccess<dim>::get_fixed_composition_boundary_indicators() const
   {
     return get_boundary_composition_manager().get_fixed_composition_boundary_indicators();
   }
@@ -552,10 +554,10 @@ namespace aspect
 
   template <int dim>
   const std::set<types::boundary_id> &
-  SimulatorAccess<dim>::get_mesh_deformation_boundary_indicators () const
+  SimulatorAccess<dim>::get_mesh_deformation_boundary_indicators() const
   {
-    Assert( simulator->parameters.mesh_deformation_enabled,
-            ExcMessage("You cannot get the mesh deformation boundary indicators if mesh deformation is not enabled."));
+    Assert(simulator->parameters.mesh_deformation_enabled,
+           ExcMessage("You cannot get the mesh deformation boundary indicators if mesh deformation is not enabled."));
     return simulator->mesh_deformation->get_active_mesh_deformation_boundary_indicators();
   }
 
@@ -563,7 +565,7 @@ namespace aspect
 
   template <int dim>
   const BoundaryVelocity::Manager<dim> &
-  SimulatorAccess<dim>::get_boundary_velocity_manager () const
+  SimulatorAccess<dim>::get_boundary_velocity_manager() const
   {
     return simulator->boundary_velocity_manager;
   }
@@ -572,10 +574,10 @@ namespace aspect
 
   template <int dim>
   const InitialTopographyModel::Interface<dim> &
-  SimulatorAccess<dim>::get_initial_topography_model () const
+  SimulatorAccess<dim>::get_initial_topography_model() const
   {
-    Assert (simulator->initial_topography_model.get() != nullptr,
-            ExcMessage("You can not call this function if no such model is actually available."));
+    Assert(simulator->initial_topography_model.get() != nullptr,
+           ExcMessage("You can not call this function if no such model is actually available."));
     return *simulator->initial_topography_model.get();
   }
 
@@ -583,10 +585,10 @@ namespace aspect
 
   template <int dim>
   const std::shared_ptr<const InitialTopographyModel::Interface<dim>>
-  SimulatorAccess<dim>::get_initial_topography_model_pointer () const
+  SimulatorAccess<dim>::get_initial_topography_model_pointer() const
   {
-    Assert (simulator->initial_topography_model.get() != nullptr,
-            ExcMessage("You can not call this function if no such model is actually available."));
+    Assert(simulator->initial_topography_model.get() != nullptr,
+           ExcMessage("You can not call this function if no such model is actually available."));
     return simulator->initial_topography_model;
   }
 
@@ -594,29 +596,28 @@ namespace aspect
 
   template <int dim>
   const GeometryModel::Interface<dim> &
-  SimulatorAccess<dim>::get_geometry_model () const
+  SimulatorAccess<dim>::get_geometry_model() const
   {
-    Assert (simulator->geometry_model.get() != nullptr,
-            ExcMessage("You can not call this function if no such model is actually available."));
+    Assert(simulator->geometry_model.get() != nullptr,
+           ExcMessage("You can not call this function if no such model is actually available."));
     return *simulator->geometry_model.get();
   }
 
   template <int dim>
   const GravityModel::Interface<dim> &
-  SimulatorAccess<dim>::get_gravity_model () const
+  SimulatorAccess<dim>::get_gravity_model() const
   {
-    Assert (simulator->gravity_model.get() != nullptr,
-            ExcMessage("You can not call this function if no such model is actually available."));
+    Assert(simulator->gravity_model.get() != nullptr, ExcMessage("You can not call this function if no such model is actually available."));
     return *simulator->gravity_model.get();
   }
 
 
   template <int dim>
   const AdiabaticConditions::Interface<dim> &
-  SimulatorAccess<dim>::get_adiabatic_conditions () const
+  SimulatorAccess<dim>::get_adiabatic_conditions() const
   {
-    Assert (simulator->adiabatic_conditions.get() != nullptr,
-            ExcMessage("You can not call this function if no such model is actually available."));
+    Assert(simulator->adiabatic_conditions.get() != nullptr,
+           ExcMessage("You can not call this function if no such model is actually available."));
     return *simulator->adiabatic_conditions.get();
   }
 
@@ -624,19 +625,19 @@ namespace aspect
 
   template <int dim>
   std::shared_ptr<const InitialTemperature::Manager<dim>>
-  SimulatorAccess<dim>::get_initial_temperature_manager_pointer () const
+  SimulatorAccess<dim>::get_initial_temperature_manager_pointer() const
   {
-    Assert (simulator->initial_temperature_manager,
-            ExcMessage ("You are trying to access the initial temperature manager "
-                        "object, but the Simulator object is no longer keeping "
-                        "track of it because the initial time has passed. If "
-                        "you need to access this object after the first time "
-                        "step, you need to copy the object returned by "
-                        "this function before or during the first time step "
-                        "into a std::shared_ptr that lives long enough to "
-                        "extend the lifetime of the object pointed to "
-                        "beyond the time frame that the Simulator object "
-                        "keeps track of it."));
+    Assert(simulator->initial_temperature_manager,
+           ExcMessage("You are trying to access the initial temperature manager "
+                      "object, but the Simulator object is no longer keeping "
+                      "track of it because the initial time has passed. If "
+                      "you need to access this object after the first time "
+                      "step, you need to copy the object returned by "
+                      "this function before or during the first time step "
+                      "into a std::shared_ptr that lives long enough to "
+                      "extend the lifetime of the object pointed to "
+                      "beyond the time frame that the Simulator object "
+                      "keeps track of it."));
     return simulator->initial_temperature_manager;
   }
 
@@ -644,19 +645,19 @@ namespace aspect
 
   template <int dim>
   const InitialTemperature::Manager<dim> &
-  SimulatorAccess<dim>::get_initial_temperature_manager () const
+  SimulatorAccess<dim>::get_initial_temperature_manager() const
   {
-    Assert (simulator->initial_temperature_manager,
-            ExcMessage ("You are trying to access the initial temperature manager "
-                        "object, but the Simulator object is no longer keeping "
-                        "track of it because the initial time has passed. If "
-                        "you need to access this object after the first time "
-                        "step, you need to copy the object returned by "
-                        "this function before or during the first time step "
-                        "into a std::shared_ptr that lives long enough to "
-                        "extend the lifetime of the object pointed to "
-                        "beyond the time frame that the Simulator object "
-                        "keeps track of it."));
+    Assert(simulator->initial_temperature_manager,
+           ExcMessage("You are trying to access the initial temperature manager "
+                      "object, but the Simulator object is no longer keeping "
+                      "track of it because the initial time has passed. If "
+                      "you need to access this object after the first time "
+                      "step, you need to copy the object returned by "
+                      "this function before or during the first time step "
+                      "into a std::shared_ptr that lives long enough to "
+                      "extend the lifetime of the object pointed to "
+                      "beyond the time frame that the Simulator object "
+                      "keeps track of it."));
     return *simulator->initial_temperature_manager;
   }
 
@@ -664,19 +665,19 @@ namespace aspect
 
   template <int dim>
   std::shared_ptr<const InitialComposition::Manager<dim>>
-  SimulatorAccess<dim>::get_initial_composition_manager_pointer () const
+  SimulatorAccess<dim>::get_initial_composition_manager_pointer() const
   {
-    Assert (simulator->initial_composition_manager,
-            ExcMessage ("You are trying to access the initial composition manager "
-                        "object, but the Simulator object is no longer keeping "
-                        "track of it because the initial time has passed. If "
-                        "you need to access to this object after the first time "
-                        "step, you need to copy the object returned by "
-                        "this function before or during the first time step "
-                        "into a std::shared_ptr that lives long enough to "
-                        "extend the lifetime of the object pointed to "
-                        "beyond the timeframe that the Simulator object "
-                        "keeps track of it."));
+    Assert(simulator->initial_composition_manager,
+           ExcMessage("You are trying to access the initial composition manager "
+                      "object, but the Simulator object is no longer keeping "
+                      "track of it because the initial time has passed. If "
+                      "you need to access to this object after the first time "
+                      "step, you need to copy the object returned by "
+                      "this function before or during the first time step "
+                      "into a std::shared_ptr that lives long enough to "
+                      "extend the lifetime of the object pointed to "
+                      "beyond the timeframe that the Simulator object "
+                      "keeps track of it."));
     return simulator->initial_composition_manager;
   }
 
@@ -684,19 +685,19 @@ namespace aspect
 
   template <int dim>
   const InitialComposition::Manager<dim> &
-  SimulatorAccess<dim>::get_initial_composition_manager () const
+  SimulatorAccess<dim>::get_initial_composition_manager() const
   {
-    Assert (simulator->initial_composition_manager,
-            ExcMessage ("You are trying to access the initial composition manager "
-                        "object, but the Simulator object is no longer keeping "
-                        "track of it because the initial time has passed. If "
-                        "you need access to this object after the first time "
-                        "step, you need to copy the object returned by "
-                        "this function before or during the first time step "
-                        "into a std::shared_ptr that lives long enough to "
-                        "extend the lifetime of the object pointed to "
-                        "beyond the timeframe that the Simulator object "
-                        "keeps track of it."));
+    Assert(simulator->initial_composition_manager,
+           ExcMessage("You are trying to access the initial composition manager "
+                      "object, but the Simulator object is no longer keeping "
+                      "track of it because the initial time has passed. If "
+                      "you need access to this object after the first time "
+                      "step, you need to copy the object returned by "
+                      "this function before or during the first time step "
+                      "into a std::shared_ptr that lives long enough to "
+                      "extend the lifetime of the object pointed to "
+                      "beyond the timeframe that the Simulator object "
+                      "keeps track of it."));
     return *simulator->initial_composition_manager;
   }
 
@@ -704,49 +705,47 @@ namespace aspect
 
   template <int dim>
   const HeatingModel::Manager<dim> &
-  SimulatorAccess<dim>::get_heating_model_manager () const
+  SimulatorAccess<dim>::get_heating_model_manager() const
   {
     return simulator->heating_model_manager;
   }
 
   template <int dim>
   const PrescribedDilation::Manager<dim> &
-  SimulatorAccess<dim>::get_prescribed_dilation_manager () const
+  SimulatorAccess<dim>::get_prescribed_dilation_manager() const
   {
     return simulator->prescribed_dilation_manager;
   }
 
   template <int dim>
   const MeshRefinement::Manager<dim> &
-  SimulatorAccess<dim>::get_mesh_refinement_manager () const
+  SimulatorAccess<dim>::get_mesh_refinement_manager() const
   {
     return simulator->mesh_refinement_manager;
   }
 
   template <int dim>
   const MeltHandler<dim> &
-  SimulatorAccess<dim>::get_melt_handler () const
+  SimulatorAccess<dim>::get_melt_handler() const
   {
-    Assert (simulator->melt_handler.get() != nullptr,
-            ExcMessage("You can not call this function if melt transport is not enabled."));
+    Assert(simulator->melt_handler.get() != nullptr, ExcMessage("You can not call this function if melt transport is not enabled."));
     return *(simulator->melt_handler);
   }
 
   template <int dim>
   const VolumeOfFluidHandler<dim> &
-  SimulatorAccess<dim>::get_volume_of_fluid_handler () const
+  SimulatorAccess<dim>::get_volume_of_fluid_handler() const
   {
-    Assert (simulator->volume_of_fluid_handler.get() != nullptr,
-            ExcMessage("You can not call this function if volume of fluid interface tracking is not enabled."));
+    Assert(simulator->volume_of_fluid_handler.get() != nullptr,
+           ExcMessage("You can not call this function if volume of fluid interface tracking is not enabled."));
     return *(simulator->volume_of_fluid_handler);
   }
 
   template <int dim>
   const NewtonHandler<dim> &
-  SimulatorAccess<dim>::get_newton_handler () const
+  SimulatorAccess<dim>::get_newton_handler() const
   {
-    Assert (simulator->newton_handler.get() != nullptr,
-            ExcMessage("You can not call this function if the Newton solver is not enabled."));
+    Assert(simulator->newton_handler.get() != nullptr, ExcMessage("You can not call this function if the Newton solver is not enabled."));
     return *(simulator->newton_handler);
   }
 
@@ -754,44 +753,44 @@ namespace aspect
 #ifdef ASPECT_WITH_WORLD_BUILDER
   template <int dim>
   const WorldBuilder::World &
-  SimulatorAccess<dim>::get_world_builder () const
+  SimulatorAccess<dim>::get_world_builder() const
   {
-    Assert (simulator->world_builder.get() != nullptr,
-            ExcMessage ("You are trying to access the WorldBuilder "
-                        "object, but the Simulator object is not currently storing "
-                        "a valid pointer to such an object. This is likely "
-                        "because the Simulator object is no longer keeping "
-                        "track of wht WorldBuilder object because "
-                        "the initial time has passed. If "
-                        "you need to access this object after the first time "
-                        "step, you need to copy the object returned by "
-                        "this function before or during the first time step "
-                        "into a std::shared_ptr that lives long enough to "
-                        "extend the lifetime of the object pointed to "
-                        "beyond the time frame that the Simulator object "
-                        "keeps track of it."));
+    Assert(simulator->world_builder.get() != nullptr,
+           ExcMessage("You are trying to access the WorldBuilder "
+                      "object, but the Simulator object is not currently storing "
+                      "a valid pointer to such an object. This is likely "
+                      "because the Simulator object is no longer keeping "
+                      "track of wht WorldBuilder object because "
+                      "the initial time has passed. If "
+                      "you need to access this object after the first time "
+                      "step, you need to copy the object returned by "
+                      "this function before or during the first time step "
+                      "into a std::shared_ptr that lives long enough to "
+                      "extend the lifetime of the object pointed to "
+                      "beyond the time frame that the Simulator object "
+                      "keeps track of it."));
     return *simulator->world_builder;
   }
 
 
   template <int dim>
   std::shared_ptr<const WorldBuilder::World>
-  SimulatorAccess<dim>::get_world_builder_pointer () const
+  SimulatorAccess<dim>::get_world_builder_pointer() const
   {
-    Assert (simulator->world_builder.get() != nullptr,
-            ExcMessage ("You are trying to access the WorldBuilder "
-                        "object, but the Simulator object is not currently storing "
-                        "a valid pointer to such an object. This is likely "
-                        "because the Simulator object is no longer keeping "
-                        "track of wht WorldBuilder object because "
-                        "the initial time has passed. If "
-                        "you need to access this object after the first time "
-                        "step, you need to copy the object returned by "
-                        "this function before or during the first time step "
-                        "into a std::shared_ptr that lives long enough to "
-                        "extend the lifetime of the object pointed to "
-                        "beyond the time frame that the Simulator object "
-                        "keeps track of it."));
+    Assert(simulator->world_builder.get() != nullptr,
+           ExcMessage("You are trying to access the WorldBuilder "
+                      "object, but the Simulator object is not currently storing "
+                      "a valid pointer to such an object. This is likely "
+                      "because the Simulator object is no longer keeping "
+                      "track of wht WorldBuilder object because "
+                      "the initial time has passed. If "
+                      "you need to access this object after the first time "
+                      "step, you need to copy the object returned by "
+                      "this function before or during the first time step "
+                      "into a std::shared_ptr that lives long enough to "
+                      "extend the lifetime of the object pointed to "
+                      "beyond the time frame that the Simulator object "
+                      "keeps track of it."));
     return simulator->world_builder;
   }
 #endif
@@ -799,28 +798,27 @@ namespace aspect
 
   template <int dim>
   const MeshDeformation::MeshDeformationHandler<dim> &
-  SimulatorAccess<dim>::get_mesh_deformation_handler () const
+  SimulatorAccess<dim>::get_mesh_deformation_handler() const
   {
-    Assert (simulator->mesh_deformation.get() != nullptr,
-            ExcMessage("You cannot call this function if mesh deformation is not enabled."));
+    Assert(simulator->mesh_deformation.get() != nullptr, ExcMessage("You cannot call this function if mesh deformation is not enabled."));
 
     return *(simulator->mesh_deformation);
   }
 
   template <int dim>
   void
-  SimulatorAccess<dim>::get_composition_values_at_q_point (const std::vector<std::vector<double>> &composition_values,
-                                                           const unsigned int                      q,
-                                                           std::vector<double>                    &composition_values_at_q_point)
+  SimulatorAccess<dim>::get_composition_values_at_q_point(const std::vector<std::vector<double>> &composition_values,
+                                                          const unsigned int                      q,
+                                                          std::vector<double>                    &composition_values_at_q_point)
   {
-    for (unsigned int k=0; k < composition_values_at_q_point.size(); ++k)
+    for (unsigned int k = 0; k < composition_values_at_q_point.size(); ++k)
       composition_values_at_q_point[k] = composition_values[k][q];
   }
 
 
   template <int dim>
   TableHandler &
-  SimulatorAccess<dim>::get_statistics_object () const
+  SimulatorAccess<dim>::get_statistics_object() const
   {
     return const_cast<TableHandler &>(simulator->statistics);
   }
@@ -843,31 +841,29 @@ namespace aspect
 
   template <int dim>
   bool
-  SimulatorAccess<dim>::simulator_is_past_initialization () const
+  SimulatorAccess<dim>::simulator_is_past_initialization() const
   {
-    return ((simulator != nullptr)
-            &&
-            (simulator->simulator_is_past_initialization == true));
+    return ((simulator != nullptr) && (simulator->simulator_is_past_initialization == true));
   }
 
 
   template <int dim>
   double
-  SimulatorAccess<dim>::get_pressure_scaling () const
+  SimulatorAccess<dim>::get_pressure_scaling() const
   {
     return (simulator->pressure_scaling);
   }
 
   template <int dim>
   bool
-  SimulatorAccess<dim>::pressure_rhs_needs_compatibility_modification () const
+  SimulatorAccess<dim>::pressure_rhs_needs_compatibility_modification() const
   {
     return simulator->do_pressure_rhs_compatibility_modification;
   }
 
   template <int dim>
   bool
-  SimulatorAccess<dim>::model_has_prescribed_stokes_solution () const
+  SimulatorAccess<dim>::model_has_prescribed_stokes_solution() const
   {
     return (simulator->prescribed_stokes_solution.get() != nullptr);
   }
@@ -894,7 +890,7 @@ namespace aspect
   const Particle::Manager<dim> &
   SimulatorAccess<dim>::get_particle_manager(unsigned int particle_manager_index) const
   {
-    AssertThrow (particle_manager_index < simulator->particle_managers.size(), ExcInternalError());
+    AssertThrow(particle_manager_index < simulator->particle_managers.size(), ExcInternalError());
     return simulator->particle_managers[particle_manager_index];
   }
 
@@ -904,14 +900,15 @@ namespace aspect
   Particle::Manager<dim> &
   SimulatorAccess<dim>::get_particle_manager(unsigned int particle_manager_index)
   {
-    AssertThrow (particle_manager_index < simulator->particle_managers.size(), ExcInternalError());
-    return const_cast<Particle::Manager<dim>&>(simulator->particle_managers[particle_manager_index]);
+    AssertThrow(particle_manager_index < simulator->particle_managers.size(), ExcInternalError());
+    return const_cast<Particle::Manager<dim> &>(simulator->particle_managers[particle_manager_index]);
   }
 
 
 
   template <int dim>
-  bool SimulatorAccess<dim>::is_stokes_matrix_free() const
+  bool
+  SimulatorAccess<dim>::is_stokes_matrix_free() const
   {
     return simulator->is_stokes_matrix_free();
   }
@@ -920,18 +917,17 @@ namespace aspect
 
   template <int dim>
   const StokesMatrixFreeHandler<dim> &
-  SimulatorAccess<dim>::get_stokes_matrix_free () const
+  SimulatorAccess<dim>::get_stokes_matrix_free() const
   {
-    Assert (simulator->is_stokes_matrix_free(),
-            ExcMessage("You can not call this function if the matrix-free Stokes solver is not used."));
-    return *dynamic_cast<StokesMatrixFreeHandler<dim>*>(simulator->stokes_solver.get());
+    Assert(simulator->is_stokes_matrix_free(), ExcMessage("You can not call this function if the matrix-free Stokes solver is not used."));
+    return *dynamic_cast<StokesMatrixFreeHandler<dim> *>(simulator->stokes_solver.get());
   }
 
 
 
   template <int dim>
   const StokesSolver::Interface<dim> &
-  SimulatorAccess<dim>::get_stokes_solver () const
+  SimulatorAccess<dim>::get_stokes_solver() const
   {
     return *(simulator->stokes_solver.get());
   }
@@ -940,7 +936,7 @@ namespace aspect
 
   template <int dim>
   const PrescribedSolution::Manager<dim> &
-  SimulatorAccess<dim>::get_prescribed_solution () const
+  SimulatorAccess<dim>::get_prescribed_solution() const
   {
     return simulator->prescribed_solution_manager;
   }
@@ -949,9 +945,9 @@ namespace aspect
 
   template <int dim>
   RotationProperties<dim>
-  SimulatorAccess<dim>::compute_net_angular_momentum(const bool use_constant_density,
+  SimulatorAccess<dim>::compute_net_angular_momentum(const bool                        use_constant_density,
                                                      const LinearAlgebra::BlockVector &solution,
-                                                     const bool limit_to_top_faces) const
+                                                     const bool                        limit_to_top_faces) const
   {
     return simulator->compute_net_angular_momentum(use_constant_density, solution, limit_to_top_faces);
   }
@@ -969,8 +965,7 @@ namespace aspect
 
   template <int dim>
   void
-  SimulatorAccess<dim>::denormalize_pressure(const double                      pressure_adjustment,
-                                             LinearAlgebra::BlockVector       &vector) const
+  SimulatorAccess<dim>::denormalize_pressure(const double pressure_adjustment, LinearAlgebra::BlockVector &vector) const
   {
     simulator->denormalize_pressure(pressure_adjustment, vector);
   }
@@ -990,8 +985,7 @@ namespace aspect
 // explicit instantiations
 namespace aspect
 {
-#define INSTANTIATE(dim) \
-  template class SimulatorAccess<dim>;
+#define INSTANTIATE(dim) template class SimulatorAccess<dim>;
 
   ASPECT_INSTANTIATE(INSTANTIATE)
 

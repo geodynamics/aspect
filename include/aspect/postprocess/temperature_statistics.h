@@ -42,8 +42,8 @@ namespace aspect
         /**
          * Evaluate the solution for some temperature statistics.
          */
-        std::pair<std::string,std::string>
-        execute (TableHandler &statistics) override;
+        std::pair<std::string, std::string>
+        execute(TableHandler &statistics) override;
     };
   }
 }

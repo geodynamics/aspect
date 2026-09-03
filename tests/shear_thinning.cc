@@ -29,12 +29,11 @@ namespace aspect
     class ShearThinning : public MaterialModel::Simple<dim>
     {
       public:
-
-        virtual void evaluate(const MaterialModel::MaterialModelInputs<dim> &in,
-                              MaterialModel::MaterialModelOutputs<dim> &out) const;
+        virtual void
+        evaluate(const MaterialModel::MaterialModelInputs<dim> &in, MaterialModel::MaterialModelOutputs<dim> &out) const;
 
         void
-        parse_parameters (ParameterHandler &prm);
+        parse_parameters(ParameterHandler &prm);
     };
 
   }
@@ -47,19 +46,17 @@ namespace aspect
 
     template <int dim>
     void
-    ShearThinning<dim>::
-    evaluate(const MaterialModel::MaterialModelInputs<dim> &in,
-             MaterialModel::MaterialModelOutputs<dim> &out) const
+    ShearThinning<dim>::evaluate(const MaterialModel::MaterialModelInputs<dim> &in, MaterialModel::MaterialModelOutputs<dim> &out) const
     {
       Simple<dim>::evaluate(in, out);
       if (in.requests_property(MaterialProperties::viscosity))
-        for (unsigned int i=0; i < in.n_evaluation_points(); ++i)
-          out.viscosities[i] = 1./(1+in.strain_rate[i].norm());
+        for (unsigned int i = 0; i < in.n_evaluation_points(); ++i)
+          out.viscosities[i] = 1. / (1 + in.strain_rate[i].norm());
     }
 
     template <int dim>
     void
-    ShearThinning<dim>::parse_parameters (ParameterHandler &prm)
+    ShearThinning<dim>::parse_parameters(ParameterHandler &prm)
     {
       Simple<dim>::parse_parameters(prm);
 
@@ -95,9 +92,8 @@ namespace aspect
     class ShearThinning : public Interface<dim>, public ::aspect::SimulatorAccess<dim>
     {
       public:
-        virtual
-        std::pair<std::string,std::string>
-        execute (TableHandler &);
+        virtual std::pair<std::string, std::string>
+        execute(TableHandler &);
     };
   }
 }
@@ -111,60 +107,53 @@ namespace aspect
   namespace Postprocess
   {
     template <int dim>
-    std::pair<std::string,std::string>
-    ShearThinning<dim>::execute (TableHandler &)
+    std::pair<std::string, std::string>
+    ShearThinning<dim>::execute(TableHandler &)
     {
       // create a quadrature formula based on the temperature element alone.
       // be defensive about determining that what we think is the temperature
       // element is indeed the temperature element
-      Assert (this->get_fe().n_base_elements() == 3+(this->n_compositional_fields()>0 ? 1 : 0),
-              ExcNotImplemented());
-      const QGauss<dim> quadrature_formula (this->get_fe().base_element(2).degree+1);
+      Assert(this->get_fe().n_base_elements() == 3 + (this->n_compositional_fields() > 0 ? 1 : 0), ExcNotImplemented());
+      const QGauss<dim> quadrature_formula(this->get_fe().base_element(2).degree + 1);
 
-      FEValues<dim> fe_values (this->get_mapping(),
-                               this->get_fe(),
-                               quadrature_formula,
-                               update_gradients         | update_values |
-                               update_quadrature_points | update_JxW_values);
+      FEValues<dim> fe_values(this->get_mapping(),
+                              this->get_fe(),
+                              quadrature_formula,
+                              update_gradients | update_values | update_quadrature_points | update_JxW_values);
 
-      std::vector<std::vector<double>> composition_values (this->n_compositional_fields(),std::vector<double> (quadrature_formula.size()));
+      std::vector<std::vector<double>> composition_values(this->n_compositional_fields(), std::vector<double>(quadrature_formula.size()));
 
-      typename DoFHandler<dim>::active_cell_iterator
-      cell = this->get_dof_handler().begin_active(),
-      endc = this->get_dof_handler().end();
+      typename DoFHandler<dim>::active_cell_iterator cell = this->get_dof_handler().begin_active(), endc = this->get_dof_handler().end();
 
-      typename MaterialModel::MaterialModelInputs<dim> in(fe_values.n_quadrature_points, this->n_compositional_fields());
+      typename MaterialModel::MaterialModelInputs<dim>  in(fe_values.n_quadrature_points, this->n_compositional_fields());
       typename MaterialModel::MaterialModelOutputs<dim> out(fe_values.n_quadrature_points, this->n_compositional_fields());
       in.requested_properties = MaterialModel::MaterialProperties::viscosity;
 
       // compute the integral of the viscosity. since we're on a unit box,
       // this also is the average value
       double viscosity_integral = 0;
-      for (; cell!=endc; ++cell)
+      for (; cell != endc; ++cell)
         if (cell->is_locally_owned())
           {
-            fe_values.reinit (cell);
-            fe_values[this->introspection().extractors.temperature].get_function_values (this->get_solution(),
-                                                                                         in.temperature);
-            fe_values[this->introspection().extractors.pressure].get_function_values (this->get_solution(),
-                                                                                      in.pressure);
-            fe_values[this->introspection().extractors.velocities].get_function_symmetric_gradients (this->get_solution(),
-                in.strain_rate);
-            for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
+            fe_values.reinit(cell);
+            fe_values[this->introspection().extractors.temperature].get_function_values(this->get_solution(), in.temperature);
+            fe_values[this->introspection().extractors.pressure].get_function_values(this->get_solution(), in.pressure);
+            fe_values[this->introspection().extractors.velocities].get_function_symmetric_gradients(this->get_solution(), in.strain_rate);
+            for (unsigned int c = 0; c < this->n_compositional_fields(); ++c)
               fe_values[this->introspection().extractors.compositional_fields[c]].get_function_values(this->get_solution(),
-                  composition_values[c]);
+                                                                                                      composition_values[c]);
 
             in.position = fe_values.get_quadrature_points();
-            for (unsigned int i=0; i<fe_values.n_quadrature_points; ++i)
+            for (unsigned int i = 0; i < fe_values.n_quadrature_points; ++i)
               {
-                for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
+                for (unsigned int c = 0; c < this->n_compositional_fields(); ++c)
                   in.composition[i][c] = composition_values[c][i];
               }
 
             this->get_material_model().evaluate(in, out);
 
 
-            for (unsigned int q=0; q<fe_values.n_quadrature_points; ++q)
+            for (unsigned int q = 0; q < fe_values.n_quadrature_points; ++q)
               viscosity_integral += out.viscosities[q] * fe_values.JxW(q);
           }
 
@@ -172,8 +161,7 @@ namespace aspect
       screen_text.precision(4);
       screen_text << Utilities::MPI::sum(viscosity_integral, this->get_mpi_communicator());
 
-      return std::pair<std::string, std::string> ("Average viscosity:",
-                                                  screen_text.str());
+      return std::pair<std::string, std::string>("Average viscosity:", screen_text.str());
     }
   }
 }

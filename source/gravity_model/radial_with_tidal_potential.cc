@@ -19,21 +19,20 @@
 */
 
 
-#include <aspect/gravity_model/radial_with_tidal_potential.h>
 #include <aspect/geometry_model/interface.h>
+#include <aspect/gravity_model/radial_constant.h>
+#include <aspect/gravity_model/radial_with_tidal_potential.h>
 #include <aspect/utilities.h>
 
 #include <deal.II/base/tensor.h>
-
-#include <aspect/gravity_model/radial_constant.h>
 
 namespace aspect
 {
   namespace GravityModel
   {
     template <int dim>
-    Tensor<1,dim>
-    RadialWithTidalPotential<dim>::gravity_vector (const Point<dim> &p) const
+    Tensor<1, dim>
+    RadialWithTidalPotential<dim>::gravity_vector(const Point<dim> &p) const
     {
       /**
        * Notation of this potential equation is converted from spherical coordinates to cartesian coordinates.
@@ -50,28 +49,27 @@ namespace aspect
       const double t = (this->simulator_is_past_initialization()) ? this->get_time() : 0.0;
 
       const double NSR_angular_frequency = 2. * dealii::numbers::PI / P;
-      const double C1 = std::cos( 2. * NSR_angular_frequency * t);
-      const double C2 = std::sin( 2. * NSR_angular_frequency * t);
+      const double C1                    = std::cos(2. * NSR_angular_frequency * t);
+      const double C2                    = std::sin(2. * NSR_angular_frequency * t);
 
-      Tensor<1,dim> gradient_Tstar;
-      Tensor<1,dim> gradient_T0;
+      Tensor<1, dim> gradient_Tstar;
+      Tensor<1, dim> gradient_T0;
 
-      gradient_Tstar[0] = 1./3. * p[0];
-      gradient_Tstar[1] = 1./3. * p[1];
+      gradient_Tstar[0] = 1. / 3. * p[0];
+      gradient_Tstar[1] = 1. / 3. * p[1];
 
-      gradient_T0[0] = C1*p[0] - C2*p[1];
-      gradient_T0[1] = -C1*p[1] - C2*p[0];
+      gradient_T0[0] = C1 * p[0] - C2 * p[1];
+      gradient_T0[1] = -C1 * p[1] - C2 * p[0];
 
       if constexpr (dim == 3)
         {
-          gradient_Tstar[2] = -2./3. * p[2];
-          gradient_T0[2] = 0;
+          gradient_Tstar[2] = -2. / 3. * p[2];
+          gradient_T0[2]    = 0;
         }
 
-      const double G = aspect::constants::big_g;
-      const double T_factor = 3. * G * M_p / ( 2. * a_s * a_s * a_s );
-      const Tensor<1,dim> tidal_gravity = T_factor *
-                                          (gradient_Tstar + gradient_T0);
+      const double         G             = aspect::constants::big_g;
+      const double         T_factor      = 3. * G * M_p / (2. * a_s * a_s * a_s);
+      const Tensor<1, dim> tidal_gravity = T_factor * (gradient_Tstar + gradient_T0);
 
       return radialconstant.gravity_vector(p) + tidal_gravity;
     }
@@ -79,41 +77,44 @@ namespace aspect
 
     template <int dim>
     void
-    RadialWithTidalPotential<dim>::declare_parameters (ParameterHandler &prm)
+    RadialWithTidalPotential<dim>::declare_parameters(ParameterHandler &prm)
     {
       RadialConstant<dim>::declare_parameters(prm);
       prm.enter_subsection("Gravity model");
       {
         prm.enter_subsection("Radial with tidal potential");
         {
-          prm.declare_entry ("Mass of perturbing body", "1.898e27",
-                             Patterns::Double (),
-                             "Mass of body that perturbs gravity of modeled body. "
-                             "The default value is chosen for modeling Europa, therefore, it is the mass of Jupiter. "
-                             "Units: \\si{\\kilo\\gram}.");
-          prm.declare_entry ("Semimajor axis of orbit", "670900000",
-                             Patterns::Double (),
-                             "The length of the semimajor axis of the orbit that cause the tidal perturbation. "
-                             "For example, tidal perturbation on Europa happens by Europa orbiting Jupiter, "
-                             "and that on Earth, if Moon is in consideration, happens by Moon orbiting Earth. "
-                             "The default value is for the semimajor axis of Europa's orbit. "
-                             "Units: \\si{\\meter}.");
-          prm.declare_entry ("Period of nonsynchronous rotation", "10000",
-                             Patterns::Double (),
-                             "Period of nonsynchronous rotation (NSR). "
-                             "The default value is the period of NSR on Europa's icy shell. "
-                             "Units is year when 'Use years instead of seconds' is true, "
-                             "and \\si{\\second} when 'Use years instead of seconds' is false. ");
+          prm.declare_entry("Mass of perturbing body",
+                            "1.898e27",
+                            Patterns::Double(),
+                            "Mass of body that perturbs gravity of modeled body. "
+                            "The default value is chosen for modeling Europa, therefore, it is the mass of Jupiter. "
+                            "Units: \\si{\\kilo\\gram}.");
+          prm.declare_entry("Semimajor axis of orbit",
+                            "670900000",
+                            Patterns::Double(),
+                            "The length of the semimajor axis of the orbit that cause the tidal perturbation. "
+                            "For example, tidal perturbation on Europa happens by Europa orbiting Jupiter, "
+                            "and that on Earth, if Moon is in consideration, happens by Moon orbiting Earth. "
+                            "The default value is for the semimajor axis of Europa's orbit. "
+                            "Units: \\si{\\meter}.");
+          prm.declare_entry("Period of nonsynchronous rotation",
+                            "10000",
+                            Patterns::Double(),
+                            "Period of nonsynchronous rotation (NSR). "
+                            "The default value is the period of NSR on Europa's icy shell. "
+                            "Units is year when 'Use years instead of seconds' is true, "
+                            "and \\si{\\second} when 'Use years instead of seconds' is false. ");
         }
-        prm.leave_subsection ();
+        prm.leave_subsection();
       }
-      prm.leave_subsection ();
+      prm.leave_subsection();
     }
 
 
     template <int dim>
     void
-    RadialWithTidalPotential<dim>::parse_parameters (ParameterHandler &prm)
+    RadialWithTidalPotential<dim>::parse_parameters(ParameterHandler &prm)
     {
       radialconstant.initialize_simulator(this->get_simulator());
       radialconstant.parse_parameters(prm);
@@ -122,18 +123,18 @@ namespace aspect
       {
         prm.enter_subsection("Radial with tidal potential");
         {
-          M_p = prm.get_double ("Mass of perturbing body");
-          a_s = prm.get_double ("Semimajor axis of orbit");
+          M_p                     = prm.get_double("Mass of perturbing body");
+          a_s                     = prm.get_double("Semimajor axis of orbit");
           const double time_scale = this->get_parameters().convert_to_years ? constants::year_in_seconds : 1.0;
-          P = prm.get_double ("Period of nonsynchronous rotation") * time_scale;
+          P                       = prm.get_double("Period of nonsynchronous rotation") * time_scale;
 
-          AssertThrow (this->get_parameters().maximum_time_step < P ,
-                       ExcMessage ("Time step size should be smaller than the period of nonsynchronous rotation. "
-                                   "Otherwise, the tidal potential will not be resolved properly."));
+          AssertThrow(this->get_parameters().maximum_time_step < P,
+                      ExcMessage("Time step size should be smaller than the period of nonsynchronous rotation. "
+                                 "Otherwise, the tidal potential will not be resolved properly."));
         }
-        prm.leave_subsection ();
+        prm.leave_subsection();
       }
-      prm.leave_subsection ();
+      prm.leave_subsection();
     }
   }
 }

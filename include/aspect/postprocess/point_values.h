@@ -46,44 +46,46 @@ namespace aspect
         /**
          * Constructor
          */
-        PointValues ();
+        PointValues();
 
         /**
          * Evaluate the solution and determine the values at the
          * selected points.
          */
-        std::pair<std::string,std::string>
-        execute (TableHandler &statistics) override;
+        std::pair<std::string, std::string>
+        execute(TableHandler &statistics) override;
 
         /**
          * Declare the parameters this class takes through input files.
          */
-        static
-        void
-        declare_parameters (ParameterHandler &prm);
+        static void
+        declare_parameters(ParameterHandler &prm);
 
         /**
          * Read the parameters this class declares from the parameter file.
          */
         void
-        parse_parameters (ParameterHandler &prm) override;
+        parse_parameters(ParameterHandler &prm) override;
 
         /**
          * Save the state of this object.
          */
-        void save (std::map<std::string, std::string> &status_strings) const override;
+        void
+        save(std::map<std::string, std::string> &status_strings) const override;
 
         /**
          * Restore the state of the object.
          */
-        void load (const std::map<std::string, std::string> &status_strings) override;
+        void
+        load(const std::map<std::string, std::string> &status_strings) override;
 
         /**
          * Serialize the contents of this class as far as they are not read
          * from input parameter files.
          */
         template <class Archive>
-        void serialize (Archive &ar, const unsigned int version);
+        void
+        serialize(Archive &ar, const unsigned int version);
 
       private:
         /**
@@ -94,7 +96,8 @@ namespace aspect
          * falling behind with last_output_time and having to catch up once
          * the time step becomes larger. This is done after every output.
          */
-        void set_last_output_time (const double current_time);
+        void
+        set_last_output_time(const double current_time);
 
         /**
          * Interval between the generation of output in seconds.

@@ -21,12 +21,13 @@
 #ifndef _aspect_particle_integrator_interface_h
 #define _aspect_particle_integrator_interface_h
 
-#include <aspect/particle/interface.h>
 #include <aspect/global.h>
 
+#include <aspect/particle/interface.h>
+
+#include <deal.II/base/parameter_handler.h>
 #include <deal.II/particles/particle.h>
 #include <deal.II/particles/particle_handler.h>
-#include <deal.II/base/parameter_handler.h>
 
 namespace aspect
 {
@@ -65,13 +66,12 @@ namespace aspect
            * the particles.
            * @param [in] dt The length of the integration timestep.
            */
-          virtual
-          void
+          virtual void
           local_integrate_step(const typename ParticleHandler<dim>::particle_iterator &begin_particle,
                                const typename ParticleHandler<dim>::particle_iterator &end_particle,
-                               const std::vector<Tensor<1,dim>> &old_velocities,
-                               const std::vector<Tensor<1,dim>> &velocities,
-                               const double dt) = 0;
+                               const std::vector<Tensor<1, dim>>                      &old_velocities,
+                               const std::vector<Tensor<1, dim>>                      &velocities,
+                               const double                                            dt) = 0;
 
           /**
            * This function is called at the end of every integration step.
@@ -83,7 +83,8 @@ namespace aspect
            * another integration step. The particle manager will continue
            * to start new integration steps until this function returns false.
            */
-          virtual bool new_integration_step();
+          virtual bool
+          new_integration_step();
 
           /**
            * Return data length of the integration related data required for
@@ -97,7 +98,8 @@ namespace aspect
            * @return The number of bytes required to store the relevant
            * integrator data for one particle.
            */
-          virtual std::size_t get_data_size() const;
+          virtual std::size_t
+          get_data_size() const;
 
           /**
            * Return a list of boolean values indicating which solution vectors
@@ -108,7 +110,8 @@ namespace aspect
            * indicates if the particle integrator requires the solution vector
            * at the new time (k+1).
            */
-          virtual std::array<bool, 3> required_solution_vectors() const = 0;
+          virtual std::array<bool, 3>
+          required_solution_vectors() const = 0;
 
           /**
            * Read integration related data for a particle specified by particle_id
@@ -122,10 +125,8 @@ namespace aspect
            * @return The updated position of the pointer into the data array.
            * The return value is @p data advanced by get_data_size() bytes.
            */
-          virtual
-          const void *
-          read_data(const typename ParticleHandler<dim>::particle_iterator &particle,
-                    const void *data);
+          virtual const void *
+          read_data(const typename ParticleHandler<dim>::particle_iterator &particle, const void *data);
 
           /**
            * Write integration related data to a vector for a particle
@@ -139,10 +140,8 @@ namespace aspect
            * @return The updated position of the pointer into the data array.
            * The return value is @p data advanced by get_data_size() bytes.
            */
-          virtual
-          void *
-          write_data(const typename ParticleHandler<dim>::particle_iterator &particle,
-                     void *data) const;
+          virtual void *
+          write_data(const typename ParticleHandler<dim>::particle_iterator &particle, void *data) const;
       };
 
 
@@ -151,7 +150,7 @@ namespace aspect
        * classes for particles.
        */
       std::string
-      integrator_object_names ();
+      integrator_object_names();
 
 
       /**
@@ -171,10 +170,10 @@ namespace aspect
        */
       template <int dim>
       void
-      register_particle_integrator (const std::string &name,
-                                    const std::string &description,
-                                    void (*declare_parameters_function) (ParameterHandler &),
-                                    std::unique_ptr<Interface<dim>> (*factory_function) ());
+      register_particle_integrator(const std::string &name,
+                                   const std::string &description,
+                                   void (*declare_parameters_function)(ParameterHandler &),
+                                   std::unique_ptr<Interface<dim>> (*factory_function)());
 
       /**
        * A function that given the name of a model returns a pointer to an
@@ -188,7 +187,7 @@ namespace aspect
        */
       template <int dim>
       std::unique_ptr<Interface<dim>>
-      create_particle_integrator (ParameterHandler &prm);
+      create_particle_integrator(ParameterHandler &prm);
 
 
       /**
@@ -198,7 +197,7 @@ namespace aspect
        */
       template <int dim>
       void
-      declare_parameters (ParameterHandler &prm);
+      declare_parameters(ParameterHandler &prm);
 
 
       /**
@@ -212,7 +211,7 @@ namespace aspect
        */
       template <int dim>
       void
-      write_plugin_graph (std::ostream &output_stream);
+      write_plugin_graph(std::ostream &output_stream);
 
       /**
        * Given a class name, a name, and a description for the parameter file
@@ -224,14 +223,12 @@ namespace aspect
 #define ASPECT_REGISTER_PARTICLE_INTEGRATOR(classname, name, description) \
   template class classname<2>; \
   template class classname<3>; \
-  namespace ASPECT_REGISTER_PARTICLE_INTEGRATOR_ ## classname \
+  namespace ASPECT_REGISTER_PARTICLE_INTEGRATOR_##classname \
   { \
-    aspect::internal::Plugins::RegisterHelper<aspect::Particle::Integrator::Interface<2>,classname<2>> \
-    dummy_ ## classname ## _2d (&aspect::Particle::Integrator::register_particle_integrator<2>, \
-                                name, description); \
-    aspect::internal::Plugins::RegisterHelper<aspect::Particle::Integrator::Interface<3>,classname<3>> \
-    dummy_ ## classname ## _3d (&aspect::Particle::Integrator::register_particle_integrator<3>, \
-                                name, description); \
+    aspect::internal::Plugins::RegisterHelper<aspect::Particle::Integrator::Interface<2>, classname<2>> dummy_##classname##_2d( \
+      &aspect::Particle::Integrator::register_particle_integrator<2>, name, description); \
+    aspect::internal::Plugins::RegisterHelper<aspect::Particle::Integrator::Interface<3>, classname<3>> dummy_##classname##_3d( \
+      &aspect::Particle::Integrator::register_particle_integrator<3>, name, description); \
   }
     }
   }

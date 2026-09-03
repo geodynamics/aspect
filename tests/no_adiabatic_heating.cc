@@ -30,10 +30,8 @@ namespace aspect
     class NoAdiabaticHeating : public CompressibilityIteratedStokes<dim>
     {
       public:
-        virtual double thermal_expansion_coefficient (const double,
-                                                      const double,
-                                                      const std::vector<double> &,
-                                                      const Point<dim> &) const
+        virtual double
+        thermal_expansion_coefficient(const double, const double, const std::vector<double> &, const Point<dim> &) const
         {
           return 0;
         }
@@ -48,8 +46,6 @@ namespace aspect
 {
   namespace MaterialModel
   {
-    ASPECT_REGISTER_MATERIAL_MODEL(NoAdiabaticHeating,
-                                   "no adiabatic heating",
-                                   "As described in the .prm file.")
+    ASPECT_REGISTER_MATERIAL_MODEL(NoAdiabaticHeating, "no adiabatic heating", "As described in the .prm file.")
   }
 }

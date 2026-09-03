@@ -19,8 +19,8 @@
 */
 
 
-#include <aspect/mesh_refinement/boundary.h>
 #include <aspect/geometry_model/interface.h>
+#include <aspect/mesh_refinement/boundary.h>
 
 namespace aspect
 {
@@ -40,39 +40,36 @@ namespace aspect
           for (const unsigned int face_no : cell->face_indices())
             if (cell->face(face_no)->at_boundary())
               {
-                const types::boundary_id boundary_indicator
-                  = cell->face(face_no)->boundary_id();
-                if ( boundary_refinement_indicators.find(boundary_indicator) !=
-                     boundary_refinement_indicators.end() )
+                const types::boundary_id boundary_indicator = cell->face(face_no)->boundary_id();
+                if (boundary_refinement_indicators.find(boundary_indicator) != boundary_refinement_indicators.end())
                   {
                     indicators(cell->active_cell_index()) = 1.0;
-                    break;  // no need to loop over the rest of the faces
+                    break; // no need to loop over the rest of the faces
                   }
               }
-
     }
 
     template <int dim>
     void
-    Boundary<dim>::
-    declare_parameters (ParameterHandler &prm)
+    Boundary<dim>::declare_parameters(ParameterHandler &prm)
     {
       prm.enter_subsection("Mesh refinement");
       {
         prm.enter_subsection("Boundary");
         {
-          prm.declare_entry ("Boundary refinement indicators", "",
-                             Patterns::List (Patterns::Anything()),
-                             "A comma separated list of names denoting those boundaries "
-                             "where there should be mesh refinement."
-                             "\n\n"
-                             "The names of the boundaries listed here can either be "
-                             "numbers (in which case they correspond to the numerical "
-                             "boundary indicators assigned by the geometry object), or they "
-                             "can correspond to any of the symbolic names the geometry object "
-                             "may have provided for each part of the boundary. You may want "
-                             "to compare this with the documentation of the geometry model you "
-                             "use in your model.");
+          prm.declare_entry("Boundary refinement indicators",
+                            "",
+                            Patterns::List(Patterns::Anything()),
+                            "A comma separated list of names denoting those boundaries "
+                            "where there should be mesh refinement."
+                            "\n\n"
+                            "The names of the boundaries listed here can either be "
+                            "numbers (in which case they correspond to the numerical "
+                            "boundary indicators assigned by the geometry object), or they "
+                            "can correspond to any of the symbolic names the geometry object "
+                            "may have provided for each part of the boundary. You may want "
+                            "to compare this with the documentation of the geometry model you "
+                            "use in your model.");
         }
         prm.leave_subsection();
       }
@@ -81,18 +78,17 @@ namespace aspect
 
     template <int dim>
     void
-    Boundary<dim>::parse_parameters (ParameterHandler &prm)
+    Boundary<dim>::parse_parameters(ParameterHandler &prm)
     {
       prm.enter_subsection("Mesh refinement");
       {
         prm.enter_subsection("Boundary");
         {
-          const std::vector<types::boundary_id> x_boundary_refinement_indicators
-            = this->get_geometry_model().translate_symbolic_boundary_names_to_ids(Utilities::split_string_list
-                                                                                  (prm.get ("Boundary refinement indicators")));
-          boundary_refinement_indicators
-            = std::set<types::boundary_id> (x_boundary_refinement_indicators.begin(),
-                                            x_boundary_refinement_indicators.end());
+          const std::vector<types::boundary_id> x_boundary_refinement_indicators =
+            this->get_geometry_model().translate_symbolic_boundary_names_to_ids(
+              Utilities::split_string_list(prm.get("Boundary refinement indicators")));
+          boundary_refinement_indicators =
+            std::set<types::boundary_id>(x_boundary_refinement_indicators.begin(), x_boundary_refinement_indicators.end());
         }
         prm.leave_subsection();
       }

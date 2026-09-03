@@ -30,15 +30,14 @@ namespace aspect
   {
     namespace Rheology
     {
-      ConstantViscosity::ConstantViscosity ()
-        :
-        viscosity(numbers::signaling_nan<double>())
+      ConstantViscosity::ConstantViscosity()
+        : viscosity(numbers::signaling_nan<double>())
       {}
 
 
 
       double
-      ConstantViscosity::compute_viscosity () const
+      ConstantViscosity::compute_viscosity() const
       {
         return viscosity;
       }
@@ -46,20 +45,20 @@ namespace aspect
 
 
       void
-      ConstantViscosity::declare_parameters (ParameterHandler &prm,
-                                             const double default_viscosity)
+      ConstantViscosity::declare_parameters(ParameterHandler &prm, const double default_viscosity)
       {
-        prm.declare_entry ("Viscosity", std::to_string(default_viscosity),
-                           Patterns::Double (0.),
-                           "The value of the viscosity $\\eta$. Units: \\si{\\pascal\\second}.");
+        prm.declare_entry("Viscosity",
+                          std::to_string(default_viscosity),
+                          Patterns::Double(0.),
+                          "The value of the viscosity $\\eta$. Units: \\si{\\pascal\\second}.");
       }
 
 
 
       void
-      ConstantViscosity::parse_parameters (ParameterHandler &prm)
+      ConstantViscosity::parse_parameters(ParameterHandler &prm)
       {
-        viscosity = prm.get_double ("Viscosity");
+        viscosity = prm.get_double("Viscosity");
       }
     }
   }

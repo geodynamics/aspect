@@ -31,12 +31,11 @@ namespace aspect
     class PrescribedFieldsMaterial : public MaterialModel::Simple<dim>
     {
       public:
-
-        void evaluate(const MaterialModel::MaterialModelInputs<dim> &in,
-                      MaterialModel::MaterialModelOutputs<dim> &out) const override;
+        void
+        evaluate(const MaterialModel::MaterialModelInputs<dim> &in, MaterialModel::MaterialModelOutputs<dim> &out) const override;
 
         void
-        create_additional_named_outputs (MaterialModel::MaterialModelOutputs<dim> &out) const override;
+        create_additional_named_outputs(MaterialModel::MaterialModelOutputs<dim> &out) const override;
     };
 
   }
@@ -49,35 +48,34 @@ namespace aspect
 
     template <int dim>
     void
-    PrescribedFieldsMaterial<dim>::
-    evaluate(const MaterialModel::MaterialModelInputs<dim> &in,
-             MaterialModel::MaterialModelOutputs<dim> &out) const
+    PrescribedFieldsMaterial<dim>::evaluate(const MaterialModel::MaterialModelInputs<dim> &in,
+                                            MaterialModel::MaterialModelOutputs<dim>      &out) const
     {
       Simple<dim>::evaluate(in, out);
 
       // set up variable to interpolate prescribed field outputs onto compositional fields
-      const std::shared_ptr<PrescribedFieldOutputs<dim>> prescribed_field_out
-        = out.template get_additional_output_object<PrescribedFieldOutputs<dim>>();
+      const std::shared_ptr<PrescribedFieldOutputs<dim>> prescribed_field_out =
+        out.template get_additional_output_object<PrescribedFieldOutputs<dim>>();
 
       if (prescribed_field_out != nullptr)
-        for (unsigned int i=0; i < in.n_evaluation_points(); ++i)
+        for (unsigned int i = 0; i < in.n_evaluation_points(); ++i)
           {
             const double y = in.position[i](1);
-            for (unsigned int j=0; j<this->n_compositional_fields(); ++j)
-              prescribed_field_out->prescribed_field_outputs[i][j] = y*j;
+            for (unsigned int j = 0; j < this->n_compositional_fields(); ++j)
+              prescribed_field_out->prescribed_field_outputs[i][j] = y * j;
           }
     }
 
 
     template <int dim>
     void
-    PrescribedFieldsMaterial<dim>::create_additional_named_outputs (MaterialModel::MaterialModelOutputs<dim> &out) const
+    PrescribedFieldsMaterial<dim>::create_additional_named_outputs(MaterialModel::MaterialModelOutputs<dim> &out) const
     {
       if (out.template has_additional_output_object<PrescribedFieldOutputs<dim>>() == false)
         {
           const unsigned int n_points = out.n_evaluation_points();
           out.additional_outputs.push_back(
-            std::make_unique<MaterialModel::PrescribedFieldOutputs<dim>> (n_points,this->n_compositional_fields()));
+            std::make_unique<MaterialModel::PrescribedFieldOutputs<dim>>(n_points, this->n_compositional_fields()));
         }
     }
   }

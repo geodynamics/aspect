@@ -22,12 +22,13 @@
 #define _aspect_material_model_rheology_friction_models_h
 
 #include <aspect/global.h>
+
 #include <aspect/material_model/interface.h>
+#include <aspect/material_model/rheology/drucker_prager.h>
 #include <aspect/simulator_access.h>
-#include <deal.II/base/parsed_function.h>
 #include <aspect/utilities.h>
 
-#include <aspect/material_model/rheology/drucker_prager.h>
+#include <deal.II/base/parsed_function.h>
 #include <deal.II/fe/component_mask.h>
 
 namespace aspect
@@ -58,15 +59,14 @@ namespace aspect
           /**
            * Declare the parameters this function takes through input files.
            */
-          static
-          void
-          declare_parameters (ParameterHandler &prm);
+          static void
+          declare_parameters(ParameterHandler &prm);
 
           /**
            * Read the parameters from the parameter file.
            */
           void
-          parse_parameters (ParameterHandler &prm);
+          parse_parameters(ParameterHandler &prm);
 
           /**
            * A function that computes the new friction angle when it is not independent.
@@ -74,16 +74,16 @@ namespace aspect
            * fields, it returns the newly calculated friction angle.
            */
           double
-          compute_friction_angle(const double current_edot_ii,
+          compute_friction_angle(const double       current_edot_ii,
                                  const unsigned int volume_fraction_index,
-                                 const double static_friction_angle,
-                                 const Point<dim> &position) const;
+                                 const double       static_friction_angle,
+                                 const Point<dim>  &position) const;
 
           /**
            * A function that returns the selected type of friction dependence.
            */
           FrictionMechanism
-          get_friction_mechanism () const;
+          get_friction_mechanism() const;
 
         private:
           /**

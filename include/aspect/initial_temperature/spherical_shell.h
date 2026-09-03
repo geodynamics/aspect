@@ -43,20 +43,20 @@ namespace aspect
         /**
          * Return the initial temperature as a function of position.
          */
-        double initial_temperature (const Point<dim> &position) const override;
+        double
+        initial_temperature(const Point<dim> &position) const override;
 
         /**
          * Declare the parameters this class takes through input files.
          */
-        static
-        void
-        declare_parameters (ParameterHandler &prm);
+        static void
+        declare_parameters(ParameterHandler &prm);
 
         /**
          * Read the parameters this class declares from the parameter file.
          */
         void
-        parse_parameters (ParameterHandler &prm) override;
+        parse_parameters(ParameterHandler &prm) override;
 
       private:
         /**
@@ -83,7 +83,6 @@ namespace aspect
          * Outer radius.
          */
         double R1;
-
     };
 
 
@@ -97,7 +96,6 @@ namespace aspect
     class SphericalGaussianPerturbation : public Interface<dim>, public SimulatorAccess<dim>
     {
       public:
-
         /**
          * Constructor.
          */
@@ -106,20 +104,20 @@ namespace aspect
         /**
          * Return the initial temperature as a function of position.
          */
-        double initial_temperature (const Point<dim> &position) const override;
+        double
+        initial_temperature(const Point<dim> &position) const override;
 
         /**
          * Declare the parameters this class takes through input files.
          */
-        static
-        void
-        declare_parameters (ParameterHandler &prm);
+        static void
+        declare_parameters(ParameterHandler &prm);
 
         /**
          * Read the parameters this class declares from the parameter file.
          */
         void
-        parse_parameters (ParameterHandler &prm) override;
+        parse_parameters(ParameterHandler &prm) override;
 
       private:
         /**
@@ -141,7 +139,7 @@ namespace aspect
         /**
          * This variable is read from the parameter file through a parameter called 'Sign'.
          */
-        double sign;
+        double       sign;
         unsigned int npoint;
 
         std::vector<double> radial_position;

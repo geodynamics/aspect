@@ -56,15 +56,14 @@ namespace aspect
           /**
            * Declare the parameters this class takes through input files.
            */
-          static
-          void
-          declare_parameters (ParameterHandler &prm);
+          static void
+          declare_parameters(ParameterHandler &prm);
 
           /**
            * Read the parameters this class declares from the parameter file.
            */
           void
-          parse_parameters (ParameterHandler &prm) override;
+          parse_parameters(ParameterHandler &prm) override;
 
         private:
           /**
@@ -72,7 +71,8 @@ namespace aspect
            *
            * @return A vector container of points each of size dim.
            */
-          std::vector<Point<dim>> generate_particle_positions_in_unit_cell();
+          std::vector<Point<dim>>
+          generate_particle_positions_in_unit_cell();
 
           /**
            * Number of particles to create for each spatial dimension as

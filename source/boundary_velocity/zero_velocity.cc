@@ -27,13 +27,11 @@ namespace aspect
   namespace BoundaryVelocity
   {
     template <int dim>
-    Tensor<1,dim>
-    ZeroVelocity<dim>::
-    boundary_velocity (const types::boundary_id ,
-                       const Point<dim> &) const
+    Tensor<1, dim>
+    ZeroVelocity<dim>::boundary_velocity(const types::boundary_id, const Point<dim> &) const
     {
       // return a zero tensor regardless of position
-      return Tensor<1,dim>();
+      return Tensor<1, dim>();
     }
   }
 }

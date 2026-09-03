@@ -29,10 +29,8 @@ namespace aspect
     namespace VisualizationPostprocessors
     {
       template <int dim>
-      ArtificialViscosity<dim>::
-      ArtificialViscosity ()
-        :
-        CellDataVectorCreator<dim>("W/m/K")
+      ArtificialViscosity<dim>::ArtificialViscosity()
+        : CellDataVectorCreator<dim>("W/m/K")
       {}
 
 
@@ -41,9 +39,8 @@ namespace aspect
       std::pair<std::string, std::unique_ptr<Vector<float>>>
       ArtificialViscosity<dim>::execute() const
       {
-        std::pair<std::string, std::unique_ptr<Vector<float>>>
-        return_value ("artificial_viscosity",
-                      std::make_unique<Vector<float>>(this->get_triangulation().n_active_cells()));
+        std::pair<std::string, std::unique_ptr<Vector<float>>> return_value(
+          "artificial_viscosity", std::make_unique<Vector<float>>(this->get_triangulation().n_active_cells()));
         this->get_artificial_viscosity(*return_value.second);
 
         // The function we call above sets the artificial viscosity to

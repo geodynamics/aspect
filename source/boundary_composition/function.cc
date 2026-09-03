@@ -19,9 +19,10 @@
 */
 
 
+#include <aspect/global.h>
+
 #include <aspect/boundary_composition/function.h>
 #include <aspect/utilities.h>
-#include <aspect/global.h>
 
 namespace aspect
 {
@@ -30,10 +31,9 @@ namespace aspect
 
     template <int dim>
     double
-    Function<dim>::
-    boundary_composition (const types::boundary_id /*boundary_indicator*/,
-                          const Point<dim> &position,
-                          const unsigned int compositional_field) const
+    Function<dim>::boundary_composition(const types::boundary_id /*boundary_indicator*/,
+                                        const Point<dim>  &position,
+                                        const unsigned int compositional_field) const
     {
       const Utilities::NaturalCoordinate<dim> point =
         this->get_geometry_model().cartesian_to_other_coordinates(position, coordinate_system);
@@ -49,34 +49,35 @@ namespace aspect
       // we get time passed as seconds (always) but may want
       // to reinterpret it in years
       if (this->convert_output_to_years())
-        function->set_time (this->get_time() / year_in_seconds);
+        function->set_time(this->get_time() / year_in_seconds);
       else
-        function->set_time (this->get_time());
+        function->set_time(this->get_time());
     }
 
 
 
     template <int dim>
     void
-    Function<dim>::declare_parameters (ParameterHandler &prm)
+    Function<dim>::declare_parameters(ParameterHandler &prm)
     {
       prm.enter_subsection("Boundary composition model");
       {
         prm.enter_subsection("Function");
         {
-          prm.declare_entry ("Coordinate system", "cartesian",
-                             Patterns::Selection ("cartesian|spherical|depth"),
-                             "A selection that determines the assumed coordinate "
-                             "system for the function variables. Allowed values "
-                             "are 'cartesian', 'spherical', and 'depth'. "
-                             "'spherical' coordinates are interpreted as r,phi "
-                             "or r,phi,theta in 2d/3d respectively with theta "
-                             "being the polar angle. 'depth' will create a "
-                             "function, in which only the first parameter is "
-                             "non-zero, which is interpreted to be the depth of "
-                             "the point.");
+          prm.declare_entry("Coordinate system",
+                            "cartesian",
+                            Patterns::Selection("cartesian|spherical|depth"),
+                            "A selection that determines the assumed coordinate "
+                            "system for the function variables. Allowed values "
+                            "are 'cartesian', 'spherical', and 'depth'. "
+                            "'spherical' coordinates are interpreted as r,phi "
+                            "or r,phi,theta in 2d/3d respectively with theta "
+                            "being the polar angle. 'depth' will create a "
+                            "function, in which only the first parameter is "
+                            "non-zero, which is interpreted to be the depth of "
+                            "the point.");
 
-          Functions::ParsedFunction<dim>::declare_parameters (prm, 1);
+          Functions::ParsedFunction<dim>::declare_parameters(prm, 1);
         }
         prm.leave_subsection();
       }
@@ -87,7 +88,7 @@ namespace aspect
 
     template <int dim>
     void
-    Function<dim>::parse_parameters (ParameterHandler &prm)
+    Function<dim>::parse_parameters(ParameterHandler &prm)
     {
       prm.enter_subsection("Boundary composition model");
       {
@@ -97,9 +98,8 @@ namespace aspect
 
           try
             {
-              function
-                = std::make_unique<Functions::ParsedFunction<dim>>(this->n_compositional_fields());
-              function->parse_parameters (prm);
+              function = std::make_unique<Functions::ParsedFunction<dim>>(this->n_compositional_fields());
+              function->parse_parameters(prm);
             }
           catch (...)
             {

@@ -45,16 +45,15 @@ namespace aspect
         /**
          * Constructor.
          */
-        Function ();
+        Function();
 
         /**
          * Return the boundary velocity as a function of position. For the
          * current class, this function obviously simply returns a zero
          * tensor.
          */
-        Tensor<1,dim>
-        boundary_velocity (const types::boundary_id boundary_indicator,
-                           const Point<dim> &position) const override;
+        Tensor<1, dim>
+        boundary_velocity(const types::boundary_id boundary_indicator, const Point<dim> &position) const override;
 
         /**
          * A function that is called at the beginning of each time step to
@@ -63,20 +62,19 @@ namespace aspect
          * the parsed function what the current time is.
          */
         void
-        update () override;
+        update() override;
 
         /**
          * Declare the parameters this class takes through input files.
          */
-        static
-        void
-        declare_parameters (ParameterHandler &prm);
+        static void
+        declare_parameters(ParameterHandler &prm);
 
         /**
          * Read the parameters this class declares from the parameter file.
          */
         void
-        parse_parameters (ParameterHandler &prm) override;
+        parse_parameters(ParameterHandler &prm) override;
 
       private:
         /**

@@ -27,7 +27,7 @@ namespace aspect
 {
   namespace BoundaryTemperature
   {
-// ------------------------------ InitialTemperature -------------------
+    // ------------------------------ InitialTemperature -------------------
 
     template <int dim>
     void
@@ -43,9 +43,7 @@ namespace aspect
 
     template <int dim>
     double
-    InitialTemperature<dim>::
-    boundary_temperature (const types::boundary_id,
-                          const Point<dim> &position) const
+    InitialTemperature<dim>::boundary_temperature(const types::boundary_id, const Point<dim> &position) const
     {
       return initial_temperature->initial_temperature(position);
     }
@@ -53,8 +51,7 @@ namespace aspect
 
     template <int dim>
     double
-    InitialTemperature<dim>::
-    minimal_temperature (const std::set<types::boundary_id> &) const
+    InitialTemperature<dim>::minimal_temperature(const std::set<types::boundary_id> &) const
     {
       return min_temperature;
     }
@@ -63,8 +60,7 @@ namespace aspect
 
     template <int dim>
     double
-    InitialTemperature<dim>::
-    maximal_temperature (const std::set<types::boundary_id> &) const
+    InitialTemperature<dim>::maximal_temperature(const std::set<types::boundary_id> &) const
     {
       return max_temperature;
     }
@@ -73,39 +69,35 @@ namespace aspect
 
     template <int dim>
     void
-    InitialTemperature<dim>::declare_parameters (ParameterHandler &prm)
+    InitialTemperature<dim>::declare_parameters(ParameterHandler &prm)
     {
       prm.enter_subsection("Boundary temperature model");
       {
         prm.enter_subsection("Initial temperature");
         {
-          prm.declare_entry ("Minimal temperature", "0.",
-                             Patterns::Double (),
-                             "Minimal temperature. Units: $\\text{K}$.");
-          prm.declare_entry ("Maximal temperature", "3773.",
-                             Patterns::Double (),
-                             "Maximal temperature. Units: $\\text{K}$.");
+          prm.declare_entry("Minimal temperature", "0.", Patterns::Double(), "Minimal temperature. Units: $\\text{K}$.");
+          prm.declare_entry("Maximal temperature", "3773.", Patterns::Double(), "Maximal temperature. Units: $\\text{K}$.");
         }
-        prm.leave_subsection ();
+        prm.leave_subsection();
       }
-      prm.leave_subsection ();
+      prm.leave_subsection();
     }
 
 
     template <int dim>
     void
-    InitialTemperature<dim>::parse_parameters (ParameterHandler &prm)
+    InitialTemperature<dim>::parse_parameters(ParameterHandler &prm)
     {
       prm.enter_subsection("Boundary temperature model");
       {
         prm.enter_subsection("Initial temperature");
         {
-          min_temperature = prm.get_double ("Minimal temperature");
-          max_temperature = prm.get_double ("Maximal temperature");
+          min_temperature = prm.get_double("Minimal temperature");
+          max_temperature = prm.get_double("Maximal temperature");
         }
-        prm.leave_subsection ();
+        prm.leave_subsection();
       }
-      prm.leave_subsection ();
+      prm.leave_subsection();
     }
   }
 }

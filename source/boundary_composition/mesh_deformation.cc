@@ -27,7 +27,7 @@ namespace aspect
 {
   namespace BoundaryComposition
   {
-// ------------------------------ MeshDeformation -------------------
+    // ------------------------------ MeshDeformation -------------------
 
     template <int dim>
     void
@@ -36,17 +36,17 @@ namespace aspect
       // Check that mesh deformation is actually active. The mesh deformation plugins
       // are not initialized yet, so we can only check the input parameters.
       AssertThrow(this->get_parameters().mesh_deformation_enabled == true,
-                  ExcMessage ("The boundary composition plugin ``mesh deformation'' can only be used when a mesh deformation plugin is active."));
+                  ExcMessage(
+                    "The boundary composition plugin ``mesh deformation'' can only be used when a mesh deformation plugin is active."));
     }
 
 
 
     template <int dim>
     double
-    MeshDeformation<dim>::
-    boundary_composition (const types::boundary_id boundary_indicator,
-                          const Point<dim> &position,
-                          const unsigned int compositional_field) const
+    MeshDeformation<dim>::boundary_composition(const types::boundary_id boundary_indicator,
+                                               const Point<dim>        &position,
+                                               const unsigned int       compositional_field) const
     {
       return this->get_mesh_deformation_handler().boundary_composition(boundary_indicator, position, compositional_field);
     }

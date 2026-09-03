@@ -28,24 +28,21 @@ namespace aspect
   {
     template <int dim>
     void
-    LatentHeat<dim>::
-    evaluate (const MaterialModel::MaterialModelInputs<dim> &material_model_inputs,
-              const MaterialModel::MaterialModelOutputs<dim> &material_model_outputs,
-              HeatingModel::HeatingModelOutputs &heating_model_outputs) const
+    LatentHeat<dim>::evaluate(const MaterialModel::MaterialModelInputs<dim>  &material_model_inputs,
+                              const MaterialModel::MaterialModelOutputs<dim> &material_model_outputs,
+                              HeatingModel::HeatingModelOutputs              &heating_model_outputs) const
     {
       Assert(heating_model_outputs.heating_source_terms.size() == material_model_inputs.n_evaluation_points(),
-             ExcMessage ("Heating outputs need to have the same number of entries as the material model inputs."));
+             ExcMessage("Heating outputs need to have the same number of entries as the material model inputs."));
 
-      for (unsigned int q=0; q<heating_model_outputs.heating_source_terms.size(); ++q)
+      for (unsigned int q = 0; q < heating_model_outputs.heating_source_terms.size(); ++q)
         {
-          heating_model_outputs.heating_source_terms[q] = material_model_inputs.temperature[q]
-                                                          * material_model_outputs.densities[q]
-                                                          * material_model_outputs.entropy_derivative_pressure[q]
-                                                          * (material_model_inputs.velocity[q] * material_model_inputs.pressure_gradient[q]);
+          heating_model_outputs.heating_source_terms[q] = material_model_inputs.temperature[q] * material_model_outputs.densities[q] *
+                                                          material_model_outputs.entropy_derivative_pressure[q] *
+                                                          (material_model_inputs.velocity[q] * material_model_inputs.pressure_gradient[q]);
 
-          heating_model_outputs.lhs_latent_heat_terms[q] = - material_model_outputs.densities[q]
-                                                           * material_model_inputs.temperature[q]
-                                                           * material_model_outputs.entropy_derivative_temperature[q];
+          heating_model_outputs.lhs_latent_heat_terms[q] = -material_model_outputs.densities[q] * material_model_inputs.temperature[q] *
+                                                           material_model_outputs.entropy_derivative_temperature[q];
         }
     }
 
@@ -53,12 +50,10 @@ namespace aspect
 
     template <int dim>
     MaterialModel::MaterialProperties::Property
-    LatentHeat<dim>::
-    get_required_properties () const
+    LatentHeat<dim>::get_required_properties() const
     {
       return MaterialModel::MaterialProperties::entropy_derivative_pressure |
-             MaterialModel::MaterialProperties::entropy_derivative_temperature |
-             MaterialModel::MaterialProperties::density;
+             MaterialModel::MaterialProperties::entropy_derivative_temperature | MaterialModel::MaterialProperties::density;
     }
   }
 }
@@ -68,8 +63,6 @@ namespace aspect
 {
   namespace HeatingModel
   {
-    ASPECT_REGISTER_HEATING_MODEL(LatentHeat,
-                                  "latent heat",
-                                  "Implementation of a standard model for latent heat.")
+    ASPECT_REGISTER_HEATING_MODEL(LatentHeat, "latent heat", "Implementation of a standard model for latent heat.")
   }
 }

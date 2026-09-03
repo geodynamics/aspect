@@ -30,8 +30,8 @@ namespace aspect
   namespace Postprocess
   {
     template <int dim>
-    std::pair<std::string,std::string>
-    FiniteElementInformation<dim>::execute (TableHandler &)
+    std::pair<std::string, std::string>
+    FiniteElementInformation<dim>::execute(TableHandler &)
     {
       // Only report once:
       if (this->get_timestep_number() > 0 || this->get_pre_refinement_step() != std::numeric_limits<unsigned int>::max())
@@ -39,24 +39,21 @@ namespace aspect
 
       std::ostringstream output;
 
-      unsigned int compositional_field_index = 0;
-      const auto &compositional_field_names = this->introspection().get_composition_names();
-      const auto &compositional_field_descriptions = this->introspection().get_composition_descriptions();
+      unsigned int compositional_field_index        = 0;
+      const auto  &compositional_field_names        = this->introspection().get_composition_names();
+      const auto  &compositional_field_descriptions = this->introspection().get_composition_descriptions();
 
       for (const auto &variable : this->introspection().get_variables())
         if (variable.name == "compositions")
           for (unsigned int i = 0; i < variable.multiplicity; ++i)
             {
-              output << "composition " << compositional_field_index << ": "
-                     << compositional_field_names[compositional_field_index]
-                     << " (" << CompositionalFieldDescription::type_to_string(compositional_field_descriptions[compositional_field_index].type)
-                     << "): " << variable.fe->get_name()
-                     << std::endl;
+              output << "composition " << compositional_field_index << ": " << compositional_field_names[compositional_field_index] << " ("
+                     << CompositionalFieldDescription::type_to_string(compositional_field_descriptions[compositional_field_index].type)
+                     << "): " << variable.fe->get_name() << std::endl;
               ++compositional_field_index;
             }
         else
-          output << variable.name << ": "
-                 << variable.fe->get_name() << std::endl;
+          output << variable.name << ": " << variable.fe->get_name() << std::endl;
 
       return {"Finite element spaces:", output.str()};
     }

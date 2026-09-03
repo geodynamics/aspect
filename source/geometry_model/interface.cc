@@ -20,11 +20,12 @@
 
 
 #include <aspect/global.h>
+
 #include <aspect/geometry_model/interface.h>
 #include <aspect/simulator_access.h>
 
-#include <deal.II/dofs/dof_tools.h>
 #include <deal.II/base/utilities.h>
+#include <deal.II/dofs/dof_tools.h>
 
 #include <tuple>
 
@@ -33,7 +34,7 @@ namespace aspect
   namespace GeometryModel
   {
     template <int dim>
-    std::map<std::string,types::boundary_id>
+    std::map<std::string, types::boundary_id>
     Interface<dim>::get_symbolic_boundary_names_map() const
     {
       // return an empty map in the base class
@@ -54,12 +55,11 @@ namespace aspect
 
     template <int dim>
     void
-    Interface<dim>::adjust_positions_for_periodicity (Point<dim> &/*position*/,
-                                                      const ArrayView<Point<dim>> &/*connected_positions*/,
-                                                      const ArrayView<Tensor<1, dim>> &/*connected_velocities*/) const
+    Interface<dim>::adjust_positions_for_periodicity(Point<dim> & /*position*/,
+                                                     const ArrayView<Point<dim>> & /*connected_positions*/,
+                                                     const ArrayView<Tensor<1, dim>> & /*connected_velocities*/) const
     {
-      AssertThrow(false,
-                  ExcMessage("Positions cannot be adjusted for periodicity in the chosen geometry model."));
+      AssertThrow(false, ExcMessage("Positions cannot be adjusted for periodicity in the chosen geometry model."));
       return;
     }
 
@@ -75,19 +75,19 @@ namespace aspect
 
 
     template <int dim>
-    std::array<double,dim>
+    std::array<double, dim>
     Interface<dim>::cartesian_to_natural_coordinates(const Point<dim> &) const
     {
-      Assert (false,
-              ExcMessage ("The cartesian_to_natural_coordinates function has "
-                          "not been implemented in this geometry model."));
+      Assert(false,
+             ExcMessage("The cartesian_to_natural_coordinates function has "
+                        "not been implemented in this geometry model."));
       return {};
     }
 
 
     template <int dim>
     Utilities::NaturalCoordinate<dim>
-    Interface<dim>::cartesian_to_other_coordinates(const Point<dim> &position,
+    Interface<dim>::cartesian_to_other_coordinates(const Point<dim>                               &position,
                                                    const Utilities::Coordinates::CoordinateSystem &coordinate_system) const
     {
       std::array<double, dim> other_coord;
@@ -115,11 +115,11 @@ namespace aspect
 
     template <int dim>
     Point<dim>
-    Interface<dim>::natural_to_cartesian_coordinates(const std::array<double,dim> &) const
+    Interface<dim>::natural_to_cartesian_coordinates(const std::array<double, dim> &) const
     {
-      Assert (false,
-              ExcMessage ("The natural_to_cartesian_coordinates function has "
-                          "not been implemented in this geometry model."));
+      Assert(false,
+             ExcMessage("The natural_to_cartesian_coordinates function has "
+                        "not been implemented in this geometry model."));
       return Point<dim>();
     }
 
@@ -129,15 +129,14 @@ namespace aspect
     namespace
     {
       types::boundary_id
-      translate_boundary_indicator (const std::string &name_,
-                                    const std::map<std::string,types::boundary_id> &boundary_names_mapping)
+      translate_boundary_indicator(const std::string &name_, const std::map<std::string, types::boundary_id> &boundary_names_mapping)
       {
         // trim whitespace on either side of the name if necessary
         std::string name = name_;
         while ((name.size() > 0) && (name[0] == ' '))
-          name.erase (name.begin());
-        while ((name.size() > 0) && (name[name.size()-1] == ' '))
-          name.erase (name.end()-1);
+          name.erase(name.begin());
+        while ((name.size() > 0) && (name[name.size() - 1] == ' '))
+          name.erase(name.end() - 1);
 
         // backwards compatibility (rename boundaries to all use "top" and "bottom"
         if (name == "surface" || name == "outer")
@@ -146,7 +145,7 @@ namespace aspect
           name = "bottom";
 
         // see if the given name is a symbolic one
-        if (boundary_names_mapping.find (name) != boundary_names_mapping.end())
+        if (boundary_names_mapping.find(name) != boundary_names_mapping.end())
           return boundary_names_mapping.find(name)->second;
         else
           return dealii::Utilities::string_to_int(name);
@@ -154,13 +153,13 @@ namespace aspect
 
 
       std::vector<types::boundary_id>
-      translate_boundary_indicators (const std::vector<std::string> &names,
-                                     const std::map<std::string,types::boundary_id> &boundary_names_mapping)
+      translate_boundary_indicators(const std::vector<std::string>                  &names,
+                                    const std::map<std::string, types::boundary_id> &boundary_names_mapping)
       {
         std::vector<types::boundary_id> results;
         results.reserve(names.size());
         for (const auto &name : names)
-          results.push_back (translate_boundary_indicator(name, boundary_names_mapping));
+          results.push_back(translate_boundary_indicator(name, boundary_names_mapping));
 
         return results;
       }
@@ -169,8 +168,7 @@ namespace aspect
 
     template <int dim>
     types::boundary_id
-    Interface<dim>::
-    translate_symbolic_boundary_name_to_id (const std::string &name) const
+    Interface<dim>::translate_symbolic_boundary_name_to_id(const std::string &name) const
     {
       return translate_boundary_indicator(name, get_symbolic_boundary_names_map());
     }
@@ -179,8 +177,7 @@ namespace aspect
 
     template <int dim>
     std::vector<types::boundary_id>
-    Interface<dim>::
-    translate_symbolic_boundary_names_to_ids (const std::vector<std::string> &names) const
+    Interface<dim>::translate_symbolic_boundary_names_to_ids(const std::vector<std::string> &names) const
     {
       return translate_boundary_indicators(names, get_symbolic_boundary_names_map());
     }
@@ -188,10 +185,9 @@ namespace aspect
 
     template <int dim>
     std::string
-    Interface<dim>::
-    translate_id_to_symbol_name(const types::boundary_id boundary_id) const
+    Interface<dim>::translate_id_to_symbol_name(const types::boundary_id boundary_id) const
     {
-      const std::map<std::string,types::boundary_id> mapping = get_symbolic_boundary_names_map();
+      const std::map<std::string, types::boundary_id> mapping = get_symbolic_boundary_names_map();
 
       // loop over all entries in the map, and set 'name' to the key if the
       // value matches the given 'boundary_id'. if 'name' has already been
@@ -201,10 +197,10 @@ namespace aspect
       for (const auto &p : mapping)
         if (p.second == boundary_id)
           {
-            Assert (name == "",
-                    ExcMessage ("This geometry model appears to provide multiple "
-                                "names for the boundary with indicator <" +
-                                Utilities::int_to_string (boundary_id) + ">."));
+            Assert(name == "",
+                   ExcMessage("This geometry model appears to provide multiple "
+                              "names for the boundary with indicator <" +
+                              Utilities::int_to_string(boundary_id) + ">."));
             name = p.first;
           }
 
@@ -212,44 +208,41 @@ namespace aspect
     }
 
 
-// -------------------------------- Deal with registering geometry models and automating
-// -------------------------------- their setup and selection at run time
+    // -------------------------------- Deal with registering geometry models and automating
+    // -------------------------------- their setup and selection at run time
 
     namespace
     {
-      std::tuple
-      <aspect::internal::Plugins::UnusablePluginList,
-      aspect::internal::Plugins::UnusablePluginList,
-      aspect::internal::Plugins::PluginList<Interface<2>>,
-      aspect::internal::Plugins::PluginList<Interface<3>>> registered_plugins;
+      std::tuple<aspect::internal::Plugins::UnusablePluginList,
+                 aspect::internal::Plugins::UnusablePluginList,
+                 aspect::internal::Plugins::PluginList<Interface<2>>,
+                 aspect::internal::Plugins::PluginList<Interface<3>>>
+        registered_plugins;
     }
 
 
 
     template <int dim>
     void
-    register_geometry_model (const std::string &name,
-                             const std::string &description,
-                             void (*declare_parameters_function) (ParameterHandler &),
-                             std::unique_ptr<Interface<dim>> (*factory_function) ())
+    register_geometry_model(const std::string &name,
+                            const std::string &description,
+                            void (*declare_parameters_function)(ParameterHandler &),
+                            std::unique_ptr<Interface<dim>> (*factory_function)())
     {
-      std::get<dim>(registered_plugins).register_plugin (name,
-                                                         description,
-                                                         declare_parameters_function,
-                                                         factory_function);
+      std::get<dim>(registered_plugins).register_plugin(name, description, declare_parameters_function, factory_function);
     }
 
 
     template <int dim>
     std::unique_ptr<Interface<dim>>
-    create_geometry_model (ParameterHandler &prm)
+    create_geometry_model(ParameterHandler &prm)
     {
       std::string model_name;
-      prm.enter_subsection ("Geometry model");
+      prm.enter_subsection("Geometry model");
       {
-        model_name = prm.get ("Model name");
+        model_name = prm.get("Model name");
       }
-      prm.leave_subsection ();
+      prm.leave_subsection();
 
       // If one sets the model name to an empty string in the input file,
       // ParameterHandler produces an error while reading the file. However,
@@ -261,53 +254,46 @@ namespace aspect
                   ExcMessage("You need to select a Geometry model "
                              "(`set Model name' in `subsection Geometry model')."));
 
-      return std::get<dim>(registered_plugins).create_plugin (model_name,
-                                                              "Geometry model::model name",
-                                                              prm);
+      return std::get<dim>(registered_plugins).create_plugin(model_name, "Geometry model::model name", prm);
     }
 
 
 
     template <int dim>
     void
-    declare_parameters (ParameterHandler &prm)
+    declare_parameters(ParameterHandler &prm)
     {
       // declare the entry in the parameter file
-      prm.enter_subsection ("Geometry model");
+      prm.enter_subsection("Geometry model");
       {
-        const std::string pattern_of_names
-          = std::get<dim>(registered_plugins).get_pattern_of_names ();
-        prm.declare_entry ("Model name", "unspecified",
-                           Patterns::Selection (pattern_of_names+"|unspecified"),
-                           "Select one of the following models:\n\n"
-                           +
-                           std::get<dim>(registered_plugins).get_description_string());
+        const std::string pattern_of_names = std::get<dim>(registered_plugins).get_pattern_of_names();
+        prm.declare_entry("Model name",
+                          "unspecified",
+                          Patterns::Selection(pattern_of_names + "|unspecified"),
+                          "Select one of the following models:\n\n" + std::get<dim>(registered_plugins).get_description_string());
       }
-      prm.leave_subsection ();
+      prm.leave_subsection();
 
-      std::get<dim>(registered_plugins).declare_parameters (prm);
+      std::get<dim>(registered_plugins).declare_parameters(prm);
     }
 
 
 
     template <int dim>
     void
-    write_plugin_graph (std::ostream &out)
+    write_plugin_graph(std::ostream &out)
     {
-      std::get<dim>(registered_plugins).write_plugin_graph ("Geometry model interface",
-                                                            out);
+      std::get<dim>(registered_plugins).write_plugin_graph("Geometry model interface", out);
     }
 
 
 
     template <int dim>
     void
-    Interface<dim>::make_periodicity_constraints(const DoFHandler<dim> &dof_handler,
-                                                 AffineConstraints<double> &constraints) const
+    Interface<dim>::make_periodicity_constraints(const DoFHandler<dim> &dof_handler, AffineConstraints<double> &constraints) const
     {
-      using periodic_boundary_set
-        = std::set<std::pair<std::pair<types::boundary_id, types::boundary_id>, unsigned int>>;
-      periodic_boundary_set pbs = get_periodic_boundary_pairs();
+      using periodic_boundary_set = std::set<std::pair<std::pair<types::boundary_id, types::boundary_id>, unsigned int>>;
+      periodic_boundary_set pbs   = get_periodic_boundary_pairs();
 
       for (const auto &pb : pbs)
         {
@@ -328,25 +314,17 @@ namespace aspect
   {
 #define INSTANTIATE(dim) \
   template class Interface<dim>; \
-  \
-  template \
-  void \
-  register_geometry_model<dim> (const std::string &, \
-                                const std::string &, \
-                                void ( *) (ParameterHandler &), \
-                                std::unique_ptr<Interface<dim>>( *) ()); \
-  \
-  template  \
-  void \
-  declare_parameters<dim> (ParameterHandler &); \
-  \
-  template \
-  void \
-  write_plugin_graph<dim> (std::ostream &); \
-  \
-  template \
-  std::unique_ptr<Interface<dim>> \
-  create_geometry_model<dim> (ParameterHandler &prm);
+\
+  template void register_geometry_model<dim>(const std::string &, \
+                                             const std::string &, \
+                                             void (*)(ParameterHandler &), \
+                                             std::unique_ptr<Interface<dim>> (*)()); \
+\
+  template void declare_parameters<dim>(ParameterHandler &); \
+\
+  template void write_plugin_graph<dim>(std::ostream &); \
+\
+  template std::unique_ptr<Interface<dim>> create_geometry_model<dim>(ParameterHandler & prm);
 
     ASPECT_INSTANTIATE(INSTANTIATE)
 

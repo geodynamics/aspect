@@ -21,8 +21,8 @@
 #ifndef _aspect_particle_property_cpo_bingham_average_h
 #define _aspect_particle_property_cpo_bingham_average_h
 
-#include <aspect/particle/property/interface.h>
 #include <aspect/particle/property/crystal_preferred_orientation.h>
+#include <aspect/particle/property/interface.h>
 #include <aspect/simulator_access.h>
 
 #include <array>
@@ -39,34 +39,18 @@ namespace aspect
        * Computes the Bingham average of the CPO particle properties.
        * See https://courses.eas.ualberta.ca/eas421/lecturepages/orientation.html for more info.
        *
-       * The layout of the data vector per particle is the following (note that for this plugin with rotation matrix representation the following dim's are always 3):
-       * 1 averaged a axis of olivine       -> 3 (dim) doubles, starts at:
-       *                                         data_position + 1,
-       * 2 eigenvalues of a axis of olivine -> 3 (dim) doubles, starts at:
-       *                                         data_position + 4,
-       * 3 averaged b axis of olivine       -> 3 (dim) doubles, starts at:
-       *                                         data_position + 7,
-       * 4 eigenvalues of b axis of olivine -> 3 (dim) doubles, starts at:
-       *                                         data_position + 10,
-       * 5 averaged c axis of olivine       -> 3 (dim) doubles, starts at:
-       *                                         data_position + 13,
-       * 6 eigenvalues of c axis of olivine -> 3 (dim) doubles, starts at:
-       *                                         data_position + 16,
-       * 7 averaged a axis of enstatite       -> 3 (dim) doubles, starts at:
-       *                                          data_position + 19,
-       * 8 eigenvalues of a axis of enstatite -> 3 (dim) doubles, starts at:
-       *                                          data_position + 22,
-       * 9 averaged a axis of enstatite       -> 3 (dim) doubles, starts at:
-       *                                          data_position + 25,
-       * 10 eigenvalues of a axis of enstatite -> 3 (dim) doubles, starts at:
-       *                                          data_position + 28,
-       * 11 averaged a axis of enstatite       -> 3 (dim) doubles, starts at:
-       *                                          data_position + 31,
-       * 12 eigenvalues of a axis of enstatite -> 3 (dim) doubles, starts at:
-       *                                          data_position + 34,
-       * If "Use rotation matrix" is set to False in the parameter file, the output number
-       * 1, 3, 5 will save the phi1, theta, phi2 or olivine and 7, 8, 9 will be the same
-       * for enstatite, and they will be 1 (dim) double instead of 3 (dim) doubles.
+       * The layout of the data vector per particle is the following (note that for this plugin with rotation matrix representation the
+       * following dim's are always 3): 1 averaged a axis of olivine       -> 3 (dim) doubles, starts at: data_position + 1, 2 eigenvalues
+       * of a axis of olivine -> 3 (dim) doubles, starts at: data_position + 4, 3 averaged b axis of olivine       -> 3 (dim) doubles,
+       * starts at: data_position + 7, 4 eigenvalues of b axis of olivine -> 3 (dim) doubles, starts at: data_position + 10, 5 averaged c
+       * axis of olivine       -> 3 (dim) doubles, starts at: data_position + 13, 6 eigenvalues of c axis of olivine -> 3 (dim) doubles,
+       * starts at: data_position + 16, 7 averaged a axis of enstatite       -> 3 (dim) doubles, starts at: data_position + 19, 8
+       * eigenvalues of a axis of enstatite -> 3 (dim) doubles, starts at: data_position + 22, 9 averaged a axis of enstatite       -> 3
+       * (dim) doubles, starts at: data_position + 25, 10 eigenvalues of a axis of enstatite -> 3 (dim) doubles, starts at: data_position +
+       * 28, 11 averaged a axis of enstatite       -> 3 (dim) doubles, starts at: data_position + 31, 12 eigenvalues of a axis of enstatite
+       * -> 3 (dim) doubles, starts at: data_position + 34, If "Use rotation matrix" is set to False in the parameter file, the output
+       * number 1, 3, 5 will save the phi1, theta, phi2 or olivine and 7, 8, 9 will be the same for enstatite, and they will be 1 (dim)
+       * double instead of 3 (dim) doubles.
        *
        * @ingroup ParticleProperties
        */
@@ -84,7 +68,7 @@ namespace aspect
            * beginning of the program after parse_parameters is run.
            */
           void
-          initialize () override;
+          initialize() override;
 
           /**
            * Initialization function. This function is called once at the
@@ -98,28 +82,27 @@ namespace aspect
            * properties.
            */
           void
-          initialize_one_particle_property (const Point<dim> &position,
-                                            std::vector<double> &particle_properties) const override;
+          initialize_one_particle_property(const Point<dim> &position, std::vector<double> &particle_properties) const override;
 
           /**
            * @copydoc aspect::Particle::Property::Interface::update_particle_properties()
            */
           void
-          update_particle_properties (const ParticleUpdateInputs<dim> &inputs,
-                                      typename ParticleHandler<dim>::particle_iterator_range &particles) const override;
+          update_particle_properties(const ParticleUpdateInputs<dim>                        &inputs,
+                                     typename ParticleHandler<dim>::particle_iterator_range &particles) const override;
 
           /**
            * This implementation tells the particle manager that
            * we need to update particle properties every time step.
            */
           UpdateTimeFlags
-          need_update () const override;
+          need_update() const override;
 
           /**
            * @copydoc aspect::Particle::Property::Interface::get_update_flags()
            */
           UpdateFlags
-          get_update_flags (const unsigned int component) const override;
+          get_update_flags(const unsigned int component) const override;
 
           /**
            * Set up the information about the names and number of components
@@ -140,30 +123,29 @@ namespace aspect
            * are stored in the first to last array respectively. This function is declared with array
            * length 6 and 4 for rotation matrix or Euler angle representations.
            */
-          std::array<std::array<double,6>,3>
-          compute_bingham_average(std::vector<Tensor<2,3>> matrices, std::integral_constant<int,6>) const;
+          std::array<std::array<double, 6>, 3>
+          compute_bingham_average(std::vector<Tensor<2, 3>> matrices, std::integral_constant<int, 6>) const;
 
-          std::array<std::array<double,4>,3>
-          compute_bingham_average(std::vector<Tensor<2,3>> matrices, std::integral_constant<int,4>) const;
+          std::array<std::array<double, 4>, 3>
+          compute_bingham_average(std::vector<Tensor<2, 3>> matrices, std::integral_constant<int, 4>) const;
 
           /**
            * Declare the parameters this class takes through input files.
            */
-          static
-          void
-          declare_parameters (ParameterHandler &prm);
+          static void
+          declare_parameters(ParameterHandler &prm);
 
           /**
            * Read the parameters this class declares from the parameter file.
            */
           void
-          parse_parameters (ParameterHandler &prm) override;
+          parse_parameters(ParameterHandler &prm) override;
 
           void
-          save (std::map<std::string, std::string> &status_strings) const override;
+          save(std::map<std::string, std::string> &status_strings) const override;
 
           void
-          load (const std::map<std::string, std::string> &status_strings) override;
+          load(const std::map<std::string, std::string> &status_strings) override;
 
         private:
           /**
@@ -215,7 +197,6 @@ namespace aspect
            * called 'Use rotation matrix'.
            */
           bool use_rotmat;
-
       };
     }
   }

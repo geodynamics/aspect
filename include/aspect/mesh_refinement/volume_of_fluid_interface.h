@@ -37,8 +37,7 @@ namespace aspect
      * @ingroup MeshRefinement
      */
     template <int dim>
-    class VolumeOfFluidInterface: public Interface<dim>,
-      public SimulatorAccess<dim>
+    class VolumeOfFluidInterface : public Interface<dim>, public SimulatorAccess<dim>
     {
       public:
         /**
@@ -51,15 +50,14 @@ namespace aspect
         /**
          * Declare the parameters this class takes through input files.
          */
-        static
-        void
-        declare_parameters (ParameterHandler &prm);
+        static void
+        declare_parameters(ParameterHandler &prm);
 
         /**
          * Read the parameters this class declares from the parameter file.
          */
         void
-        parse_parameters (ParameterHandler &prm) override;
+        parse_parameters(ParameterHandler &prm) override;
 
       private:
         /**

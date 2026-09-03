@@ -45,9 +45,9 @@ namespace aspect
            * or adjacent cells if none is present in same cell.
            */
           std::vector<std::vector<double>>
-          properties_at_points(const ParticleHandler<dim> &particle_handler,
-                               const std::vector<Point<dim>> &positions,
-                               const ComponentMask &selected_properties,
+          properties_at_points(const ParticleHandler<dim>                                                     &particle_handler,
+                               const std::vector<Point<dim>>                                                  &positions,
+                               const ComponentMask                                                            &selected_properties,
                                const typename parallel::distributed::Triangulation<dim>::active_cell_iterator &cell) const override;
 
           // avoid -Woverloaded-virtual:
@@ -56,15 +56,14 @@ namespace aspect
           /**
            * @copydoc Interface<dim>::declare_parameters()
            */
-          static
-          void
-          declare_parameters (ParameterHandler &prm);
+          static void
+          declare_parameters(ParameterHandler &prm);
 
           /**
            * @copydoc Interface<dim>::parse_parameters()
            */
           void
-          parse_parameters (ParameterHandler &prm) override;
+          parse_parameters(ParameterHandler &prm) override;
 
         private:
           /**

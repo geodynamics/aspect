@@ -18,14 +18,14 @@
   <http://www.gnu.org/licenses/>.
 */
 
+#include <aspect/particle/property/interface.h>
 #include <aspect/simulator.h>
 #include <aspect/simulator_access.h>
-#include <aspect/particle/property/interface.h>
 
 #include <iostream>
 
 unsigned int counter_without = 0, counter_with = 0;
-bool quiet = true;
+bool         quiet = true;
 
 
 namespace aspect
@@ -38,13 +38,12 @@ namespace aspect
       class PostInitializeParticleProperty : public Interface<dim>, public ::aspect::SimulatorAccess<dim>
       {
         public:
-
-          virtual
-          void
-          initialize ()
+          virtual void
+          initialize()
           {
             std::cout << "initialize" << std::endl;
-            const Particle::Property::Manager<dim> &manager = this->get_particle_manager(this->get_particle_manager_index()).get_property_manager();
+            const Particle::Property::Manager<dim> &manager =
+              this->get_particle_manager(this->get_particle_manager_index()).get_property_manager();
             post_initialized_info = manager.get_data_info().get_field_index_by_name("initial position");
             std::cout << "initial position: post_initialized_info = " << post_initialized_info << std::endl;
 
@@ -56,8 +55,7 @@ namespace aspect
             exit(0);
           }
 
-          virtual
-          std::vector<std::pair<std::string, unsigned int>>
+          virtual std::vector<std::pair<std::string, unsigned int>>
           get_property_information() const
           {
             return std::vector<std::pair<std::string, unsigned int>>();
@@ -65,7 +63,6 @@ namespace aspect
 
         private:
           unsigned int post_initialized_info;
-
       };
     }
   }
@@ -78,9 +75,7 @@ namespace aspect
   {
     namespace Property
     {
-      ASPECT_REGISTER_PARTICLE_PROPERTY(PostInitializeParticleProperty,
-                                        "PostInitializeParticleProperty",
-                                        "")
+      ASPECT_REGISTER_PARTICLE_PROPERTY(PostInitializeParticleProperty, "PostInitializeParticleProperty", "")
     }
   }
 }

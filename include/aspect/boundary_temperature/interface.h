@@ -23,20 +23,23 @@
 #define _aspect_boundary_temperature_interface_h
 
 #include <aspect/plugins.h>
+
 #include <aspect/geometry_model/interface.h>
-#include <aspect/utilities.h>
 #include <aspect/simulator_access.h>
+#include <aspect/utilities.h>
 
 #include <deal.II/base/parameter_handler.h>
 #include <deal.II/distributed/tria.h>
 
 #include <boost/core/demangle.hpp>
+
 #include <typeinfo>
 
 
 namespace aspect
 {
-  template <int dim> class SimulatorAccess;
+  template <int dim>
+  class SimulatorAccess;
 
   /**
    * A namespace for the definition of things that have to do with describing
@@ -67,9 +70,8 @@ namespace aspect
          *
          * @return Boundary temperature at position @p position.
          */
-        virtual
-        double boundary_temperature (const types::boundary_id boundary_indicator,
-                                     const Point<dim> &position) const = 0;
+        virtual double
+        boundary_temperature(const types::boundary_id boundary_indicator, const Point<dim> &position) const = 0;
 
         /**
          * Return the minimal temperature on that part of the boundary on
@@ -78,9 +80,8 @@ namespace aspect
          * This value is used in computing dimensionless numbers such as the
          * Nusselt number indicating heat flux.
          */
-        virtual
-        double minimal_temperature (const std::set<types::boundary_id> &fixed_boundary_ids
-                                    = std::set<types::boundary_id>()) const = 0;
+        virtual double
+        minimal_temperature(const std::set<types::boundary_id> &fixed_boundary_ids = std::set<types::boundary_id>()) const = 0;
 
         /**
          * Return the maximal temperature on that part of the boundary on
@@ -89,9 +90,8 @@ namespace aspect
          * This value is used in computing dimensionless numbers such as the
          * Nusselt number indicating heat flux.
          */
-        virtual
-        double maximal_temperature (const std::set<types::boundary_id> &fixed_boundary_ids
-                                    = std::set<types::boundary_id>()) const = 0;
+        virtual double
+        maximal_temperature(const std::set<types::boundary_id> &fixed_boundary_ids = std::set<types::boundary_id>()) const = 0;
     };
 
 
@@ -108,9 +108,8 @@ namespace aspect
          * Declare the parameters of all known boundary temperature plugins, as
          * well as the ones this class has itself.
          */
-        static
-        void
-        declare_parameters (ParameterHandler &prm);
+        static void
+        declare_parameters(ParameterHandler &prm);
 
         /**
          * Read the parameters this class declares from the parameter file.
@@ -118,7 +117,7 @@ namespace aspect
          * then let these objects read their parameters as well.
          */
         void
-        parse_parameters (ParameterHandler &prm) override;
+        parse_parameters(ParameterHandler &prm) override;
 
         /**
          * A function that calls the boundary_temperature functions of all the
@@ -126,22 +125,21 @@ namespace aspect
          * to combine them.
          */
         double
-        boundary_temperature (const types::boundary_id boundary_indicator,
-                              const Point<dim> &position) const;
+        boundary_temperature(const types::boundary_id boundary_indicator, const Point<dim> &position) const;
 
         /**
          * Return the minimal temperature of all selected plugins on that
          * part of the boundary on which Dirichlet conditions are posed.
          */
-        double minimal_temperature (const std::set<types::boundary_id> &fixed_boundary_ids
-                                    = std::set<types::boundary_id>()) const;
+        double
+        minimal_temperature(const std::set<types::boundary_id> &fixed_boundary_ids = std::set<types::boundary_id>()) const;
 
         /**
          * Return the maximal temperature of all selected plugins on that
          * part of the boundary on which Dirichlet conditions are posed.
          */
-        double maximal_temperature (const std::set<types::boundary_id> &fixed_boundary_ids
-                                    = std::set<types::boundary_id>()) const;
+        double
+        maximal_temperature(const std::set<types::boundary_id> &fixed_boundary_ids = std::set<types::boundary_id>()) const;
 
         /**
          * A function that is used to register boundary temperature objects in such
@@ -160,12 +158,11 @@ namespace aspect
          * @param factory_function A pointer to a function that can create an
          * object of this boundary temperature model.
          */
-        static
-        void
-        register_boundary_temperature (const std::string &name,
-                                       const std::string &description,
-                                       void (*declare_parameters_function) (ParameterHandler &),
-                                       std::unique_ptr<Interface<dim>> (*factory_function) ());
+        static void
+        register_boundary_temperature(const std::string &name,
+                                      const std::string &description,
+                                      void (*declare_parameters_function)(ParameterHandler &),
+                                      std::unique_ptr<Interface<dim>> (*factory_function)());
 
 
         /**
@@ -177,7 +174,7 @@ namespace aspect
          */
         DEAL_II_DEPRECATED
         const std::vector<std::string> &
-        get_active_boundary_temperature_names () const;
+        get_active_boundary_temperature_names() const;
 
         /**
          * Return a list of pointers to all boundary temperature models
@@ -188,7 +185,7 @@ namespace aspect
          */
         DEAL_II_DEPRECATED
         const std::list<std::unique_ptr<Interface<dim>>> &
-        get_active_boundary_temperature_conditions () const;
+        get_active_boundary_temperature_conditions() const;
 
         /**
          * Go through the list of all boundary temperature models that have been selected
@@ -205,10 +202,9 @@ namespace aspect
          *   class of the current class.
          */
         template <typename BoundaryTemperatureType,
-                  typename = typename std::enable_if_t<std::is_base_of<Interface<dim>,BoundaryTemperatureType>::value>>
-        DEAL_II_DEPRECATED
-        bool
-        has_matching_boundary_temperature_model () const;
+                  typename = typename std::enable_if_t<std::is_base_of<Interface<dim>, BoundaryTemperatureType>::value>>
+        DEAL_II_DEPRECATED bool
+        has_matching_boundary_temperature_model() const;
 
         /**
          * Go through the list of all boundary temperature models that have been selected
@@ -227,10 +223,9 @@ namespace aspect
          *   class of the current class.
          */
         template <typename BoundaryTemperatureType,
-                  typename = typename std::enable_if_t<std::is_base_of<Interface<dim>,BoundaryTemperatureType>::value>>
-        DEAL_II_DEPRECATED
-        const BoundaryTemperatureType &
-        get_matching_boundary_temperature_model () const;
+                  typename = typename std::enable_if_t<std::is_base_of<Interface<dim>, BoundaryTemperatureType>::value>>
+        DEAL_II_DEPRECATED const BoundaryTemperatureType &
+        get_matching_boundary_temperature_model() const;
 
         /*
          * Return a set of boundary indicators for which boundary
@@ -255,19 +250,17 @@ namespace aspect
          *
          * @param output_stream The stream to write the output to.
          */
-        static
-        void
-        write_plugin_graph (std::ostream &output_stream);
+        static void
+        write_plugin_graph(std::ostream &output_stream);
 
 
         /**
          * Exception.
          */
-        DeclException1 (ExcBoundaryTemperatureNameNotFound,
-                        std::string,
-                        << "Could not find entry <"
-                        << arg1
-                        << "> among the names of registered boundary temperature objects.");
+        DeclException1(ExcBoundaryTemperatureNameNotFound,
+                       std::string,
+                       << "Could not find entry <" << arg1 << "> among the names of registered boundary temperature objects.");
+
       private:
         /**
          * A list of enums of boundary temperature operators that have been
@@ -296,9 +289,8 @@ namespace aspect
 
     template <int dim>
     template <typename BoundaryTemperatureType, typename>
-    inline
-    bool
-    Manager<dim>::has_matching_boundary_temperature_model () const
+    inline bool
+    Manager<dim>::has_matching_boundary_temperature_model() const
     {
       return this->template has_matching_active_plugin<BoundaryTemperatureType>();
     }
@@ -306,9 +298,8 @@ namespace aspect
 
     template <int dim>
     template <typename BoundaryTemperatureType, typename>
-    inline
-    const BoundaryTemperatureType &
-    Manager<dim>::get_matching_boundary_temperature_model () const
+    inline const BoundaryTemperatureType &
+    Manager<dim>::get_matching_boundary_temperature_model() const
     {
       return this->template get_matching_active_plugin<BoundaryTemperatureType>();
     }
@@ -322,7 +313,7 @@ namespace aspect
      */
     template <int dim>
     std::string
-    get_valid_model_names_pattern ();
+    get_valid_model_names_pattern();
 
 
     /**
@@ -335,14 +326,12 @@ namespace aspect
 #define ASPECT_REGISTER_BOUNDARY_TEMPERATURE_MODEL(classname, name, description) \
   template class classname<2>; \
   template class classname<3>; \
-  namespace ASPECT_REGISTER_BOUNDARY_TEMPERATURE_MODEL_ ## classname \
+  namespace ASPECT_REGISTER_BOUNDARY_TEMPERATURE_MODEL_##classname \
   { \
-    aspect::internal::Plugins::RegisterHelper<aspect::BoundaryTemperature::Interface<2>,classname<2>> \
-    dummy_ ## classname ## _2d (&aspect::BoundaryTemperature::Manager<2>::register_boundary_temperature, \
-                                name, description); \
-    aspect::internal::Plugins::RegisterHelper<aspect::BoundaryTemperature::Interface<3>,classname<3>> \
-    dummy_ ## classname ## _3d (&aspect::BoundaryTemperature::Manager<3>::register_boundary_temperature, \
-                                name, description); \
+    aspect::internal::Plugins::RegisterHelper<aspect::BoundaryTemperature::Interface<2>, classname<2>> dummy_##classname##_2d( \
+      &aspect::BoundaryTemperature::Manager<2>::register_boundary_temperature, name, description); \
+    aspect::internal::Plugins::RegisterHelper<aspect::BoundaryTemperature::Interface<3>, classname<3>> dummy_##classname##_3d( \
+      &aspect::BoundaryTemperature::Manager<3>::register_boundary_temperature, name, description); \
   }
   }
 }

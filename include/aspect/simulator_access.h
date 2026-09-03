@@ -23,12 +23,13 @@
 #define _aspect_simulator_access_h
 
 #include <aspect/global.h>
-#include <aspect/parameters.h>
-#include <aspect/introspection.h>
 
+#include <aspect/introspection.h>
+#include <aspect/parameters.h>
+
+#include <deal.II/base/conditional_ostream.h>
 #include <deal.II/base/table_handler.h>
 #include <deal.II/base/timer.h>
-#include <deal.II/base/conditional_ostream.h>
 #include <deal.II/distributed/tria.h>
 #include <deal.II/dofs/dof_handler.h>
 #include <deal.II/fe/fe.h>
@@ -43,128 +44,164 @@ namespace WorldBuilder
 namespace aspect
 {
   // forward declarations:
-  template <int dim> class Simulator;
-  template <int dim> struct SimulatorSignals;
-  template <int dim> class LateralAveraging;
-  template <int dim> struct RotationProperties;
+  template <int dim>
+  class Simulator;
+  template <int dim>
+  struct SimulatorSignals;
+  template <int dim>
+  class LateralAveraging;
+  template <int dim>
+  struct RotationProperties;
 
   namespace GravityModel
   {
-    template <int dim> class Interface;
+    template <int dim>
+    class Interface;
   }
 
   namespace HeatingModel
   {
-    template <int dim> class Manager;
+    template <int dim>
+    class Manager;
   }
 
   namespace PrescribedDilation
   {
-    template <int dim> class Manager;
+    template <int dim>
+    class Manager;
   }
 
   namespace MaterialModel
   {
-    template <int dim> class Interface;
+    template <int dim>
+    class Interface;
   }
 
   namespace InitialTemperature
   {
-    template <int dim> class Manager;
-    template <int dim> class Interface;
+    template <int dim>
+    class Manager;
+    template <int dim>
+    class Interface;
   }
 
   namespace BoundaryTemperature
   {
-    template <int dim> class Manager;
-    template <int dim> class Interface;
+    template <int dim>
+    class Manager;
+    template <int dim>
+    class Interface;
   }
 
   namespace BoundaryHeatFlux
   {
-    template <int dim> class Interface;
+    template <int dim>
+    class Interface;
   }
 
   namespace BoundaryConvectiveHeating
   {
-    template <int dim> class Manager;
-    template <int dim> class Interface;
+    template <int dim>
+    class Manager;
+    template <int dim>
+    class Interface;
   }
 
   namespace BoundaryComposition
   {
-    template <int dim> class Manager;
-    template <int dim> class Interface;
+    template <int dim>
+    class Manager;
+    template <int dim>
+    class Interface;
   }
 
   namespace BoundaryTraction
   {
-    template <int dim> class Manager;
-    template <int dim> class Interface;
+    template <int dim>
+    class Manager;
+    template <int dim>
+    class Interface;
   }
 
   namespace BoundaryVelocity
   {
-    template <int dim> class Manager;
-    template <int dim> class Interface;
+    template <int dim>
+    class Manager;
+    template <int dim>
+    class Interface;
   }
 
   namespace InitialComposition
   {
-    template <int dim> class Manager;
-    template <int dim> class Interface;
+    template <int dim>
+    class Manager;
+    template <int dim>
+    class Interface;
   }
 
   namespace InitialTopographyModel
   {
-    template <int dim> class Interface;
+    template <int dim>
+    class Interface;
   }
 
   namespace MeshRefinement
   {
-    template <int dim> class Manager;
+    template <int dim>
+    class Manager;
   }
 
   namespace AdiabaticConditions
   {
-    template <int dim> class Interface;
+    template <int dim>
+    class Interface;
   }
 
   namespace Postprocess
   {
-    template <int dim> class Manager;
+    template <int dim>
+    class Manager;
   }
 
-  template <int dim> class MeltHandler;
-  template <int dim> class VolumeOfFluidHandler;
+  template <int dim>
+  class MeltHandler;
+  template <int dim>
+  class VolumeOfFluidHandler;
 
   namespace MeshDeformation
   {
-    template <int dim> class MeshDeformationHandler;
+    template <int dim>
+    class MeshDeformationHandler;
   }
 
-  template <int dim> class NewtonHandler;
+  template <int dim>
+  class NewtonHandler;
 
-  template <int dim> class StokesMatrixFreeHandler;
+  template <int dim>
+  class StokesMatrixFreeHandler;
 
   namespace Particle
   {
-    template <int dim> class Manager;
+    template <int dim>
+    class Manager;
   }
 
   namespace StokesSolver
   {
-    template <int dim> class Interface;
+    template <int dim>
+    class Interface;
   }
 
   namespace TimeStepping
   {
-    template <int dim> class Manager;
+    template <int dim>
+    class Manager;
   }
 
   namespace PrescribedSolution
   {
-    template <int dim> class  Manager;
+    template <int dim>
+    class Manager;
   }
 
   /**
@@ -226,19 +263,19 @@ namespace aspect
        * to call initialize() to provide this reference to the Simulator
        * object.
        */
-      SimulatorAccess ();
+      SimulatorAccess();
 
       /**
        * Create a SimulatorAccess object that is already initialized for
        * a particular Simulator.
        */
-      SimulatorAccess (const Simulator<dim> &simulator_object);
+      SimulatorAccess(const Simulator<dim> &simulator_object);
 
       /**
        * Destructor. Does nothing but is virtual so that derived classes
        * destructors are also virtual.
        */
-      virtual ~SimulatorAccess ();
+      virtual ~SimulatorAccess();
 
       /**
        * Initialize this class for a given simulator. This function is marked
@@ -249,7 +286,8 @@ namespace aspect
        *
        * @param simulator_object A reference to the main simulator object.
        */
-      virtual void initialize_simulator (const Simulator<dim> &simulator_object);
+      virtual void
+      initialize_simulator(const Simulator<dim> &simulator_object);
 
       /** @name Accessing variables that identify overall properties of the simulator */
       /** @{ */
@@ -262,7 +300,7 @@ namespace aspect
        * base.
        */
       const Introspection<dim> &
-      introspection () const;
+      introspection() const;
 
       /**
        * Return a reference to the Simulator itself. Note that you can not
@@ -272,14 +310,14 @@ namespace aspect
        * reference to the Simulator).
        */
       const Simulator<dim> &
-      get_simulator () const;
+      get_simulator() const;
 
       /**
        * Return a reference to the parameters object that describes all run-time
        * parameters used in the current simulation.
        */
       const Parameters<dim> &
-      get_parameters () const;
+      get_parameters() const;
 
       /**
        * Get Access to the structure containing the signals of the simulator.
@@ -291,7 +329,7 @@ namespace aspect
        * Return the MPI communicator for this simulation.
        */
       MPI_Comm
-      get_mpi_communicator () const;
+      get_mpi_communicator() const;
 
       /**
        * Return the timer object for this simulation. Since the timer is
@@ -300,7 +338,7 @@ namespace aspect
        * their code.
        */
       TimerOutput &
-      get_computing_timer () const;
+      get_computing_timer() const;
 
       /**
        * Return a reference to the stream object that only outputs something
@@ -308,30 +346,31 @@ namespace aspect
        * into it on all other processors.
        */
       const ConditionalOStream &
-      get_pcout () const;
+      get_pcout() const;
 
       /**
        * Return the current simulation time in seconds.
        */
-      double get_time () const;
+      double
+      get_time() const;
 
       /**
        * Return the size of the current time step.
        */
       double
-      get_timestep () const;
+      get_timestep() const;
 
       /**
        * Return the size of the last time step.
        */
       double
-      get_old_timestep () const;
+      get_old_timestep() const;
 
       /**
        * Return the current number of a time step.
        */
       unsigned int
-      get_timestep_number () const;
+      get_timestep_number() const;
 
       /**
        * Return a reference to the manager of the time stepping strategies.
@@ -345,27 +384,27 @@ namespace aspect
        * Return the current nonlinear iteration number of a time step.
        */
       unsigned int
-      get_nonlinear_iteration () const;
+      get_nonlinear_iteration() const;
 
       /**
        * Return a reference to the triangulation in use by the simulator
        * object.
        */
       const parallel::distributed::Triangulation<dim> &
-      get_triangulation () const;
+      get_triangulation() const;
 
       /**
        * Return the global volume of the computational domain.
        */
       double
-      get_volume () const;
+      get_volume() const;
 
       /**
        * Return a reference to the mapping used to describe the boundary of
        * the domain.
        */
       const Mapping<dim> &
-      get_mapping () const;
+      get_mapping() const;
 
       /**
        * Return the directory specified in the input parameter file to be the
@@ -373,7 +412,7 @@ namespace aspect
        * by a directory separator (i.e., '/').
        */
       std::string
-      get_output_directory () const;
+      get_output_directory() const;
 
       /**
        * Return the ID of the checkpoint that ASPECT is currently writing or was last
@@ -382,43 +421,43 @@ namespace aspect
        * with the main ASPECT checkpoint.
        */
       unsigned int
-      get_checkpoint_id () const;
+      get_checkpoint_id() const;
 
       /**
        * Return whether we use the adiabatic heating term.
        */
       bool
-      include_adiabatic_heating () const;
+      include_adiabatic_heating() const;
 
       /**
        * Return whether we use the latent heat term.
        */
       bool
-      include_latent_heat () const;
+      include_latent_heat() const;
 
       /**
        * Return whether we solve the equations for melt transport.
        */
       bool
-      include_melt_transport () const;
+      include_melt_transport() const;
 
       /**
        * Return the stokes velocity degree.
        */
       int
-      get_stokes_velocity_degree () const;
+      get_stokes_velocity_degree() const;
 
       /**
        * Return the adiabatic surface temperature.
        */
       double
-      get_adiabatic_surface_temperature () const;
+      get_adiabatic_surface_temperature() const;
 
       /**
        * Return the adiabatic surface pressure.
        */
       double
-      get_surface_pressure () const;
+      get_surface_pressure() const;
 
       /**
        * Return whether things like velocities should be converted from the
@@ -426,7 +465,7 @@ namespace aspect
        * the corresponding entry in the input parameter file.
        */
       bool
-      convert_output_to_years () const;
+      convert_output_to_years() const;
 
       /**
        * Return the number of the current pre refinement step.
@@ -438,20 +477,20 @@ namespace aspect
        * std::numeric_limits<unsigned int>::max() afterwards.
        */
       unsigned int
-      get_pre_refinement_step () const;
+      get_pre_refinement_step() const;
 
       /**
        * Return the number of compositional fields specified in the input
        * parameter file that will be advected along with the flow field.
        */
       unsigned int
-      n_compositional_fields () const;
+      n_compositional_fields() const;
 
       /**
        * Return the simulation end time in seconds.
        */
       double
-      get_end_time () const;
+      get_end_time() const;
 
       /**
        * Compute the error indicators in the same way they are normally used
@@ -473,16 +512,14 @@ namespace aspect
        * will only compute the artificial viscosity in cells at boundaries.
        */
       void
-      get_artificial_viscosity(Vector<float> &viscosity_per_cell,
-                               const bool skip_interior_cells = false) const;
+      get_artificial_viscosity(Vector<float> &viscosity_per_cell, const bool skip_interior_cells = false) const;
 
       /**
        * Returns the entropy viscosity on each locally owned cell as it is
        * used to stabilize the composition equation.
        */
       void
-      get_artificial_viscosity_composition(Vector<float> &viscosity_per_cell,
-                                           const unsigned int compositional_variable) const;
+      get_artificial_viscosity_composition(Vector<float> &viscosity_per_cell, const unsigned int compositional_variable) const;
       /** @} */
 
 
@@ -501,7 +538,7 @@ namespace aspect
        * contains ghost elements for all locally relevant degrees of freedom.
        */
       const LinearAlgebra::BlockVector &
-      get_current_linearization_point () const;
+      get_current_linearization_point() const;
 
       /**
        * Return a reference to the vector that has the current solution of the
@@ -514,7 +551,7 @@ namespace aspect
        * contains ghost elements for all locally relevant degrees of freedom.
        */
       const LinearAlgebra::BlockVector &
-      get_solution () const;
+      get_solution() const;
 
       /**
        * Return a reference to the vector that has the solution of the entire
@@ -525,7 +562,7 @@ namespace aspect
        * contains ghost elements for all locally relevant degrees of freedom.
        */
       const LinearAlgebra::BlockVector &
-      get_old_solution () const;
+      get_old_solution() const;
 
       /**
        * Return a reference to the vector that has the solution of the entire
@@ -536,7 +573,7 @@ namespace aspect
        * contains ghost elements for all locally relevant degrees of freedom.
        */
       const LinearAlgebra::BlockVector &
-      get_old_old_solution () const;
+      get_old_old_solution() const;
 
       /**
        * Return a reference to the vector that has the reactions computed by the
@@ -546,7 +583,7 @@ namespace aspect
        * contains ghost elements for all locally relevant degrees of freedom.
        */
       const LinearAlgebra::BlockVector &
-      get_reaction_vector () const;
+      get_reaction_vector() const;
 
       /**
        * Return a reference to the vector that has the mesh velocity for
@@ -556,14 +593,14 @@ namespace aspect
        * contains ghost elements for all locally relevant degrees of freedom.
        */
       const LinearAlgebra::BlockVector &
-      get_mesh_velocity () const;
+      get_mesh_velocity() const;
 
       /**
        * Return a reference to the DoFHandler that is used to discretize the
        * variables at the current time step.
        */
       const DoFHandler<dim> &
-      get_dof_handler () const;
+      get_dof_handler() const;
 
       /**
        * Return a reference to the finite element that is
@@ -574,19 +611,19 @@ namespace aspect
        * used in this simulation).
        */
       const FiniteElement<dim> &
-      get_fe () const;
+      get_fe() const;
 
       /**
        * Return a reference to the system matrix at the current time step.
        */
       const LinearAlgebra::BlockSparseMatrix &
-      get_system_matrix () const;
+      get_system_matrix() const;
 
       /**
        * Return a reference to the system preconditioner matrix at the current time step.
        */
       const LinearAlgebra::BlockSparseMatrix &
-      get_system_preconditioner_matrix () const;
+      get_system_preconditioner_matrix() const;
 
       /** @} */
 
@@ -599,19 +636,19 @@ namespace aspect
        * density().
        */
       const MaterialModel::Interface<dim> &
-      get_material_model () const;
+      get_material_model() const;
 
       /**
        * Return a reference to the gravity model description.
        */
       const GravityModel::Interface<dim> &
-      get_gravity_model () const;
+      get_gravity_model() const;
 
       /**
        * Return a reference to the initial topography model.
        */
       const InitialTopographyModel::Interface<dim> &
-      get_initial_topography_model () const;
+      get_initial_topography_model() const;
 
       /**
        * Return a shared pointer to the initial topography model.
@@ -619,13 +656,13 @@ namespace aspect
        * store a pointer to the initial topography model.
        */
       const std::shared_ptr<const InitialTopographyModel::Interface<dim>>
-      get_initial_topography_model_pointer () const;
+      get_initial_topography_model_pointer() const;
 
       /**
        * Return a reference to the geometry model.
        */
       const GeometryModel::Interface<dim> &
-      get_geometry_model () const;
+      get_geometry_model() const;
 
 
       /**
@@ -633,7 +670,7 @@ namespace aspect
        * conditions.
        */
       const AdiabaticConditions::Interface<dim> &
-      get_adiabatic_conditions () const;
+      get_adiabatic_conditions() const;
 
       /**
        * Return whether the current model has a boundary temperature object
@@ -643,7 +680,8 @@ namespace aspect
        * boundary temperature model that can provide, for example,
        * a minimal and maximal temperature on the boundary.
        */
-      bool has_boundary_temperature () const;
+      bool
+      has_boundary_temperature() const;
 
       /**
        * Return a reference to the manager of the boundary temperature models.
@@ -652,7 +690,7 @@ namespace aspect
        * for a given position.
        */
       const BoundaryTemperature::Manager<dim> &
-      get_boundary_temperature_manager () const;
+      get_boundary_temperature_manager() const;
 
       /**
        * Return a reference to the manager of the boundary convective heating models.
@@ -661,14 +699,14 @@ namespace aspect
        * for a given position.
        */
       const BoundaryConvectiveHeating::Manager<dim> &
-      get_boundary_convective_heating_manager () const;
+      get_boundary_convective_heating_manager() const;
 
       /**
        * Return a reference to the object that describes heat flux
        * boundary conditions.
        */
       const BoundaryHeatFlux::Interface<dim> &
-      get_boundary_heat_flux () const;
+      get_boundary_heat_flux() const;
 
       /**
        * Return whether the current model has a boundary composition object
@@ -677,7 +715,8 @@ namespace aspect
        * boundaries are reflecting. In such cases, there is no
        * boundary composition model.
        */
-      bool has_boundary_composition () const;
+      bool
+      has_boundary_composition() const;
 
       /**
        * Return an reference to the manager of the boundary composition models.
@@ -686,7 +725,7 @@ namespace aspect
        * for a given position.
        */
       const BoundaryComposition::Manager<dim> &
-      get_boundary_composition_manager () const;
+      get_boundary_composition_manager() const;
 
       /**
        * Return an reference to the manager of the boundary traction models.
@@ -695,7 +734,7 @@ namespace aspect
        * for a given position.
        */
       const BoundaryTraction::Manager<dim> &
-      get_boundary_traction_manager () const;
+      get_boundary_traction_manager() const;
 
       /**
        * Return a reference to the manager of the initial temperature models.
@@ -724,7 +763,7 @@ namespace aspect
        * as you need it.
        */
       std::shared_ptr<const InitialTemperature::Manager<dim>>
-      get_initial_temperature_manager_pointer () const;
+      get_initial_temperature_manager_pointer() const;
 
       /**
        * Return a reference to the manager of the initial temperature model.
@@ -741,7 +780,7 @@ namespace aspect
        * the get_initial_temperature_manager_pointer() function above.
        */
       const InitialTemperature::Manager<dim> &
-      get_initial_temperature_manager () const;
+      get_initial_temperature_manager() const;
 
       /**
        * Return a pointer to the manager of the initial composition model.
@@ -769,7 +808,7 @@ namespace aspect
        * as you need it.
        */
       std::shared_ptr<const InitialComposition::Manager<dim>>
-      get_initial_composition_manager_pointer () const;
+      get_initial_composition_manager_pointer() const;
 
       /**
        * Return a reference to the manager of the initial composition model.
@@ -786,35 +825,35 @@ namespace aspect
        * the get_initial_composition_manager_pointer() function above.
        */
       const InitialComposition::Manager<dim> &
-      get_initial_composition_manager () const;
+      get_initial_composition_manager() const;
 
       /**
        * Return a set of boundary indicators that describes which of the
        * boundaries have a fixed temperature.
        */
       const std::set<types::boundary_id> &
-      get_fixed_temperature_boundary_indicators () const;
+      get_fixed_temperature_boundary_indicators() const;
 
       /**
        * Return a set of boundary indicators that describes which of the
        * boundaries have a fixed heat flux.
        */
       const std::set<types::boundary_id> &
-      get_fixed_heat_flux_boundary_indicators () const;
+      get_fixed_heat_flux_boundary_indicators() const;
 
       /**
        * Return a set of boundary indicators that describes which of the
        * boundaries have a convective heating, i.e. Robin boundary condition.
        */
       const std::set<types::boundary_id> &
-      get_fixed_convective_heating_boundary_indicators () const;
+      get_fixed_convective_heating_boundary_indicators() const;
 
       /**
        * Return a set of boundary indicators that describes which of the
        * boundaries have a fixed composition.
        */
       const std::set<types::boundary_id> &
-      get_fixed_composition_boundary_indicators () const;
+      get_fixed_composition_boundary_indicators() const;
 
       /**
        * Return a set of boundary indicators that describes which of the
@@ -823,7 +862,7 @@ namespace aspect
        * condition, only which boundaries have a mesh deformation condition.
        */
       const std::set<types::boundary_id> &
-      get_mesh_deformation_boundary_indicators () const;
+      get_mesh_deformation_boundary_indicators() const;
 
       /**
        * Return an reference to the manager of the boundary velocity models.
@@ -832,7 +871,7 @@ namespace aspect
        * for a given position.
        */
       const BoundaryVelocity::Manager<dim> &
-      get_boundary_velocity_manager () const;
+      get_boundary_velocity_manager() const;
 
       /**
        * Return a pointer to the manager of the heating model.
@@ -840,7 +879,7 @@ namespace aspect
        * used in a computation.
        */
       const HeatingModel::Manager<dim> &
-      get_heating_model_manager () const;
+      get_heating_model_manager() const;
 
       /**
        * Return a pointer to the manager of the prescribed dilation.
@@ -848,7 +887,7 @@ namespace aspect
        * used in a computation.
        */
       const PrescribedDilation::Manager<dim> &
-      get_prescribed_dilation_manager () const;
+      get_prescribed_dilation_manager() const;
 
       /**
        * Return a reference to the manager of the mesh refinement strategies.
@@ -857,26 +896,26 @@ namespace aspect
        * been included.
        */
       const MeshRefinement::Manager<dim> &
-      get_mesh_refinement_manager () const;
+      get_mesh_refinement_manager() const;
 
       /**
        * Return a reference to the melt handler.
        */
       const MeltHandler<dim> &
-      get_melt_handler () const;
+      get_melt_handler() const;
 
       /**
        * Return a reference to the VolumeOfFluid handler.
        */
       const VolumeOfFluidHandler<dim> &
-      get_volume_of_fluid_handler () const;
+      get_volume_of_fluid_handler() const;
 
       /**
        * Return a reference to the Newton handler that controls the Newton
        * iteration to resolve nonlinearities.
        */
       const NewtonHandler<dim> &
-      get_newton_handler () const;
+      get_newton_handler() const;
 
 #ifdef ASPECT_WITH_WORLD_BUILDER
       /**
@@ -896,7 +935,7 @@ namespace aspect
        * the get_world_builder_pointer() function below.
        */
       const WorldBuilder::World &
-      get_world_builder () const;
+      get_world_builder() const;
 
       /**
        * This function is to get_world_builder() what
@@ -908,14 +947,14 @@ namespace aspect
        * keeping a shared pointer to it.
        */
       std::shared_ptr<const WorldBuilder::World>
-      get_world_builder_pointer () const;
+      get_world_builder_pointer() const;
 #endif
       /**
        * Return a reference to the mesh deformation handler. This function will
        * throw an exception if mesh deformation is not activated.
        */
       const MeshDeformation::MeshDeformationHandler<dim> &
-      get_mesh_deformation_handler () const;
+      get_mesh_deformation_handler() const;
 
       /**
        * Return a reference to the lateral averaging object owned
@@ -923,14 +962,14 @@ namespace aspect
        * of various quantities at depth slices.
        */
       const LateralAveraging<dim> &
-      get_lateral_averaging () const;
+      get_lateral_averaging() const;
 
       /**
        * Return a pointer to the object that describes the DoF
        * constraints for the time step we are currently solving.
        */
       const AffineConstraints<double> &
-      get_current_constraints () const;
+      get_current_constraints() const;
 
       /**
        * Return whether the Simulator object has been completely initialized
@@ -964,14 +1003,15 @@ namespace aspect
        *   initialization steps (mesh refinement, interpolation of initial
        *   conditions, etc.) before re-starting the time loop.
        */
-      bool simulator_is_past_initialization () const;
+      bool
+      simulator_is_past_initialization() const;
 
       /**
        * Return the value used for rescaling the pressure in the linear
        * solver.
        */
       double
-      get_pressure_scaling () const;
+      get_pressure_scaling() const;
 
       /**
        * Return whether we need to apply a compatibility modification
@@ -986,18 +1026,17 @@ namespace aspect
        * Return whether the model uses a prescribed Stokes solution.
        */
       bool
-      model_has_prescribed_stokes_solution () const;
+      model_has_prescribed_stokes_solution() const;
 
       /**
        * A convenience function that copies the values of the compositional
        * fields at the quadrature point q given as input parameter to the
        * output vector composition_values_at_q_point.
        */
-      static
-      void
-      get_composition_values_at_q_point (const std::vector<std::vector<double>> &composition_values,
-                                         const unsigned int                      q,
-                                         std::vector<double>                    &composition_values_at_q_point);
+      static void
+      get_composition_values_at_q_point(const std::vector<std::vector<double>> &composition_values,
+                                        const unsigned int                      q,
+                                        std::vector<double>                    &composition_values_at_q_point);
 
       /**
        * Return a writable reference to the statistics object into which
@@ -1010,13 +1049,14 @@ namespace aspect
        * record information as necessary.
        * @return
        */
-      TableHandler &get_statistics_object() const;
+      TableHandler &
+      get_statistics_object() const;
 
       /**
        * Return a reference to the melt handler.
        */
       const Postprocess::Manager<dim> &
-      get_postprocess_manager () const;
+      get_postprocess_manager() const;
 
       /**
        * Returns the number of active particle managers.
@@ -1043,27 +1083,28 @@ namespace aspect
       /**
        * Return true if using the block GMG Stokes solver.
        */
-      bool is_stokes_matrix_free() const;
+      bool
+      is_stokes_matrix_free() const;
 
       /**
        * Return a reference to the StokesMatrixFreeHandler that controls the
        * matrix-free Stokes solver.
        */
       const StokesMatrixFreeHandler<dim> &
-      get_stokes_matrix_free () const;
+      get_stokes_matrix_free() const;
 
       /**
        * Return a reference to the active Stokes solver.
        */
       const StokesSolver::Interface<dim> &
-      get_stokes_solver () const;
+      get_stokes_solver() const;
 
       /**
        * Return a reference to the PrescribedSolution::Manager that manages the
        * Prescribed solution plugins.
        */
       const PrescribedSolution::Manager<dim> &
-      get_prescribed_solution () const;
+      get_prescribed_solution() const;
 
       /**
        * Compute the angular momentum and other rotation properties
@@ -1077,21 +1118,21 @@ namespace aspect
        * (or net rotation) of the top surface.
        */
       RotationProperties<dim>
-      compute_net_angular_momentum(const bool use_constant_density,
+      compute_net_angular_momentum(const bool                        use_constant_density,
                                    const LinearAlgebra::BlockVector &solution,
-                                   const bool limit_to_top_faces = false) const;
+                                   const bool                        limit_to_top_faces = false) const;
 
       /**
-      * Eliminate the nullspace of the velocity in the given vector. Both
-      * vectors are expected to contain the current solution.
-      *
-      * @param solution The locally relevant vector for the whole
-      * finite element, this vector will be filled at the end.
-      * @param distributed_stokes_solution only contains velocity and pressure and
-      * only locally owned elements.
-      */
-      void remove_nullspace(LinearAlgebra::BlockVector &solution,
-                            LinearAlgebra::BlockVector &distributed_stokes_solution) const;
+       * Eliminate the nullspace of the velocity in the given vector. Both
+       * vectors are expected to contain the current solution.
+       *
+       * @param solution The locally relevant vector for the whole
+       * finite element, this vector will be filled at the end.
+       * @param distributed_stokes_solution only contains velocity and pressure and
+       * only locally owned elements.
+       */
+      void
+      remove_nullspace(LinearAlgebra::BlockVector &solution, LinearAlgebra::BlockVector &distributed_stokes_solution) const;
 
       /**
        * Adjust the pressure variable (which is only determined up to
@@ -1105,7 +1146,8 @@ namespace aspect
        * This is so that its negative can later be used again in
        * denormalize_pressure().
        */
-      double normalize_pressure(LinearAlgebra::BlockVector &vector) const;
+      double
+      normalize_pressure(LinearAlgebra::BlockVector &vector) const;
 
       /**
        * Invert the action of the normalize_pressure() function above. This
@@ -1117,8 +1159,8 @@ namespace aspect
        *
        * This function modifies @p vector in-place.
        */
-      void denormalize_pressure(const double                      pressure_adjustment,
-                                LinearAlgebra::BlockVector       &vector) const;
+      void
+      denormalize_pressure(const double pressure_adjustment, LinearAlgebra::BlockVector &vector) const;
 
       /** @} */
 

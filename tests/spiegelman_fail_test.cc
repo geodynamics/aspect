@@ -18,18 +18,17 @@
   <http://www.gnu.org/licenses/>.
 */
 
-#include <algorithm>
-#include <aspect/simulator.h>
-#include <deal.II/grid/tria.h>
-#include <aspect/simulator_access.h>
+#include <aspect/material_model/interface.h>
 #include <aspect/newton.h>
 #include <aspect/parameters.h>
-
-#include <iostream>
-
+#include <aspect/simulator.h>
+#include <aspect/simulator_access.h>
 #include <aspect/utilities.h>
 
-#include <aspect/material_model/interface.h>
+#include <deal.II/grid/tria.h>
+
+#include <algorithm>
+#include <iostream>
 
 namespace aspect
 {
@@ -87,12 +86,20 @@ namespace aspect
     class SpiegelmanMaterial : public MaterialModel::Interface<dim>, public ::aspect::SimulatorAccess<dim>
     {
       public:
-        double compute_second_invariant(const SymmetricTensor<2,dim> strain_rate, const double min_strain_rate) const;
+        double
+        compute_second_invariant(const SymmetricTensor<2, dim> strain_rate, const double min_strain_rate) const;
 
-        double compute_viscosity(const double edot_ii,const double pressure,const int comp, const double constant_viscosity,const bool compute_full_viscosity, const double min_visc, const double max_visc) const;
+        double
+        compute_viscosity(const double edot_ii,
+                          const double pressure,
+                          const int    comp,
+                          const double constant_viscosity,
+                          const bool   compute_full_viscosity,
+                          const double min_visc,
+                          const double max_visc) const;
 
-        virtual void evaluate(const MaterialModel::MaterialModelInputs<dim> &in,
-                              MaterialModel::MaterialModelOutputs<dim> &out) const;
+        virtual void
+        evaluate(const MaterialModel::MaterialModelInputs<dim> &in, MaterialModel::MaterialModelOutputs<dim> &out) const;
 
         /**
          * Return whether the model is compressible or not.  Incompressibility
@@ -104,20 +111,19 @@ namespace aspect
          *
          * This material model is incompressible.
          */
-        virtual bool is_compressible () const;
+        virtual bool
+        is_compressible() const;
 
-        virtual double reference_density () const;
+        virtual double
+        reference_density() const;
 
-        static
-        void
-        declare_parameters (ParameterHandler &prm);
+        static void
+        declare_parameters(ParameterHandler &prm);
 
-        virtual
-        void
-        parse_parameters (ParameterHandler &prm);
+        virtual void
+        parse_parameters(ParameterHandler &prm);
 
       private:
-
         double reference_T;
 
 
@@ -135,8 +141,8 @@ namespace aspect
         std::vector<double> min_visc;
         std::vector<double> max_visc;
         std::vector<double> veff_coefficient;
-        double ref_visc;
-        double reference_compressibility;
+        double              ref_visc;
+        double              reference_compressibility;
         std::vector<double> ref_visc_list;
 
         std::vector<double> thermal_diffusivity;
@@ -185,16 +191,18 @@ namespace aspect
   namespace
   {
     std::vector<double>
-    get_vector_double (const std::string &parameter, const unsigned int n_fields, ParameterHandler &prm)
+    get_vector_double(const std::string &parameter, const unsigned int n_fields, ParameterHandler &prm)
     {
       std::vector<double> parameter_list;
-      parameter_list = Utilities::string_to_double(Utilities::split_string_list(prm.get (parameter)));
+      parameter_list = Utilities::string_to_double(Utilities::split_string_list(prm.get(parameter)));
       if (parameter_list.size() == 1)
         parameter_list.resize(n_fields, parameter_list[0]);
 
       AssertThrow(parameter_list.size() == n_fields,
-                  ExcMessage("Length of " + parameter + " list (size "+ std::to_string(parameter_list.size()) +") must be either one,"
-                             " or n_compositional_fields+1 (= " + std::to_string(n_fields) + ")."));
+                  ExcMessage("Length of " + parameter + " list (size " + std::to_string(parameter_list.size()) +
+                             ") must be either one,"
+                             " or n_compositional_fields+1 (= " +
+                             std::to_string(n_fields) + ")."));
 
       return parameter_list;
     }
@@ -204,39 +212,34 @@ namespace aspect
   {
     template <int dim>
     double
-    SpiegelmanMaterial<dim>::
-    compute_second_invariant(const SymmetricTensor<2,dim> strain_rate, const double min_strain_rate) const
+    SpiegelmanMaterial<dim>::compute_second_invariant(const SymmetricTensor<2, dim> strain_rate, const double min_strain_rate) const
     {
-      const double edot_ii_strict = std::sqrt(strain_rate*strain_rate);
-      const double edot_ii = std::max(edot_ii_strict, min_strain_rate);
+      const double edot_ii_strict = std::sqrt(strain_rate * strain_rate);
+      const double edot_ii        = std::max(edot_ii_strict, min_strain_rate);
       return edot_ii;
     }
 
     template <int dim>
     double
-    SpiegelmanMaterial<dim>::
-    compute_viscosity(const double edot_ii,
-                      const double pressure,
-                      const int comp,
-                      const double constant_viscosity,
-                      const bool compute_full_viscosity,
-                      const double min_visc,
-                      const double max_visc) const
+    SpiegelmanMaterial<dim>::compute_viscosity(const double edot_ii,
+                                               const double pressure,
+                                               const int    comp,
+                                               const double constant_viscosity,
+                                               const bool   compute_full_viscosity,
+                                               const double min_visc,
+                                               const double max_visc) const
     {
       double viscosity;
 
       if (constant_viscosity == 0)
         {
-          const double strength = ( (dim==3)
-                                    ?
-                                    ( 6.0 * cohesion[comp] * cos_phi[comp] + 6.0 * std::max(pressure,0.0) * sin_phi[comp] )
-                                    / ( std::sqrt(3) * ( 3.0 + sin_phi[comp] ) )
-                                    :
-                                    cohesion[comp] * cos_phi[comp] + std::max(pressure,0.0) * sin_phi[comp] );
+          const double strength = ((dim == 3) ? (6.0 * cohesion[comp] * cos_phi[comp] + 6.0 * std::max(pressure, 0.0) * sin_phi[comp]) /
+                                                  (std::sqrt(3) * (3.0 + sin_phi[comp])) :
+                                                cohesion[comp] * cos_phi[comp] + std::max(pressure, 0.0) * sin_phi[comp]);
 
           // Rescale the viscosity back onto the yield surface
           if (strength != 0 && edot_ii != 0)
-            viscosity = strength / ( 2.0 * std::sqrt(0.5) * edot_ii );
+            viscosity = strength / (2.0 * std::sqrt(0.5) * edot_ii);
           else
             viscosity = ref_visc;
 
@@ -256,28 +259,27 @@ namespace aspect
 
     template <int dim>
     void
-    SpiegelmanMaterial<dim>::
-    evaluate(const MaterialModel::MaterialModelInputs<dim> &in,
-             MaterialModel::MaterialModelOutputs<dim> &out) const
+    SpiegelmanMaterial<dim>::evaluate(const MaterialModel::MaterialModelInputs<dim> &in,
+                                      MaterialModel::MaterialModelOutputs<dim>      &out) const
     {
-      //set up additional output for the derivatives
-      const std::shared_ptr<MaterialModelDerivatives<dim>> derivatives
-        = out.template get_additional_output_object<MaterialModelDerivatives<dim>>();
+      // set up additional output for the derivatives
+      const std::shared_ptr<MaterialModelDerivatives<dim>> derivatives =
+        out.template get_additional_output_object<MaterialModelDerivatives<dim>>();
 
-      for (unsigned int i=0; i < in.n_evaluation_points(); ++i)
+      for (unsigned int i = 0; i < in.n_evaluation_points(); ++i)
         {
           const double temperature = in.temperature[i];
-          const double pressure = in.pressure[i];
+          const double pressure    = in.pressure[i];
 
           // Averaging composition-field dependent properties
           // Compositions
-          //This assert may be help when designing tests for this material model
-          AssertThrow(in.composition[i].size()+1 == n_fields,
+          // This assert may be help when designing tests for this material model
+          AssertThrow(in.composition[i].size() + 1 == n_fields,
                       ExcMessage("Number of compositional fields + 1 not equal to number of fields given in input file."));
 
           const std::vector<double> volume_fractions = MaterialUtilities::compute_composition_fractions(in.composition[i]);
-          double density = 0.0;
-          for (unsigned int c=0; c < volume_fractions.size(); ++c)
+          double                    density          = 0.0;
+          for (unsigned int c = 0; c < volume_fractions.size(); ++c)
             {
               const double temperature_factor = (1 - thermal_expansivities[c] * (temperature - reference_T));
               density += volume_fractions[c] * densities[c] * std::exp(reference_compressibility * pressure) * temperature_factor;
@@ -285,17 +287,17 @@ namespace aspect
 
           // thermal expansivities
           double thermal_expansivity = 0.0;
-          for (unsigned int c=0; c < volume_fractions.size(); ++c)
+          for (unsigned int c = 0; c < volume_fractions.size(); ++c)
             thermal_expansivity += volume_fractions[c] * thermal_expansivities[c];
 
           // Specific heat at the given positions.
           double specific_heat = 0.0;
-          for (unsigned int c=0; c < volume_fractions.size(); ++c)
+          for (unsigned int c = 0; c < volume_fractions.size(); ++c)
             specific_heat += volume_fractions[c] * heat_capacity[c];
 
           // Thermal conductivity at the given positions.
           double thermal_conductivities = 0.0;
-          for (unsigned int c=0; c < volume_fractions.size(); ++c)
+          for (unsigned int c = 0; c < volume_fractions.size(); ++c)
             thermal_conductivities += volume_fractions[c] * thermal_diffusivity[c] * heat_capacity[c] * densities[c];
 
           // calculate effective viscosity
@@ -305,13 +307,13 @@ namespace aspect
               // experience the same strain rate (isostrain). Since there is only one process in
               // this material model (a general powerlaw) we do not need to worry about how to
               // distribute the strain-rate and stress over the processes.
-              std::vector<double> composition_viscosities(volume_fractions.size());
-              std::vector<SymmetricTensor<2,dim>> composition_viscosities_derivatives(volume_fractions.size());
-              std::vector<double> composition_dviscosities_dpressure(volume_fractions.size());
+              std::vector<double>                  composition_viscosities(volume_fractions.size());
+              std::vector<SymmetricTensor<2, dim>> composition_viscosities_derivatives(volume_fractions.size());
+              std::vector<double>                  composition_dviscosities_dpressure(volume_fractions.size());
 
-              const SymmetricTensor<2,dim> edot = use_deviator_of_strain_rate ? deviator(in.strain_rate[i]) : in.strain_rate[i];
+              const SymmetricTensor<2, dim> edot = use_deviator_of_strain_rate ? deviator(in.strain_rate[i]) : in.strain_rate[i];
 
-              for (unsigned int c=0; c < volume_fractions.size(); ++c)
+              for (unsigned int c = 0; c < volume_fractions.size(); ++c)
                 {
                   // If strain rate is zero (like during the first time step) set it to some very small number
                   // to prevent a division-by-zero, and a floating point exception.
@@ -324,42 +326,48 @@ namespace aspect
                   // Viscosities should have same number of entries as compositional fields
 
                   // Regularized Drucker Prager viscosity (see Spiegelman et al, 2016)
-                  composition_viscosities[c] = compute_viscosity(edot_ii,pressure,c,constant_viscosity[c],true,min_visc[c],max_visc[c]);
+                  composition_viscosities[c] =
+                    compute_viscosity(edot_ii, pressure, c, constant_viscosity[c], true, min_visc[c], max_visc[c]);
 
-                  Assert(dealii::numbers::is_finite(composition_viscosities[c]),ExcMessage ("Error: Viscosity is not finite."));
+                  Assert(dealii::numbers::is_finite(composition_viscosities[c]), ExcMessage("Error: Viscosity is not finite."));
 
                   if (derivatives != nullptr)
                     {
                       if (use_analytical_derivative)
                         {
-                          //analytic
-                          if (constant_viscosity[c] == 0  && composition_viscosities[c] <= max_visc[c] && composition_viscosities[c] >= min_visc[c])
+                          // analytic
+                          if (constant_viscosity[c] == 0 && composition_viscosities[c] <= max_visc[c] &&
+                              composition_viscosities[c] >= min_visc[c])
                             {
-                              // we only want the pure durcker prager here, so the regularization should be off and the min and max values should not be used.
-                              // Therefore we set the compute_full_viscosity flag to false. The min and max viscosity values  won't be used with this flag,
-                              // so we enter dummy values.
-                              const double drucker_prager_viscosity = compute_viscosity(edot_ii,pressure,c,constant_viscosity[c],false,std::numeric_limits<double>::min(),std::numeric_limits<double>::max());
-                              const double regularization_adjustment = (ref_visc * ref_visc)
-                                                                       / (ref_visc * ref_visc + 2.0 * ref_visc * drucker_prager_viscosity
-                                                                          + drucker_prager_viscosity * drucker_prager_viscosity);
+                              // we only want the pure durcker prager here, so the regularization should be off and the min and max values
+                              // should not be used. Therefore we set the compute_full_viscosity flag to false. The min and max viscosity
+                              // values  won't be used with this flag, so we enter dummy values.
+                              const double drucker_prager_viscosity = compute_viscosity(edot_ii,
+                                                                                        pressure,
+                                                                                        c,
+                                                                                        constant_viscosity[c],
+                                                                                        false,
+                                                                                        std::numeric_limits<double>::min(),
+                                                                                        std::numeric_limits<double>::max());
+                              const double regularization_adjustment =
+                                (ref_visc * ref_visc) / (ref_visc * ref_visc + 2.0 * ref_visc * drucker_prager_viscosity +
+                                                         drucker_prager_viscosity * drucker_prager_viscosity);
 
-                              composition_viscosities_derivatives[c] = -regularization_adjustment *
-                                                                       (drucker_prager_viscosity / (edot_ii * edot_ii)) * edot;
+                              composition_viscosities_derivatives[c] =
+                                -regularization_adjustment * (drucker_prager_viscosity / (edot_ii * edot_ii)) * edot;
 
                               if (use_deviator_of_strain_rate == true)
                                 composition_viscosities_derivatives[c] = composition_viscosities_derivatives[c] * deviator_tensor<dim>();
 
-                              composition_dviscosities_dpressure[c] = regularization_adjustment *
-                                                                      ((dim == 3)
-                                                                       ?
-                                                                       6 * sin_phi[c] / (std::sqrt(3) * (3.0 + sin_phi[c]) * 2.0 * std::sqrt(0.5) * edot_ii)
-                                                                       :
-                                                                       sin_phi[c] / (2.0 * std::sqrt(0.5) * edot_ii));
+                              composition_dviscosities_dpressure[c] =
+                                regularization_adjustment *
+                                ((dim == 3) ? 6 * sin_phi[c] / (std::sqrt(3) * (3.0 + sin_phi[c]) * 2.0 * std::sqrt(0.5) * edot_ii) :
+                                              sin_phi[c] / (2.0 * std::sqrt(0.5) * edot_ii));
                             }
                           else
                             {
                               composition_viscosities_derivatives[c] = 0;
-                              composition_dviscosities_dpressure[c] = 0;
+                              composition_dviscosities_dpressure[c]  = 0;
                             }
                         }
                       else
@@ -367,16 +375,24 @@ namespace aspect
                           // finite difference
                           const double finite_difference_accuracy = 1e-7;
                           // For each independent component, compute the derivative.
-                          for (unsigned int component = 0; component < SymmetricTensor<2,dim>::n_independent_components; ++component)
+                          for (unsigned int component = 0; component < SymmetricTensor<2, dim>::n_independent_components; ++component)
                             {
                               // compute which of the independent index of the strain-rate tensor we are now looking at.
-                              const TableIndices<2> strain_rate_indices = SymmetricTensor<2,dim>::unrolled_to_component_indices (component);
+                              const TableIndices<2> strain_rate_indices = SymmetricTensor<2, dim>::unrolled_to_component_indices(component);
 
                               // add a small difference to one independent component of the strain-rate tensor
-                              const SymmetricTensor<2,dim> strain_rate_difference_plus = edot + std::max(edot_ii, min_strain_rate[c]) * finite_difference_accuracy
-                                                                                         * Utilities::nth_basis_for_symmetric_tensors<dim>(component);
-                              const double second_invariant_strain_rate_difference_plus = compute_second_invariant(strain_rate_difference_plus, min_strain_rate[c]);
-                              const double eta_component_plus = compute_viscosity(second_invariant_strain_rate_difference_plus,pressure,c,constant_viscosity[c],true,min_visc[c],max_visc[c]);
+                              const SymmetricTensor<2, dim> strain_rate_difference_plus =
+                                edot + std::max(edot_ii, min_strain_rate[c]) * finite_difference_accuracy *
+                                         Utilities::nth_basis_for_symmetric_tensors<dim>(component);
+                              const double second_invariant_strain_rate_difference_plus =
+                                compute_second_invariant(strain_rate_difference_plus, min_strain_rate[c]);
+                              const double eta_component_plus = compute_viscosity(second_invariant_strain_rate_difference_plus,
+                                                                                  pressure,
+                                                                                  c,
+                                                                                  constant_viscosity[c],
+                                                                                  true,
+                                                                                  min_visc[c],
+                                                                                  max_visc[c]);
 
                               // compute the difference between the viscosity with and without the strain-rate difference.
                               double viscosity_derivative = eta_component_plus - composition_viscosities[c];
@@ -394,7 +410,8 @@ namespace aspect
                            */
                           double pressure_difference = in.pressure[i] + (std::fabs(in.pressure[i]) * finite_difference_accuracy);
 
-                          double pressure_difference_eta = compute_viscosity(edot_ii, pressure_difference,c,constant_viscosity[c],true,min_visc[c],max_visc[c]);
+                          double pressure_difference_eta =
+                            compute_viscosity(edot_ii, pressure_difference, c, constant_viscosity[c], true, min_visc[c], max_visc[c]);
                           double deriv_pressure = pressure_difference_eta - composition_viscosities[c];
 
 
@@ -415,23 +432,33 @@ namespace aspect
                     }
                 }
               out.viscosities[i] = Utilities::weighted_p_norm_average(volume_fractions, composition_viscosities, viscosity_averaging_p);
-              Assert(dealii::numbers::is_finite(out.viscosities[i]),ExcMessage ("Error: Averaged viscosity is not finite."));
+              Assert(dealii::numbers::is_finite(out.viscosities[i]), ExcMessage("Error: Averaged viscosity is not finite."));
 
               if (derivatives != nullptr)
                 {
-                  derivatives->viscosity_derivative_wrt_strain_rate[i] = Utilities::derivative_of_weighted_p_norm_average(out.viscosities[i],volume_fractions, composition_viscosities, composition_viscosities_derivatives, viscosity_averaging_p);
-                  derivatives->viscosity_derivative_wrt_pressure[i] = Utilities::derivative_of_weighted_p_norm_average(out.viscosities[i],volume_fractions, composition_viscosities, composition_dviscosities_dpressure, viscosity_averaging_p);
+                  derivatives->viscosity_derivative_wrt_strain_rate[i] =
+                    Utilities::derivative_of_weighted_p_norm_average(out.viscosities[i],
+                                                                     volume_fractions,
+                                                                     composition_viscosities,
+                                                                     composition_viscosities_derivatives,
+                                                                     viscosity_averaging_p);
+                  derivatives->viscosity_derivative_wrt_pressure[i] =
+                    Utilities::derivative_of_weighted_p_norm_average(out.viscosities[i],
+                                                                     volume_fractions,
+                                                                     composition_viscosities,
+                                                                     composition_dviscosities_dpressure,
+                                                                     viscosity_averaging_p);
 
                   Assert(dealii::numbers::is_finite(derivatives->viscosity_derivative_wrt_pressure[i]),
-                         ExcMessage ("Error: Averaged dviscosities_dpressure is not finite."));
+                         ExcMessage("Error: Averaged dviscosities_dpressure is not finite."));
 
                   for (int x = 0; x < dim; ++x)
                     for (int y = 0; y < dim; ++y)
                       Assert(dealii::numbers::is_finite(derivatives->viscosity_derivative_wrt_strain_rate[i][x][y]),
-                             ExcMessage ("Error: Averaged dviscosities_dstrain_rate is not finite."));
+                             ExcMessage("Error: Averaged dviscosities_dstrain_rate is not finite."));
                 }
             }
-          out.densities[i] = density;
+          out.densities[i]                      = density;
           out.thermal_expansion_coefficients[i] = thermal_expansivity;
           // Specific heat at the given positions.
           out.specific_heat[i] = specific_heat;
@@ -448,117 +475,140 @@ namespace aspect
           // Change in composition due to chemical reactions at the
           // given positions. The term reaction_terms[i][c] is the
           // change in compositional field c at point i.
-          for (unsigned int c=0; c < in.composition[i].size(); ++c)
+          for (unsigned int c = 0; c < in.composition[i].size(); ++c)
             out.reaction_terms[i][c] = 0.0;
         }
     }
 
     template <int dim>
     double
-    SpiegelmanMaterial<dim>::
-    reference_density () const
+    SpiegelmanMaterial<dim>::reference_density() const
     {
       return densities[0];
     }
 
     template <int dim>
     bool
-    SpiegelmanMaterial<dim>::
-    is_compressible () const
+    SpiegelmanMaterial<dim>::is_compressible() const
     {
       return (reference_compressibility != 0);
     }
 
     template <int dim>
     void
-    SpiegelmanMaterial<dim>::declare_parameters (ParameterHandler &prm)
+    SpiegelmanMaterial<dim>::declare_parameters(ParameterHandler &prm)
     {
       prm.enter_subsection("Compositional fields");
       {
-        prm.declare_entry ("Number of fields", "0",
-                           Patterns::Integer (0),
-                           "The number of fields that will be advected along with the flow field, excluding "
-                           "velocity, pressure and temperature.");
+        prm.declare_entry("Number of fields",
+                          "0",
+                          Patterns::Integer(0),
+                          "The number of fields that will be advected along with the flow field, excluding "
+                          "velocity, pressure and temperature.");
 
         // temperature and density parameters
-        prm.declare_entry ("List of conductivities", "2.25",
-                           Patterns::List (Patterns::Double(0)),
-                           "A list of thermal conductivities equal to the number of "
-                           "compositional fields.");
-        prm.declare_entry ("List of capacities", "1250",
-                           Patterns::List (Patterns::Double(0)),
-                           "A list of heat capacities equal to the number of "
-                           "compositional fields.");
-        prm.declare_entry ("Thermal expansivities", "3.5e-5",
-                           Patterns::List(Patterns::Double(0)),
-                           "List of thermal expansivities for background mantle and compositional fields, "
-                           "for a total of N+1 values, where N is the number of compositional fields. "
-                           "If only one value is given, then all use the same value.  Units: $\\frac{1}{\\text{K}}$");
-        prm.declare_entry ("List of reference densities", "2700",
-                           Patterns::List (Patterns::Double(0)),
-                           "A list of reference densities equal to the number of "
-                           "compositional fields.");
+        prm.declare_entry("List of conductivities",
+                          "2.25",
+                          Patterns::List(Patterns::Double(0)),
+                          "A list of thermal conductivities equal to the number of "
+                          "compositional fields.");
+        prm.declare_entry("List of capacities",
+                          "1250",
+                          Patterns::List(Patterns::Double(0)),
+                          "A list of heat capacities equal to the number of "
+                          "compositional fields.");
+        prm.declare_entry("Thermal expansivities",
+                          "3.5e-5",
+                          Patterns::List(Patterns::Double(0)),
+                          "List of thermal expansivities for background mantle and compositional fields, "
+                          "for a total of N+1 values, where N is the number of compositional fields. "
+                          "If only one value is given, then all use the same value.  Units: $\\frac{1}{\\text{K}}$");
+        prm.declare_entry("List of reference densities",
+                          "2700",
+                          Patterns::List(Patterns::Double(0)),
+                          "A list of reference densities equal to the number of "
+                          "compositional fields.");
 
         // visocosity parameters
-        prm.declare_entry ("List of cohesions", "1e20",
-                           Patterns::List (Patterns::Double(0)),
-                           "A list of initial viscosities equal to the number of "
-                           "compositional fields.");
-        prm.declare_entry ("List of angles of internal friction", "30",
-                           Patterns::List (Patterns::Double(0)),
-                           "A list of initial viscosities equal to the number of "
-                           "compositional fields.");
-        prm.declare_entry ("List of initial viscosities", "1e21",
-                           Patterns::List (Patterns::Double(0)),
-                           "A list of initial viscosities equal to the number of "
-                           "compositional fields.");
-        prm.declare_entry ("List of constant viscosities", "0",
-                           Patterns::List (Patterns::Double(0)),
-                           "A list of viscous viscosities equal to the number of "
-                           "compositional fields. When it is zero, the Drucker Prager "
-                           "rheology is used, when it is nonzero, it sets the viscosity "
-                           "with the set value.");
-
+        prm.declare_entry("List of cohesions",
+                          "1e20",
+                          Patterns::List(Patterns::Double(0)),
+                          "A list of initial viscosities equal to the number of "
+                          "compositional fields.");
+        prm.declare_entry("List of angles of internal friction",
+                          "30",
+                          Patterns::List(Patterns::Double(0)),
+                          "A list of initial viscosities equal to the number of "
+                          "compositional fields.");
+        prm.declare_entry("List of initial viscosities",
+                          "1e21",
+                          Patterns::List(Patterns::Double(0)),
+                          "A list of initial viscosities equal to the number of "
+                          "compositional fields.");
+        prm.declare_entry("List of constant viscosities",
+                          "0",
+                          Patterns::List(Patterns::Double(0)),
+                          "A list of viscous viscosities equal to the number of "
+                          "compositional fields. When it is zero, the Drucker Prager "
+                          "rheology is used, when it is nonzero, it sets the viscosity "
+                          "with the set value.");
       }
       prm.leave_subsection();
 
       prm.enter_subsection("Material model");
       {
-        prm.enter_subsection ("Spiegelman 2016");
+        prm.enter_subsection("Spiegelman 2016");
         {
           // Reference and minimum/maximum values
-          prm.declare_entry ("Reference temperature", "293", Patterns::Double(0),
-                             "For calculating density by thermal expansivity. Units: $\\text{K}$");
-          prm.declare_entry ("Minimum strain rate", "1.96e-40", Patterns::List(Patterns::Double(0)),
-                             "Stabilizes strain dependent viscosity. Units: \\si{\\per\\second}");
-          prm.declare_entry ("Minimum viscosity", "1e10", Patterns::List(Patterns::Double(0)),
-                             "Lower cutoff for effective viscosity. Units: $\\text{Pa}\\text{s}$");
-          prm.declare_entry ("Maximum viscosity", "1e28", Patterns::List(Patterns::Double(0)),
-                             "Upper cutoff for effective viscosity. Units: $\\text{Pa}\\text{s}$");
-          prm.declare_entry ("Effective viscosity coefficient", "1.0", Patterns::List(Patterns::Double(0)),
-                             "Scaling coefficient for effective viscosity.");
-          prm.declare_entry ("Reference viscosity", "1e22", Patterns::List(Patterns::Double(0)),
-                             "Reference viscosity for nondimensionalization. Units $Pa s$");
-          prm.declare_entry ("Reference compressibility", "4e-12", Patterns::Double (0),
-                             "The value of the reference compressibility. Units: $\\frac{1}{\\text{Pa}}$.");
+          prm.declare_entry("Reference temperature",
+                            "293",
+                            Patterns::Double(0),
+                            "For calculating density by thermal expansivity. Units: $\\text{K}$");
+          prm.declare_entry("Minimum strain rate",
+                            "1.96e-40",
+                            Patterns::List(Patterns::Double(0)),
+                            "Stabilizes strain dependent viscosity. Units: \\si{\\per\\second}");
+          prm.declare_entry("Minimum viscosity",
+                            "1e10",
+                            Patterns::List(Patterns::Double(0)),
+                            "Lower cutoff for effective viscosity. Units: $\\text{Pa}\\text{s}$");
+          prm.declare_entry("Maximum viscosity",
+                            "1e28",
+                            Patterns::List(Patterns::Double(0)),
+                            "Upper cutoff for effective viscosity. Units: $\\text{Pa}\\text{s}$");
+          prm.declare_entry("Effective viscosity coefficient",
+                            "1.0",
+                            Patterns::List(Patterns::Double(0)),
+                            "Scaling coefficient for effective viscosity.");
+          prm.declare_entry("Reference viscosity",
+                            "1e22",
+                            Patterns::List(Patterns::Double(0)),
+                            "Reference viscosity for nondimensionalization. Units $Pa s$");
+          prm.declare_entry("Reference compressibility",
+                            "4e-12",
+                            Patterns::Double(0),
+                            "The value of the reference compressibility. Units: $\\frac{1}{\\text{Pa}}$.");
 
           // averaging parameters
-          prm.declare_entry ("Viscosity averaging p", "-1",
-                             Patterns::Double(),
-                             "This is the p value in the generalized weighed average eqation: "
-                             " mean = \\frac{1}{k}(\\sum_{i=1}^k \\big(c_i \\eta_{\\text{eff}_i}^p)\\big)^{\\frac{1}{p}}. "
-                             " Units: $\\text{Pa}\\text{s}$");
+          prm.declare_entry("Viscosity averaging p",
+                            "-1",
+                            Patterns::Double(),
+                            "This is the p value in the generalized weighed average eqation: "
+                            " mean = \\frac{1}{k}(\\sum_{i=1}^k \\big(c_i \\eta_{\\text{eff}_i}^p)\\big)^{\\frac{1}{p}}. "
+                            " Units: $\\text{Pa}\\text{s}$");
 
           // finite difference versus analytical
-          prm.declare_entry ("Use analytical derivative", "true",
-                             Patterns::Bool(),
-                             "This value determines whether to use the analytical or the finite difference derivative "
-                             "for the Newton solver. Although the analytical derivative should be much faster to compute, "
-                             "the finite difference derivative can be useful when changing the rheology.");
+          prm.declare_entry("Use analytical derivative",
+                            "true",
+                            Patterns::Bool(),
+                            "This value determines whether to use the analytical or the finite difference derivative "
+                            "for the Newton solver. Although the analytical derivative should be much faster to compute, "
+                            "the finite difference derivative can be useful when changing the rheology.");
 
-          prm.declare_entry ("Use deviator of strain-rate", "true",
-                             Patterns::Bool(),
-                             "Whether or not to use the deviator of the strain-rate in the viscosity calculation.");
+          prm.declare_entry("Use deviator of strain-rate",
+                            "true",
+                            Patterns::Bool(),
+                            "Whether or not to use the deviator of the strain-rate in the viscosity calculation.");
         }
         prm.leave_subsection();
       }
@@ -569,24 +619,23 @@ namespace aspect
 
     template <int dim>
     void
-    SpiegelmanMaterial<dim>::parse_parameters (ParameterHandler &prm)
+    SpiegelmanMaterial<dim>::parse_parameters(ParameterHandler &prm)
     {
       using namespace Utilities;
       // can't use this->n_compositional_fields(), because some
       // tests never initiate the simulator, but uses the material
       // model directly.
-      prm.enter_subsection ("Compositional fields");
+      prm.enter_subsection("Compositional fields");
       {
-        n_fields = prm.get_integer ("Number of fields")+1;
+        n_fields = prm.get_integer("Number of fields") + 1;
 
         // temperature and density parameters
         thermal_diffusivity = possibly_extend_from_1_to_N(string_to_double(split_string_list(prm.get("List of conductivities"))),
                                                           n_fields,
                                                           "List of conductivities");
-        heat_capacity = possibly_extend_from_1_to_N(string_to_double(split_string_list(prm.get("List of capacities"))),
-                                                    n_fields,
-                                                    "List of capacities");
-        densities = possibly_extend_from_1_to_N(string_to_double(split_string_list(prm.get("List of reference densities"))),
+        heat_capacity =
+          possibly_extend_from_1_to_N(string_to_double(split_string_list(prm.get("List of capacities"))), n_fields, "List of capacities");
+        densities             = possibly_extend_from_1_to_N(string_to_double(split_string_list(prm.get("List of reference densities"))),
                                                 n_fields,
                                                 "List of refdens");
         thermal_expansivities = possibly_extend_from_1_to_N(string_to_double(split_string_list(prm.get("Thermal expansivities"))),
@@ -594,9 +643,8 @@ namespace aspect
                                                             "Thermal expansivities");
 
         // Rheological parameters
-        cohesion = possibly_extend_from_1_to_N(string_to_double(split_string_list(prm.get("List of cohesions"))),
-                                               n_fields,
-                                               "List of cohesions");
+        cohesion =
+          possibly_extend_from_1_to_N(string_to_double(split_string_list(prm.get("List of cohesions"))), n_fields, "List of cohesions");
         phi = possibly_extend_from_1_to_N(string_to_double(split_string_list(prm.get("List of angles of internal friction"))),
                                           n_fields,
                                           "List of angles of internal friction");
@@ -623,27 +671,25 @@ namespace aspect
 
       prm.enter_subsection("Material model");
       {
-        prm.enter_subsection ("Spiegelman 2016");
+        prm.enter_subsection("Spiegelman 2016");
         {
-
           // Reference and minimum/maximum values
-          reference_T = prm.get_double("Reference temperature");
-          ref_visc = prm.get_double ("Reference viscosity");
-          min_strain_rate = possibly_extend_from_1_to_N(string_to_double(split_string_list(prm.get("Minimum strain rate"))),
+          reference_T                 = prm.get_double("Reference temperature");
+          ref_visc                    = prm.get_double("Reference viscosity");
+          min_strain_rate             = possibly_extend_from_1_to_N(string_to_double(split_string_list(prm.get("Minimum strain rate"))),
                                                         n_fields,
                                                         "Minimum strain rate");
-          min_visc = get_vector_double ("Minimum viscosity",n_fields,prm);
-          max_visc = get_vector_double ("Maximum viscosity",n_fields,prm);
-          veff_coefficient = get_vector_double ("Effective viscosity coefficient",n_fields,prm);
-          reference_compressibility  = prm.get_double ("Reference compressibility");
-          use_deviator_of_strain_rate = prm.get_bool ("Use deviator of strain-rate");
+          min_visc                    = get_vector_double("Minimum viscosity", n_fields, prm);
+          max_visc                    = get_vector_double("Maximum viscosity", n_fields, prm);
+          veff_coefficient            = get_vector_double("Effective viscosity coefficient", n_fields, prm);
+          reference_compressibility   = prm.get_double("Reference compressibility");
+          use_deviator_of_strain_rate = prm.get_bool("Use deviator of strain-rate");
 
 
           // averaging parameters
           viscosity_averaging_p = prm.get_double("Viscosity averaging p");
 
           use_analytical_derivative = prm.get_bool("Use analytical derivative");
-
         }
         prm.leave_subsection();
       }
@@ -651,11 +697,14 @@ namespace aspect
 
 
       // Declare dependencies on solution variables
-      this->model_dependence.viscosity = NonlinearDependence::temperature | NonlinearDependence::pressure | NonlinearDependence::strain_rate | NonlinearDependence::compositional_fields;
-      this->model_dependence.density = NonlinearDependence::temperature | NonlinearDependence::pressure | NonlinearDependence::compositional_fields;
+      this->model_dependence.viscosity = NonlinearDependence::temperature | NonlinearDependence::pressure |
+                                         NonlinearDependence::strain_rate | NonlinearDependence::compositional_fields;
+      this->model_dependence.density =
+        NonlinearDependence::temperature | NonlinearDependence::pressure | NonlinearDependence::compositional_fields;
       this->model_dependence.compressibility = NonlinearDependence::none;
-      this->model_dependence.specific_heat = NonlinearDependence::none;
-      this->model_dependence.thermal_conductivity = NonlinearDependence::temperature | NonlinearDependence::pressure | NonlinearDependence::compositional_fields;
+      this->model_dependence.specific_heat   = NonlinearDependence::none;
+      this->model_dependence.thermal_conductivity =
+        NonlinearDependence::temperature | NonlinearDependence::pressure | NonlinearDependence::compositional_fields;
     }
   }
 }

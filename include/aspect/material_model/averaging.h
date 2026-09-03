@@ -100,37 +100,36 @@ namespace aspect
          * inputs in @p in.
          */
         void
-        evaluate (const typename Interface<dim>::MaterialModelInputs &in,
-                  typename Interface<dim>::MaterialModelOutputs &out) const override;
+        evaluate(const typename Interface<dim>::MaterialModelInputs &in, typename Interface<dim>::MaterialModelOutputs &out) const override;
         /**
          * Method to declare parameters related to depth-dependent model
          */
         static void
-        declare_parameters (ParameterHandler &prm);
+        declare_parameters(ParameterHandler &prm);
 
         /**
          * Method to parse parameters related to depth-dependent model
          */
         void
-        parse_parameters (ParameterHandler &prm) override;
+        parse_parameters(ParameterHandler &prm) override;
 
         /**
          * Method that indicates whether material is compressible. Depth dependent model is compressible
          * if and only if base model is compressible.
          */
-        bool is_compressible () const override;
+        bool
+        is_compressible() const override;
 
 
 
       private:
-
         /**
          * Parse a string representing one of the options returned by
          * get_averaging_operation_names(), and return the corresponding
          * AveragingOperation value.
          */
         AveragingOperation
-        parse_averaging_operation_name (const std::string &s);
+        parse_averaging_operation_name(const std::string &s);
 
         /**
          * Given the averaging @p operation, a description of where the
@@ -138,12 +137,12 @@ namespace aspect
          * perform this operation on all elements of the @p values structure.
          */
         void
-        average (const AveragingOperation averaging_operation,
-                 const std::vector<Point<dim>>    &position,
-                 std::vector<double>           &values_out) const;
+        average(const AveragingOperation       averaging_operation,
+                const std::vector<Point<dim>> &position,
+                std::vector<double>           &values_out) const;
 
         void
-        create_additional_named_outputs (MaterialModel::MaterialModelOutputs<dim> &out) const override;
+        create_additional_named_outputs(MaterialModel::MaterialModelOutputs<dim> &out) const override;
 
         /**
          * The bell shape limit variable stores the maximum extend of the bell

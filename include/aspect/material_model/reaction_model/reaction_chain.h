@@ -36,8 +36,8 @@ namespace aspect
       template <int dim>
       struct ReactionStep
       {
-        std::shared_ptr<Cahn1956Interface<dim>> kinetics;
-        unsigned int local_reaction_index = numbers::invalid_unsigned_int;
+          std::shared_ptr<Cahn1956Interface<dim>> kinetics;
+          unsigned int                            local_reaction_index = numbers::invalid_unsigned_int;
       };
 
       /**
@@ -56,21 +56,28 @@ namespace aspect
         public:
           std::vector<ReactionStep<dim>> reactions;
 
-          void initialize();
-          unsigned int n_reactions() const;
+          void
+          initialize();
+          unsigned int
+          n_reactions() const;
 
-          std::vector<double> clamp_cumulative_progress(std::vector<double> reaction_progress_values) const;
-          std::vector<double> compute_phase_mass_fractions(const std::vector<double> &reaction_progress_values,
-                                                           const std::vector<double> &phase_densities) const;
+          std::vector<double>
+          clamp_cumulative_progress(std::vector<double> reaction_progress_values) const;
+          std::vector<double>
+          compute_phase_mass_fractions(const std::vector<double> &reaction_progress_values,
+                                       const std::vector<double> &phase_densities) const;
 
-          double net_forward_reaction_rate(const double temperature,
-                                           const double pressure,
-                                           const double delta_forward_gibbs_energy,
-                                           const double cumulative_forward_reaction_progress,
-                                           const unsigned int reaction_index) const;
+          double
+          net_forward_reaction_rate(const double       temperature,
+                                    const double       pressure,
+                                    const double       delta_forward_gibbs_energy,
+                                    const double       cumulative_forward_reaction_progress,
+                                    const unsigned int reaction_index) const;
 
-          static void declare_parameters(ParameterHandler &prm);
-          void parse_parameters(ParameterHandler &prm);
+          static void
+          declare_parameters(ParameterHandler &prm);
+          void
+          parse_parameters(ParameterHandler &prm);
 
         private:
           /**

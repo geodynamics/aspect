@@ -18,8 +18,8 @@
  <http://www.gnu.org/licenses/>.
  */
 
-#include <aspect/particle/property/velocity.h>
 #include <aspect/particle/manager.h>
+#include <aspect/particle/property/velocity.h>
 
 namespace aspect
 {
@@ -29,8 +29,7 @@ namespace aspect
     {
       template <int dim>
       void
-      Velocity<dim>::initialize_one_particle_property(const Point<dim> &,
-                                                      std::vector<double> &data) const
+      Velocity<dim>::initialize_one_particle_property(const Point<dim> &, std::vector<double> &data) const
       {
         for (unsigned int i = 0; i < dim; ++i)
           data.push_back(0.0);
@@ -38,22 +37,25 @@ namespace aspect
 
       template <int dim>
       void
-      Velocity<dim>::update_particle_properties(const ParticleUpdateInputs<dim> &inputs,
+      Velocity<dim>::update_particle_properties(const ParticleUpdateInputs<dim>                        &inputs,
                                                 typename ParticleHandler<dim>::particle_iterator_range &particles) const
       {
-        const typename aspect::Particle::Manager<dim>::ParticleVelocity particle_velocity = this->get_particle_manager(this->get_particle_manager_index()).get_particle_velocity_choice();
+        const typename aspect::Particle::Manager<dim>::ParticleVelocity particle_velocity =
+          this->get_particle_manager(this->get_particle_manager_index()).get_particle_velocity_choice();
         unsigned int p = 0;
-        for (auto &particle: particles)
+        for (auto &particle : particles)
           {
             for (unsigned int i = 0; i < dim; ++i)
 
               switch (particle_velocity)
                 {
                   case aspect::Particle::Manager<dim>::ParticleVelocity::solid:
-                    particle.get_properties()[this->data_position+i] = inputs.solution[p][this->introspection().component_indices.velocities[i]];
+                    particle.get_properties()[this->data_position + i] =
+                      inputs.solution[p][this->introspection().component_indices.velocities[i]];
                     break;
                   case aspect::Particle::Manager<dim>::ParticleVelocity::fluid:
-                    particle.get_properties()[this->data_position+i] = inputs.solution[p][this->introspection().variable("fluid velocity").first_component_index +i];
+                    particle.get_properties()[this->data_position + i] =
+                      inputs.solution[p][this->introspection().variable("fluid velocity").first_component_index + i];
                     break;
                 }
             ++p;
@@ -69,9 +71,10 @@ namespace aspect
 
       template <int dim>
       UpdateFlags
-      Velocity<dim>::get_update_flags (const unsigned int component) const
+      Velocity<dim>::get_update_flags(const unsigned int component) const
       {
-        const typename aspect::Particle::Manager<dim>::ParticleVelocity particle_velocity = this->get_particle_manager(this->get_particle_manager_index()).get_particle_velocity_choice();
+        const typename aspect::Particle::Manager<dim>::ParticleVelocity particle_velocity =
+          this->get_particle_manager(this->get_particle_manager_index()).get_particle_velocity_choice();
         switch (particle_velocity)
           {
             case aspect::Particle::Manager<dim>::ParticleVelocity::solid:
@@ -91,7 +94,7 @@ namespace aspect
       std::vector<std::pair<std::string, unsigned int>>
       Velocity<dim>::get_property_information() const
       {
-        const std::vector<std::pair<std::string,unsigned int>> property_information (1,std::make_pair("velocity",dim));
+        const std::vector<std::pair<std::string, unsigned int>> property_information(1, std::make_pair("velocity", dim));
         return property_information;
       }
     }

@@ -41,9 +41,7 @@ namespace aspect
        * base class. See there for their meaning.
        */
       template <int dim>
-      class BoundaryIndicator
-        : public CellDataVectorCreator<dim>,
-          public SimulatorAccess<dim>
+      class BoundaryIndicator : public CellDataVectorCreator<dim>, public SimulatorAccess<dim>
       {
         public:
           /**
@@ -55,8 +53,7 @@ namespace aspect
            * @copydoc CellDataVectorCreator<dim>::execute()
            */
           std::pair<std::string, std::unique_ptr<Vector<float>>>
-          execute () const override;
-
+          execute() const override;
       };
     }
   }

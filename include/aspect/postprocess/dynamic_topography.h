@@ -43,8 +43,8 @@ namespace aspect
         /**
          * Evaluate the solution for the dynamic topography.
          */
-        std::pair<std::string,std::string>
-        execute (TableHandler &statistics) override;
+        std::pair<std::string, std::string>
+        execute(TableHandler &statistics) override;
 
         /**
          * Return the topography vector as calculated by the consistent
@@ -89,14 +89,13 @@ namespace aspect
          * Parse the parameters for the postprocessor.
          */
         void
-        parse_parameters (ParameterHandler &prm) override;
+        parse_parameters(ParameterHandler &prm) override;
 
         /**
          * Declare the parameters for the postprocessor.
          */
-        static
-        void
-        declare_parameters (ParameterHandler &prm);
+        static void
+        declare_parameters(ParameterHandler &prm);
 
       private:
         /**
@@ -105,8 +104,8 @@ namespace aspect
          * in @p position_and_topography are written to a file
          * with a file name determined by @p boundary_id.
          */
-        void output_to_file(const types::boundary_id boundary_id,
-                            const std::vector<std::pair<Point<dim>, double>> &position_and_topography);
+        void
+        output_to_file(const types::boundary_id boundary_id, const std::vector<std::pair<Point<dim>, double>> &position_and_topography);
 
         /**
          * A vector which stores the surface stress values calculated

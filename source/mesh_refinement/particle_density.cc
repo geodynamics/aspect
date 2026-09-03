@@ -20,7 +20,6 @@
 
 
 #include <aspect/mesh_refinement/particle_density.h>
-
 #include <aspect/particle/manager.h>
 
 namespace aspect
@@ -44,7 +43,7 @@ namespace aspect
             // of high particle density and coarse cells in low particle
             // density regions.
             indicators(cell->active_cell_index()) = 0.0;
-            for (unsigned int i=0; i<this->n_particle_managers(); ++i)
+            for (unsigned int i = 0; i < this->n_particle_managers(); ++i)
               {
                 const Particle::ParticleHandler<dim> &particle_handler = this->get_particle_manager(i).get_particle_handler();
                 indicators(cell->active_cell_index()) += static_cast<float>(particle_handler.n_particles_in_cell(cell));

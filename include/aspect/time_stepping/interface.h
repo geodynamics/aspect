@@ -23,6 +23,7 @@
 #define _aspect_time_stepping_interface_h
 
 #include <aspect/global.h>
+
 #include <aspect/simulator_access.h>
 #include <aspect/termination_criteria/interface.h>
 
@@ -68,17 +69,17 @@ namespace aspect
      */
     struct TimeStepInfo
     {
-      /**
-       * The proposed time step size for the next step as computed by querying
-       * plugins and applying other logic.
-       */
-      double next_time_step_size;
+        /**
+         * The proposed time step size for the next step as computed by querying
+         * plugins and applying other logic.
+         */
+        double next_time_step_size;
 
-      /**
-       * If true, a termination criterion decided to shorten the time step
-       * size.
-       */
-      bool reduced_by_termination_plugin;
+        /**
+         * If true, a termination criterion decided to shorten the time step
+         * size.
+         */
+        bool reduced_by_termination_plugin;
     };
 
     /**
@@ -98,8 +99,7 @@ namespace aspect
          * b) What timestep size to use.
          *
          */
-        virtual
-        double
+        virtual double
         execute() = 0;
 
         /**
@@ -114,8 +114,7 @@ namespace aspect
          * The default implementation of this function will always advance
          * to the next time step.
          */
-        virtual
-        std::pair<Reaction, double>
+        virtual std::pair<Reaction, double>
         determine_reaction(const TimeStepInfo &info);
     };
 
@@ -132,7 +131,8 @@ namespace aspect
          * Override initialize_simulator() so that we can also initialize the contained
          * termination_manager.
          */
-        void initialize_simulator (const Simulator<dim> &simulator_object) override;
+        void
+        initialize_simulator(const Simulator<dim> &simulator_object) override;
 
 
         /**
@@ -148,37 +148,41 @@ namespace aspect
         /**
          * Return the next step size as computed from update().
          */
-        double get_next_time_step_size() const;
+        double
+        get_next_time_step_size() const;
 
         /**
          * If true, a plugin requested to redo the last computed time step. Updated
          * when calling update().
          */
-        bool should_repeat_time_step() const;
+        bool
+        should_repeat_time_step() const;
 
         /**
          * If true, execute a mesh refinement step now (potentially before repeating
          * the current time step).
          */
-        bool should_refine_mesh() const;
+        bool
+        should_refine_mesh() const;
 
         /**
          * If true, the simulator should perform a checkpoint before terminating.
          */
-        bool need_checkpoint_on_terminate() const;
+        bool
+        need_checkpoint_on_terminate() const;
 
         /**
          * Check if the simulation is ready to terminate successfully.
          */
-        bool should_simulation_terminate_now() const;
+        bool
+        should_simulation_terminate_now() const;
 
         /**
          * Declare the parameters of all known termination criteria plugins,
          * as well as of ones this class has itself.
          */
-        static
-        void
-        declare_parameters (ParameterHandler &prm);
+        static void
+        declare_parameters(ParameterHandler &prm);
 
         /**
          * Read the parameters this class declares from the parameter file.
@@ -186,11 +190,11 @@ namespace aspect
          * then let these objects read their parameters as well.
          */
         void
-        parse_parameters (ParameterHandler &prm) override;
+        parse_parameters(ParameterHandler &prm) override;
 
         template <class Archive>
         void
-        serialize (Archive &ar, const unsigned int)
+        serialize(Archive &ar, const unsigned int)
         {
           ar &termination_manager;
         }
@@ -204,9 +208,8 @@ namespace aspect
          *
          * @param output_stream The stream to write the output to.
          */
-        static
-        void
-        write_plugin_graph (std::ostream &output_stream);
+        static void
+        write_plugin_graph(std::ostream &output_stream);
 
         /**
          * A function that is used to register time stepping model objects in such
@@ -226,15 +229,13 @@ namespace aspect
          *
          * @ingroup TimeStepping
          */
-        static
-        void
-        register_time_stepping_model (const std::string &name,
-                                      const std::string &description,
-                                      void (*declare_parameters_function) (ParameterHandler &),
-                                      std::unique_ptr<Interface<dim>> (*factory_function) ());
+        static void
+        register_time_stepping_model(const std::string &name,
+                                     const std::string &description,
+                                     void (*declare_parameters_function)(ParameterHandler &),
+                                     std::unique_ptr<Interface<dim>> (*factory_function)());
 
       private:
-
         /**
          * The current Reaction computed by update().
          */
@@ -277,17 +278,15 @@ namespace aspect
      *
      * @ingroup TimeStepping
      */
-#define ASPECT_REGISTER_TIME_STEPPING_MODEL(classname,name,description) \
+#define ASPECT_REGISTER_TIME_STEPPING_MODEL(classname, name, description) \
   template class classname<2>; \
   template class classname<3>; \
-  namespace ASPECT_REGISTER_TIME_STEPPING_MODEL_ ## classname \
+  namespace ASPECT_REGISTER_TIME_STEPPING_MODEL_##classname \
   { \
-    aspect::internal::Plugins::RegisterHelper<aspect::TimeStepping::Interface<2>,classname<2>> \
-    dummy_ ## classname ## _2d (&aspect::TimeStepping::Manager<2>::register_time_stepping_model, \
-                                name, description); \
-    aspect::internal::Plugins::RegisterHelper<aspect::TimeStepping::Interface<3>,classname<3>> \
-    dummy_ ## classname ## _3d (&aspect::TimeStepping::Manager<3>::register_time_stepping_model, \
-                                name, description); \
+    aspect::internal::Plugins::RegisterHelper<aspect::TimeStepping::Interface<2>, classname<2>> dummy_##classname##_2d( \
+      &aspect::TimeStepping::Manager<2>::register_time_stepping_model, name, description); \
+    aspect::internal::Plugins::RegisterHelper<aspect::TimeStepping::Interface<3>, classname<3>> dummy_##classname##_3d( \
+      &aspect::TimeStepping::Manager<3>::register_time_stepping_model, name, description); \
   }
 
   }

@@ -22,6 +22,7 @@
 #define _aspect_material_model_rheology_constant_viscosity_prefactors_h
 
 #include <aspect/global.h>
+
 #include <aspect/material_model/interface.h>
 #include <aspect/simulator_access.h>
 
@@ -48,22 +49,20 @@ namespace aspect
           /**
            * Declare the parameters this function takes through input files.
            */
-          static
-          void
-          declare_parameters (ParameterHandler &prm);
+          static void
+          declare_parameters(ParameterHandler &prm);
 
           /**
            * Read the parameters from the parameter file.
            */
           void
-          parse_parameters (ParameterHandler &prm);
+          parse_parameters(ParameterHandler &prm);
 
           /**
            * Compute the viscosity.
            */
           double
-          compute_viscosity (const double base_viscosity,
-                             const unsigned int composition_index) const;
+          compute_viscosity(const double base_viscosity, const unsigned int composition_index) const;
 
         private:
           /**

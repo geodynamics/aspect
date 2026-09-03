@@ -62,9 +62,9 @@ namespace aspect
           void
           local_integrate_step(const typename ParticleHandler<dim>::particle_iterator &begin_particle,
                                const typename ParticleHandler<dim>::particle_iterator &end_particle,
-                               const std::vector<Tensor<1,dim>> &old_velocities,
-                               const std::vector<Tensor<1,dim>> &velocities,
-                               const double dt) override;
+                               const std::vector<Tensor<1, dim>>                      &old_velocities,
+                               const std::vector<Tensor<1, dim>>                      &velocities,
+                               const double                                            dt) override;
 
           /**
            * Return a list of boolean values indicating which solution vectors
@@ -78,7 +78,8 @@ namespace aspect
            * The forward Euler integrator only requires the solution vector at the
            * old time (k), and consequently returns `{false, true, false}`.
            */
-          std::array<bool, 3> required_solution_vectors() const override;
+          std::array<bool, 3>
+          required_solution_vectors() const override;
 
           /**
            * We need to tell the property manager how many intermediate properties this integrator requires,

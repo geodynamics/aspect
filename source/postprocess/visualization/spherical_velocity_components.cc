@@ -30,20 +30,16 @@ namespace aspect
     namespace VisualizationPostprocessors
     {
       template <int dim>
-      SphericalVelocityComponents<dim>::
-      SphericalVelocityComponents ()
-        :
-        DataPostprocessorVector<dim> ("spherical_velocity_components",
-                                      update_values | update_quadrature_points),
-        Interface<dim>()    // unknown units at construction time, will be filled by a separate function
+      SphericalVelocityComponents<dim>::SphericalVelocityComponents()
+        : DataPostprocessorVector<dim>("spherical_velocity_components", update_values | update_quadrature_points)
+        , Interface<dim>() // unknown units at construction time, will be filled by a separate function
       {}
 
 
 
       template <int dim>
       std::string
-      SphericalVelocityComponents<dim>::
-      get_physical_units () const
+      SphericalVelocityComponents<dim>::get_physical_units() const
       {
         if (this->convert_output_to_years())
           return "m/year";
@@ -55,43 +51,42 @@ namespace aspect
 
       template <int dim>
       void
-      SphericalVelocityComponents<dim>::
-      evaluate_vector_field(const DataPostprocessorInputs::Vector<dim> &input_data,
-                            std::vector<Vector<double>> &computed_quantities) const
+      SphericalVelocityComponents<dim>::evaluate_vector_field(const DataPostprocessorInputs::Vector<dim> &input_data,
+                                                              std::vector<Vector<double>>                &computed_quantities) const
       {
         const unsigned int n_quadrature_points = input_data.evaluation_points.size();
-        Assert (computed_quantities.size() == n_quadrature_points,    ExcInternalError());
-        Assert (computed_quantities[0].size() == dim,    ExcInternalError());
+        Assert(computed_quantities.size() == n_quadrature_points, ExcInternalError());
+        Assert(computed_quantities[0].size() == dim, ExcInternalError());
 
-        const double velocity_scaling_factor =
-          this->convert_output_to_years() ? year_in_seconds : 1.0;
+        const double velocity_scaling_factor = this->convert_output_to_years() ? year_in_seconds : 1.0;
 
-        Tensor<1,dim> velocity;
-        for (unsigned int q=0; q<n_quadrature_points; ++q)
+        Tensor<1, dim> velocity;
+        for (unsigned int q = 0; q < n_quadrature_points; ++q)
           {
             for (unsigned int d = 0; d < dim; ++d)
               {
-                velocity[d] = input_data.solution_values[q][this->introspection().component_indices.velocities[d]] * velocity_scaling_factor;
+                velocity[d] =
+                  input_data.solution_values[q][this->introspection().component_indices.velocities[d]] * velocity_scaling_factor;
               }
 
-            std::array<double,dim> scoord = aspect::Utilities::Coordinates::cartesian_to_spherical_coordinates(input_data.evaluation_points[q]);
+            std::array<double, dim> scoord =
+              aspect::Utilities::Coordinates::cartesian_to_spherical_coordinates(input_data.evaluation_points[q]);
 
-            if (dim==2)
+            if (dim == 2)
               {
-                computed_quantities[q](0) =  std::cos(scoord[1])*velocity[0]+std::sin(scoord[1])*velocity[1]; // v_r
-                computed_quantities[q](1) = -std::sin(scoord[1])*velocity[0]+std::cos(scoord[1])*velocity[1]; // v_scoord[1]
+                computed_quantities[q](0) = std::cos(scoord[1]) * velocity[0] + std::sin(scoord[1]) * velocity[1];  // v_r
+                computed_quantities[q](1) = -std::sin(scoord[1]) * velocity[0] + std::cos(scoord[1]) * velocity[1]; // v_scoord[1]
               }
 
-            if (dim==3)
+            if (dim == 3)
               {
-                computed_quantities[q](0) = velocity[0]*(std::sin(scoord[2])*std::cos(scoord[1]))
-                                            + velocity[1]*(std::sin(scoord[2])*std::sin(scoord[1]))
-                                            + velocity[2]*(std::cos(scoord[2]));                // v_r
-                computed_quantities[q](1) = velocity[0]*(-std::sin(scoord[1]))
-                                            + velocity[1]*(std::cos(scoord[1]));                // v_phi
-                computed_quantities[q](2) = velocity[0]*(std::cos(scoord[2])*std::cos(scoord[1]))
-                                            + velocity[1]*(std::cos(scoord[2])*std::sin(scoord[1]))
-                                            + velocity[2]*(-std::sin(scoord[2]));               // v_theta
+                computed_quantities[q](0) = velocity[0] * (std::sin(scoord[2]) * std::cos(scoord[1])) +
+                                            velocity[1] * (std::sin(scoord[2]) * std::sin(scoord[1])) +
+                                            velocity[2] * (std::cos(scoord[2]));                                        // v_r
+                computed_quantities[q](1) = velocity[0] * (-std::sin(scoord[1])) + velocity[1] * (std::cos(scoord[1])); // v_phi
+                computed_quantities[q](2) = velocity[0] * (std::cos(scoord[2]) * std::cos(scoord[1])) +
+                                            velocity[1] * (std::cos(scoord[2]) * std::sin(scoord[1])) +
+                                            velocity[2] * (-std::sin(scoord[2])); // v_theta
               }
           }
       }
@@ -99,12 +94,12 @@ namespace aspect
 
       template <int dim>
       std::vector<std::string>
-      SphericalVelocityComponents<dim>::get_names () const
+      SphericalVelocityComponents<dim>::get_names() const
       {
         std::vector<std::string> names;
         names.emplace_back("v_r");
         names.emplace_back("v_phi");
-        if (dim==3)
+        if (dim == 3)
           names.emplace_back("v_theta");
         return names;
       }
@@ -112,11 +107,9 @@ namespace aspect
 
       template <int dim>
       std::vector<DataComponentInterpretation::DataComponentInterpretation>
-      SphericalVelocityComponents<dim>::get_data_component_interpretation () const
+      SphericalVelocityComponents<dim>::get_data_component_interpretation() const
       {
-        return
-          std::vector<DataComponentInterpretation::DataComponentInterpretation>
-          (dim,DataComponentInterpretation::component_is_scalar);
+        return std::vector<DataComponentInterpretation::DataComponentInterpretation>(dim, DataComponentInterpretation::component_is_scalar);
       }
 
     }

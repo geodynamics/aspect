@@ -45,21 +45,22 @@ namespace aspect
          * Evaluate the solution for the laterally averaged pressure at
          * the top and bottom of the domain.
          */
-        std::pair<std::string,std::string>
-        execute (TableHandler &statistics) override;
+        std::pair<std::string, std::string>
+        execute(TableHandler &statistics) override;
 
         /**
          * Query the pressure at the top surface
          */
-        double pressure_at_top() const;
+        double
+        pressure_at_top() const;
 
         /**
          * Query the pressure at the bottom surface
          */
-        double pressure_at_bottom() const;
+        double
+        pressure_at_bottom() const;
 
       private:
-
         /**
          * Pressure at the top of the domain.
          * Filled when execute() is called.

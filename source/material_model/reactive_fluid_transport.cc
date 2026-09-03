@@ -18,11 +18,13 @@
   <http://www.gnu.org/licenses/>.
 */
 
-#include <algorithm>
-#include <aspect/material_model/reactive_fluid_transport.h>
 #include <aspect/adiabatic_conditions/interface.h>
+#include <aspect/material_model/reactive_fluid_transport.h>
+
 #include <deal.II/base/parameter_handler.h>
 #include <deal.II/numerics/fe_field_function.h>
+
+#include <algorithm>
 
 namespace aspect
 {
@@ -30,8 +32,7 @@ namespace aspect
   {
     template <int dim>
     bool
-    ReactiveFluidTransport<dim>::
-    is_compressible () const
+    ReactiveFluidTransport<dim>::is_compressible() const
     {
       return base_model->is_compressible();
     }
@@ -40,8 +41,7 @@ namespace aspect
 
     template <int dim>
     double
-    ReactiveFluidTransport<dim>::
-    reference_darcy_coefficient () const
+    ReactiveFluidTransport<dim>::reference_darcy_coefficient() const
     {
       if (fluid_solid_reaction_scheme == katz2003)
         {
@@ -58,10 +58,7 @@ namespace aspect
 
     template <int dim>
     double
-    ReactiveFluidTransport<dim>::
-    compute_bulk_density (const double porosity,
-                          const double solid_density,
-                          const double fluid_density) const
+    ReactiveFluidTransport<dim>::compute_bulk_density(const double porosity, const double solid_density, const double fluid_density) const
     {
       return (1 - porosity) * solid_density + porosity * fluid_density;
     }
@@ -70,10 +67,9 @@ namespace aspect
 
     template <int dim>
     double
-    ReactiveFluidTransport<dim>::
-    compute_mass_fraction (const double volume_frac,
-                           const double material_density,
-                           const double bulk_density) const
+    ReactiveFluidTransport<dim>::compute_mass_fraction(const double volume_frac,
+                                                       const double material_density,
+                                                       const double bulk_density) const
     {
       return volume_frac * material_density / bulk_density;
     }
@@ -82,17 +78,15 @@ namespace aspect
 
     template <int dim>
     void
-    ReactiveFluidTransport<dim>::
-    melt_fractions (const MaterialModel::MaterialModelInputs<dim> &in,
-                    std::vector<double> &melt_fractions,
-                    const MaterialModel::MaterialModelOutputs<dim> *out) const
+    ReactiveFluidTransport<dim>::melt_fractions(const MaterialModel::MaterialModelInputs<dim>  &in,
+                                                std::vector<double>                            &melt_fractions,
+                                                const MaterialModel::MaterialModelOutputs<dim> *out) const
     {
       // the Katz 2003 model does not need information about fluid content
       if (fluid_solid_reaction_scheme == katz2003)
         {
-          for (unsigned int q=0; q<in.n_evaluation_points(); ++q)
-            melt_fractions[q] = katz2003_model.melt_fraction(in.temperature[q],
-                                                             this->get_adiabatic_conditions().pressure(in.position[q]));
+          for (unsigned int q = 0; q < in.n_evaluation_points(); ++q)
+            melt_fractions[q] = katz2003_model.melt_fraction(in.temperature[q], this->get_adiabatic_conditions().pressure(in.position[q]));
         }
       else
         {
@@ -105,50 +99,49 @@ namespace aspect
 
           const std::shared_ptr<const MeltOutputs<dim>> fluid_out = out->template get_additional_output_object<MeltOutputs<dim>>();
 
-          const unsigned int porosity_idx = this->introspection().compositional_index_for_name("porosity");
-          const unsigned int bound_fluid_idx = (fluid_solid_reaction_scheme == zero_solubility)
-                                               ?
-                                               this->introspection().compositional_index_for_name("bound_fluid")
-                                               :
-                                               numbers::invalid_unsigned_int;
+          const unsigned int porosity_idx    = this->introspection().compositional_index_for_name("porosity");
+          const unsigned int bound_fluid_idx = (fluid_solid_reaction_scheme == zero_solubility) ?
+                                                 this->introspection().compositional_index_for_name("bound_fluid") :
+                                                 numbers::invalid_unsigned_int;
 
-          for (unsigned int q=0; q<in.n_evaluation_points(); ++q)
+          for (unsigned int q = 0; q < in.n_evaluation_points(); ++q)
             {
               // This function outputs the mass fraction of equilibrium free water at each quadrature point. However,
               // the free water is a volume fraction, while the bound water is a mass fraction. Convert the free water
               // to a mass fraction so that we correctly compare the two values.
               const double volume_fraction_porosity = in.composition[q][porosity_idx];
               const double bulk_density = compute_bulk_density(volume_fraction_porosity, out->densities[q], fluid_out->fluid_densities[q]);
-              const double mass_fraction_porosity = compute_mass_fraction(volume_fraction_porosity, fluid_out->fluid_densities[q], bulk_density);
+              const double mass_fraction_porosity =
+                compute_mass_fraction(volume_fraction_porosity, fluid_out->fluid_densities[q], bulk_density);
 
               switch (fluid_solid_reaction_scheme)
                 {
                   case no_reaction:
-                  {
-                    // No reactions occur between the solid and fluid phases,
-                    // and the fluid mass fraction (stored in the melt_fractions
-                    // vector) is equal to the mass fraction of the porosity.
-                    melt_fractions[q] = mass_fraction_porosity;
-                    break;
-                  }
+                    {
+                      // No reactions occur between the solid and fluid phases,
+                      // and the fluid mass fraction (stored in the melt_fractions
+                      // vector) is equal to the mass fraction of the porosity.
+                      melt_fractions[q] = mass_fraction_porosity;
+                      break;
+                    }
                   case zero_solubility:
-                  {
-                    // The fluid volume fraction in equilibrium with the solid
-                    // at any point (stored in the melt_fractions vector) is
-                    // equal to the sum of the bound fluid content and porosity.
-                    melt_fractions[q] = in.composition[q][bound_fluid_idx] + mass_fraction_porosity;
-                    break;
-                  }
+                    {
+                      // The fluid volume fraction in equilibrium with the solid
+                      // at any point (stored in the melt_fractions vector) is
+                      // equal to the sum of the bound fluid content and porosity.
+                      melt_fractions[q] = in.composition[q][bound_fluid_idx] + mass_fraction_porosity;
+                      break;
+                    }
                   case tian_approximation:
-                  {
-                    melt_fractions[q] = tian2019_model.melt_fraction(in, mass_fraction_porosity, q);
-                    break;
-                  }
+                    {
+                      melt_fractions[q] = tian2019_model.melt_fraction(in, mass_fraction_porosity, q);
+                      break;
+                    }
                   default:
-                  {
-                    AssertThrow(false, ExcNotImplemented());
-                    break;
-                  }
+                    {
+                      AssertThrow(false, ExcNotImplemented());
+                      break;
+                    }
                 }
             }
         }
@@ -182,9 +175,9 @@ namespace aspect
     template <int dim>
     void
     ReactiveFluidTransport<dim>::evaluate(const typename Interface<dim>::MaterialModelInputs &in,
-                                          typename Interface<dim>::MaterialModelOutputs &out) const
+                                          typename Interface<dim>::MaterialModelOutputs      &out) const
     {
-      base_model->evaluate(in,out);
+      base_model->evaluate(in, out);
 
       if (fluid_solid_reaction_scheme != katz2003)
         {
@@ -197,10 +190,10 @@ namespace aspect
               const std::shared_ptr<ElasticOutputs<dim>> elastic_out = out.template get_additional_output_object<ElasticOutputs<dim>>();
 
               // Scale the base model viscosity value based on the presence of fluid.
-              for (unsigned int q=0; q<out.n_evaluation_points(); ++q)
+              for (unsigned int q = 0; q < out.n_evaluation_points(); ++q)
                 {
-                  const double porosity = std::max(in.composition[q][porosity_idx],0.0);
-                  out.viscosities[q] *= (1.0 - porosity) * std::exp(- alpha_phi * porosity);
+                  const double porosity = std::max(in.composition[q][porosity_idx], 0.0);
+                  out.viscosities[q] *= (1.0 - porosity) * std::exp(-alpha_phi * porosity);
                   if (elastic_out != nullptr)
                     {
                       elastic_out->elastic_force[q] *= (1.0 - porosity) * std::exp(-alpha_phi * porosity);
@@ -212,37 +205,41 @@ namespace aspect
           // Fill the melt outputs if they exist. Note that the MeltOutputs class was originally
           // designed for two-phase flow material models in ASPECT that model the flow of melt,
           // but can be reused for a geofluid of arbitrary composition.
-          const std::shared_ptr<MeltOutputs<dim>> fluid_out
-            = out.template get_additional_output_object<MeltOutputs<dim>>();
+          const std::shared_ptr<MeltOutputs<dim>> fluid_out = out.template get_additional_output_object<MeltOutputs<dim>>();
 
 
           if (fluid_out != nullptr && in.requests_property(MaterialProperties::additional_outputs))
             {
-              for (unsigned int q=0; q<out.n_evaluation_points(); ++q)
+              for (unsigned int q = 0; q < out.n_evaluation_points(); ++q)
                 {
-                  double porosity = std::max(in.composition[q][porosity_idx],0.0);
+                  double porosity = std::max(in.composition[q][porosity_idx], 0.0);
 
                   fluid_out->fluid_viscosities[q] = eta_f;
-                  fluid_out->permeabilities[q] = reference_permeability * Utilities::fixed_power<3>(porosity) * Utilities::fixed_power<2>(1.0-porosity);
+                  fluid_out->permeabilities[q] =
+                    reference_permeability * Utilities::fixed_power<3>(porosity) * Utilities::fixed_power<2>(1.0 - porosity);
 
-                  fluid_out->fluid_densities[q] = reference_rho_f * std::exp(fluid_compressibility * (in.pressure[q] - this->get_surface_pressure()));
+                  fluid_out->fluid_densities[q] =
+                    reference_rho_f * std::exp(fluid_compressibility * (in.pressure[q] - this->get_surface_pressure()));
                   if (in.requests_property(MaterialProperties::viscosity))
                     {
                       const double phi_0 = 0.05;
 
                       // Limit the porosity to be no smaller than 1e-8 when
                       // calculating fluid effects on viscosities.
-                      porosity = std::max(porosity,1e-8);
-                      fluid_out->compaction_viscosities[q] = std::clamp(out.viscosities[q] * shear_to_bulk_viscosity_ratio * phi_0/porosity, min_compaction_viscosity, max_compaction_viscosity);
+                      porosity = std::max(porosity, 1e-8);
+                      fluid_out->compaction_viscosities[q] =
+                        std::clamp(out.viscosities[q] * shear_to_bulk_viscosity_ratio * phi_0 / porosity,
+                                   min_compaction_viscosity,
+                                   max_compaction_viscosity);
                     }
                 }
             }
 
-          const std::shared_ptr<ReactionRateOutputs<dim>> reaction_rate_out
-            = out.template get_additional_output_object<ReactionRateOutputs<dim>>();
+          const std::shared_ptr<ReactionRateOutputs<dim>> reaction_rate_out =
+            out.template get_additional_output_object<ReactionRateOutputs<dim>>();
 
-          if (this->get_parameters().use_operator_splitting && reaction_rate_out != nullptr
-              && in.requests_property(MaterialProperties::reaction_rates))
+          if (this->get_parameters().use_operator_splitting && reaction_rate_out != nullptr &&
+              in.requests_property(MaterialProperties::reaction_rates))
             {
               Assert(fluid_out != nullptr,
                      ExcMessage("The material model 'ReactiveFluidTransport' requires melt material "
@@ -255,8 +252,9 @@ namespace aspect
               double reaction_fraction       = 0.0;
               if (this->simulator_is_past_initialization())
                 {
-                  const unsigned int number_of_reaction_steps = std::max(static_cast<unsigned int>(this->get_timestep() / this->get_parameters().reaction_time_step),
-                                                                         std::max(this->get_parameters().reaction_steps_per_advection_step,1U));
+                  const unsigned int number_of_reaction_steps =
+                    std::max(static_cast<unsigned int>(this->get_timestep() / this->get_parameters().reaction_time_step),
+                             std::max(this->get_parameters().reaction_steps_per_advection_step, 1U));
                   reaction_time_step_size = this->get_timestep() / static_cast<double>(number_of_reaction_steps);
                   reaction_fraction       = reaction_time_step_size / fluid_reaction_time_scale;
                 }
@@ -266,7 +264,7 @@ namespace aspect
               std::vector<double> eq_free_fluid_fractions(out.n_evaluation_points());
               melt_fractions(in, eq_free_fluid_fractions, &out);
 
-              for (unsigned int q=0; q<out.n_evaluation_points(); ++q)
+              for (unsigned int q = 0; q < out.n_evaluation_points(); ++q)
                 {
                   const unsigned int bound_fluid_idx = this->introspection().compositional_index_for_name("bound_fluid");
 
@@ -274,7 +272,7 @@ namespace aspect
                   const double fluid_density = fluid_out->fluid_densities[q];
 
                   const double volume_fraction_porosity = in.composition[q][porosity_idx];
-                  const double bulk_density = compute_bulk_density(volume_fraction_porosity, solid_density, fluid_density);
+                  const double bulk_density             = compute_bulk_density(volume_fraction_porosity, solid_density, fluid_density);
 
                   // We need to convert the porosity, which is a volume fraction, to a mass fraction
                   // to determine the total mass fraction of water (across both phases). This is then
@@ -289,13 +287,14 @@ namespace aspect
                   // the mass fraction of water in the fluid. Fl_wt is always 100%, because the fluid is assumed to
                   // be composed of only water. The bound_fluid composition gives Sm_wt, and we compute Sm_mass as
                   // was done when defining mass_frac_porosity.
-                  const double total_mass_fraction_water = in.composition[q][bound_fluid_idx] * (1 - volume_fraction_porosity) * solid_density / bulk_density +
-                                                           mass_fraction_porosity;
+                  const double total_mass_fraction_water =
+                    in.composition[q][bound_fluid_idx] * (1 - volume_fraction_porosity) * solid_density / bulk_density +
+                    mass_fraction_porosity;
 
                   // Determine the change in the mass fraction of porosity from the equilibrium fluid fraction
                   // and update the mass fraction of porosity.
                   const double mass_fraction_porosity_change = (eq_free_fluid_fractions[q] - mass_fraction_porosity) * reaction_fraction;
-                  const double new_mass_fraction_porosity = mass_fraction_porosity + mass_fraction_porosity_change;
+                  const double new_mass_fraction_porosity    = mass_fraction_porosity + mass_fraction_porosity_change;
 
                   // Since porosity is a volume fraction, convert the mass fraction change to a volume fraction change
                   // to update the porosity value. We cannot use the bulk density to do this, because we do not yet know
@@ -303,23 +302,25 @@ namespace aspect
                   // the  new bulk density as a function of the new volume fraction porosity into this equation:
                   // new_Fl_mass * new_bulk_density = new_volume_frac * fluid_density
                   // and solving for the new volume fraction. This gives us the following equation:
-                  const double new_volume_fraction_porosity = solid_density * new_mass_fraction_porosity /
-                                                              (fluid_density + solid_density * new_mass_fraction_porosity - fluid_density * new_mass_fraction_porosity);
+                  const double new_volume_fraction_porosity =
+                    solid_density * new_mass_fraction_porosity /
+                    (fluid_density + solid_density * new_mass_fraction_porosity - fluid_density * new_mass_fraction_porosity);
 
                   // Now determine the new bulk density using the new volume fraction of porosity
                   const double new_bulk_density = compute_bulk_density(new_volume_fraction_porosity, solid_density, fluid_density);
 
                   // Determine the bound fluid mass fraction using the new volume fraction of porosity and the original
                   // mass fraction of water. We do this by determining the mass fraction of the solid phase:
-                  const double mass_fraction_solid = compute_mass_fraction(1.0 - new_volume_fraction_porosity, solid_density, new_bulk_density);
+                  const double mass_fraction_solid =
+                    compute_mass_fraction(1.0 - new_volume_fraction_porosity, solid_density, new_bulk_density);
                   // And now we use the total mass fraction of water determined above to ensure that we are conserving
                   // mass during the reactions. Sm_mass is then given by:
-                  const double new_bound_fluid_mass_fraction = (total_mass_fraction_water - new_mass_fraction_porosity) /
-                                                               (mass_fraction_solid);
+                  const double new_bound_fluid_mass_fraction =
+                    (total_mass_fraction_water - new_mass_fraction_porosity) / (mass_fraction_solid);
 
                   // Determine the change in both the bound and free water as a mass fraction and volume fraction, respectively
                   double bound_fluid_change = new_bound_fluid_mass_fraction - in.composition[q][bound_fluid_idx];
-                  double porosity_change = new_volume_fraction_porosity - volume_fraction_porosity;
+                  double porosity_change    = new_volume_fraction_porosity - volume_fraction_porosity;
 
                   // Do not allow negative bound water
                   if (bound_fluid_change + in.composition[q][bound_fluid_idx] < 0)
@@ -328,7 +329,7 @@ namespace aspect
                   if (porosity_change + volume_fraction_porosity < 0)
                     porosity_change = -volume_fraction_porosity;
                   // Apply the reactions
-                  for (unsigned int c=0; c<in.composition[q].size(); ++c)
+                  for (unsigned int c = 0; c < in.composition[q].size(); ++c)
                     {
                       if (c == bound_fluid_idx && this->get_timestep_number() > 0)
                         // Apply the mass fraction change to the bound fluid content, which is a mass fraction
@@ -354,7 +355,7 @@ namespace aspect
 
     template <int dim>
     void
-    ReactiveFluidTransport<dim>::declare_parameters (ParameterHandler &prm)
+    ReactiveFluidTransport<dim>::declare_parameters(ParameterHandler &prm)
     {
       prm.enter_subsection("Material model");
       {
@@ -373,143 +374,153 @@ namespace aspect
           }
           prm.leave_subsection();
 
-          prm.declare_entry("Base model","visco plastic",
+          prm.declare_entry("Base model",
+                            "visco plastic",
                             Patterns::Selection(MaterialModel::get_valid_model_names_pattern<dim>()),
                             "The name of a material model incorporating the "
                             "addition of fluids. Valid values for this parameter "
                             "are the names of models that are also valid for the "
                             "``Material models/Model name'' parameter. See the documentation for "
                             "that for more information.");
-          prm.declare_entry ("Reference fluid density", "2500",
-                             Patterns::Double (0),
-                             "Reference density of the melt/fluid$\\rho_{f,0}$. Units: \\si{\\kilogram\\per\\meter\\cubed}.");
-          prm.declare_entry ("Shear to bulk viscosity ratio", "0.1",
-                             Patterns::Double (0),
-                             "Ratio between shear and bulk viscosity at the reference "
-                             "permeability $\\phi_0=0.05$. The bulk viscosity additionally "
-                             "scales with $\\phi_0/\\phi$. The shear viscosity is read in "
-                             "from the base model. Units: dimensionless.");
-          prm.declare_entry ("Minimum compaction viscosity", "0",
-                             Patterns::Double (0),
-                             "Lower cutoff for the compaction viscosity. Units: \\si{\\pascal\\second}.");
-          prm.declare_entry ("Maximum compaction viscosity",
-                             boost::lexical_cast<std::string>(std::numeric_limits<double>::max()),
-                             Patterns::Double (0),
-                             "Upper cutoff for the compaction viscosity. Units: \\si{\\pascal\\second}.");
-          prm.declare_entry ("Reference fluid viscosity", "10",
-                             Patterns::Double (0),
-                             "The value of the constant melt/fluid viscosity $\\eta_f$. Units: \\si{\\pascal\\second}.");
-          prm.declare_entry ("Exponential fluid weakening factor", "27",
-                             Patterns::Double (0),
-                             "The porosity dependence of the viscosity. Units: dimensionless.");
-          prm.declare_entry ("Reference permeability", "1e-8",
-                             Patterns::Double(),
-                             "Reference permeability of the solid host rock."
-                             "Units: \\si{\\meter\\squared}.");
-          prm.declare_entry ("Fluid compressibility", "0.0",
-                             Patterns::Double (0),
-                             "The value of the compressibility of the fluid. "
-                             "Units: \\si{\\per\\pascal}.");
-          prm.declare_entry ("Fluid reaction time scale for operator splitting", "1e3",
-                             Patterns::Double (0),
-                             "In case the operator splitting scheme is used, the porosity field can not "
-                             "be set to a new equilibrium fluid fraction instantly, but the model has to "
-                             "provide a reaction time scale instead. This time scale defines how fast fluid "
-                             "release and absorption happen, or more specifically, the parameter defines the "
-                             "time after which the deviation of the porosity from the free fluid fraction "
-                             "that would be in equilibrium with the solid will be reduced to a fraction of "
-                             "$1/e$. So if the fluid reaction time scale is small compared "
-                             "to the time step size, the reaction will be so fast that the porosity is very "
-                             "close to this equilibrium value after reactions are computed. Conversely, "
-                             "if the fluid reaction time scale is large compared to the time step size, almost no "
-                             "fluid release and absorption will occur."
-                             "\n\n"
-                             "Also note that the fluid reaction time scale has to be larger than or equal to the reaction "
-                             "time step used in the operator splitting scheme, otherwise reactions can not be "
-                             "computed. If the model does not use operator splitting, this parameter is not used. "
-                             "Units: yr or s, depending on the ``Use years instead of seconds'' parameter.");
-          prm.declare_entry ("Fluid-solid reaction scheme", "no reaction",
-                             Patterns::Selection("no reaction|zero solubility|tian approximation|katz2003"),
-                             "Select what type of scheme to use for reactions between fluid and solid phases. "
-                             "The current available options are models where no reactions occur between "
-                             "the two phases, or the solid phase is insoluble (zero solubility) and all "
-                             "of the bound fluid is released into the fluid phase, tian approximation "
-                             "use polynomials to describe hydration and dehydration reactions for four different "
-                             "rock compositions as defined in Tian et al., 2019, or the Katz et. al. 2003 mantle "
-                             "melting model. If the Katz 2003 melting model is used, its parameters are declared "
-                             "in its own subsection.");
-          prm.declare_entry ("Reference temperature", "293.",
-                             Patterns::Double (0.),
-                             "The reference temperature $T_0$ for the katz2003 reaction model. "
-                             "The reference temperature is used in both the density and "
-                             "viscosity formulas of this model. Units: \\si{\\kelvin}.");
+          prm.declare_entry("Reference fluid density",
+                            "2500",
+                            Patterns::Double(0),
+                            "Reference density of the melt/fluid$\\rho_{f,0}$. Units: \\si{\\kilogram\\per\\meter\\cubed}.");
+          prm.declare_entry("Shear to bulk viscosity ratio",
+                            "0.1",
+                            Patterns::Double(0),
+                            "Ratio between shear and bulk viscosity at the reference "
+                            "permeability $\\phi_0=0.05$. The bulk viscosity additionally "
+                            "scales with $\\phi_0/\\phi$. The shear viscosity is read in "
+                            "from the base model. Units: dimensionless.");
+          prm.declare_entry("Minimum compaction viscosity",
+                            "0",
+                            Patterns::Double(0),
+                            "Lower cutoff for the compaction viscosity. Units: \\si{\\pascal\\second}.");
+          prm.declare_entry("Maximum compaction viscosity",
+                            boost::lexical_cast<std::string>(std::numeric_limits<double>::max()),
+                            Patterns::Double(0),
+                            "Upper cutoff for the compaction viscosity. Units: \\si{\\pascal\\second}.");
+          prm.declare_entry("Reference fluid viscosity",
+                            "10",
+                            Patterns::Double(0),
+                            "The value of the constant melt/fluid viscosity $\\eta_f$. Units: \\si{\\pascal\\second}.");
+          prm.declare_entry("Exponential fluid weakening factor",
+                            "27",
+                            Patterns::Double(0),
+                            "The porosity dependence of the viscosity. Units: dimensionless.");
+          prm.declare_entry("Reference permeability",
+                            "1e-8",
+                            Patterns::Double(),
+                            "Reference permeability of the solid host rock."
+                            "Units: \\si{\\meter\\squared}.");
+          prm.declare_entry("Fluid compressibility",
+                            "0.0",
+                            Patterns::Double(0),
+                            "The value of the compressibility of the fluid. "
+                            "Units: \\si{\\per\\pascal}.");
+          prm.declare_entry("Fluid reaction time scale for operator splitting",
+                            "1e3",
+                            Patterns::Double(0),
+                            "In case the operator splitting scheme is used, the porosity field can not "
+                            "be set to a new equilibrium fluid fraction instantly, but the model has to "
+                            "provide a reaction time scale instead. This time scale defines how fast fluid "
+                            "release and absorption happen, or more specifically, the parameter defines the "
+                            "time after which the deviation of the porosity from the free fluid fraction "
+                            "that would be in equilibrium with the solid will be reduced to a fraction of "
+                            "$1/e$. So if the fluid reaction time scale is small compared "
+                            "to the time step size, the reaction will be so fast that the porosity is very "
+                            "close to this equilibrium value after reactions are computed. Conversely, "
+                            "if the fluid reaction time scale is large compared to the time step size, almost no "
+                            "fluid release and absorption will occur."
+                            "\n\n"
+                            "Also note that the fluid reaction time scale has to be larger than or equal to the reaction "
+                            "time step used in the operator splitting scheme, otherwise reactions can not be "
+                            "computed. If the model does not use operator splitting, this parameter is not used. "
+                            "Units: yr or s, depending on the ``Use years instead of seconds'' parameter.");
+          prm.declare_entry("Fluid-solid reaction scheme",
+                            "no reaction",
+                            Patterns::Selection("no reaction|zero solubility|tian approximation|katz2003"),
+                            "Select what type of scheme to use for reactions between fluid and solid phases. "
+                            "The current available options are models where no reactions occur between "
+                            "the two phases, or the solid phase is insoluble (zero solubility) and all "
+                            "of the bound fluid is released into the fluid phase, tian approximation "
+                            "use polynomials to describe hydration and dehydration reactions for four different "
+                            "rock compositions as defined in Tian et al., 2019, or the Katz et. al. 2003 mantle "
+                            "melting model. If the Katz 2003 melting model is used, its parameters are declared "
+                            "in its own subsection.");
+          prm.declare_entry("Reference temperature",
+                            "293.",
+                            Patterns::Double(0.),
+                            "The reference temperature $T_0$ for the katz2003 reaction model. "
+                            "The reference temperature is used in both the density and "
+                            "viscosity formulas of this model. Units: \\si{\\kelvin}.");
         }
         prm.leave_subsection();
-
       }
       prm.leave_subsection();
     }
 
     template <int dim>
     void
-    ReactiveFluidTransport<dim>::parse_parameters (ParameterHandler &prm)
+    ReactiveFluidTransport<dim>::parse_parameters(ParameterHandler &prm)
     {
       prm.enter_subsection("Material model");
       {
         prm.enter_subsection("Reactive Fluid Transport Model");
         {
-          AssertThrow( prm.get("Base model") != "reactive fluid transport",
-                       ExcMessage("You may not use ``reactive fluid transport'' "
-                                  "as the base model for the reactive fluid transport "
-                                  "model itself.") );
+          AssertThrow(prm.get("Base model") != "reactive fluid transport",
+                      ExcMessage("You may not use ``reactive fluid transport'' "
+                                 "as the base model for the reactive fluid transport "
+                                 "model itself."));
 
-          reference_rho_f                   = prm.get_double ("Reference fluid density");
-          shear_to_bulk_viscosity_ratio     = prm.get_double ("Shear to bulk viscosity ratio");
-          max_compaction_viscosity          = prm.get_double ("Maximum compaction viscosity");
-          min_compaction_viscosity          = prm.get_double ("Minimum compaction viscosity");
-          eta_f                             = prm.get_double ("Reference fluid viscosity");
-          reference_permeability            = prm.get_double ("Reference permeability");
-          alpha_phi                         = prm.get_double ("Exponential fluid weakening factor");
-          fluid_compressibility             = prm.get_double ("Fluid compressibility");
-          fluid_reaction_time_scale         = prm.get_double ("Fluid reaction time scale for operator splitting");
-          reference_T                       = prm.get_double ("Reference temperature");
+          reference_rho_f               = prm.get_double("Reference fluid density");
+          shear_to_bulk_viscosity_ratio = prm.get_double("Shear to bulk viscosity ratio");
+          max_compaction_viscosity      = prm.get_double("Maximum compaction viscosity");
+          min_compaction_viscosity      = prm.get_double("Minimum compaction viscosity");
+          eta_f                         = prm.get_double("Reference fluid viscosity");
+          reference_permeability        = prm.get_double("Reference permeability");
+          alpha_phi                     = prm.get_double("Exponential fluid weakening factor");
+          fluid_compressibility         = prm.get_double("Fluid compressibility");
+          fluid_reaction_time_scale     = prm.get_double("Fluid reaction time scale for operator splitting");
+          reference_T                   = prm.get_double("Reference temperature");
 
           // Create the base model and initialize its SimulatorAccess base
           // class; it will get a chance to read its parameters below after we
           // leave the current section.
           base_model = create_material_model<dim>(prm.get("Base model"));
-          if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(base_model.get()))
-            sim->initialize_simulator (this->get_simulator());
+          if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim> *>(base_model.get()))
+            sim->initialize_simulator(this->get_simulator());
 
           if (this->convert_output_to_years() == true)
             fluid_reaction_time_scale *= year_in_seconds;
 
           // Reaction scheme parameter
-          if (prm.get ("Fluid-solid reaction scheme") == "zero solubility")
+          if (prm.get("Fluid-solid reaction scheme") == "zero solubility")
             {
               fluid_solid_reaction_scheme = zero_solubility;
             }
-          else if (prm.get ("Fluid-solid reaction scheme") == "no reaction")
+          else if (prm.get("Fluid-solid reaction scheme") == "no reaction")
             {
               fluid_solid_reaction_scheme = no_reaction;
             }
-          else if (prm.get ("Fluid-solid reaction scheme") == "tian approximation")
+          else if (prm.get("Fluid-solid reaction scheme") == "tian approximation")
             {
               fluid_solid_reaction_scheme = tian_approximation;
 
               prm.enter_subsection("Tian 2019 model");
               {
-                tian2019_model.initialize_simulator (this->get_simulator());
+                tian2019_model.initialize_simulator(this->get_simulator());
                 tian2019_model.parse_parameters(prm);
               }
               prm.leave_subsection();
             }
-          else if (prm.get ("Fluid-solid reaction scheme") == "katz2003")
+          else if (prm.get("Fluid-solid reaction scheme") == "katz2003")
             {
               fluid_solid_reaction_scheme = katz2003;
               prm.enter_subsection("Katz 2003 model");
               {
-                katz2003_model.initialize_simulator (this->get_simulator());
+                katz2003_model.initialize_simulator(this->get_simulator());
                 katz2003_model.parse_parameters(prm);
               }
               prm.leave_subsection();
@@ -531,7 +542,8 @@ namespace aspect
 
           if (fluid_solid_reaction_scheme == tian_approximation)
             {
-              AssertThrow(this->get_parameters().use_operator_splitting && this->get_parameters().reaction_solver_type == Parameters<dim>::ReactionSolverType::fixed_step,
+              AssertThrow(this->get_parameters().use_operator_splitting &&
+                            this->get_parameters().reaction_solver_type == Parameters<dim>::ReactionSolverType::fixed_step,
                           ExcMessage("The Fluid-reaction scheme tian approximation must be used with operator splitting "
                                      "and 'Reaction solver type = fixed step'."));
             }
@@ -540,11 +552,11 @@ namespace aspect
             {
               if (this->get_parameters().reaction_solver_type == Parameters<dim>::ReactionSolverType::fixed_step)
                 AssertThrow(fluid_reaction_time_scale >= this->get_parameters().reaction_time_step,
-                            ExcMessage("The reaction time step " + Utilities::to_string(this->get_parameters().reaction_time_step)
-                                       + " in the operator splitting scheme is too large to compute fluid release rates! "
+                            ExcMessage("The reaction time step " + Utilities::to_string(this->get_parameters().reaction_time_step) +
+                                       " in the operator splitting scheme is too large to compute fluid release rates! "
                                        "You have to choose it in such a way that it is smaller than the 'Fluid reaction time scale for "
-                                       "operator splitting' chosen in the material model, which is currently "
-                                       + Utilities::to_string(fluid_reaction_time_scale) + "."));
+                                       "operator splitting' chosen in the material model, which is currently " +
+                                       Utilities::to_string(fluid_reaction_time_scale) + "."));
               AssertThrow(fluid_reaction_time_scale > 0,
                           ExcMessage("The Fluid reaction time scale for operator splitting must be larger than 0!"));
             }
@@ -584,13 +596,12 @@ namespace aspect
 
     template <int dim>
     void
-    ReactiveFluidTransport<dim>::create_additional_named_outputs (MaterialModel::MaterialModelOutputs<dim> &out) const
+    ReactiveFluidTransport<dim>::create_additional_named_outputs(MaterialModel::MaterialModelOutputs<dim> &out) const
     {
-      if (this->get_parameters().use_operator_splitting
-          && out.template has_additional_output_object<ReactionRateOutputs<dim>>() == false)
+      if (this->get_parameters().use_operator_splitting && out.template has_additional_output_object<ReactionRateOutputs<dim>>() == false)
         {
           out.additional_outputs.push_back(
-            std::make_unique<MaterialModel::ReactionRateOutputs<dim>> (out.n_evaluation_points(), this->n_compositional_fields()));
+            std::make_unique<MaterialModel::ReactionRateOutputs<dim>>(out.n_evaluation_points(), this->n_compositional_fields()));
         }
       base_model->create_additional_named_outputs(out);
     }

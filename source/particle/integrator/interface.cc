@@ -49,8 +49,7 @@ namespace aspect
 
       template <int dim>
       const void *
-      Interface<dim>::read_data(const typename ParticleHandler<dim>::particle_iterator &/*particle*/,
-                                const void *data)
+      Interface<dim>::read_data(const typename ParticleHandler<dim>::particle_iterator & /*particle*/, const void *data)
       {
         return data;
       }
@@ -59,140 +58,133 @@ namespace aspect
 
       template <int dim>
       void *
-      Interface<dim>::write_data(const typename ParticleHandler<dim>::particle_iterator &/*particle*/,
-                                 void *data) const
+      Interface<dim>::write_data(const typename ParticleHandler<dim>::particle_iterator & /*particle*/, void *data) const
       {
         return data;
       }
 
 
 
-// -------------------------------- Deal with registering models and automating
-// -------------------------------- their setup and selection at run time
+      // -------------------------------- Deal with registering models and automating
+      // -------------------------------- their setup and selection at run time
 
       namespace
       {
-        std::tuple
-        <aspect::internal::Plugins::UnusablePluginList,
-        aspect::internal::Plugins::UnusablePluginList,
-        aspect::internal::Plugins::PluginList<Interface<2>>,
-        aspect::internal::Plugins::PluginList<Interface<3>>> registered_plugins;
+        std::tuple<aspect::internal::Plugins::UnusablePluginList,
+                   aspect::internal::Plugins::UnusablePluginList,
+                   aspect::internal::Plugins::PluginList<Interface<2>>,
+                   aspect::internal::Plugins::PluginList<Interface<3>>>
+          registered_plugins;
       }
 
 
 
       template <int dim>
       void
-      register_particle_integrator (const std::string &name,
-                                    const std::string &description,
-                                    void (*declare_parameters_function) (ParameterHandler &),
-                                    std::unique_ptr<Interface<dim>> (*factory_function) ())
+      register_particle_integrator(const std::string &name,
+                                   const std::string &description,
+                                   void (*declare_parameters_function)(ParameterHandler &),
+                                   std::unique_ptr<Interface<dim>> (*factory_function)())
       {
-        std::get<dim>(registered_plugins).register_plugin (name,
-                                                           description,
-                                                           declare_parameters_function,
-                                                           factory_function);
+        std::get<dim>(registered_plugins).register_plugin(name, description, declare_parameters_function, factory_function);
       }
 
 
 
       template <int dim>
       std::unique_ptr<Interface<dim>>
-      create_particle_integrator (ParameterHandler &prm)
+      create_particle_integrator(ParameterHandler &prm)
       {
         std::string name;
-        name = prm.get ("Integration scheme");
+        name = prm.get("Integration scheme");
 
-        return std::get<dim>(registered_plugins).create_plugin (name,
-                                                                "Particle::Integrator name");
+        return std::get<dim>(registered_plugins).create_plugin(name, "Particle::Integrator name");
       }
 
 
 
       template <int dim>
       void
-      declare_parameters (ParameterHandler &prm)
+      declare_parameters(ParameterHandler &prm)
       {
         // declare the entry in the parameter file
-        const std::string pattern_of_names
-          = std::get<dim>(registered_plugins).get_pattern_of_names ();
+        const std::string pattern_of_names = std::get<dim>(registered_plugins).get_pattern_of_names();
 
-        prm.declare_entry ("Integration scheme", "rk2",
-                           Patterns::Selection (pattern_of_names),
-                           "This parameter is used to decide which method to "
-                           "use to solve the equation that describes the position "
-                           "of particles, i.e., $\\frac{d}{dt}\\mathbf x_k(t) = "
-                           "\\mathbf u(\\mathbf x_k(t),t)$, where $k$ is an index "
-                           "that runs over all particles, and $\\mathbf u(\\mathbf x,t)$ "
-                           "is the velocity field that results from the Stokes "
-                           "equations."
-                           "\n\n"
-                           "In practice, the exact velocity $\\mathbf u(\\mathbf x,t)$ "
-                           "is of course not available, but only a numerical "
-                           "approximation $\\mathbf u_h(\\mathbf x,t)$. Furthermore, "
-                           "this approximation is only available at discrete time steps, "
-                           "$\\mathbf u^n(\\mathbf x)=\\mathbf u(\\mathbf x,t^n)$, and "
-                           "these need to be interpolated between time steps if the "
-                           "integrator for the equation above requires an evaluation at "
-                           "time points between the discrete time steps. If we denote this "
-                           "interpolation in time by $\\tilde{\\mathbf u}_h(\\mathbf x,t)$ "
-                           "where $\\tilde{\\mathbf u}_h(\\mathbf x,t^n)="
-                           "\\mathbf u^n(\\mathbf x)$, then the equation the differential "
-                           "equation solver really tries to solve is "
-                           "$\\frac{d}{dt}\\tilde{\\mathbf x}_k(t) = "
-                           " \\tilde{\\mathbf u}_h(\\mathbf x_k(t),t)$."
-                           "\n\n"
-                           "As a consequence of these considerations, if you try to "
-                           "assess convergence properties of an ODE integrator -- for "
-                           "example to verify that the RK4 integrator converges with "
-                           "fourth order --, it is important to recall that the "
-                           "integrator may not solve the equation you think it "
-                           "solves. If, for example, we call the numerical solution "
-                           "of the ODE $\\tilde{\\mathbf x}_{k,h}(t)$, then the "
-                           "error will typically satisfy a relationship like "
-                           "\\["
-                           "  \\| \\tilde{\\mathbf x}_k(T) - \\tilde{\\mathbf x}_{k,h}(T) \\|"
-                           "  \\le"
-                           "  C(T) \\Delta t^p"
-                           "\\] "
-                           "where $\\Delta t$ is the time step and $p$ the convergence order "
-                           "of the method, and $C(T)$ is a (generally unknown) constant "
-                           "that depends on the end time $T$ at which one compares the "
-                           "solutions. On the other hand, an analytically computed "
-                           "trajectory would likely use the \\textit{exact} velocity, "
-                           "and one may be tempted to compute "
-                           "$\\| \\mathbf x_k(T) - \\tilde{\\mathbf x}_{k,h}(T) \\|$, "
-                           "but this quantity will, in the best case, only satisfy an "
-                           "estimate of the form "
-                           "\\["
-                           "  \\| \\mathbf x_k(T) - \\tilde{\\mathbf x}_{k,h}(T) \\|"
-                           "  \\le"
-                           "  C_1(T) \\Delta t^p"
-                           "  + C_2(T) \\| \\mathbf u-\\mathbf u_h \\|"
-                           "  + C_3(T) \\| \\mathbf u_h-\\tilde{\\mathbf u}_h \\|"
-                           "\\] "
-                           "with appropriately chosen norms for the second and third "
-                           "term. These second and third terms typically converge to "
-                           "zero at relatively low rates (compared to the order $p$ of "
-                           "the integrator, which can often be chosen relatively high) "
-                           "in the mesh size $h$ and the time step size $\\\\Delta t$, "
-                           "limiting the overall accuracy of the ODE integrator."
-                           "\n\n"
-                           "Select one of the following models:\n\n"
-                           +
-                           std::get<dim>(registered_plugins).get_description_string());
+        prm.declare_entry("Integration scheme",
+                          "rk2",
+                          Patterns::Selection(pattern_of_names),
+                          "This parameter is used to decide which method to "
+                          "use to solve the equation that describes the position "
+                          "of particles, i.e., $\\frac{d}{dt}\\mathbf x_k(t) = "
+                          "\\mathbf u(\\mathbf x_k(t),t)$, where $k$ is an index "
+                          "that runs over all particles, and $\\mathbf u(\\mathbf x,t)$ "
+                          "is the velocity field that results from the Stokes "
+                          "equations."
+                          "\n\n"
+                          "In practice, the exact velocity $\\mathbf u(\\mathbf x,t)$ "
+                          "is of course not available, but only a numerical "
+                          "approximation $\\mathbf u_h(\\mathbf x,t)$. Furthermore, "
+                          "this approximation is only available at discrete time steps, "
+                          "$\\mathbf u^n(\\mathbf x)=\\mathbf u(\\mathbf x,t^n)$, and "
+                          "these need to be interpolated between time steps if the "
+                          "integrator for the equation above requires an evaluation at "
+                          "time points between the discrete time steps. If we denote this "
+                          "interpolation in time by $\\tilde{\\mathbf u}_h(\\mathbf x,t)$ "
+                          "where $\\tilde{\\mathbf u}_h(\\mathbf x,t^n)="
+                          "\\mathbf u^n(\\mathbf x)$, then the equation the differential "
+                          "equation solver really tries to solve is "
+                          "$\\frac{d}{dt}\\tilde{\\mathbf x}_k(t) = "
+                          " \\tilde{\\mathbf u}_h(\\mathbf x_k(t),t)$."
+                          "\n\n"
+                          "As a consequence of these considerations, if you try to "
+                          "assess convergence properties of an ODE integrator -- for "
+                          "example to verify that the RK4 integrator converges with "
+                          "fourth order --, it is important to recall that the "
+                          "integrator may not solve the equation you think it "
+                          "solves. If, for example, we call the numerical solution "
+                          "of the ODE $\\tilde{\\mathbf x}_{k,h}(t)$, then the "
+                          "error will typically satisfy a relationship like "
+                          "\\["
+                          "  \\| \\tilde{\\mathbf x}_k(T) - \\tilde{\\mathbf x}_{k,h}(T) \\|"
+                          "  \\le"
+                          "  C(T) \\Delta t^p"
+                          "\\] "
+                          "where $\\Delta t$ is the time step and $p$ the convergence order "
+                          "of the method, and $C(T)$ is a (generally unknown) constant "
+                          "that depends on the end time $T$ at which one compares the "
+                          "solutions. On the other hand, an analytically computed "
+                          "trajectory would likely use the \\textit{exact} velocity, "
+                          "and one may be tempted to compute "
+                          "$\\| \\mathbf x_k(T) - \\tilde{\\mathbf x}_{k,h}(T) \\|$, "
+                          "but this quantity will, in the best case, only satisfy an "
+                          "estimate of the form "
+                          "\\["
+                          "  \\| \\mathbf x_k(T) - \\tilde{\\mathbf x}_{k,h}(T) \\|"
+                          "  \\le"
+                          "  C_1(T) \\Delta t^p"
+                          "  + C_2(T) \\| \\mathbf u-\\mathbf u_h \\|"
+                          "  + C_3(T) \\| \\mathbf u_h-\\tilde{\\mathbf u}_h \\|"
+                          "\\] "
+                          "with appropriately chosen norms for the second and third "
+                          "term. These second and third terms typically converge to "
+                          "zero at relatively low rates (compared to the order $p$ of "
+                          "the integrator, which can often be chosen relatively high) "
+                          "in the mesh size $h$ and the time step size $\\\\Delta t$, "
+                          "limiting the overall accuracy of the ODE integrator."
+                          "\n\n"
+                          "Select one of the following models:\n\n" +
+                            std::get<dim>(registered_plugins).get_description_string());
 
-        std::get<dim>(registered_plugins).declare_parameters (prm);
+        std::get<dim>(registered_plugins).declare_parameters(prm);
       }
 
 
 
       template <int dim>
       void
-      write_plugin_graph (std::ostream &out)
+      write_plugin_graph(std::ostream &out)
       {
-        std::get<dim>(registered_plugins).write_plugin_graph ("Particle integrator interface",
-                                                              out);
+        std::get<dim>(registered_plugins).write_plugin_graph("Particle integrator interface", out);
       }
     }
   }
@@ -207,25 +199,17 @@ namespace aspect
     {
 #define INSTANTIATE(dim) \
   template class Interface<dim>; \
-  \
-  template \
-  void \
-  register_particle_integrator<dim> (const std::string &, \
-                                     const std::string &, \
-                                     void ( *) (ParameterHandler &), \
-                                     std::unique_ptr<Interface<dim>>( *) ()); \
-  \
-  template  \
-  void \
-  declare_parameters<dim> (ParameterHandler &); \
-  \
-  template \
-  void \
-  write_plugin_graph<dim> (std::ostream &); \
-  \
-  template \
-  std::unique_ptr<Interface<dim>> \
-  create_particle_integrator<dim> (ParameterHandler &prm);
+\
+  template void register_particle_integrator<dim>(const std::string &, \
+                                                  const std::string &, \
+                                                  void (*)(ParameterHandler &), \
+                                                  std::unique_ptr<Interface<dim>> (*)()); \
+\
+  template void declare_parameters<dim>(ParameterHandler &); \
+\
+  template void write_plugin_graph<dim>(std::ostream &); \
+\
+  template std::unique_ptr<Interface<dim>> create_particle_integrator<dim>(ParameterHandler & prm);
 
       ASPECT_INSTANTIATE(INSTANTIATE)
 

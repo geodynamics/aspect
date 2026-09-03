@@ -18,15 +18,16 @@
   <http://www.gnu.org/licenses/>.
 */
 
+#include <aspect/global.h>
+
 #include <aspect/boundary_velocity/interface.h>
 #include <aspect/simulator_access.h>
 #include <aspect/utilities.h>
-#include <aspect/global.h>
 
+#include <deal.II/base/function_lib.h>
+#include <deal.II/base/quadrature_lib.h>
 #include <deal.II/dofs/dof_tools.h>
 #include <deal.II/numerics/data_out.h>
-#include <deal.II/base/quadrature_lib.h>
-#include <deal.II/base/function_lib.h>
 #include <deal.II/numerics/error_estimator.h>
 #include <deal.II/numerics/vector_tools.h>
 
@@ -44,14 +45,14 @@ namespace aspect
       /**
        * Empty Constructor.
        */
-      AsciiBoundaryMember ();
+      AsciiBoundaryMember();
 
       /**
        * Initialization function. This function is called once at the
        * beginning of the program. Checks preconditions.
        */
       void
-      initialize ();
+      initialize();
 
       /**
        * A function that is called at the beginning of each time step. For
@@ -60,28 +61,26 @@ namespace aspect
        * is reached.
        */
       void
-      update ();
+      update();
 
       /**
        * Return the boundary velocity as a function of position. For the
        * current class, this function returns value from the text files.
        */
-      Tensor<1,dim>
-      boundary_velocity (const types::boundary_id boundary_indicator,
-                         const Point<dim> &position) const;
+      Tensor<1, dim>
+      boundary_velocity(const types::boundary_id boundary_indicator, const Point<dim> &position) const;
 
       /**
        * Declare the parameters this class takes through input files.
        */
-      static
-      void
-      declare_parameters (ParameterHandler &prm);
+      static void
+      declare_parameters(ParameterHandler &prm);
 
       /**
        * Read the parameters this class declares from the parameter file.
        */
       void
-      parse_parameters (ParameterHandler &prm);
+      parse_parameters(ParameterHandler &prm);
 
       std::unique_ptr<Utilities::AsciiDataBoundary<dim>> member;
 
@@ -89,15 +88,15 @@ namespace aspect
   };
 
   template <int dim>
-  AsciiBoundaryMember<dim>::AsciiBoundaryMember ()
+  AsciiBoundaryMember<dim>::AsciiBoundaryMember()
   {}
 
 
   template <int dim>
   void
-  AsciiBoundaryMember<dim>::initialize ()
+  AsciiBoundaryMember<dim>::initialize()
   {
-    unsigned int i=0;
+    unsigned int i = 0;
     for (const auto &plugin : this->get_boundary_velocity_manager().get_active_plugins())
       {
         if (plugin.get() == this)
@@ -106,39 +105,33 @@ namespace aspect
         ++i;
       }
 
-    AssertThrow(boundary_ids.empty() == false,
-                ExcMessage("Did not find the boundary indicator for the velocity ascii data plugin."));
+    AssertThrow(boundary_ids.empty() == false, ExcMessage("Did not find the boundary indicator for the velocity ascii data plugin."));
 
-    member->initialize(boundary_ids,
-                       dim);
+    member->initialize(boundary_ids, dim);
   }
 
   template <int dim>
   void
-  AsciiBoundaryMember<dim>::update ()
+  AsciiBoundaryMember<dim>::update()
   {
     member->update();
   }
 
 
   template <int dim>
-  Tensor<1,dim>
-  AsciiBoundaryMember<dim>::
-  boundary_velocity (const types::boundary_id ,
-                     const Point<dim> &position) const
+  Tensor<1, dim>
+  AsciiBoundaryMember<dim>::boundary_velocity(const types::boundary_id, const Point<dim> &position) const
   {
-    Tensor<1,dim> velocity;
+    Tensor<1, dim> velocity;
     for (unsigned int i = 0; i < dim; i++)
-      velocity[i] = member->get_data_component(*(boundary_ids.begin()),
-                                               position,
-                                               i);
+      velocity[i] = member->get_data_component(*(boundary_ids.begin()), position, i);
     return velocity;
   }
 
 
   template <int dim>
   void
-  AsciiBoundaryMember<dim>::declare_parameters (ParameterHandler &prm)
+  AsciiBoundaryMember<dim>::declare_parameters(ParameterHandler &prm)
   {
     prm.enter_subsection("Boundary velocity model");
     {
@@ -152,7 +145,7 @@ namespace aspect
 
   template <int dim>
   void
-  AsciiBoundaryMember<dim>::parse_parameters (ParameterHandler &prm)
+  AsciiBoundaryMember<dim>::parse_parameters(ParameterHandler &prm)
   {
     prm.enter_subsection("Boundary velocity model");
     {
@@ -163,9 +156,8 @@ namespace aspect
 
       if (this->convert_output_to_years() == true)
         {
-          member->scale_factor               /= year_in_seconds;
+          member->scale_factor /= year_in_seconds;
         }
-
     }
     prm.leave_subsection();
   }

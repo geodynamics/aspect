@@ -40,58 +40,58 @@ namespace aspect
     {
       struct CoreData
       {
-        /**
-         * Default constructor. Initialize everything to invalid values,
-         * and set is_initialized to false. The values will be updated
-         * in the first call of update() in DynamicCore class.
-         */
-        CoreData ();
+          /**
+           * Default constructor. Initialize everything to invalid values,
+           * and set is_initialized to false. The values will be updated
+           * in the first call of update() in DynamicCore class.
+           */
+          CoreData();
 
-        /**
-         * Energy for specific heat, radioactive heating, gravitational contribution,
-         * adiabatic contribution, and latent heat. These variables are updated each time step.
-         */
-        double Qs,Qr,Qg,Qk,Ql;
+          /**
+           * Energy for specific heat, radioactive heating, gravitational contribution,
+           * adiabatic contribution, and latent heat. These variables are updated each time step.
+           */
+          double Qs, Qr, Qg, Qk, Ql;
 
-        /**
-         * Entropy for specific heat, radioactive heating, gravitational contribution,
-         * adiabatic contribution, latent heat, and heat solution. These entropy terms are not
-         * used for solving the core evolution. However, the total excess entropy
-         * (dE = Es*dT/dt+Er+El*dR/dt+Eg*dR/dt+Eh*dR/dt-Ek) is useful to determine the core is active or not.
-         * For dE>0, the core is likely to be active and generating magnetic field. These variables are updated each time step as well.
-         */
-        double Es,Er,Eg,Ek,El,Eh;
+          /**
+           * Entropy for specific heat, radioactive heating, gravitational contribution,
+           * adiabatic contribution, latent heat, and heat solution. These entropy terms are not
+           * used for solving the core evolution. However, the total excess entropy
+           * (dE = Es*dT/dt+Er+El*dR/dt+Eg*dR/dt+Eh*dR/dt-Ek) is useful to determine the core is active or not.
+           * For dE>0, the core is likely to be active and generating magnetic field. These variables are updated each time step as well.
+           */
+          double Es, Er, Eg, Ek, El, Eh;
 
-        /**
-         * Parameters for core evolution
-         * Ri     inner core radius
-         * Ti     core-mantle boundary (CMB) temperature
-         * Xi     light component concentration in liquid core
-         */
-        double Ri,Ti,Xi;
+          /**
+           * Parameters for core evolution
+           * Ri     inner core radius
+           * Ti     core-mantle boundary (CMB) temperature
+           * Xi     light component concentration in liquid core
+           */
+          double Ri, Ti, Xi;
 
-        /**
-         * Core-mantle boundary heat flux (Q) and core radioactive heating rate (H)
-         */
-        double Q,H;
+          /**
+           * Core-mantle boundary heat flux (Q) and core radioactive heating rate (H)
+           */
+          double Q, H;
 
-        /**
-         * Time step for core energy balance solver
-         */
-        double dt;
+          /**
+           * Time step for core energy balance solver
+           */
+          double dt;
 
-        /**
-         * The changing rate of inner core radius, CMB temperature, and light component
-         * concentration.
-         */
-        double dR_dt,dT_dt,dX_dt;
+          /**
+           * The changing rate of inner core radius, CMB temperature, and light component
+           * concentration.
+           */
+          double dR_dt, dT_dt, dX_dt;
 
-        /**
-         * Other energy source into the core
-         */
-        double Q_OES;
+          /**
+           * Other energy source into the core
+           */
+          double Q_OES;
 
-        bool is_initialized;
+          bool is_initialized;
       };
 
       /**
@@ -150,8 +150,7 @@ namespace aspect
          * @param location The location of the point at which we ask for the temperature.
          */
         double
-        boundary_temperature (const types::boundary_id boundary_indicator,
-                              const Point<dim> &location) const override;
+        boundary_temperature(const types::boundary_id boundary_indicator, const Point<dim> &location) const override;
 
         /**
          * Return the minimal temperature on that part of the boundary
@@ -161,7 +160,7 @@ namespace aspect
          * Nusselt number indicating heat flux.
          */
         double
-        minimal_temperature (const std::set<types::boundary_id> &fixed_boundary_ids) const override;
+        minimal_temperature(const std::set<types::boundary_id> &fixed_boundary_ids) const override;
 
         /**
          * Return the maximal temperature on that part of the boundary
@@ -171,22 +170,21 @@ namespace aspect
          * Nusselt number indicating heat flux.
          */
         double
-        maximal_temperature (const std::set<types::boundary_id> &fixed_boundary_ids) const override;
+        maximal_temperature(const std::set<types::boundary_id> &fixed_boundary_ids) const override;
 
         /**
          * Declare the parameters this class takes through input files.
          * This class declares the inner and outer boundary temperatures.
          */
-        static
-        void
-        declare_parameters (ParameterHandler &prm);
+        static void
+        declare_parameters(ParameterHandler &prm);
 
         /**
          * Read the parameters this class declares from the parameter
          * file.
          */
         void
-        parse_parameters (ParameterHandler &prm) override;
+        parse_parameters(ParameterHandler &prm) override;
 
         /**
          * Serialize the contents of this class as far as they are not read
@@ -194,22 +192,21 @@ namespace aspect
          */
         template <class Archive>
         void
-        serialize (Archive &ar, const unsigned int version);
+        serialize(Archive &ar, const unsigned int version);
 
         /**
          * Save the state of this object.
          */
         void
-        save (std::map<std::string, std::string> &status_strings) const override;
+        save(std::map<std::string, std::string> &status_strings) const override;
 
         /**
          * Restore the state of the object.
          */
         void
-        load (const std::map<std::string, std::string> &status_strings) override;
+        load(const std::map<std::string, std::string> &status_strings) override;
 
       private:
-
         /**
          * Data for core energy balance
          * it get updated each time step.
@@ -427,19 +424,21 @@ namespace aspect
         std::string name_OES;
         struct str_data_OES
         {
-          double t;
-          double w;
+            double t;
+            double w;
 
-          template <class Archive>
-          void serialize (Archive &ar, const unsigned int)
-          {
-            ar &t
-            & w;
-          }
+            template <class Archive>
+            void
+            serialize(Archive &ar, const unsigned int)
+            {
+              ar &t &w;
+            }
         };
         std::vector<struct str_data_OES> data_OES;
-        void read_data_OES();
-        double compute_OES(double t) const;
+        void
+        read_data_OES();
+        double
+        compute_OES(double t) const;
 
         /**
          * Solve core energy balance for each time step.
@@ -458,83 +457,96 @@ namespace aspect
          *    This becomes a small nonlinear problem. Directly iterate through the above three equations doesn't
          *    converge well. Alternatively we solve the inner core radius using the bisection method.
          *
-         *    At the conditions of the Earth's core, an inner core is forming at the center of the Earth and surrounded by a liquid outer core.
-         *    However, the core solidus is influenced by light components (e.g. S) and its slope is very close to an adiabat. So there is an alternative
-         *    scenario that the crystallization happens first at the core mantle boundary instead of at the center, which is called a 'snowing core'
-         *    (Stewart, A. J., et al. (2007). "Mars: a new core-crystallization regime." Science 316(5829): 1323-1325.). This also
-         *    provides a valid solution for the solver. The current code treats the
-         *    normal core scenario and throws for the unsupported snowing core case.
+         *    At the conditions of the Earth's core, an inner core is forming at the center of the Earth and surrounded by a liquid outer
+         * core. However, the core solidus is influenced by light components (e.g. S) and its slope is very close to an adiabat. So there is
+         * an alternative scenario that the crystallization happens first at the core mantle boundary instead of at the center, which is
+         * called a 'snowing core' (Stewart, A. J., et al. (2007). "Mars: a new core-crystallization regime." Science 316(5829):
+         * 1323-1325.). This also provides a valid solution for the solver. The current code treats the normal core scenario and throws for
+         * the unsupported snowing core case.
          *
          * @return A tuple containing the updated X, T, and R values.
          */
-        internal::SolveTimeStepResult solve_time_step() const;
+        internal::SolveTimeStepResult
+        solve_time_step() const;
 
         /**
          * Compute the difference between solidus and adiabatic temperature at inner
          * core boundary for a given inner core radius @p r.
          */
-        double compute_dT(const double r) const;
+        double
+        compute_dT(const double r) const;
 
         /**
          * Use energy balance to calculate core mantle boundary temperature
          * with a given inner core radius @p r.
          */
-        double compute_Tc(const double r) const;
+        double
+        compute_Tc(const double r) const;
 
         /**
          * Get the solidus temperature at inner core boundary
          * with a given inner core radius @p r.
          */
-        double compute_Ts(const double r) const;
+        double
+        compute_Ts(const double r) const;
 
         /**
          * Compute the core solidus at a given light element concentration @p X (in wt.%)
          * and pressure @p pressure.
          */
-        double compute_solidus(const double X, const double pressure) const;
+        double
+        compute_solidus(const double X, const double pressure) const;
 
         /**
          * Get initial inner core radius with given initial core mantle temperature
          * @p T.
          */
-        double compute_initial_Ri(const double T) const;
+        double
+        compute_initial_Ri(const double T) const;
 
         /**
          * Get the light element concentration (in wt.%) in the outer core from given
          * inner core radius @p r.
          */
-        double compute_X(const double r) const;
+        double
+        compute_X(const double r) const;
 
         /**
          * Compute the core mass inside a certain radius @p r.
          */
-        double compute_mass(const double r) const;
+        double
+        compute_mass(const double r) const;
 
         /**
          * Calculate Sn(B,R), referring to \cite NPB+04 .
          */
-        double fun_Sn(const double B, const double R, const unsigned int n) const;
+        double
+        fun_Sn(const double B, const double R, const unsigned int n) const;
 
         /**
          * Calculate density at given radius @p r.
          */
-        double compute_rho(const double r) const;
+        double
+        compute_rho(const double r) const;
 
         /**
          * Calculate the core temperature at given radius @p r and
          * temperature at CMB @p Tc.
          */
-        double compute_T(const double Tc, const double r) const;
+        double
+        compute_T(const double Tc, const double r) const;
 
         /**
          * Calculate pressure at given radius @p r
          */
-        double compute_pressure(const double r) const;
+        double
+        compute_pressure(const double r) const;
 
         /**
          * Calculate the gravitational potential at given radius @p r
          */
-        double compute_gravity_potential(const double r) const;
+        double
+        compute_gravity_potential(const double r) const;
 
         /**
          * Calculate energy (@p Qs) and entropy (@p Es) change rate factor
@@ -544,7 +556,7 @@ namespace aspect
          * @return A pair of (Qs, Es), i.e., the energy change rate factor first
          * and the entropy change rate factor second.
          */
-        std::pair<double,double>
+        std::pair<double, double>
         compute_specific_heating(const double Tc) const;
 
         /**
@@ -554,7 +566,7 @@ namespace aspect
          * @return A pair of (Qr, Er), i.e., the energy change rate factor first
          * and the entropy change rate factor second.
          */
-        std::pair<double,double>
+        std::pair<double, double>
         compute_radio_heating(const double Tc) const;
 
         /**
@@ -566,7 +578,7 @@ namespace aspect
          * @return A pair of (Qg, Eg), i.e., the energy change rate factor first
          * and the entropy change rate factor second.
          */
-        std::pair<double,double>
+        std::pair<double, double>
         compute_gravity_heating(const double Tc, const double r, const double X) const;
 
         /**
@@ -576,7 +588,7 @@ namespace aspect
          * @return A pair of (Qk, Ek), i.e., the energy change rate factor first
          * and the entropy change rate factor second.
          */
-        std::pair<double,double>
+        std::pair<double, double>
         compute_adiabatic_heating(const double Tc) const;
 
         /**
@@ -587,7 +599,7 @@ namespace aspect
          * @return A pair of (Ql, El), i.e., the energy change rate factor first
          * and the entropy change rate factor second.
          */
-        std::pair<double,double>
+        std::pair<double, double>
         compute_latent_heating(const double Tc, const double r) const;
 
         /**
@@ -600,14 +612,15 @@ namespace aspect
         /**
          * return radiogenic heating rate at the current time
          */
-        double compute_radioheating_rate() const;
+        double
+        compute_radioheating_rate() const;
 
         /**
          * Update the data of the core dynamic simulation, the data will be used
          * in the next timestep and for postprocessing.
          */
-        void update_core_data();
-
+        void
+        update_core_data();
     };
   }
 }

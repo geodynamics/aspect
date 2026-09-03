@@ -25,8 +25,9 @@
 #include <aspect/boundary_velocity/interface.h>
 #include <aspect/simulator_access.h>
 
-#include <array>
 #include <deal.II/base/function_lib.h>
+
+#include <array>
 
 
 namespace aspect
@@ -43,27 +44,24 @@ namespace aspect
       class GPlatesLookup
       {
         public:
-
           /**
            * Initialize all members and calculates any necessary rotation
            * parameters for a 2D model.
            */
-          GPlatesLookup(const Tensor<1,2> &surface_point_one,
-                        const Tensor<1,2> &surface_point_two);
+          GPlatesLookup(const Tensor<1, 2> &surface_point_one, const Tensor<1, 2> &surface_point_two);
 
           /**
            * Outputs the GPlates module information at model start.
            */
           std::string
-          screen_output(const Tensor<1,2> &surface_point_one,
-                        const Tensor<1,2> &surface_point_two) const;
+          screen_output(const Tensor<1, 2> &surface_point_one, const Tensor<1, 2> &surface_point_two) const;
 
           /**
            * Loads a gplates .gpml velocity file. Throws an exception if the
            * file does not exist.
            */
-          void load_file(const std::string &filename,
-                         const MPI_Comm comm);
+          void
+          load_file(const std::string &filename, const MPI_Comm comm);
 
           /**
            * Returns the computed surface velocity in cartesian coordinates.
@@ -72,7 +70,8 @@ namespace aspect
            *
            * @param position The current position to compute velocity
            */
-          Tensor<1,dim> surface_velocity(const Point<dim> &position) const;
+          Tensor<1, dim>
+          surface_velocity(const Point<dim> &position) const;
 
         private:
           /**
@@ -91,7 +90,7 @@ namespace aspect
            * the two user prescribed points. Is not necessary and therefore
            * not used for 3D models.
            */
-          Tensor<2,3> rotation_matrix;
+          Tensor<2, 3> rotation_matrix;
 
           /**
            * A function that returns the corresponding paraview angles for a
@@ -100,16 +99,15 @@ namespace aspect
            * coordinate axes in the order y-x-z (instead of the often used
            * z-x-z)
            */
-          std::array<double,3>
-          angles_from_matrix (const Tensor<2,3> &rotation_matrix) const;
+          std::array<double, 3>
+          angles_from_matrix(const Tensor<2, 3> &rotation_matrix) const;
 
           /**
            * A function that returns the corresponding rotation axis/angle for
            * a rotation described by a rotation matrix.
            */
           double
-          rotation_axis_from_matrix (Tensor<1,3> &rotation_axis,
-                                     const Tensor<2,3> &rotation_matrix) const;
+          rotation_axis_from_matrix(Tensor<1, 3> &rotation_axis, const Tensor<2, 3> &rotation_matrix) const;
 
           /**
            * Convert a tensor of rank 1 and dimension in to rank 1 and
@@ -117,22 +115,23 @@ namespace aspect
            * if $out > in$ zeroes will be appended to fill the tensor.
            */
           template <int in, int out>
-          Tensor<1,out> convert_tensor (const Tensor<1,in> &old_tensor) const;
+          Tensor<1, out>
+          convert_tensor(const Tensor<1, in> &old_tensor) const;
 
           /**
            * Return the cartesian coordinates of a spherical surface position
            * defined by theta (polar angle, not geographical latitude) and
            * phi.
            */
-          Tensor<1,3>
-          cartesian_surface_coordinates(const Tensor<1,3> &sposition) const;
+          Tensor<1, 3>
+          cartesian_surface_coordinates(const Tensor<1, 3> &sposition) const;
 
           /**
            * This function looks up the north- and east-velocities at a given
            * position and converts them to cartesian velocities.
            */
-          Tensor<1,dim>
-          cartesian_velocity_at_surface_point(const std::array<double,3> &spherical_point) const;
+          Tensor<1, dim>
+          cartesian_velocity_at_surface_point(const std::array<double, 3> &spherical_point) const;
 
           /**
            * Returns cartesian velocities calculated from surface velocities
@@ -143,8 +142,8 @@ namespace aspect
            * @param s_position Position in spherical coordinates
            * (radius,phi,theta)
            */
-          Tensor<1,3> sphere_to_cart_velocity(const Tensor<1,2> &s_velocities,
-                                              const std::array<double,3> &s_position) const;
+          Tensor<1, 3>
+          sphere_to_cart_velocity(const Tensor<1, 2> &s_velocities, const std::array<double, 3> &s_position) const;
 
           /**
            * Check whether the gpml file was created by GPlates1.4 or later.
@@ -170,22 +169,21 @@ namespace aspect
         /**
          * Empty Constructor.
          */
-        GPlates ();
+        GPlates();
 
         /**
          * Return the boundary velocity as a function of position. For the
          * current class, this function returns value from gplates.
          */
-        Tensor<1,dim>
-        boundary_velocity (const types::boundary_id boundary_indicator,
-                           const Point<dim> &position) const override;
+        Tensor<1, dim>
+        boundary_velocity(const types::boundary_id boundary_indicator, const Point<dim> &position) const override;
 
         /**
          * Initialization function. This function is called once at the
          * beginning of the program. Checks preconditions.
          */
         void
-        initialize () override;
+        initialize() override;
 
         /**
          * A function that is called at the beginning of each time step. For
@@ -194,20 +192,19 @@ namespace aspect
          * files is reached.
          */
         void
-        update () override;
+        update() override;
 
         /**
          * Declare the parameters this class takes through input files.
          */
-        static
-        void
-        declare_parameters (ParameterHandler &prm);
+        static void
+        declare_parameters(ParameterHandler &prm);
 
         /**
          * Read the parameters this class declares from the parameter file.
          */
         void
-        parse_parameters (ParameterHandler &prm) override;
+        parse_parameters(ParameterHandler &prm) override;
 
       private:
         /**
@@ -301,8 +298,8 @@ namespace aspect
         /**
          * Parsed user input of point1 and point2
          */
-        Tensor<1,2> pointone;
-        Tensor<1,2> pointtwo;
+        Tensor<1, 2> pointone;
+        Tensor<1, 2> pointtwo;
 
         /**
          * Determines the depth of the lithosphere. The user might want to apply
@@ -334,20 +331,20 @@ namespace aspect
          * time step.
          */
         void
-        update_data (const bool load_both_files);
+        update_data(const bool load_both_files);
 
         /**
          * Handles settings and user notification in case the time-dependent
          * part of the boundary condition is over.
          */
         void
-        end_time_dependence ();
+        end_time_dependence();
 
         /**
          * Create a filename out of the name template.
          */
         std::string
-        create_filename (const unsigned int timestep) const;
+        create_filename(const unsigned int timestep) const;
     };
   }
 }

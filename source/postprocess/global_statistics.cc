@@ -30,38 +30,25 @@ namespace aspect
     void
     GlobalStatistics<dim>::initialize()
     {
-      this->get_signals().post_stokes_solver.connect(
-        [&](const SimulatorAccess<dim> &/*simulator_access*/,
-            const unsigned int number_S_iterations,
-            const unsigned int number_A_iterations,
-            const SolverControl &solver_control_cheap,
-            const SolverControl &solver_control_expensive)
-      {
-        this->store_stokes_solver_history(number_S_iterations,
-                                          number_A_iterations,
-                                          solver_control_cheap,
-                                          solver_control_expensive);
+      this->get_signals().post_stokes_solver.connect([&](const SimulatorAccess<dim> & /*simulator_access*/,
+                                                         const unsigned int   number_S_iterations,
+                                                         const unsigned int   number_A_iterations,
+                                                         const SolverControl &solver_control_cheap,
+                                                         const SolverControl &solver_control_expensive) {
+        this->store_stokes_solver_history(number_S_iterations, number_A_iterations, solver_control_cheap, solver_control_expensive);
       });
 
-      this->get_signals().post_advection_solver.connect(
-        [&](const SimulatorAccess<dim> &/*simulator_access*/,
-            const bool solved_temperature_field,
-            const unsigned int compositional_index,
-            const SolverControl &solver_control)
-      {
-        this->store_advection_solver_history(solved_temperature_field,
-                                             compositional_index,
-                                             solver_control);
+      this->get_signals().post_advection_solver.connect([&](const SimulatorAccess<dim> & /*simulator_access*/,
+                                                            const bool           solved_temperature_field,
+                                                            const unsigned int   compositional_index,
+                                                            const SolverControl &solver_control) {
+        this->store_advection_solver_history(solved_temperature_field, compositional_index, solver_control);
       });
 
       // delete the data after the initial refinement steps, to not mix it up
       // with the first time step
       if (!this->get_parameters().run_postprocessors_on_initial_refinement)
-        this->get_signals().post_set_initial_state.connect(
-          [&] (const SimulatorAccess<dim> &)
-        {
-          this->clear_data();
-        });
+        this->get_signals().post_set_initial_state.connect([&](const SimulatorAccess<dim> &) { this->clear_data(); });
     }
 
 
@@ -81,8 +68,8 @@ namespace aspect
 
     template <int dim>
     void
-    GlobalStatistics<dim>::store_stokes_solver_history(const unsigned int number_S_iterations,
-                                                       const unsigned int number_A_iterations,
+    GlobalStatistics<dim>::store_stokes_solver_history(const unsigned int   number_S_iterations,
+                                                       const unsigned int   number_A_iterations,
                                                        const SolverControl &solver_control_cheap,
                                                        const SolverControl &solver_control_expensive)
     {
@@ -108,13 +95,11 @@ namespace aspect
 
     template <int dim>
     void
-    GlobalStatistics<dim>::store_advection_solver_history(const bool solved_temperature_field,
-                                                          const unsigned int compositional_index,
+    GlobalStatistics<dim>::store_advection_solver_history(const bool           solved_temperature_field,
+                                                          const unsigned int   compositional_index,
                                                           const SolverControl &solver_control)
     {
-      const unsigned int column_position = (solved_temperature_field) ?
-                                           0 :
-                                           compositional_index+1;
+      const unsigned int column_position = (solved_temperature_field) ? 0 : compositional_index + 1;
 
       // If the solver was not called (e.g. the field
       // was computed by the material model), then the solver control
@@ -130,8 +115,8 @@ namespace aspect
 
 
     template <int dim>
-    std::pair<std::string,std::string>
-    GlobalStatistics<dim>::execute (TableHandler &statistics)
+    std::pair<std::string, std::string>
+    GlobalStatistics<dim>::execute(TableHandler &statistics)
     {
       // We would like to know how many nonlinear iterations were performed since
       // the last call to execute(). Unfortunately some solver schemes iterate only the
@@ -142,47 +127,41 @@ namespace aspect
       unsigned int nonlinear_iterations = stokes_iterations_cheap.size();
 
       for (const auto &advection_iteration : advection_iterations)
-        nonlinear_iterations = std::max(nonlinear_iterations, static_cast<unsigned int> (advection_iteration.second.size()));
+        nonlinear_iterations = std::max(nonlinear_iterations, static_cast<unsigned int>(advection_iteration.second.size()));
 
       if (one_line_per_iteration)
         for (unsigned int iteration = 0; iteration < nonlinear_iterations; ++iteration)
           {
             generate_global_statistics(statistics);
 
-            statistics.add_value("Nonlinear iteration number",
-                                 iteration);
+            statistics.add_value("Nonlinear iteration number", iteration);
 
             for (const auto &advection_iteration : advection_iterations)
               if (iteration < advection_iteration.second.size())
                 {
-                  const std::string column_name = (advection_iteration.first == 0) ?
-                                                  "Iterations for temperature solver"
-                                                  :
-                                                  "Iterations for composition solver " + Utilities::int_to_string(advection_iteration.first);
+                  const std::string column_name = (advection_iteration.first == 0) ? "Iterations for temperature solver" :
+                                                                                     "Iterations for composition solver " +
+                                                                                       Utilities::int_to_string(advection_iteration.first);
 
-                  statistics.add_value(column_name,
-                                       advection_iteration.second[iteration]);
+                  statistics.add_value(column_name, advection_iteration.second[iteration]);
                 }
 
             if (iteration < stokes_iterations_cheap.size())
               {
                 statistics.add_value("Iterations for Stokes solver",
                                      stokes_iterations_cheap[iteration] + stokes_iterations_expensive[iteration]);
-                statistics.add_value("Velocity iterations in Stokes preconditioner",
-                                     list_of_A_iterations[iteration]);
-                statistics.add_value("Schur complement iterations in Stokes preconditioner",
-                                     list_of_S_iterations[iteration]);
+                statistics.add_value("Velocity iterations in Stokes preconditioner", list_of_A_iterations[iteration]);
+                statistics.add_value("Schur complement iterations in Stokes preconditioner", list_of_S_iterations[iteration]);
               }
-
           }
       else
         {
           generate_global_statistics(statistics);
 
-          unsigned int A_iterations = 0;
-          unsigned int S_iterations = 0;
-          unsigned int Stokes_outer_iterations = 0;
-          std::vector<unsigned int> advection_outer_iterations(advection_iterations.size(),0);
+          unsigned int              A_iterations            = 0;
+          unsigned int              S_iterations            = 0;
+          unsigned int              Stokes_outer_iterations = 0;
+          std::vector<unsigned int> advection_outer_iterations(advection_iterations.size(), 0);
 
           for (unsigned int iteration = 0; iteration < nonlinear_iterations; ++iteration)
             {
@@ -199,30 +178,27 @@ namespace aspect
                 {
                   A_iterations += list_of_A_iterations[iteration];
                   S_iterations += list_of_S_iterations[iteration];
-                  Stokes_outer_iterations += stokes_iterations_cheap[iteration] +
-                                             stokes_iterations_expensive[iteration];
+                  Stokes_outer_iterations += stokes_iterations_cheap[iteration] + stokes_iterations_expensive[iteration];
                 }
             }
 
           // only output the number of nonlinear iterations if we actually
           // use a nonlinear solver scheme
-          if (!(this->get_parameters().nonlinear_solver == Parameters<dim>::NonlinearSolver::single_Advection_single_Stokes
-                || this->get_parameters().nonlinear_solver == Parameters<dim>::NonlinearSolver::single_Advection_no_Stokes))
-            statistics.add_value("Number of nonlinear iterations",
-                                 nonlinear_iterations);
+          if (!(this->get_parameters().nonlinear_solver == Parameters<dim>::NonlinearSolver::single_Advection_single_Stokes ||
+                this->get_parameters().nonlinear_solver == Parameters<dim>::NonlinearSolver::single_Advection_no_Stokes))
+            statistics.add_value("Number of nonlinear iterations", nonlinear_iterations);
 
           // Only output statistics columns if the solver actually signaled at least one
           // successful solve. Some solver schemes might need no advection or Stokes solver
           unsigned int column = 0;
           for (const auto &field_index_and_iterations : advection_iterations)
             {
-              const std::string column_name = (field_index_and_iterations.first == 0) ?
-                                              "Iterations for temperature solver"
-                                              :
-                                              "Iterations for composition solver " + Utilities::int_to_string(field_index_and_iterations.first);
+              const std::string column_name =
+                (field_index_and_iterations.first == 0) ?
+                  "Iterations for temperature solver" :
+                  "Iterations for composition solver " + Utilities::int_to_string(field_index_and_iterations.first);
 
-              statistics.add_value(column_name,
-                                   advection_outer_iterations[column]);
+              statistics.add_value(column_name, advection_outer_iterations[column]);
               ++column;
             }
 
@@ -230,18 +206,15 @@ namespace aspect
           // object is still stored, so this line works in that case as well.
           if (stokes_iterations_cheap.size() > 0)
             {
-              statistics.add_value("Iterations for Stokes solver",
-                                   Stokes_outer_iterations);
-              statistics.add_value("Velocity iterations in Stokes preconditioner",
-                                   A_iterations);
-              statistics.add_value("Schur complement iterations in Stokes preconditioner",
-                                   S_iterations);
+              statistics.add_value("Iterations for Stokes solver", Stokes_outer_iterations);
+              statistics.add_value("Velocity iterations in Stokes preconditioner", A_iterations);
+              statistics.add_value("Schur complement iterations in Stokes preconditioner", S_iterations);
             }
         }
 
       clear_data();
 
-      return std::make_pair (std::string(),std::string());
+      return std::make_pair(std::string(), std::string());
     }
 
 
@@ -275,8 +248,7 @@ namespace aspect
         }
 
       // set global statistics about the mesh and problem size
-      statistics.add_value("Number of mesh cells",
-                           this->get_triangulation().n_global_active_cells());
+      statistics.add_value("Number of mesh cells", this->get_triangulation().n_global_active_cells());
 
       types::global_dof_index n_stokes_dofs = this->introspection().system_dofs_per_block[0];
       if (this->introspection().block_indices.velocities != this->introspection().block_indices.pressure)
@@ -287,26 +259,27 @@ namespace aspect
                            this->introspection().system_dofs_per_block[this->introspection().block_indices.temperature]);
       if (this->n_compositional_fields() > 0)
         statistics.add_value("Number of degrees of freedom for all compositions",
-                             static_cast<types::global_dof_index>(this->n_compositional_fields())
-                             * this->introspection().system_dofs_per_block[this->introspection().block_indices.compositional_fields[0]]);
+                             static_cast<types::global_dof_index>(this->n_compositional_fields()) *
+                               this->introspection().system_dofs_per_block[this->introspection().block_indices.compositional_fields[0]]);
     }
 
 
 
     template <int dim>
     void
-    GlobalStatistics<dim>::declare_parameters (ParameterHandler &prm)
+    GlobalStatistics<dim>::declare_parameters(ParameterHandler &prm)
     {
       prm.enter_subsection("Postprocess");
       {
         prm.enter_subsection("Global statistics");
         {
-          prm.declare_entry ("Write statistics for each nonlinear iteration", "false",
-                             Patterns::Bool (),
-                             "Whether to put every nonlinear iteration into a separate "
-                             "line in the statistics file (if true), or to output only "
-                             "one line per time step that contains the total number of "
-                             "iterations of the Stokes and advection linear system solver.");
+          prm.declare_entry("Write statistics for each nonlinear iteration",
+                            "false",
+                            Patterns::Bool(),
+                            "Whether to put every nonlinear iteration into a separate "
+                            "line in the statistics file (if true), or to output only "
+                            "one line per time step that contains the total number of "
+                            "iterations of the Stokes and advection linear system solver.");
         }
         prm.leave_subsection();
       }
@@ -317,7 +290,7 @@ namespace aspect
 
     template <int dim>
     void
-    GlobalStatistics<dim>::parse_parameters (ParameterHandler &prm)
+    GlobalStatistics<dim>::parse_parameters(ParameterHandler &prm)
     {
       prm.enter_subsection("Postprocess");
       {

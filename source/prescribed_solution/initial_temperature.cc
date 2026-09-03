@@ -18,35 +18,33 @@
   <http://www.gnu.org/licenses/>.
 */
 
+#include <aspect/geometry_model/interface.h>
 #include <aspect/initial_temperature/interface.h>
 #include <aspect/prescribed_solution/initial_temperature.h>
-#include <aspect/geometry_model/interface.h>
 
 namespace aspect
 {
   namespace PrescribedSolution
   {
     template <int dim>
-    InitialTemperature<dim>::InitialTemperature ()
-      :
-      prescribed_temperature_indicator_function(1)
+    InitialTemperature<dim>::InitialTemperature()
+      : prescribed_temperature_indicator_function(1)
     {}
 
 
 
     template <int dim>
     void
-    InitialTemperature<dim>::initialize ()
+    InitialTemperature<dim>::initialize()
     {
-      initial_temperature_manager =
-        this->get_initial_temperature_manager_pointer();
+      initial_temperature_manager = this->get_initial_temperature_manager_pointer();
     }
 
 
 
     template <int dim>
     void
-    InitialTemperature<dim>::update ()
+    InitialTemperature<dim>::update()
     {
       if (this->convert_output_to_years())
         prescribed_temperature_indicator_function.set_time(this->get_time() / year_in_seconds);
@@ -58,23 +56,20 @@ namespace aspect
 
     template <int dim>
     void
-    InitialTemperature<dim>::constrain_solution (const typename DoFHandler<dim>::active_cell_iterator &/*cell*/,
-                                                 const std::vector<Point<dim>> &positions,
-                                                 const std::vector<unsigned int> &component_indices,
-                                                 std::vector<bool> &should_be_constrained,
-                                                 std::vector<double> &solution)
+    InitialTemperature<dim>::constrain_solution(const typename DoFHandler<dim>::active_cell_iterator & /*cell*/,
+                                                const std::vector<Point<dim>>   &positions,
+                                                const std::vector<unsigned int> &component_indices,
+                                                std::vector<bool>               &should_be_constrained,
+                                                std::vector<double>             &solution)
     {
+      const unsigned int temperature_index = this->introspection().component_indices.temperature;
 
-      const unsigned int temperature_index =
-        this->introspection().component_indices.temperature;
-
-      for (unsigned int q=0; q<positions.size(); ++q)
+      for (unsigned int q = 0; q < positions.size(); ++q)
         {
           if (component_indices[q] != temperature_index)
             continue;
 
-          const auto point =
-            this->get_geometry_model().cartesian_to_other_coordinates(positions[q], coordinate_system);
+          const auto point = this->get_geometry_model().cartesian_to_other_coordinates(positions[q], coordinate_system);
 
           const double indicator =
             prescribed_temperature_indicator_function.value(Utilities::convert_array_to_point<dim>(point.get_coordinates()), 0);
@@ -82,7 +77,7 @@ namespace aspect
           if (indicator > 0.5)
             {
               should_be_constrained[q] = true;
-              solution[q] = initial_temperature_manager->initial_temperature(positions[q]);
+              solution[q]              = initial_temperature_manager->initial_temperature(positions[q]);
             }
         }
     }
@@ -91,7 +86,7 @@ namespace aspect
 
     template <int dim>
     void
-    InitialTemperature<dim>::declare_parameters (ParameterHandler &prm)
+    InitialTemperature<dim>::declare_parameters(ParameterHandler &prm)
     {
       prm.enter_subsection("Prescribed solution");
       {
@@ -119,14 +114,13 @@ namespace aspect
 
     template <int dim>
     void
-    InitialTemperature<dim>::parse_parameters (ParameterHandler &prm)
+    InitialTemperature<dim>::parse_parameters(ParameterHandler &prm)
     {
       prm.enter_subsection("Prescribed solution");
       {
         prm.enter_subsection("Initial temperature");
         {
-          coordinate_system =
-            Utilities::Coordinates::string_to_coordinate_system(prm.get("Coordinate system"));
+          coordinate_system = Utilities::Coordinates::string_to_coordinate_system(prm.get("Coordinate system"));
 
           prm.enter_subsection("Indicator function");
           {

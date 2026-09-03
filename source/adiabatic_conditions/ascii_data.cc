@@ -20,6 +20,7 @@
 
 
 #include <aspect/global.h>
+
 #include <aspect/adiabatic_conditions/ascii_data.h>
 #include <aspect/utilities.h>
 
@@ -32,26 +33,25 @@ namespace aspect
   {
     template <int dim>
     AsciiData<dim>::AsciiData()
-      :
-      initialized(false),
-      temperature_index(numbers::invalid_unsigned_int),
-      pressure_index(numbers::invalid_unsigned_int),
-      density_index(numbers::invalid_unsigned_int)
+      : initialized(false)
+      , temperature_index(numbers::invalid_unsigned_int)
+      , pressure_index(numbers::invalid_unsigned_int)
+      , density_index(numbers::invalid_unsigned_int)
     {}
 
 
 
     template <int dim>
     void
-    AsciiData<dim>::initialize ()
+    AsciiData<dim>::initialize()
     {
       if (initialized)
         return;
 
       this->initialize(this->get_mpi_communicator());
       temperature_index = this->get_column_index_from_name("temperature");
-      pressure_index = this->get_column_index_from_name("pressure");
-      density_index = this->get_column_index_from_name("density");
+      pressure_index    = this->get_column_index_from_name("pressure");
+      density_index     = this->get_column_index_from_name("density");
 
       initialized = true;
     }
@@ -68,41 +68,42 @@ namespace aspect
 
 
     template <int dim>
-    double AsciiData<dim>::pressure (const Point<dim> &p) const
+    double
+    AsciiData<dim>::pressure(const Point<dim> &p) const
     {
       const double depth = this->get_geometry_model().depth(p);
-      return this->get_data_component(Point<1>(depth),pressure_index);
+      return this->get_data_component(Point<1>(depth), pressure_index);
     }
 
 
 
     template <int dim>
-    double AsciiData<dim>::temperature (const Point<dim> &p) const
+    double
+    AsciiData<dim>::temperature(const Point<dim> &p) const
     {
       const double depth = this->get_geometry_model().depth(p);
-      return this->get_data_component(Point<1>(depth),temperature_index);
+      return this->get_data_component(Point<1>(depth), temperature_index);
     }
 
 
 
     template <int dim>
-    double AsciiData<dim>::density (const Point<dim> &p) const
+    double
+    AsciiData<dim>::density(const Point<dim> &p) const
     {
       const double depth = this->get_geometry_model().depth(p);
-      return this->get_data_component(Point<1>(depth),density_index);
+      return this->get_data_component(Point<1>(depth), density_index);
     }
 
 
 
     template <int dim>
-    double AsciiData<dim>::density_derivative (const Point<dim> &p) const
+    double
+    AsciiData<dim>::density_derivative(const Point<dim> &p) const
     {
       const double depth = this->get_geometry_model().depth(p);
-      const double eps = std::sqrt(std::numeric_limits<double>::epsilon()) * this->get_geometry_model().maximal_depth();
-      return (this->get_data_component(Point<1>(depth+eps),density_index)
-              -
-              this->get_data_component(Point<1>(depth),density_index))
-             /
+      const double eps   = std::sqrt(std::numeric_limits<double>::epsilon()) * this->get_geometry_model().maximal_depth();
+      return (this->get_data_component(Point<1>(depth + eps), density_index) - this->get_data_component(Point<1>(depth), density_index)) /
              eps;
     }
 
@@ -110,13 +111,11 @@ namespace aspect
 
     template <int dim>
     void
-    AsciiData<dim>::declare_parameters (ParameterHandler &prm)
+    AsciiData<dim>::declare_parameters(ParameterHandler &prm)
     {
       prm.enter_subsection("Adiabatic conditions model");
       {
-        Utilities::AsciiDataBase<dim>::declare_parameters(prm,
-                                                          "$ASPECT_SOURCE_DIR/tests/adiabatic-conditions/ascii-data/test/",
-                                                          "");
+        Utilities::AsciiDataBase<dim>::declare_parameters(prm, "$ASPECT_SOURCE_DIR/tests/adiabatic-conditions/ascii-data/test/", "");
       }
       prm.leave_subsection();
     }
@@ -125,7 +124,7 @@ namespace aspect
 
     template <int dim>
     void
-    AsciiData<dim>::parse_parameters (ParameterHandler &prm)
+    AsciiData<dim>::parse_parameters(ParameterHandler &prm)
     {
       prm.enter_subsection("Adiabatic conditions model");
       {

@@ -18,9 +18,10 @@
   <http://www.gnu.org/licenses/>.
 */
 
-#include <algorithm>
-#include <aspect/material_model/ascii_reference_profile.h>
 #include <aspect/adiabatic_conditions/interface.h>
+#include <aspect/material_model/ascii_reference_profile.h>
+
+#include <algorithm>
 
 
 namespace aspect
@@ -29,96 +30,95 @@ namespace aspect
   {
     template <int dim>
     AsciiReferenceProfile<dim>::AsciiReferenceProfile()
-      :
-      density_index(numbers::invalid_unsigned_int),
-      thermal_expansivity_index(numbers::invalid_unsigned_int),
-      specific_heat_index(numbers::invalid_unsigned_int),
-      compressibility_index(numbers::invalid_unsigned_int),
-      seismic_vp_index(numbers::invalid_unsigned_int),
-      seismic_vs_index(numbers::invalid_unsigned_int),
-      seismic_dvp_dT_index(numbers::invalid_unsigned_int),
-      seismic_dvs_dT_index(numbers::invalid_unsigned_int)
+      : density_index(numbers::invalid_unsigned_int)
+      , thermal_expansivity_index(numbers::invalid_unsigned_int)
+      , specific_heat_index(numbers::invalid_unsigned_int)
+      , compressibility_index(numbers::invalid_unsigned_int)
+      , seismic_vp_index(numbers::invalid_unsigned_int)
+      , seismic_vs_index(numbers::invalid_unsigned_int)
+      , seismic_dvp_dT_index(numbers::invalid_unsigned_int)
+      , seismic_dvs_dT_index(numbers::invalid_unsigned_int)
     {}
 
     template <int dim>
     void
-    AsciiReferenceProfile<dim>::initialize ()
+    AsciiReferenceProfile<dim>::initialize()
     {
       profile.initialize(this->get_mpi_communicator());
 
-      density_index = profile.get_column_index_from_name("density");
+      density_index             = profile.get_column_index_from_name("density");
       thermal_expansivity_index = profile.get_column_index_from_name("thermal_expansivity");
-      specific_heat_index = profile.get_column_index_from_name("specific_heat");
-      compressibility_index = profile.get_column_index_from_name("compressibility");
+      specific_heat_index       = profile.get_column_index_from_name("specific_heat");
+      compressibility_index     = profile.get_column_index_from_name("compressibility");
 
       // these are only optional entries in the data file, read them in if they exist,
       // but keep the invalid unsigned int entry if the columns do not exist
       // the strings have to be all lower case for the lookup class to find them
-      seismic_vp_index = profile.maybe_get_column_index_from_name("seismic_vp");
-      seismic_vs_index = profile.maybe_get_column_index_from_name("seismic_vs");
+      seismic_vp_index     = profile.maybe_get_column_index_from_name("seismic_vp");
+      seismic_vs_index     = profile.maybe_get_column_index_from_name("seismic_vs");
       seismic_dvp_dT_index = profile.maybe_get_column_index_from_name("seismic_dvp_dt");
       seismic_dvs_dT_index = profile.maybe_get_column_index_from_name("seismic_dvs_dt");
     }
 
     template <int dim>
     void
-    AsciiReferenceProfile<dim>::
-    evaluate(const MaterialModel::MaterialModelInputs<dim> &in,
-             MaterialModel::MaterialModelOutputs<dim> &out) const
+    AsciiReferenceProfile<dim>::evaluate(const MaterialModel::MaterialModelInputs<dim> &in,
+                                         MaterialModel::MaterialModelOutputs<dim>      &out) const
     {
-      for (unsigned int i=0; i < in.n_evaluation_points(); ++i)
+      for (unsigned int i = 0; i < in.n_evaluation_points(); ++i)
         {
-          const Point<dim> position = in.position[i];
-          const double temperature_deviation = in.temperature[i] - this->get_adiabatic_conditions().temperature(position);
-          const double pressure_deviation = in.pressure[i] - this->get_adiabatic_conditions().pressure(position);
+          const Point<dim> position              = in.position[i];
+          const double     temperature_deviation = in.temperature[i] - this->get_adiabatic_conditions().temperature(position);
+          const double     pressure_deviation    = in.pressure[i] - this->get_adiabatic_conditions().pressure(position);
 
-          const double depth = this->get_geometry_model().depth(position);
+          const double   depth = this->get_geometry_model().depth(position);
           const Point<1> profile_position(depth);
 
-          double visc_temperature_dependence = std::clamp(std::exp(-thermal_viscosity_exponent*temperature_deviation/this->get_adiabatic_conditions().temperature(position)), 1e-3, 1e3);
+          double visc_temperature_dependence = std::clamp(std::exp(-thermal_viscosity_exponent * temperature_deviation /
+                                                                   this->get_adiabatic_conditions().temperature(position)),
+                                                          1e-3,
+                                                          1e3);
           if (std::isnan(visc_temperature_dependence))
             visc_temperature_dependence = 1.0;
 
           double visc_depth_dependence = viscosity_prefactors[0];
-          for (unsigned int j=0; j < transition_depths.size(); ++j)
+          for (unsigned int j = 0; j < transition_depths.size(); ++j)
             {
-              if (depth>transition_depths[j])
-                visc_depth_dependence = viscosity_prefactors[j+1];
+              if (depth > transition_depths[j])
+                visc_depth_dependence = viscosity_prefactors[j + 1];
             }
 
           out.viscosities[i] = viscosity * visc_temperature_dependence * visc_depth_dependence;
 
           out.thermal_conductivities[i] = thermal_conductivity;
 
-          out.thermal_expansion_coefficients[i] = profile.get_data_component(profile_position,thermal_expansivity_index);
-          out.specific_heat[i] = profile.get_data_component(profile_position,specific_heat_index);
-          out.compressibilities[i] = profile.get_data_component(profile_position,compressibility_index);
+          out.thermal_expansion_coefficients[i] = profile.get_data_component(profile_position, thermal_expansivity_index);
+          out.specific_heat[i]                  = profile.get_data_component(profile_position, specific_heat_index);
+          out.compressibilities[i]              = profile.get_data_component(profile_position, compressibility_index);
 
-          out.densities[i] = profile.get_data_component(profile_position,density_index)
-                             * (1.0 - out.thermal_expansion_coefficients[i] * temperature_deviation)
-                             * (tala ? 1.0 : (1.0 + out.compressibilities[i] * pressure_deviation));
+          out.densities[i] = profile.get_data_component(profile_position, density_index) *
+                             (1.0 - out.thermal_expansion_coefficients[i] * temperature_deviation) *
+                             (tala ? 1.0 : (1.0 + out.compressibilities[i] * pressure_deviation));
 
-          out.entropy_derivative_pressure[i] = 0.0;
+          out.entropy_derivative_pressure[i]    = 0.0;
           out.entropy_derivative_temperature[i] = 0.0;
 
-          for (unsigned int c=0; c<in.composition[i].size(); ++c)
+          for (unsigned int c = 0; c < in.composition[i].size(); ++c)
             out.reaction_terms[i][c] = 0.0;
 
           // fill seismic velocities outputs if they exist
-          if (const std::shared_ptr<SeismicAdditionalOutputs<dim>> seismic_out
-              = out.template get_additional_output_object<SeismicAdditionalOutputs<dim>>())
+          if (const std::shared_ptr<SeismicAdditionalOutputs<dim>> seismic_out =
+                out.template get_additional_output_object<SeismicAdditionalOutputs<dim>>())
             if (in.requests_property(MaterialProperties::additional_outputs))
               {
                 if (seismic_vp_index != numbers::invalid_unsigned_int)
-                  seismic_out->vp[i] = profile.get_data_component(profile_position,seismic_vp_index);
+                  seismic_out->vp[i] = profile.get_data_component(profile_position, seismic_vp_index);
                 if (seismic_vs_index != numbers::invalid_unsigned_int)
-                  seismic_out->vs[i] = profile.get_data_component(profile_position,seismic_vs_index);
+                  seismic_out->vs[i] = profile.get_data_component(profile_position, seismic_vs_index);
                 if (seismic_dvp_dT_index != numbers::invalid_unsigned_int)
-                  seismic_out->vp[i] += profile.get_data_component(profile_position,seismic_dvp_dT_index)
-                                        * temperature_deviation;
+                  seismic_out->vp[i] += profile.get_data_component(profile_position, seismic_dvp_dT_index) * temperature_deviation;
                 if (seismic_dvs_dT_index != numbers::invalid_unsigned_int)
-                  seismic_out->vs[i] += profile.get_data_component(profile_position,seismic_dvs_dT_index)
-                                        * temperature_deviation;
+                  seismic_out->vs[i] += profile.get_data_component(profile_position, seismic_dvs_dT_index) * temperature_deviation;
               }
         }
     }
@@ -127,8 +127,7 @@ namespace aspect
 
     template <int dim>
     bool
-    AsciiReferenceProfile<dim>::
-    is_compressible () const
+    AsciiReferenceProfile<dim>::is_compressible() const
     {
       return true;
     }
@@ -137,45 +136,43 @@ namespace aspect
 
     template <int dim>
     void
-    AsciiReferenceProfile<dim>::declare_parameters (ParameterHandler &prm)
+    AsciiReferenceProfile<dim>::declare_parameters(ParameterHandler &prm)
     {
       prm.enter_subsection("Material model");
       {
         prm.enter_subsection("Ascii reference profile");
         {
-          prm.declare_entry ("Thermal conductivity", "4.0",
-                             Patterns::Double (0.),
-                             "Reference conductivity");
-          prm.declare_entry ("Viscosity", "1e21",
-                             Patterns::Double (0.),
-                             "Viscosity");
-          prm.declare_entry ("Use TALA", "false",
-                             Patterns::Bool (),
-                             "Whether to use the TALA instead of the ALA "
-                             "approximation.");
-          prm.declare_entry ("Thermal viscosity exponent", "0.",
-                             Patterns::Double (0.),
-                             "The temperature dependence of viscosity. Dimensionless exponent.");
-          prm.declare_entry ("Transition depths", "1.5e5, 4.1e5, 6.6e5",
-                             Patterns::List (Patterns::Double(0.)),
-                             "A list of depths where the viscosity changes. Values must "
-                             "monotonically increase. "
-                             "Units: \\si{\\meter}.");
-          prm.declare_entry ("Viscosity prefactors", "10., 0.1, 1., 10.",
-                             Patterns::List (Patterns::Double(0.)),
-                             "A list of prefactors for the viscosity that determine the viscosity "
-                             "profile. Each prefactor is applied in a depth range specified by the "
-                             "list of `Transition depths', i.e. the first prefactor is applied above "
-                             "the first transition depth, the second one between the first and second "
-                             "transition depth, and so on. "
-                             "To compute the viscosity profile, this prefactor is multiplied by the "
-                             "reference viscosity specified through the parameter `Viscosity'. "
-                             "List must have one more entry than Transition depths. "
-                             "Units: non-dimensional.");
+          prm.declare_entry("Thermal conductivity", "4.0", Patterns::Double(0.), "Reference conductivity");
+          prm.declare_entry("Viscosity", "1e21", Patterns::Double(0.), "Viscosity");
+          prm.declare_entry("Use TALA",
+                            "false",
+                            Patterns::Bool(),
+                            "Whether to use the TALA instead of the ALA "
+                            "approximation.");
+          prm.declare_entry("Thermal viscosity exponent",
+                            "0.",
+                            Patterns::Double(0.),
+                            "The temperature dependence of viscosity. Dimensionless exponent.");
+          prm.declare_entry("Transition depths",
+                            "1.5e5, 4.1e5, 6.6e5",
+                            Patterns::List(Patterns::Double(0.)),
+                            "A list of depths where the viscosity changes. Values must "
+                            "monotonically increase. "
+                            "Units: \\si{\\meter}.");
+          prm.declare_entry("Viscosity prefactors",
+                            "10., 0.1, 1., 10.",
+                            Patterns::List(Patterns::Double(0.)),
+                            "A list of prefactors for the viscosity that determine the viscosity "
+                            "profile. Each prefactor is applied in a depth range specified by the "
+                            "list of `Transition depths', i.e. the first prefactor is applied above "
+                            "the first transition depth, the second one between the first and second "
+                            "transition depth, and so on. "
+                            "To compute the viscosity profile, this prefactor is multiplied by the "
+                            "reference viscosity specified through the parameter `Viscosity'. "
+                            "List must have one more entry than Transition depths. "
+                            "Units: non-dimensional.");
 
-          aspect::Utilities::AsciiDataProfile<dim>::declare_parameters(prm,
-                                                                       "$ASPECT_SOURCE_DIR/data/adiabatic-conditions/ascii-data/",
-                                                                       "");
+          aspect::Utilities::AsciiDataProfile<dim>::declare_parameters(prm, "$ASPECT_SOURCE_DIR/data/adiabatic-conditions/ascii-data/", "");
         }
         prm.leave_subsection();
       }
@@ -186,25 +183,24 @@ namespace aspect
 
     template <int dim>
     void
-    AsciiReferenceProfile<dim>::parse_parameters (ParameterHandler &prm)
+    AsciiReferenceProfile<dim>::parse_parameters(ParameterHandler &prm)
     {
       prm.enter_subsection("Material model");
       {
         prm.enter_subsection("Ascii reference profile");
         {
-          tala                 = prm.get_bool ("Use TALA");
-          thermal_conductivity = prm.get_double ("Thermal conductivity");
-          viscosity            = prm.get_double ("Viscosity");
-          thermal_viscosity_exponent = prm.get_double ("Thermal viscosity exponent");
-          transition_depths    = Utilities::string_to_double
-                                 (Utilities::split_string_list(prm.get ("Transition depths")));
-          viscosity_prefactors = Utilities::string_to_double
-                                 (Utilities::split_string_list(prm.get ("Viscosity prefactors")));
+          tala                       = prm.get_bool("Use TALA");
+          thermal_conductivity       = prm.get_double("Thermal conductivity");
+          viscosity                  = prm.get_double("Viscosity");
+          thermal_viscosity_exponent = prm.get_double("Thermal viscosity exponent");
+          transition_depths          = Utilities::string_to_double(Utilities::split_string_list(prm.get("Transition depths")));
+          viscosity_prefactors       = Utilities::string_to_double(Utilities::split_string_list(prm.get("Viscosity prefactors")));
 
           // make sure to check against the depth lists for size errors, since using depth
-          if (viscosity_prefactors.size() != transition_depths.size()+1)
-            AssertThrow(false, ExcMessage("Error: The list of Viscosity prefactors needs to have exactly "
-                                          "one more entry than the list of Transition depths. "));
+          if (viscosity_prefactors.size() != transition_depths.size() + 1)
+            AssertThrow(false,
+                        ExcMessage("Error: The list of Viscosity prefactors needs to have exactly "
+                                   "one more entry than the list of Transition depths. "));
 
           profile.parse_parameters(prm);
         }
@@ -213,27 +209,24 @@ namespace aspect
       prm.leave_subsection();
 
       // Declare dependencies on solution variables
-      this->model_dependence.viscosity = NonlinearDependence::none;
-      this->model_dependence.density = NonlinearDependence::pressure | NonlinearDependence::temperature;
-      this->model_dependence.compressibility = NonlinearDependence::none;
-      this->model_dependence.specific_heat = NonlinearDependence::none;
+      this->model_dependence.viscosity            = NonlinearDependence::none;
+      this->model_dependence.density              = NonlinearDependence::pressure | NonlinearDependence::temperature;
+      this->model_dependence.compressibility      = NonlinearDependence::none;
+      this->model_dependence.specific_heat        = NonlinearDependence::none;
       this->model_dependence.thermal_conductivity = NonlinearDependence::none;
-
     }
 
 
 
     template <int dim>
     void
-    AsciiReferenceProfile<dim>::create_additional_named_outputs (MaterialModel::MaterialModelOutputs<dim> &out) const
+    AsciiReferenceProfile<dim>::create_additional_named_outputs(MaterialModel::MaterialModelOutputs<dim> &out) const
     {
-      if (out.template has_additional_output_object<SeismicAdditionalOutputs<dim>>() == false
-          && seismic_vp_index != numbers::invalid_unsigned_int
-          && seismic_vs_index != numbers::invalid_unsigned_int)
+      if (out.template has_additional_output_object<SeismicAdditionalOutputs<dim>>() == false &&
+          seismic_vp_index != numbers::invalid_unsigned_int && seismic_vs_index != numbers::invalid_unsigned_int)
         {
           const unsigned int n_points = out.n_evaluation_points();
-          out.additional_outputs.push_back(
-            std::make_unique<MaterialModel::SeismicAdditionalOutputs<dim>> (n_points));
+          out.additional_outputs.push_back(std::make_unique<MaterialModel::SeismicAdditionalOutputs<dim>>(n_points));
         }
     }
   }

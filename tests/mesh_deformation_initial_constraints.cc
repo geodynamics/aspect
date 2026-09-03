@@ -19,9 +19,10 @@
 */
 
 
-#include <aspect/mesh_deformation/interface.h>
 #include <aspect/gravity_model/interface.h>
+#include <aspect/mesh_deformation/interface.h>
 #include <aspect/simulator_access.h>
+
 #include <deal.II/dofs/dof_tools.h>
 
 namespace aspect
@@ -38,34 +39,26 @@ namespace aspect
         PrescribedDeformation()
         {}
 
-        virtual
-        void
-        compute_initial_deformation_as_constraints(const Mapping<dim> &/*mapping*/,
-                                                   const DoFHandler<dim> &mesh_deformation_dof_handler,
-                                                   const types::boundary_id boundary_indicator,
+        virtual void
+        compute_initial_deformation_as_constraints(const Mapping<dim> & /*mapping*/,
+                                                   const DoFHandler<dim>     &mesh_deformation_dof_handler,
+                                                   const types::boundary_id   boundary_indicator,
                                                    AffineConstraints<double> &constraints) const override
         {
-
           const IndexSet constrained_dofs =
-            DoFTools::extract_boundary_dofs(mesh_deformation_dof_handler,
-                                            ComponentMask(dim, true),
-          {boundary_indicator});
+            DoFTools::extract_boundary_dofs(mesh_deformation_dof_handler, ComponentMask(dim, true), {boundary_indicator});
 
           for (const types::global_dof_index index : constrained_dofs)
             {
               if (constraints.can_store_line(index))
-                if (constraints.is_constrained(index)==false)
+                if (constraints.is_constrained(index) == false)
                   {
                     // set some nonsensical values:
                     const double value = static_cast<double>(index) * 10.0;
-                    constraints.add_constraint(index,
-                                               {},
-                                               value);
+                    constraints.add_constraint(index, {}, value);
                   }
             }
-
         }
-
     };
   }
 }
@@ -76,8 +69,6 @@ namespace aspect
 {
   namespace MeshDeformation
   {
-    ASPECT_REGISTER_MESH_DEFORMATION_MODEL(PrescribedDeformation,
-                                           "prescribed deformation",
-                                           "A test plugin for initial mesh deformation.")
+    ASPECT_REGISTER_MESH_DEFORMATION_MODEL(PrescribedDeformation, "prescribed deformation", "A test plugin for initial mesh deformation.")
   }
 }

@@ -46,9 +46,10 @@ namespace aspect
           /**
            * Constructor.
            */
-          ElasticStress ();
+          ElasticStress();
 
-          void initialize () override;
+          void
+          initialize() override;
 
           /**
            * Function to update particles after they have been restored
@@ -57,33 +58,32 @@ namespace aspect
            * of iterative Advection solver schemes.
            */
           void
-          update_particles (typename Particle::Manager<dim> &particle_manager) const;
+          update_particles(typename Particle::Manager<dim> &particle_manager) const;
 
           /**
            * @copydoc aspect::Particle::Property::Interface::initialize_one_particle_property()
            */
           void
-          initialize_one_particle_property (const Point<dim> &position,
-                                            std::vector<double> &particle_properties) const override;
+          initialize_one_particle_property(const Point<dim> &position, std::vector<double> &particle_properties) const override;
 
           /**
            * @copydoc aspect::Particle::Property::Interface::update_particle_properties()
            */
           void
-          update_particle_properties (const ParticleUpdateInputs<dim> &inputs,
-                                      typename ParticleHandler<dim>::particle_iterator_range &particles) const override;
+          update_particle_properties(const ParticleUpdateInputs<dim>                        &inputs,
+                                     typename ParticleHandler<dim>::particle_iterator_range &particles) const override;
 
           /**
            * @copydoc aspect::Particle::Property::Interface::need_update()
            */
           UpdateTimeFlags
-          need_update () const override;
+          need_update() const override;
 
           /**
            * @copydoc aspect::Particle::Property::Interface::get_update_flags()
            */
           UpdateFlags
-          get_update_flags (const unsigned int component) const override;
+          get_update_flags(const unsigned int component) const override;
 
           /**
            * @copydoc aspect::Particle::Property::Interface::get_property_information()
@@ -94,15 +94,14 @@ namespace aspect
           /**
            * Declare the parameters this class takes through input files.
            */
-          static
-          void
-          declare_parameters (ParameterHandler &prm);
+          static void
+          declare_parameters(ParameterHandler &prm);
 
           /**
            * Read the parameters this class declares from the parameter file.
            */
           void
-          parse_parameters (ParameterHandler &prm) override;
+          parse_parameters(ParameterHandler &prm) override;
 
         private:
           /**
@@ -118,9 +117,9 @@ namespace aspect
            * one particle at a time; the second set for all the particles
            * in a cell at the same time. TODO use one set for both?
            */
-          mutable MaterialModel::MaterialModelInputs<dim> material_inputs;
+          mutable MaterialModel::MaterialModelInputs<dim>  material_inputs;
           mutable MaterialModel::MaterialModelOutputs<dim> material_outputs;
-          mutable MaterialModel::MaterialModelInputs<dim> material_inputs_cell;
+          mutable MaterialModel::MaterialModelInputs<dim>  material_inputs_cell;
           mutable MaterialModel::MaterialModelOutputs<dim> material_outputs_cell;
 
           /**

@@ -20,15 +20,15 @@
 
 
 
+#include <aspect/adiabatic_conditions/interface.h>
 #include <aspect/boundary_temperature/dynamic_core.h>
 #include <aspect/geometry_model/spherical_shell.h>
-#include <aspect/adiabatic_conditions/interface.h>
 #include <aspect/gravity_model/interface.h>
 #include <aspect/introspection.h>
 
-#include <deal.II/fe/fe_values.h>
 #include <deal.II/base/quadrature.h>
 #include <deal.II/base/utilities.h>
+#include <deal.II/fe/fe_values.h>
 
 #include <boost/serialization/vector.hpp>
 
@@ -41,36 +41,35 @@ namespace aspect
   {
     namespace internal
     {
-      CoreData::CoreData ()
-        : Qs(numbers::signaling_nan<double>()),
-          Qr(numbers::signaling_nan<double>()),
-          Qg(numbers::signaling_nan<double>()),
-          Qk(numbers::signaling_nan<double>()),
-          Ql(numbers::signaling_nan<double>()),
-          Es(numbers::signaling_nan<double>()),
-          Er(numbers::signaling_nan<double>()),
-          Eg(numbers::signaling_nan<double>()),
-          Ek(numbers::signaling_nan<double>()),
-          El(numbers::signaling_nan<double>()),
-          Eh(numbers::signaling_nan<double>()),
-          Ri(numbers::signaling_nan<double>()),
-          Ti(numbers::signaling_nan<double>()),
-          Xi(numbers::signaling_nan<double>()),
-          Q(numbers::signaling_nan<double>()),
-          H(numbers::signaling_nan<double>()),
-          dt(numbers::signaling_nan<double>()),
-          dR_dt(numbers::signaling_nan<double>()),
-          dT_dt(numbers::signaling_nan<double>()),
-          dX_dt(numbers::signaling_nan<double>()),
-          Q_OES(numbers::signaling_nan<double>()),
-          is_initialized(false)
+      CoreData::CoreData()
+        : Qs(numbers::signaling_nan<double>())
+        , Qr(numbers::signaling_nan<double>())
+        , Qg(numbers::signaling_nan<double>())
+        , Qk(numbers::signaling_nan<double>())
+        , Ql(numbers::signaling_nan<double>())
+        , Es(numbers::signaling_nan<double>())
+        , Er(numbers::signaling_nan<double>())
+        , Eg(numbers::signaling_nan<double>())
+        , Ek(numbers::signaling_nan<double>())
+        , El(numbers::signaling_nan<double>())
+        , Eh(numbers::signaling_nan<double>())
+        , Ri(numbers::signaling_nan<double>())
+        , Ti(numbers::signaling_nan<double>())
+        , Xi(numbers::signaling_nan<double>())
+        , Q(numbers::signaling_nan<double>())
+        , H(numbers::signaling_nan<double>())
+        , dt(numbers::signaling_nan<double>())
+        , dR_dt(numbers::signaling_nan<double>())
+        , dT_dt(numbers::signaling_nan<double>())
+        , dX_dt(numbers::signaling_nan<double>())
+        , Q_OES(numbers::signaling_nan<double>())
+        , is_initialized(false)
       {}
     }
 
     template <int dim>
     DynamicCore<dim>::DynamicCore()
-      :
-      // leave the core_data variable in its uninitialized state
+      : // leave the core_data variable in its uninitialized state
       core_data()
     {
       is_first_call = true;
@@ -85,13 +84,13 @@ namespace aspect
       core_data.dt = this->get_timestep();
       core_data.H  = compute_radioheating_rate();
 
-      if (is_first_call==true)
+      if (is_first_call == true)
         {
           // Read data of other energy source
           read_data_OES();
 
           const GeometryModel::SphericalShell<dim> &spherical_shell_geometry =
-            Plugins::get_plugin_as_type<const GeometryModel::SphericalShell<dim>> (this->get_geometry_model());
+            Plugins::get_plugin_as_type<const GeometryModel::SphericalShell<dim>>(this->get_geometry_model());
 
           Rc = spherical_shell_geometry.inner_radius();
           Mc = compute_mass(Rc);
@@ -101,11 +100,10 @@ namespace aspect
             {
               Point<dim> p1;
               p1(0) = spherical_shell_geometry.inner_radius();
-              dTa   = this->get_adiabatic_conditions().temperature(p1)
-                      - this->get_adiabatic_surface_temperature();
+              dTa   = this->get_adiabatic_conditions().temperature(p1) - this->get_adiabatic_surface_temperature();
             }
           else
-            dTa   = 0.;
+            dTa = 0.;
 
           // Setup initial core data from prm input. On restart, core_data has
           // already been restored by DynamicCore::load().
@@ -115,9 +113,9 @@ namespace aspect
               core_data.Ri = compute_initial_Ri(core_data.Ti);
               core_data.Xi = compute_X(core_data.Ri);
 
-              core_data.Q = 0.;
-              core_data.H = 0.;
-              core_data.dt = 0.;
+              core_data.Q     = 0.;
+              core_data.H     = 0.;
+              core_data.dt    = 0.;
               core_data.dT_dt = init_dT_dt;
               core_data.dR_dt = init_dR_dt;
               core_data.dX_dt = init_dX_dt;
@@ -125,19 +123,18 @@ namespace aspect
               core_data.is_initialized = true;
 
               std::stringstream output;
-              output<<std::setiosflags(std::ios::left)
-                    <<"   Dynamic core initialized as:"<<std::endl
-                    <<"     "<<std::setw(15)<<"Tc(K)"<<std::setw(15)<<"Ri(km)"<<std::setw(15)<<"Xi"
-                    <<std::setw(15)<<"dT/dt(K/year)"<<std::setw(15)<<"dR/dt(km/year)"<<std::setw(15)<<"dX/dt(1/year)"<<std::endl
-                    <<"     "<<std::setprecision(6)<<std::setw(15)<<inner_temperature<<std::setw(15)<<core_data.Ri/1.e3<<std::setw(15)<<core_data.Xi
-                    <<std::setw(15)<<core_data.dT_dt *year_in_seconds<<std::setw(15)<<core_data.dR_dt/1.e3 *year_in_seconds
-                    <<std::setw(15)<<core_data.dX_dt *year_in_seconds<<std::endl;
+              output << std::setiosflags(std::ios::left) << "   Dynamic core initialized as:" << std::endl
+                     << "     " << std::setw(15) << "Tc(K)" << std::setw(15) << "Ri(km)" << std::setw(15) << "Xi" << std::setw(15)
+                     << "dT/dt(K/year)" << std::setw(15) << "dR/dt(km/year)" << std::setw(15) << "dX/dt(1/year)" << std::endl
+                     << "     " << std::setprecision(6) << std::setw(15) << inner_temperature << std::setw(15) << core_data.Ri / 1.e3
+                     << std::setw(15) << core_data.Xi << std::setw(15) << core_data.dT_dt * year_in_seconds << std::setw(15)
+                     << core_data.dR_dt / 1.e3 * year_in_seconds << std::setw(15) << core_data.dX_dt * year_in_seconds << std::endl;
               this->get_pcout() << output.str();
             }
           else
             {
               core_data.dt = this->get_timestep();
-              core_data.H = compute_radioheating_rate();
+              core_data.H  = compute_radioheating_rate();
               update_core_data();
             }
           is_first_call = false;
@@ -145,28 +142,28 @@ namespace aspect
 
       // Calculate core mantle boundary heat flow
       {
-        const Quadrature<dim-1> &quadrature_formula = this->introspection().face_quadratures.temperature;
-        FEFaceValues<dim> fe_face_values (this->get_mapping(),
-                                          this->get_fe(),
-                                          quadrature_formula,
-                                          update_gradients      | update_values |
-                                          update_normal_vectors |
-                                          update_quadrature_points       | update_JxW_values);
+        const Quadrature<dim - 1> &quadrature_formula = this->introspection().face_quadratures.temperature;
+        FEFaceValues<dim>          fe_face_values(this->get_mapping(),
+                                         this->get_fe(),
+                                         quadrature_formula,
+                                         update_gradients | update_values | update_normal_vectors | update_quadrature_points |
+                                           update_JxW_values);
 
-        std::vector<Tensor<1,dim>> temperature_gradients (quadrature_formula.size());
-        std::vector<std::vector<double>> composition_values (this->n_compositional_fields(),std::vector<double> (quadrature_formula.size()));
+        std::vector<Tensor<1, dim>>      temperature_gradients(quadrature_formula.size());
+        std::vector<std::vector<double>> composition_values(this->n_compositional_fields(), std::vector<double>(quadrature_formula.size()));
 
-        //std::map<types::boundary_id, double> local_boundary_fluxes;
-        double local_CMB_flux   = 0.;
-        double local_CMB_area   = 0.;
+        // std::map<types::boundary_id, double> local_boundary_fluxes;
+        double local_CMB_flux = 0.;
+        double local_CMB_area = 0.;
 
         const types::boundary_id CMB_id = inner_boundary_id;
 
-        typename MaterialModel::Interface<dim>::MaterialModelInputs in(fe_face_values.n_quadrature_points, this->n_compositional_fields());
-        typename MaterialModel::Interface<dim>::MaterialModelOutputs out(fe_face_values.n_quadrature_points, this->n_compositional_fields());
+        typename MaterialModel::Interface<dim>::MaterialModelInputs  in(fe_face_values.n_quadrature_points, this->n_compositional_fields());
+        typename MaterialModel::Interface<dim>::MaterialModelOutputs out(fe_face_values.n_quadrature_points,
+                                                                         this->n_compositional_fields());
         // Do not request viscosity or reaction rates
-        in.requested_properties = MaterialModel::MaterialProperties::equation_of_state_properties |
-                                  MaterialModel::MaterialProperties::thermal_conductivity;
+        in.requested_properties =
+          MaterialModel::MaterialProperties::equation_of_state_properties | MaterialModel::MaterialProperties::thermal_conductivity;
 
         // for every surface face on which it makes sense to compute a
         // heat flux and that is owned by this processor,
@@ -184,63 +181,61 @@ namespace aspect
               if (cell->at_boundary(f))
                 if (cell->face(f)->boundary_id() == CMB_id)
                   {
-                    fe_face_values.reinit (cell, f);
+                    fe_face_values.reinit(cell, f);
 
                     in.reinit(fe_face_values, cell, this->introspection(), this->get_solution());
 
-                    fe_face_values[this->introspection().extractors.temperature].get_function_gradients (this->get_solution(),
-                        temperature_gradients);
+                    fe_face_values[this->introspection().extractors.temperature].get_function_gradients(this->get_solution(),
+                                                                                                        temperature_gradients);
 
                     this->get_material_model().evaluate(in, out);
 
 
                     double local_normal_flux = 0;
                     double local_face_area   = 0;
-                    for (unsigned int q=0; q<fe_face_values.n_quadrature_points; ++q)
+                    for (unsigned int q = 0; q < fe_face_values.n_quadrature_points; ++q)
                       {
-                        const double thermal_conductivity
-                          = out.thermal_conductivities[q];
-                        double adiabatic_flux = 0.;
-                        if (this->get_material_model().is_compressible()==false)
+                        const double thermal_conductivity = out.thermal_conductivities[q];
+                        double       adiabatic_flux       = 0.;
+                        if (this->get_material_model().is_compressible() == false)
                           {
-                            const double alpha = out.thermal_expansion_coefficients[q];
-                            const double cp = out.specific_heat[0];
+                            const double alpha   = out.thermal_expansion_coefficients[q];
+                            const double cp      = out.specific_heat[0];
                             const double gravity = this->get_gravity_model().gravity_vector(in.position[q]).norm();
                             if (cell->face(f)->boundary_id() == inner_boundary_id)
-                              adiabatic_flux = - alpha * gravity / cp;
+                              adiabatic_flux = -alpha * gravity / cp;
                             else if (cell->face(f)->boundary_id() == outer_boundary_id)
                               adiabatic_flux = alpha * gravity / cp;
                           }
 
                         local_normal_flux += -thermal_conductivity *
-                                             (temperature_gradients[q] * fe_face_values.normal_vector(q)
-                                              + adiabatic_flux) * fe_face_values.JxW(q);
-                        local_face_area   += fe_face_values.JxW(q);
-
+                                             (temperature_gradients[q] * fe_face_values.normal_vector(q) + adiabatic_flux) *
+                                             fe_face_values.JxW(q);
+                        local_face_area += fe_face_values.JxW(q);
                       }
                     local_CMB_flux += local_normal_flux;
                     local_CMB_area += local_face_area;
                   }
         // now communicate to get the global values
-        const double global_CMB_flux = Utilities::MPI::sum (local_CMB_flux, this->get_mpi_communicator());
-        const double global_CMB_area = Utilities::MPI::sum (local_CMB_area, this->get_mpi_communicator());
+        const double global_CMB_flux = Utilities::MPI::sum(local_CMB_flux, this->get_mpi_communicator());
+        const double global_CMB_area = Utilities::MPI::sum(local_CMB_area, this->get_mpi_communicator());
 
         // Using area averaged heat-flux density times core mantle boundary area to calculate total heat-flux on the 3d sphere.
         // By doing this, using dynamic core evolution with geometry other than 3d spherical shell becomes possible.
         const double average_CMB_heatflux_density = global_CMB_flux / global_CMB_area;
-        core_data.Q = average_CMB_heatflux_density * 4. * numbers::PI * Rc * Rc;
+        core_data.Q                               = average_CMB_heatflux_density * 4. * numbers::PI * Rc * Rc;
       }
 
       core_data.Q_OES = compute_OES(this->get_time());
 
-      if ((core_data.Q + core_data.Q_OES) * core_data.dt!=0.)
+      if ((core_data.Q + core_data.Q_OES) * core_data.dt != 0.)
         {
           const auto [X1, T1, R1] = solve_time_step();
           if (core_data.dt != 0)
             {
-              core_data.dR_dt = (R1-core_data.Ri)/core_data.dt;
-              core_data.dT_dt = (T1-core_data.Ti)/core_data.dt;
-              core_data.dX_dt = (X1-core_data.Xi)/core_data.dt;
+              core_data.dR_dt = (R1 - core_data.Ri) / core_data.dt;
+              core_data.dT_dt = (T1 - core_data.Ti) / core_data.dt;
+              core_data.dX_dt = (X1 - core_data.Xi) / core_data.dt;
             }
           else
             {
@@ -258,13 +253,12 @@ namespace aspect
       if ((core_data.Q + core_data.Q_OES + core_data.Qr) * core_data.dt != 0.)
         {
           std::stringstream output;
-          output<<std::setiosflags(std::ios::left)
-                <<"   Dynamic core data updated."<<std::endl
-                <<"     "<<std::setw(15)<<"Tc(K)"<<std::setw(15)<<"Ri(km)"<<std::setw(15)<<"Xi"
-                <<std::setw(15)<<"dT/dt(K/year)"<<std::setw(15)<<"dR/dt(km/year)"<<std::setw(15)<<"dX/dt(1/year)"<<std::endl
-                <<"     "<<std::setprecision(6)<<std::setw(15)<<inner_temperature<<std::setw(15)<<core_data.Ri/1.e3<<std::setw(15)<<core_data.Xi
-                <<std::setw(15)<<core_data.dT_dt *year_in_seconds<<std::setw(15)<<core_data.dR_dt/1.e3 *year_in_seconds
-                <<std::setw(15)<<core_data.dX_dt *year_in_seconds<<std::endl;
+          output << std::setiosflags(std::ios::left) << "   Dynamic core data updated." << std::endl
+                 << "     " << std::setw(15) << "Tc(K)" << std::setw(15) << "Ri(km)" << std::setw(15) << "Xi" << std::setw(15)
+                 << "dT/dt(K/year)" << std::setw(15) << "dR/dt(km/year)" << std::setw(15) << "dX/dt(1/year)" << std::endl
+                 << "     " << std::setprecision(6) << std::setw(15) << inner_temperature << std::setw(15) << core_data.Ri / 1.e3
+                 << std::setw(15) << core_data.Xi << std::setw(15) << core_data.dT_dt * year_in_seconds << std::setw(15)
+                 << core_data.dR_dt / 1.e3 * year_in_seconds << std::setw(15) << core_data.dX_dt * year_in_seconds << std::endl;
           this->get_pcout() << output.str();
         }
     }
@@ -273,20 +267,18 @@ namespace aspect
 
     template <int dim>
     double
-    DynamicCore<dim>::
-    minimal_temperature (const std::set<types::boundary_id> &/*fixed_boundary_ids*/) const
+    DynamicCore<dim>::minimal_temperature(const std::set<types::boundary_id> & /*fixed_boundary_ids*/) const
     {
-      return std::min (inner_temperature, outer_temperature);
+      return std::min(inner_temperature, outer_temperature);
     }
 
 
 
     template <int dim>
     double
-    DynamicCore<dim>::
-    maximal_temperature (const std::set<types::boundary_id> &/*fixed_boundary_ids*/) const
+    DynamicCore<dim>::maximal_temperature(const std::set<types::boundary_id> & /*fixed_boundary_ids*/) const
     {
-      return std::max (inner_temperature, outer_temperature);
+      return std::max(inner_temperature, outer_temperature);
     }
 
 
@@ -298,15 +290,14 @@ namespace aspect
       data_OES.clear();
       if (name_OES.size() == 0)
         return;
-      std::istringstream in(Utilities::read_and_distribute_file_content(name_OES,
-                                                                        this->get_mpi_communicator()));
+      std::istringstream in(Utilities::read_and_distribute_file_content(name_OES, this->get_mpi_communicator()));
       if (in.good())
         {
           str_data_OES data_read;
-          std::string line;
+          std::string  line;
           while (std::getline(in, line))
             {
-              if (std::sscanf(line.data(), "%le\t%le\n", &data_read.t, &data_read.w)==2)
+              if (std::sscanf(line.data(), "%le\t%le\n", &data_read.t, &data_read.w) == 2)
                 data_OES.push_back(data_read);
             }
         }
@@ -316,15 +307,12 @@ namespace aspect
                       ExcMessage("The dynamic core other energy source data file "
                                  "must contain at least two data points."));
 
-          for (unsigned int i=1; i<data_OES.size(); ++i)
-            AssertThrow(data_OES[i].t > data_OES[i-1].t,
+          for (unsigned int i = 1; i < data_OES.size(); ++i)
+            AssertThrow(data_OES[i].t > data_OES[i - 1].t,
                         ExcMessage("The time values in the dynamic core other energy "
                                    "source data file must be strictly increasing."));
 
-          this->get_pcout() << "Other energy source is in use ( "
-                            << data_OES.size()
-                            << " data points are read)."
-                            << std::endl;
+          this->get_pcout() << "Other energy source is in use ( " << data_OES.size() << " data points are read)." << std::endl;
         }
     }
 
@@ -338,18 +326,16 @@ namespace aspect
         return 0.;
 
       // The core evolution is quite slow, so the time units used here is billion years.
-      const double t = time / (1.e9*year_in_seconds);
+      const double t = time / (1.e9 * year_in_seconds);
 
       AssertThrow(t >= data_OES.front().t && t <= data_OES.back().t,
                   ExcMessage("The current simulation time is outside the time range "
                              "covered by the dynamic core other energy source data file."));
 
-      for (unsigned int i=1; i<data_OES.size(); ++i)
+      for (unsigned int i = 1; i < data_OES.size(); ++i)
         {
-          if (t>=data_OES[i-1].t && t<=data_OES[i].t )
-            return data_OES[i-1].w + ( t - data_OES[i-1].t)
-                   /(data_OES[i].t - data_OES[i-1].t)
-                   *(data_OES[i].w - data_OES[i-1].w);
+          if (t >= data_OES[i - 1].t && t <= data_OES[i].t)
+            return data_OES[i - 1].w + (t - data_OES[i - 1].t) / (data_OES[i].t - data_OES[i - 1].t) * (data_OES[i].w - data_OES[i - 1].w);
         }
 
       AssertThrow(false, ExcInternalError());
@@ -362,37 +348,38 @@ namespace aspect
     double
     DynamicCore<dim>::compute_initial_Ri(const double T) const
     {
-      double r0 = 0.;
-      double r1 = Rc;
-      const double dT0 = compute_T(T,r0) - compute_solidus(compute_X(r0),compute_pressure(r0));
-      const double dT1 = compute_T(T,r1) - compute_solidus(compute_X(r1),compute_pressure(r1));
+      double       r0  = 0.;
+      double       r1  = Rc;
+      const double dT0 = compute_T(T, r0) - compute_solidus(compute_X(r0), compute_pressure(r0));
+      const double dT1 = compute_T(T, r1) - compute_solidus(compute_X(r1), compute_pressure(r1));
 
-      if (dT0<=0. && dT1<=0.)
+      if (dT0 <= 0. && dT1 <= 0.)
         return Rc;
-      if (dT0>=0. && dT1>=0.)
+      if (dT0 >= 0. && dT1 >= 0.)
         return 0.;
-      for (unsigned int i=0; i<max_steps; ++i)
+      for (unsigned int i = 0; i < max_steps; ++i)
         {
-          const double rm = (r0+r1)/2.;
-          const double dTm = compute_T(T,rm) - compute_solidus(compute_X(rm),compute_pressure(rm));
+          const double rm  = (r0 + r1) / 2.;
+          const double dTm = compute_T(T, rm) - compute_solidus(compute_X(rm), compute_pressure(rm));
           if (dTm == 0.)
             return rm;
-          if (dTm*dT0 < 0.)
+          if (dTm * dT0 < 0.)
             {
-              r1=rm;
+              r1 = rm;
             }
-          else if (dTm*dT1 < 0.)
+          else if (dTm * dT1 < 0.)
             {
-              r0=rm;
+              r0 = rm;
             }
         }
-      if (dT0>0 && dT1<0)
+      if (dT0 > 0 && dT1 < 0)
         {
           // Snowing core
-          AssertThrow(false, ExcMessage("[Dynamic core] You had a 'Snowing Core' (i.e., core is freezing from CMB), "
-                                        "the treatment is not available at the moment."));
+          AssertThrow(false,
+                      ExcMessage("[Dynamic core] You had a 'Snowing Core' (i.e., core is freezing from CMB), "
+                                 "the treatment is not available at the moment."));
         }
-      return (r0+r1)/2.;
+      return (r0 + r1) / 2.;
     }
 
 
@@ -435,7 +422,7 @@ namespace aspect
           R_1 = R_0;
           dT1 = 0;
         }
-      else if (dT2 <= 0. && dT0 <= 0. )
+      else if (dT2 <= 0. && dT0 <= 0.)
         {
           // Completely solid core
           R_1 = R_2;
@@ -444,24 +431,25 @@ namespace aspect
       else
         {
           // Use bisection method to find R_1 such that dT1 = 0
-          while (!(dT1==0 || steps>max_steps))
+          while (!(dT1 == 0 || steps > max_steps))
             {
               // If solution is out of the interval, then something is wrong.
-              if (dT0*dT2>0)
+              if (dT0 * dT2 > 0)
                 {
-                  this->get_pcout()<<"Step: "<<steps<<std::endl
-                                   <<" R=["<<R_0/1e3<<","<<R_2/1e3<<"]"<<"(km)"
-                                   <<" dT0="<<dT0<<", dT2="<<dT2<<std::endl
-                                   <<"Q_CMB="<<core_data.Q<<std::endl
-                                   <<"Warning: Solution for inner core radius can not be found! Mid-point is used."<<std::endl;
-                  AssertThrow(dT0*dT2<=0,ExcMessage("No single solution for inner core!"));
+                  this->get_pcout() << "Step: " << steps << std::endl
+                                    << " R=[" << R_0 / 1e3 << "," << R_2 / 1e3 << "]"
+                                    << "(km)"
+                                    << " dT0=" << dT0 << ", dT2=" << dT2 << std::endl
+                                    << "Q_CMB=" << core_data.Q << std::endl
+                                    << "Warning: Solution for inner core radius can not be found! Mid-point is used." << std::endl;
+                  AssertThrow(dT0 * dT2 <= 0, ExcMessage("No single solution for inner core!"));
                 }
-              else if (dT0*dT1 < 0.)
+              else if (dT0 * dT1 < 0.)
                 {
                   R_2 = R_1;
                   dT2 = dT1;
                 }
-              else if (dT2*dT1 < 0.)
+              else if (dT2 * dT1 < 0.)
                 {
                   R_0 = R_1;
                   dT0 = dT1;
@@ -474,21 +462,20 @@ namespace aspect
             }
         }
 
-      const internal::SolveTimeStepResult result = std::make_tuple(compute_X(R_1),
-                                                                   compute_Tc(R_1),
-                                                                   R_1);
+      const internal::SolveTimeStepResult result = std::make_tuple(compute_X(R_1), compute_Tc(R_1), R_1);
 
       // Check the signs of dT at the boundaries to classify the solution
-      if (dT0<0. && dT2>0.)
+      if (dT0 < 0. && dT2 > 0.)
         {
           // Core partially molten, freezing from the inside, normal solution
           return result;
         }
-      else if (dT0>0. && dT2<0.)
+      else if (dT0 > 0. && dT2 < 0.)
         {
           // Core partially molten, snowing core solution
-          AssertThrow(false, ExcMessage("[Dynamic core] You had a 'Snowing Core' (i.e., core is freezing from CMB), "
-                                        "the treatment is not available at the moment."));
+          AssertThrow(false,
+                      ExcMessage("[Dynamic core] You had a 'Snowing Core' (i.e., core is freezing from CMB), "
+                                 "the treatment is not available at the moment."));
         }
       else if (dT0 >= 0. && dT2 >= 0.)
         {
@@ -504,7 +491,8 @@ namespace aspect
         {
           // No solution found.
           this->get_pcout() << "[Dynamic core] Step: " << steps << std::endl
-                            << " R=[" << R_0/1e3 << "," << R_2/1e3 << "]" << "(km)"
+                            << " R=[" << R_0 / 1e3 << "," << R_2 / 1e3 << "]"
+                            << "(km)"
                             << " dT0=" << dT0 << ", dT2=" << dT2 << std::endl
                             << "Q_CMB=" << core_data.Q << std::endl;
           AssertThrow(false, ExcMessage("[Dynamic core] No inner core radius solution found!"));
@@ -522,9 +510,9 @@ namespace aspect
       // Using all Q values from last step.
       // Qs & Qr is constant, while Qg & Ql depends on inner core radius Ri
       // TODO: Use mid-point value for Q values.
-      return core_data.Ti - ( (core_data.Q + core_data.Qr + core_data.Q_OES) * core_data.dt
-                              + (core_data.Qg + core_data.Ql)*(r-core_data.Ri)
-                            ) / core_data.Qs;
+      return core_data.Ti -
+             ((core_data.Q + core_data.Qr + core_data.Q_OES) * core_data.dt + (core_data.Qg + core_data.Ql) * (r - core_data.Ri)) /
+               core_data.Qs;
     }
 
 
@@ -533,7 +521,7 @@ namespace aspect
     double
     DynamicCore<dim>::compute_Ts(const double r) const
     {
-      return compute_solidus(compute_X(r),compute_pressure(r));
+      return compute_solidus(compute_X(r), compute_pressure(r));
     }
 
 
@@ -542,7 +530,7 @@ namespace aspect
     double
     DynamicCore<dim>::compute_dT(const double r) const
     {
-      return compute_T(compute_Tc(r),r) - compute_Ts(r);
+      return compute_T(compute_Tc(r), r) - compute_Ts(r);
     }
 
 
@@ -551,12 +539,12 @@ namespace aspect
     void
     DynamicCore<dim>::update_core_data()
     {
-      std::tie(core_data.Qs,core_data.Es) = compute_specific_heating(core_data.Ti);
-      std::tie(core_data.Qr,core_data.Er) = compute_radio_heating(core_data.Ti);
-      std::tie(core_data.Qg,core_data.Eg) = compute_gravity_heating(core_data.Ti,core_data.Ri,core_data.Xi);
-      std::tie(core_data.Qk,core_data.Ek) = compute_adiabatic_heating(core_data.Ti);
-      std::tie(core_data.Ql,core_data.El) = compute_latent_heating(core_data.Ti,core_data.Ri);
-      core_data.Eh                        = compute_heat_solution(core_data.Ti,core_data.Ri,core_data.Xi);
+      std::tie(core_data.Qs, core_data.Es) = compute_specific_heating(core_data.Ti);
+      std::tie(core_data.Qr, core_data.Er) = compute_radio_heating(core_data.Ti);
+      std::tie(core_data.Qg, core_data.Eg) = compute_gravity_heating(core_data.Ti, core_data.Ri, core_data.Xi);
+      std::tie(core_data.Qk, core_data.Ek) = compute_adiabatic_heating(core_data.Ti);
+      std::tie(core_data.Ql, core_data.El) = compute_latent_heating(core_data.Ti, core_data.Ri);
+      core_data.Eh                         = compute_heat_solution(core_data.Ti, core_data.Ri, core_data.Xi);
     }
 
 
@@ -573,43 +561,19 @@ namespace aspect
     template <int dim>
     template <class Archive>
     void
-    DynamicCore<dim>::serialize (Archive &ar, const unsigned int)
+    DynamicCore<dim>::serialize(Archive &ar, const unsigned int)
     {
-      ar &core_data.Qs
-      & core_data.Qr
-      & core_data.Qg
-      & core_data.Qk
-      & core_data.Ql
-      & core_data.Es
-      & core_data.Er
-      & core_data.Eg
-      & core_data.Ek
-      & core_data.El
-      & core_data.Eh
-      & core_data.Ri
-      & core_data.Ti
-      & core_data.Xi
-      & core_data.Q
-      & core_data.H
-      & core_data.dt
-      & core_data.dR_dt
-      & core_data.dT_dt
-      & core_data.dX_dt
-      & core_data.Q_OES
-      & core_data.is_initialized
-      & inner_temperature
-      & is_first_call
-      & Rc
-      & Mc
-      & dTa
-      & data_OES;
+      ar &core_data.Qs &core_data.Qr &core_data.Qg &core_data.Qk &core_data.Ql &core_data.Es &core_data.Er &core_data.Eg &core_data
+        .Ek &core_data.El &core_data.Eh &core_data.Ri &core_data.Ti &core_data.Xi &core_data.Q &core_data.H &core_data.dt &core_data
+        .dR_dt &core_data.dT_dt &core_data.dX_dt &core_data.Q_OES      &core_data
+        .is_initialized &inner_temperature &is_first_call &Rc &Mc &dTa &data_OES;
     }
 
 
 
     template <int dim>
     void
-    DynamicCore<dim>::save (std::map<std::string, std::string> &status_strings) const
+    DynamicCore<dim>::save(std::map<std::string, std::string> &status_strings) const
     {
       // Serialize into a stringstream. Put the following into a code
       // block of its own to ensure the destruction of the 'oa'
@@ -617,7 +581,7 @@ namespace aspect
       // query the completed string below.
       std::ostringstream os;
       {
-        aspect::oarchive oa (os);
+        aspect::oarchive oa(os);
         oa << (*this);
       }
 
@@ -628,13 +592,13 @@ namespace aspect
 
     template <int dim>
     void
-    DynamicCore<dim>::load (const std::map<std::string, std::string> &status_strings)
+    DynamicCore<dim>::load(const std::map<std::string, std::string> &status_strings)
     {
       // See if something was saved.
       if (status_strings.find("DynamicCore") != status_strings.end())
         {
-          std::istringstream is (status_strings.find("DynamicCore")->second);
-          aspect::iarchive ia (is);
+          std::istringstream is(status_strings.find("DynamicCore")->second);
+          aspect::iarchive   ia(is);
           ia >> (*this);
         }
     }
@@ -648,30 +612,29 @@ namespace aspect
       if (use_bw11)
         {
           // Change X from weight percent to mole percent.
-          constexpr double x0 = 32./88.;
-          const double x = (X<x0) ? 56.*X/(32.*(1.-X)) : 1.;
+          constexpr double x0 = 32. / 88.;
+          const double     x  = (X < x0) ? 56. * X / (32. * (1. - X)) : 1.;
 
           // Change p from Pa to GPa
-          const double p = pressure * 1e-9;
-          const double p_square = p*p;
-          const double p_cube = p_square*p;
-          const double p_fourth = p_cube*p;
+          const double p        = pressure * 1e-9;
+          const double p_square = p * p;
+          const double p_cube   = p_square * p;
+          const double p_fourth = p_cube * p;
 
           // Fe-FeS system solidus by Buono & Walker (2011)
-          return (-2.4724*p_fourth  + 28.025*p_cube + 9.1404*p_square + 581.71*p + 3394.8) * x*x*x*x
-                 +( 1.7978*p_fourth - 6.7881*p_cube - 197.69*p_square - 271.69*p - 8219.5) * x*x*x
-                 +(-0.1702*p_fourth - 9.3959*p_cube + 163.53*p_square - 319.35*p + 5698.6) * x*x
-                 +(-0.2308*p_fourth + 7.1000*p_cube - 64.118*p_square + 105.98*p - 1621.9) * x
-                 +( 0.2302*p_fourth - 5.3688*p_cube + 38.124*p_square - 46.681*p + 1813.8);
-
+          return (-2.4724 * p_fourth + 28.025 * p_cube + 9.1404 * p_square + 581.71 * p + 3394.8) * x * x * x * x +
+                 (1.7978 * p_fourth - 6.7881 * p_cube - 197.69 * p_square - 271.69 * p - 8219.5) * x * x * x +
+                 (-0.1702 * p_fourth - 9.3959 * p_cube + 163.53 * p_square - 319.35 * p + 5698.6) * x * x +
+                 (-0.2308 * p_fourth + 7.1000 * p_cube - 64.118 * p_square + 105.98 * p - 1621.9) * x +
+                 (0.2302 * p_fourth - 5.3688 * p_cube + 38.124 * p_square - 46.681 * p + 1813.8);
         }
       else
         {
-          const double pressure_squared = pressure*pressure;
+          const double pressure_squared = pressure * pressure;
           if (composition_dependency)
-            return (Tm0*(1-Theta*X) * (1 + Tm1*pressure + Tm2*pressure_squared));
+            return (Tm0 * (1 - Theta * X) * (1 + Tm1 * pressure + Tm2 * pressure_squared));
           else
-            return (Tm0*(1-Theta)   * (1 + Tm1*pressure + Tm2*pressure_squared));
+            return (Tm0 * (1 - Theta) * (1 + Tm1 * pressure + Tm2 * pressure_squared));
         }
     }
 
@@ -681,35 +644,35 @@ namespace aspect
     double
     DynamicCore<dim>::compute_X(const double r) const
     {
-      const double xi_3 = Utilities::fixed_power<3>(r/Rc);
-      return X_init/(1-xi_3+Delta*xi_3);
+      const double xi_3 = Utilities::fixed_power<3>(r / Rc);
+      return X_init / (1 - xi_3 + Delta * xi_3);
     }
 
 
 
     template <int dim>
     double
-    DynamicCore<dim>::
-    compute_mass(const double r) const
+    DynamicCore<dim>::compute_mass(const double r) const
     {
-      return 4.*numbers::PI*Rho_cen*(-Utilities::fixed_power<2>(L)/2.*r*std::exp(-Utilities::fixed_power<2>(r/L))+Utilities::fixed_power<3>(L)/4.*std::sqrt(numbers::PI)*std::erf(r/L));
+      return 4. * numbers::PI * Rho_cen *
+             (-Utilities::fixed_power<2>(L) / 2. * r * std::exp(-Utilities::fixed_power<2>(r / L)) +
+              Utilities::fixed_power<3>(L) / 4. * std::sqrt(numbers::PI) * std::erf(r / L));
     }
 
 
 
     template <int dim>
     double
-    DynamicCore<dim>::
-    fun_Sn(const double B, const double R, const unsigned int n) const
+    DynamicCore<dim>::fun_Sn(const double B, const double R, const unsigned int n) const
     {
       // TODO: sqrt_pi could be made constexpr, but std::sqrt is not a constexpr function
       // for the MacOS tester at the moment
       const double sqrt_pi = std::sqrt(numbers::PI);
-      double S = R/(2.*sqrt_pi);
-      for (unsigned int i=1; i<=n; ++i)
+      double       S       = R / (2. * sqrt_pi);
+      for (unsigned int i = 1; i <= n; ++i)
         {
           const double it = static_cast<double>(i);
-          S += (B/sqrt_pi) * (std::exp(-it*it/4.)/it) * std::sinh(it*R/B);
+          S += (B / sqrt_pi) * (std::exp(-it * it / 4.) / it) * std::sinh(it * R / B);
         }
       return S;
     }
@@ -718,123 +681,122 @@ namespace aspect
 
     template <int dim>
     double
-    DynamicCore<dim>::
-    compute_pressure(const double r) const
+    DynamicCore<dim>::compute_pressure(const double r) const
     {
-      return P_CMB-(4*numbers::PI*constants::big_g*Utilities::fixed_power<2>(Rho_cen))/3
-             *((3*Utilities::fixed_power<2>(r)/10.-Utilities::fixed_power<2>(L)/5)*std::exp(-Utilities::fixed_power<2>(r/L))
-               -(3*Utilities::fixed_power<2>(Rc)/10-Utilities::fixed_power<2>(L)/5)*std::exp(-Utilities::fixed_power<2>(Rc/L)));
+      return P_CMB -
+             (4 * numbers::PI * constants::big_g * Utilities::fixed_power<2>(Rho_cen)) / 3 *
+               ((3 * Utilities::fixed_power<2>(r) / 10. - Utilities::fixed_power<2>(L) / 5) * std::exp(-Utilities::fixed_power<2>(r / L)) -
+                (3 * Utilities::fixed_power<2>(Rc) / 10 - Utilities::fixed_power<2>(L) / 5) * std::exp(-Utilities::fixed_power<2>(Rc / L)));
     }
 
 
 
     template <int dim>
     double
-    DynamicCore<dim>::
-    compute_rho(const double r) const
+    DynamicCore<dim>::compute_rho(const double r) const
     {
-      return Rho_cen*std::exp(-Utilities::fixed_power<2>(r/L));
+      return Rho_cen * std::exp(-Utilities::fixed_power<2>(r / L));
     }
 
 
 
     template <int dim>
     double
-    DynamicCore<dim>::
-    compute_T(const double Tc, const double r) const
+    DynamicCore<dim>::compute_T(const double Tc, const double r) const
     {
-      return Tc*std::exp((Utilities::fixed_power<2>(Rc)-Utilities::fixed_power<2>(r))/Utilities::fixed_power<2>(D));
+      return Tc * std::exp((Utilities::fixed_power<2>(Rc) - Utilities::fixed_power<2>(r)) / Utilities::fixed_power<2>(D));
     }
 
 
 
     template <int dim>
     double
-    DynamicCore<dim>::
-    compute_gravity_potential(const double r) const
+    DynamicCore<dim>::compute_gravity_potential(const double r) const
     {
-      return 2./3.*numbers::PI*constants::big_g*Rho_cen*(Utilities::fixed_power<2>(r)*(1.-3.*Utilities::fixed_power<2>(r)
-                                                         /(10.*Utilities::fixed_power<2>(L)))-Utilities::fixed_power<2>(Rc)*(1.-3.*Utilities::fixed_power<2>(Rc)/(10.*Utilities::fixed_power<2>(L))));
+      return 2. / 3. * numbers::PI * constants::big_g * Rho_cen *
+             (Utilities::fixed_power<2>(r) * (1. - 3. * Utilities::fixed_power<2>(r) / (10. * Utilities::fixed_power<2>(L))) -
+              Utilities::fixed_power<2>(Rc) * (1. - 3. * Utilities::fixed_power<2>(Rc) / (10. * Utilities::fixed_power<2>(L))));
     }
 
 
 
     template <int dim>
-    std::pair<double,double>
-    DynamicCore<dim>::
-    compute_specific_heating(const double Tc) const
+    std::pair<double, double>
+    DynamicCore<dim>::compute_specific_heating(const double Tc) const
     {
       // The object is initialized with invalid values. Make sure that
       // by the time we get here, everything we need has been set to
       // reasonable values.
-      Assert (numbers::is_finite(Tc), ExcInternalError());
-      Assert (numbers::is_finite(L), ExcInternalError());
-      Assert (numbers::is_finite(D), ExcInternalError());
-      Assert (numbers::is_finite(Rho_cen), ExcInternalError());
-      Assert (numbers::is_finite(Rc), ExcInternalError());
+      Assert(numbers::is_finite(Tc), ExcInternalError());
+      Assert(numbers::is_finite(L), ExcInternalError());
+      Assert(numbers::is_finite(D), ExcInternalError());
+      Assert(numbers::is_finite(Rho_cen), ExcInternalError());
+      Assert(numbers::is_finite(Rc), ExcInternalError());
 
-      const double A = std::sqrt(1./(Utilities::fixed_power<-2>(L)+Utilities::fixed_power<-2>(D)));
-      const double Is = 4.*numbers::PI*compute_T(Tc,0.)*Rho_cen*(-Utilities::fixed_power<2>(A)*Rc/2.*std::exp(-Utilities::fixed_power<2>(Rc/A))+Utilities::fixed_power<3>(A)*std::sqrt(numbers::PI)/4.*std::erf(Rc/A));
+      const double A  = std::sqrt(1. / (Utilities::fixed_power<-2>(L) + Utilities::fixed_power<-2>(D)));
+      const double Is = 4. * numbers::PI * compute_T(Tc, 0.) * Rho_cen *
+                        (-Utilities::fixed_power<2>(A) * Rc / 2. * std::exp(-Utilities::fixed_power<2>(Rc / A)) +
+                         Utilities::fixed_power<3>(A) * std::sqrt(numbers::PI) / 4. * std::erf(Rc / A));
 
-      const double Qs = -Cp/Tc*Is;
-      const double Es = Cp/Tc*(Mc-Is/Tc);
+      const double Qs = -Cp / Tc * Is;
+      const double Es = Cp / Tc * (Mc - Is / Tc);
 
-      return { Qs, Es };
+      return {Qs, Es};
     }
 
 
 
     template <int dim>
-    std::pair<double,double>
-    DynamicCore<dim>::
-    compute_radio_heating(const double Tc) const
+    std::pair<double, double>
+    DynamicCore<dim>::compute_radio_heating(const double Tc) const
     {
       // The object is initialized with invalid values. Make sure that
       // by the time we get here, everything we need has been set to
       // reasonable values.
-      Assert (numbers::is_finite(Tc), ExcInternalError());
-      Assert (numbers::is_finite(L), ExcInternalError());
-      Assert (numbers::is_finite(D), ExcInternalError());
-      Assert (numbers::is_finite(Rho_cen), ExcInternalError());
-      Assert (numbers::is_finite(Rc), ExcInternalError());
-      Assert (numbers::is_finite(core_data.H), ExcInternalError());
+      Assert(numbers::is_finite(Tc), ExcInternalError());
+      Assert(numbers::is_finite(L), ExcInternalError());
+      Assert(numbers::is_finite(D), ExcInternalError());
+      Assert(numbers::is_finite(Rho_cen), ExcInternalError());
+      Assert(numbers::is_finite(Rc), ExcInternalError());
+      Assert(numbers::is_finite(core_data.H), ExcInternalError());
 
       double It = numbers::signaling_nan<double>();
-      if (D>L)
+      if (D > L)
         {
-          const double B = std::sqrt(1./(1./Utilities::fixed_power<2>(L)-1./Utilities::fixed_power<2>(D)));
-          It = 4*numbers::PI*Rho_cen/compute_T(Tc,0)*(-Utilities::fixed_power<2>(B)*Rc/2*std::exp(-Utilities::fixed_power<2>(Rc/B))
-                                                      + Utilities::fixed_power<3>(B)/std::sqrt(numbers::PI)/4*std::erf(Rc/B));
+          const double B = std::sqrt(1. / (1. / Utilities::fixed_power<2>(L) - 1. / Utilities::fixed_power<2>(D)));
+          It             = 4 * numbers::PI * Rho_cen / compute_T(Tc, 0) *
+               (-Utilities::fixed_power<2>(B) * Rc / 2 * std::exp(-Utilities::fixed_power<2>(Rc / B)) +
+                Utilities::fixed_power<3>(B) / std::sqrt(numbers::PI) / 4 * std::erf(Rc / B));
         }
       else
         {
-          const double B = std::sqrt(1/(Utilities::fixed_power<-2>(D)-Utilities::fixed_power<-2>(L)));
-          It = 4*numbers::PI*Rho_cen/compute_T(Tc,0)*(Utilities::fixed_power<2>(B)*Rc/2*std::exp(Utilities::fixed_power<2>(Rc/B))
-                                                      - Utilities::fixed_power<2>(B)*fun_Sn(B,Rc,100)/2);
+          const double B = std::sqrt(1 / (Utilities::fixed_power<-2>(D) - Utilities::fixed_power<-2>(L)));
+          It             = 4 * numbers::PI * Rho_cen / compute_T(Tc, 0) *
+               (Utilities::fixed_power<2>(B) * Rc / 2 * std::exp(Utilities::fixed_power<2>(Rc / B)) -
+                Utilities::fixed_power<2>(B) * fun_Sn(B, Rc, 100) / 2);
         }
 
-      const double Qr = Mc*core_data.H;
-      const double Er = (Mc/Tc-It)*core_data.H;
-      return { Qr, Er };
+      const double Qr = Mc * core_data.H;
+      const double Er = (Mc / Tc - It) * core_data.H;
+      return {Qr, Er};
     }
 
 
 
     template <int dim>
     double
-    DynamicCore<dim>::
-    compute_heat_solution(const double Tc, const double r, const double X) const
+    DynamicCore<dim>::compute_heat_solution(const double Tc, const double r, const double X) const
     {
       // The object is initialized with invalid values. Make sure that
       // by the time we get here, everything we need has been set to
       // reasonable values.
-      Assert (numbers::is_finite(Tc), ExcInternalError());
-      Assert (numbers::is_finite(r), ExcInternalError());
-      Assert (numbers::is_finite(X), ExcInternalError());
-      Assert (numbers::is_finite(L), ExcInternalError());
-      Assert (numbers::is_finite(Rc), ExcInternalError());
+      Assert(numbers::is_finite(Tc), ExcInternalError());
+      Assert(numbers::is_finite(r), ExcInternalError());
+      Assert(numbers::is_finite(X), ExcInternalError());
+      Assert(numbers::is_finite(L), ExcInternalError());
+      Assert(numbers::is_finite(Rc), ExcInternalError());
 
-      if (r==Rc)
+      if (r == Rc)
         {
           // No energy change rate if the inner core is fully frozen.
           return 0.;
@@ -842,110 +804,120 @@ namespace aspect
       else
         {
           double It = numbers::signaling_nan<double>();
-          if (D>L)
+          if (D > L)
             {
-              const double B = std::sqrt(1./(1./Utilities::fixed_power<2>(L)-1./Utilities::fixed_power<2>(D)));
-              It = 4*numbers::PI*Rho_cen/compute_T(Tc,0)*(-Utilities::fixed_power<2>(B)*Rc/2*std::exp(-Utilities::fixed_power<2>(Rc/B))+Utilities::fixed_power<3>(B)/std::sqrt(numbers::PI)/4*std::erf(Rc/B));
-              It -= 4*numbers::PI*Rho_cen/compute_T(Tc,0)*(-Utilities::fixed_power<2>(B)*r/2*std::exp(-Utilities::fixed_power<2>(r/B))+Utilities::fixed_power<3>(B)/std::sqrt(numbers::PI)/4*std::erf(r/B));
+              const double B = std::sqrt(1. / (1. / Utilities::fixed_power<2>(L) - 1. / Utilities::fixed_power<2>(D)));
+              It             = 4 * numbers::PI * Rho_cen / compute_T(Tc, 0) *
+                   (-Utilities::fixed_power<2>(B) * Rc / 2 * std::exp(-Utilities::fixed_power<2>(Rc / B)) +
+                    Utilities::fixed_power<3>(B) / std::sqrt(numbers::PI) / 4 * std::erf(Rc / B));
+              It -= 4 * numbers::PI * Rho_cen / compute_T(Tc, 0) *
+                    (-Utilities::fixed_power<2>(B) * r / 2 * std::exp(-Utilities::fixed_power<2>(r / B)) +
+                     Utilities::fixed_power<3>(B) / std::sqrt(numbers::PI) / 4 * std::erf(r / B));
             }
           else
             {
-              const double B = std::sqrt(1./(Utilities::fixed_power<-2>(D)-Utilities::fixed_power<-2>(L)));
-              It = 4*numbers::PI*Rho_cen/compute_T(Tc,0)*(Utilities::fixed_power<2>(B)*Rc/2*std::exp(Utilities::fixed_power<2>(Rc/B))-Utilities::fixed_power<2>(B)*fun_Sn(B,Rc,100)/2);
-              It -= 4*numbers::PI*Rho_cen/compute_T(Tc,0)*(Utilities::fixed_power<2>(B)*r/2*std::exp(Utilities::fixed_power<2>(r/B))-Utilities::fixed_power<2>(B)*fun_Sn(B,r,100)/2);
+              const double B = std::sqrt(1. / (Utilities::fixed_power<-2>(D) - Utilities::fixed_power<-2>(L)));
+              It             = 4 * numbers::PI * Rho_cen / compute_T(Tc, 0) *
+                   (Utilities::fixed_power<2>(B) * Rc / 2 * std::exp(Utilities::fixed_power<2>(Rc / B)) -
+                    Utilities::fixed_power<2>(B) * fun_Sn(B, Rc, 100) / 2);
+              It -= 4 * numbers::PI * Rho_cen / compute_T(Tc, 0) *
+                    (Utilities::fixed_power<2>(B) * r / 2 * std::exp(Utilities::fixed_power<2>(r / B)) -
+                     Utilities::fixed_power<2>(B) * fun_Sn(B, r, 100) / 2);
             }
-          const double Cc = 4*numbers::PI*Utilities::fixed_power<2>(r)*compute_rho(r)*X/(Mc-compute_mass(r));
-          return Rh*(It-(Mc-compute_mass(r))/compute_T(Tc,r))*Cc;
+          const double Cc = 4 * numbers::PI * Utilities::fixed_power<2>(r) * compute_rho(r) * X / (Mc - compute_mass(r));
+          return Rh * (It - (Mc - compute_mass(r)) / compute_T(Tc, r)) * Cc;
         }
     }
 
 
 
     template <int dim>
-    std::pair<double,double>
-    DynamicCore<dim>::
-    compute_gravity_heating(const double Tc, const double r, const double X) const
+    std::pair<double, double>
+    DynamicCore<dim>::compute_gravity_heating(const double Tc, const double r, const double X) const
     {
       // The object is initialized with invalid values. Make sure that
       // by the time we get here, everything we need has been set to
       // reasonable values.
-      Assert (numbers::is_finite(Tc), ExcInternalError());
-      Assert (numbers::is_finite(r), ExcInternalError());
-      Assert (numbers::is_finite(X), ExcInternalError());
-      Assert (numbers::is_finite(Rc), ExcInternalError());
-      Assert (numbers::is_finite(L), ExcInternalError());
-      Assert (numbers::is_finite(Beta_c), ExcInternalError());
+      Assert(numbers::is_finite(Tc), ExcInternalError());
+      Assert(numbers::is_finite(r), ExcInternalError());
+      Assert(numbers::is_finite(X), ExcInternalError());
+      Assert(numbers::is_finite(Rc), ExcInternalError());
+      Assert(numbers::is_finite(L), ExcInternalError());
+      Assert(numbers::is_finite(Beta_c), ExcInternalError());
 
       double Qg;
-      if (r==Rc)
+      if (r == Rc)
         Qg = 0.;
       else
         {
-          const double Cc = 4*numbers::PI*Utilities::fixed_power<2>(r)*compute_rho(r)*X/(Mc-compute_mass(r));
-          const double C_2 = 3./16.*Utilities::fixed_power<2>(L) - 0.5*Utilities::fixed_power<2>(Rc)*(1.-3./10.*Utilities::fixed_power<2>(Rc/L));
-          Qg = (8./3.*Utilities::fixed_power<2>(numbers::PI*Rho_cen)*constants::big_g*(
-                  ((3./20.*Utilities::fixed_power<5>(Rc)-Utilities::fixed_power<2>(L)*Utilities::fixed_power<3>(Rc)/8.-C_2*Utilities::fixed_power<2>(L)*Rc)*std::exp(-Utilities::fixed_power<2>(Rc/L))
-                   +C_2/2.*Utilities::fixed_power<3>(L)*std::sqrt(numbers::PI)*std::erf(Rc/L))
-                  -((3./20.*Utilities::fixed_power<5>(r)-Utilities::fixed_power<2>(L)*Utilities::fixed_power<3>(r)/8.-C_2*Utilities::fixed_power<2>(L)*r)*std::exp(-Utilities::fixed_power<2>(r/L))
-                    +C_2/2.*Utilities::fixed_power<3>(L)*std::sqrt(numbers::PI)*std::erf(r/L)))
-                -(Mc-compute_mass(r))*compute_gravity_potential(r))*Beta_c*Cc;
+          const double Cc  = 4 * numbers::PI * Utilities::fixed_power<2>(r) * compute_rho(r) * X / (Mc - compute_mass(r));
+          const double C_2 = 3. / 16. * Utilities::fixed_power<2>(L) -
+                             0.5 * Utilities::fixed_power<2>(Rc) * (1. - 3. / 10. * Utilities::fixed_power<2>(Rc / L));
+          Qg = (8. / 3. * Utilities::fixed_power<2>(numbers::PI * Rho_cen) * constants::big_g *
+                  (((3. / 20. * Utilities::fixed_power<5>(Rc) - Utilities::fixed_power<2>(L) * Utilities::fixed_power<3>(Rc) / 8. -
+                     C_2 * Utilities::fixed_power<2>(L) * Rc) *
+                      std::exp(-Utilities::fixed_power<2>(Rc / L)) +
+                    C_2 / 2. * Utilities::fixed_power<3>(L) * std::sqrt(numbers::PI) * std::erf(Rc / L)) -
+                   ((3. / 20. * Utilities::fixed_power<5>(r) - Utilities::fixed_power<2>(L) * Utilities::fixed_power<3>(r) / 8. -
+                     C_2 * Utilities::fixed_power<2>(L) * r) *
+                      std::exp(-Utilities::fixed_power<2>(r / L)) +
+                    C_2 / 2. * Utilities::fixed_power<3>(L) * std::sqrt(numbers::PI) * std::erf(r / L))) -
+                (Mc - compute_mass(r)) * compute_gravity_potential(r)) *
+               Beta_c * Cc;
         }
 
-      const double Eg = Qg/Tc;
+      const double Eg = Qg / Tc;
 
-      return { Qg, Eg };
+      return {Qg, Eg};
     }
 
 
 
     template <int dim>
-    std::pair<double,double>
-    DynamicCore<dim>::
-    compute_adiabatic_heating(const double Tc) const
+    std::pair<double, double>
+    DynamicCore<dim>::compute_adiabatic_heating(const double Tc) const
     {
       // The object is initialized with invalid values. Make sure that
       // by the time we get here, everything we need has been set to
       // reasonable values.
-      Assert (numbers::is_finite(Tc), ExcInternalError());
-      Assert (numbers::is_finite(Rc), ExcInternalError());
-      Assert (numbers::is_finite(D), ExcInternalError());
+      Assert(numbers::is_finite(Tc), ExcInternalError());
+      Assert(numbers::is_finite(Rc), ExcInternalError());
+      Assert(numbers::is_finite(D), ExcInternalError());
 
-      const double Ek = 16*numbers::PI*k_c*Utilities::fixed_power<5>(Rc)/5/Utilities::fixed_power<4>(D);
-      const double Qk = 8*numbers::PI*Utilities::fixed_power<3>(Rc)*k_c*Tc/Utilities::fixed_power<2>(D);
-      return { Qk, Ek };
+      const double Ek = 16 * numbers::PI * k_c * Utilities::fixed_power<5>(Rc) / 5 / Utilities::fixed_power<4>(D);
+      const double Qk = 8 * numbers::PI * Utilities::fixed_power<3>(Rc) * k_c * Tc / Utilities::fixed_power<2>(D);
+      return {Qk, Ek};
     }
 
 
 
     template <int dim>
-    std::pair<double,double>
-    DynamicCore<dim>::
-    compute_latent_heating(const double Tc, const double r) const
+    std::pair<double, double>
+    DynamicCore<dim>::compute_latent_heating(const double Tc, const double r) const
     {
       // The object is initialized with invalid values. Make sure that
       // by the time we get here, everything we need has been set to
       // reasonable values.
-      Assert (numbers::is_finite(Tc), ExcInternalError());
-      Assert (numbers::is_finite(r), ExcInternalError());
-      Assert (numbers::is_finite(Lh), ExcInternalError());
+      Assert(numbers::is_finite(Tc), ExcInternalError());
+      Assert(numbers::is_finite(r), ExcInternalError());
+      Assert(numbers::is_finite(Lh), ExcInternalError());
 
-      const double Ql = 4.*numbers::PI*Utilities::fixed_power<2>(r)*Lh*compute_rho(r);
-      const double El = Ql*(compute_T(Tc,r)-Tc)/(Tc*compute_T(Tc,r));
-      return { Ql, El };
+      const double Ql = 4. * numbers::PI * Utilities::fixed_power<2>(r) * Lh * compute_rho(r);
+      const double El = Ql * (compute_T(Tc, r) - Tc) / (Tc * compute_T(Tc, r));
+      return {Ql, El};
     }
 
 
 
     template <int dim>
     double
-    DynamicCore<dim>::
-    compute_radioheating_rate() const
+    DynamicCore<dim>::compute_radioheating_rate() const
     {
-      const double time = this->get_time()+0.5*this->get_timestep();
+      const double time = this->get_time() + 0.5 * this->get_timestep();
 
       double Ht = 0;
-      for (unsigned i=0; i<n_radioheating_elements; ++i)
-        Ht += heating_rate[i]*initial_concentration[i]*1e-6*std::pow(0.5,time/half_life[i]/year_in_seconds/1e9);
+      for (unsigned i = 0; i < n_radioheating_elements; ++i)
+        Ht += heating_rate[i] * initial_concentration[i] * 1e-6 * std::pow(0.5, time / half_life[i] / year_in_seconds / 1e9);
 
       return Ht;
     }
@@ -954,10 +926,9 @@ namespace aspect
 
     template <int dim>
     bool
-    DynamicCore<dim>::
-    is_OES_used() const
+    DynamicCore<dim>::is_OES_used() const
     {
-      if (data_OES.size()>0)
+      if (data_OES.size() > 0)
         return true;
       else
         return false;
@@ -967,18 +938,16 @@ namespace aspect
 
     template <int dim>
     double
-    DynamicCore<dim>::
-    boundary_temperature (const types::boundary_id boundary_indicator,
-                          const Point<dim> &/*location*/) const
+    DynamicCore<dim>::boundary_temperature(const types::boundary_id boundary_indicator, const Point<dim> & /*location*/) const
     {
       if (boundary_indicator == inner_boundary_id)
         return inner_temperature;
       else if (boundary_indicator == outer_boundary_id)
         return outer_temperature;
       else
-        AssertThrow (false,
-                     ExcMessage ("Unknown boundary indicator for geometry model. "
-                                 "The given boundary should be ``top'' or ``bottom''."));
+        AssertThrow(false,
+                    ExcMessage("Unknown boundary indicator for geometry model. "
+                               "The given boundary should be ``top'' or ``bottom''."));
 
       return std::numeric_limits<double>::quiet_NaN();
     }
@@ -987,145 +956,150 @@ namespace aspect
 
     template <int dim>
     void
-    DynamicCore<dim>::declare_parameters (ParameterHandler &prm)
+    DynamicCore<dim>::declare_parameters(ParameterHandler &prm)
     {
       prm.enter_subsection("Boundary temperature model");
       {
         prm.enter_subsection("Dynamic core");
         {
-          prm.declare_entry ("Outer temperature", "0.",
-                             Patterns::Double (),
-                             "Temperature at the outer boundary (lithosphere water/air). Units: \\si{\\kelvin}.");
-          prm.declare_entry ("Inner temperature", "6000.",
-                             Patterns::Double (),
-                             "Temperature at the inner boundary (core mantle boundary) at the "
-                             "beginning. Units: \\si{\\kelvin}.");
-          prm.declare_entry ("dT over dt", "0.",
-                             Patterns::Double (),
-                             "Initial CMB temperature changing rate. "
-                             "Units: \\si{\\kelvin\\per\\year}.");
-          prm.declare_entry ("dR over dt", "0.",
-                             Patterns::Double (),
-                             "Initial inner core radius changing rate. "
-                             "Units: \\si{\\kilo\\meter\\per\\year}.");
-          prm.declare_entry ("dX over dt", "0.",
-                             Patterns::Double (),
-                             "Initial light composition changing rate. "
-                             "Units: \\si{\\per\\year}.");
-          prm.declare_entry ("Core density", "12.5e3",
-                             Patterns::Double (),
-                             "Density of the core. "
-                             "Units: \\si{\\kilogram\\per\\meter\\cubed}.");
-          prm.declare_entry ("CMB pressure", "0.14e12",
-                             Patterns::Double (),
-                             "Pressure at CMB. Units: \\si{\\pascal}.");
-          prm.declare_entry ("Initial light composition", "0.01",
-                             Patterns::Double (0.),
-                             "Initial light composition (eg. S,O) concentration "
-                             "in weight fraction.");
-          prm.declare_entry ("Max iteration", "30000",
-                             Patterns::Integer (0),
-                             "The max iterations for nonlinear core energy solver.");
-          prm.declare_entry ("Core heat capacity", "840.",
-                             Patterns::Double (0.),
-                             "Heat capacity of the core. "
-                             "Units: \\si{\\joule\\per\\kelvin\\per\\kilogram}.");
-          prm.declare_entry ("K0", "4.111e11",
-                             Patterns::Double (0.),
-                             "Core compressibility at zero pressure. "
-                             "See \\cite{NPB+04} for more details.");
-          prm.declare_entry ("Rho0", "7.019e3",
-                             Patterns::Double (0.),
-                             "Core density at zero pressure. "
-                             "Units: \\si{\\kilogram\\per\\meter\\cubed}. "
-                             "See \\cite{NPB+04} for more details.");
-          prm.declare_entry ("Alpha", "1.35e-5",
-                             Patterns::Double (0.),
-                             "Core thermal expansivity. Units: \\si{\\per\\kelvin}.");
-          prm.declare_entry ("Lh", "750e3",
-                             Patterns::Double (0.),
-                             "The latent heat of core freeze. "
-                             "Units: \\si{\\joule\\per\\kilogram}.");
-          prm.declare_entry ("Rh","-27.7e6",
-                             Patterns::Double (),
-                             "The heat of reaction. "
-                             "Units: \\si{\\joule\\per\\kilogram}.");
-          prm.declare_entry ("Beta composition", "1.1",
-                             Patterns::Double (0.),
-                             "Compositional expansion coefficient $Beta_c$. "
-                             "See \\cite{NPB+04} for more details.");
-          prm.declare_entry ("Delta","0.5",
-                             Patterns::Double (0., 1.),
-                             "Partition coefficient of the light element.");
-          prm.declare_entry ("Core conductivity", "60.",
-                             Patterns::Double (0.),
-                             "Core heat conductivity $k_c$. Units: \\si{\\watt\\per\\meter\\per\\kelvin}.");
+          prm.declare_entry("Outer temperature",
+                            "0.",
+                            Patterns::Double(),
+                            "Temperature at the outer boundary (lithosphere water/air). Units: \\si{\\kelvin}.");
+          prm.declare_entry("Inner temperature",
+                            "6000.",
+                            Patterns::Double(),
+                            "Temperature at the inner boundary (core mantle boundary) at the "
+                            "beginning. Units: \\si{\\kelvin}.");
+          prm.declare_entry("dT over dt",
+                            "0.",
+                            Patterns::Double(),
+                            "Initial CMB temperature changing rate. "
+                            "Units: \\si{\\kelvin\\per\\year}.");
+          prm.declare_entry("dR over dt",
+                            "0.",
+                            Patterns::Double(),
+                            "Initial inner core radius changing rate. "
+                            "Units: \\si{\\kilo\\meter\\per\\year}.");
+          prm.declare_entry("dX over dt",
+                            "0.",
+                            Patterns::Double(),
+                            "Initial light composition changing rate. "
+                            "Units: \\si{\\per\\year}.");
+          prm.declare_entry("Core density",
+                            "12.5e3",
+                            Patterns::Double(),
+                            "Density of the core. "
+                            "Units: \\si{\\kilogram\\per\\meter\\cubed}.");
+          prm.declare_entry("CMB pressure", "0.14e12", Patterns::Double(), "Pressure at CMB. Units: \\si{\\pascal}.");
+          prm.declare_entry("Initial light composition",
+                            "0.01",
+                            Patterns::Double(0.),
+                            "Initial light composition (eg. S,O) concentration "
+                            "in weight fraction.");
+          prm.declare_entry("Max iteration", "30000", Patterns::Integer(0), "The max iterations for nonlinear core energy solver.");
+          prm.declare_entry("Core heat capacity",
+                            "840.",
+                            Patterns::Double(0.),
+                            "Heat capacity of the core. "
+                            "Units: \\si{\\joule\\per\\kelvin\\per\\kilogram}.");
+          prm.declare_entry("K0",
+                            "4.111e11",
+                            Patterns::Double(0.),
+                            "Core compressibility at zero pressure. "
+                            "See \\cite{NPB+04} for more details.");
+          prm.declare_entry("Rho0",
+                            "7.019e3",
+                            Patterns::Double(0.),
+                            "Core density at zero pressure. "
+                            "Units: \\si{\\kilogram\\per\\meter\\cubed}. "
+                            "See \\cite{NPB+04} for more details.");
+          prm.declare_entry("Alpha", "1.35e-5", Patterns::Double(0.), "Core thermal expansivity. Units: \\si{\\per\\kelvin}.");
+          prm.declare_entry("Lh",
+                            "750e3",
+                            Patterns::Double(0.),
+                            "The latent heat of core freeze. "
+                            "Units: \\si{\\joule\\per\\kilogram}.");
+          prm.declare_entry("Rh",
+                            "-27.7e6",
+                            Patterns::Double(),
+                            "The heat of reaction. "
+                            "Units: \\si{\\joule\\per\\kilogram}.");
+          prm.declare_entry("Beta composition",
+                            "1.1",
+                            Patterns::Double(0.),
+                            "Compositional expansion coefficient $Beta_c$. "
+                            "See \\cite{NPB+04} for more details.");
+          prm.declare_entry("Delta", "0.5", Patterns::Double(0., 1.), "Partition coefficient of the light element.");
+          prm.declare_entry("Core conductivity",
+                            "60.",
+                            Patterns::Double(0.),
+                            "Core heat conductivity $k_c$. Units: \\si{\\watt\\per\\meter\\per\\kelvin}.");
           prm.enter_subsection("Geotherm parameters");
           {
-            prm.declare_entry ("Tm0","1695.",
-                               Patterns::Double (0.),
-                               "Melting curve (\\cite{NPB+04} eq. (40)) parameter Tm0. Units: \\si{\\kelvin}.");
-            prm.declare_entry ("Tm1","10.9e-12",
-                               Patterns::Double (),
-                               "Melting curve (\\cite{NPB+04} eq. (40)) parameter Tm1. "
-                               "Units: \\si{\\per\\pascal}.");
-            prm.declare_entry ("Tm2","-8.0e-24",
-                               Patterns::Double (),
-                               "Melting curve (\\cite{NPB+04} eq. (40)) parameter Tm2. "
-                               "Units: \\si{\\per\\pascal\\squared}.");
-            prm.declare_entry ("Theta","0.11",
-                               Patterns::Double (),
-                               "Melting curve (\\cite{NPB+04} eq. (40)) parameter Theta.");
-            prm.declare_entry ("Composition dependency","true",
-                               Patterns::Bool (),
-                               "If melting curve dependent on composition.");
-            prm.declare_entry ("Use BW11","false",
-                               Patterns::Bool (),
-                               "If using the Fe-FeS system solidus from Buono \\& Walker (2011) instead.");
+            prm.declare_entry("Tm0",
+                              "1695.",
+                              Patterns::Double(0.),
+                              "Melting curve (\\cite{NPB+04} eq. (40)) parameter Tm0. Units: \\si{\\kelvin}.");
+            prm.declare_entry("Tm1",
+                              "10.9e-12",
+                              Patterns::Double(),
+                              "Melting curve (\\cite{NPB+04} eq. (40)) parameter Tm1. "
+                              "Units: \\si{\\per\\pascal}.");
+            prm.declare_entry("Tm2",
+                              "-8.0e-24",
+                              Patterns::Double(),
+                              "Melting curve (\\cite{NPB+04} eq. (40)) parameter Tm2. "
+                              "Units: \\si{\\per\\pascal\\squared}.");
+            prm.declare_entry("Theta", "0.11", Patterns::Double(), "Melting curve (\\cite{NPB+04} eq. (40)) parameter Theta.");
+            prm.declare_entry("Composition dependency", "true", Patterns::Bool(), "If melting curve dependent on composition.");
+            prm.declare_entry("Use BW11",
+                              "false",
+                              Patterns::Bool(),
+                              "If using the Fe-FeS system solidus from Buono \\& Walker (2011) instead.");
           }
-          prm.leave_subsection ();
+          prm.leave_subsection();
 
           prm.enter_subsection("Radioactive heat source");
           {
-            prm.declare_entry ("Number of radioactive heating elements","0",
-                               Patterns::Integer (0),
-                               "Number of different radioactive heating elements in core");
-            prm.declare_entry ("Heating rates","",
-                               Patterns::List (Patterns::Double ()),
-                               "Heating rates of different elements (W/kg)");
-            prm.declare_entry ("Half life times","",
-                               Patterns::List (Patterns::Double ()),
-                               "Half decay times of different elements (Ga)");
-            prm.declare_entry ("Initial concentrations","",
-                               Patterns::List (Patterns::Double ()),
-                               "Initial concentrations of different elements (ppm)");
+            prm.declare_entry("Number of radioactive heating elements",
+                              "0",
+                              Patterns::Integer(0),
+                              "Number of different radioactive heating elements in core");
+            prm.declare_entry("Heating rates", "", Patterns::List(Patterns::Double()), "Heating rates of different elements (W/kg)");
+            prm.declare_entry("Half life times", "", Patterns::List(Patterns::Double()), "Half decay times of different elements (Ga)");
+            prm.declare_entry("Initial concentrations",
+                              "",
+                              Patterns::List(Patterns::Double()),
+                              "Initial concentrations of different elements (ppm)");
           }
-          prm.leave_subsection ();
+          prm.leave_subsection();
 
           prm.enter_subsection("Other energy source");
           {
-            prm.declare_entry ("File name","",
-                               Patterns::Anything(),
-                               "Data file name for other energy source into the core. "
-                               "The 'other energy source' is used for external core energy source."
-                               "For example if someone want to test the early lunar core powered by precession "
-                               "(Dwyer, C. A., et al. (2011). A long-lived lunar dynamo driven by continuous mechanical stirring. Nature 479(7372): 212-214.)"
-                               "Format [Time(Gyr)   Energy rate(W)]. "
-                               "The time values must be strictly increasing and cover the full simulation time.");
+            prm.declare_entry(
+              "File name",
+              "",
+              Patterns::Anything(),
+              "Data file name for other energy source into the core. "
+              "The 'other energy source' is used for external core energy source."
+              "For example if someone want to test the early lunar core powered by precession "
+              "(Dwyer, C. A., et al. (2011). A long-lived lunar dynamo driven by continuous mechanical stirring. Nature 479(7372): 212-214.)"
+              "Format [Time(Gyr)   Energy rate(W)]. "
+              "The time values must be strictly increasing and cover the full simulation time.");
           }
-          prm.leave_subsection ();
-
+          prm.leave_subsection();
         }
-        prm.leave_subsection ();
+        prm.leave_subsection();
       }
-      prm.leave_subsection ();
+      prm.leave_subsection();
     }
 
 
 
     template <int dim>
     void
-    DynamicCore<dim>::parse_parameters (ParameterHandler &prm)
+    DynamicCore<dim>::parse_parameters(ParameterHandler &prm)
     {
       prm.enter_subsection("Boundary temperature model");
       {
@@ -1134,82 +1108,75 @@ namespace aspect
           // verify that the geometry is in fact a spherical shell since only
           // for this geometry do we know for sure what boundary indicators it
           // uses and what they mean
-          AssertThrow (Plugins::plugin_type_matches<const GeometryModel::SphericalShell<dim>>(this->get_geometry_model()),
-                       ExcMessage ("This boundary model is only implemented if the geometry is "
-                                   "a spherical shell."));
+          AssertThrow(Plugins::plugin_type_matches<const GeometryModel::SphericalShell<dim>>(this->get_geometry_model()),
+                      ExcMessage("This boundary model is only implemented if the geometry is "
+                                 "a spherical shell."));
 
           inner_boundary_id = this->get_geometry_model().translate_symbolic_boundary_name_to_id("bottom");
           outer_boundary_id = this->get_geometry_model().translate_symbolic_boundary_name_to_id("top");
 
-          inner_temperature = prm.get_double ("Inner temperature");
-          outer_temperature = prm.get_double ("Outer temperature");
-          init_dT_dt        = prm.get_double ("dT over dt") / year_in_seconds;
-          init_dR_dt        = prm.get_double ("dR over dt") / year_in_seconds * 1.e3;
-          init_dX_dt        = prm.get_double ("dX over dt") / year_in_seconds;
-          Rho_cen           = prm.get_double ("Core density");
-          P_CMB             = prm.get_double ("CMB pressure");
-          X_init            = prm.get_double ("Initial light composition");
-          max_steps         = prm.get_integer ("Max iteration");
-          Cp                = prm.get_double ("Core heat capacity");
+          inner_temperature = prm.get_double("Inner temperature");
+          outer_temperature = prm.get_double("Outer temperature");
+          init_dT_dt        = prm.get_double("dT over dt") / year_in_seconds;
+          init_dR_dt        = prm.get_double("dR over dt") / year_in_seconds * 1.e3;
+          init_dX_dt        = prm.get_double("dX over dt") / year_in_seconds;
+          Rho_cen           = prm.get_double("Core density");
+          P_CMB             = prm.get_double("CMB pressure");
+          X_init            = prm.get_double("Initial light composition");
+          max_steps         = prm.get_integer("Max iteration");
+          Cp                = prm.get_double("Core heat capacity");
 
           //\cite{NPB+04}
-          K0                = prm.get_double ("K0");
-          Alpha             = prm.get_double ("Alpha");
-          Rho_0             = prm.get_double ("Rho0");
-          Lh                = prm.get_double ("Lh");
-          Beta_c            = prm.get_double ("Beta composition");
-          k_c               = prm.get_double ("Core conductivity");
-          Delta             = prm.get_double ("Delta");
-          Rh                = prm.get_double ("Rh");
+          K0     = prm.get_double("K0");
+          Alpha  = prm.get_double("Alpha");
+          Rho_0  = prm.get_double("Rho0");
+          Lh     = prm.get_double("Lh");
+          Beta_c = prm.get_double("Beta composition");
+          k_c    = prm.get_double("Core conductivity");
+          Delta  = prm.get_double("Delta");
+          Rh     = prm.get_double("Rh");
 
           prm.enter_subsection("Geotherm parameters");
           {
-            Tm0           =  prm.get_double ("Tm0");
-            Tm1           =  prm.get_double ("Tm1");
-            Tm2           =  prm.get_double ("Tm2");
-            Theta         =  prm.get_double ("Theta");
+            Tm0                    = prm.get_double("Tm0");
+            Tm1                    = prm.get_double("Tm1");
+            Tm2                    = prm.get_double("Tm2");
+            Theta                  = prm.get_double("Theta");
             composition_dependency = prm.get_bool("Composition dependency");
-            use_bw11      =  prm.get_bool("Use BW11");
+            use_bw11               = prm.get_bool("Use BW11");
           }
-          prm.leave_subsection ();
+          prm.leave_subsection();
 
           prm.enter_subsection("Radioactive heat source");
           {
-            n_radioheating_elements = prm.get_integer ("Number of radioactive heating elements");
-            heating_rate = Utilities::string_to_double
-                           (Utilities::split_string_list
-                            (prm.get("Heating rates")));
-            AssertThrow(n_radioheating_elements==heating_rate.size(),
+            n_radioheating_elements = prm.get_integer("Number of radioactive heating elements");
+            heating_rate            = Utilities::string_to_double(Utilities::split_string_list(prm.get("Heating rates")));
+            AssertThrow(n_radioheating_elements == heating_rate.size(),
                         ExcMessage("Number of heating rate entities does not match "
                                    "the number of radioactive elements."));
-            half_life = Utilities::string_to_double
-                        (Utilities::split_string_list
-                         (prm.get("Half life times")));
-            AssertThrow(n_radioheating_elements==half_life.size(),
+            half_life = Utilities::string_to_double(Utilities::split_string_list(prm.get("Half life times")));
+            AssertThrow(n_radioheating_elements == half_life.size(),
                         ExcMessage("Number of half life time entities does not match "
                                    "the number of radioactive elements."));
-            initial_concentration = Utilities::string_to_double
-                                    (Utilities::split_string_list
-                                     (prm.get("Initial concentrations")));
-            AssertThrow(n_radioheating_elements==initial_concentration.size(),
+            initial_concentration = Utilities::string_to_double(Utilities::split_string_list(prm.get("Initial concentrations")));
+            AssertThrow(n_radioheating_elements == initial_concentration.size(),
                         ExcMessage("Number of initial concentration entities does not match "
                                    "the number of radioactive elements."));
           }
-          prm.leave_subsection ();
+          prm.leave_subsection();
 
           prm.enter_subsection("Other energy source");
           {
             name_OES = prm.get("File name");
           }
-          prm.leave_subsection ();
+          prm.leave_subsection();
 
-          L = std::sqrt(3*K0*(std::log(Rho_cen/Rho_0)+1)/(2*numbers::PI*constants::big_g*Rho_0*Rho_cen));
-          D = std::sqrt(3*Cp/(2*numbers::PI*Alpha*Rho_cen*constants::big_g));
-
+          L = std::sqrt(3 * K0 * (std::log(Rho_cen / Rho_0) + 1) / (2 * numbers::PI * constants::big_g * Rho_0 * Rho_cen));
+          D = std::sqrt(3 * Cp / (2 * numbers::PI * Alpha * Rho_cen * constants::big_g));
         }
-        prm.leave_subsection ();
+        prm.leave_subsection();
       }
-      prm.leave_subsection ();
+      prm.leave_subsection();
     }
   }
 }
@@ -1234,7 +1201,6 @@ namespace aspect
                                                "(i.e., the core solidifies from the top instead of bottom). "
                                                "The adiabatic correction for the CMB heat flux uses the active gravity "
                                                "model, so the gravity at the CMB should be set in subsection "
-                                               "`Gravity model'."
-                                              )
+                                               "`Gravity model'.")
   }
 }

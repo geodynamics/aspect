@@ -22,8 +22,8 @@
 #define _aspect_material_model_latent_heat_melt_h
 
 #include <aspect/material_model/interface.h>
-#include <aspect/simulator_access.h>
 #include <aspect/melt.h>
+#include <aspect/simulator_access.h>
 
 namespace aspect
 {
@@ -38,16 +38,16 @@ namespace aspect
      */
     template <int dim>
     class LatentHeatMelt : public MaterialModel::Interface<dim>,
-      public MaterialModel::MeltFractionModel<dim>,
-      public ::aspect::SimulatorAccess<dim>
+                           public MaterialModel::MeltFractionModel<dim>,
+                           public ::aspect::SimulatorAccess<dim>
     {
       public:
         /**
          * @name Physical parameters used in the basic equations
          * @{
          */
-        void evaluate(const MaterialModel::MaterialModelInputs<dim> &in,
-                      MaterialModel::MaterialModelOutputs<dim> &out) const override;
+        void
+        evaluate(const MaterialModel::MaterialModelInputs<dim> &in, MaterialModel::MaterialModelOutputs<dim> &out) const override;
 
 
         /**
@@ -67,14 +67,16 @@ namespace aspect
          * equation as $\nabla \cdot (\rho \mathbf u)=0$ (compressible Stokes)
          * or as $\nabla \cdot \mathbf{u}=0$ (incompressible Stokes).
          */
-        bool is_compressible () const override;
+        bool
+        is_compressible() const override;
         /**
          * @}
          */
 
-        void melt_fractions (const MaterialModel::MaterialModelInputs<dim> &in,
-                             std::vector<double> &melt_fractions,
-                             const MaterialModel::MaterialModelOutputs<dim> *out = nullptr) const override;
+        void
+        melt_fractions(const MaterialModel::MaterialModelInputs<dim>  &in,
+                       std::vector<double>                            &melt_fractions,
+                       const MaterialModel::MaterialModelOutputs<dim> *out = nullptr) const override;
 
 
         /**
@@ -84,15 +86,14 @@ namespace aspect
         /**
          * Declare the parameters this class takes through input files.
          */
-        static
-        void
-        declare_parameters (ParameterHandler &prm);
+        static void
+        declare_parameters(ParameterHandler &prm);
 
         /**
          * Read the parameters this class declares from the parameter file.
          */
         void
-        parse_parameters (ParameterHandler &prm) override;
+        parse_parameters(ParameterHandler &prm) override;
         /**
          * @}
          */
@@ -155,7 +156,7 @@ namespace aspect
         /**
          *  This variable is read from the parameter file through a parameter called 'A1'.
          */
-        double A1;   // °C
+        double A1; // °C
         /**
          *  This variable is read from the parameter file through a parameter called 'A2'.
          */
@@ -169,11 +170,11 @@ namespace aspect
         /**
          *  This variable is read from the parameter file through a parameter called 'B1'.
          */
-        double B1;   // °C
+        double B1; // °C
         /**
          *  This variable is read from the parameter file through a parameter called 'B2'.
          */
-        double B2;   // °C/Pa
+        double B2; // °C/Pa
         /**
          *  This variable is read from the parameter file through a parameter called 'B3'.
          */
@@ -183,11 +184,11 @@ namespace aspect
         /**
          *  This variable is read from the parameter file through a parameter called 'C1'.
          */
-        double C1;   // °C
+        double C1; // °C
         /**
          *  This variable is read from the parameter file through a parameter called 'C2'.
          */
-        double C2;  // °C/Pa
+        double C2; // °C/Pa
         /**
          *  This variable is read from the parameter file through a parameter called 'C3'.
          */
@@ -197,15 +198,15 @@ namespace aspect
         /**
          *  This variable is read from the parameter file through a parameter called 'r1'.
          */
-        double r1;     // cpx/melt
+        double r1; // cpx/melt
         /**
          *  This variable is read from the parameter file through a parameter called 'r2'.
          */
-        double r2;     // cpx/melt/GPa
+        double r2; // cpx/melt/GPa
         /**
          *  This variable is read from the parameter file through a parameter called 'Mass fraction cpx'.
          */
-        double M_cpx;  // mass fraction of pyroxene
+        double M_cpx; // mass fraction of pyroxene
 
         // melt fraction exponent
         /**
@@ -227,11 +228,11 @@ namespace aspect
         /**
          *  This variable is read from the parameter file through a parameter called 'D1'.
          */
-        double D1;    // °C
+        double D1; // °C
         /**
          *  This variable is read from the parameter file through a parameter called 'D2'.
          */
-        double D2;  // °C/Pa
+        double D2; // °C/Pa
         /**
          *  This variable is read from the parameter file through a parameter called 'D3'.
          */
@@ -267,33 +268,30 @@ namespace aspect
          * Percentage of material that is molten. Melting model after Katz,
          * 2003 (for peridotite) and Sobolev et al., 2011 (for pyroxenite)
          */
-        virtual
-        double
-        melt_fraction (const double temperature,
-                       const double pressure,
-                       const std::vector<double> &compositional_fields,
-                       const Point<dim> &position) const;
+        virtual double
+        melt_fraction(const double               temperature,
+                      const double               pressure,
+                      const std::vector<double> &compositional_fields,
+                      const Point<dim>          &position) const;
 
-        virtual
-        double
-        peridotite_melt_fraction (const double temperature,
-                                  const double pressure,
-                                  const std::vector<double> &compositional_fields,
-                                  const Point<dim> &position) const;
+        virtual double
+        peridotite_melt_fraction(const double               temperature,
+                                 const double               pressure,
+                                 const std::vector<double> &compositional_fields,
+                                 const Point<dim>          &position) const;
 
-        virtual
-        double
-        pyroxenite_melt_fraction (const double temperature,
-                                  const double pressure,
-                                  const std::vector<double> &compositional_fields,
-                                  const Point<dim> &position) const;
+        virtual double
+        pyroxenite_melt_fraction(const double               temperature,
+                                 const double               pressure,
+                                 const std::vector<double> &compositional_fields,
+                                 const Point<dim>          &position) const;
 
         double
-        entropy_derivative ( const double temperature,
-                             const double pressure,
-                             const std::vector<double> &compositional_fields,
-                             const Point<dim> &position,
-                             const NonlinearDependence::Dependence dependence) const;
+        entropy_derivative(const double                          temperature,
+                           const double                          pressure,
+                           const std::vector<double>            &compositional_fields,
+                           const Point<dim>                     &position,
+                           const NonlinearDependence::Dependence dependence) const;
     };
 
   }

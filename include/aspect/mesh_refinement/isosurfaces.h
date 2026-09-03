@@ -26,6 +26,7 @@
 #include <aspect/mesh_refinement/interface.h>
 #include <aspect/simulator_access.h>
 #include <aspect/utilities.h>
+
 #include <deal.II/base/parsed_function.h>
 
 namespace aspect
@@ -51,8 +52,7 @@ namespace aspect
            * the name of a compositional field listed in the parameter available_compositions.
            * @param available_compositions A list of names of the available compositional fields.
            */
-          Property(const std::string &property_name,
-                   const std::vector<std::string> &available_compositions);
+          Property(const std::string &property_name, const std::vector<std::string> &available_compositions);
 
           /**
            * The Property type of the property
@@ -78,12 +78,13 @@ namespace aspect
            * This function assumes that @p values and all the vectors in isosurfaces already
            * have the same length.
            */
-          bool are_all_values_in_range(const std::vector<double> &values) const;
+          bool
+          are_all_values_in_range(const std::vector<double> &values) const;
 
-          std::vector<double> min_values;
-          std::vector<double> max_values;
-          int min_refinement;
-          int max_refinement;
+          std::vector<double>   min_values;
+          std::vector<double>   max_values;
+          int                   min_refinement;
+          int                   max_refinement;
           std::vector<Property> properties;
       };
 
@@ -99,8 +100,7 @@ namespace aspect
      * @ingroup MeshRefinement
      */
     template <int dim>
-    class Isosurfaces : public Interface<dim>,
-      public SimulatorAccess<dim>
+    class Isosurfaces : public Interface<dim>, public SimulatorAccess<dim>
     {
       public:
         /**
@@ -108,7 +108,7 @@ namespace aspect
          * ParsedFunction.
          */
         void
-        update () override;
+        update() override;
 
         /**
          * After cells have been marked for coarsening/refinement, apply
@@ -116,20 +116,19 @@ namespace aspect
          *
          */
         void
-        tag_additional_cells () const override;
+        tag_additional_cells() const override;
 
         /**
          * Declare the parameters this class takes from input files.
          */
-        static
-        void
-        declare_parameters (ParameterHandler &prm);
+        static void
+        declare_parameters(ParameterHandler &prm);
 
         /**
          * Read the parameters this class declares from the parameter file.
          */
         void
-        parse_parameters (ParameterHandler &prm) override;
+        parse_parameters(ParameterHandler &prm) override;
 
 
       private:
@@ -137,7 +136,6 @@ namespace aspect
          * A vector of the isosurfaces used by this class.
          */
         std::vector<internal::Isosurface> isosurfaces;
-
     };
   }
 }

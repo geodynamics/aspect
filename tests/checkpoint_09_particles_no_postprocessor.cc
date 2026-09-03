@@ -26,13 +26,13 @@
 namespace
 {
   void
-  run_command (const std::string &command)
+  run_command(const std::string &command)
   {
-    const int ret = std::system (command.c_str());
+    const int ret = std::system(command.c_str());
     if (ret != 0)
       {
         std::cout << "system() returned error " << ret << std::endl;
-        std::exit (1);
+        std::exit(1);
       }
   }
 }
@@ -46,68 +46,69 @@ namespace
  * is resumed from a checkpoint to make sure particle state is preserved even
  * without particle output.
  */
-int f()
+int
+f()
 {
   std::cout << "* running continuous reference:" << std::endl;
 
-  run_command ("cd output-checkpoint_09_particles_no_postprocessor ; "
-               "(cat " ASPECT_SOURCE_DIR "/tests/checkpoint_09_particles_no_postprocessor.prm "
-               " ; "
-               " echo 'set Output directory = output_continuous.tmp' "
-               " ; "
-               " rm -rf output_continuous.tmp "
-               ") "
-               "| ../../aspect -- > /dev/null");
+  run_command("cd output-checkpoint_09_particles_no_postprocessor ; "
+              "(cat " ASPECT_SOURCE_DIR "/tests/checkpoint_09_particles_no_postprocessor.prm "
+              " ; "
+              " echo 'set Output directory = output_continuous.tmp' "
+              " ; "
+              " rm -rf output_continuous.tmp "
+              ") "
+              "| ../../aspect -- > /dev/null");
 
-  run_command ("cd output-checkpoint_09_particles_no_postprocessor ; "
-               "test ! -d output_continuous.tmp/particles");
+  run_command("cd output-checkpoint_09_particles_no_postprocessor ; "
+              "test ! -d output_continuous.tmp/particles");
 
   std::cout << "* running restart setup:" << std::endl;
 
-  run_command ("cd output-checkpoint_09_particles_no_postprocessor ; "
-               "(cat " ASPECT_SOURCE_DIR "/tests/checkpoint_09_particles_no_postprocessor.prm "
-               " ; "
-               " echo 'set Output directory = output_restart_start.tmp' "
-               " ; "
-               " echo 'subsection Termination criteria' "
-               " ; "
-               " echo '  set End step = 3' "
-               " ; "
-               " echo 'end' "
-               " ; "
-               " rm -rf output_restart_start.tmp "
-               ") "
-               "| ../../aspect -- > /dev/null");
+  run_command("cd output-checkpoint_09_particles_no_postprocessor ; "
+              "(cat " ASPECT_SOURCE_DIR "/tests/checkpoint_09_particles_no_postprocessor.prm "
+              " ; "
+              " echo 'set Output directory = output_restart_start.tmp' "
+              " ; "
+              " echo 'subsection Termination criteria' "
+              " ; "
+              " echo '  set End step = 3' "
+              " ; "
+              " echo 'end' "
+              " ; "
+              " rm -rf output_restart_start.tmp "
+              ") "
+              "| ../../aspect -- > /dev/null");
 
-  run_command ("cd output-checkpoint_09_particles_no_postprocessor ; "
-               "test ! -d output_restart_start.tmp/particles ; "
-               "rm -rf output_restart_resume.tmp ; mkdir output_restart_resume.tmp ; "
-               "cp -r output_restart_start.tmp/restart output_restart_resume.tmp/");
+  run_command("cd output-checkpoint_09_particles_no_postprocessor ; "
+              "test ! -d output_restart_start.tmp/particles ; "
+              "rm -rf output_restart_resume.tmp ; mkdir output_restart_resume.tmp ; "
+              "cp -r output_restart_start.tmp/restart output_restart_resume.tmp/");
 
   std::cout << "* now resuming:" << std::endl;
 
-  run_command ("cd output-checkpoint_09_particles_no_postprocessor ; "
-               "(cat " ASPECT_SOURCE_DIR "/tests/checkpoint_09_particles_no_postprocessor.prm "
-               " ; "
-               " echo 'set Output directory = output_restart_resume.tmp' "
-               " ; "
-               " echo 'set Resume computation = true' "
-               ") "
-               "| ../../aspect -- > /dev/null");
+  run_command("cd output-checkpoint_09_particles_no_postprocessor ; "
+              "(cat " ASPECT_SOURCE_DIR "/tests/checkpoint_09_particles_no_postprocessor.prm "
+              " ; "
+              " echo 'set Output directory = output_restart_resume.tmp' "
+              " ; "
+              " echo 'set Resume computation = true' "
+              ") "
+              "| ../../aspect -- > /dev/null");
 
-  run_command ("cd output-checkpoint_09_particles_no_postprocessor ; "
-               "test ! -d output_restart_resume.tmp/particles");
+  run_command("cd output-checkpoint_09_particles_no_postprocessor ; "
+              "test ! -d output_restart_resume.tmp/particles");
 
   std::cout << "* comparing restarted run with continuous run:" << std::endl;
 
-  run_command ("cd output-checkpoint_09_particles_no_postprocessor ; "
-               "tail -n 1 output_continuous.tmp/statistics > continuous.last ; "
-               "tail -n 1 output_restart_resume.tmp/statistics > restart.last ; "
-               "diff -u continuous.last restart.last");
+  run_command("cd output-checkpoint_09_particles_no_postprocessor ; "
+              "tail -n 1 output_continuous.tmp/statistics > continuous.last ; "
+              "tail -n 1 output_restart_resume.tmp/statistics > restart.last ; "
+              "diff -u continuous.last restart.last");
 
   std::cout << "* checkpoint resume preserved particle state without particle output." << std::endl;
 
-  std::exit (0);
+  std::exit(0);
   return 42;
 }
 
