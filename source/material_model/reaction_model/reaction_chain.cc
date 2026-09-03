@@ -216,6 +216,7 @@ namespace aspect
               const std::vector<unsigned int> &global_indices = global_indices_by_model[model_name];
 
               std::shared_ptr<Cahn1956Interface<dim>> kinetics(create_reaction_model<dim>(model_name).release());
+              kinetics->initialize_simulator(this->get_simulator());
               kinetics->parse_parameters(prm, global_indices.size());
               kinetics_models.push_back(kinetics);
 
