@@ -68,28 +68,28 @@ namespace aspect
         private:
 
           /**
-           * An average for weighted rotations based on minimizing the frobenius norm between rotations
-           * Corresponds to $\mathbf{R}_{\mathrm mean} = argmin_R(\sum_i||\mathbf{R}_i - \mathbf{R}||_F)$ represented by a quaternion.
-           * Returns the output as a quaternion in the halfspace where q.w > 0
-           * Aee for reference Markley 2007 (doi:10.2514/1.28949)
+           * An average for weighted rotations based on minimizing the Frobenius norm between rotations.
+           * Corresponds to $\mathbf{R}_{\mathrm{mean}} = \mathrm{argmin}_{\mathbf{R}} (\sum_i ||\mathbf{R}_i - \mathbf{R}||_F)$, represented by a quaternion.
+           * Returns the output as a quaternion in the half-space where q.w > 0.
+           * See Markley et.al. 2007 (doi:10.2514/1.28949).
            */
           std::array<double,4>
           markley_average(const std::vector<std::array<double,4>> &quat_array, const std::vector<double> &weights) const;
 
           /**
-           * returns the geodesic distance between two rotations each represened by a quaternion.
-           * A geodesic describes the shortest path in a non-euclidian space.
+           * Returns the geodesic distance between two rotations, each represented by a quaternion.
+           * A geodesic describes the shortest path in a non-Euclidean space.
            * This metric is equal to the Riemannian metric in $SO(3)$ and lies in the interval $[0,\pi)$.
-           * For a comparison of different metrics see Huynh 2009 (https://doi.org/10.1007%2Fs10851-009-0161-2).
+           * For a comparison of different metrics, see Huynh 2009 (https://doi.org/10.1007%2Fs10851-009-0161-2).
            */
           double
           SO3_geodesic(const std::array<double,4> &quaternion1, const std::array<double,4> &quaternion2) const;
 
           /**
-           * Sends a quaternion into the fundamental zone of reference quaternion.
+           * Sends a quaternion into the fundamental zone of the reference quaternion.
            * The fundamental zone contains only one representation of any crystal orientation.
-           * In this case the representation closest to the reference quaternion is chosen.
-           * In this function all prossible representation of a crystal orientation for one rotation are hard coded and can be expanded by any other symmetry group.
+           * In this case, the representation closest to the reference quaternion is chosen.
+           * In this function, all possible representations of a crystal orientation for one rotation are hard coded and can be expanded for any other symmetry group.
            */
           std::array<double,4>
           to_fundamental_zone(const std::array<double,4> &quaternion, const std::array<double,4> &reference_quaternion) const;
@@ -126,7 +126,7 @@ namespace aspect
 
           /**
            * A component mask that determines whether a given particle property is not a quaternion.
-           * The properties that are not quaternions and which are interpolated from particles to filed are input to the base interpolator.
+           * The properties that are not quaternions and are interpolated from particles to the field are passed to the base interpolator.
            */
           ComponentMask not_quaternion_properties;
 

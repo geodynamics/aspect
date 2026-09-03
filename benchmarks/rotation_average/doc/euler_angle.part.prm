@@ -24,7 +24,7 @@ end
 
 # # # Discretization # # #
 
-# Also keep euler angles as degree 0 polynomials
+# Also keep Euler angles as degree-0 polynomials
 # for comparability.
 subsection Discretization
   set Composition polynomial degree = 0, 0, 0, 2, 0

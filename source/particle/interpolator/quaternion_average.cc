@@ -111,12 +111,12 @@ namespace aspect
           {
             prm.declare_entry("Base interpolation scheme", "cell average",
                               Patterns::Selection(Interpolator::get_valid_interpolator_names_pattern<dim>()),
-                              "Scheme that is used to interpolate everything but quaternions");
+                              "Scheme used to interpolate all properties except quaternions.");
             prm.declare_entry("Symmetry group", "triclinic",
                               Patterns::Selection("triclinic|orthorhombic"),
-                              "symmetry group of underlying rotations that are supposed to be averaged"
-                              "this determines which symmetry operators are used to project rotations"
-                              "into the fundamental zone of the respective symmetry group");
+                              "Symmetry group of the underlying rotations that are supposed to be averaged. "
+                              "This determines which symmetry operators are used to project rotations "
+                              "into the fundamental zone of the respective symmetry group.");
           }
           prm.leave_subsection();
         }
@@ -136,7 +136,7 @@ namespace aspect
           {
             symmetry_group = prm.get("Symmetry group");
             AssertThrow( prm.get("Base interpolation scheme") != "quaternion average",
-                         ExcMessage("You may not use the ``quaternion average'' for averaging other objects than quaternions") );
+                         ExcMessage("You may not use the ``quaternion average'' interpolator for averaging objects other than quaternions.") );
 
             // create the base model;
             // it will get a chance to read its parameters below
@@ -153,7 +153,7 @@ namespace aspect
             const auto &particle_property_information = particle_property_manager.get_data_info();
 
             std::vector<std::string> active_plugin_names = particle_property_information.get_property_names();
-            // remove this in case you want to average another rotation based particle property
+            // remove this in case you want to average another rotation-based particle property
             AssertThrow(particle_property_manager.plugin_name_exists("crystal preferred orientation"),
                         ExcMessage("No crystal preferred orientation property plugin found."));
             AssertThrow(particle_property_manager.plugin_name_exists("cpo bingham average"),
@@ -169,7 +169,7 @@ namespace aspect
 
             for (unsigned int mineral_i = 0; mineral_i < n_minerals; ++mineral_i)
               {
-                AssertThrow(particle_property_manager.get_data_info().fieldname_exists("cpo mineral " + std::to_string(mineral_i) + " q.n"), ExcMessage("quaternions must be a particle property.\noutput rotation as in subsection Bingham average has to be set to quaternion."));
+                AssertThrow(particle_property_manager.get_data_info().fieldname_exists("cpo mineral " + std::to_string(mineral_i) + " q.n"), ExcMessage("Quaternions must be a particle property.\nThe output rotation in the subsection Bingham average has to be set to quaternion."));
 
                 quaternion_data_pos[mineral_i] = particle_property_manager.get_data_info().get_position_by_field_name("cpo mineral " + std::to_string(mineral_i) + " q.w");
 
@@ -193,7 +193,7 @@ namespace aspect
       {
         AssertThrow(quat_array.size()==weights.size(), ExcMessage("unequal length of quaternion array and weight array"));
 
-        // use LAPACK to compute eigenvalues/vectors of a 4x4 real symmetric matrix
+        // use LAPACK to compute eigenvalues and eigenvectors of a 4x4 real symmetric matrix
         LAPACKFullMatrix<double> K(4,4);
         double normalization = 0;
 
@@ -218,7 +218,7 @@ namespace aspect
         FullMatrix<double> eigenvectors;
 
         // only pick eigenvalues larger than 0 -> reduce search space
-        // maximum eiganvalue has to be > 0 as eigenvalues add up to one
+        // the maximum eigenvalue has to be > 0 since the eigenvalues add up to one
         K.compute_eigenvalues_symmetric(0,std::numeric_limits<double>::infinity(), 0, eigenvalues, eigenvectors);
 
         unsigned int last_idx = eigenvalues.size()-1;
@@ -311,11 +311,11 @@ namespace aspect
       QuaternionAverage<dim>::symmetry_average(const std::vector<std::array<double,4>> &quat_array, const std::vector<double> &weights) const
       {
         const unsigned int n_particles = quat_array.size();
-        // crafting an initial guess
-        // avoids locking into a not optimal solution for few particles
+        // craft an initial guess
+        // avoid getting stuck in a non-optimal solution for a small number of particles
         std::array<double,4> quat_mean = markley_average(quat_array, weights);
 
-        // find maximal geodesic from initial mean
+        // find the maximal geodesic distance from the initial mean
         std::vector<double> geodesics(n_particles);
         for (unsigned int j=0; j<n_particles; j++)
           geodesics[j] = SO3_geodesic(quat_array[j], quat_mean);
@@ -340,7 +340,7 @@ namespace aspect
             for (unsigned int j=0; j<n_particles; j++)
               symmetrized_quat_array[j] = to_fundamental_zone(quat_array[j], quat_0);
 
-            // standart average in SO(3)
+            // standard average in SO(3)
             quat_mean = markley_average(symmetrized_quat_array, weights);
 
             // compute objective function
@@ -373,7 +373,7 @@ namespace aspect
     {
       ASPECT_REGISTER_PARTICLE_INTERPOLATOR(QuaternionAverage,
                                             "quaternion average",
-                                            "Return an average rotation represented by a quaternions with the option to take into account a crystal symmetry group."
+                                            "Return an average rotation represented by quaternions, with the option to take into account a crystal symmetry group."
                                             "All other properties are averaged with a base interpolation scheme.")
     }
   }

@@ -82,7 +82,7 @@ Select one of the following models:
 
 &lsquo;quadratic least squares&rsquo;: Interpolates particle properties onto a vector of points using a quadratic least squares method. Note that deal.II must be configured with BLAS/LAPACK.
 
-&lsquo;quaternion average&rsquo;: Return an average rotation represented by a quaternions with the option to take into account a crystal symmetry group.All other properties are averaged with a base interpolation scheme.
+&lsquo;quaternion average&rsquo;: Return an average rotation represented by quaternions, with the option to take into account a crystal symmetry group.All other properties are averaged with a base interpolation scheme.
 
 &lsquo;bilinear least squares&rsquo;: Deprecated, now an alias for &lsquo;linear least squares&rsquo;. This alias will be removed in the future.
 ::::
@@ -1005,7 +1005,7 @@ A typical example would be to set this runtime parameter to &lsquo;pi=3.14159265
 
 **Pattern:** [Selection cell average|distance weighted average|harmonic average|linear least squares|nearest neighbor|quadratic least squares|quaternion average ]
 
-**Documentation:** Scheme that is used to interpolate everything but quaternions
+**Documentation:** Scheme used to interpolate all properties except quaternions.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Symmetry group<parameters:Particles_202/Interpolator/Quaternion_20average/Symmetry_20group>`
@@ -1014,7 +1014,7 @@ A typical example would be to set this runtime parameter to &lsquo;pi=3.14159265
 
 **Pattern:** [Selection triclinic|orthorhombic ]
 
-**Documentation:** symmetry group of underlying rotations that are supposed to be averagedthis determines which symmetry operators are used to project rotationsinto the fundamental zone of the respective symmetry group
+**Documentation:** Symmetry group of the underlying rotations that are supposed to be averaged. This determines which symmetry operators are used to project rotations into the fundamental zone of the respective symmetry group.
 ::::
 
 (parameters:Particles_202/Melt_20particle)=

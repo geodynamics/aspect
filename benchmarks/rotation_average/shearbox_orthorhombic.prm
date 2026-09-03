@@ -9,7 +9,7 @@ set End time                     = 3.5
 set Use years instead of seconds = false
 
 
-# # # Configuation of a simple shear box in 2D # # #
+# # # Configuration of a simple shear box in 2D # # #
 
 subsection Geometry model
   set Model name = box

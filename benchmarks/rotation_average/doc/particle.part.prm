@@ -21,12 +21,12 @@ end
 
 # # # Particles # # #
 
-# The bingham average and crystal preferred orientation plugins are required
+# The Bingham average and crystal preferred orientation plugins are required
 # to generate an "average" crystal orientation on each particle.
-# This rotation is stored as a quaternion and interpolated as one object to the gird
+# This rotation is stored as a quaternion and interpolated as one object to the grid
 # using the quaternion average interpolator.
-# the integrated strain invariant can give us information about how much strain accumulated.
-# in normal geodynamic settings the maximum strain is around 15.
+# The integrated strain invariant can give us information about how much strain accumulated.
+# In normal geodynamic settings the maximum strain is around 15.
 subsection Particles
   set List of particle properties = crystal preferred orientation, cpo bingham average, integrated strain invariant
   set Interpolation scheme          = quaternion average
@@ -36,7 +36,7 @@ subsection Particles
   # which is supposed to be averaged.
   # Currently, orthorhombic and triclinic are supported.
   # Triclinic gives a well established rotation average and
-  # orthorhombic uses the algorith described in the doc file.
+  # orthorhombic uses the algorithm described in the doc file.
   subsection Interpolator
     subsection Quaternion average
       set Base interpolation scheme = linear least squares
@@ -66,7 +66,7 @@ subsection Particles
     end
 
     # We run fabric evolution with Drex.
-    # The Mobility and Nucleation efficency are set to zero
+    # The Mobility and Nucleation efficiency are set to zero
     # to exclude dynamic recrystallization
     # which can cause complex cpo at high strain.
     subsection D-Rex 2004

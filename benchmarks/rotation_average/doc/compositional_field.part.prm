@@ -21,8 +21,8 @@ subsection Compositional fields
 end
 
 # For crystal preferred orientation mapping we often start from a random state.
-# To have a smooth start it is favorable to choose the identity quaternion
-# q=(1,0,0,0) as initial condition.
+# To have a smooth start, it is favorable to choose the identity quaternion
+# q = (1, 0, 0, 0) as the initial condition.
 subsection Initial composition model
   set List of model names = function
 
