@@ -1,6 +1,3 @@
-include $ASPECT_SOURCE_DIR/benchmarks/rotation_average/rotation_box_orthorhombic.prm
-set Output directory         = output-rotation-average-euler-angles
-
 # # # Compositional fields # # #
 
 # We set the compositional fields with euler angles instead of quaternions.

@@ -1,13 +1,13 @@
-# # # Compositional fields # # # 
+# # # Compositional fields # # #
 
-# The quaternions output by the bingham average are interpolated to the grid 
-# Quaternions can be written with a scalar part q.w 
-# and a vector part (q.n) or (q.x, q.y, q.z). 
-# If we want to map the average rotation of another mineral we can interpolate 
-# cpo mineral 1 q.w[0] ... to the grid as well.  
-# The field "eigenvalue a1" is there to use the base interpolation scheme on one other field 
-# It also tells us about how "peaked" the distribution for the a-axis is 
-# or in other words how well the a-axes align. 
+# The quaternions output by the bingham average are interpolated to the grid
+# Quaternions can be written with a scalar part q.w
+# and a vector part (q.n) or (q.x, q.y, q.z).
+# If we want to map the average rotation of another mineral we can interpolate
+# cpo mineral 1 q.w[0] ... to the grid as well.
+# The field "eigenvalue a1" is there to use the base interpolation scheme on one other field
+# It also tells us about how "peaked" the distribution for the a-axis is
+# or in other words how well the a-axes align.
 # water is required for the drex algorithm to work.
 subsection Compositional fields
   set Number of fields = 6
@@ -20,8 +20,8 @@ subsection Compositional fields
                         generic, generic
 end
 
-# For crystal preferred orientation mapping we often start from a random state. 
-# To have a smooth start it is favorable to choose the identity quaternion 
+# For crystal preferred orientation mapping we often start from a random state.
+# To have a smooth start it is favorable to choose the identity quaternion
 # q=(1,0,0,0) as initial condition.
 subsection Initial composition model
   set List of model names = function
@@ -32,12 +32,12 @@ subsection Initial composition model
   end
 end
 
-# # # Discretization # # # 
+# # # Discretization # # #
 
-# For quaternions it is recommened to use discontinuous degree 0 polynomials, 
+# For quaternions it is recommended to use discontinuous degree 0 polynomials,
 # in other words a constant value per cell.
 # This ensures that we recover a proper rotation after interpolation.
-# We can set different discretization and polynomial degrees 
+# We can set different discretization and polynomial degrees
 # for the properties that are not quaternions if we want to.
 subsection Discretization
   set Composition polynomial degree = 0, 0, 0, 0, \

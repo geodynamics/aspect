@@ -40,9 +40,8 @@ namespace aspect
       {
         public:
           /**
-           * Return the quaternion average per mineral of all quaternion component fields
-           * and return the cell-wise averaged properties of all particles of the cell containing the
-           * given positions.
+           * Return the average rotation or crystal orientation per mineral of all quaternion component fields.
+           * Also returns the interpolated properties of all not quaternion properties using a base interpolation scheme.
            */
           std::vector<std::vector<double>>
           properties_at_points(const ParticleHandler<dim> &particle_handler,
@@ -69,35 +68,36 @@ namespace aspect
         private:
 
           /**
-           * average weighted rotations based on minimizing the frobenius norm between rotations
-           * corresponds to R_{mean} = argmin_R(\sum_i||R_i - R||_F)
-           * see for reference Markley 2007 (doi:10.2514/1.28949)
-           * returns the output as a quaternion in the halfspace where q[0] > 0
+           * An average for weighted rotations based on minimizing the frobenius norm between rotations
+           * Corresponds to $\mathbf{R}_{\mathrm mean} = argmin_R(\sum_i||\mathbf{R}_i - \mathbf{R}||_F)$ represented by a quaternion.
+           * Returns the output as a quaternion in the halfspace where q.w > 0
+           * Aee for reference Markley 2007 (doi:10.2514/1.28949)
            */
           std::array<double,4>
           markley_average(const std::vector<std::array<double,4>> &quat_array, const std::vector<double> &weights) const;
 
           /**
-           * returns the geodesic distance between two rotations each represened by a quaternion
-           * a geodesic describes the shortest path in a non-euclidian space
-           * this metric is equal to the Riemannian metric in SO(3) and lies in the interval [0,pi)
-           * for a comparison of different metrics see (https://doi.org/10.1007%2Fs10851-009-0161-2)
+           * returns the geodesic distance between two rotations each represened by a quaternion.
+           * A geodesic describes the shortest path in a non-euclidian space.
+           * This metric is equal to the Riemannian metric in $SO(3)$ and lies in the interval $[0,\pi)$.
+           * For a comparison of different metrics see Huynh 2009 (https://doi.org/10.1007%2Fs10851-009-0161-2).
            */
           double
           SO3_geodesic(const std::array<double,4> &quaternion1, const std::array<double,4> &quaternion2) const;
 
           /**
-           * sends a quaternion into the fundamental zone of the reference quaternion
-           *
-           *
+           * Sends a quaternion into the fundamental zone of reference quaternion.
+           * The fundamental zone contains only one representation of any crystal orientation.
+           * In this case the representation closest to the reference quaternion is chosen.
+           * In this function all prossible representation of a crystal orientation for one rotation are hard coded and can be expanded by any other symmetry group.
            */
           std::array<double,4>
           to_fundamental_zone(const std::array<double,4> &quaternion, const std::array<double,4> &reference_quaternion) const;
 
           /**
-           * average over the reduced space of rotations SO(3)/G
-           * where G is the symmetry group G c SO(3) that contains the rotations under which an orthotropic crystal stays invariant. (e.g. Crystallographic texture and group representation, Chapter 6)
-           * The average is taken by projecting all
+           * Average over the reduced space of rotations $SO(3)/G_{cr}$,
+           * where $G_{cr} \subset SO(3)$ is the symmetry group that contains the rotations under which an orthotropic crystal stays invariant. (e.g. Crystallographic texture and group representation, Chapter 6)
+           * The average is taken by iteratively projecting all rotations into the fundamental zone around a proposed mean value.
            */
           std::array<double,4>
           symmetry_average(const std::vector<std::array<double,4>> &quat_array, const std::vector<double> &weights) const;
@@ -111,14 +111,14 @@ namespace aspect
           unsigned int n_minerals;
 
           /**
-           * the name of the symmetry group of underlying rotations that are supposed to be averaged
-           * this determines which symmetry operators are used to project rotations
-           * into the fundamental zone of the respective symmetry group
+           * The name of the symmetry group of the rotations that are supposed to be averaged.
+           * This determines the symmetry operators that are used to project rotations
+           * into a fundamental zone.
            */
           std::string symmetry_group;
 
           /**
-           * stores the data position of the first quaternion component for each mineral
+           * Stores the data position of the first quaternion component for each mineral
            * used such that one does not have to sift through all particle properties
            * to find the quaternions.
            */
@@ -126,12 +126,12 @@ namespace aspect
 
           /**
            * A component mask that determines whether a given particle property is not a quaternion.
-           * The properties that are not quaternions and which are selected can be input to the base interpolator.
+           * The properties that are not quaternions and which are interpolated from particles to filed are input to the base interpolator.
            */
           ComponentMask not_quaternion_properties;
 
           /**
-           * Scheme that is used to interpolate all particle properties but quaternions
+           * Particle interpolater that is used to interpolate all particle properties but quaternions.
            */
           std::unique_ptr<Interface<dim>> base_interpolator;
 

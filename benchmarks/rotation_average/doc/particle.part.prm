@@ -1,41 +1,41 @@
-# # # Post Process # # # 
+# # # Post Process # # #
 
-# We use particles to track the crystal preferred orientation 
+# We use particles to track the crystal preferred orientation
 subsection Postprocess
   set List of postprocessors = visualization, particles, crystal preferred orientation
 
-  # ... 
+  # ...
 
-  # Do not output the particle cpo more than once and compress it 
+  # Do not output the particle cpo more than once and compress it
   # if you are not interested in the detailed cpo.
   subsection Crystal Preferred Orientation
     set Time between data output = 1
     set Write in background thread = true
     set Compress cpo data files = true
-    set Write out raw cpo data = mineral 0: volume fraction, mineral 0: Euler angles 
-    set Write out draw volume weighted cpo data = 
+    set Write out raw cpo data = mineral 0: volume fraction, mineral 0: Euler angles
+    set Write out draw volume weighted cpo data =
   end
 
   # ...
 end
 
-# # # Particles # # # 
+# # # Particles # # #
 
 # The bingham average and crystal preferred orientation plugins are required
-# to generate an "average" crystal orientation on each particle. 
-# This rotation is stored as a quaternion and interpolated as one object to the gird 
+# to generate an "average" crystal orientation on each particle.
+# This rotation is stored as a quaternion and interpolated as one object to the gird
 # using the quaternion average interpolator.
-# the integrated strain invariant can give us information about how much strain accumulated. 
-# in normal geodynamic settings the maximum strain is around 15. 
+# the integrated strain invariant can give us information about how much strain accumulated.
+# in normal geodynamic settings the maximum strain is around 15.
 subsection Particles
   set List of particle properties = crystal preferred orientation, cpo bingham average, integrated strain invariant
   set Interpolation scheme          = quaternion average
-  # The interpolator allows using a base interpolation scheme 
+  # The interpolator allows using a base interpolation scheme
   # for all properties that are not quaternions.
-  # One can also define the symmetry group of the crystal orientation, 
+  # One can also define the symmetry group of the crystal orientation,
   # which is supposed to be averaged.
   # Currently, orthorhombic and triclinic are supported.
-  # Triclinic gives a well established rotation average and 
+  # Triclinic gives a well established rotation average and
   # orthorhombic uses the algorith described in the doc file.
   subsection Interpolator
     subsection Quaternion average
@@ -45,9 +45,9 @@ subsection Particles
   end
 
   # Cells without particles are currently not supported.
-  # A particle generator that is not random uniform is recommended 
+  # A particle generator that is not random uniform is recommended
   # to avoid a cell with zero particles in the zeroth timestep.
-  # We also need a relatively high number of particles per cell. 
+  # We also need a relatively high number of particles per cell.
   set Particle generator name       = reference cell
   set Minimum particles per cell    = 6
   set Maximum particles per cell    = 7
@@ -65,12 +65,12 @@ subsection Particles
       set Volume fractions minerals = 1
     end
 
-    # We run fabric evolution with Drex. 
-    # The Mobility and Nucleation efficency are set to zero 
+    # We run fabric evolution with Drex.
+    # The Mobility and Nucleation efficency are set to zero
     # to exclude dynamic recrystallization
-    # which can cause complex cpo at high strain. 
+    # which can cause complex cpo at high strain.
     subsection D-Rex 2004
-      set Mobility = 0 # 10 
+      set Mobility = 0 # 10
       set Stress exponents = 3.5
       set Exponents p = 1.5
       set Nucleation efficiency = 0 #5

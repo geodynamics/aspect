@@ -93,7 +93,7 @@ namespace aspect
         for (unsigned int mineral_i = 0; mineral_i < n_minerals; mineral_i++)
           if (selected_properties[quaternion_data_pos[mineral_i]])
             for (unsigned int pos_index=0; pos_index<positions.size(); pos_index++)
-              for (unsigned int j = 0; j<4; j++)              
+              for (unsigned int j = 0; j<4; j++)
                 cell_properties[pos_index][quaternion_data_pos[mineral_i]+j] = mean_quat[mineral_i][j];
 
         return cell_properties;
@@ -373,7 +373,8 @@ namespace aspect
     {
       ASPECT_REGISTER_PARTICLE_INTERPOLATOR(QuaternionAverage,
                                             "quaternion average",
-                                            "Return a quaternion average with taking into account the orthotropic symmetry group ")
+                                            "Return an average rotation represented by a quaternions with the option to take into account a crystal symmetry group."
+                                            "All other properties are averaged with a base interpolation scheme.")
     }
   }
 }

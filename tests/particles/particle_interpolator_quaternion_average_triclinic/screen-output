@@ -1,22 +1,4 @@
------------------------------------------------------------------------------
---                             This is ASPECT                              --
--- The Advanced Solver for Planetary Evolution, Convection, and Tectonics. --
------------------------------------------------------------------------------
---     . version 3.1.0-pre (add_quaternion_interpolator, 8d7354464)
---     . using deal.II 9.7.0
---     .       with 32 bit indices
---     .       with vectorization level 3 (AVX512, 8 doubles, 512 bits)
---     . using Trilinos 16.1.0
---     . using p4est 2.3.6
---     . using Geodynamic World Builder 1.1.1
---     . running in DEBUG mode
---     . running with 1 MPI process
------------------------------------------------------------------------------
 
------------------------------------------------------------------------------
--- For information on how to cite ASPECT, see:
---   https://aspect.geodynamics.org/citing.html?ver=3.1.0-pre&CPO=1&dg=1&mf=1&particles=1&sha=8d7354464&src=code
------------------------------------------------------------------------------
 Number of active cells: 16 (on 3 levels)
 Number of degrees of freedom: 429 (162+25+81+16+16+16+16+81+16)
 
@@ -71,34 +53,4 @@ Number of degrees of freedom: 429 (162+25+81+16+16+16+16+81+16)
 Termination requested by criterion: end time
 
 
-+----------------------------------------------+------------+------------+
-| Total wallclock time elapsed since start     |      1.03s |            |
-|                                              |            |            |
-| Section                          | no. calls |  wall time | % of total |
-+----------------------------------+-----------+------------+------------+
-| Assemble Stokes system rhs       |         5 |    0.0882s |       8.5% |
-| Assemble temperature system      |         5 |    0.0775s |       7.5% |
-| Build Stokes preconditioner      |         5 |   0.00596s |      0.58% |
-| Build temperature preconditioner |         5 |    0.0015s |      0.15% |
-| Initialization                   |         1 |     0.415s |        40% |
-| Particles: Advect                |        10 |   0.00919s |      0.89% |
-| Particles: Copy                  |         5 |   0.00134s |      0.13% |
-| Particles: Generate              |         1 |  0.000481s |         0% |
-| Particles: Initialization        |         1 |  0.000487s |         0% |
-| Particles: Initialize properties |         1 |   0.00398s |      0.38% |
-| Particles: Interpolate           |         5 |    0.0182s |       1.8% |
-| Particles: Sort                  |        10 |   0.00306s |       0.3% |
-| Particles: Update properties     |         5 |     0.104s |        10% |
-| Postprocessing                   |         5 |    0.0153s |       1.5% |
-| Setup dof systems                |         1 |    0.0307s |         3% |
-| Setup initial conditions         |         1 |    0.0279s |       2.7% |
-| Setup matrices                   |         1 |    0.0562s |       5.4% |
-| Solve Stokes system              |         5 |    0.0965s |       9.3% |
-| Solve temperature system         |         5 |   0.00312s |       0.3% |
-+----------------------------------+-----------+------------+------------+
 
--- Total wallclock time elapsed including restarts: 1s
------------------------------------------------------------------------------
--- For information on how to cite ASPECT, see:
---   https://aspect.geodynamics.org/citing.html?ver=3.1.0-pre&CPO=1&dg=1&mf=1&particles=1&sha=8d7354464&src=code
------------------------------------------------------------------------------

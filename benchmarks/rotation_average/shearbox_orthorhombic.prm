@@ -89,7 +89,7 @@ subsection Compositional fields
   set Mapped particle properties = qw:cpo mineral 0 q.w[0], qx:cpo mineral 0 q.n[0], qy:cpo mineral 0 q.n[1], qz:cpo mineral 0 q.n[2], eigvalue_a1:cpo mineral 0 eigenvalues a axis[0]
 
   set Types of fields = generic, generic, generic, generic, \
-                        generic, generic, 
+                        generic, generic,
 end
 
 subsection Initial composition model
@@ -124,8 +124,8 @@ subsection Postprocess
     set Time between data output = 1
     set Write in background thread = true
     set Compress cpo data files = true
-    set Write out raw cpo data = mineral 0: volume fraction, mineral 0: Euler angles 
-    set Write out draw volume weighted cpo data = 
+    set Write out raw cpo data = mineral 0: volume fraction, mineral 0: Euler angles
+    set Write out draw volume weighted cpo data =
   end
 
   subsection Particles
