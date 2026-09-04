@@ -19,8 +19,12 @@
 */
 
 #include <aspect/simulator/assemblers/stokes.h>
-#include <aspect/simulator.h>
+
 #include <aspect/utilities.h>
+#include <aspect/prescribed_dilation/interface.h>
+#include <aspect/gravity_model/interface.h>
+#include <aspect/boundary_traction/interface.h>
+
 
 #include <deal.II/base/signaling_nan.h>
 

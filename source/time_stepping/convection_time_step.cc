@@ -19,8 +19,10 @@
 */
 
 
-#include <aspect/simulator.h>
 #include <aspect/time_stepping/convection_time_step.h>
+
+#include <aspect/gravity_model/interface.h>
+
 #include <aspect/melt.h>
 #include <aspect/utilities.h>
 

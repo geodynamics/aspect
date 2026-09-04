@@ -17,8 +17,10 @@
   along with ASPECT; see the file LICENSE.  If not see
   <http://www.gnu.org/licenses/>.
 */
-#include <aspect/simulator.h>
+
 #include <aspect/postprocess/visualization/surface_elevation.h>
+
+#include <aspect/geometry_model/interface.h>
 
 namespace aspect
 {

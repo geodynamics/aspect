@@ -21,7 +21,6 @@
 
 #include <aspect/heating_model/tidal_heating.h>
 
-#include <aspect/simulator.h>
 #include <aspect/geometry_model/interface.h>
 #include <aspect/geometry_model/chunk.h>
 #include <aspect/geometry_model/two_merged_chunks.h>

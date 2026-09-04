@@ -19,17 +19,15 @@
 */
 
 
-#include <aspect/simulator.h>
-#include <aspect/global.h>
-#include <aspect/mesh_deformation/free_surface.h>
-#include <aspect/utilities.h>
-#include <aspect/structured_data.h>
-#include <aspect/geometry_model/spherical_shell.h>
 #include <aspect/postprocess/sea_level.h>
+
+#include <aspect/geometry_model/spherical_shell.h>
+#include <aspect/gravity_model/interface.h>
+#include <aspect/mesh_deformation/free_surface.h>
 #include <aspect/postprocess/geoid.h>
 
-#include <deal.II/base/quadrature_lib.h>
-#include <deal.II/fe/fe_values.h>
+#include <aspect/utilities.h>
+#include <aspect/structured_data.h>
 
 #include <cmath>
 #include <limits>

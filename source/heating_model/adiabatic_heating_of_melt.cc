@@ -21,8 +21,7 @@
 
 #include <aspect/heating_model/adiabatic_heating_of_melt.h>
 #include <aspect/melt.h>
-#include <aspect/simulator.h>
-#include <deal.II/numerics/fe_field_function.h>
+#include <aspect/gravity_model/interface.h>
 
 namespace aspect
 {

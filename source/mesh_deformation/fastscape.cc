@@ -25,7 +25,6 @@
 #include <deal.II/numerics/vector_tools.h>
 #include <aspect/postprocess/visualization.h>
 #include <ctime>
-#include <aspect/simulator.h>
 
 namespace aspect
 {

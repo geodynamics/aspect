@@ -20,10 +20,11 @@
 
 
 #include <aspect/newton.h>
+
+#include <aspect/boundary_traction/interface.h>
+#include <aspect/prescribed_dilation/interface.h>
 #include <aspect/simulator/assemblers/advection.h>
 #include <aspect/simulator/assemblers/stokes.h>
-
-#include <aspect/simulator.h>
 
 namespace aspect
 {

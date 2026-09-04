@@ -20,11 +20,12 @@
 
 
 #include <aspect/mesh_deformation/diffusion.h>
+
+#include <aspect/boundary_velocity/interface.h>
 #include <aspect/gravity_model/interface.h>
 #include <aspect/geometry_model/interface.h>
 #include <aspect/geometry_model/box.h>
 #include <aspect/geometry_model/two_merged_boxes.h>
-#include <aspect/simulator.h>
 #include <aspect/geometry_model/initial_topography_model/zero_topography.h>
 #include <aspect/linear_algebra_types.h>
 

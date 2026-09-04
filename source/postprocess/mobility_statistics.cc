@@ -18,13 +18,10 @@
   <http://www.gnu.org/licenses/>.
 */
 
-#include <aspect/simulator.h>
 #include <aspect/postprocess/mobility_statistics.h>
-#include <aspect/material_model/simple.h>
-#include <aspect/global.h>
+
 #include <aspect/utilities.h>
 #include <aspect/geometry_model/interface.h>
-#include <aspect/geometry_model/spherical_shell.h>
 
 #include <deal.II/base/quadrature_lib.h>
 #include <deal.II/fe/fe_values.h>

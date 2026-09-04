@@ -175,7 +175,7 @@ namespace aspect
            * A pointer to the crystal preferred orientation particle property.
            * Avoids repeated searches for that property.
            */
-          std::unique_ptr<const Particle::Property::CrystalPreferredOrientation<dim>> cpo_particle_property;
+          const Particle::Property::CrystalPreferredOrientation<dim> *cpo_particle_property;
 
           /**
            * Random number generator. For reproducibility of tests it is
