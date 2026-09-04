@@ -424,6 +424,15 @@ A typical example would be to set this runtime parameter to &lsquo;pi=3.14159265
 **Documentation:** The minimum upwelling angle required for a particle to be converted into lithospheric material. This angle is measured between the horizontal direction and the particle velocity vector and ranges from 0 to 90 degrees. A value of 0 means that all particles (except for particles with a basaltic composition) are converted into lithosphere (harzburgite) as soon as they reach the required depth. A value of 90 means that only particles (except for particles with a basaltic composition) moving vertically upward are converted into lithosphere (harzburgite). Units: \si{\degree}.
 ::::
 
+::::{dropdown} __Parameter:__ {ref}`Track basalt formation time<parameters:Particles_202/Crust_20and_20lithosphere_20formation/Track_20basalt_20formation_20time>`
+:name: parameters:Particles_202/Crust_20and_20lithosphere_20formation/Track_20basalt_20formation_20time
+**Default value:** false
+
+**Pattern:** [Bool]
+
+**Documentation:** If true, the model time when a particle is first and last converted to basalt will be recorded as particle properties. A value smaller than the model start timeindicates that the particle has not yet been converted to basalt.
+::::
+
 (parameters:Particles_202/Crystal_20Preferred_20Orientation)=
 ## **Subsection:** Particles 2 / Crystal Preferred Orientation
 ::::{dropdown} __Parameter:__ {ref}`CPO derivatives algorithm<parameters:Particles_202/Crystal_20Preferred_20Orientation/CPO_20derivatives_20algorithm>`

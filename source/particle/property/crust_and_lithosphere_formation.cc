@@ -64,6 +64,18 @@ namespace aspect
         // Set the initial composition to the initial basalt and harzburgite fractions.
         data.push_back(this->get_initial_composition_manager().initial_composition(position,basalt_index));
         data.push_back(this->get_initial_composition_manager().initial_composition(position,harzburgite_index));
+
+        if (if_track_basalt_formation_time)
+          {
+            // First basalt formation time. It is initialized to a value smaller than
+            // the model start time so that particles that have not yet been converted
+            // to basalt can be distinguished.
+            data.push_back(this->get_parameters().start_time - 1e10);
+            // Last basalt formation time. It is initialized to a value smaller than
+            // the model start time so that particles that have not yet been converted
+            // to basalt a second time can be distinguished.
+            data.push_back(this->get_parameters().start_time - 1e10);
+          }
       }
 
 
@@ -120,6 +132,49 @@ namespace aspect
           {
             particle.get_properties()[this->data_position] += material_outputs.reaction_terms[p][basalt_index];
             particle.get_properties()[this->data_position+1] += material_outputs.reaction_terms[p][harzburgite_index];
+
+            if (if_track_basalt_formation_time)
+              {
+                const double current_time = this->get_time() / (this->convert_output_to_years() ? year_in_seconds : 1.0);
+
+                const Particle::Property::Manager<dim> &manager = this->get_particle_manager(this->get_particle_manager_index()).get_property_manager();
+                const unsigned int generation_time_index = manager.get_data_info().get_field_index_by_name("particle generation time");
+
+                // For newly generated particles, their initial values are interpolated from
+                // the surrounding particles. We reset their basalt formation times to the lowest value
+                // so that they can be identified as not yet converted to basalt.
+                if (particle.get_properties()[generation_time_index] == current_time)
+                  {
+                    particle.get_properties()[this->data_position + 2] = this->get_parameters().start_time - 1e10;
+                    particle.get_properties()[this->data_position + 3] = this->get_parameters().start_time - 1e10;
+                  }
+
+                // If the particle starts as basalt or has already been converted to basalt,
+                // the basalt reaction term remains zero, even if it satisfies the basalt formation condition.
+                // Therefore, we use a fake "zero basalt" value to check whether the particle
+                // would satisfy the condition for new basalt formation.
+                material_inputs.composition[p][basalt_index] = 0;
+                crust_lithosphere_formation->calculate_reaction_terms(material_inputs,material_outputs);
+
+                if (material_outputs.reaction_terms[p][basalt_index] > 0)
+                  {
+                    // First generation:
+                    // The first basalt formation time is initialized to the lowest value.
+                    // A value smaller than the model start time indicates that the particle
+                    // has not yet been converted to basalt. Newly generated particles are not converted
+                    // to basalt in the same time step, because the basalt formation time is intended to
+                    // record the first time the particle reaches the conversion condition.
+                    if ((particle.get_properties()[this->data_position+2] < this->get_parameters().start_time) && (particle.get_properties()[generation_time_index] < current_time))
+                      particle.get_properties()[this->data_position+2] = current_time;
+
+                    // Last generation:
+                    // We record the last generation time if the particle has been converted to basalt at least once before.
+                    else if (particle.get_properties()[this->data_position+2] > this->get_parameters().start_time)
+                      {
+                        particle.get_properties()[this->data_position+3] = current_time;
+                      }
+                  }
+              }
             ++p;
           }
       }
@@ -177,7 +232,15 @@ namespace aspect
       std::vector<std::pair<std::string, unsigned int>>
       CrustLithosphereFormation<dim>::get_property_information() const
       {
-        return {{"basalt",1}, {"harzburgite",1}};
+        if (if_track_basalt_formation_time)
+          return {{"basalt",1},
+            {"harzburgite",1},
+            {"first_basalt_formation_time",1},
+            {"last_basalt_formation_time",1}
+          };
+
+        else
+          return {{"basalt",1}, {"harzburgite",1}};
       }
 
 
@@ -188,7 +251,15 @@ namespace aspect
       {
         prm.enter_subsection("Crust and lithosphere formation");
         {
+          // Add parameter for 'track basalt formation' on or off
           MaterialModel::ReactionModel::CrustLithosphereFormation<dim>::declare_parameters(prm);
+
+          prm.declare_entry ("Track basalt formation time", "false",
+                             Patterns::Bool (),
+                             "If true, the model time when a particle is first and last converted to basalt "
+                             "will be recorded as particle properties. A value smaller than the model start time"
+                             "indicates that the particle has not yet been converted to basalt.");
+
         }
         prm.leave_subsection();
       }
@@ -204,6 +275,16 @@ namespace aspect
           crust_lithosphere_formation = std::make_unique<MaterialModel::ReactionModel::CrustLithosphereFormation<dim>>();
           crust_lithosphere_formation->initialize_simulator(this->get_simulator());
           crust_lithosphere_formation->parse_parameters(prm);
+
+          if_track_basalt_formation_time = prm.get_bool("Track basalt formation time");
+
+          // When tracking basalt formation times, we need to make sure that
+          // the particle get a correct initialization time when they are created.
+          // The particle generation time property is required to identify newly generated particles
+          const auto &manager = this->get_particle_manager(this->get_particle_manager_index()).get_property_manager();
+          AssertThrow(if_track_basalt_formation_time == false || manager.plugin_name_exists("particle generation time"),
+                      ExcMessage("The 'particle generation time' plugin must be enabled to track "
+                                 "the basalt formation time."));
         }
         prm.leave_subsection();
       }

@@ -1,0 +1,23 @@
+# 1: Time step number
+# 2: Time (years)
+# 3: Time step size (years)
+# 4: Number of mesh cells
+# 5: Number of Stokes degrees of freedom
+# 6: Number of temperature degrees of freedom
+# 7: Number of degrees of freedom for all compositions
+# 8: Iterations for temperature solver
+# 9: Number of advected particles
+# 10: Particle file name
+ 0 0.000000000000e+00 0.000000000000e+00 64 659 289 578 0 6400 output-particle_crustal_formation_basalt_generation_time/particles/particles-00000 
+ 1 2.800915235677e-09 2.800915235677e-09 64 659 289 578 0 6144                                                                                 "" 
+ 2 5.601830471353e-09 2.800915235677e-09 64 659 289 578 0 5928                                                                                 "" 
+ 3 8.402745707030e-09 2.800915235677e-09 64 659 289 578 0 5768                                                                                 "" 
+ 4 1.120366094271e-08 2.800915235677e-09 64 659 289 578 0 5685 output-particle_crustal_formation_basalt_generation_time/particles/particles-00001 
+ 5 1.400457617838e-08 2.800915235677e-09 64 659 289 578 0 5595                                                                                 "" 
+ 6 1.680549141406e-08 2.800915235677e-09 64 659 289 578 0 5536                                                                                 "" 
+ 7 1.960640664974e-08 2.800915235677e-09 64 659 289 578 0 5478                                                                                 "" 
+ 8 2.240732188541e-08 2.800915235677e-09 64 659 289 578 0 5410 output-particle_crustal_formation_basalt_generation_time/particles/particles-00002 
+ 9 2.520823712109e-08 2.800915235677e-09 64 659 289 578 0 5358                                                                                 "" 
+10 2.800915235677e-08 2.800915235677e-09 64 659 289 578 0 5347                                                                                 "" 
+11 3.081006759244e-08 2.800915235677e-09 16 187  81 162 0 5249 output-particle_crustal_formation_basalt_generation_time/particles/particles-00003 
+12 3.171000000000e-08 8.999324075562e-10 16 187  81 162 0 5223                                                                                 "" 

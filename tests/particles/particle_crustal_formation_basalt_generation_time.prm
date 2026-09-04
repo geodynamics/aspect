@@ -1,0 +1,109 @@
+# This is a test for recording basalt formation times when using the 
+# crust and lithosphere formation particle property and reaction model. 
+# Particles are converted to basalt when they move upward into the 
+# top half of the model domain.
+
+set Dimension                              = 2
+set Use years instead of seconds = true
+set End time                               = 3.171e-8  # equals to 1 second
+set Adiabatic surface temperature          = 1613.0
+set Maximum time step                      = 1.
+
+
+subsection Prescribed Stokes solution  
+  set Model name = circle
+end
+set Nonlinear solver scheme                =  single Advection, no Stokes
+
+subsection Geometry model
+  set Model name = box
+
+  subsection Box
+    set X extent = 20000
+    set Y extent = 20000
+    set Box origin X coordinate = -10000
+    set Box origin Y coordinate = -10000
+  end
+end
+
+subsection Gravity model
+  set Model name = ascii data
+end
+
+subsection Initial temperature model
+  set List of model names =  function
+
+  subsection Function
+    set Coordinate system   = depth
+    set Function expression = 1000
+  end
+
+end
+
+subsection Material model
+  set Model name = simple
+end
+
+subsection Compositional fields
+  set Number of fields                   = 2
+  set Names of fields                    = basalt, harzburgite
+  set Types of fields                    = chemical composition, chemical composition
+  set Compositional field methods        = particles, particles
+  set Mapped particle properties         = basalt:basalt, harzburgite:harzburgite
+end
+
+subsection Initial composition model
+  set List of model names = function
+  subsection Function
+    set Coordinate system   = depth
+    set Variable names      = depth,x
+    set Function expression = 0.7;0
+  end
+end
+
+subsection Mesh refinement
+  set Initial adaptive refinement        = 0
+  set Initial global refinement          = 3
+
+end
+
+subsection Postprocess
+  set List of postprocessors = particles
+
+  subsection Particles
+    set Time between data output = 1e-8
+    set Data output format                 = gnuplot
+  end
+end
+
+subsection Particles
+    set Load balancing strategy = remove and add particles
+    set Minimum particles per cell = 25
+    set Maximum particles per cell = 400
+
+    set List of particle properties = crust and lithosphere formation, particle generation time
+    set Interpolation scheme    = quadratic least squares
+    set Particle generator name = reference cell
+    set Update ghost particles = true
+
+    subsection Crust and lithosphere formation
+      set Crustal thickness                             = 10000
+      set Lithosphere thickness                         = 700000
+      set Harzburgite profile in lithosphere = constant
+      set Minimum upwelling angle for crust formation = 0
+      set Minimum upwelling angle for lithosphere formation = 0
+      set Track basalt formation time                            = true
+    end
+
+    subsection Generator
+      subsection Reference cell
+        set Number of particles per cell per direction = 10
+      end
+    end
+
+    subsection Interpolator
+      subsection Quadratic least squares
+        set Use quadratic least squares limiter = true
+      end
+    end
+end
