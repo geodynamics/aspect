@@ -18,7 +18,7 @@
   <http://www.gnu.org/licenses/>.
 */
 
-#include <aspect/simulator.h>
+
 #include <aspect/geometry_model/initial_topography_model/interface.h>
 #include <aspect/geometry_model/initial_topography_model/prm_polygon.h>
 #include <aspect/simulator_access.h>

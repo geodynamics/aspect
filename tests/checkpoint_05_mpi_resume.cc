@@ -18,11 +18,15 @@
   <http://www.gnu.org/licenses/>.
 */
 
-#include <aspect/simulator.h>
+
+
+#include <deal.II/base/mpi.h>
 
 #include <iostream>
 #include <thread>
 #include <chrono>
+#include <cstdlib>
+#include <string>
 
 /*
  * Launch the following function when this plugin is created. Copy checkpoint

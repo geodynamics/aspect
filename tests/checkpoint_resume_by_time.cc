@@ -9,7 +9,9 @@
   any later version.
 */
 
-#include <aspect/simulator.h>
+
+
+#include <aspect/global.h>
 
 #include <cstdlib>
 #include <fstream>

@@ -23,7 +23,7 @@
 #include <aspect/geometry_model/box.h>
 #include <aspect/boundary_composition/initial_composition.h>
 #include <aspect/boundary_composition/box.h>
-#include <aspect/simulator.h>
+
 
 #include <utility>
 #include <limits>

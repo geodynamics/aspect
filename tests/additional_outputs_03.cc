@@ -18,7 +18,8 @@
   <http://www.gnu.org/licenses/>.
 */
 
-#include <aspect/simulator.h>
+
+#include <aspect/simulator_signals.h>
 #include <deal.II/grid/tria.h>
 #include <aspect/material_model/simple.h>
 #include <aspect/simulator_access.h>

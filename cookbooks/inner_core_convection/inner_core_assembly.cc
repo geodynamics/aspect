@@ -20,7 +20,8 @@
 
 #include <aspect/simulator_access.h>
 #include <aspect/global.h>
-#include <aspect/simulator.h>
+#include <aspect/simulator_signals.h>
+
 #include <aspect/simulator/assemblers/interface.h>
 
 #include <deal.II/base/quadrature_lib.h>
