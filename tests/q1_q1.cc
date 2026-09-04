@@ -72,8 +72,9 @@ namespace aspect
             beta_(beta)
           {}
 
-          virtual void vector_value (const Point<dim>   &pos,
-                                     Vector<double>   &values) const
+          virtual void
+          vector_value (const Point<dim>   &pos,
+                        Vector<double>   &values) const
           {
             Assert (dim == 2, ExcNotImplemented());
             Assert (values.size() >= 4, ExcInternalError());
@@ -107,7 +108,7 @@ namespace aspect
          */
         virtual
         Tensor<1,dim>
-        boundary_velocity (const types::boundary_id ,
+        boundary_velocity (const types::boundary_id,
                            const Point<dim> &position) const;
 
       private:
@@ -130,8 +131,9 @@ namespace aspect
          * @name Physical parameters used in the basic equations
          * @{
          */
-        virtual void evaluate(const MaterialModel::MaterialModelInputs<dim> &in,
-                              MaterialModel::MaterialModelOutputs<dim> &out) const
+        virtual void
+        evaluate(const MaterialModel::MaterialModelInputs<dim> &in,
+                 MaterialModel::MaterialModelOutputs<dim> &out) const
         {
           for (unsigned int i=0; i < in.n_evaluation_points(); ++i)
             {
@@ -257,7 +259,7 @@ namespace aspect
     template <>
     Tensor<1,2>
     DoneaHuertaBoundary<2>::
-    boundary_velocity (const types::boundary_id ,
+    boundary_velocity (const types::boundary_id,
                        const Point<2> &p) const
     {
       const DoneaHuertaMaterial<2> *
@@ -271,7 +273,7 @@ namespace aspect
     template <>
     Tensor<1,3>
     DoneaHuertaBoundary<3>::
-    boundary_velocity (const types::boundary_id ,
+    boundary_velocity (const types::boundary_id,
                        const Point<3> &) const
     {
       Assert (false, ExcNotImplemented());

@@ -29,13 +29,15 @@ namespace aspect
     public MaterialModel::Interface<dim>, public ::aspect::SimulatorAccess<dim>
   {
     public:
-      virtual bool is_compressible () const
+      virtual bool
+      is_compressible () const
       {
         return false;
       }
 
-      virtual void evaluate(const typename MaterialModel::Interface<dim>::MaterialModelInputs &in,
-                            typename MaterialModel::Interface<dim>::MaterialModelOutputs &out) const
+      virtual void
+      evaluate(const typename MaterialModel::Interface<dim>::MaterialModelInputs &in,
+               typename MaterialModel::Interface<dim>::MaterialModelOutputs &out) const
       {
         for (unsigned int i=0; i<in.n_evaluation_points(); ++i)
           {

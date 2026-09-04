@@ -2153,8 +2153,8 @@ namespace aspect
                                                                           "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
                                                                           "0123456789_") == std::string::npos,
                        ExcMessage("Invalid character in field " + names_of_compositional_fields[i] + ". "
-                                  "Names of compositional fields should consist of a "
-                                  "combination of letters, numbers and underscores."));
+                                                                          "Names of compositional fields should consist of a "
+                                                                          "combination of letters, numbers and underscores."));
           AssertThrow (names_of_compositional_fields[i].size() > 0,
                        ExcMessage("Invalid name of field " + names_of_compositional_fields[i] + ". "
                                   "Names of compositional fields need to be non-empty."));
@@ -2515,7 +2515,8 @@ namespace aspect
 
 
   template <int dim>
-  void Simulator<dim>::declare_parameters (ParameterHandler &prm, const unsigned int mpi_rank)
+  void
+  Simulator<dim>::declare_parameters (ParameterHandler &prm, const unsigned int mpi_rank)
   {
     Parameters<dim>::declare_parameters (prm, mpi_rank);
     VolumeOfFluidHandler<dim>::declare_parameters(prm);

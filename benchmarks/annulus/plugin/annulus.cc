@@ -315,7 +315,8 @@ namespace aspect
 
 
 
-        bool is_compressible () const override
+        bool
+        is_compressible () const override
         {
           return false;
         }
@@ -383,21 +384,24 @@ namespace aspect
 
 
 
-        double get_k() const
+        double
+        get_k() const
         {
           return k;
         }
 
 
 
-        bool use_transient_solution() const
+        bool
+        use_transient_solution() const
         {
           return use_transient_flow_solution;
         }
 
 
 
-        bool analytical_density() const
+        bool
+        analytical_density() const
         {
           return use_analytical_density;
         }
@@ -436,7 +440,7 @@ namespace aspect
     {
       public:
         Tensor<1,dim>
-        boundary_velocity (const types::boundary_id ,
+        boundary_velocity (const types::boundary_id,
                            const Point<dim> &position) const override
         {
           Assert (dim==2, ExcNotImplemented());
@@ -486,7 +490,8 @@ namespace aspect
     class AnnulusPostprocessor : public Postprocess::Interface<dim>, public ::aspect::SimulatorAccess<dim>
     {
       public:
-        void initialize() override
+        void
+        initialize() override
         {
           const AnnulusMaterial<dim> &material_model
             = Plugins::get_plugin_as_type<const AnnulusMaterial<dim>>(this->get_material_model());
@@ -494,8 +499,8 @@ namespace aspect
 
           compute_density_error = (material_model.analytical_density() == false);
           reference_solution = std::make_unique<AnalyticSolutions::FunctionAnnulus<dim>>(material_model.get_k(),
-                                                                                          n_components,
-                                                                                          material_model.use_transient_solution());
+                                                                                         n_components,
+                                                                                         material_model.use_transient_solution());
         }
 
 
@@ -770,8 +775,9 @@ namespace aspect
     class AnnulusInitialDensity : public aspect::InitialComposition::Interface<dim>, public ::aspect::SimulatorAccess<dim>
     {
       public:
-        double initial_composition (const Point<dim> &position,
-                                    const unsigned int n_comp) const override
+        double
+        initial_composition (const Point<dim> &position,
+                             const unsigned int n_comp) const override
         {
           const double density_index = this->introspection().compositional_index_for_name("density_field");
 

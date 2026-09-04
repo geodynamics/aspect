@@ -133,7 +133,8 @@ namespace aspect
 
 
   template <int dim>
-  double SimulatorAccess<dim>::get_time () const
+  double
+  SimulatorAccess<dim>::get_time () const
   {
     return simulator->time;
   }
@@ -141,7 +142,8 @@ namespace aspect
 
 
   template <int dim>
-  double SimulatorAccess<dim>::get_timestep () const
+  double
+  SimulatorAccess<dim>::get_timestep () const
   {
     return simulator->time_step;
   }
@@ -149,7 +151,8 @@ namespace aspect
 
 
   template <int dim>
-  double SimulatorAccess<dim>::get_old_timestep () const
+  double
+  SimulatorAccess<dim>::get_old_timestep () const
   {
     return simulator->old_time_step;
   }
@@ -157,7 +160,8 @@ namespace aspect
 
 
   template <int dim>
-  unsigned int SimulatorAccess<dim>::get_timestep_number () const
+  unsigned int
+  SimulatorAccess<dim>::get_timestep_number () const
   {
     return simulator->timestep_number;
   }
@@ -174,7 +178,8 @@ namespace aspect
 
 
   template <int dim>
-  unsigned int SimulatorAccess<dim>::get_nonlinear_iteration () const
+  unsigned int
+  SimulatorAccess<dim>::get_nonlinear_iteration () const
   {
     return simulator->nonlinear_iteration;
   }
@@ -911,7 +916,8 @@ namespace aspect
 
 
   template <int dim>
-  bool SimulatorAccess<dim>::is_stokes_matrix_free() const
+  bool
+  SimulatorAccess<dim>::is_stokes_matrix_free() const
   {
     return simulator->is_stokes_matrix_free();
   }

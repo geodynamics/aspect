@@ -28,7 +28,8 @@
 
 // create a function that is run upon loading the plugin
 // and that produces some output
-int f()
+int
+f()
 {
   std::cout << aspect::Utilities::expand_ASPECT_SOURCE_DIR("srcdir='$ASPECT_SOURCE_DIR'") << std::endl;
 

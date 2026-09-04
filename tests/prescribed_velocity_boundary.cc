@@ -39,7 +39,8 @@ namespace aspect
     namespace AnalyticSolutions
     {
       // based on http://geodynamics.org/hg/cs/AMR/Discontinuous_Stokes with permission
-      void _Inclusion(double pos[2], double r_inclusion, double eta, double *vx, double *vy, double *p)
+      void
+      _Inclusion(double pos[2], double r_inclusion, double eta, double *vx, double *vy, double *p)
       {
         const double min_eta = 1.0;
         const double max_eta = eta;
@@ -87,8 +88,9 @@ namespace aspect
       {
         public:
           FunctionInclusion (double eta_B) : Function<dim>(dim+2), eta_B_(eta_B) {}
-          virtual void vector_value (const Point<dim>   &p,
-                                     Vector<double>   &values) const
+          virtual void
+          vector_value (const Point<dim>   &p,
+                        Vector<double>   &values) const
           {
             double pos[2]= {p(0),p(1)};
             AnalyticSolutions::_Inclusion
@@ -121,7 +123,8 @@ namespace aspect
         boundary_velocity (const types::boundary_id boundary_id,
                            const Point<dim> &position) const;
 
-        virtual void initialize ()
+        virtual void
+        initialize ()
         { }
 
 
@@ -176,8 +179,9 @@ namespace aspect
          * @{
          */
 
-        virtual void evaluate(const MaterialModel::MaterialModelInputs<dim> &in,
-                              MaterialModel::MaterialModelOutputs<dim> &out) const
+        virtual void
+        evaluate(const MaterialModel::MaterialModelInputs<dim> &in,
+                 MaterialModel::MaterialModelOutputs<dim> &out) const
         {
           for (unsigned int i=0; i < in.n_evaluation_points(); ++i)
             {

@@ -44,7 +44,7 @@ namespace aspect
           const std::vector<double> composition = in.composition[i];
 
           const std::vector<double> volume_fractions = MaterialUtilities::compute_only_composition_fractions(composition,
-                                                       this->introspection().chemical_composition_field_indices());
+                                                                                                             this->introspection().chemical_composition_field_indices());
 
           equation_of_state.evaluate(in, i, eos_outputs);
 
@@ -166,7 +166,7 @@ namespace aspect
           elastic_rheology.parse_parameters(prm);
 
           viscosity_averaging = MaterialUtilities::parse_compositional_averaging_operation ("Viscosity averaging scheme",
-                                prm);
+                                                                                            prm);
 
           // Make options file for parsing maps to double arrays
           std::vector<std::string> chemical_field_names = this->introspection().chemical_composition_field_names();

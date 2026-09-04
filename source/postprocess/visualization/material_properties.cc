@@ -263,9 +263,9 @@ namespace aspect
             {
               const std::string pattern_of_names
                 = "viscosity|density|thermal expansivity|specific heat|"
-                  "thermal conductivity|thermal diffusivity|compressibility|"
-                  "entropy derivative temperature|entropy derivative pressure|reaction terms|"
-                  "melt fraction";
+                "thermal conductivity|thermal diffusivity|compressibility|"
+                "entropy derivative temperature|entropy derivative pressure|reaction terms|"
+                "melt fraction";
 
               prm.declare_entry("List of material properties",
                                 "density,thermal expansivity,specific heat,viscosity",

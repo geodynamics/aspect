@@ -138,8 +138,9 @@ namespace aspect
 
 
   template <int dim>
-  double Simulator<dim>::assemble_and_solve_temperature (const double &initial_residual,
-                                                         double *residual)
+  double
+  Simulator<dim>::assemble_and_solve_temperature (const double &initial_residual,
+                                                  double *residual)
   {
     double current_residual = 0.0;
 
@@ -213,7 +214,7 @@ namespace aspect
       }
 
     current_linearization_point.block(introspection.block_indices.temperature)
-      = solution.block(introspection.block_indices.temperature);
+                               = solution.block(introspection.block_indices.temperature);
 
     if (initial_residual > 0)
       return current_residual / initial_residual;
@@ -455,7 +456,7 @@ namespace aspect
     for (unsigned int c=0; c<introspection.n_compositional_fields; ++c)
       {
         current_linearization_point.block(introspection.block_indices.compositional_fields[c])
-          = solution.block(introspection.block_indices.compositional_fields[c]);
+                                   = solution.block(introspection.block_indices.compositional_fields[c]);
 
         if ((initial_residual.size() > 0) && (initial_residual[c] > 0))
           {
@@ -518,11 +519,11 @@ namespace aspect
     const double current_nonlinear_residual = solve_stokes(solution).first;
 
     current_linearization_point.block(introspection.block_indices.velocities)
-      = solution.block(introspection.block_indices.velocities);
+                               = solution.block(introspection.block_indices.velocities);
 
     if (introspection.block_indices.velocities != introspection.block_indices.pressure)
       current_linearization_point.block(introspection.block_indices.pressure)
-        = solution.block(introspection.block_indices.pressure);
+                                 = solution.block(introspection.block_indices.pressure);
 
     if (parameters.include_melt_transport)
       {
@@ -543,8 +544,9 @@ namespace aspect
 
 
   template <int dim>
-  void Simulator<dim>::do_one_defect_correction_Stokes_step(DefectCorrectionResiduals &dcr,
-                                                            const bool use_picard)
+  void
+  Simulator<dim>::do_one_defect_correction_Stokes_step(DefectCorrectionResiduals &dcr,
+                                                       const bool use_picard)
   {
     // Many parts of the solver depend on the block layout (velocity = 0,
     // pressure = 1). For example the linearized_stokes_initial_guess vector or the StokesBlock matrix
@@ -573,11 +575,11 @@ namespace aspect
     {
       const bool EisenstatWalkerChoiceOne = true;
       parameters.linear_stokes_solver_tolerance = compute_Eisenstat_Walker_linear_tolerance(EisenstatWalkerChoiceOne,
-                                                  newton_handler->parameters.maximum_linear_stokes_solver_tolerance,
-                                                  parameters.linear_stokes_solver_tolerance,
-                                                  dcr.stokes_residuals.second,
-                                                  dcr.residual,
-                                                  dcr.residual_old);
+                                                                                            newton_handler->parameters.maximum_linear_stokes_solver_tolerance,
+                                                                                            parameters.linear_stokes_solver_tolerance,
+                                                                                            dcr.stokes_residuals.second,
+                                                                                            dcr.residual,
+                                                                                            dcr.residual_old);
 
       pcout << "   The linear solver tolerance is set to "
             << parameters.linear_stokes_solver_tolerance
@@ -796,7 +798,8 @@ namespace aspect
 
 
   template <int dim>
-  void Simulator<dim>::solve_no_advection_no_stokes ()
+  void
+  Simulator<dim>::solve_no_advection_no_stokes ()
   {
     if (parameters.run_postprocessors_on_nonlinear_iterations)
       postprocess ();
@@ -811,7 +814,8 @@ namespace aspect
 
 
   template <int dim>
-  void Simulator<dim>::solve_no_advection_single_stokes ()
+  void
+  Simulator<dim>::solve_no_advection_single_stokes ()
   {
     assemble_and_solve_stokes();
 
@@ -828,7 +832,8 @@ namespace aspect
 
 
   template <int dim>
-  void Simulator<dim>::solve_no_advection_single_stokes_first_timestep_only ()
+  void
+  Simulator<dim>::solve_no_advection_single_stokes_first_timestep_only ()
   {
     if (timestep_number == 0)
       assemble_and_solve_stokes();
@@ -843,7 +848,8 @@ namespace aspect
 
 
   template <int dim>
-  void Simulator<dim>::solve_no_advection_iterated_stokes ()
+  void
+  Simulator<dim>::solve_no_advection_iterated_stokes ()
   {
     double initial_stokes_residual = 0.0;
 
@@ -885,7 +891,8 @@ namespace aspect
 
 
   template <int dim>
-  void Simulator<dim>::solve_no_advection_iterated_defect_correction_stokes ()
+  void
+  Simulator<dim>::solve_no_advection_iterated_defect_correction_stokes ()
   {
     // Now store the linear_tolerance we started out with, because we might change
     // it within this timestep.
@@ -948,7 +955,8 @@ namespace aspect
 
 
   template <int dim>
-  void Simulator<dim>::solve_single_advection_no_stokes ()
+  void
+  Simulator<dim>::solve_single_advection_no_stokes ()
   {
     assemble_and_solve_temperature();
     assemble_and_solve_composition();
@@ -974,9 +982,9 @@ namespace aspect
       current_constraints.distribute (distributed_stokes_solution);
 
       solution.block(introspection.block_indices.velocities) =
-        distributed_stokes_solution.block(introspection.block_indices.velocities);
+                distributed_stokes_solution.block(introspection.block_indices.velocities);
       solution.block(introspection.block_indices.pressure) =
-        distributed_stokes_solution.block(introspection.block_indices.pressure);
+                distributed_stokes_solution.block(introspection.block_indices.pressure);
 
       if (parameters.include_melt_transport)
         {
@@ -1002,7 +1010,8 @@ namespace aspect
 
 
   template <int dim>
-  void Simulator<dim>::solve_single_advection_single_stokes ()
+  void
+  Simulator<dim>::solve_single_advection_single_stokes ()
   {
     assemble_and_solve_temperature();
     assemble_and_solve_composition();
@@ -1021,7 +1030,8 @@ namespace aspect
 
 
   template <int dim>
-  void Simulator<dim>::solve_single_advection_iterated_stokes ()
+  void
+  Simulator<dim>::solve_single_advection_iterated_stokes ()
   {
     // solve the temperature and composition systems once...
     assemble_and_solve_temperature();
@@ -1068,7 +1078,8 @@ namespace aspect
 
 
   template <int dim>
-  void Simulator<dim>::solve_single_advection_iterated_defect_correction_stokes ()
+  void
+  Simulator<dim>::solve_single_advection_iterated_defect_correction_stokes ()
   {
     // The defect correction solver is just the Newton solver without derivatives.
     solve_single_advection_iterated_newton_stokes(/*use_newton_iterations = */ false);
@@ -1077,7 +1088,8 @@ namespace aspect
 
 
   template <int dim>
-  void Simulator<dim>::solve_single_advection_iterated_newton_stokes (const bool use_newton_iterations)
+  void
+  Simulator<dim>::solve_single_advection_iterated_newton_stokes (const bool use_newton_iterations)
   {
     // First assemble and solve the temperature and compositional fields
     assemble_and_solve_temperature();
@@ -1178,7 +1190,8 @@ namespace aspect
 
 
   template <int dim>
-  void Simulator<dim>::solve_iterated_advection_no_stokes ()
+  void
+  Simulator<dim>::solve_iterated_advection_no_stokes ()
   {
     double initial_temperature_residual = 0;
     std::vector<double> initial_composition_residual (introspection.n_compositional_fields,0);
@@ -1255,9 +1268,9 @@ namespace aspect
       current_constraints.distribute (distributed_stokes_solution);
 
       solution.block(introspection.block_indices.velocities) =
-        distributed_stokes_solution.block(introspection.block_indices.velocities);
+                distributed_stokes_solution.block(introspection.block_indices.velocities);
       solution.block(introspection.block_indices.pressure) =
-        distributed_stokes_solution.block(introspection.block_indices.pressure);
+                distributed_stokes_solution.block(introspection.block_indices.pressure);
 
       if (parameters.include_melt_transport)
         {
@@ -1276,7 +1289,8 @@ namespace aspect
 
 
   template <int dim>
-  void Simulator<dim>::solve_iterated_advection_and_stokes ()
+  void
+  Simulator<dim>::solve_iterated_advection_and_stokes ()
   {
     double initial_temperature_residual = 0;
     double initial_stokes_residual      = 0;
@@ -1357,7 +1371,8 @@ namespace aspect
 
 
   template <int dim>
-  void Simulator<dim>::solve_iterated_advection_and_defect_correction_stokes ()
+  void
+  Simulator<dim>::solve_iterated_advection_and_defect_correction_stokes ()
   {
     // The defect correction solver is just the Newton solver without derivatives.
     solve_iterated_advection_and_newton_stokes(/*use_newton_iterations = */ false);
@@ -1366,7 +1381,8 @@ namespace aspect
 
 
   template <int dim>
-  void Simulator<dim>::solve_iterated_advection_and_newton_stokes (bool use_newton_iterations)
+  void
+  Simulator<dim>::solve_iterated_advection_and_newton_stokes (bool use_newton_iterations)
   {
     // Now store the linear_tolerance we started out with, because we might change
     // it within this timestep.

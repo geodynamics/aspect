@@ -22,13 +22,15 @@
 
 #include <iostream>
 
-void print_string_vector(std::vector<std::string> data)
+void
+print_string_vector(std::vector<std::string> data)
 {
   for (std::vector<std::string>::iterator it = data.begin(); it != data.end(); ++it)
     std::cout << "\t" << *it << std::endl;
 }
 
-int f()
+int
+f()
 {
   using namespace aspect::Utilities;
 

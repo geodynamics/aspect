@@ -31,7 +31,8 @@ namespace aspect
     {
       namespace internal
       {
-        double weight (const double distance, const double interpolation_range)
+        double
+        weight (const double distance, const double interpolation_range)
         {
           // linear weight function (hat function)
           return std::max(1.0 - (distance/interpolation_range),0.0);
@@ -61,8 +62,8 @@ namespace aspect
 
         // Create with signaling NaNs
         std::vector<std::vector<double>> cell_properties(n_interpolate_positions,
-                                                          std::vector<double>(n_particle_properties,
-                                                                              numbers::signaling_nan<double>()));
+                                                         std::vector<double>(n_particle_properties,
+                                                                             numbers::signaling_nan<double>()));
 
         // Set requested properties to 0.0
         for (unsigned int index_positions = 0; index_positions < n_interpolate_positions; ++index_positions)

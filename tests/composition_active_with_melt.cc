@@ -34,12 +34,14 @@ namespace aspect
     public MaterialModel::MeltInterface<dim>
   {
     public:
-      virtual bool is_compressible () const
+      virtual bool
+      is_compressible () const
       {
         return false;
       }
 
-      virtual double reference_darcy_coefficient () const
+      virtual double
+      reference_darcy_coefficient () const
       {
         return 1.0;
       }
@@ -59,8 +61,9 @@ namespace aspect
       void
       parse_parameters (ParameterHandler &prm);
 
-      virtual void evaluate(const typename MaterialModel::Interface<dim>::MaterialModelInputs &in,
-                            typename MaterialModel::Interface<dim>::MaterialModelOutputs &out) const
+      virtual void
+      evaluate(const typename MaterialModel::Interface<dim>::MaterialModelInputs &in,
+               typename MaterialModel::Interface<dim>::MaterialModelOutputs &out) const
       {
         for (unsigned int i=0; i<in.n_evaluation_points(); ++i)
           {

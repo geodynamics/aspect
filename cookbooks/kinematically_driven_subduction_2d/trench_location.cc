@@ -111,7 +111,8 @@ namespace aspect
     }
 
     template <int dim>
-    void TrenchLocation<dim>::declare_parameters(ParameterHandler &prm)
+    void
+    TrenchLocation<dim>::declare_parameters(ParameterHandler &prm)
     {
       prm.enter_subsection("Postprocess");
       {
@@ -128,7 +129,8 @@ namespace aspect
     }
 
     template <int dim>
-    void TrenchLocation<dim>::parse_parameters(ParameterHandler &prm)
+    void
+    TrenchLocation<dim>::parse_parameters(ParameterHandler &prm)
     {
       prm.enter_subsection("Postprocess");
       {

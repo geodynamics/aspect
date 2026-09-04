@@ -63,7 +63,8 @@ namespace aspect
       }
 
       template <int dim>
-      void InterfaceControlledGrowth<dim>::declare_parameters(ParameterHandler &prm)
+      void
+      InterfaceControlledGrowth<dim>::declare_parameters(ParameterHandler &prm)
       {
         prm.enter_subsection("Interface controlled growth");
         {
@@ -84,7 +85,8 @@ namespace aspect
       }
 
       template <int dim>
-      void InterfaceControlledGrowth<dim>::parse_parameters(ParameterHandler &prm, const unsigned int n_reactions)
+      void
+      InterfaceControlledGrowth<dim>::parse_parameters(ParameterHandler &prm, const unsigned int n_reactions)
       {
         prm.enter_subsection("Interface controlled growth");
         {

@@ -94,7 +94,7 @@ namespace aspect
                   fe_face_values.reinit (cell, f);
                   // extract velocities
                   fe_face_values[this->introspection().extractors.velocities].get_function_values (this->get_solution(),
-                      surface_velocity_values);
+                                                                                                   surface_velocity_values);
 
                   // determine the squared velocity on the face
                   for (unsigned int q = 0; q < n_q_points_face; ++q)

@@ -55,7 +55,8 @@ namespace aspect
         FunctorDepthAverageUnscaledViscosity()
         {}
 
-        bool need_material_properties() const override
+        bool
+        need_material_properties() const override
         {
           return true;
         }
@@ -71,11 +72,12 @@ namespace aspect
             }
         }
 
-        void operator()(const MaterialModel::MaterialModelInputs<dim> &,
-                        const MaterialModel::MaterialModelOutputs<dim> &out,
-                        const FEValues<dim> &,
-                        const LinearAlgebra::BlockVector &,
-                        std::vector<double> &output) override
+        void
+        operator()(const MaterialModel::MaterialModelInputs<dim> &,
+                   const MaterialModel::MaterialModelOutputs<dim> &out,
+                   const FEValues<dim> &,
+                   const LinearAlgebra::BlockVector &,
+                   std::vector<double> &output) override
         {
           const std::shared_ptr<const MaterialModel::UnscaledViscosityAdditionalOutputs<dim>> unscaled_viscosity_outputs
             = out.template get_additional_output_object<const MaterialModel::UnscaledViscosityAdditionalOutputs<dim>>();
@@ -100,12 +102,14 @@ namespace aspect
     class ScaledViscosityProfileMaterial : public MaterialModel::Interface<dim>, public aspect::SimulatorAccess<dim>
     {
       public:
-        void initialize() override
+        void
+        initialize() override
         {
           reference_viscosity_coordinates = reference_viscosity_profile->get_interpolation_point_coordinates();
         }
 
-        void update() override
+        void
+        update() override
         {
           std::vector<std::unique_ptr<internal::FunctorBase<dim>>> lateral_averaging_properties;
           lateral_averaging_properties.push_back(std::make_unique<internal::FunctorDepthAverageUnscaledViscosity<dim>>());
@@ -173,8 +177,9 @@ namespace aspect
 
 
 
-        void evaluate(const MaterialModel::MaterialModelInputs<dim> &in,
-                      MaterialModel::MaterialModelOutputs<dim> &out) const override
+        void
+        evaluate(const MaterialModel::MaterialModelInputs<dim> &in,
+                 MaterialModel::MaterialModelOutputs<dim> &out) const override
         {
           const std::shared_ptr<UnscaledViscosityAdditionalOutputs<dim>> unscaled_viscosity_out =
             out.template get_additional_output_object<MaterialModel::UnscaledViscosityAdditionalOutputs<dim>>();
@@ -205,7 +210,8 @@ namespace aspect
             }
         }
 
-        bool is_compressible() const override
+        bool
+        is_compressible() const override
         {
           return false;
         }

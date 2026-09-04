@@ -39,20 +39,23 @@ namespace aspect
   class MeltMaterial:
     public MaterialModel::MeltInterface<dim>, public ::aspect::SimulatorAccess<dim>
   {
-      virtual bool is_compressible () const
+      virtual bool
+      is_compressible () const
       {
         return false;
       }
 
-      virtual double reference_darcy_coefficient () const
+      virtual double
+      reference_darcy_coefficient () const
       {
         const double porosity = 0.01;
         const double permeability = 1.0 + 0.001 / (1.0 - porosity);
         return permeability / 2.0;
       }
 
-      virtual void evaluate(const typename MaterialModel::Interface<dim>::MaterialModelInputs &in,
-                            typename MaterialModel::Interface<dim>::MaterialModelOutputs &out) const
+      virtual void
+      evaluate(const typename MaterialModel::Interface<dim>::MaterialModelInputs &in,
+               typename MaterialModel::Interface<dim>::MaterialModelOutputs &out) const
       {
 
         for (unsigned int i=0; i<in.n_evaluation_points(); ++i)
@@ -99,8 +102,9 @@ namespace aspect
   {
     public:
       RefFunction () : Function<dim>(9) {}
-      virtual void vector_value (const Point<dim>   &p,
-                                 Vector<double>   &values) const
+      virtual void
+      vector_value (const Point<dim>   &p,
+                    Vector<double>   &values) const
       {
         double x = p(0);
         double y = p(1);
@@ -196,7 +200,8 @@ namespace aspect
   {
     public:
       virtual
-      void fluid_pressure_gradient (
+      void
+      fluid_pressure_gradient (
         const types::boundary_id boundary_indicator,
         const MaterialModel::MaterialModelInputs<dim> &material_model_inputs,
         const MaterialModel::MaterialModelOutputs<dim> &material_model_outputs,

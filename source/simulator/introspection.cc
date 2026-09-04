@@ -289,7 +289,7 @@ namespace aspect
         else
           {
             std::shared_ptr<FiniteElement<dim>> fe = internal::new_FE_Q_or_DGQ<dim>(parameters.use_discontinuous_composition_discretization[c],
-                                                                                     parameters.composition_degrees[c]);
+                                                                                    parameters.composition_degrees[c]);
             variables.push_back(VariableDeclaration<dim>("compositions", fe, 1, 1));
           }
       }

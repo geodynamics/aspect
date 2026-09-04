@@ -35,7 +35,8 @@ namespace aspect
   {
     namespace
     {
-      std::vector<std::string> make_plastic_additional_outputs_names()
+      std::vector<std::string>
+      make_plastic_additional_outputs_names()
       {
         std::vector<std::string> names;
         names.emplace_back("current_cohesions");
@@ -304,9 +305,9 @@ namespace aspect
                   case composite:
                   {
                     const double scaled_viscosity_diffusion = compositional_viscosity_prefactors.compute_viscosity(in, viscosity_diffusion, j, i,
-                                                              CompositionalViscosityPrefactors<dim>::ModifiedFlowLaws::diffusion);
+                                                                                                                   CompositionalViscosityPrefactors<dim>::ModifiedFlowLaws::diffusion);
                     const double scaled_viscosity_dislocation = compositional_viscosity_prefactors.compute_viscosity(in, viscosity_dislocation, j, i,
-                                                                CompositionalViscosityPrefactors<dim>::ModifiedFlowLaws::dislocation);
+                                                                                                                     CompositionalViscosityPrefactors<dim>::ModifiedFlowLaws::dislocation);
                     non_yielding_viscosity = (scaled_viscosity_diffusion * scaled_viscosity_dislocation)/
                                              (scaled_viscosity_diffusion + scaled_viscosity_dislocation);
 
@@ -317,9 +318,9 @@ namespace aspect
                   case minimum_diffusion_dislocation:
                   {
                     const double scaled_viscosity_diffusion = compositional_viscosity_prefactors.compute_viscosity(in, viscosity_diffusion, j, i,
-                                                              CompositionalViscosityPrefactors<dim>::ModifiedFlowLaws::diffusion);
+                                                                                                                   CompositionalViscosityPrefactors<dim>::ModifiedFlowLaws::diffusion);
                     const double scaled_viscosity_dislocation = compositional_viscosity_prefactors.compute_viscosity(in, viscosity_dislocation, j, i,
-                                                                CompositionalViscosityPrefactors<dim>::ModifiedFlowLaws::dislocation);
+                                                                                                                     CompositionalViscosityPrefactors<dim>::ModifiedFlowLaws::dislocation);
                     non_yielding_viscosity = std::min(scaled_viscosity_diffusion, scaled_viscosity_dislocation);
 
                     output_parameters.diffusion_viscosities[j] = scaled_viscosity_diffusion;
@@ -408,8 +409,8 @@ namespace aspect
 
             // Step 4a: calculate the strain-weakened friction and cohesion
             output_parameters.drucker_prager_parameters[j] = drucker_prager_plasticity.compute_drucker_prager_parameters(j,
-                                                             phase_function_values,
-                                                             n_phase_transitions_per_composition);
+                                                                                                                         phase_function_values,
+                                                                                                                         n_phase_transitions_per_composition);
             output_parameters.drucker_prager_parameters[j].cohesion *= weakening_factors[0];
             output_parameters.drucker_prager_parameters[j].angle_internal_friction *= weakening_factors[1];
 
@@ -419,9 +420,9 @@ namespace aspect
             // the strain weakening to the dynamic friction angle. Didn't come up with a clear argument for
             // one order or the other.
             output_parameters.drucker_prager_parameters[j].angle_internal_friction = friction_models.compute_friction_angle(effective_edot_ii,
-                                                                                     j,
-                                                                                     output_parameters.drucker_prager_parameters[j].angle_internal_friction,
-                                                                                     in.position[i]);
+                                                                                                                            j,
+                                                                                                                            output_parameters.drucker_prager_parameters[j].angle_internal_friction,
+                                                                                                                            in.position[i]);
 
             // Step 5: plastic yielding
 
@@ -503,8 +504,8 @@ namespace aspect
               {
                 output_parameters.drucker_prager_parameters[j].angle_dilation *= weakening_factors[1];
                 const std::pair<double,double> dilation_terms = drucker_prager_plasticity.compute_dilation_terms_for_stokes_system (output_parameters.drucker_prager_parameters[j],
-                                                                non_yielding_viscosity,
-                                                                effective_edot_ii);
+                                                                                                                                    non_yielding_viscosity,
+                                                                                                                                    effective_edot_ii);
                 output_parameters.dilation_lhs_terms[j] = dilation_terms.first;
                 output_parameters.dilation_rhs_terms[j] = dilation_terms.second;
               }
@@ -894,7 +895,7 @@ namespace aspect
           AssertThrow(*p1 >= *p2, ExcMessage("Maximum viscosity should be larger or equal to the minimum viscosity."));
 
         viscosity_averaging = MaterialUtilities::parse_compositional_averaging_operation ("Viscosity averaging scheme",
-                              prm);
+                                                                                          prm);
 
         // Rheological parameters
         if (prm.get ("Viscous flow law") == "composite")
@@ -1050,7 +1051,7 @@ namespace aspect
                 plastic_out->friction_angles[i] += constants::radians_to_degree * volume_fractions[j] * drucker_prager_parameters.angle_internal_friction;
 
                 plastic_out->yield_stresses[i] += volume_fractions[j] * drucker_prager_plasticity.compute_yield_stress(pressure_for_plasticity,
-                                                  drucker_prager_parameters);
+                                                                                                                       drucker_prager_parameters);
               }
           }
       }

@@ -27,7 +27,8 @@
  * Launch the following function when this plugin is created. Copy checkpoint
  * files into the correct place to resume model.
  */
-int f()
+int
+f()
 {
   // Wait for file system operations of the test checkpoint_07_enable_free_surface_create to finish
   std::this_thread::sleep_for(std::chrono::seconds(15));

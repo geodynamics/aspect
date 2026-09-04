@@ -284,8 +284,8 @@ namespace aspect
         // calculated in Step 2 allowed all the mechanisms to
         // accommodate strain at that creep stress.
         std::pair<double, double> log_edot_ii_and_deriv_iterate = calculate_isostress_log_strain_rate_and_derivative(log_edot_and_deriv,
-                                                                  viscoplastic_stress,
-                                                                  partial_strain_rates);
+                                                                                                                     viscoplastic_stress,
+                                                                                                                     partial_strain_rates);
         double log_strain_rate_residual = log_edot_ii_and_deriv_iterate.first - log_edot_ii;
 
         // 4) In this rheology model, the total strain rate is partitioned between
@@ -314,8 +314,8 @@ namespace aspect
 
             // Compute the new log strain rate residual and log stress derivative
             log_edot_ii_and_deriv_iterate = calculate_isostress_log_strain_rate_and_derivative(log_edot_and_deriv,
-                                            viscoplastic_stress,
-                                            partial_strain_rates);
+                                                                                               viscoplastic_stress,
+                                                                                               partial_strain_rates);
             log_strain_rate_residual = log_edot_ii - log_edot_ii_and_deriv_iterate.first;
 
             ++stress_iteration;
@@ -544,8 +544,8 @@ namespace aspect
         // calculated in Step 2 allowed all the mechanisms to
         // accommodate strain at that creep stress.
         std::pair<double, double> log_edot_ii_and_deriv_iterate = calculate_composition_log_strain_rate_and_derivative(log_edot_and_deriv,
-                                                                  viscoplastic_stress,
-                                                                  partial_strain_rates);
+                                                                                                                       viscoplastic_stress,
+                                                                                                                       partial_strain_rates);
         double log_strain_rate_residual = log_edot_ii_and_deriv_iterate.first - log_edot_ii;
 
         // 4) In this rheology model, the total strain rate is partitioned between
@@ -570,8 +570,8 @@ namespace aspect
 
             // Compute the new log strain rate residual and log stress derivative
             log_edot_ii_and_deriv_iterate = calculate_composition_log_strain_rate_and_derivative(log_edot_and_deriv,
-                                            viscoplastic_stress,
-                                            partial_strain_rates);
+                                                                                                 viscoplastic_stress,
+                                                                                                 partial_strain_rates);
             log_strain_rate_residual = log_edot_ii - log_edot_ii_and_deriv_iterate.first;
 
             ++stress_iteration;
@@ -612,8 +612,8 @@ namespace aspect
       template <int dim>
       std::pair<double, double>
       CompositeViscoPlastic<dim>::calculate_composition_log_strain_rate_and_derivative(const std::array<std::pair<double, double>, 4> &logarithmic_strain_rates_and_stress_derivatives,
-          const double viscoplastic_stress,
-          std::vector<double> &partial_strain_rates) const
+                                                                                       const double viscoplastic_stress,
+                                                                                       std::vector<double> &partial_strain_rates) const
       {
         // Initialize the double containing the total strain rate
         // for the single compositional field of interest.
@@ -660,7 +660,8 @@ namespace aspect
 
 
       // Overload the + operator to act on two pairs of doubles.
-      std::pair<double,double> operator+(const std::pair<double,double> &x, const std::pair<double,double> &y)
+      std::pair<double,double>
+      operator+(const std::pair<double,double> &x, const std::pair<double,double> &y)
       {
         return std::make_pair(x.first+y.first, x.second+y.second);
       }

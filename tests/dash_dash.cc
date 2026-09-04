@@ -23,7 +23,8 @@
 // create a function that is run upon loading the plugin.  as discussed in the
 // corresponding .prm file, this function simply calls ASPECT again, and then
 // terminates the original instance of ASPECT
-int f()
+int
+f()
 {
   // call ASPECT with "--" and pipe an existing input file into it.
   //

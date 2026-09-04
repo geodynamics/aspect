@@ -96,7 +96,8 @@ namespace aspect
           FunctorDepthAverageUnscaledViscosity()
           {}
 
-          bool need_material_properties() const override
+          bool
+          need_material_properties() const override
           {
             return true;
           }
@@ -112,11 +113,12 @@ namespace aspect
               }
           }
 
-          void operator()(const MaterialModel::MaterialModelInputs<dim> &,
-                          const MaterialModel::MaterialModelOutputs<dim> &out,
-                          const FEValues<dim> &,
-                          const LinearAlgebra::BlockVector &,
-                          std::vector<double> &output) override
+          void
+          operator()(const MaterialModel::MaterialModelInputs<dim> &,
+                     const MaterialModel::MaterialModelOutputs<dim> &out,
+                     const FEValues<dim> &,
+                     const LinearAlgebra::BlockVector &,
+                     std::vector<double> &output) override
           {
             const std::shared_ptr<const MaterialModel::UnscaledViscosityAdditionalOutputs<dim>> unscaled_viscosity_outputs
               = out.template get_additional_output_object<const MaterialModel::UnscaledViscosityAdditionalOutputs<dim>>();
@@ -202,8 +204,8 @@ namespace aspect
       // temperature and velocity, we want to update the lateral average profile after each temperature
       // and Stokes solve.
       this->get_signals().post_stokes_solver.connect([&](const SimulatorAccess<dim> &,
-                                                         const unsigned int ,
-                                                         const unsigned int ,
+                                                         const unsigned int,
+                                                         const unsigned int,
                                                          const SolverControl &,
                                                          const SolverControl &)
       {
@@ -211,8 +213,8 @@ namespace aspect
       });
 
       this->get_signals().post_advection_solver.connect([&](const SimulatorAccess<dim> &,
-                                                            const unsigned int ,
-                                                            const unsigned int ,
+                                                            const unsigned int,
+                                                            const unsigned int,
                                                             const SolverControl &)
       {
         this->update();

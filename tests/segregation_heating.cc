@@ -33,7 +33,8 @@ namespace aspect
   {
     public:
       virtual
-      void fluid_pressure_gradient (
+      void
+      fluid_pressure_gradient (
         const types::boundary_id /*boundary_indicator*/,
         const MaterialModel::MaterialModelInputs<dim> &material_model_inputs,
         const MaterialModel::MaterialModelOutputs<dim> &material_model_outputs,

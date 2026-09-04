@@ -69,11 +69,11 @@ namespace aspect
       const int dim = 3;
 
       topography_lookup = std::make_unique<Utilities::StructuredDataLookup<dim-1>>(/* n_components = */1,
-                          /* scale = */1.0);
+                                                                                                       /* scale = */1.0);
       topography_lookup->load_file(data_directory_topography+data_file_name_topography,this->get_mpi_communicator());
 
       ice_height_lookup = std::make_unique<Utilities::StructuredDataLookup<dim-1>>(/* n_components = */1,
-                          /* scale = */1.0);
+                                                                                                       /* scale = */1.0);
       ice_height_lookup->load_file(data_directory_ice_height+data_file_name_ice_height,this->get_mpi_communicator());
     }
 
@@ -550,7 +550,8 @@ namespace aspect
 
     template <int dim>
     template <class Archive>
-    void SeaLevel<dim>::serialize (Archive &ar, const unsigned int)
+    void
+    SeaLevel<dim>::serialize (Archive &ar, const unsigned int)
     {
       ar &last_output_time
       & sea_level_offset;

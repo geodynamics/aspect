@@ -78,8 +78,9 @@ namespace aspect
             eta(eta)
           {}
 
-          virtual void vector_value (const Point<dim>   &pos,
-                                     Vector<double>   &values) const
+          virtual void
+          vector_value (const Point<dim>   &pos,
+                        Vector<double>   &values) const
           {
             Assert (dim == 2, ExcNotImplemented());
             Assert (values.size() >= 3, ExcInternalError());
@@ -132,7 +133,7 @@ namespace aspect
     template <>
     Tensor<1,2>
     MyBoundary<2>::
-    boundary_velocity (const types::boundary_id ,
+    boundary_velocity (const types::boundary_id,
                        const Point<2> &p) const
     {
       return AnalyticSolutions::velocity (p, eta);
@@ -143,7 +144,7 @@ namespace aspect
     template <>
     Tensor<1,3>
     MyBoundary<3>::
-    boundary_velocity (const types::boundary_id ,
+    boundary_velocity (const types::boundary_id,
                        const Point<3> &p) const
     {
       Assert (false, ExcNotImplemented());
@@ -164,8 +165,9 @@ namespace aspect
     class MyMaterial : public MaterialModel::Interface<dim>
     {
       public:
-        virtual void evaluate(const MaterialModel::MaterialModelInputs<dim> &in,
-                              MaterialModel::MaterialModelOutputs<dim> &out) const
+        virtual void
+        evaluate(const MaterialModel::MaterialModelInputs<dim> &in,
+                 MaterialModel::MaterialModelOutputs<dim> &out) const
         {
           const std::shared_ptr<MaterialModel::PrescribedPlasticDilation<dim>> prescribed_dilation
             = out.template get_additional_output_object<MaterialModel::PrescribedPlasticDilation<dim>>();

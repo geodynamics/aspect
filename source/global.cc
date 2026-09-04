@@ -27,7 +27,7 @@
 #include <deal.II/base/vectorization.h>
 
 #ifdef ASPECT_WITH_WORLD_BUILDER
-#include <world_builder/config.h>
+  #include <world_builder/config.h>
 #endif
 
 #include <cstring>
@@ -38,7 +38,8 @@
 namespace aspect
 {
   template <class Stream>
-  void print_aspect_header(Stream &stream)
+  void
+  print_aspect_header(Stream &stream)
   {
     const int n_tasks = dealii::Utilities::MPI::n_mpi_processes(MPI_COMM_WORLD);
 

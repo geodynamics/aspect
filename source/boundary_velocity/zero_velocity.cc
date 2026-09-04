@@ -29,7 +29,7 @@ namespace aspect
     template <int dim>
     Tensor<1,dim>
     ZeroVelocity<dim>::
-    boundary_velocity (const types::boundary_id ,
+    boundary_velocity (const types::boundary_id,
                        const Point<dim> &) const
     {
       // return a zero tensor regardless of position

@@ -69,7 +69,8 @@ namespace aspect
 
 
   template <int dim, int velocity_degree>
-  void StokesMatrixFreeHandlerGlobalCoarseningImplementation<dim,velocity_degree>::parse_parameters(ParameterHandler &prm)
+  void
+  StokesMatrixFreeHandlerGlobalCoarseningImplementation<dim,velocity_degree>::parse_parameters(ParameterHandler &prm)
   {
     prm.enter_subsection ("Solver parameters");
     prm.enter_subsection ("Matrix Free");
@@ -141,7 +142,8 @@ namespace aspect
 
 
   template <int dim, int velocity_degree>
-  void StokesMatrixFreeHandlerGlobalCoarseningImplementation<dim, velocity_degree>::assemble ()
+  void
+  StokesMatrixFreeHandlerGlobalCoarseningImplementation<dim, velocity_degree>::assemble ()
   {
     if (this->get_parameters().mesh_deformation_enabled)
       {
@@ -161,7 +163,8 @@ namespace aspect
 
 
   template <int dim, int velocity_degree>
-  void StokesMatrixFreeHandlerGlobalCoarseningImplementation<dim, velocity_degree>::evaluate_material_model ()
+  void
+  StokesMatrixFreeHandlerGlobalCoarseningImplementation<dim, velocity_degree>::evaluate_material_model ()
   {
     const auto &dof_handler_projection = dofhandlers_projection.back();
 
@@ -452,9 +455,9 @@ namespace aspect
                                                 1.0;
 
                           active_cell_data.newton_factor_wrt_pressure_table(cell,q)[i]
-                            = derivatives->viscosity_derivative_wrt_pressure[q] *
-                              derivatives->viscosity_derivative_averaging_weights[q] *
-                              newton_derivative_scaling_factor;
+                                          = derivatives->viscosity_derivative_wrt_pressure[q] *
+                                            derivatives->viscosity_derivative_averaging_weights[q] *
+                                            newton_derivative_scaling_factor;
                           Assert(std::isfinite(active_cell_data.newton_factor_wrt_pressure_table(cell,q)[i]),
                                  ExcMessage("active_cell_data.newton_factor_wrt_pressure_table is not finite: " + std::to_string(active_cell_data.newton_factor_wrt_pressure_table(cell,q)[i]) +
                                             ". Relevant variables are derivatives->viscosity_derivative_wrt_pressure[q] = " + std::to_string(derivatives->viscosity_derivative_wrt_pressure[q]) +
@@ -465,12 +468,12 @@ namespace aspect
                             for (unsigned int n=0; n<dim; ++n)
                               {
                                 active_cell_data.strain_rate_table(cell, q)[m][n][i]
-                                  = effective_strain_rate[m][n];
+                                                = effective_strain_rate[m][n];
 
                                 active_cell_data.newton_factor_wrt_strain_rate_table(cell, q)[m][n][i]
-                                  = derivatives->viscosity_derivative_wrt_strain_rate[q][m][n] *
-                                    derivatives->viscosity_derivative_averaging_weights[q] *
-                                    newton_derivative_scaling_factor * alpha;
+                                                = derivatives->viscosity_derivative_wrt_strain_rate[q][m][n] *
+                                                  derivatives->viscosity_derivative_averaging_weights[q] *
+                                                  newton_derivative_scaling_factor * alpha;
 
                                 Assert(std::isfinite(active_cell_data.strain_rate_table(cell, q)[m][n][i]),
                                        ExcMessage("active_cell_data.strain_rate_table has an element which is not finite: " + std::to_string(active_cell_data.strain_rate_table(cell, q)[m][n][i])));
@@ -481,7 +484,7 @@ namespace aspect
                           if (active_cell_data.enable_prescribed_dilation)
                             {
                               active_cell_data.dilation_derivative_wrt_pressure_table(cell,q)[i]
-                                = derivatives->dilation_derivative_wrt_pressure[q] * newton_derivative_scaling_factor;
+                                              = derivatives->dilation_derivative_wrt_pressure[q] * newton_derivative_scaling_factor;
                               Assert(std::isfinite(active_cell_data.dilation_derivative_wrt_pressure_table(cell,q)[i]),
                                      ExcMessage("active_cell_data.dilation_derivative_wrt_pressure_table is not finite: " + std::to_string(active_cell_data.dilation_derivative_wrt_pressure_table(cell,q)[i]) +
                                                 ". Relevant variables are derivatives->dilation_derivative_wrt_pressure[q] = " + std::to_string(derivatives->dilation_derivative_wrt_pressure[q]) +
@@ -491,8 +494,8 @@ namespace aspect
                                 for (unsigned int n=0; n<dim; ++n)
                                   {
                                     active_cell_data.dilation_derivative_wrt_strain_rate_table(cell,q)[m][n][i]
-                                      = derivatives->dilation_derivative_wrt_strain_rate[q][m][n] *
-                                        newton_derivative_scaling_factor;
+                                                    = derivatives->dilation_derivative_wrt_strain_rate[q][m][n] *
+                                                      newton_derivative_scaling_factor;
                                     Assert(std::isfinite(active_cell_data.dilation_derivative_wrt_pressure_table(cell,q)[i]),
                                            ExcMessage("active_cell_data.dilation_derivative_wrt_strain_rate_table is not finite: " + std::to_string(active_cell_data.dilation_derivative_wrt_pressure_table(cell,q)[i]) +
                                                       ". Relevant variables are derivatives->dilation_derivative_wrt_strain_rate[q] = " + std::to_string(derivatives->dilation_derivative_wrt_pressure[q]) +
@@ -624,7 +627,7 @@ namespace aspect
                                                            g_norm;
                       for (unsigned int d = 0; d < dim; ++d)
                         active_cell_data.free_surface_stabilization_term_table(face - n_faces_interior, q)[d][i]
-                          = pressure_perturbation * g_hat[d];
+                                        = pressure_perturbation * g_hat[d];
                     }
                 }
             }
@@ -635,7 +638,8 @@ namespace aspect
 
 
   template <int dim, int velocity_degree>
-  void StokesMatrixFreeHandlerGlobalCoarseningImplementation<dim, velocity_degree>::correct_stokes_rhs()
+  void
+  StokesMatrixFreeHandlerGlobalCoarseningImplementation<dim, velocity_degree>::correct_stokes_rhs()
   {
     // We never include Newton terms in step 0 and after that we solve with zero boundary conditions.
     // Therefore, we don't need to include Newton terms here.
@@ -773,10 +777,10 @@ namespace aspect
   template <int dim, int velocity_degree>
   StokesSolver::SolverOutputs
   StokesMatrixFreeHandlerGlobalCoarseningImplementation<dim,velocity_degree>::solve(const LinearAlgebra::BlockSparseMatrix &/*system_matrix*/,
-      const LinearAlgebra::BlockVector &system_rhs,
-      const bool solve_newton_system,
-      const double last_pressure_normalization_adjustment,
-      LinearAlgebra::BlockVector &solution_vector)
+                                                                                    const LinearAlgebra::BlockVector &system_rhs,
+                                                                                    const bool solve_newton_system,
+                                                                                    const double last_pressure_normalization_adjustment,
+                                                                                    LinearAlgebra::BlockVector &solution_vector)
   {
     StokesSolver::SolverOutputs outputs;
 
@@ -1439,7 +1443,8 @@ namespace aspect
 
 
   template <int dim, int velocity_degree>
-  void StokesMatrixFreeHandlerGlobalCoarseningImplementation<dim, velocity_degree>::setup_dofs()
+  void
+  StokesMatrixFreeHandlerGlobalCoarseningImplementation<dim, velocity_degree>::setup_dofs()
   {
     // Mapping used on the level triangulations of the multigrid hierarchy;
     // see get_level_triangulation_mapping() for why this can differ from
@@ -1710,7 +1715,8 @@ namespace aspect
 
 
   template <int dim, int velocity_degree>
-  void StokesMatrixFreeHandlerGlobalCoarseningImplementation<dim, velocity_degree>::build_preconditioner()
+  void
+  StokesMatrixFreeHandlerGlobalCoarseningImplementation<dim, velocity_degree>::build_preconditioner()
   {
     this->get_computing_timer().enter_subsection("Build Stokes preconditioner");
 

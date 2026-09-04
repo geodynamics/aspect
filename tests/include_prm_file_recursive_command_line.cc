@@ -25,7 +25,8 @@
  * Launch the following function when this plugin is created. Launch ASPECT
  * from the command line and then continue with the outer ASPECT run.
  */
-int f()
+int
+f()
 {
   std::cout << "* Starting from command line ..." << std::endl;
 

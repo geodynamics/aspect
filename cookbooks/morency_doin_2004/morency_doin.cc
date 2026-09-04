@@ -212,7 +212,7 @@ namespace aspect
           AssertThrow(x_values.size() == 1u || (x_values.size() == n_fields),
                       ExcMessage("Length of density list must be either one, or n_compositional_fields+1"));
           if (x_values.size() == 1)
-            densities.assign( n_fields , x_values[0]);
+            densities.assign( n_fields, x_values[0]);
           else
             densities = x_values;
 
@@ -221,7 +221,7 @@ namespace aspect
           AssertThrow(x_values.size() == 1u || (x_values.size() == n_fields),
                       ExcMessage("Length of activation energy list must be either one, or n_compositional_fields+1"));
           if (x_values.size() == 1)
-            activation_energies.assign( n_fields , x_values[0] );
+            activation_energies.assign( n_fields, x_values[0] );
           else
             activation_energies = x_values;
 
@@ -230,7 +230,7 @@ namespace aspect
           AssertThrow(x_values.size() == 1u || (x_values.size() == n_fields),
                       ExcMessage("Length of thermal expansivity list must be either one, or n_compositional_fields+1"));
           if (x_values.size() == 1)
-            thermal_expansivities.assign( n_fields , x_values[0]);
+            thermal_expansivities.assign( n_fields, x_values[0]);
           else
             thermal_expansivities = x_values;
 
@@ -239,14 +239,14 @@ namespace aspect
           AssertThrow(x_values.size() == 1u || (x_values.size() == n_fields),
                       ExcMessage("Length of nv list must be either one, or n_compositional_fields+1"));
           if (x_values.size() == 1)
-            nvs.assign( n_fields , x_values[0]);
+            nvs.assign( n_fields, x_values[0]);
           else
             nvs = x_values;
           x_values = Utilities::string_to_double(Utilities::split_string_list(prm.get ("Stress exponents for plastic rheology")));
           AssertThrow(x_values.size() == 1u || (x_values.size() == n_fields),
                       ExcMessage("Length of np list must be either one, or n_compositional_fields+1"));
           if (x_values.size() == 1)
-            nps.assign( n_fields , x_values[0]);
+            nps.assign( n_fields, x_values[0]);
           else
             nps = x_values;
         }

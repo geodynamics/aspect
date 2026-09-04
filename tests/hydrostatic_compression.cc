@@ -40,13 +40,15 @@ namespace aspect
     public MaterialModel::Interface<dim>, public ::aspect::SimulatorAccess<dim>
   {
     public:
-      virtual bool is_compressible () const
+      virtual bool
+      is_compressible () const
       {
         return true;
       }
 
-      virtual void evaluate(const typename MaterialModel::Interface<dim>::MaterialModelInputs &in,
-                            typename MaterialModel::Interface<dim>::MaterialModelOutputs &out) const
+      virtual void
+      evaluate(const typename MaterialModel::Interface<dim>::MaterialModelInputs &in,
+               typename MaterialModel::Interface<dim>::MaterialModelOutputs &out) const
       {
         const double alpha = -0.2;     // T0 = 100
 
@@ -71,7 +73,8 @@ namespace aspect
   class Gravity : public aspect::GravityModel::Interface<dim>
   {
     public:
-      virtual Tensor<1,dim> gravity_vector (const Point<dim> &pos) const
+      virtual Tensor<1,dim>
+      gravity_vector (const Point<dim> &pos) const
       {
         const double x=pos[0];
         const double z=pos[1];
@@ -95,8 +98,9 @@ namespace aspect
   {
     public:
       RefFunction () : Function<dim>(dim+2) {}
-      virtual void vector_value (const Point<dim>   &p,
-                                 Vector<double>   &values) const
+      virtual void
+      vector_value (const Point<dim>   &p,
+                    Vector<double>   &values) const
       {
         double x = p(0);
         double z = p(1);
@@ -271,8 +275,9 @@ namespace aspect
 
 
   template <int dim>
-  void add_force_assembler(const SimulatorAccess<dim> &simulator_access,
-                           Assemblers::Manager<dim> &assemblers)
+  void
+  add_force_assembler(const SimulatorAccess<dim> &simulator_access,
+                      Assemblers::Manager<dim> &assemblers)
   {
 
     Assemblers::Interface<dim> *assembler = new ForceAssembler<dim>();
@@ -284,7 +289,8 @@ namespace aspect
 
 
 template <int dim>
-void signal_connector (aspect::SimulatorSignals<dim> &signals)
+void
+signal_connector (aspect::SimulatorSignals<dim> &signals)
 {
   signals.set_assemblers.connect (&aspect::add_force_assembler<dim>);
 }

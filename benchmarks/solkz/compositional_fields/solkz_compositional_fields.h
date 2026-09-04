@@ -14,8 +14,9 @@ namespace aspect
     class SolKzCompositionalMaterial : public SolKzMaterial<dim>
     {
       public:
-        void evaluate(const MaterialModel::MaterialModelInputs<dim> &in,
-                      MaterialModel::MaterialModelOutputs<dim> &out) const override
+        void
+        evaluate(const MaterialModel::MaterialModelInputs<dim> &in,
+                 MaterialModel::MaterialModelOutputs<dim> &out) const override
         {
           SolKzMaterial<dim>::evaluate(in, out);
 

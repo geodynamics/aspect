@@ -35,14 +35,16 @@ namespace aspect
   {
     namespace
     {
-      void append_face_to_subcell_data(SubCellData &subcell_data, const CellData<1> &face)
+      void
+      append_face_to_subcell_data(SubCellData &subcell_data, const CellData<1> &face)
       {
         subcell_data.boundary_lines.push_back(face);
       }
 
 
 
-      void append_face_to_subcell_data(SubCellData &subcell_data, const CellData<2> &face)
+      void
+      append_face_to_subcell_data(SubCellData &subcell_data, const CellData<2> &face)
       {
         subcell_data.boundary_quads.push_back(face);
       }
@@ -330,7 +332,7 @@ namespace aspect
     SphericalShell<dim>::initialize ()
     {
       manifold = std::make_unique<internal::SphericalManifoldWithTopography<dim>>(this->get_initial_topography_model_pointer(),
-                                                                                   R0, R1);
+                                                                                  R0, R1);
     }
 
 
@@ -788,7 +790,8 @@ namespace aspect
 
 
     template <int dim>
-    double SphericalShell<dim>::inner_radius () const
+    double
+    SphericalShell<dim>::inner_radius () const
     {
       return R0;
     }
@@ -796,7 +799,8 @@ namespace aspect
 
 
     template <int dim>
-    double SphericalShell<dim>::outer_radius () const
+    double
+    SphericalShell<dim>::outer_radius () const
     {
       return R1;
     }
@@ -804,7 +808,8 @@ namespace aspect
 
 
     template <int dim>
-    double SphericalShell<dim>::opening_angle () const
+    double
+    SphericalShell<dim>::opening_angle () const
     {
       return phi;
     }

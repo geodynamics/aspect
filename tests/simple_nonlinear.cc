@@ -33,7 +33,8 @@
 namespace aspect
 {
   template <int dim>
-  int f(double parameter)
+  int
+  f(double parameter)
   {
 
     std::cout << std::endl << "Test for p = " << parameter << " with dimension " << dim << std::endl;
@@ -227,7 +228,8 @@ namespace aspect
     return 42;
   }
 
-  int exit_function()
+  int
+  exit_function()
   {
     exit(0);
     return 42;

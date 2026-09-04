@@ -350,7 +350,7 @@ namespace aspect
         grain_size = prm.get_double("Grain size");
 
         viscosity_averaging = MaterialUtilities::parse_compositional_averaging_operation ("Viscosity averaging scheme",
-                              prm);
+                                                                                          prm);
 
         // Rheological parameters for chemical compositions
         // increment by one for background:

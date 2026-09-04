@@ -39,8 +39,9 @@ namespace aspect
   {
     template <int dim>
     template <class Archive>
-    void StokesResidual<dim>::DataPoint::serialize (Archive &ar,
-                                                    const unsigned int)
+    void
+    StokesResidual<dim>::DataPoint::serialize (Archive &ar,
+                                               const unsigned int)
     {
       ar &time &solve_index &values;
     }
@@ -81,8 +82,9 @@ namespace aspect
     }
 
     template <int dim>
-    void StokesResidual<dim>::stokes_solver_callback (const SolverControl &solver_control_cheap,
-                                                      const SolverControl &solver_control_expensive)
+    void
+    StokesResidual<dim>::stokes_solver_callback (const SolverControl &solver_control_cheap,
+                                                 const SolverControl &solver_control_expensive)
     {
       unsigned int current_solve_index = 0;
       if (entries.size()>0 && entries.back().time == this->get_time())
@@ -131,7 +133,8 @@ namespace aspect
 
     template <int dim>
     template <class Archive>
-    void StokesResidual<dim>::serialize (Archive &ar, const unsigned int)
+    void
+    StokesResidual<dim>::serialize (Archive &ar, const unsigned int)
     {
       ar &entries;
     }

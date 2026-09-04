@@ -22,8 +22,9 @@
 #include <aspect/parameters.h>
 
 template <int dim>
-void f(const aspect::SimulatorAccess<dim> &simulator_access,
-       aspect::Assemblers::Manager<dim> &)
+void
+f(const aspect::SimulatorAccess<dim> &simulator_access,
+  aspect::Assemblers::Manager<dim> &)
 {
   // This function tests whether the compositional field types are correctly
   // processed.
@@ -58,14 +59,16 @@ void f(const aspect::SimulatorAccess<dim> &simulator_access,
 }
 
 template <>
-void f(const aspect::SimulatorAccess<2> &,
-       aspect::Assemblers::Manager<2> &)
+void
+f(const aspect::SimulatorAccess<2> &,
+  aspect::Assemblers::Manager<2> &)
 {
   AssertThrow(false,dealii::ExcInternalError());
 }
 
 template <int dim>
-void signal_connector (aspect::SimulatorSignals<dim> &signals)
+void
+signal_connector (aspect::SimulatorSignals<dim> &signals)
 {
   std::cout << "* Connecting signals" << std::endl;
   signals.set_assemblers.connect (std::bind(&f<dim>,

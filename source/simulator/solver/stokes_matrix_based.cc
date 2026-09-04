@@ -85,8 +85,9 @@ namespace aspect
 
 
 
-      void StokesBlock::vmult (LinearAlgebra::BlockVector       &dst,
-                               const LinearAlgebra::BlockVector &src) const
+      void
+      StokesBlock::vmult (LinearAlgebra::BlockVector       &dst,
+                          const LinearAlgebra::BlockVector &src) const
       {
         Assert (src.n_blocks() == 2, ExcInternalError());
         Assert (dst.n_blocks() == 2, ExcInternalError());
@@ -99,8 +100,9 @@ namespace aspect
       }
 
 
-      void StokesBlock::Tvmult (LinearAlgebra::BlockVector       &dst,
-                                const LinearAlgebra::BlockVector &src) const
+      void
+      StokesBlock::Tvmult (LinearAlgebra::BlockVector       &dst,
+                           const LinearAlgebra::BlockVector &src) const
       {
         Assert (src.n_blocks() == 2, ExcInternalError());
         Assert (dst.n_blocks() == 2, ExcInternalError());
@@ -113,8 +115,9 @@ namespace aspect
       }
 
 
-      void StokesBlock::vmult_add (LinearAlgebra::BlockVector       &dst,
-                                   const LinearAlgebra::BlockVector &src) const
+      void
+      StokesBlock::vmult_add (LinearAlgebra::BlockVector       &dst,
+                              const LinearAlgebra::BlockVector &src) const
       {
         Assert (src.n_blocks() == 2, ExcInternalError());
         Assert (dst.n_blocks() == 2, ExcInternalError());
@@ -127,8 +130,9 @@ namespace aspect
       }
 
 
-      void StokesBlock::Tvmult_add (LinearAlgebra::BlockVector       &dst,
-                                    const LinearAlgebra::BlockVector &src) const
+      void
+      StokesBlock::Tvmult_add (LinearAlgebra::BlockVector       &dst,
+                               const LinearAlgebra::BlockVector &src) const
       {
         Assert (src.n_blocks() == 2, ExcInternalError());
         Assert (dst.n_blocks() == 2, ExcInternalError());
@@ -142,9 +146,10 @@ namespace aspect
 
 
 
-      double StokesBlock::residual (LinearAlgebra::BlockVector       &dst,
-                                    const LinearAlgebra::BlockVector &x,
-                                    const LinearAlgebra::BlockVector &b) const
+      double
+      StokesBlock::residual (LinearAlgebra::BlockVector       &dst,
+                             const LinearAlgebra::BlockVector &x,
+                             const LinearAlgebra::BlockVector &b) const
       {
         Assert (x.n_blocks() == 2, ExcInternalError());
         Assert (dst.n_blocks() == 2, ExcInternalError());
@@ -233,8 +238,9 @@ namespace aspect
 
 
       template <class PreconditionerMp>
-      void WeightedBFBT<PreconditionerMp>::vmult(LinearAlgebra::Vector &dst,
-                                                 const LinearAlgebra::Vector &src) const
+      void
+      WeightedBFBT<PreconditionerMp>::vmult(LinearAlgebra::Vector &dst,
+                                            const LinearAlgebra::Vector &src) const
       {
         SolverControl solver_control(1000, src.l2_norm() * solver_tolerance);
         PrimitiveVectorMemory<LinearAlgebra::Vector> mem;
@@ -289,7 +295,8 @@ namespace aspect
 
 
       template <class PreconditionerMp>
-      unsigned int WeightedBFBT<PreconditionerMp>::n_iterations() const
+      unsigned int
+      WeightedBFBT<PreconditionerMp>::n_iterations() const
       {
         return n_iterations_;
       }
@@ -345,8 +352,9 @@ namespace aspect
 
 
       template <class PreconditionerMp>
-      void InverseWeightedMassMatrix<PreconditionerMp>::vmult(LinearAlgebra::Vector &dst,
-                                                              const LinearAlgebra::Vector &src) const
+      void
+      InverseWeightedMassMatrix<PreconditionerMp>::vmult(LinearAlgebra::Vector &dst,
+                                                         const LinearAlgebra::Vector &src) const
       {
         // Trilinos reports a breakdown in case src=dst=0, even though it should return
         // convergence without iterating. We simply skip solving in this case.
@@ -381,7 +389,8 @@ namespace aspect
 
 
       template <class PreconditionerMp>
-      unsigned int InverseWeightedMassMatrix<PreconditionerMp>::n_iterations() const
+      unsigned int
+      InverseWeightedMassMatrix<PreconditionerMp>::n_iterations() const
       {
         return n_iterations_;
       }
@@ -519,8 +528,8 @@ namespace aspect
           // pressure).
           const double velocity_residual = system_matrix.block(velocity_block_index,
                                                                pressure_block_index).residual (distributed_stokes_solution.block(velocity_block_index),
-                                                                   linearized_stokes_initial_guess.block(pressure_block_index),
-                                                                   system_rhs.block(velocity_block_index));
+                                                                                               linearized_stokes_initial_guess.block(pressure_block_index),
+                                                                                               system_rhs.block(velocity_block_index));
           const double pressure_residual = system_rhs.block(pressure_block_index).l2_norm();
 
           solver_tolerance = this->get_parameters().linear_stokes_solver_tolerance *

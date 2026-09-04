@@ -36,7 +36,8 @@ namespace aspect
     namespace convert
     {
       template <int dim>
-      Tensor<1,dim> to_tensor(const Tensor<1,dim> &in)
+      Tensor<1,dim>
+      to_tensor(const Tensor<1,dim> &in)
       {
         return in;
       }
@@ -44,7 +45,8 @@ namespace aspect
 
 
       template <int dim>
-      Tensor<1,1> to_tensor(const double in)
+      Tensor<1,1>
+      to_tensor(const double in)
       {
         Tensor<1,1> result;
         result[0] = in;
@@ -54,7 +56,8 @@ namespace aspect
 
 
       template <int dim, int n_components>
-      Tensor<1,n_components,Tensor<1,dim>> to_tensor2(const Tensor<1,n_components,Tensor<1,dim>> &in)
+      Tensor<1,n_components,Tensor<1,dim>>
+      to_tensor2(const Tensor<1,n_components,Tensor<1,dim>> &in)
       {
         return in;
       }
@@ -62,7 +65,8 @@ namespace aspect
 
 
       template <int dim, int n_components>
-      Tensor<1,1,Tensor<1,dim>> to_tensor2(const Tensor<1,dim> &in)
+      Tensor<1,1,Tensor<1,dim>>
+      to_tensor2(const Tensor<1,dim> &in)
       {
         Tensor<1,1,Tensor<1,dim>> result;
         result[0] = in;
@@ -87,8 +91,9 @@ namespace aspect
             evaluation(mapping, fe, first_selected_component)
         {}
 
-        void evaluate(const ArrayView<double> &solution_values,
-                      const EvaluationFlags::EvaluationFlags flags) override
+        void
+        evaluate(const ArrayView<double> &solution_values,
+                 const EvaluationFlags::EvaluationFlags flags) override
         {
           evaluation.evaluate(solution_values, flags);
         }
@@ -143,10 +148,11 @@ namespace aspect
 
 
     template <int dim>
-    static std::unique_ptr<DynamicFEPointEvaluation<dim>> make(NonMatching::MappingInfo<dim> &mapping,
-                                                                const FiniteElement<dim> &fe,
-                                                                const unsigned int        first_selected_component,
-                                                                int n_fields)
+    static std::unique_ptr<DynamicFEPointEvaluation<dim>>
+    make(NonMatching::MappingInfo<dim> &mapping,
+         const FiniteElement<dim> &fe,
+         const unsigned int        first_selected_component,
+         int n_fields)
     {
       switch (n_fields)
         {
@@ -191,8 +197,8 @@ namespace aspect
              simulator.get_fe(),
              simulator.introspection().component_indices.velocities[0]),
     pressure(std::make_unique<FEPointEvaluation<1, dim>>(mapping_info,
-                                                          simulator.get_fe(),
-                                                          simulator.introspection().component_indices.pressure)),
+                                                         simulator.get_fe(),
+                                                         simulator.introspection().component_indices.pressure)),
     temperature(mapping_info,
                 simulator.get_fe(),
                 simulator.introspection().component_indices.temperature),
@@ -235,9 +241,9 @@ namespace aspect
     // supported by the fast path of FEPointEvaluation. Replace with slow path.
     if (simulator_access.get_parameters().use_locally_conservative_discretization == true)
       pressure = std::make_unique<FEPointEvaluation<1, dim>>(simulator_access.get_mapping(),
-                                                              simulator_access.get_fe(),
-                                                              update_flags,
-                                                              simulator.introspection().component_indices.pressure);
+                                                             simulator_access.get_fe(),
+                                                             update_flags,
+                                                             simulator.introspection().component_indices.pressure);
 
     // Create the melt evaluators, but only if we use melt transport in the model
     if (simulator_access.include_melt_transport())
@@ -248,29 +254,29 @@ namespace aspect
         melt_component_indices[2] = simulator_access.introspection().variable("compaction pressure").first_component_index;
 
         fluid_velocity = std::make_unique<FEPointEvaluation<dim, dim>>(mapping_info,
-                                                                        simulator_access.get_fe(),
-                                                                        melt_component_indices[0]);
+                                                                       simulator_access.get_fe(),
+                                                                       melt_component_indices[0]);
         if (simulator_access.get_parameters().use_locally_conservative_discretization == false)
           fluid_pressure = std::make_unique<FEPointEvaluation<1, dim>>(mapping_info,
-                                                                        simulator_access.get_fe(),
-                                                                        melt_component_indices[1]);
+                                                                       simulator_access.get_fe(),
+                                                                       melt_component_indices[1]);
         else
           {
             fluid_pressure = std::make_unique<FEPointEvaluation<1, dim>>(simulator_access.get_mapping(),
-                                                                          simulator_access.get_fe(),
-                                                                          update_flags,
-                                                                          melt_component_indices[1]);
+                                                                         simulator_access.get_fe(),
+                                                                         update_flags,
+                                                                         melt_component_indices[1]);
           }
 
         if (simulator_access.get_melt_handler().melt_parameters.use_discontinuous_p_c == false)
           compaction_pressure = std::make_unique<FEPointEvaluation<1, dim>>(mapping_info,
-                                                                             simulator_access.get_fe(),
-                                                                             melt_component_indices[2]);
+                                                                            simulator_access.get_fe(),
+                                                                            melt_component_indices[2]);
         else
           compaction_pressure = std::make_unique<FEPointEvaluation<1, dim>>(simulator_access.get_mapping(),
-                                                                             simulator_access.get_fe(),
-                                                                             update_flags,
-                                                                             melt_component_indices[2]);
+                                                                            simulator_access.get_fe(),
+                                                                            update_flags,
+                                                                            melt_component_indices[2]);
 
 
       }

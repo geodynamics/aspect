@@ -59,7 +59,7 @@ namespace aspect
       // here in turns. then normalize the output vector and
       // verify that its values are non-negative numbers
       std::vector<Vector<float>> all_error_indicators (this->plugin_objects.size(),
-                                                        Vector<float>(error_indicators.size()));
+                                                       Vector<float>(error_indicators.size()));
       unsigned int index = 0;
       for (auto &p : this->plugin_objects)
         {

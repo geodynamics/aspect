@@ -26,8 +26,9 @@ namespace aspect
   {
     namespace Utilities
     {
-      double compute_fluid_fraction (const Tensor<1, 2> normal,
-                                     const double d)
+      double
+      compute_fluid_fraction (const Tensor<1, 2> normal,
+                              const double d)
       {
         const int dim = 2;
 
@@ -68,8 +69,9 @@ namespace aspect
 
 
 
-      double compute_interface_location (const Tensor<1, 2> normal,
-                                         const double vol)
+      double
+      compute_interface_location (const Tensor<1, 2> normal,
+                                  const double vol)
       {
         const int dim = 2;
 
@@ -114,8 +116,9 @@ namespace aspect
 
 
 
-      double compute_fluid_fraction (const Tensor<1, 3> normal,
-                                     const double d)
+      double
+      compute_fluid_fraction (const Tensor<1, 3> normal,
+                              const double d)
       {
         // Calculations done by Scardovelli and Zaleski in
         // doi:10.1006/jcph.2000.6567,
@@ -211,8 +214,9 @@ namespace aspect
 
 
 
-      double compute_interface_location (const Tensor<1, 3, double> normal,
-                                         const double vol)
+      double
+      compute_interface_location (const Tensor<1, 3, double> normal,
+                                  const double vol)
       {
         // Calculations done by Scardovelli and Zaleski in
         // doi:10.1006/jcph.2000.6567,
@@ -333,11 +337,12 @@ namespace aspect
 
 
 
-      void xFEM_Heaviside(const unsigned int degree,
-                          const Tensor<1, 2> normal,
-                          const double d,
-                          const std::vector<Point<2>> &points,
-                          std::vector<double> &values)
+      void
+      xFEM_Heaviside(const unsigned int degree,
+                     const Tensor<1, 2> normal,
+                     const double d,
+                     const std::vector<Point<2>> &points,
+                     std::vector<double> &values)
       {
         const int basis_count=4;
         std::vector<double> coeffs(basis_count);
@@ -432,22 +437,24 @@ namespace aspect
 
 
 
-      void xFEM_Heaviside(const unsigned int /*degree*/,
-                          const Tensor<1, 3> /*normal*/,
-                          const double /*d*/,
-                          const std::vector<Point<3>> &/*points*/,
-                          std::vector<double> &/*values*/)
+      void
+      xFEM_Heaviside(const unsigned int /*degree*/,
+                     const Tensor<1, 3> /*normal*/,
+                     const double /*d*/,
+                     const std::vector<Point<3>> &/*points*/,
+                     std::vector<double> &/*values*/)
       {
         AssertThrow(false, ExcNotImplemented());
       }
 
 
 
-      void xFEM_Heaviside_derivative_d(const unsigned int degree,
-                                       const Tensor<1, 2> normal,
-                                       const double d,
-                                       const std::vector<Point<2>> &points,
-                                       std::vector<double> &values)
+      void
+      xFEM_Heaviside_derivative_d(const unsigned int degree,
+                                  const Tensor<1, 2> normal,
+                                  const double d,
+                                  const std::vector<Point<2>> &points,
+                                  std::vector<double> &values)
       {
         const int basis_count=4;
         std::vector<double> coeffs(basis_count);
@@ -541,11 +548,12 @@ namespace aspect
 
 
 
-      void xFEM_Heaviside_derivative_d(const unsigned int /*degree*/,
-                                       const Tensor<1, 3> /*normal*/,
-                                       const double /*d*/,
-                                       const std::vector<Point<3>> &/*points*/,
-                                       std::vector<double> &/*values*/)
+      void
+      xFEM_Heaviside_derivative_d(const unsigned int /*degree*/,
+                                  const Tensor<1, 3> /*normal*/,
+                                  const double /*d*/,
+                                  const std::vector<Point<3>> &/*points*/,
+                                  std::vector<double> &/*values*/)
       {
         AssertThrow(false, ExcNotImplemented());
       }
@@ -553,13 +561,14 @@ namespace aspect
 
 
       template <int dim>
-      double compute_interface_location_newton(const unsigned int degree,
-                                               const Tensor<1, dim> normal,
-                                               const double volume_fraction,
-                                               const double vol,
-                                               const double epsilon,
-                                               const std::vector<Point<dim>> &points,
-                                               const std::vector<double> &weights)
+      double
+      compute_interface_location_newton(const unsigned int degree,
+                                        const Tensor<1, dim> normal,
+                                        const double volume_fraction,
+                                        const double vol,
+                                        const double epsilon,
+                                        const std::vector<Point<dim>> &points,
+                                        const std::vector<double> &weights)
       {
         double norm1=0.0;
         for (int i=0; i<dim; ++i)
@@ -621,11 +630,12 @@ namespace aspect
       }
 
       template <int dim>
-      double compute_fluid_volume(const unsigned int degree,
-                                  const Tensor<1, dim> normal,
-                                  const double d,
-                                  const std::vector<Point<dim>> &points,
-                                  const std::vector<double> &weights)
+      double
+      compute_fluid_volume(const unsigned int degree,
+                           const Tensor<1, dim> normal,
+                           const double d,
+                           const std::vector<Point<dim>> &points,
+                           const std::vector<double> &weights)
       {
         std::vector<double> f_values(points.size());
 
@@ -639,10 +649,11 @@ namespace aspect
       }
 
       template <int dim>
-      double calculate_volume_flux(const unsigned int dir,
-                                   const double time_direction_derivative,
-                                   const Tensor<1, dim> normal,
-                                   const double d_face)
+      double
+      calculate_volume_flux(const unsigned int dir,
+                            const double time_direction_derivative,
+                            const Tensor<1, dim> normal,
+                            const double d_face)
       {
         Tensor<1, dim> i_normal;
         double i_d;

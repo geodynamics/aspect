@@ -158,16 +158,16 @@ namespace aspect
           const std::array<double,4 > pressure_cutoffs {{10, 26, 16, 50}};
 
           std::vector<std::vector<double>> devolatilization_enthalpy_changes {LR_peridotite_poly_coeffs, LR_gabbro_poly_coeffs, \
-                                                                               LR_MORB_poly_coeffs, LR_sediment_poly_coeffs
-                                                                              };
+            LR_MORB_poly_coeffs, LR_sediment_poly_coeffs
+          };
 
           std::vector<std::vector<double>> water_mass_fractions {csat_peridotite_poly_coeffs, csat_gabbro_poly_coeffs, \
-                                                                  csat_MORB_poly_coeffs, csat_sediment_poly_coeffs
-                                                                 };
+            csat_MORB_poly_coeffs, csat_sediment_poly_coeffs
+          };
 
           std::vector<std::vector<double>> devolatilization_onset_temperatures {Td_peridotite_poly_coeffs, Td_gabbro_poly_coeffs, \
-                                                                                 Td_MORB_poly_coeffs, Td_sediment_poly_coeffs
-                                                                                };
+            Td_MORB_poly_coeffs, Td_sediment_poly_coeffs
+          };
       };
     }
 

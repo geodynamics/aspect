@@ -311,8 +311,8 @@ namespace aspect
             {
               std::ostringstream out;
               out << "While sorting postprocessors by their dependencies, "
-                  "ASPECT encountered a cycle in dependencies. The following "
-                  "postprocessors are involved:\n";
+                     "ASPECT encountered a cycle in dependencies. The following "
+                     "postprocessors are involved:\n";
               typename std::list<std::unique_ptr<Interface<dim>>>::const_iterator
               pp = this->plugin_objects.begin();
               for (unsigned int i=0; i<this->plugin_names.size(); ++i, ++pp)

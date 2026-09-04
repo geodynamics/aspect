@@ -26,14 +26,16 @@
 namespace aspect
 {
   template <int dim>
-  void pre_data_out_build_patches (DataOut<dim> &)
+  void
+  pre_data_out_build_patches (DataOut<dim> &)
   {
     std::cout << "\npre_data_out_build_patches:\n";
   }
 
 
   template <int dim>
-  void signal_connector (SimulatorSignals<dim> &signals)
+  void
+  signal_connector (SimulatorSignals<dim> &signals)
   {
     std::cout << "Connecting signals" << std::endl;
     signals.pre_data_out_build_patches.connect (&pre_data_out_build_patches<dim>);

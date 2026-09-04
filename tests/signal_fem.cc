@@ -31,7 +31,8 @@ namespace aspect
 {
 
   template <int dim>
-  void my_signal(std::vector<VariableDeclaration<dim>> &variables)
+  void
+  my_signal(std::vector<VariableDeclaration<dim>> &variables)
   {
     std::cout << "* signals.edit_finite_element_variables:" << std::endl;
 
@@ -59,7 +60,8 @@ namespace aspect
 
 
 template <int dim>
-void signal_connector (aspect::SimulatorSignals<dim> &signals)
+void
+signal_connector (aspect::SimulatorSignals<dim> &signals)
 {
   std::cout << "* Connecting signals" << std::endl;
   signals.edit_finite_element_variables.connect(&aspect::my_signal<dim>);

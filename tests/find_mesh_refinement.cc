@@ -40,7 +40,8 @@ namespace aspect
         virtual void update();
     };
     template <int dim>
-    void Box2<dim>::update()
+    void
+    Box2<dim>::update()
     {
       if (this->get_mesh_refinement_manager().template has_matching_mesh_refinement_strategy<MeshRefinement::Density<dim>>())
         std::cout << "Density is found!" << std::endl;

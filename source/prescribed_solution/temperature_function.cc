@@ -26,7 +26,8 @@ namespace aspect
 
 
     template <int dim>
-    void TemperatureFunction<dim>::update()
+    void
+    TemperatureFunction<dim>::update()
     {
       if (this->convert_output_to_years())
         {

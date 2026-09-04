@@ -45,7 +45,8 @@ namespace aspect
 
 
     template <int dim>
-    double AsciiProfile<dim>::initial_temperature (const Point<dim> &p) const
+    double
+    AsciiProfile<dim>::initial_temperature (const Point<dim> &p) const
     {
       const double depth = this->get_geometry_model().depth(p);
       return this->get_data_component(Point<1>(depth),temperature_index);

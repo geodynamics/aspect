@@ -29,7 +29,8 @@ namespace aspect
 // Check various conversions between cartesian and spherical coordinates
 
   template <typename T, unsigned int dim>
-  void check_point(T point1, T point2)
+  void
+  check_point(T point1, T point2)
   {
     std::cout << std::endl << "Point 1: ";
     for (unsigned int i = 0; i < dim; ++i)
@@ -42,7 +43,8 @@ namespace aspect
     std::cout << std::endl;
   }
 
-  int f()
+  int
+  f()
   {
     const dealii::Point<2> origin2(0,0);
     const dealii::Point<3> origin3(0,0,0);

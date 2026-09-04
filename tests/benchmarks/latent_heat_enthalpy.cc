@@ -44,8 +44,8 @@ namespace aspect
           const std::string material_file_names  = "testdata.txt";
 
           material_lookup = std::make_unique<MaterialModel::MaterialUtilities::Lookup::PerplexReader>(datadirectory+material_file_names,
-                            true,
-                            this->get_mpi_communicator());
+                                                                                                      true,
+                                                                                                      this->get_mpi_communicator());
         }
 
         bool

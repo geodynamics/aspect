@@ -29,7 +29,7 @@ TEST_CASE("Utilities::MapParsing::parse_map_to_double_array")
     INFO("check 1: ");
     aspect::Utilities::MapParsing::Options options({"background","C1","C2","C3","C4","C5"}, "TestField");
     compare_vectors_approx(aspect::Utilities::MapParsing::parse_map_to_double_array ("C1:100, C2:200, C3:300, C4:400, C5:500, background:0",
-                           options),
+                                                                                     options),
     {0.0,100.0,200.0,300.0,400.0,500.0});
 
     INFO("check 2: ");
@@ -38,17 +38,17 @@ TEST_CASE("Utilities::MapParsing::parse_map_to_double_array")
 
     INFO("check 3: ");
     compare_vectors_approx(aspect::Utilities::MapParsing::parse_map_to_double_array ("background:0, C1:100, C2:200, C3:300, C4:400, C5:500",
-                           options),
+                                                                                     options),
     {0.0,100.0,200.0,300.0,400.0,500.0});
 
     INFO("check 4: ");
     compare_vectors_approx(aspect::Utilities::MapParsing::parse_map_to_double_array ("background:0, C2:200, C1:100, C4:400, C5:500, C3:300",
-                           options),
+                                                                                     options),
     {0.0,100.0,200.0,300.0,400.0,500.0});
 
     INFO("check 5: ");
     compare_vectors_approx(aspect::Utilities::MapParsing::parse_map_to_double_array ("C1:100, C2:200, background:0, C3:300, C4:400, C5:500",
-                           options),
+                                                                                     options),
     {0.0,100.0,200.0,300.0,400.0,500.0});
   }
 
@@ -56,12 +56,12 @@ TEST_CASE("Utilities::MapParsing::parse_map_to_double_array")
     INFO("check 6: ");
     aspect::Utilities::MapParsing::Options options({"C1","C2","C3","C4","C5"}, "TestField");
     compare_vectors_approx(aspect::Utilities::MapParsing::parse_map_to_double_array ("100, 200, 300, 400, 500",
-                           options),
+                                                                                     options),
     {100.0,200.0,300.0,400.0,500.0});
 
     INFO("check 7: ");
     compare_vectors_approx(aspect::Utilities::MapParsing::parse_map_to_double_array ("C1:100, C2:200, C3:300, C4:400, C5:500",
-                           options),
+                                                                                     options),
     {100.0,200.0,300.0,400.0,500.0});
   }
 
@@ -69,7 +69,7 @@ TEST_CASE("Utilities::MapParsing::parse_map_to_double_array")
     INFO("check 8: ");
     aspect::Utilities::MapParsing::Options options({"background","C1","C2","C3","C4","C5"}, "TestField");
     compare_vectors_approx(aspect::Utilities::MapParsing::parse_map_to_double_array ("background:0, C2:200, C1:100, C4:400, C5:500, C3:300",
-                           options),
+                                                                                     options),
     {0.0,100.0,200.0,300.0,400.0,500.0});
   }
 
@@ -79,7 +79,7 @@ TEST_CASE("Utilities::MapParsing::parse_map_to_double_array")
     options.store_values_per_key = true;
     options.allow_multiple_values_per_key = true;
     compare_vectors_approx(aspect::Utilities::MapParsing::parse_map_to_double_array ("C1:100, C2:200|100, C3:300, C4:400, C5:500, background:0",
-                           options),
+                                                                                     options),
     {0.0,100.0,200.0,100.0,300.0,400.0,500.0});
 
     REQUIRE(options.n_values_per_key == std::vector<unsigned int>({1,1,2,1,1,1}));
@@ -91,7 +91,7 @@ TEST_CASE("Utilities::MapParsing::parse_map_to_double_array")
     options.allow_multiple_values_per_key = true;
     options.store_values_per_key = true;
     compare_vectors_approx(aspect::Utilities::MapParsing::parse_map_to_double_array ("C1:100, C2:200|, C3:300, C4:400, C5:500",
-                           options),
+                                                                                     options),
     {100.0,200.0,300.0,400.0,500.0});
 
     REQUIRE(options.n_values_per_key == std::vector<unsigned int>({1,1,1,1,1}));
@@ -104,7 +104,7 @@ TEST_CASE("Utilities::MapParsing::parse_map_to_double_array")
     options.allow_multiple_values_per_key = true;
 
     compare_vectors_approx(aspect::Utilities::MapParsing::parse_map_to_double_array ("C1:100, C2:200|300, C3:300, C4:400, C5:500",
-                           options),
+                                                                                     options),
     {100.0,200.0,300.0,300.0,400.0,500.0});
 
     REQUIRE(options.n_values_per_key == std::vector<unsigned int>({1,2,1,1,1}));
@@ -112,7 +112,7 @@ TEST_CASE("Utilities::MapParsing::parse_map_to_double_array")
     options.store_values_per_key = false;
     options.check_values_per_key = true;
     compare_vectors_approx(aspect::Utilities::MapParsing::parse_map_to_double_array ("C1:100, C2:200|300, C3:300, C4:400, C5:500",
-                           options),
+                                                                                     options),
     {100.0,200.0,300.0,300.0,400.0,500.0});
   }
 
@@ -123,7 +123,7 @@ TEST_CASE("Utilities::MapParsing::parse_map_to_double_array")
     options.store_values_per_key = true;
 
     compare_vectors_approx(aspect::Utilities::MapParsing::parse_map_to_double_array ("all:300|400",
-                           options),
+                                                                                     options),
     {300.0,400.0,300.0,400.0});
 
     REQUIRE(options.n_values_per_key == std::vector<unsigned int> ({2,2}));
@@ -131,7 +131,7 @@ TEST_CASE("Utilities::MapParsing::parse_map_to_double_array")
     options.store_values_per_key = false;
     options.check_values_per_key = true;
     compare_vectors_approx(aspect::Utilities::MapParsing::parse_map_to_double_array ("all:100|200",
-                           options),
+                                                                                     options),
     {100.0,200.0,100.0,200.0});
   }
 
@@ -141,7 +141,7 @@ TEST_CASE("Utilities::MapParsing::parse_map_to_double_array")
     options.allow_missing_keys = true;
 
     compare_vectors_approx(aspect::Utilities::MapParsing::parse_map_to_double_array ("background:0, C1:100, C4:400, C5:500, C3:300",
-                           options),
+                                                                                     options),
     {0.0,100.0,300.0,400.0,500.0});
   }
 
@@ -151,7 +151,7 @@ TEST_CASE("Utilities::MapParsing::parse_map_to_double_array")
     options.allow_missing_keys = true;
 
     compare_vectors_approx(aspect::Utilities::MapParsing::parse_map_to_double_array ("C1:100, C4:400, C5:500, C3:300",
-                           options),
+                                                                                     options),
     {100.0,300.0,400.0,500.0});
   }
 
@@ -161,7 +161,7 @@ TEST_CASE("Utilities::MapParsing::parse_map_to_double_array")
     options.allow_missing_keys = true;
 
     compare_vectors_approx(aspect::Utilities::MapParsing::parse_map_to_double_array ("",
-                           options),
+                                                                                     options),
                            std::vector<double>());
   }
 
@@ -173,7 +173,7 @@ TEST_CASE("Utilities::MapParsing::parse_map_to_double_array")
     options.allow_missing_keys = true;
 
     compare_vectors_approx(aspect::Utilities::MapParsing::parse_map_to_double_array ("C1:100, C2:200|300, C3:300, C5:500",
-                           options),
+                                                                                     options),
     {100.0,200.0,300.0,300.0,500.0});
 
     REQUIRE(options.n_values_per_key == std::vector<unsigned int>({1,2,1,0,1}));
@@ -181,7 +181,7 @@ TEST_CASE("Utilities::MapParsing::parse_map_to_double_array")
     options.store_values_per_key = false;
     options.check_values_per_key = true;
     compare_vectors_approx(aspect::Utilities::MapParsing::parse_map_to_double_array ("C1:100, C2:200|300, C3:300, C5:500",
-                           options),
+                                                                                     options),
     {100.0,200.0,300.0,300.0,500.0});
   }
 
@@ -194,14 +194,14 @@ TEST_CASE("Utilities::MapParsing::parse_map_to_double_array")
     options.n_values_per_key = {2,2};
 
     compare_vectors_approx(aspect::Utilities::MapParsing::parse_map_to_double_array ("C1:300|400, C2:200",
-                           options),
+                                                                                     options),
     {300.0,400.0,200.0,200.0});
 
     INFO("check 19: ");
 
     // still using the compare_vectors_approx defined before
     compare_vectors_approx(aspect::Utilities::MapParsing::parse_map_to_double_array ("200",
-                           options),
+                                                                                     options),
     {200.0,200.0,200.0,200.0});
   }
 
@@ -319,7 +319,7 @@ TEST_CASE("Utilities::MapParsing::parse_map_to_double_array FAIL ON PURPOSE")
     options.store_values_per_key = true;
 
     compare_vectors_approx(aspect::Utilities::MapParsing::parse_map_to_double_array ("C1:100, C2:200|300, C3:300, C4:400, C5:500",
-                           options),
+                                                                                     options),
     {100.0,200.0,300.0,300.0,400.0,500.0});
 
     REQUIRE(options.n_values_per_key == std::vector<unsigned int>({1,2,1,1,1}));
@@ -339,7 +339,7 @@ TEST_CASE("Utilities::MapParsing::parse_map_to_double_array FAIL ON PURPOSE")
     options.store_values_per_key = true;
 
     compare_vectors_approx(aspect::Utilities::MapParsing::parse_map_to_double_array ("all:300|400",
-                           options),
+                                                                                     options),
     {300.0,400.0,300.0,400.0});
 
     REQUIRE(options.n_values_per_key == std::vector<unsigned int>({2,2}));

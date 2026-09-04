@@ -68,7 +68,8 @@ namespace aspect
 
 
     template <int dim>
-    double AsciiData<dim>::pressure (const Point<dim> &p) const
+    double
+    AsciiData<dim>::pressure (const Point<dim> &p) const
     {
       const double depth = this->get_geometry_model().depth(p);
       return this->get_data_component(Point<1>(depth),pressure_index);
@@ -77,7 +78,8 @@ namespace aspect
 
 
     template <int dim>
-    double AsciiData<dim>::temperature (const Point<dim> &p) const
+    double
+    AsciiData<dim>::temperature (const Point<dim> &p) const
     {
       const double depth = this->get_geometry_model().depth(p);
       return this->get_data_component(Point<1>(depth),temperature_index);
@@ -86,7 +88,8 @@ namespace aspect
 
 
     template <int dim>
-    double AsciiData<dim>::density (const Point<dim> &p) const
+    double
+    AsciiData<dim>::density (const Point<dim> &p) const
     {
       const double depth = this->get_geometry_model().depth(p);
       return this->get_data_component(Point<1>(depth),density_index);
@@ -95,7 +98,8 @@ namespace aspect
 
 
     template <int dim>
-    double AsciiData<dim>::density_derivative (const Point<dim> &p) const
+    double
+    AsciiData<dim>::density_derivative (const Point<dim> &p) const
     {
       const double depth = this->get_geometry_model().depth(p);
       const double eps = std::sqrt(std::numeric_limits<double>::epsilon()) * this->get_geometry_model().maximal_depth();

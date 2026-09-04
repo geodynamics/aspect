@@ -700,8 +700,9 @@ namespace aspect
 
     template <int dim>
     template <class Archive>
-    void MeshDeformationHandler<dim>::save (Archive &ar,
-                                            const unsigned int) const
+    void
+    MeshDeformationHandler<dim>::save (Archive &ar,
+                                       const unsigned int) const
     {
       // let all the mesh deformation plugins save their data in a map and then
       // serialize that
@@ -717,8 +718,9 @@ namespace aspect
 
     template <int dim>
     template <class Archive>
-    void MeshDeformationHandler<dim>::load (Archive &ar,
-                                            const unsigned int)
+    void
+    MeshDeformationHandler<dim>::load (Archive &ar,
+                                       const unsigned int)
     {
       // get the map back out of the stream; then let the mesh deformation plugins
       // that we currently have get their data from there. note that this

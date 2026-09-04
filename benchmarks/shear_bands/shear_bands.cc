@@ -71,17 +71,20 @@ namespace aspect
       public ::aspect::SimulatorAccess<dim>
     {
       public:
-        bool is_compressible () const override
+        bool
+        is_compressible () const override
         {
           return false;
         }
 
-        double reference_viscosity () const
+        double
+        reference_viscosity () const
         {
           return eta_0;
         }
 
-        double reference_darcy_coefficient () const override
+        double
+        reference_darcy_coefficient () const override
         {
           return reference_permeability * std::pow(0.01, permeability_exponent) / eta_f;
         }
@@ -109,8 +112,9 @@ namespace aspect
         void
         parse_parameters (ParameterHandler &prm) override;
 
-        void evaluate(const typename MaterialModel::Interface<dim>::MaterialModelInputs &in,
-                      typename MaterialModel::Interface<dim>::MaterialModelOutputs &out) const override
+        void
+        evaluate(const typename MaterialModel::Interface<dim>::MaterialModelInputs &in,
+                 typename MaterialModel::Interface<dim>::MaterialModelOutputs &out) const override
         {
           const unsigned int porosity_idx = this->introspection().compositional_index_for_name("porosity");
           const double strain_rate_dependence = (1.0 - dislocation_creep_exponent) / dislocation_creep_exponent;
@@ -374,8 +378,8 @@ namespace aspect
 
       interpolate_noise
         = std::make_unique<Functions::InterpolatedUniformGridData<dim>> (grid_extents,
-                                                                          grid_intervals,
-                                                                          white_noise);
+                                                                         grid_intervals,
+                                                                         white_noise);
     }
 
 
@@ -760,7 +764,7 @@ namespace aspect
           {
             fe_values.reinit (cell);
             fe_values[this->introspection().extractors.velocities].get_function_divergences (this->get_solution(),
-                velocity_divergences);
+                                                                                             velocity_divergences);
             position = fe_values.get_quadrature_points();
 
             for (unsigned int q = 0; q < n_q_points; ++q)

@@ -120,7 +120,7 @@ namespace aspect
     {
       // Converts rank 2 kelvin notation viscosity tensor to full rank 4 tensor necessary in the assembler
       // recast into FullMatrix type with shape 6x6 for 3d or 3x3 for 2d applications
-      FullMatrix<double> V_mat((dim==3) ? 6 : 3 , (dim==3) ? 6 : 3);
+      FullMatrix<double> V_mat((dim==3) ? 6 : 3, (dim==3) ? 6 : 3);
       if (dim == 3)
         {
           for (unsigned int vi=0; vi<6; ++vi)

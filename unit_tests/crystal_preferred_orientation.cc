@@ -29,7 +29,8 @@
 /**
  * Compare the given two std::array<double,3> entries with an epsilon (using Catch::Approx)
  */
-inline void check_3d_arrays_approx_equal(
+inline void
+check_3d_arrays_approx_equal(
   const std::array<double,3> &computed,
   const std::array<double,3> &expected)
 {
@@ -45,7 +46,8 @@ inline void check_3d_arrays_approx_equal(
 /**
  * Compare the given two std::array<double,3> entries with an epsilon (using Catch::Approx)
  */
-inline void check_3d_arrays_approx_equal(
+inline void
+check_3d_arrays_approx_equal(
   const std::vector<double> &computed,
   const std::vector<double> &expected)
 {
@@ -61,7 +63,8 @@ inline void check_3d_arrays_approx_equal(
 /**
  * Compare two rotation matrices
  */
-inline void check_rotation_matrices_approx_equal(
+inline void
+check_rotation_matrices_approx_equal(
   const std::array<std::array<double,3>,3> &computed,
   const std::array<std::array<double,3>,3> &expected)
 {
@@ -86,7 +89,8 @@ inline void check_rotation_matrices_approx_equal(
 /**
  * Compare two rotation matrices
  */
-inline void check_rotation_matrices_approx_equal(
+inline void
+check_rotation_matrices_approx_equal(
   const dealii::Tensor<2,3> &computed,
   const dealii::Tensor<2,3> &expected)
 {
@@ -472,7 +476,7 @@ TEST_CASE("CPO core: Spin tensor")
     // The correct analytical solution to check against
     // Note that this still has to be multiplied with with volume fraction
     // of each grain to get the same solution as D-Rex would get.
-    double solution[5] = {0.0, 0.0, 0.0, 0.0 ,0.0};
+    double solution[5] = {0.0, 0.0, 0.0, 0.0,0.0};
     for (unsigned int iii = 0; iii < derivatives.first.size(); ++iii)
       CHECK(derivatives.first[iii] == Approx(solution[iii]));
 
@@ -773,7 +777,7 @@ TEST_CASE("CPO")
 
 
     // The correct analytical solution to check against
-    double solution[5] = {3.150563756, -0.787640939, -0.787640939, -0.787640939 ,-0.787640939};
+    double solution[5] = {3.150563756, -0.787640939, -0.787640939, -0.787640939,-0.787640939};
     for (unsigned int i = 0; i < derivatives.first.size(); ++i)
       CHECK(derivatives.first[i] == Approx(solution[i]));
 
@@ -1002,7 +1006,7 @@ TEST_CASE("CPO")
                                                        true);
 
     // The correct analytical solution to check against
-    double solution[5] = {2.5350823696, -0.6337705924, -0.6337705924, -0.6337705924 ,-0.6337705924};
+    double solution[5] = {2.5350823696, -0.6337705924, -0.6337705924, -0.6337705924,-0.6337705924};
     for (unsigned int i = 0; i < derivatives.first.size(); ++i)
       CHECK(derivatives.first[i] == Approx(solution[i]));
 

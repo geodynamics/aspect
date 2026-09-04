@@ -189,7 +189,7 @@ namespace aspect
                     in.reinit(fe_face_values, cell, this->introspection(), this->get_solution());
 
                     fe_face_values[this->introspection().extractors.temperature].get_function_gradients (this->get_solution(),
-                        temperature_gradients);
+                                                                                                         temperature_gradients);
 
                     this->get_material_model().evaluate(in, out);
 
@@ -754,7 +754,7 @@ namespace aspect
     compute_gravity_potential(const double r) const
     {
       return 2./3.*numbers::PI*constants::big_g*Rho_cen*(Utilities::fixed_power<2>(r)*(1.-3.*Utilities::fixed_power<2>(r)
-                                                         /(10.*Utilities::fixed_power<2>(L)))-Utilities::fixed_power<2>(Rc)*(1.-3.*Utilities::fixed_power<2>(Rc)/(10.*Utilities::fixed_power<2>(L))));
+                                                                                       /(10.*Utilities::fixed_power<2>(L)))-Utilities::fixed_power<2>(Rc)*(1.-3.*Utilities::fixed_power<2>(Rc)/(10.*Utilities::fixed_power<2>(L))));
     }
 
 

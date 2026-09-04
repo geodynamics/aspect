@@ -293,7 +293,7 @@ namespace aspect
                                                                         std::vector<double> &data) const
       {
         const SymmetricTensor<2,6> elastic_matrix = Particle::Property::CpoElasticTensor<dim>::get_elastic_tensor(cpo_elastic_tensor_data_position,
-                                                    data);
+                                                                                                                  data);
 
         const SymmetricTensor<2,3> dilatation_stiffness_tensor_full = Property::Utilities::compute_dilatation_stiffness_tensor(elastic_matrix);
         const SymmetricTensor<2,3> voigt_stiffness_tensor_full = Property::Utilities::compute_voigt_stiffness_tensor(elastic_matrix);
@@ -355,7 +355,7 @@ namespace aspect
           {
             ArrayView<double> data = particle.get_properties();
             const SymmetricTensor<2,6> elastic_matrix = Particle::Property::CpoElasticTensor<dim>::get_elastic_tensor(cpo_elastic_tensor_data_position,
-                                                        data);
+                                                                                                                      data);
 
             const SymmetricTensor<2,3> dilatation_stiffness_tensor_full = Utilities::compute_dilatation_stiffness_tensor(elastic_matrix);
             const SymmetricTensor<2,3> voigt_stiffness_tensor_full = Utilities::compute_voigt_stiffness_tensor(elastic_matrix);

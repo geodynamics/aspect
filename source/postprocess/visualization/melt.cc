@@ -132,9 +132,9 @@ namespace aspect
                     ExcMessage("Need MeltOutputs from the material model for computing the melt properties."));
 
         const double p_c_scale = Plugins::get_plugin_as_type<const MaterialModel::MeltInterface<dim>>(this->get_material_model()).p_c_scale(in,
-                                 out,
-                                 this->get_melt_handler(),
-                                 true);
+          out,
+          this->get_melt_handler(),
+          true);
 
         for (unsigned int q=0; q<n_quadrature_points; ++q)
           {
@@ -204,9 +204,9 @@ namespace aspect
             {
               const std::string pattern_of_names
                 = "compaction viscosity|fluid viscosity|permeability|"
-                  "fluid density|fluid density gradient|is melt cell|"
-                  "darcy coefficient|darcy coefficient no cutoff|"
-                  "compaction length";
+                "fluid density|fluid density gradient|is melt cell|"
+                "darcy coefficient|darcy coefficient no cutoff|"
+                "compaction length";
 
               prm.declare_entry("List of properties",
                                 "compaction viscosity,permeability",

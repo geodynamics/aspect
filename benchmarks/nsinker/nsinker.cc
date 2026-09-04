@@ -58,8 +58,9 @@ namespace aspect
          * @name Physical parameters used in the basic equations
          * @{
          */
-        void evaluate(const MaterialModel::MaterialModelInputs<dim> &in,
-                      MaterialModel::MaterialModelOutputs<dim> &out) const override
+        void
+        evaluate(const MaterialModel::MaterialModelInputs<dim> &in,
+                 MaterialModel::MaterialModelOutputs<dim> &out) const override
         {
           const double sqrt_dynamic_viscosity_ratio = std::sqrt(dynamic_viscosity_ratio);
 
@@ -93,7 +94,8 @@ namespace aspect
          * (compressible Stokes) or as $\nabla \cdot \mathbf{u}=0$
          * (incompressible Stokes).
          */
-        bool is_compressible () const override
+        bool
+        is_compressible () const override
         {
           return false;
         }
@@ -317,15 +319,17 @@ namespace aspect
 
 
 // Change pressure scaling to 1.0:
-double pressure_scaling_signal(const double /*pressure_scaling*/,
-                               const double /*reference_viscosity*/,
-                               const double /*length_scale*/)
+double
+pressure_scaling_signal(const double /*pressure_scaling*/,
+                        const double /*reference_viscosity*/,
+                        const double /*length_scale*/)
 {
   return 1.0;
 }
 
 template <int dim>
-void signal_connector (aspect::SimulatorSignals<dim> &signals)
+void
+signal_connector (aspect::SimulatorSignals<dim> &signals)
 {
   signals.modify_pressure_scaling.connect(&pressure_scaling_signal);
 }

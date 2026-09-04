@@ -94,8 +94,9 @@ namespace aspect
             beta_(beta)
           {}
 
-          void vector_value (const Point<dim>   &pos,
-                             Vector<double>   &values) const override
+          void
+          vector_value (const Point<dim>   &pos,
+                        Vector<double>   &values) const override
           {
             Assert (dim == 3, ExcNotImplemented());
             Assert (values.size() >= 4, ExcInternalError());
@@ -148,7 +149,7 @@ namespace aspect
     template <>
     Tensor<1,2>
     BursteddeBoundary<2>::
-    boundary_velocity (const types::boundary_id ,
+    boundary_velocity (const types::boundary_id,
                        const Point<2> &/*p*/) const
     {
       Assert (false, ExcNotImplemented());
@@ -160,7 +161,7 @@ namespace aspect
     template <>
     Tensor<1,3>
     BursteddeBoundary<3>::
-    boundary_velocity (const types::boundary_id ,
+    boundary_velocity (const types::boundary_id,
                        const Point<3> &p) const
     {
       return AnalyticSolutions::burstedde_velocity (p, beta);
@@ -180,8 +181,9 @@ namespace aspect
     class BursteddeMaterial : public MaterialModel::Interface<dim>
     {
       public:
-        void evaluate(const MaterialModel::MaterialModelInputs<dim> &in,
-                      MaterialModel::MaterialModelOutputs<dim> &out) const override
+        void
+        evaluate(const MaterialModel::MaterialModelInputs<dim> &in,
+                 MaterialModel::MaterialModelOutputs<dim> &out) const override
         {
           for (unsigned int i=0; i < in.n_evaluation_points(); ++i)
             {

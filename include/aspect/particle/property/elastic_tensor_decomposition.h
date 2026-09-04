@@ -109,7 +109,8 @@ namespace aspect
          * The tensors below can be used to project matrices to different symmetries.
          * See Browaeys and Chevrot, 2004.
          */
-        const SymmetricTensor<2,21> projection_matrix_triclinic_to_monoclinic(
+        const SymmetricTensor<2,21>
+        projection_matrix_triclinic_to_monoclinic(
           Tensor<2,21>(
         {
           {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
@@ -136,7 +137,8 @@ namespace aspect
         })
         );
 
-        const SymmetricTensor<2,9> projection_matrix_monoclinic_to_orthorhombic(
+        const SymmetricTensor<2,9>
+        projection_matrix_monoclinic_to_orthorhombic(
           Tensor<2,9>(
         {
           {1,0,0,0,0,0,0,0,0},
@@ -151,7 +153,8 @@ namespace aspect
         })
         );
 
-        const SymmetricTensor<2,9> projection_matrix_orthorhombic_to_tetragonal(
+        const SymmetricTensor<2,9>
+        projection_matrix_orthorhombic_to_tetragonal(
           Tensor<2,9>(
         {
           {0.5,0.5,0.0,0.0,0.0,0.0,0.0,0.0,0.0},
@@ -166,33 +169,35 @@ namespace aspect
         })
         );
 
-        const SymmetricTensor<2,9> projection_matrix_tetragonal_to_hexagonal(
+        const SymmetricTensor<2,9>
+        projection_matrix_tetragonal_to_hexagonal(
           Tensor<2,9>(
         {
-          {3./8.                , 3./8.                , 0.0, 0.0, 0.0, 1./(4.*std::sqrt(2.))  , 0.0, 0.0, 1./4.                 },
-          {3./8.                , 3./8.                , 0.0, 0.0, 0.0, 1./(4.*std::sqrt(2.))  , 0.0, 0.0, 1./4.                 },
-          {0.0                  , 0.0                  , 1.0, 0.0, 0.0, 0.0                    , 0.0, 0.0, 0.0                   },
-          {0.0                  , 0.0                  , 0.0, 0.5, 0.5, 0.0                    , 0.0, 0.0, 0.0                   },
-          {0.0                  , 0.0                  , 0.0, 0.5, 0.5, 0.0                    , 0.0, 0.0, 0.0                   },
-          {1./(4.*std::sqrt(2.)), 1./(4.*std::sqrt(2.)), 0.0, 0.0, 0.0, 3./4.                  , 0.0, 0.0, -1./(2.*std::sqrt(2.))},
-          {0.0                  , 0.0                  , 0.0, 0.0, 0.0, 0.0                    , 0.5, 0.5, 0.0                   },
-          {0.0                  , 0.0                  , 0.0, 0.0, 0.0, 0.0                    , 0.5, 0.5, 0.0                   },
-          {1./4.                , 1./4.                , 0.0, 0.0, 0.0, -1./(2.*std::sqrt(2.)) , 0.0, 0.0, 0.5                   }
+          {3./8., 3./8., 0.0, 0.0, 0.0, 1./(4.*std::sqrt(2.)), 0.0, 0.0, 1./4.                 },
+          {3./8., 3./8., 0.0, 0.0, 0.0, 1./(4.*std::sqrt(2.)), 0.0, 0.0, 1./4.                 },
+          {0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0                   },
+          {0.0, 0.0, 0.0, 0.5, 0.5, 0.0, 0.0, 0.0, 0.0                   },
+          {0.0, 0.0, 0.0, 0.5, 0.5, 0.0, 0.0, 0.0, 0.0                   },
+          {1./(4.*std::sqrt(2.)), 1./(4.*std::sqrt(2.)), 0.0, 0.0, 0.0, 3./4., 0.0, 0.0, -1./(2.*std::sqrt(2.))},
+          {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.5, 0.5, 0.0                   },
+          {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.5, 0.5, 0.0                   },
+          {1./4., 1./4., 0.0, 0.0, 0.0, -1./(2.*std::sqrt(2.)), 0.0, 0.0, 0.5                   }
         })
         );
 
-        const SymmetricTensor<2,9> projection_matrix_hexagonal_to_isotropic(
+        const SymmetricTensor<2,9>
+        projection_matrix_hexagonal_to_isotropic(
           Tensor<2,9>(
         {
-          {3./15.           , 3./15.           , 3./15.           , std::sqrt(2.)/15. , std::sqrt(2.)/15. , std::sqrt(2.)/15. , 2./15.            , 2./15.            , 2./15.             },
-          {3./15.           , 3./15.           , 3./15.           , std::sqrt(2.)/15. , std::sqrt(2.)/15. , std::sqrt(2.)/15. , 2./15.            , 2./15.            , 2./15.             },
-          {3./15.           , 3./15.           , 3./15.           , std::sqrt(2.)/15. , std::sqrt(2.)/15. , std::sqrt(2.)/15. , 2./15.            , 2./15.            , 2./15.             },
-          {std::sqrt(2.)/15., std::sqrt(2.)/15., std::sqrt(2.)/15., 4./15.            , 4./15.            , 4./15.            , -std::sqrt(2.)/15., -std::sqrt(2.)/15., -std::sqrt(2.)/15. },
-          {std::sqrt(2.)/15., std::sqrt(2.)/15., std::sqrt(2.)/15., 4./15.            , 4./15.            , 4./15.            , -std::sqrt(2.)/15., -std::sqrt(2.)/15., -std::sqrt(2.)/15. },
-          {std::sqrt(2.)/15., std::sqrt(2.)/15., std::sqrt(2.)/15., 4./15.            , 4./15.            , 4./15.            , -std::sqrt(2.)/15., -std::sqrt(2.)/15., -std::sqrt(2.)/15. },
-          {2./15.           , 2./15.           , 2./15.           , -std::sqrt(2.)/15., -std::sqrt(2.)/15., -std::sqrt(2.)/15., 1./5.             , 1./5.             , 1./5.         },
-          {2./15.           , 2./15.           , 2./15.           , -std::sqrt(2.)/15., -std::sqrt(2.)/15., -std::sqrt(2.)/15., 1./5.             , 1./5.             , 1./5.              },
-          {2./15.           , 2./15.           , 2./15.           , -std::sqrt(2.)/15., -std::sqrt(2.)/15., -std::sqrt(2.)/15., 1./5.             , 1./5.             , 1./5.              }
+          {3./15., 3./15., 3./15., std::sqrt(2.)/15., std::sqrt(2.)/15., std::sqrt(2.)/15., 2./15., 2./15., 2./15.             },
+          {3./15., 3./15., 3./15., std::sqrt(2.)/15., std::sqrt(2.)/15., std::sqrt(2.)/15., 2./15., 2./15., 2./15.             },
+          {3./15., 3./15., 3./15., std::sqrt(2.)/15., std::sqrt(2.)/15., std::sqrt(2.)/15., 2./15., 2./15., 2./15.             },
+          {std::sqrt(2.)/15., std::sqrt(2.)/15., std::sqrt(2.)/15., 4./15., 4./15., 4./15., -std::sqrt(2.)/15., -std::sqrt(2.)/15., -std::sqrt(2.)/15. },
+          {std::sqrt(2.)/15., std::sqrt(2.)/15., std::sqrt(2.)/15., 4./15., 4./15., 4./15., -std::sqrt(2.)/15., -std::sqrt(2.)/15., -std::sqrt(2.)/15. },
+          {std::sqrt(2.)/15., std::sqrt(2.)/15., std::sqrt(2.)/15., 4./15., 4./15., 4./15., -std::sqrt(2.)/15., -std::sqrt(2.)/15., -std::sqrt(2.)/15. },
+          {2./15., 2./15., 2./15., -std::sqrt(2.)/15., -std::sqrt(2.)/15., -std::sqrt(2.)/15., 1./5., 1./5., 1./5.         },
+          {2./15., 2./15., 2./15., -std::sqrt(2.)/15., -std::sqrt(2.)/15., -std::sqrt(2.)/15., 1./5., 1./5., 1./5.              },
+          {2./15., 2./15., 2./15., -std::sqrt(2.)/15., -std::sqrt(2.)/15., -std::sqrt(2.)/15., 1./5., 1./5., 1./5.              }
         })
         );
       }

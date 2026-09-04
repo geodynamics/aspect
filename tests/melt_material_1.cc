@@ -38,20 +38,23 @@ namespace aspect
   class MeltMaterial:
     public MaterialModel::MeltInterface<dim>, public ::aspect::SimulatorAccess<dim>
   {
-      virtual bool is_compressible () const
+      virtual bool
+      is_compressible () const
       {
         return false;
       }
 
-      virtual double reference_darcy_coefficient () const
+      virtual double
+      reference_darcy_coefficient () const
       {
         const double porosity = 0.01;
         const double permeability = 1.0 * Utilities::fixed_power<3>(porosity) * Utilities::fixed_power<2>(1.0-porosity);
         return permeability / 0.1;
       }
 
-      virtual void evaluate(const typename MaterialModel::Interface<dim>::MaterialModelInputs &in,
-                            typename MaterialModel::Interface<dim>::MaterialModelOutputs &out) const
+      virtual void
+      evaluate(const typename MaterialModel::Interface<dim>::MaterialModelInputs &in,
+               typename MaterialModel::Interface<dim>::MaterialModelOutputs &out) const
       {
 
         for (unsigned int i=0; i<in.n_evaluation_points(); ++i)

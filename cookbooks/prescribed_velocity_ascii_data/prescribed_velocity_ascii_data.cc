@@ -50,8 +50,9 @@ namespace aspect
   /**
    * Declare additional parameters.
    */
-  void declare_parameters(const unsigned int dim,
-                          ParameterHandler &prm)
+  void
+  declare_parameters(const unsigned int dim,
+                     ParameterHandler &prm)
   {
     prm.declare_entry ("Prescribe internal velocities", "false",
                        Patterns::Bool (),
@@ -89,8 +90,9 @@ namespace aspect
 
 
   template <int dim>
-  void parse_parameters(const Parameters<dim> &,
-                        ParameterHandler &prm)
+  void
+  parse_parameters(const Parameters<dim> &,
+                   ParameterHandler &prm)
   {
     prescribe_internal_velocities = prm.get_bool ("Prescribe internal velocities");
     prm.enter_subsection ("Prescribed velocities");
@@ -135,24 +137,28 @@ namespace aspect
    */
   namespace
   {
-    Point<2> as_2d(const Point<3> &/*p*/)
+    Point<2>
+    as_2d(const Point<3> &/*p*/)
     {
       Assert (false, ExcInternalError());
       return Point<2>();
     }
 
-    Point<2> as_2d(const Point<2> &p)
+    Point<2>
+    as_2d(const Point<2> &p)
     {
       return p;
     }
 
-    Point<3> as_3d(const Point<2> &/*p*/)
+    Point<3>
+    as_3d(const Point<2> &/*p*/)
     {
       Assert (false, ExcInternalError());
       return Point<3>();
     }
 
-    Point<3> as_3d(const Point<3> &p)
+    Point<3>
+    as_3d(const Point<3> &p)
     {
       return p;
     }
@@ -167,8 +173,9 @@ namespace aspect
    * matrix on any arbitrary degree of freedom in the model space.
    */
   template <int dim>
-  void constrain_internal_velocities (const SimulatorAccess<dim> &simulator_access,
-                                      AffineConstraints<double> &current_constraints)
+  void
+  constrain_internal_velocities (const SimulatorAccess<dim> &simulator_access,
+                                 AffineConstraints<double> &current_constraints)
   {
     if (!prescribed_velocity_ascii_file_loaded)
       {
@@ -287,7 +294,8 @@ namespace aspect
   }
 
   // Connect declare_parameters and parse_parameters to appropriate signals.
-  void parameter_connector ()
+  void
+  parameter_connector ()
   {
     SimulatorSignals<2>::declare_additional_parameters.connect (&declare_parameters);
     SimulatorSignals<3>::declare_additional_parameters.connect (&declare_parameters);
@@ -298,7 +306,8 @@ namespace aspect
 
   // Connect constraints function to correct signal.
   template <int dim>
-  void signal_connector (SimulatorSignals<dim> &signals)
+  void
+  signal_connector (SimulatorSignals<dim> &signals)
   {
     signals.post_constraints_creation.connect (&constrain_internal_velocities<dim>);
   }

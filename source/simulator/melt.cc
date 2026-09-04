@@ -60,9 +60,10 @@ namespace aspect
 
 
     template <int dim>
-    void MeltInputs<dim>::fill (const LinearAlgebra::BlockVector &solution,
-                                const FEValuesBase<dim>          &fe_values,
-                                const Introspection<dim>         &introspection)
+    void
+    MeltInputs<dim>::fill (const LinearAlgebra::BlockVector &solution,
+                           const FEValuesBase<dim>          &fe_values,
+                           const Introspection<dim>         &introspection)
     {
       compaction_pressures.resize(fe_values.n_quadrature_points);
       fluid_velocities.resize(fe_values.n_quadrature_points, Tensor<1,dim>());
@@ -90,9 +91,10 @@ namespace aspect
 
 
     template <int dim>
-    void MeltOutputs<dim>::average (const MaterialAveraging::AveragingOperation operation,
-                                    const FullMatrix<double>  &projection_matrix,
-                                    const FullMatrix<double>  &expansion_matrix)
+    void
+    MeltOutputs<dim>::average (const MaterialAveraging::AveragingOperation operation,
+                               const FullMatrix<double>  &projection_matrix,
+                               const FullMatrix<double>  &expansion_matrix)
     {
       average_property (operation, projection_matrix, expansion_matrix,
                         compaction_viscosities);
@@ -282,18 +284,18 @@ namespace aspect
 
                 // add S between p_c and p_f
                 data.local_matrix(i,j) +=
-                  (
-                    (p_c_scale * one_over_eta *
-                     pressure_scaling *
-                     pressure_scaling)
-                    * scratch.phi_p[i] * scratch.phi_p_c[j]
-                    +
-                    (p_c_scale * one_over_eta *
-                     pressure_scaling *
-                     pressure_scaling)
-                    * scratch.phi_p_c[i] * scratch.phi_p[j]
-                  )
-                  * JxW;
+                      (
+                        (p_c_scale * one_over_eta *
+                         pressure_scaling *
+                         pressure_scaling)
+                        * scratch.phi_p[i] * scratch.phi_p_c[j]
+                        +
+                        (p_c_scale * one_over_eta *
+                         pressure_scaling *
+                         pressure_scaling)
+                        * scratch.phi_p_c[i] * scratch.phi_p[j]
+                      )
+                      * JxW;
               }
         }
     }
@@ -412,7 +414,7 @@ namespace aspect
       const unsigned int porosity_index = introspection.compositional_index_for_name("porosity");
       if (this->get_parameters().use_operator_splitting)
         scratch.finite_element_values[introspection.extractors.compositional_fields[porosity_index]].get_function_values(this->get_reaction_vector(),
-            reactions);
+                                                                                                                         reactions);
 
       for (unsigned int i=0, i_stokes=0; i_stokes<stokes_dofs_per_cell; /*increment at end of loop*/)
         {
@@ -874,28 +876,28 @@ namespace aspect
           for (unsigned int i=0; i<advection_dofs_per_cell; ++i)
             {
               data.local_rhs(i)
-              += (field_term_for_rhs * scratch.phi_field[i]
-                  + time_step *
-                  scratch.phi_field[i]
-                  * (gamma + melt_transport_RHS)
-                  + scratch.phi_field[i]
-                  * reaction_term)
-                 * JxW;
+                  += (field_term_for_rhs * scratch.phi_field[i]
+                      + time_step *
+                      scratch.phi_field[i]
+                      * (gamma + melt_transport_RHS)
+                      + scratch.phi_field[i]
+                      * reaction_term)
+                     * JxW;
 
               for (unsigned int j=0; j<advection_dofs_per_cell; ++j)
                 {
                   data.local_matrix(i,j)
-                  += (
-                       (time_step * (conductivity + scratch.artificial_viscosity)
-                        * (scratch.grad_phi_field[i] * scratch.grad_phi_field[j]))
-                       + ((time_step * (scratch.phi_field[i] * (current_u * scratch.grad_phi_field[j])))
-                          + (factor * scratch.phi_field[i] * scratch.phi_field[j])) *
-                       (density_c_P_solid + latent_heat_LHS)
-                       + ((time_step * (scratch.phi_field[i] * (current_u_f * scratch.grad_phi_field[j])))
-                          + (factor * scratch.phi_field[i] * scratch.phi_field[j])) *
-                       (density_c_P_melt)
-                       + time_step * scratch.phi_field[i] * scratch.phi_field[j] * melt_transport_LHS
-                     ) * JxW;
+                      += (
+                           (time_step * (conductivity + scratch.artificial_viscosity)
+                            * (scratch.grad_phi_field[i] * scratch.grad_phi_field[j]))
+                           + ((time_step * (scratch.phi_field[i] * (current_u * scratch.grad_phi_field[j])))
+                              + (factor * scratch.phi_field[i] * scratch.phi_field[j])) *
+                           (density_c_P_solid + latent_heat_LHS)
+                           + ((time_step * (scratch.phi_field[i] * (current_u_f * scratch.grad_phi_field[j])))
+                              + (factor * scratch.phi_field[i] * scratch.phi_field[j])) *
+                           (density_c_P_melt)
+                           + time_step * scratch.phi_field[i] * scratch.phi_field[j] * melt_transport_LHS
+                         ) * JxW;
                 }
             }
         }
@@ -1454,7 +1456,8 @@ namespace aspect
     template <int dim>
     struct PcConstraintsCopyData
     {
-      explicit PcConstraintsCopyData (const unsigned int stokes_dofs_per_cell)
+      explicit
+      PcConstraintsCopyData (const unsigned int stokes_dofs_per_cell)
       {
         nonzero_dof_indices.reserve(stokes_dofs_per_cell);
       }
@@ -1622,7 +1625,7 @@ namespace aspect
     // For the constraints, first pick all relevant p_c dofs:
     IndexSet for_constraints = this->introspection().index_sets.system_relevant_set
                                & Utilities::extract_locally_active_dofs_with_component<dim>(this->get_dof_handler(),
-                                   this->introspection().variable("compaction pressure").component_mask);
+                                                                                            this->introspection().variable("compaction pressure").component_mask);
 
     // now subtract the ones that are nonzero as computed above:
     for_constraints.subtract_set(nonzero_pc_dofs);
@@ -1751,8 +1754,8 @@ namespace aspect
     // add the boundary integral for melt migration
     assemblers.stokes_system_assembler_on_boundary_face_properties.need_face_material_model_data = true;
     assemblers.stokes_system_assembler_on_boundary_face_properties.needed_update_flags = (update_values  | update_quadrature_points |
-        update_normal_vectors | update_gradients |
-        update_JxW_values);
+                                                                                          update_normal_vectors | update_gradients |
+                                                                                          update_JxW_values);
 
 
     assemblers.stokes_system_on_boundary_face.push_back(

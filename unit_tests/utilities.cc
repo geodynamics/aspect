@@ -57,7 +57,7 @@ TEST_CASE("Utilities::weighted_p_norm_average")
   std::vector<double> weights = {1,1,2,2,3,3};
   std::vector<double> values = {6,5,4,3,2,1};
   std::vector<double> p_norms = {-1000,-2.5,-2,-1,0,1,2,2.5,3,4,1000};
-  std::vector<double> expected = {1., 1.59237, 1.6974 , 1.98895, 2.38899, 2.83333, 3.24037, 3.41824, 3.57872, 3.85347, 6. };
+  std::vector<double> expected = {1., 1.59237, 1.6974, 1.98895, 2.38899, 2.83333, 3.24037, 3.41824, 3.57872, 3.85347, 6. };
 
   for (unsigned int i = 0; i < p_norms.size(); i++)
     {
@@ -223,9 +223,9 @@ TEST_CASE("Random draw volume weighted average rotation matrix")
   std::mt19937 random_number_generator;
   random_number_generator.seed(5);
   const std::vector<dealii::Tensor<2,3>> result = aspect::Utilities::rotation_matrices_random_draw_volume_weighting(unsorted_volume_fractions,
-                                                   unsorted_rotation_matrices,
-                                                   25,
-                                                   random_number_generator);
+                                                                                                                    unsorted_rotation_matrices,
+                                                                                                                    25,
+                                                                                                                    random_number_generator);
 
   const std::vector<dealii::Tensor<2,3>> result_ref =
   {
@@ -367,7 +367,7 @@ TEST_CASE("CPO elastic tensor transform functions")
     {
       dealii::SymmetricTensor<2,6> result_up_1_rotate_down = aspect::Utilities::Tensors::to_voigt_stiffness_matrix(
                                                                aspect::Utilities::Tensors::rotate_full_stiffness_tensor(rotation_tensor,
-                                                                   aspect::Utilities::Tensors::to_full_stiffness_tensor(reference_elastic_tensor)));
+                                                                                                                        aspect::Utilities::Tensors::to_full_stiffness_tensor(reference_elastic_tensor)));
       dealii::SymmetricTensor<2,6> result_1_rotate = aspect::Utilities::Tensors::rotate_voigt_stiffness_matrix(rotation_tensor,reference_elastic_tensor);
 
       // first check that one the tensors didn't change with zero rotation
@@ -409,7 +409,7 @@ TEST_CASE("CPO elastic tensor transform functions")
     {
       dealii::SymmetricTensor<2,6> result_up_1_rotate_down = aspect::Utilities::Tensors::to_voigt_stiffness_matrix(
                                                                aspect::Utilities::Tensors::rotate_full_stiffness_tensor(rotation_tensor,
-                                                                   aspect::Utilities::Tensors::to_full_stiffness_tensor(reference_elastic_tensor)));
+                                                                                                                        aspect::Utilities::Tensors::to_full_stiffness_tensor(reference_elastic_tensor)));
       dealii::SymmetricTensor<2,6> result_1_rotate = aspect::Utilities::Tensors::rotate_voigt_stiffness_matrix(rotation_tensor,reference_elastic_tensor);
 
       for (size_t i = 0; i < 6; i++)
@@ -464,7 +464,7 @@ TEST_CASE("CPO elastic tensor transform functions")
     {
       dealii::SymmetricTensor<2,6> result_up_1_rotate_down = aspect::Utilities::Tensors::to_voigt_stiffness_matrix(
                                                                aspect::Utilities::Tensors::rotate_full_stiffness_tensor(rotation_tensor,
-                                                                   aspect::Utilities::Tensors::to_full_stiffness_tensor(reference_elastic_tensor)));
+                                                                                                                        aspect::Utilities::Tensors::to_full_stiffness_tensor(reference_elastic_tensor)));
       dealii::SymmetricTensor<2,6> result_1_rotate = aspect::Utilities::Tensors::rotate_voigt_stiffness_matrix(rotation_tensor,reference_elastic_tensor);
 
       for (size_t i = 0; i < 6; i++)
@@ -518,7 +518,7 @@ TEST_CASE("CPO elastic tensor transform functions")
     {
       dealii::SymmetricTensor<2,6> result_up_1_rotate_down = aspect::Utilities::Tensors::to_voigt_stiffness_matrix(
                                                                aspect::Utilities::Tensors::rotate_full_stiffness_tensor(rotation_tensor,
-                                                                   aspect::Utilities::Tensors::to_full_stiffness_tensor(reference_elastic_tensor)));
+                                                                                                                        aspect::Utilities::Tensors::to_full_stiffness_tensor(reference_elastic_tensor)));
       dealii::SymmetricTensor<2,6> result_1_rotate = aspect::Utilities::Tensors::rotate_voigt_stiffness_matrix(rotation_tensor, reference_elastic_tensor);
 
       for (size_t i = 0; i < 6; i++)
@@ -573,7 +573,7 @@ TEST_CASE("CPO elastic tensor transform functions")
     {
       dealii::SymmetricTensor<2,6> result_up_1_rotate_down = aspect::Utilities::Tensors::to_voigt_stiffness_matrix(
                                                                aspect::Utilities::Tensors::rotate_full_stiffness_tensor(rotation_tensor,
-                                                                   aspect::Utilities::Tensors::to_full_stiffness_tensor(reference_elastic_tensor)));
+                                                                                                                        aspect::Utilities::Tensors::to_full_stiffness_tensor(reference_elastic_tensor)));
       dealii::SymmetricTensor<2,6> result_1_rotate = aspect::Utilities::Tensors::rotate_voigt_stiffness_matrix(rotation_tensor, reference_elastic_tensor);
 
       for (size_t i = 0; i < 6; i++)

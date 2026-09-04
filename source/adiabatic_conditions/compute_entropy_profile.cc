@@ -211,7 +211,8 @@ namespace aspect
 
 
     template <int dim>
-    double ComputeEntropyProfile<dim>::pressure (const Point<dim> &p) const
+    double
+    ComputeEntropyProfile<dim>::pressure (const Point<dim> &p) const
     {
       return get_property(p,pressures);
     }
@@ -219,7 +220,8 @@ namespace aspect
 
 
     template <int dim>
-    double ComputeEntropyProfile<dim>::temperature (const Point<dim> &p) const
+    double
+    ComputeEntropyProfile<dim>::temperature (const Point<dim> &p) const
     {
       return get_property(p,temperatures);
     }
@@ -227,7 +229,8 @@ namespace aspect
 
 
     template <int dim>
-    double ComputeEntropyProfile<dim>::density (const Point<dim> &p) const
+    double
+    ComputeEntropyProfile<dim>::density (const Point<dim> &p) const
     {
       return get_property(p,densities);
     }
@@ -235,7 +238,8 @@ namespace aspect
 
 
     template <int dim>
-    double ComputeEntropyProfile<dim>::density_derivative (const Point<dim> &p) const
+    double
+    ComputeEntropyProfile<dim>::density_derivative (const Point<dim> &p) const
     {
       const double z = this->get_geometry_model().depth(p);
 
@@ -262,8 +266,9 @@ namespace aspect
 
 
     template <int dim>
-    double ComputeEntropyProfile<dim>::get_property (const Point<dim> &p,
-                                                     const std::vector<double> &property) const
+    double
+    ComputeEntropyProfile<dim>::get_property (const Point<dim> &p,
+                                              const std::vector<double> &property) const
     {
       const double z = this->get_geometry_model().depth(p);
 

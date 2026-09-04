@@ -71,7 +71,8 @@ namespace aspect
         delta_depth = (max_depth-min_depth)/(values.size()-1);
       }
 
-      double LateralViscosityLookup::lateral_viscosity(double depth) const
+      double
+      LateralViscosityLookup::lateral_viscosity(double depth) const
       {
         depth=std::max(min_depth, depth);
         depth=std::min(depth, max_depth);
@@ -83,7 +84,8 @@ namespace aspect
         return values[idx];
       }
 
-      int LateralViscosityLookup::get_nslices() const
+      int
+      LateralViscosityLookup::get_nslices() const
       {
         return values.size();
       }
@@ -116,7 +118,8 @@ namespace aspect
         delta_depth = (max_depth-min_depth)/(values.size()-1);
       }
 
-      double RadialViscosityLookup::radial_viscosity(double depth) const
+      double
+      RadialViscosityLookup::radial_viscosity(double depth) const
       {
         depth=std::max(min_depth, depth);
         depth=std::min(depth, max_depth);
@@ -459,7 +462,7 @@ namespace aspect
           max_eta                         = prm.get_double ("Maximum viscosity");
           max_lateral_eta_variation       = prm.get_double ("Maximum lateral viscosity variation");
           viscosity_averaging_scheme      = MaterialUtilities::parse_compositional_averaging_operation ("Viscosity averaging scheme",
-                                            prm);
+                                                                                                        prm);
 
           // Thermal conductivity parameters
           if (prm.get ("Thermal conductivity formulation") == "constant")

@@ -29,7 +29,8 @@
 namespace aspect
 {
   template <int dim>
-  void VolumeOfFluidHandler<dim>::set_initial_volume_fractions ()
+  void
+  VolumeOfFluidHandler<dim>::set_initial_volume_fractions ()
   {
     for (unsigned int f=0; f<n_volume_of_fluid_fields; ++f)
       {
@@ -64,7 +65,8 @@ namespace aspect
   }
 
   template <int dim>
-  void VolumeOfFluidHandler<dim>::initialize_from_composition_field (
+  void
+  VolumeOfFluidHandler<dim>::initialize_from_composition_field (
     const VolumeOfFluidField<dim> &field)
   {
     LinearAlgebra::BlockVector initial_solution;
@@ -101,7 +103,7 @@ namespace aspect
         for (unsigned int q = 0; q < fe_init.n_quadrature_points; ++q)
           {
             const double fraction_at_point = this->get_initial_composition_manager().initial_composition(fe_init.quadrature_point(q),
-                                             field.composition_index);
+                                                                                                         field.composition_index);
             const double JxW = fe_init.JxW(q);
             volume_of_fluid_val += fraction_at_point * JxW;
             cell_vol += JxW;
@@ -130,7 +132,8 @@ namespace aspect
   }
 
   template <int dim>
-  void VolumeOfFluidHandler<dim>::initialize_from_level_set (
+  void
+  VolumeOfFluidHandler<dim>::initialize_from_level_set (
     const VolumeOfFluidField<dim> &field)
   {
     LinearAlgebra::BlockVector initial_solution;
@@ -165,7 +168,7 @@ namespace aspect
 
         const double cell_diam = cell->diameter();
         const double d_func = this->get_initial_composition_manager().initial_composition(cell->barycenter(),
-                              field.composition_index);
+                                                                                          field.composition_index);
         fe_init.reinit (cell);
 
         double volume_of_fluid_val = 0.0;

@@ -58,8 +58,9 @@ namespace aspect
         /**
         * Evaluate material properties.
         */
-        void evaluate(const MaterialModelInputs<dim> &in,
-                      MaterialModelOutputs<dim> &out) const override
+        void
+        evaluate(const MaterialModelInputs<dim> &in,
+                 MaterialModelOutputs<dim> &out) const override
         {
 
           for (unsigned int i=0; i < in.n_evaluation_points(); ++i)
@@ -94,7 +95,8 @@ namespace aspect
             }
         }
 
-        bool is_compressible () const override
+        bool
+        is_compressible () const override
         {
           return true;
         }

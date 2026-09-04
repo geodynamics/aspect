@@ -47,7 +47,8 @@ namespace aspect
 
 
     template <int dim>
-    double Function<dim>::pressure (const Point<dim> &p) const
+    double
+    Function<dim>::pressure (const Point<dim> &p) const
     {
       const double z = this->get_geometry_model().depth(p);
       return function.value(Point<1>(z), 1);
@@ -56,14 +57,16 @@ namespace aspect
 
 
     template <int dim>
-    double Function<dim>::temperature (const Point<dim> &p) const
+    double
+    Function<dim>::temperature (const Point<dim> &p) const
     {
       const double z = this->get_geometry_model().depth(p);
       return function.value(Point<1>(z), 0);
     }
 
     template <int dim>
-    double Function<dim>::density (const Point<dim> &p) const
+    double
+    Function<dim>::density (const Point<dim> &p) const
     {
       const double z = this->get_geometry_model().depth(p);
       return function.value(Point<1>(z), 2);
@@ -72,7 +75,8 @@ namespace aspect
 
 
     template <int dim>
-    double Function<dim>::density_derivative (const Point<dim> &p) const
+    double
+    Function<dim>::density_derivative (const Point<dim> &p) const
     {
       // TODO: better eps or make it a user input
       const double z = this->get_geometry_model().depth(p);

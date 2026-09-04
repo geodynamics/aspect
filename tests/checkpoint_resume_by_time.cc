@@ -20,7 +20,8 @@
 
 namespace
 {
-  int run_command(const std::string &command)
+  int
+  run_command(const std::string &command)
   {
     std::cout << "Executing the following command:\n"
               << command
@@ -33,7 +34,8 @@ namespace
     return ret;
   }
 
-  double read_checkpoint_time(const std::string &file_name)
+  double
+  read_checkpoint_time(const std::string &file_name)
   {
     std::ifstream metadata(file_name);
     std::string label;
@@ -43,7 +45,8 @@ namespace
   }
 }
 
-int f()
+int
+f()
 {
   std::cout << "* starting from beginning:" << std::endl;
 

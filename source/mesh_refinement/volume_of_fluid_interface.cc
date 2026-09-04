@@ -233,7 +233,7 @@ namespace aspect
 
       std::set<typename Triangulation<dim>::active_cell_iterator> marked_cells_and_neighbors = marked_cells;
       typename std::set<typename parallel::distributed::Triangulation<dim>::active_cell_iterator>::const_iterator mcells = marked_cells.begin(),
-                                                                                                                  endmc = marked_cells.end();
+               endmc = marked_cells.end();
       for (; mcells != endmc; ++mcells)
         {
           typename parallel::distributed::Triangulation<dim>::active_cell_iterator mcell = *mcells;

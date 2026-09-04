@@ -24,7 +24,8 @@
 // file that is used as a trigger for terminating
 // ASPECT. Otherwise we might have a left over file that triggers termination
 // immediately.
-int f()
+int
+f()
 {
   system ("rm -f output-terminate_user_request/restart/last_good_checkpoint.txt");
   return 42;

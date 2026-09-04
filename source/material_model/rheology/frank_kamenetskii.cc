@@ -54,7 +54,7 @@ namespace aspect
 
         //Frank-Kamenetskii equation with added pressure dependence terms
         const double viscosity_frank_kamenetskii = prefactors_frank_kamenetskii[composition] * std::exp(viscosity_ratios_frank_kamenetskii[composition] * 0.5 * (1.0-temperature/reference_temperatures[composition])
-                                                   + pressure_prefactors_frank_kamenetskii[composition] * (pressure-reference_pressures[composition])/(density*gravity*max_depth));
+                                                                                                        + pressure_prefactors_frank_kamenetskii[composition] * (pressure-reference_pressures[composition])/(density*gravity*max_depth));
 
 
         return viscosity_frank_kamenetskii;
@@ -141,7 +141,7 @@ namespace aspect
         options.list_of_allowed_keys = compositional_field_names;
 
         viscosity_ratios_frank_kamenetskii = Utilities::MapParsing::parse_map_to_double_array (prm.get("Viscosity ratios for Frank Kamenetskii"),
-                                             options);
+                                                                                               options);
 
         options.property_name = "Prefactors for Frank Kamenetskii";
         prefactors_frank_kamenetskii = Utilities::MapParsing::parse_map_to_double_array(prm.get("Prefactors for Frank Kamenetskii"),
@@ -149,7 +149,7 @@ namespace aspect
 
         options.property_name = "Pressure prefactors for Frank Kamenetskii";
         pressure_prefactors_frank_kamenetskii = Utilities::MapParsing::parse_map_to_double_array(prm.get("Pressure prefactors for Frank Kamenetskii"),
-                                                options);
+                                                                                                 options);
 
         options.property_name = "Reference temperatures for Frank Kamenetskii";
         reference_temperatures = Utilities::MapParsing::parse_map_to_double_array(prm.get("Reference temperatures for Frank Kamenetskii"),

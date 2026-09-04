@@ -39,7 +39,8 @@ namespace aspect
         virtual void update();
     };
     template <int dim>
-    void Box2<dim>::update()
+    void
+    Box2<dim>::update()
     {
       this->get_mesh_refinement_manager().template get_matching_mesh_refinement_strategy<MeshRefinement::Boundary<dim>>();
       std::cout << "Boundary is found!" << std::endl;

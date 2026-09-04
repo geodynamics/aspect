@@ -175,8 +175,9 @@ namespace aspect
             mmm_(mmm)
           {}
 
-          void vector_value (const Point<dim>   &pos,
-                             Vector<double>   &values) const override
+          void
+          vector_value (const Point<dim>   &pos,
+                        Vector<double>   &values) const override
           {
             Assert (dim == 3, ExcNotImplemented());
             Assert (values.size() >= 4, ExcInternalError());
@@ -211,7 +212,7 @@ namespace aspect
          * Return the boundary velocity as a function of position.
          */
         Tensor<1,dim>
-        boundary_velocity (const types::boundary_id ,
+        boundary_velocity (const types::boundary_id,
                            const Point<dim> &position) const override;
 
 
@@ -242,7 +243,7 @@ namespace aspect
     template <>
     Tensor<1,2>
     HollowSphereBoundary<2>::
-    boundary_velocity (const types::boundary_id ,
+    boundary_velocity (const types::boundary_id,
                        const Point<2> &) const
     {
       Assert (false, ExcNotImplemented());
@@ -254,7 +255,7 @@ namespace aspect
     template <>
     Tensor<1,3>
     HollowSphereBoundary<3>::
-    boundary_velocity (const types::boundary_id ,
+    boundary_velocity (const types::boundary_id,
                        const Point<3> &p) const
     {
       return AnalyticSolutions::hollow_sphere_velocity (p, mmm);

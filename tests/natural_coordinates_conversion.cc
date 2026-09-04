@@ -28,7 +28,8 @@
 #include <aspect/simulator_access.h>
 #include <limits>
 
-int f()
+int
+f()
 {
   using namespace aspect;
   // test whether the functions return the inverse of each other.

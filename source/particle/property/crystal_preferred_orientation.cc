@@ -23,8 +23,8 @@
 #include <aspect/utilities.h>
 
 #ifdef ASPECT_WITH_WORLD_BUILDER
-#include <world_builder/grains.h>
-#include <world_builder/world.h>
+  #include <world_builder/grains.h>
+  #include <world_builder/world.h>
 #endif
 
 #include <boost/serialization/map.hpp>
@@ -507,8 +507,8 @@ namespace aspect
             volume_fraction_grains =  volume_fraction_grains + dt * volume_fraction_grains * derivatives.first[grain_i];
             set_volume_fractions_grains(cpo_index,data,mineral_i,grain_i, volume_fraction_grains);
             Assert(std::isfinite(get_volume_fractions_grains(cpo_index,data,mineral_i,grain_i)),ExcMessage("volume_fractions[grain_i] is not finite. grain_i = "
-                   + std::to_string(grain_i) + ", volume_fractions[grain_i] = " + std::to_string(get_volume_fractions_grains(cpo_index,data,mineral_i,grain_i))
-                   + ", derivatives.first[grain_i] = " + std::to_string(derivatives.first[grain_i])));
+                                                                                                           + std::to_string(grain_i) + ", volume_fractions[grain_i] = " + std::to_string(get_volume_fractions_grains(cpo_index,data,mineral_i,grain_i))
+                                                                                                           + ", derivatives.first[grain_i] = " + std::to_string(derivatives.first[grain_i])));
 
             sum_volume_fractions += get_volume_fractions_grains(cpo_index,data,mineral_i,grain_i);
 
@@ -549,8 +549,8 @@ namespace aspect
                 vf_new = get_volume_fractions_grains(cpo_index,data,mineral_i,grain_i) + dt * vf_new * derivatives.first[grain_i];
 
                 Assert(std::isfinite(get_volume_fractions_grains(cpo_index,data,mineral_i,grain_i)),ExcMessage("volume_fractions[grain_i] is not finite. grain_i = "
-                       + std::to_string(grain_i) + ", volume_fractions[grain_i] = " + std::to_string(get_volume_fractions_grains(cpo_index,data,mineral_i,grain_i))
-                       + ", derivatives.first[grain_i] = " + std::to_string(derivatives.first[grain_i])));
+                                                                                                               + std::to_string(grain_i) + ", volume_fractions[grain_i] = " + std::to_string(get_volume_fractions_grains(cpo_index,data,mineral_i,grain_i))
+                                                                                                               + ", derivatives.first[grain_i] = " + std::to_string(derivatives.first[grain_i])));
                 if (std::fabs(vf_new-vf_old) < property_advection_tolerance)
                   {
                     break;
@@ -1033,7 +1033,7 @@ namespace aspect
       template <int dim>
       std::array<double,4>
       CrystalPreferredOrientation<dim>::reference_resolved_shear_stress_from_deformation_type(DeformationType deformation_type,
-          double max_value) const
+                                                                                              double max_value) const
       {
         std::array<double,4> ref_resolved_shear_stress;
         switch (deformation_type)

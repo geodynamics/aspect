@@ -35,7 +35,8 @@ namespace aspect
   {
     namespace
     {
-      std::vector<std::string> make_dislocation_viscosity_outputs_names()
+      std::vector<std::string>
+      make_dislocation_viscosity_outputs_names()
       {
         std::vector<std::string> names;
         names.emplace_back("dislocation_viscosity");
@@ -90,14 +91,14 @@ namespace aspect
           if (material_file_format == perplex)
             material_lookup
             .push_back(std::make_unique<MaterialModel::MaterialUtilities::Lookup::PerplexReader>(datadirectory+material_file_names[i],
-                       use_bilinear_interpolation,
-                       this->get_mpi_communicator()));
+                                                                                                 use_bilinear_interpolation,
+                                                                                                 this->get_mpi_communicator()));
           else if (material_file_format == hefesto)
             material_lookup
             .push_back(std::make_unique<MaterialModel::MaterialUtilities::Lookup::HeFESToReader>(datadirectory+material_file_names[i],
-                       datadirectory+derivatives_file_names[i],
-                       use_bilinear_interpolation,
-                       this->get_mpi_communicator()));
+                                                                                                 datadirectory+derivatives_file_names[i],
+                                                                                                 use_bilinear_interpolation,
+                                                                                                 this->get_mpi_communicator()));
           else
             AssertThrow (false, ExcNotImplemented());
         }
@@ -453,15 +454,15 @@ namespace aspect
           if (!temperature_evaluator)
             temperature_evaluator
               = std::make_unique<FEPointEvaluation<1,dim>>(this->get_mapping(),
-                                                            this->get_fe(),
-                                                            update_values,
-                                                            this->introspection().component_indices.temperature);
+                                                           this->get_fe(),
+                                                           update_values,
+                                                           this->introspection().component_indices.temperature);
           if (!pressure_evaluator)
             pressure_evaluator
               = std::make_unique<FEPointEvaluation<1,dim>>(this->get_mapping(),
-                                                            this->get_fe(),
-                                                            update_values,
-                                                            this->introspection().component_indices.pressure);
+                                                           this->get_fe(),
+                                                           update_values,
+                                                           this->introspection().component_indices.pressure);
 
 
           // Initialize the evaluator for the temperature
@@ -584,8 +585,8 @@ namespace aspect
                   // In the grain size material model, viscosity does not depend on composition,
                   // so we set the compositional index for the Drucker-Prager parameters to 0.
                   const Rheology::DruckerPragerParameters drucker_prager_parameters = drucker_prager_plasticity.compute_drucker_prager_parameters(0,
-                                                                                      phase_function_values,
-                                                                                      n_phase_transitions);
+                    phase_function_values,
+                    n_phase_transitions);
                   const double pressure_for_yielding = use_adiabatic_pressure_for_yielding
                                                        ?
                                                        adiabatic_pressures[i]
@@ -652,22 +653,22 @@ namespace aspect
           // Create the two lambda functions that are needed to calculate the reaction terms.
           // The functions give access to the dislocation and diffusion viscosity functions of this class.
           const std::function<double(double, double, double, const dealii::SymmetricTensor<2, dim>&, unsigned int, double, double)> dislocation_viscosity_ = [this] (const double temperature,
-              const double adiabatic_temperature,
-              const double adiabatic_pressure,
-              const SymmetricTensor<2,dim> &strain_rate,
-              const unsigned int phase_index,
-              const double diffusion_viscosity,
-              const double viscosity_guess)->double
+            const double adiabatic_temperature,
+            const double adiabatic_pressure,
+            const SymmetricTensor<2,dim> &strain_rate,
+            const unsigned int phase_index,
+            const double diffusion_viscosity,
+            const double viscosity_guess)->double
           {
             return this->dislocation_viscosity(temperature, adiabatic_temperature, adiabatic_pressure, strain_rate, phase_index, diffusion_viscosity, viscosity_guess);
           };
 
           const std::function<double(double, double, double, double, double, unsigned int)> diffusion_viscosity_ = [this] (const double temperature,
-              const double adiabatic_temperature,
-              const double adiabatic_pressure,
-              const double grain_size,
-              const double second_strain_rate_invariant,
-              const unsigned int phase_index)->double
+                                                                                                                           const double adiabatic_temperature,
+                                                                                                                           const double adiabatic_pressure,
+                                                                                                                           const double grain_size,
+                                                                                                                           const double second_strain_rate_invariant,
+                                                                                                                           const unsigned int phase_index)->double
           {
             return this->diffusion_viscosity(temperature, adiabatic_temperature, adiabatic_pressure, grain_size, second_strain_rate_invariant, phase_index);
           };

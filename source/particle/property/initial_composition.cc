@@ -120,7 +120,8 @@ namespace aspect
       }
 
       template<int dim>
-      void InitialComposition<dim>::declare_parameters(ParameterHandler &prm)
+      void
+      InitialComposition<dim>::declare_parameters(ParameterHandler &prm)
       {
         prm.enter_subsection("Initial composition");
         {
@@ -137,7 +138,8 @@ namespace aspect
 
 
       template<int dim>
-      void InitialComposition<dim>::parse_parameters(ParameterHandler &prm)
+      void
+      InitialComposition<dim>::parse_parameters(ParameterHandler &prm)
       {
         prm.enter_subsection("Initial composition");
         {

@@ -277,8 +277,9 @@ namespace aspect
     public:
       RefFunction () : Function<dim>(dim+3) {}
 
-      void vector_value (const Point<dim>   &p,
-                         Vector<double>   &values) const override
+      void
+      vector_value (const Point<dim>   &p,
+                    Vector<double>   &values) const override
       {
         double x = p(0);
         double z = p(1);

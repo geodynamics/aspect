@@ -24,10 +24,10 @@
 #include <aspect/melt.h>
 
 #ifdef ASPECT_WITH_LIBDAP
-#include <D4Connect.h>
-#include <Connect.h>
-#include <Response.h>
-#include <Array.h>
+  #include <D4Connect.h>
+  #include <Connect.h>
+  #include <Response.h>
+  #include <Array.h>
 #endif
 
 #include <array>
@@ -80,8 +80,8 @@ namespace aspect
       for (unsigned int i=0; i<rows.size(); ++i)
         {
           std::vector<std::string> current_columns = Utilities::possibly_extend_from_1_to_N(Utilities::split_string_list(rows[i]),
-                                                     n_columns,
-                                                     property_name);
+                                                                                            n_columns,
+                                                                                            property_name);
 
           for (unsigned int j=0; j<current_columns.size(); ++j)
             {
@@ -556,8 +556,9 @@ namespace aspect
 
 
     template <int dim>
-    IndexSet extract_locally_active_dofs_with_component(const DoFHandler<dim> &dof_handler,
-                                                        const ComponentMask &component_mask)
+    IndexSet
+    extract_locally_active_dofs_with_component(const DoFHandler<dim> &dof_handler,
+                                               const ComponentMask &component_mask)
     {
       std::vector<unsigned char> local_asoc =
         get_local_component_association (dof_handler.get_fe(),
@@ -582,7 +583,8 @@ namespace aspect
 
 
     template <int dim>
-    std::vector<Point<dim>> get_unit_support_points(const SimulatorAccess<dim> &simulator_access)
+    std::vector<Point<dim>>
+    get_unit_support_points(const SimulatorAccess<dim> &simulator_access)
     {
       if ( !simulator_access.get_parameters().use_locally_conservative_discretization )
         {
@@ -1224,10 +1226,11 @@ namespace aspect
 
 
 
-    std::pair<double,double> real_spherical_harmonic( const unsigned int l,
-                                                      const unsigned int m,
-                                                      const double theta,
-                                                      const double phi)
+    std::pair<double,double>
+    real_spherical_harmonic( const unsigned int l,
+                             const unsigned int m,
+                             const double theta,
+                             const double phi)
     {
       Assert (l<65, ExcMessage("ASPECT uses the implementation of spherical harmonics provided by the "
                                "BOOST library, which is only accurate up a limited degree (see "
@@ -1553,9 +1556,10 @@ namespace aspect
 
 
 
-    void create_directory(const std::string &pathname,
-                          const MPI_Comm comm,
-                          const bool silent)
+    void
+    create_directory(const std::string &pathname,
+                     const MPI_Comm comm,
+                     const bool silent)
     {
       // verify that the output directory actually exists. if it doesn't, create
       // it on processor zero
@@ -1636,7 +1640,8 @@ namespace aspect
           /**
            * Number of off-diagonals above.
            */
-          int num_upper() const
+          int
+          num_upper() const
           {
             return m_upper.size()-1;
           }
@@ -1646,7 +1651,8 @@ namespace aspect
           /**
            * Number of off-diagonals below.
            */
-          int num_lower() const
+          int
+          num_lower() const
           {
             return m_lower.size()-1;
           }
@@ -1733,7 +1739,8 @@ namespace aspect
 
 
 
-      void band_matrix::resize(int dim, int n_u, int n_l)
+      void
+      band_matrix::resize(int dim, int n_u, int n_l)
       {
         assert(dim > 0);
         assert(n_u >= 0);
@@ -1748,7 +1755,8 @@ namespace aspect
 
 
 
-      int band_matrix::dim() const
+      int
+      band_matrix::dim() const
       {
         if (m_upper.size()>0)
           {
@@ -1762,7 +1770,8 @@ namespace aspect
 
 
 
-      double &band_matrix::operator () (int i, int j)
+      double &
+      band_matrix::operator () (int i, int j)
       {
         int k = j - i;       // what band is the entry
         assert( (i >= 0) && (i<dim()) && (j >= 0) && (j < dim()) );
@@ -1776,7 +1785,8 @@ namespace aspect
 
 
 
-      double band_matrix::operator () (int i, int j) const
+      double
+      band_matrix::operator () (int i, int j) const
       {
         int k=j-i;       // what band is the entry
         assert( (i >= 0) && (i < dim()) && (j >= 0) && (j < dim()) );
@@ -1790,7 +1800,8 @@ namespace aspect
 
 
 
-      double band_matrix::saved_diag(int i) const
+      double
+      band_matrix::saved_diag(int i) const
       {
         assert( (i >= 0) && (i < dim()) );
         return m_lower[0][i];
@@ -1798,7 +1809,8 @@ namespace aspect
 
 
 
-      double &band_matrix::saved_diag(int i)
+      double &
+      band_matrix::saved_diag(int i)
       {
         assert( (i >= 0) && (i < dim()) );
         return m_lower[0][i];
@@ -1806,7 +1818,8 @@ namespace aspect
 
 
 
-      void band_matrix::lu_decompose()
+      void
+      band_matrix::lu_decompose()
       {
         int i_max,j_max;
         int j_min;
@@ -1848,7 +1861,8 @@ namespace aspect
 
 
 
-      std::vector<double> band_matrix::l_solve(const std::vector<double> &b) const
+      std::vector<double>
+      band_matrix::l_solve(const std::vector<double> &b) const
       {
         assert( this->dim() == static_cast<int>(b.size()) );
         std::vector<double> x(this->dim());
@@ -1866,7 +1880,8 @@ namespace aspect
 
 
 
-      std::vector<double> band_matrix::r_solve(const std::vector<double> &b) const
+      std::vector<double>
+      band_matrix::r_solve(const std::vector<double> &b) const
       {
         assert( this->dim() == static_cast<int>(b.size()) );
         std::vector<double> x(this->dim());
@@ -1884,8 +1899,9 @@ namespace aspect
 
 
 
-      std::vector<double> band_matrix::lu_solve(const std::vector<double> &b,
-                                                bool is_lu_decomposed)
+      std::vector<double>
+      band_matrix::lu_solve(const std::vector<double> &b,
+                            bool is_lu_decomposed)
       {
         assert( this->dim() == static_cast<int>(b.size()) );
         std::vector<double>  x,y;
@@ -1902,10 +1918,11 @@ namespace aspect
 
 
 
-      void spline::set_points(const std::vector<double> &x,
-                              const std::vector<double> &y,
-                              bool cubic_spline,
-                              bool monotone_spline)
+      void
+      spline::set_points(const std::vector<double> &x,
+                         const std::vector<double> &y,
+                         bool cubic_spline,
+                         bool monotone_spline)
       {
         assert(x.size() == y.size());
         m_x = x;
@@ -2032,7 +2049,8 @@ namespace aspect
 
 
 
-      double spline::operator() (double x) const
+      double
+      spline::operator() (double x) const
       {
         size_t n = m_x.size();
         // find the closest point m_x[idx] < x, idx=0 even if x<m_x[0]
@@ -2083,7 +2101,8 @@ namespace aspect
 
 
 
-    std::string parenthesize_if_nonempty (const std::string &s)
+    std::string
+    parenthesize_if_nonempty (const std::string &s)
     {
       if (s.size() > 0)
         return " (\"" + s + "\")";
@@ -2439,10 +2458,11 @@ namespace aspect
 
 
     template <int dim>
-    double compute_spd_factor(const double eta,
-                              const SymmetricTensor<2,dim> &strain_rate,
-                              const SymmetricTensor<2,dim> &dviscosities_dstrain_rate,
-                              const double SPD_safety_factor)
+    double
+    compute_spd_factor(const double eta,
+                       const SymmetricTensor<2,dim> &strain_rate,
+                       const SymmetricTensor<2,dim> &dviscosities_dstrain_rate,
+                       const double SPD_safety_factor)
     {
       // if the strain rate is zero, or the derivative is zero, then
       // the exact choice of alpha factor does not matter because the
@@ -2482,7 +2502,8 @@ namespace aspect
 
 
     template <int dim>
-    Point<dim> convert_array_to_point(const std::array<double,dim> &array)
+    Point<dim>
+    convert_array_to_point(const std::array<double,dim> &array)
     {
       Point<dim> point;
       for (unsigned int i = 0; i < dim; ++i)
@@ -2494,7 +2515,8 @@ namespace aspect
 
 
     template <int dim>
-    std::array<double,dim> convert_point_to_array(const Point<dim> &point)
+    std::array<double,dim>
+    convert_point_to_array(const Point<dim> &point)
     {
       std::array<double,dim> array;
       for (unsigned int i = 0; i < dim; ++i)
@@ -2565,7 +2587,8 @@ namespace aspect
 
 
 
-    std::vector<Operator> create_model_operator_list(const std::vector<std::string> &operator_names)
+    std::vector<Operator>
+    create_model_operator_list(const std::vector<std::string> &operator_names)
     {
       std::vector<Operator> operator_list(operator_names.size());
       for (unsigned int i=0; i<operator_names.size(); ++i)
@@ -2593,7 +2616,8 @@ namespace aspect
 
 
 
-    const std::string get_model_operator_options()
+    const std::string
+    get_model_operator_options()
     {
       return "add|subtract|minimum|maximum|replace if valid";
     }
@@ -2636,7 +2660,8 @@ namespace aspect
 
 
     template <int dim>
-    std::array<double,dim> &NaturalCoordinate<dim>::get_coordinates()
+    std::array<double,dim> &
+    NaturalCoordinate<dim>::get_coordinates()
     {
       return coordinates;
     }
@@ -2644,7 +2669,8 @@ namespace aspect
 
 
     template <int dim>
-    const std::array<double,dim> &NaturalCoordinate<dim>::get_coordinates() const
+    const std::array<double,dim> &
+    NaturalCoordinate<dim>::get_coordinates() const
     {
       return coordinates;
     }
@@ -2652,7 +2678,8 @@ namespace aspect
 
 
     template <>
-    std::array<double,1> NaturalCoordinate<2>::get_surface_coordinates() const
+    std::array<double,1>
+    NaturalCoordinate<2>::get_surface_coordinates() const
     {
       std::array<double,1> coordinate;
 
@@ -2682,7 +2709,8 @@ namespace aspect
 
 
     template <>
-    std::array<double,2> NaturalCoordinate<3>::get_surface_coordinates() const
+    std::array<double,2>
+    NaturalCoordinate<3>::get_surface_coordinates() const
     {
       std::array<double,2> coordinate;
 
@@ -2713,7 +2741,8 @@ namespace aspect
 
 
     template <int dim>
-    double NaturalCoordinate<dim>::get_depth_coordinate() const
+    double
+    NaturalCoordinate<dim>::get_depth_coordinate() const
     {
       switch (coordinate_system)
         {
@@ -2825,12 +2854,13 @@ namespace aspect
 
 
 
-    void throw_linear_solver_failure_exception(const std::string &solver_name,
-                                               const std::string &function_name,
-                                               const std::vector<SolverControl> &solver_controls,
-                                               const std::exception &exc,
-                                               const MPI_Comm mpi_communicator,
-                                               const std::string &output_filename)
+    void
+    throw_linear_solver_failure_exception(const std::string &solver_name,
+                                          const std::string &function_name,
+                                          const std::vector<SolverControl> &solver_controls,
+                                          const std::exception &exc,
+                                          const MPI_Comm mpi_communicator,
+                                          const std::string &output_filename)
     {
       if (Utilities::MPI::this_mpi_process(mpi_communicator) == 0)
         {
@@ -3366,7 +3396,8 @@ namespace aspect
 
 
       template <>
-      const Tensor<3,3> &levi_civita<3>()
+      const Tensor<3,3> &levi_civita<3>
+      ()
       {
         static const Tensor<3,3> t =
           []()
@@ -3380,7 +3411,8 @@ namespace aspect
           permutation_operator_3d[1][0][2]  = -1;
           permutation_operator_3d[2][1][0]  = -1;
           return permutation_operator_3d;
-        }();
+        }
+        ();
 
         return t;
       }
@@ -3388,7 +3420,8 @@ namespace aspect
 
 
       template <int dim>
-      SymmetricTensor<2,dim> consistent_deviator(const SymmetricTensor<2,dim> &input)
+      SymmetricTensor<2,dim>
+      consistent_deviator(const SymmetricTensor<2,dim> &input)
       {
         SymmetricTensor<2,dim> output = input;
 
@@ -3402,7 +3435,8 @@ namespace aspect
 
 
       template <int dim>
-      double consistent_second_invariant_of_deviatoric_tensor(const SymmetricTensor<2,dim> &t)
+      double
+      consistent_second_invariant_of_deviatoric_tensor(const SymmetricTensor<2,dim> &t)
       {
         if (dim == 2)
           // Under plane strain assumption, t is not a 2D tensor, but a "slice" of

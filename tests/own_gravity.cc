@@ -29,7 +29,8 @@ namespace aspect
     public aspect::GravityModel::Interface<dim>
   {
     public:
-      virtual Tensor<1,dim> gravity_vector (const Point<dim> &position) const
+      virtual Tensor<1,dim>
+      gravity_vector (const Point<dim> &position) const
       {
         Tensor<1,dim> ret;
         ret[0] = position[1];

@@ -334,7 +334,7 @@ namespace aspect
       const std::vector<std::string> x_initialization_type = Utilities::split_string_list(prm.get("Volume of fluid initialization type"));
 
       initialization_data_type = std::vector<VolumeOfFluid::VolumeOfFluidInputType::Kind> (n_volume_of_fluid_fields,
-                                 VolumeOfFluid::VolumeOfFluidInputType::composition);
+                                                                                           VolumeOfFluid::VolumeOfFluidInputType::composition);
 
       for (const auto &p : x_initialization_type)
         {
@@ -449,7 +449,8 @@ namespace aspect
 
 
   template <int dim>
-  unsigned int VolumeOfFluidHandler<dim>::get_n_fields() const
+  unsigned int
+  VolumeOfFluidHandler<dim>::get_n_fields() const
   {
     return n_volume_of_fluid_fields;
   }
@@ -457,7 +458,8 @@ namespace aspect
 
 
   template <int dim>
-  const std::string VolumeOfFluidHandler<dim>::name_for_field_index(unsigned int field) const
+  const std::string
+  VolumeOfFluidHandler<dim>::name_for_field_index(unsigned int field) const
   {
     Assert(field < n_volume_of_fluid_fields,
            ExcMessage("Invalid field index"));
@@ -467,7 +469,8 @@ namespace aspect
 
 
   template <int dim>
-  double VolumeOfFluidHandler<dim>::get_volume_fraction_threshold() const
+  double
+  VolumeOfFluidHandler<dim>::get_volume_fraction_threshold() const
   {
     return volume_fraction_threshold;
   }
@@ -475,7 +478,8 @@ namespace aspect
 
 
   template <int dim>
-  const VolumeOfFluidField<dim> &VolumeOfFluidHandler<dim>::field_struct_for_field_index(unsigned int field) const
+  const VolumeOfFluidField<dim> &
+  VolumeOfFluidHandler<dim>::field_struct_for_field_index(unsigned int field) const
   {
     Assert(field < n_volume_of_fluid_fields,
            ExcMessage("Invalid field index"));
@@ -485,7 +489,8 @@ namespace aspect
 
 
   template <int dim>
-  unsigned int VolumeOfFluidHandler<dim>::field_index_for_name(const std::string &composition_fieldname) const
+  unsigned int
+  VolumeOfFluidHandler<dim>::field_index_for_name(const std::string &composition_fieldname) const
   {
     const unsigned int composition_index = this->introspection().compositional_index_for_name(composition_fieldname);
     if (volume_of_fluid_composition_map_index.count(composition_index) ==0)
@@ -496,7 +501,8 @@ namespace aspect
 
 
   template <int dim>
-  void VolumeOfFluidHandler<dim>::do_volume_of_fluid_update (const AdvectionField &advection_field)
+  void
+  VolumeOfFluidHandler<dim>::do_volume_of_fluid_update (const AdvectionField &advection_field)
   {
     const bool direction_order_descending = (this->get_timestep_number() % 2) == 1;
     const VolumeOfFluidField<dim> volume_of_fluid_field = data[volume_of_fluid_composition_map_index[advection_field.field_index()]];
@@ -534,9 +540,10 @@ namespace aspect
 
 
   template <int dim>
-  void VolumeOfFluidHandler<dim>::assemble_volume_of_fluid_system (const VolumeOfFluidField<dim> &field,
-                                                                   const unsigned int dir,
-                                                                   const bool update_from_old)
+  void
+  VolumeOfFluidHandler<dim>::assemble_volume_of_fluid_system (const VolumeOfFluidField<dim> &field,
+                                                              const unsigned int dir,
+                                                              const bool update_from_old)
   {
     this->get_computing_timer().enter_subsection("Assemble volume of fluid system");
 
@@ -604,7 +611,8 @@ namespace aspect
 
 
   template <int dim>
-  void VolumeOfFluidHandler<dim>::copy_local_to_global_volume_of_fluid_system (const internal::Assembly::CopyData::VolumeOfFluidSystem<dim> &data)
+  void
+  VolumeOfFluidHandler<dim>::copy_local_to_global_volume_of_fluid_system (const internal::Assembly::CopyData::VolumeOfFluidSystem<dim> &data)
   {
     // copy entries into the global matrix. note that these local contributions
     // only correspond to the advection dofs, as assembled above

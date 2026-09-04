@@ -49,11 +49,12 @@ namespace aspect
           : field_(field)
         {}
 
-        void operator()(const MaterialModel::MaterialModelInputs<dim> &,
-                        const MaterialModel::MaterialModelOutputs<dim> &,
-                        const FEValues<dim> &fe_values,
-                        const LinearAlgebra::BlockVector &solution,
-                        std::vector<double> &output) override
+        void
+        operator()(const MaterialModel::MaterialModelInputs<dim> &,
+                   const MaterialModel::MaterialModelOutputs<dim> &,
+                   const FEValues<dim> &fe_values,
+                   const LinearAlgebra::BlockVector &solution,
+                   std::vector<double> &output) override
         {
           fe_values[field_].get_function_values (solution, output);
         }
@@ -85,11 +86,12 @@ namespace aspect
 
 
 
-        void operator()(const MaterialModel::MaterialModelInputs<dim> &,
-                        const MaterialModel::MaterialModelOutputs<dim> &,
-                        const FEValues<dim> &fe_values,
-                        const LinearAlgebra::BlockVector &,
-                        std::vector<double> &output) override
+        void
+        operator()(const MaterialModel::MaterialModelInputs<dim> &,
+                   const MaterialModel::MaterialModelOutputs<dim> &,
+                   const FEValues<dim> &fe_values,
+                   const LinearAlgebra::BlockVector &,
+                   std::vector<double> &output) override
         {
           const unsigned int n_quadrature_points = output.size();
           for (unsigned int i=0; i<n_quadrature_points; ++i)
@@ -116,16 +118,18 @@ namespace aspect
     class FunctorDepthAverageViscosity: public internal::FunctorBase<dim>
     {
       public:
-        bool need_material_properties() const override
+        bool
+        need_material_properties() const override
         {
           return true;
         }
 
-        void operator()(const MaterialModel::MaterialModelInputs<dim> &,
-                        const MaterialModel::MaterialModelOutputs<dim> &out,
-                        const FEValues<dim> &,
-                        const LinearAlgebra::BlockVector &,
-                        std::vector<double> &output) override
+        void
+        operator()(const MaterialModel::MaterialModelInputs<dim> &,
+                   const MaterialModel::MaterialModelOutputs<dim> &out,
+                   const FEValues<dim> &,
+                   const LinearAlgebra::BlockVector &,
+                   std::vector<double> &output) override
         {
           output = out.viscosities;
         }
@@ -137,16 +141,18 @@ namespace aspect
     class FunctorDepthAverageLogViscosity: public internal::FunctorBase<dim>
     {
       public:
-        bool need_material_properties() const override
+        bool
+        need_material_properties() const override
         {
           return true;
         }
 
-        void operator()(const MaterialModel::MaterialModelInputs<dim> &,
-                        const MaterialModel::MaterialModelOutputs<dim> &out,
-                        const FEValues<dim> &,
-                        const LinearAlgebra::BlockVector &,
-                        std::vector<double> &output) override
+        void
+        operator()(const MaterialModel::MaterialModelInputs<dim> &,
+                   const MaterialModel::MaterialModelOutputs<dim> &out,
+                   const FEValues<dim> &,
+                   const LinearAlgebra::BlockVector &,
+                   std::vector<double> &output) override
         {
           const unsigned int n_points = out.n_evaluation_points();
           for (unsigned i = 0; i < n_points; ++i)
@@ -165,16 +171,18 @@ namespace aspect
           : field_(field), convert_to_years_(convert_to_years)
         {}
 
-        void setup(const unsigned int q_points) override
+        void
+        setup(const unsigned int q_points) override
         {
           velocity_values.resize(q_points);
         }
 
-        void operator()(const MaterialModel::MaterialModelInputs<dim> &,
-                        const MaterialModel::MaterialModelOutputs<dim> &,
-                        const FEValues<dim> &fe_values,
-                        const LinearAlgebra::BlockVector &solution,
-                        std::vector<double> &output) override
+        void
+        operator()(const MaterialModel::MaterialModelInputs<dim> &,
+                   const MaterialModel::MaterialModelOutputs<dim> &,
+                   const FEValues<dim> &fe_values,
+                   const LinearAlgebra::BlockVector &solution,
+                   std::vector<double> &output) override
         {
           fe_values[field_].get_function_values (solution, velocity_values);
           for (unsigned int q=0; q<output.size(); ++q)
@@ -201,22 +209,25 @@ namespace aspect
             convert_to_years_(convert_to_years)
         {}
 
-        bool need_material_properties() const override
+        bool
+        need_material_properties() const override
         {
           // this is needed because we want to access in.position in operator()
           return true;
         }
 
-        void setup(const unsigned int q_points) override
+        void
+        setup(const unsigned int q_points) override
         {
           velocity_values.resize(q_points);
         }
 
-        void operator()(const MaterialModel::MaterialModelInputs<dim> &in,
-                        const MaterialModel::MaterialModelOutputs<dim> &,
-                        const FEValues<dim> &fe_values,
-                        const LinearAlgebra::BlockVector &solution,
-                        std::vector<double> &output) override
+        void
+        operator()(const MaterialModel::MaterialModelInputs<dim> &in,
+                   const MaterialModel::MaterialModelOutputs<dim> &,
+                   const FEValues<dim> &fe_values,
+                   const LinearAlgebra::BlockVector &solution,
+                   std::vector<double> &output) override
         {
           fe_values[field_].get_function_values (solution, velocity_values);
           for (unsigned int q=0; q<output.size(); ++q)
@@ -249,22 +260,25 @@ namespace aspect
             convert_to_years_(convert_to_years)
         {}
 
-        bool need_material_properties() const override
+        bool
+        need_material_properties() const override
         {
           // this is needed because we want to access in.position in operator()
           return true;
         }
 
-        void setup(const unsigned int q_points) override
+        void
+        setup(const unsigned int q_points) override
         {
           velocity_values.resize(q_points);
         }
 
-        void operator()(const MaterialModel::MaterialModelInputs<dim> &in,
-                        const MaterialModel::MaterialModelOutputs<dim> &,
-                        const FEValues<dim> &fe_values,
-                        const LinearAlgebra::BlockVector &solution,
-                        std::vector<double> &output) override
+        void
+        operator()(const MaterialModel::MaterialModelInputs<dim> &in,
+                   const MaterialModel::MaterialModelOutputs<dim> &,
+                   const FEValues<dim> &fe_values,
+                   const LinearAlgebra::BlockVector &solution,
+                   std::vector<double> &output) override
         {
           fe_values[field_].get_function_values (solution, velocity_values);
           for (unsigned int q=0; q<output.size(); ++q)
@@ -293,7 +307,8 @@ namespace aspect
           : vs_(vs)
         {}
 
-        bool need_material_properties() const override
+        bool
+        need_material_properties() const override
         {
           return true;
         }
@@ -306,11 +321,12 @@ namespace aspect
             std::make_unique<MaterialModel::SeismicAdditionalOutputs<dim>> (n_points));
         }
 
-        void operator()(const MaterialModel::MaterialModelInputs<dim> &,
-                        const MaterialModel::MaterialModelOutputs<dim> &out,
-                        const FEValues<dim> &,
-                        const LinearAlgebra::BlockVector &,
-                        std::vector<double> &output) override
+        void
+        operator()(const MaterialModel::MaterialModelInputs<dim> &,
+                   const MaterialModel::MaterialModelOutputs<dim> &out,
+                   const FEValues<dim> &,
+                   const LinearAlgebra::BlockVector &,
+                   std::vector<double> &output) override
         {
           const std::shared_ptr<const MaterialModel::SeismicAdditionalOutputs<dim>> seismic_outputs
             = out.template get_additional_output_object<const MaterialModel::SeismicAdditionalOutputs<dim>>();
@@ -342,23 +358,26 @@ namespace aspect
             gravity_model(gm)
         {}
 
-        bool need_material_properties() const override
+        bool
+        need_material_properties() const override
         {
           return true;
         }
 
-        void setup(const unsigned int q_points) override
+        void
+        setup(const unsigned int q_points) override
         {
           velocity_values.resize(q_points);
           temperature_values.resize(q_points);
           temperature_gradients.resize(q_points);
         }
 
-        void operator()(const MaterialModel::MaterialModelInputs<dim> &in,
-                        const MaterialModel::MaterialModelOutputs<dim> &out,
-                        const FEValues<dim> &fe_values,
-                        const LinearAlgebra::BlockVector &solution,
-                        std::vector<double> &output) override
+        void
+        operator()(const MaterialModel::MaterialModelInputs<dim> &in,
+                   const MaterialModel::MaterialModelOutputs<dim> &out,
+                   const FEValues<dim> &fe_values,
+                   const LinearAlgebra::BlockVector &solution,
+                   std::vector<double> &output) override
         {
           fe_values[velocity_field_].get_function_values (solution, velocity_values);
           fe_values[temperature_field_].get_function_values (solution, temperature_values);
@@ -397,21 +416,24 @@ namespace aspect
             gravity_model(gm)
         {}
 
-        bool need_material_properties() const override
+        bool
+        need_material_properties() const override
         {
           return true;
         }
 
-        void setup(const unsigned int q_points) override
+        void
+        setup(const unsigned int q_points) override
         {
           velocity_values.resize(q_points);
         }
 
-        void operator()(const MaterialModel::MaterialModelInputs<dim> &in,
-                        const MaterialModel::MaterialModelOutputs<dim> &out,
-                        const FEValues<dim> &fe_values,
-                        const LinearAlgebra::BlockVector &solution,
-                        std::vector<double> &output) override
+        void
+        operator()(const MaterialModel::MaterialModelInputs<dim> &in,
+                   const MaterialModel::MaterialModelOutputs<dim> &out,
+                   const FEValues<dim> &fe_values,
+                   const LinearAlgebra::BlockVector &solution,
+                   std::vector<double> &output) override
         {
           fe_values[velocity_field_].get_function_values (solution, velocity_values);
 
@@ -440,21 +462,24 @@ namespace aspect
           : field_(field)
         {}
 
-        bool need_material_properties() const override
+        bool
+        need_material_properties() const override
         {
           return true;
         }
 
-        void setup(const unsigned int q_points) override
+        void
+        setup(const unsigned int q_points) override
         {
           field_values.resize(q_points);
         }
 
-        void operator()(const MaterialModel::MaterialModelInputs<dim> &,
-                        const MaterialModel::MaterialModelOutputs<dim> &out,
-                        const FEValues<dim> &fe_values,
-                        const LinearAlgebra::BlockVector &solution,
-                        std::vector<double> &output) override
+        void
+        operator()(const MaterialModel::MaterialModelInputs<dim> &,
+                   const MaterialModel::MaterialModelOutputs<dim> &out,
+                   const FEValues<dim> &fe_values,
+                   const LinearAlgebra::BlockVector &solution,
+                   std::vector<double> &output) override
         {
           fe_values[field_].get_function_values (solution, field_values);
 
@@ -473,16 +498,18 @@ namespace aspect
   class FunctorDepthAverageDensity: public internal::FunctorBase<dim>
   {
     public:
-      bool need_material_properties() const override
+      bool
+      need_material_properties() const override
       {
         return true;
       }
 
-      void operator()(const MaterialModel::MaterialModelInputs<dim> &,
-                      const MaterialModel::MaterialModelOutputs<dim> &out,
-                      const FEValues<dim> &,
-                      const LinearAlgebra::BlockVector &,
-                      std::vector<double> &output) override
+      void
+      operator()(const MaterialModel::MaterialModelInputs<dim> &,
+                 const MaterialModel::MaterialModelOutputs<dim> &out,
+                 const FEValues<dim> &,
+                 const LinearAlgebra::BlockVector &,
+                 std::vector<double> &output) override
       {
         output = out.densities;
       }
@@ -586,7 +613,7 @@ namespace aspect
     const unsigned int n_slices = depth_bounds.size()-1;
 
     std::vector<std::vector<double>> values(n_properties,
-                                             std::vector<double>(n_slices,0.0));
+                                            std::vector<double>(n_slices,0.0));
     std::vector<double> volume(n_slices,0.0);
 
     // We would like to use a quadrature formula that is appropriately accurate laterally,
@@ -619,7 +646,7 @@ namespace aspect
     std::unique_ptr<Quadrature<dim>> quadrature_formula;
     if (geometry_unique_depth_direction != numbers::invalid_unsigned_int)
       quadrature_formula = std::make_unique<Quadrature<dim>>(internal::get_quadrature_formula<dim>(lateral_quadrature_degree,
-                                                              geometry_unique_depth_direction));
+                                                                                                   geometry_unique_depth_direction));
     else
       quadrature_formula = std::make_unique<Quadrature<dim>>(QIterated<dim>(QMidpoint<1>(),10));
 
@@ -631,9 +658,9 @@ namespace aspect
                              update_values | update_gradients | update_quadrature_points | update_JxW_values);
 
     std::vector<std::vector<double>> composition_values (this->n_compositional_fields(),
-                                                          std::vector<double> (n_q_points));
+                                                         std::vector<double> (n_q_points));
     std::vector<std::vector<double>> output_values(n_properties,
-                                                    std::vector<double>(n_q_points));
+                                                   std::vector<double>(n_q_points));
 
     MaterialModel::MaterialModelInputs<dim> in(n_q_points,
                                                this->n_compositional_fields());
@@ -734,7 +761,8 @@ namespace aspect
 
 
   template <int dim>
-  void LateralAveraging<dim>::get_density_averages(std::vector<double> &values) const
+  void
+  LateralAveraging<dim>::get_density_averages(std::vector<double> &values) const
   {
     values = compute_lateral_averages(values.size(),
                                       std::vector<std::string>(1,"density"))[0];
@@ -743,7 +771,8 @@ namespace aspect
 
 
   template <int dim>
-  void LateralAveraging<dim>::get_temperature_averages(std::vector<double> &values) const
+  void
+  LateralAveraging<dim>::get_temperature_averages(std::vector<double> &values) const
   {
     values = compute_lateral_averages(values.size(),
                                       std::vector<std::string>(1,"temperature"))[0];
@@ -752,8 +781,9 @@ namespace aspect
 
 
   template <int dim>
-  void LateralAveraging<dim>::get_composition_averages(const unsigned int c,
-                                                       std::vector<double> &values) const
+  void
+  LateralAveraging<dim>::get_composition_averages(const unsigned int c,
+                                                  std::vector<double> &values) const
   {
     values = compute_lateral_averages(values.size(),
                                       std::vector<std::string>(1,"C_" + Utilities::int_to_string(c)))[0];
@@ -762,7 +792,8 @@ namespace aspect
 
 
   template <int dim>
-  void LateralAveraging<dim>::get_viscosity_averages(std::vector<double> &values) const
+  void
+  LateralAveraging<dim>::get_viscosity_averages(std::vector<double> &values) const
   {
     values = compute_lateral_averages(values.size(),
                                       std::vector<std::string>(1,"viscosity"))[0];
@@ -771,7 +802,8 @@ namespace aspect
 
 
   template <int dim>
-  void LateralAveraging<dim>::get_log_viscosity_averages(std::vector<double> &values) const
+  void
+  LateralAveraging<dim>::get_log_viscosity_averages(std::vector<double> &values) const
   {
     values = compute_lateral_averages(values.size(),
                                       std::vector<std::string>(1,"log_viscosity"))[0];
@@ -779,7 +811,8 @@ namespace aspect
 
 
   template <int dim>
-  void LateralAveraging<dim>::get_velocity_magnitude_averages(std::vector<double> &values) const
+  void
+  LateralAveraging<dim>::get_velocity_magnitude_averages(std::vector<double> &values) const
   {
     values = compute_lateral_averages(values.size(),
                                       std::vector<std::string>(1,"velocity_magnitude"))[0];
@@ -788,7 +821,8 @@ namespace aspect
 
 
   template <int dim>
-  void LateralAveraging<dim>::get_sinking_velocity_averages(std::vector<double> &values) const
+  void
+  LateralAveraging<dim>::get_sinking_velocity_averages(std::vector<double> &values) const
   {
     values = compute_lateral_averages(values.size(),
                                       std::vector<std::string>(1,"sinking_velocity"))[0];
@@ -797,7 +831,8 @@ namespace aspect
 
 
   template <int dim>
-  void LateralAveraging<dim>::get_rising_velocity_averages(std::vector<double> &values) const
+  void
+  LateralAveraging<dim>::get_rising_velocity_averages(std::vector<double> &values) const
   {
     values = compute_lateral_averages(values.size(),
                                       std::vector<std::string>(1,"rising_velocity"))[0];
@@ -806,7 +841,8 @@ namespace aspect
 
 
   template <int dim>
-  void LateralAveraging<dim>::get_Vs_averages(std::vector<double> &values) const
+  void
+  LateralAveraging<dim>::get_Vs_averages(std::vector<double> &values) const
   {
     values = compute_lateral_averages(values.size(),
                                       std::vector<std::string>(1,"Vs"))[0];
@@ -815,7 +851,8 @@ namespace aspect
 
 
   template <int dim>
-  void LateralAveraging<dim>::get_Vp_averages(std::vector<double> &values) const
+  void
+  LateralAveraging<dim>::get_Vp_averages(std::vector<double> &values) const
   {
     values = compute_lateral_averages(values.size(),
                                       std::vector<std::string>(1,"Vp"))[0];
@@ -824,7 +861,8 @@ namespace aspect
 
 
   template <int dim>
-  void LateralAveraging<dim>::get_vertical_heat_flux_averages(std::vector<double> &values) const
+  void
+  LateralAveraging<dim>::get_vertical_heat_flux_averages(std::vector<double> &values) const
   {
     values = compute_lateral_averages(values.size(),
                                       std::vector<std::string>(1,"vertical_heat_flux"))[0];
@@ -833,7 +871,8 @@ namespace aspect
 
 
   template <int dim>
-  void LateralAveraging<dim>::get_vertical_mass_flux_averages(std::vector<double> &values) const
+  void
+  LateralAveraging<dim>::get_vertical_mass_flux_averages(std::vector<double> &values) const
   {
     values = compute_lateral_averages(values.size(),
                                       std::vector<std::string>(1,"vertical_mass_flux"))[0];

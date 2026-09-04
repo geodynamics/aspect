@@ -33,9 +33,9 @@
 #include <list>
 
 #ifdef DEBUG
-#ifdef ASPECT_USE_FP_EXCEPTIONS
-#include <cfenv>
-#endif
+  #ifdef ASPECT_USE_FP_EXCEPTIONS
+    #include <cfenv>
+  #endif
 #endif
 
 namespace aspect
@@ -358,7 +358,7 @@ namespace aspect
 
       // Vectors for evaluating the compositional field parts of the finite element solution
       std::vector<std::vector<double>> composition_values (introspection.n_compositional_fields,
-                                                            std::vector<double> (fe_values.n_quadrature_points));
+                                                           std::vector<double> (fe_values.n_quadrature_points));
       for (unsigned int c=0; c<introspection.n_compositional_fields; ++c)
         fe_values[introspection.extractors.compositional_fields[c]]
         .get_function_values(solution_vector,composition_values[c]);
@@ -461,13 +461,15 @@ namespace aspect
 
     namespace MaterialAveraging
     {
-      std::string get_averaging_operation_names ()
+      std::string
+      get_averaging_operation_names ()
       {
         return "none|default averaging|arithmetic average|harmonic average|geometric average|pick largest|project to Q1|log average|harmonic average only viscosity|geometric average only viscosity|project to Q1 only viscosity";
       }
 
 
-      AveragingOperation parse_averaging_operation_name (const std::string &s)
+      AveragingOperation
+      parse_averaging_operation_name (const std::string &s)
       {
         if (s == "none")
           return none;
@@ -520,10 +522,11 @@ namespace aspect
       // Do the requested averaging operation for one array. The
       // projection matrix argument is only used if the operation
       // chosen is project_to_Q1.
-      void average_property (const AveragingOperation  operation,
-                             const FullMatrix<double>      &projection_matrix,
-                             const FullMatrix<double>      &expansion_matrix,
-                             std::vector<double>           &values_out)
+      void
+      average_property (const AveragingOperation  operation,
+                        const FullMatrix<double>      &projection_matrix,
+                        const FullMatrix<double>      &expansion_matrix,
+                        std::vector<double>           &values_out)
       {
 #ifdef DEBUG
 #ifdef ASPECT_USE_FP_EXCEPTIONS
@@ -756,11 +759,12 @@ namespace aspect
        * This function computes the matrices $E$ and $M^{-1}F$.
        */
       template <int dim>
-      void compute_projection_matrix (const typename DoFHandler<dim>::active_cell_iterator &cell,
-                                      const Quadrature<dim>   &quadrature_formula,
-                                      const Mapping<dim>      &mapping,
-                                      FullMatrix<double>      &projection_matrix,
-                                      FullMatrix<double>      &expansion_matrix)
+      void
+      compute_projection_matrix (const typename DoFHandler<dim>::active_cell_iterator &cell,
+                                 const Quadrature<dim>   &quadrature_formula,
+                                 const Mapping<dim>      &mapping,
+                                 FullMatrix<double>      &projection_matrix,
+                                 FullMatrix<double>      &expansion_matrix)
       {
         static const FE_Q<dim> fe(1);
         FEValues<dim> fe_values (mapping, fe, quadrature_formula,
@@ -849,12 +853,13 @@ namespace aspect
 
 
       template <int dim>
-      void average (const AveragingOperation operation,
-                    const typename DoFHandler<dim>::active_cell_iterator &cell,
-                    const Quadrature<dim>         &quadrature_formula,
-                    const Mapping<dim>            &mapping,
-                    const MaterialProperties::Property &requested_properties,
-                    MaterialModelOutputs<dim>     &values_out)
+      void
+      average (const AveragingOperation operation,
+               const typename DoFHandler<dim>::active_cell_iterator &cell,
+               const Quadrature<dim>         &quadrature_formula,
+               const Mapping<dim>            &mapping,
+               const MaterialProperties::Property &requested_properties,
+               MaterialModelOutputs<dim>     &values_out)
       {
         if (operation == none)
           return;
@@ -1033,7 +1038,8 @@ namespace aspect
 
     namespace
     {
-      std::vector<std::string> make_prescribed_dilation_outputs_names()
+      std::vector<std::string>
+      make_prescribed_dilation_outputs_names()
       {
         std::vector<std::string> names;
         names.emplace_back("dilation_lhs_term");
@@ -1054,7 +1060,8 @@ namespace aspect
 
 
     template <int dim>
-    std::vector<double> PrescribedPlasticDilation<dim>::get_nth_output(const unsigned int idx) const
+    std::vector<double>
+    PrescribedPlasticDilation<dim>::get_nth_output(const unsigned int idx) const
     {
       AssertIndexRange (idx, 2);
       switch (idx)
@@ -1076,7 +1083,8 @@ namespace aspect
 
     namespace
     {
-      std::vector<std::string> make_seismic_additional_outputs_names()
+      std::vector<std::string>
+      make_seismic_additional_outputs_names()
       {
         std::vector<std::string> names;
         names.emplace_back("seismic_Vs");
@@ -1121,7 +1129,8 @@ namespace aspect
 
     namespace
     {
-      std::vector<std::string> make_reaction_rate_outputs_names(const unsigned int n_comp)
+      std::vector<std::string>
+      make_reaction_rate_outputs_names(const unsigned int n_comp)
       {
         std::vector<std::string> names;
         for (unsigned int c=0; c<n_comp; ++c)
@@ -1132,7 +1141,8 @@ namespace aspect
 
 
 
-      std::vector<std::string> make_prescribed_field_output_names(const unsigned int n_comp)
+      std::vector<std::string>
+      make_prescribed_field_output_names(const unsigned int n_comp)
       {
         std::vector<std::string> names;
         for (unsigned int c=0; c<n_comp; ++c)
@@ -1172,7 +1182,8 @@ namespace aspect
 
     namespace
     {
-      std::vector<std::string> make_phase_outputs_names()
+      std::vector<std::string>
+      make_phase_outputs_names()
       {
         std::vector<std::string> names;
         names.emplace_back("phase");

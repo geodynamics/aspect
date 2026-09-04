@@ -80,23 +80,23 @@ namespace aspect
             // Average among phases. This averaging is not strictly correct, but
             // it will not matter much if the parameters are similar across transitions.
             creep_parameters.prefactor = MaterialModel::MaterialUtilities::phase_average_value(phase_function_values, n_phase_transitions_per_composition,
-                                         prefactors, composition,  MaterialModel::MaterialUtilities::PhaseUtilities::logarithmic);
+                                                                                               prefactors, composition,  MaterialModel::MaterialUtilities::PhaseUtilities::logarithmic);
             creep_parameters.stress_exponent = MaterialModel::MaterialUtilities::phase_average_value(phase_function_values, n_phase_transitions_per_composition,
-                                               stress_exponents, composition);
+                                                                                                     stress_exponents, composition);
             creep_parameters.activation_energy = MaterialModel::MaterialUtilities::phase_average_value(phase_function_values, n_phase_transitions_per_composition,
-                                                 activation_energies, composition);
+                                                                                                       activation_energies, composition);
             creep_parameters.activation_volume = MaterialModel::MaterialUtilities::phase_average_value(phase_function_values, n_phase_transitions_per_composition,
-                                                 activation_volumes, composition);
+                                                                                                       activation_volumes, composition);
             creep_parameters.peierls_stress = MaterialModel::MaterialUtilities::phase_average_value(phase_function_values, n_phase_transitions_per_composition,
-                                              peierls_stresses, composition);
+                                                                                                    peierls_stresses, composition);
             creep_parameters.glide_parameter_p = MaterialModel::MaterialUtilities::phase_average_value(phase_function_values, n_phase_transitions_per_composition,
-                                                 glide_parameters_p, composition);
+                                                                                                       glide_parameters_p, composition);
             creep_parameters.glide_parameter_q = MaterialModel::MaterialUtilities::phase_average_value(phase_function_values, n_phase_transitions_per_composition,
-                                                 glide_parameters_q, composition);
+                                                                                                       glide_parameters_q, composition);
             creep_parameters.fitting_parameter = MaterialModel::MaterialUtilities::phase_average_value(phase_function_values, n_phase_transitions_per_composition,
-                                                 fitting_parameters, composition);
+                                                                                                       fitting_parameters, composition);
             creep_parameters.stress_cutoff = MaterialModel::MaterialUtilities::phase_average_value(phase_function_values, n_phase_transitions_per_composition,
-                                             stress_cutoffs, composition);
+                                                                                                   stress_cutoffs, composition);
           }
         return creep_parameters;
       }

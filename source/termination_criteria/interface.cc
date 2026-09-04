@@ -32,7 +32,8 @@ namespace aspect
 // ------------------------------ Interface -----------------------------
 
     template <int dim>
-    double Interface<dim>::check_for_last_time_step (const double time_step) const
+    double
+    Interface<dim>::check_for_last_time_step (const double time_step) const
     {
       return time_step;
     }
@@ -42,7 +43,8 @@ namespace aspect
 // ------------------------------ Manager -----------------------------
 
     template <int dim>
-    double Manager<dim>::check_for_last_time_step (const double time_step) const
+    double
+    Manager<dim>::check_for_last_time_step (const double time_step) const
     {
       double new_time_step = time_step;
       for (const auto &p : this->plugin_objects)

@@ -27,7 +27,8 @@ namespace aspect
   namespace PrescribedStokesSolution
   {
     template <int dim>
-    void Circle<dim>::stokes_solution (const Point<dim> &p, Vector<double> &value) const
+    void
+    Circle<dim>::stokes_solution (const Point<dim> &p, Vector<double> &value) const
     {
       value(0) = -p(1);
       value(1) = p(0);

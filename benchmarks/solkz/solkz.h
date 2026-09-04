@@ -43,7 +43,8 @@ namespace aspect
       // release 1.7.0. As mentioned in the Underworld Manual, this code has been
       // released under the GNU General Public License (GPL).
 
-      void _Velic_solKz(
+      void
+      _Velic_solKz(
         double pos[],
         double _sigma, /* density */
         double _km, int _n, /* wavelength in z, wavenumber in x */
@@ -627,8 +628,9 @@ namespace aspect
         public:
           FunctionSolKz(unsigned int n_components) : Function<dim>(n_components) {}
 
-          void vector_value(const Point<dim> &p,
-                            Vector<double> &values) const override
+          void
+          vector_value(const Point<dim> &p,
+                       Vector<double> &values) const override
           {
             double pos[2] = {p(0), p(1)};
             double total_stress[3], strain_rate[3];
@@ -654,8 +656,9 @@ namespace aspect
          * @name Physical parameters used in the basic equations
          * @{
          */
-        void evaluate(const MaterialModel::MaterialModelInputs<dim> &in,
-                      MaterialModel::MaterialModelOutputs<dim> &out) const override
+        void
+        evaluate(const MaterialModel::MaterialModelInputs<dim> &in,
+                 MaterialModel::MaterialModelOutputs<dim> &out) const override
         {
           for (unsigned int i=0; i < in.n_evaluation_points(); ++i)
             {
@@ -691,7 +694,8 @@ namespace aspect
          * (compressible Stokes) or as $\nabla \cdot \mathbf{u}=0$
          * (incompressible Stokes).
          */
-        bool is_compressible() const override
+        bool
+        is_compressible() const override
         {
           return false;
         }

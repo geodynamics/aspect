@@ -90,18 +90,21 @@ namespace aspect
             }
 
             // Declare a function that returns the cosine coefficients
-            const std::vector<double> &cos_coeffs() const
+            const std::vector<double> &
+            cos_coeffs() const
             {
               return a_lm;
             }
 
             // Declare a function that returns the sine coefficients
-            const std::vector<double> &sin_coeffs() const
+            const std::vector<double> &
+            sin_coeffs() const
             {
               return b_lm;
             }
 
-            unsigned int maxdegree()
+            unsigned int
+            maxdegree()
             {
               return order;
             }
@@ -137,7 +140,8 @@ namespace aspect
                 }
             }
 
-            const std::vector<double> &spline_depths() const
+            const std::vector<double> &
+            spline_depths() const
             {
               return depths;
             }

@@ -29,7 +29,8 @@ using namespace aspect;
 
 
 template <int dim>
-void post_mesh_deformation (const SimulatorAccess<dim> &simulator_access)
+void
+post_mesh_deformation (const SimulatorAccess<dim> &simulator_access)
 {
   // Get the reference location of the one particle,
   // and check that it has the correct value.
@@ -61,7 +62,8 @@ void post_mesh_deformation (const SimulatorAccess<dim> &simulator_access)
 
 
 template <int dim>
-void signal_connector (SimulatorSignals<dim> &signals)
+void
+signal_connector (SimulatorSignals<dim> &signals)
 {
   signals.post_mesh_deformation.connect (&post_mesh_deformation<dim>);
 }

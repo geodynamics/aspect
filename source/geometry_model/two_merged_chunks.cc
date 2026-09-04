@@ -23,10 +23,10 @@
 #include <aspect/geometry_model/initial_topography_model/zero_topography.h>
 #include <aspect/geometry_model/initial_topography_model/ascii_data.h>
 #ifdef ASPECT_WITH_WORLD_BUILDER
-#  include <world_builder/config.h>
-#  if WORLD_BUILDER_VERSION_GTE(1,1,1)
-#    include <aspect/geometry_model/initial_topography_model/world_builder.h>
-#  endif
+  #include <world_builder/config.h>
+  #if WORLD_BUILDER_VERSION_GTE(1,1,1)
+    #include <aspect/geometry_model/initial_topography_model/world_builder.h>
+  #endif
 #endif
 
 #include <aspect/simulator_signals.h>
@@ -61,9 +61,9 @@ namespace aspect
                              "initial topography model can be used with the TwoMergedChunks geometry model."));
 
       manifold = std::make_unique<internal::ChunkGeometry<dim>>(this->get_initial_topography_model_pointer(),
-                                                                 point1[1],
-                                                                 point1[0],
-                                                                 point2[0]-point1[0]);
+                                                                point1[1],
+                                                                point1[0],
+                                                                point2[0]-point1[0]);
     }
 
 

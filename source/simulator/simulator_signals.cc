@@ -46,14 +46,16 @@ namespace aspect
       static bool connector_functions_have_been_called = false;
 
       // add a user-provided connector to the list of connectors we keep
-      void register_connector_function_2d (const std::function<void (aspect::SimulatorSignals<2> &)> &connector)
+      void
+      register_connector_function_2d (const std::function<void (aspect::SimulatorSignals<2> &)> &connector)
       {
         Assert(!connector_functions_have_been_called,
                ExcMessage("Registration of signal connector happened after connection has already been called!"));
         connector_functions_2d.push_back (connector);
       }
 
-      void register_connector_function_3d (const std::function<void (aspect::SimulatorSignals<3> &)> &connector)
+      void
+      register_connector_function_3d (const std::function<void (aspect::SimulatorSignals<3> &)> &connector)
       {
         Assert(!connector_functions_have_been_called,
                ExcMessage("Registration of signal connector happened after connection has already been called!"));
@@ -63,7 +65,8 @@ namespace aspect
 
       // call connectors to ensure that plugins get a change to register their slots
       template <>
-      void call_connector_functions (aspect::SimulatorSignals<2> &signals)
+      void
+      call_connector_functions (aspect::SimulatorSignals<2> &signals)
       {
         Assert(!connector_functions_have_been_called,
                ExcInternalError());
@@ -75,7 +78,8 @@ namespace aspect
       }
 
       template <>
-      void call_connector_functions (aspect::SimulatorSignals<3> &signals)
+      void
+      call_connector_functions (aspect::SimulatorSignals<3> &signals)
       {
         Assert(!connector_functions_have_been_called,
                ExcInternalError());

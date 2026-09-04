@@ -29,9 +29,9 @@
 #include <deal.II/grid/grid_tools.h>
 
 #if DEAL_II_VERSION_GTE(9,7,0)
-#include <deal.II/numerics/solution_transfer.h>
+  #include <deal.II/numerics/solution_transfer.h>
 #else
-#include <deal.II/distributed/solution_transfer.h>
+  #include <deal.II/distributed/solution_transfer.h>
 #endif
 
 #include <deal.II/fe/mapping_q_cache.h>
@@ -42,7 +42,7 @@
 #include <limits>
 
 #ifdef DEAL_II_WITH_ZLIB
-#  include <zlib.h>
+  #include <zlib.h>
 #endif
 
 namespace aspect
@@ -57,14 +57,16 @@ namespace aspect
     };
 
     template <int dim>
-    unsigned int checkpoint_id_width(const Parameters<dim> &parameters)
+    unsigned int
+    checkpoint_id_width(const Parameters<dim> &parameters)
     {
       return std::max(2U, static_cast<unsigned int>(std::to_string(parameters.n_checkpoints_to_keep+parameters.n_additional_checkpoints_to_keep).size()));
     }
 
     template <int dim>
-    std::string checkpoint_path_from_id(const Parameters<dim> &parameters,
-                                        const unsigned int checkpoint_id)
+    std::string
+    checkpoint_path_from_id(const Parameters<dim> &parameters,
+                            const unsigned int checkpoint_id)
     {
       return parameters.output_directory
              + "restart/"
@@ -72,9 +74,10 @@ namespace aspect
              + "/";
     }
 
-    void write_checkpoint_metadata(const std::string &checkpoint_path,
-                                   const double time,
-                                   const unsigned int timestep_number)
+    void
+    write_checkpoint_metadata(const std::string &checkpoint_path,
+                              const double time,
+                              const unsigned int timestep_number)
     {
       std::ofstream metadata_out(checkpoint_path + "metadata.txt");
       metadata_out.precision(17);
@@ -87,7 +90,8 @@ namespace aspect
                              + checkpoint_path + "metadata.txt> failed."));
     }
 
-    CheckpointMetadata read_checkpoint_metadata(const std::string &checkpoint_path)
+    CheckpointMetadata
+    read_checkpoint_metadata(const std::string &checkpoint_path)
     {
       std::ifstream metadata_in(checkpoint_path + "metadata.txt");
       AssertThrow(static_cast<bool>(metadata_in),
@@ -114,8 +118,9 @@ namespace aspect
      * in the input file active during restart.
      */
     template <int dim>
-    void save_critical_parameters (const Parameters<dim> &parameters,
-                                   aspect::oarchive &oa)
+    void
+    save_critical_parameters (const Parameters<dim> &parameters,
+                              aspect::oarchive &oa)
     {
       oa << parameters.convert_to_years;
       oa << parameters.surface_pressure;
@@ -143,8 +148,9 @@ namespace aspect
      * in the input file active during restart.
      */
     template <int dim>
-    void load_and_check_critical_parameters (const Parameters<dim> &parameters,
-                                             aspect::iarchive &ia)
+    void
+    load_and_check_critical_parameters (const Parameters<dim> &parameters,
+                                        aspect::iarchive &ia)
     {
       bool convert_to_years;
       ia >> convert_to_years;
@@ -312,7 +318,8 @@ namespace aspect
 
 
   template <int dim>
-  void Simulator<dim>::create_snapshot(const bool is_additional_checkpoint)
+  void
+  Simulator<dim>::create_snapshot(const bool is_additional_checkpoint)
   {
     computing_timer.enter_subsection("Create snapshot");
 
@@ -478,7 +485,8 @@ namespace aspect
 
 
   template <int dim>
-  unsigned int Simulator<dim>::determine_last_good_snapshot() const
+  unsigned int
+  Simulator<dim>::determine_last_good_snapshot() const
   {
     unsigned int last_checkpoint_id = numbers::invalid_unsigned_int;
 
@@ -499,7 +507,8 @@ namespace aspect
 
 
   template <int dim>
-  unsigned int Simulator<dim>::determine_resume_snapshot() const
+  unsigned int
+  Simulator<dim>::determine_resume_snapshot() const
   {
     if (parameters.resume_checkpoint_id != 0)
       {
@@ -558,7 +567,8 @@ namespace aspect
 
 
   template <int dim>
-  void Simulator<dim>::resume_from_snapshot()
+  void
+  Simulator<dim>::resume_from_snapshot()
   {
     // By definition, a checkpoint is past the first time step. As a consequence,
     // the Simulator object will not need the initial conditions objects, and
@@ -758,7 +768,8 @@ namespace aspect
 
   template <int dim>
   template <class Archive>
-  void Simulator<dim>::serialize (Archive &ar, const unsigned int)
+  void
+  Simulator<dim>::serialize (Archive &ar, const unsigned int)
   {
     ar &time;
     ar &time_step;

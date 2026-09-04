@@ -27,7 +27,8 @@
 namespace aspect
 {
   template <int dim>
-  std::unique_ptr<StokesMatrixFreeHandler<dim>> create_matrix_free_solver(Simulator<dim> &simulator, const Parameters<dim> &parameters)
+  std::unique_ptr<StokesMatrixFreeHandler<dim>>
+  create_matrix_free_solver(Simulator<dim> &simulator, const Parameters<dim> &parameters)
   {
     if (parameters.stokes_gmg_type == Parameters<dim>::StokesGMGType::local_smoothing)
       {
@@ -62,7 +63,8 @@ namespace aspect
   }
 
   template <int dim>
-  void StokesMatrixFreeHandler<dim>::declare_parameters(ParameterHandler &prm)
+  void
+  StokesMatrixFreeHandler<dim>::declare_parameters(ParameterHandler &prm)
   {
     StokesMatrixFreeHandlerLocalSmoothingImplementation<dim,2>::declare_parameters(prm);
     StokesMatrixFreeHandlerGlobalCoarseningImplementation<dim,2>::declare_parameters(prm);

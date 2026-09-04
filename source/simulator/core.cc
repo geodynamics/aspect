@@ -34,7 +34,7 @@
 #include <aspect/postprocess/particles.h>
 
 #ifdef ASPECT_WITH_WORLD_BUILDER
-#include <world_builder/world.h>
+  #include <world_builder/world.h>
 #endif
 
 #include <aspect/simulator/assemblers/interface.h>
@@ -63,9 +63,9 @@
 #include <deal.II/numerics/vector_tools.h>
 
 #if DEAL_II_VERSION_GTE(9,7,0)
-#include <deal.II/numerics/solution_transfer.h>
+  #include <deal.II/numerics/solution_transfer.h>
 #else
-#include <deal.II/distributed/solution_transfer.h>
+  #include <deal.II/distributed/solution_transfer.h>
 #endif
 #include <deal.II/distributed/grid_refinement.h>
 
@@ -89,9 +89,10 @@ namespace aspect
      * setup based on parameters followed by a signal to allow modifications.
      */
     template <int dim>
-    std::vector<VariableDeclaration<dim>> construct_variables(const Parameters<dim> &parameters,
-                                                               SimulatorSignals<dim> &signals,
-                                                               std::unique_ptr<MeltHandler<dim>> &melt_handler)
+    std::vector<VariableDeclaration<dim>>
+    construct_variables(const Parameters<dim> &parameters,
+                        SimulatorSignals<dim> &signals,
+                        std::unique_ptr<MeltHandler<dim>> &melt_handler)
     {
       std::vector<VariableDeclaration<dim>> variables
         = construct_default_variables (parameters);
@@ -756,7 +757,7 @@ namespace aspect
               return boundary_temperature_manager.boundary_temperature(p, x);
             },
             introspection.component_masks.temperature.first_selected_component(),
-            introspection.n_components);
+                                                     introspection.n_components);
 
             VectorTools::interpolate_boundary_values (*mapping,
                                                       dof_handler,
@@ -879,7 +880,8 @@ namespace aspect
   namespace
   {
     template <int dim>
-    bool solver_scheme_solves_advection_equations(const Parameters<dim> &parameters)
+    bool
+    solver_scheme_solves_advection_equations(const Parameters<dim> &parameters)
     {
       // Check if we use a solver scheme that solves the advection equations
       switch (parameters.nonlinear_solver)
@@ -909,7 +911,8 @@ namespace aspect
 
 
     template <int dim>
-    bool solver_scheme_solves_stokes_equations(const Parameters<dim> &parameters)
+    bool
+    solver_scheme_solves_stokes_equations(const Parameters<dim> &parameters)
     {
       // Check if we use a solver scheme that solves the Stokes equations
       switch (parameters.nonlinear_solver)
@@ -939,7 +942,8 @@ namespace aspect
 
 
     template <int dim>
-    bool compositional_field_needs_matrix_block(const Introspection<dim> &introspection, const unsigned int composition_index)
+    bool
+    compositional_field_needs_matrix_block(const Introspection<dim> &introspection, const unsigned int composition_index)
     {
       const AdvectionField adv_field (AdvectionField::composition(composition_index));
       switch (adv_field.advection_method(introspection))
@@ -963,7 +967,8 @@ namespace aspect
 
 
     template <int dim>
-    bool compositional_fields_need_matrix_block(const Introspection<dim> &introspection)
+    bool
+    compositional_fields_need_matrix_block(const Introspection<dim> &introspection)
     {
       // Check if any compositional field method actually requires a matrix block
       // (as opposed to all are advected by other means or prescribed fields)
@@ -1625,10 +1630,10 @@ namespace aspect
       if (parameters.include_melt_transport)
         {
           introspection.index_sets.locally_owned_melt_pressure_dofs = system_index_set & Utilities::extract_locally_active_dofs_with_component(dof_handler,
-                                                                      introspection.variable("fluid pressure").component_mask|
-                                                                      introspection.variable("compaction pressure").component_mask);
+            introspection.variable("fluid pressure").component_mask|
+            introspection.variable("compaction pressure").component_mask);
           introspection.index_sets.locally_owned_fluid_pressure_dofs = system_index_set & Utilities::extract_locally_active_dofs_with_component(dof_handler,
-                                                                       introspection.variable("fluid pressure").component_mask);
+            introspection.variable("fluid pressure").component_mask);
         }
 
 
@@ -2111,8 +2116,8 @@ namespace aspect
     catch (ExcNonlinearSolverNoConvergence &)
       {
         pcout << "\n"
-              "   WARNING: The nonlinear solver in the current timestep failed to converge.\n"
-              "   Acting according to the parameter 'Nonlinear solver failure strategy':"
+                 "   WARNING: The nonlinear solver in the current timestep failed to converge.\n"
+                 "   Acting according to the parameter 'Nonlinear solver failure strategy':"
               << std::endl;
         ++nonlinear_solver_failures;
 

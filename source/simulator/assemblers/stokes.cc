@@ -728,13 +728,13 @@ namespace aspect
       std::vector<double> density_old_old(n_q_points);
 
       scratch.finite_element_values[introspection.extractors.compositional_fields[density_idx]].get_function_gradients (this->get_current_linearization_point(),
-          density_gradients);
+                                                                                                                        density_gradients);
       scratch.finite_element_values[introspection.extractors.compositional_fields[density_idx]].get_function_values (this->get_current_linearization_point(),
-          density);
+                                                                                                                     density);
       scratch.finite_element_values[introspection.extractors.compositional_fields[density_idx]].get_function_values (this->get_old_solution(),
-          density_old);
+                                                                                                                     density_old);
       scratch.finite_element_values[introspection.extractors.compositional_fields[density_idx]].get_function_values (this->get_old_old_solution(),
-          density_old_old);
+                                                                                                                     density_old_old);
 
       for (unsigned int q=0; q<n_q_points; ++q)
         {

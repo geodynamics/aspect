@@ -127,7 +127,7 @@ namespace aspect
           const double time_scale = this->get_parameters().convert_to_years ? constants::year_in_seconds : 1.0;
           P = prm.get_double ("Period of nonsynchronous rotation") * time_scale;
 
-          AssertThrow (this->get_parameters().maximum_time_step < P ,
+          AssertThrow (this->get_parameters().maximum_time_step < P,
                        ExcMessage ("Time step size should be smaller than the period of nonsynchronous rotation. "
                                    "Otherwise, the tidal potential will not be resolved properly."));
         }

@@ -39,10 +39,11 @@
 /**
  * MPI operator used by MPI_max_and_data
  */
-void myop_func(void *invec,
-               void *inoutvec,
-               int *len,
-               MPI_Datatype *datatype)
+void
+myop_func(void *invec,
+          void *inoutvec,
+          int *len,
+          MPI_Datatype *datatype)
 {
   AssertThrow(*len > 1, dealii::ExcNotImplemented());
   AssertThrow(*datatype == MPI_DOUBLE, dealii::ExcNotImplemented());
@@ -63,13 +64,14 @@ void myop_func(void *invec,
  * @p local_data from the rank with the largest @local_max to every rank
  * (returned in @p global_data).
  */
-void MPI_max_and_data(const double &local_max,
-                      const double &local_data,
-                      double &global_max,
-                      double &global_data)
+void
+MPI_max_and_data(const double &local_max,
+                 const double &local_data,
+                 double &global_max,
+                 double &global_data)
 {
   MPI_Op myop;
-  MPI_Op_create(&myop_func, /* commutes? */ 1 ,&myop);
+  MPI_Op_create(&myop_func, /* commutes? */ 1,&myop);
 
   double local[] = {local_max, local_data};
   double global[2];
@@ -137,7 +139,8 @@ namespace aspect
        * @param amplitude The amplitude of the solitary wave, which is always
        * greater than 1.
        */
-      double solitary_wave_solution (const double phi, const double amplitude)
+      double
+      solitary_wave_solution (const double phi, const double amplitude)
       {
         AssertThrow(phi > 1.0 && phi <= amplitude,
                     ExcMessage("The solitary wave solution can only be computed "
@@ -158,8 +161,9 @@ namespace aspect
        *
        * @param filename Name of the input file.
        */
-      void read_solitary_wave_solution (const std::string &filename,
-                                        const MPI_Comm comm)
+      void
+      read_solitary_wave_solution (const std::string &filename,
+                                   const MPI_Comm comm)
       {
         std::string temp;
         std::stringstream in(Utilities::read_and_distribute_file_content(filename, comm));
@@ -189,13 +193,14 @@ namespace aspect
        * @param offset The offset of the center of the solitary wave from the
        * boundary of the domain.
        */
-      void compute_porosity (const double amplitude,
-                             const double background_porosity,
-                             const double /*offset*/,
-                             const double compaction_length,
-                             const bool read_solution,
-                             const std::string file_name,
-                             const MPI_Comm comm)
+      void
+      compute_porosity (const double amplitude,
+                        const double background_porosity,
+                        const double /*offset*/,
+                        const double compaction_length,
+                        const bool read_solution,
+                        const std::string file_name,
+                        const MPI_Comm comm)
       {
         // non-dimensionalize the amplitude
         const double non_dim_amplitude = amplitude / background_porosity;
@@ -225,8 +230,9 @@ namespace aspect
       }
 
 
-      double interpolate (const double position,
-                          const double offset)
+      double
+      interpolate (const double position,
+                   const double offset)
       {
         // interpolate from the solution grid to the mesh used in the simulation
         // solitary wave is a monotonically decreasing function, so the coordinates
@@ -276,13 +282,15 @@ namespace aspect
             max_z_(max_z)
           {}
 
-          void set_delta(const double delta)
+          void
+          set_delta(const double delta)
           {
             delta_ = delta;
           }
 
-          void vector_value (const Point<dim> &p,
-                             Vector<double>   &values) const override
+          void
+          vector_value (const Point<dim> &p,
+                        Vector<double>   &values) const override
           {
             unsigned int index = static_cast<int>((p[dim-1]-delta_)/max_z_ * (initial_pressure_.size()-1));
             if (p[dim-1]-delta_ < 0)
@@ -372,12 +380,14 @@ namespace aspect
     class SolitaryWaveMaterial : public MaterialModel::MeltInterface<dim>, public ::aspect::SimulatorAccess<dim>
     {
       public:
-        bool is_compressible () const override
+        bool
+        is_compressible () const override
         {
           return false;
         }
 
-        double reference_darcy_coefficient () const override
+        double
+        reference_darcy_coefficient () const override
         {
           // Make sure we keep track of the initial composition manager and
           // that it continues to live beyond the time when the simulator
@@ -396,12 +406,14 @@ namespace aspect
 
         }
 
-        double length_scaling (const double porosity) const
+        double
+        length_scaling (const double porosity) const
         {
           return std::sqrt(reference_permeability * Utilities::fixed_power<3>(porosity) * (xi_0 + 4.0/3.0 * eta_0) / eta_f);
         }
 
-        double velocity_scaling (const double porosity) const
+        double
+        velocity_scaling (const double porosity) const
         {
           const Point<dim> surface_point = this->get_geometry_model().representative_point(0.0);
           return reference_permeability * Utilities::fixed_power<2>(porosity) * (reference_rho_s - reference_rho_f)
@@ -421,8 +433,9 @@ namespace aspect
         void
         parse_parameters (ParameterHandler &prm) override;
 
-        void evaluate(const typename MaterialModel::Interface<dim>::MaterialModelInputs &in,
-                      typename MaterialModel::Interface<dim>::MaterialModelOutputs &out) const override
+        void
+        evaluate(const typename MaterialModel::Interface<dim>::MaterialModelInputs &in,
+                 typename MaterialModel::Interface<dim>::MaterialModelOutputs &out) const override
         {
           const unsigned int porosity_idx = this->introspection().compositional_index_for_name("porosity");
 
@@ -864,7 +877,7 @@ namespace aspect
             {
               fe_values.reinit (cell);
               fe_values[this->introspection().extractors.compositional_fields[porosity_index]].get_function_values (this->get_solution(),
-                  compositional_values);
+                                                                                                                    compositional_values);
               for (unsigned int q=0; q<n_q_points; ++q)
                 {
                   const double composition = compositional_values[q];
@@ -891,7 +904,7 @@ namespace aspect
           {
             fe_values.reinit (cell);
             fe_values[this->introspection().extractors.compositional_fields[porosity_index]].get_function_values (this->get_solution(),
-                compositional_values);
+                                                                                                                  compositional_values);
 
             for (unsigned int q=0; q<n_q_points; ++q)
               {
@@ -940,7 +953,7 @@ namespace aspect
         {
           store_initial_pressure();
           ref_func = std::make_unique<AnalyticSolutions::FunctionSolitaryWave<dim>>(offset,0.0,initial_pressure,
-                                                                                     this->get_geometry_model().maximal_depth(), this->introspection().n_components);
+                                                                                    this->get_geometry_model().maximal_depth(), this->introspection().n_components);
         }
 
       double delta=0;

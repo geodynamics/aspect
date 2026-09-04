@@ -118,8 +118,9 @@ namespace aspect
   };
 
   template <int dim>
-  void set_assemblers_phase_boundary(const SimulatorAccess<dim> &simulator_access,
-                                     Assemblers::Manager<dim> &assemblers)
+  void
+  set_assemblers_phase_boundary(const SimulatorAccess<dim> &simulator_access,
+                                Assemblers::Manager<dim> &assemblers)
   {
     AssertThrow (Plugins::plugin_type_matches<const MaterialModel::InnerCore<dim>>
                  (simulator_access.get_material_model()),
@@ -131,7 +132,8 @@ namespace aspect
 }
 
 template <int dim>
-void signal_connector (aspect::SimulatorSignals<dim> &signals)
+void
+signal_connector (aspect::SimulatorSignals<dim> &signals)
 {
   signals.set_assemblers.connect (&aspect::set_assemblers_phase_boundary<dim>);
 }

@@ -431,7 +431,8 @@ namespace aspect
           double w;
 
           template <class Archive>
-          void serialize (Archive &ar, const unsigned int)
+          void
+          serialize (Archive &ar, const unsigned int)
           {
             ar &t
             & w;

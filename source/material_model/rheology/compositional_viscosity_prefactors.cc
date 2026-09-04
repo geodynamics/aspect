@@ -201,11 +201,11 @@ namespace aspect
 
             options.list_of_allowed_keys = compositional_field_names;
             diffusion_water_fugacity_exponents = Utilities::MapParsing::parse_map_to_double_array (prm.get("Water fugacity exponents for diffusion creep"),
-                                                 options);
+                                                                                                   options);
             dislocation_water_fugacity_exponents = Utilities::MapParsing::parse_map_to_double_array (prm.get("Water fugacity exponents for dislocation creep"),
-                                                   options);
+                                                                                                     options);
             minimum_mass_fraction_water_for_dry_creep = Utilities::MapParsing::parse_map_to_double_array (prm.get("Minimum mass fraction bound water content for fugacity"),
-                                                        options);
+                                                                                                          options);
           }
         if (prm.get ("Viscosity prefactor scheme") == "interface weakening")
           {

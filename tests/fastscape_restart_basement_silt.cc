@@ -32,7 +32,8 @@
  * reproduce the uninterrupted run; comparing the two topography outputs and
  * statistics detects any corruption of the restarted basement/silt state.
  */
-int f()
+int
+f()
 {
   std::cout << "* starting from beginning:" << std::endl;
 

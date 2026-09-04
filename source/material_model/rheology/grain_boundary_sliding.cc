@@ -67,15 +67,15 @@ namespace aspect
           {
             // Average among phases
             slide_parameters.prefactor = MaterialModel::MaterialUtilities::phase_average_value(phase_function_values, n_phase_transitions_per_composition,
-                                         prefactors, composition,  MaterialModel::MaterialUtilities::PhaseUtilities::logarithmic);
+                                                                                               prefactors, composition,  MaterialModel::MaterialUtilities::PhaseUtilities::logarithmic);
             slide_parameters.activation_energy = MaterialModel::MaterialUtilities::phase_average_value(phase_function_values, n_phase_transitions_per_composition,
-                                                 activation_energies, composition);
+                                                                                                       activation_energies, composition);
             slide_parameters.activation_volume = MaterialModel::MaterialUtilities::phase_average_value(phase_function_values, n_phase_transitions_per_composition,
-                                                 activation_volumes, composition);
+                                                                                                       activation_volumes, composition);
             slide_parameters.stress_exponent = MaterialModel::MaterialUtilities::phase_average_value(phase_function_values, n_phase_transitions_per_composition,
-                                               stress_exponents, composition);
+                                                                                                     stress_exponents, composition);
             slide_parameters.grain_size_exponent = MaterialModel::MaterialUtilities::phase_average_value(phase_function_values, n_phase_transitions_per_composition,
-                                                   grain_size_exponents, composition);
+                                                                                                         grain_size_exponents, composition);
           }
         return slide_parameters;
       }

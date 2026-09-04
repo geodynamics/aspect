@@ -55,8 +55,9 @@ namespace
   {
     public:
 
-      void evaluate(const MaterialModel::MaterialModelInputs<dim> &/*in*/,
-                    MaterialModel::MaterialModelOutputs<dim> &out) const override
+      void
+      evaluate(const MaterialModel::MaterialModelInputs<dim> &/*in*/,
+               MaterialModel::MaterialModelOutputs<dim> &out) const override
       {
         const auto additional = out.template get_additional_output_object<AdditionalOutputs1<dim>>();
         additional->additional_material_output1[0] = 42.0;

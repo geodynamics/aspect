@@ -41,8 +41,9 @@ namespace aspect
   {
     template <int dim>
     template <class Archive>
-    void DepthAverage<dim>::DataPoint::serialize (Archive &ar,
-                                                  const unsigned int)
+    void
+    DepthAverage<dim>::DataPoint::serialize (Archive &ar,
+                                             const unsigned int)
     {
       ar &time &values;
     }
@@ -438,7 +439,8 @@ namespace aspect
 
     template <int dim>
     template <class Archive>
-    void DepthAverage<dim>::serialize (Archive &ar, const unsigned int)
+    void
+    DepthAverage<dim>::serialize (Archive &ar, const unsigned int)
     {
       ar &last_output_time
       & entries;

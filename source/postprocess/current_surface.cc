@@ -164,7 +164,8 @@ namespace aspect
 
     template <int dim>
     template <class Archive>
-    void CurrentSurface<dim>::serialize (Archive &ar, const unsigned int)
+    void
+    CurrentSurface<dim>::serialize (Archive &ar, const unsigned int)
     {
       ar &coordinates
       & data_table;

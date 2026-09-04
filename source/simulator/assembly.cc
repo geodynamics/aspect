@@ -655,12 +655,12 @@ namespace aspect
                                                scratch.material_model_outputs);
 
     scratch.finite_element_values[introspection.extractors.velocities].get_function_values(current_linearization_point,
-        scratch.velocity_values);
+                                                                                           scratch.velocity_values);
     if (assemble_newton_stokes_system)
       scratch.finite_element_values[introspection.extractors.velocities].get_function_divergences(current_linearization_point,scratch.velocity_divergence);
     if (parameters.formulation_mass_conservation == Parameters<dim>::Formulation::MassConservation::hydrostatic_compression)
       scratch.finite_element_values[introspection.extractors.temperature].get_function_gradients(current_linearization_point,
-          scratch.temperature_gradients);
+                                                                                                 scratch.temperature_gradients);
 
 
     const bool use_reference_density_profile = (parameters.formulation_mass_conservation == Parameters<dim>::Formulation::MassConservation::reference_density_profile)
@@ -758,7 +758,8 @@ namespace aspect
 
 
   template <int dim>
-  void Simulator<dim>::assemble_stokes_system ()
+  void
+  Simulator<dim>::assemble_stokes_system ()
   {
     std::string timer_section_name = "Assemble Stokes system";
 
@@ -975,16 +976,16 @@ namespace aspect
 
 
     scratch.finite_element_values[introspection.extractors.velocities].get_function_values(current_linearization_point,
-        scratch.current_velocity_values);
+                                                                                           scratch.current_velocity_values);
 
     if (parameters.include_melt_transport)
       scratch.finite_element_values[introspection.extractors.velocities].get_function_divergences(current_linearization_point,
-          scratch.current_velocity_divergences);
+                                                                                                  scratch.current_velocity_divergences);
 
     // get the mesh velocity, as we need to subtract it off of the advection systems
     if (parameters.mesh_deformation_enabled)
       scratch.finite_element_values[introspection.extractors.velocities].get_function_values(mesh_deformation->mesh_velocity,
-          scratch.mesh_velocity_values);
+                                                                                             scratch.mesh_velocity_values);
 
     // compute material properties and heating terms
     scratch.material_model_inputs.reinit (scratch.finite_element_values,
@@ -1109,12 +1110,12 @@ namespace aspect
             (*scratch.face_finite_element_values).reinit (cell, scratch.face_number);
 
             (*scratch.face_finite_element_values)[introspection.extractors.velocities].get_function_values(current_linearization_point,
-                scratch.face_current_velocity_values);
+                                                                                                           scratch.face_current_velocity_values);
 
             // get the mesh velocity, as we need to subtract it off of the advection systems
             if (parameters.mesh_deformation_enabled)
               (*scratch.face_finite_element_values)[introspection.extractors.velocities].get_function_values(mesh_deformation->mesh_velocity,
-                  scratch.face_mesh_velocity_values);
+                                                                                                             scratch.face_mesh_velocity_values);
 
             if (assemblers->advection_system_assembler_on_face_properties[advection_field.field_index()].need_face_material_model_data)
               {
@@ -1227,7 +1228,8 @@ namespace aspect
 
 
   template <int dim>
-  void Simulator<dim>::assemble_advection_system (const AdvectionField &advection_field)
+  void
+  Simulator<dim>::assemble_advection_system (const AdvectionField &advection_field)
   {
     computing_timer.enter_subsection(advection_field.is_temperature() ?
                                      "Assemble temperature system" :

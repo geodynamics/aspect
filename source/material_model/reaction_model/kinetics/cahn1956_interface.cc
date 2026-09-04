@@ -29,7 +29,8 @@ namespace aspect
     namespace ReactionModel
     {
       template <int dim>
-      std::unique_ptr<Cahn1956Interface<dim>> create_reaction_model(const std::string &model_name)
+      std::unique_ptr<Cahn1956Interface<dim>>
+      create_reaction_model(const std::string &model_name)
       {
         return std::unique_ptr<Cahn1956Interface<dim>>(ReactionModelPluginList<dim>::create_plugin(model_name, "Reaction kinetics model"));
       }

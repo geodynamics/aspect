@@ -17,7 +17,7 @@
 #include <aspect/simulator_access.h>
 
 #ifdef ASPECT_WITH_WORLD_BUILDER
-#  include <world_builder/config.h>
+  #include <world_builder/config.h>
 #endif
 
 namespace WorldBuilder

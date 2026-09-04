@@ -47,7 +47,8 @@ namespace
  * that checkpoint. Without restoring SteadyTemperature::time_temperature,
  * the resumed calculation needs to rebuild its history and terminates later.
  */
-int f()
+int
+f()
 {
   std::cout << "* running continuous reference:" << std::endl;
 

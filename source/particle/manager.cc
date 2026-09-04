@@ -64,18 +64,18 @@ namespace aspect
 
     template <int dim>
     Manager<dim>::Manager(Manager &&other) noexcept
-  :
-    particle_manager_index(other.particle_manager_index),
-                           generator(std::move(other.generator)),
-                           integrator(std::move(other.integrator)),
-                           interpolator(std::move(other.interpolator)),
-                           particle_handler(std::move(other.particle_handler)),
-                           particle_handler_backup(), // can not move
-                           property_manager(std::move(other.property_manager)),
-                           particle_load_balancing(other.particle_load_balancing),
-                           min_particles_per_cell(other.min_particles_per_cell),
-                           max_particles_per_cell(other.max_particles_per_cell),
-                           particle_weight(other.particle_weight)
+      :
+      particle_manager_index(other.particle_manager_index),
+      generator(std::move(other.generator)),
+      integrator(std::move(other.integrator)),
+      interpolator(std::move(other.interpolator)),
+      particle_handler(std::move(other.particle_handler)),
+      particle_handler_backup(), // can not move
+      property_manager(std::move(other.property_manager)),
+      particle_load_balancing(other.particle_load_balancing),
+      min_particles_per_cell(other.min_particles_per_cell),
+      max_particles_per_cell(other.max_particles_per_cell),
+      particle_weight(other.particle_weight)
     {}
 
 
@@ -97,8 +97,8 @@ namespace aspect
       // If we restarted from a checkpoint we will fill this particle handler
       // later with its serialized variables and stored particles
       particle_handler = std::make_unique<ParticleHandler<dim>>(this->get_triangulation(),
-                                                                 this->get_mapping(),
-                                                                 property_manager->get_n_property_components());
+                                                                this->get_mapping(),
+                                                                property_manager->get_n_property_components());
 
       particle_handler_backup.initialize(this->get_triangulation(),
                                          this->get_mapping(),
@@ -383,9 +383,9 @@ namespace aspect
                                                                          cell);
 
                             typename ParticleHandler<dim>::particle_iterator particle = particle_handler->insert_particle(new_particle.second,
-                                                                                        typename parallel::distributed::Triangulation<dim>::cell_iterator (&this->get_triangulation(),
-                                                                                            new_particle.first.first,
-                                                                                            new_particle.first.second));
+                                                                                                                          typename parallel::distributed::Triangulation<dim>::cell_iterator (&this->get_triangulation(),
+                                                                                                                            new_particle.first.first,
+                                                                                                                            new_particle.first.second));
                             particle->set_properties(particle_properties);
 
                           }
@@ -416,9 +416,9 @@ namespace aspect
                                                                          cell);
 
                             typename ParticleHandler<dim>::particle_iterator particle = particle_handler->insert_particle(new_particle.second,
-                                                                                        typename parallel::distributed::Triangulation<dim>::cell_iterator (&this->get_triangulation(),
-                                                                                            new_particle.first.first,
-                                                                                            new_particle.first.second));
+                                                                                                                          typename parallel::distributed::Triangulation<dim>::cell_iterator (&this->get_triangulation(),
+                                                                                                                            new_particle.first.first,
+                                                                                                                            new_particle.first.second));
                             particle->set_properties(particle_properties);
                           }
                         else if (addition_algorithm == AdditionAlgorithm::histogram)
@@ -568,9 +568,9 @@ namespace aspect
                                                                          cell);
 
                             typename ParticleHandler<dim>::particle_iterator particle = particle_handler->insert_particle(new_particle.second,
-                                                                                        typename parallel::distributed::Triangulation<dim>::cell_iterator (&this->get_triangulation(),
-                                                                                            new_particle.first.first,
-                                                                                            new_particle.first.second));
+                                                                                                                          typename parallel::distributed::Triangulation<dim>::cell_iterator (&this->get_triangulation(),
+                                                                                                                            new_particle.first.first,
+                                                                                                                            new_particle.first.second));
                             particle->set_properties(particle_properties);
 
                           }
@@ -914,7 +914,7 @@ namespace aspect
             mapping_flags |= update_flags[i];
 
           std::unique_ptr<SolutionEvaluator<dim>> evaluator = construct_solution_evaluator(*this,
-                                                               mapping_flags);
+                                                                                           mapping_flags);
 
           // FEPointEvaluation uses different evaluation flags than the common UpdateFlags.
           // Translate between the two.
@@ -968,7 +968,7 @@ namespace aspect
                           "It is safe to uncomment this assertion, but you can expect a performance penalty."));
 
         std::unique_ptr<SolutionEvaluator<dim>> evaluator = construct_solution_evaluator(*this,
-                                                             update_values);
+                                                                                         update_values);
 
         // Loop over all cells and advect the particles cell-wise
         for (const auto &cell : this->get_dof_handler().active_cell_iterators())
@@ -1009,8 +1009,8 @@ namespace aspect
                         << (this->n_particle_managers() >1 ?
                             // print the particle world number if there are multiple particle worlds,
                             // starting at one
-                            " (particle manager " + std::to_string(particle_manager_index+1) + ")" :
-                            "")
+      " (particle manager " + std::to_string(particle_manager_index+1) + ")" :
+      "")
                         << "... " << std::flush;
       do
         {

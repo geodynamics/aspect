@@ -26,7 +26,8 @@
 
 namespace aspect
 {
-  int f()
+  int
+  f()
   {
     using namespace aspect::Utilities;
 

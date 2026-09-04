@@ -56,16 +56,18 @@ namespace aspect
      */
     namespace ChangeVectorTypes
     {
-      void copy(aspect::LinearAlgebra::Vector &out,
-                const dealii::LinearAlgebra::distributed::Vector<double> &in)
+      void
+      copy(aspect::LinearAlgebra::Vector &out,
+           const dealii::LinearAlgebra::distributed::Vector<double> &in)
       {
         dealii::LinearAlgebra::ReadWriteVector<double> rwv(out.locally_owned_elements());
         rwv.import_elements(in, VectorOperation::insert);
         out.import_elements(rwv,VectorOperation::insert);
       }
 
-      void copy(dealii::LinearAlgebra::distributed::Vector<double> &out,
-                const aspect::LinearAlgebra::Vector &in)
+      void
+      copy(dealii::LinearAlgebra::distributed::Vector<double> &out,
+           const aspect::LinearAlgebra::Vector &in)
       {
         dealii::LinearAlgebra::ReadWriteVector<double> rwv;
 
@@ -79,16 +81,18 @@ namespace aspect
         out.import_elements(rwv, VectorOperation::insert);
       }
 
-      void copy(aspect::LinearAlgebra::BlockVector &out,
-                const dealii::LinearAlgebra::distributed::BlockVector<double> &in)
+      void
+      copy(aspect::LinearAlgebra::BlockVector &out,
+           const dealii::LinearAlgebra::distributed::BlockVector<double> &in)
       {
         const unsigned int n_blocks = in.n_blocks();
         for (unsigned int b=0; b<n_blocks; ++b)
           copy(out.block(b),in.block(b));
       }
 
-      void copy(dealii::LinearAlgebra::distributed::BlockVector<double> &out,
-                const aspect::LinearAlgebra::BlockVector &in)
+      void
+      copy(dealii::LinearAlgebra::distributed::BlockVector<double> &out,
+           const aspect::LinearAlgebra::BlockVector &in)
       {
         const unsigned int n_blocks = in.n_blocks();
         for (unsigned int b=0; b<n_blocks; ++b)
@@ -221,30 +225,30 @@ namespace aspect
           // When the projection is computed, this will set the viscosity exactly
           // to this averaged value.
           if (dof_handler_projection.get_fe().degree == 0)
-            MaterialModel::MaterialAveraging::average (material_averaging,
-            FEQ_cell,
-            quadrature_formula,
-            mapping,
-            in.requested_properties,
-            out);
+          MaterialModel::MaterialAveraging::average (material_averaging,
+                                                     FEQ_cell,
+                                                     quadrature_formula,
+                                                     mapping,
+                                                     in.requested_properties,
+                                                     out);
 
           if (active_no_averaging)
             {
               // also copy the viscosity to the CellData
 
               const unsigned int index = matrix_free.get_matrix_free_cell_index(cell);
-              const unsigned int lane_size = VectorizedArray<number>::size();
-              const unsigned int cell_index = index / lane_size;
-              const unsigned int lane = index % lane_size;
+                const unsigned int lane_size = VectorizedArray<number>::size();
+                const unsigned int cell_index = index / lane_size;
+                const unsigned int lane = index % lane_size;
 
-              for (unsigned int q=0; q<values.size(); ++q)
-                active_cell_data.viscosity(cell_index, q)[lane] = out.viscosities[q];
-            }
+                for (unsigned int q=0; q<values.size(); ++q)
+                  active_cell_data.viscosity(cell_index, q)[lane] = out.viscosities[q];
+              }
 
           for (unsigned int i=0; i<values.size(); ++i)
-            {
-              // Find the local max/min of the evaluated viscosities.
-              minimum_viscosity_local = std::min(minimum_viscosity_local, out.viscosities[i]);
+          {
+            // Find the local max/min of the evaluated viscosities.
+            minimum_viscosity_local = std::min(minimum_viscosity_local, out.viscosities[i]);
               maximum_viscosity_local = std::max(maximum_viscosity_local, out.viscosities[i]);
 
               values[i] = out.viscosities[i];
@@ -318,7 +322,7 @@ namespace aspect
                     // of the evaluated viscosity on the active level.
                     for (unsigned int q=0; q<n_q_points; ++q)
                       active_cell_data.viscosity(cell, q)[i]
-                        = std::clamp(values_on_quad[q], minimum_viscosity, maximum_viscosity);
+                                      = std::clamp(values_on_quad[q], minimum_viscosity, maximum_viscosity);
                   }
               }
           }
@@ -359,7 +363,8 @@ namespace aspect
   template <int dim, int degree_v, typename number>
   void
   MatrixFreeStokesOperators::StokesOperator<dim,degree_v,number>
-  ::compute_diagonal ()
+  ::
+  compute_diagonal ()
   {
     // There is currently no need in the code for the diagonal of the entire Stokes
     // block. If needed, one could easily construct based on the diagonal of the A
@@ -372,10 +377,11 @@ namespace aspect
   template <int dim, int degree_v, typename number>
   void
   MatrixFreeStokesOperators::StokesOperator<dim,degree_v,number>
-  ::local_apply (const dealii::MatrixFree<dim, number>                         &data,
-                 dealii::LinearAlgebra::distributed::BlockVector<number>       &dst,
-                 const dealii::LinearAlgebra::distributed::BlockVector<number> &src,
-                 const std::pair<unsigned int, unsigned int>                   &cell_range) const
+  ::
+  local_apply (const dealii::MatrixFree<dim, number>                         &data,
+               dealii::LinearAlgebra::distributed::BlockVector<number>       &dst,
+               const dealii::LinearAlgebra::distributed::BlockVector<number> &src,
+               const std::pair<unsigned int, unsigned int>                   &cell_range) const
   {
     FEEvaluation<dim,degree_v,degree_v+1,dim,number> u_eval(data, 0);
     FEEvaluation<dim,degree_v-1,degree_v+1,1,number> p_eval(data, /*dofh*/1);
@@ -547,10 +553,11 @@ namespace aspect
   template <int dim, int degree_v, typename number>
   void
   MatrixFreeStokesOperators::StokesOperator<dim, degree_v, number>
-  ::local_apply_face(const dealii::MatrixFree<dim, number> &,
-                     dealii::LinearAlgebra::distributed::BlockVector<number> &,
-                     const dealii::LinearAlgebra::distributed::BlockVector<number> &,
-                     const std::pair<unsigned int, unsigned int> &) const
+  ::
+  local_apply_face(const dealii::MatrixFree<dim, number> &,
+                   dealii::LinearAlgebra::distributed::BlockVector<number> &,
+                   const dealii::LinearAlgebra::distributed::BlockVector<number> &,
+                   const std::pair<unsigned int, unsigned int> &) const
   {
   }
 
@@ -559,10 +566,11 @@ namespace aspect
   template <int dim, int degree_v, typename number>
   void
   MatrixFreeStokesOperators::StokesOperator<dim, degree_v, number>
-  ::local_apply_boundary_face(const dealii::MatrixFree<dim, number> &data,
-                              dealii::LinearAlgebra::distributed::BlockVector<number> &dst,
-                              const dealii::LinearAlgebra::distributed::BlockVector<number> &src,
-                              const std::pair<unsigned int, unsigned int> &face_range) const
+  ::
+  local_apply_boundary_face(const dealii::MatrixFree<dim, number> &data,
+                            dealii::LinearAlgebra::distributed::BlockVector<number> &dst,
+                            const dealii::LinearAlgebra::distributed::BlockVector<number> &src,
+                            const std::pair<unsigned int, unsigned int> &face_range) const
   {
     // Assemble the fictive stabilization stress (phi_u[i].g)*(phi_u[j].n)
     // g=pressure_perturbation * g_hat is stored in free_surface_stabilization_term_table
@@ -602,8 +610,9 @@ namespace aspect
   template <int dim, int degree_v, typename number>
   void
   MatrixFreeStokesOperators::StokesOperator<dim,degree_v,number>
-  ::apply_add (dealii::LinearAlgebra::distributed::BlockVector<number> &dst,
-               const dealii::LinearAlgebra::distributed::BlockVector<number> &src) const
+  ::
+  apply_add (dealii::LinearAlgebra::distributed::BlockVector<number> &dst,
+             const dealii::LinearAlgebra::distributed::BlockVector<number> &src) const
   {
     if (cell_data->apply_stabilization_free_surface_faces)
       MatrixFreeOperators::Base<dim, dealii::LinearAlgebra::distributed::BlockVector<number>>::
@@ -653,7 +662,8 @@ namespace aspect
   template <int dim, int degree_v, typename number>
   void
   MatrixFreeStokesOperators::BTBlockOperator<dim,degree_v,number>
-  ::compute_diagonal ()
+  ::
+  compute_diagonal ()
   {
     // There is no need in the code for this diagonal.
     Assert(false, ExcNotImplemented());
@@ -664,10 +674,11 @@ namespace aspect
   template <int dim, int degree_v, typename number>
   void
   MatrixFreeStokesOperators::BTBlockOperator<dim,degree_v,number>
-  ::local_apply (const dealii::MatrixFree<dim, number>                         &data,
-                 dealii::LinearAlgebra::distributed::BlockVector<number>       &dst,
-                 const dealii::LinearAlgebra::distributed::BlockVector<number> &src,
-                 const std::pair<unsigned int, unsigned int>                   &cell_range) const
+  ::
+  local_apply (const dealii::MatrixFree<dim, number>                         &data,
+               dealii::LinearAlgebra::distributed::BlockVector<number>       &dst,
+               const dealii::LinearAlgebra::distributed::BlockVector<number> &src,
+               const std::pair<unsigned int, unsigned int>                   &cell_range) const
   {
     FEEvaluation<dim,degree_v,degree_v+1,dim,number> u_eval(data, 0);
     FEEvaluation<dim,degree_v-1,degree_v+1,1,number> p_eval(data, /*dofh*/1);
@@ -701,10 +712,11 @@ namespace aspect
   template <int dim, int degree_v, typename number>
   void
   MatrixFreeStokesOperators::BTBlockOperator<dim, degree_v, number>
-  ::local_apply_face(const dealii::MatrixFree<dim, number> &,
-                     dealii::LinearAlgebra::distributed::BlockVector<number> &,
-                     const dealii::LinearAlgebra::distributed::BlockVector<number> &,
-                     const std::pair<unsigned int, unsigned int> &) const
+  ::
+  local_apply_face(const dealii::MatrixFree<dim, number> &,
+                   dealii::LinearAlgebra::distributed::BlockVector<number> &,
+                   const dealii::LinearAlgebra::distributed::BlockVector<number> &,
+                   const std::pair<unsigned int, unsigned int> &) const
   {
   }
 
@@ -713,8 +725,9 @@ namespace aspect
   template <int dim, int degree_v, typename number>
   void
   MatrixFreeStokesOperators::BTBlockOperator<dim,degree_v,number>
-  ::apply_add (dealii::LinearAlgebra::distributed::BlockVector<number> &dst,
-               const dealii::LinearAlgebra::distributed::BlockVector<number> &src) const
+  ::
+  apply_add (dealii::LinearAlgebra::distributed::BlockVector<number> &dst,
+             const dealii::LinearAlgebra::distributed::BlockVector<number> &src) const
   {
     MatrixFreeOperators::Base<dim, dealii::LinearAlgebra::distributed::BlockVector<number>>::
     data->cell_loop(&BTBlockOperator::local_apply, this, dst, src);
@@ -761,9 +774,9 @@ namespace aspect
     AffineConstraints<number> dummy;
 
     mf_storage->reinit(mapping,
-    std::vector< const DoFHandler< dim > *> {&dof_handler_v, &dof_handler_p},
-    std::vector< const AffineConstraints< number > *> {&constraints_v, &constraints_p} ,
-    QGauss<1>(degree_p+2), data);
+                       std::vector< const DoFHandler< dim > *> {&dof_handler_v, &dof_handler_p},
+                       std::vector< const AffineConstraints< number > *> {&constraints_v, &constraints_p},
+                       QGauss<1>(degree_p+2), data);
 
     this->initialize(mf_storage, std::vector< unsigned int > {1}, std::vector< unsigned int > {1});
   }
@@ -783,10 +796,11 @@ namespace aspect
   template <int dim, int degree_p, typename number>
   void
   MatrixFreeStokesOperators::MassMatrixOperator<dim,degree_p,number>
-  ::local_apply (const dealii::MatrixFree<dim, number>                 &data,
-                 dealii::LinearAlgebra::distributed::Vector<number>       &dst,
-                 const dealii::LinearAlgebra::distributed::Vector<number> &src,
-                 const std::pair<unsigned int, unsigned int>           &cell_range) const
+  ::
+  local_apply (const dealii::MatrixFree<dim, number>                 &data,
+               dealii::LinearAlgebra::distributed::Vector<number>       &dst,
+               const dealii::LinearAlgebra::distributed::Vector<number> &src,
+               const std::pair<unsigned int, unsigned int>           &cell_range) const
   {
     FEEvaluation<dim,degree_p,degree_p+2,1,number> pressure (data, /*dofh*/1);
 
@@ -804,11 +818,12 @@ namespace aspect
   template <int dim, int degree_p, typename number>
   void
   MatrixFreeStokesOperators::MassMatrixOperator<dim,degree_p,number>
-  ::inner_cell_operation(FEEvaluation<dim,
-                         degree_p,
-                         degree_p+2,
-                         1,
-                         number> &pressure) const
+  ::
+  inner_cell_operation(FEEvaluation<dim,
+                       degree_p,
+                       degree_p+2,
+                       1,
+                       number> &pressure) const
   {
     const bool use_viscosity_at_quadrature_points
       = (cell_data->viscosity.size(1) == pressure.n_q_points);
@@ -845,8 +860,9 @@ namespace aspect
   template <int dim, int degree_p, typename number>
   void
   MatrixFreeStokesOperators::MassMatrixOperator<dim,degree_p,number>
-  ::apply_add (dealii::LinearAlgebra::distributed::Vector<number> &dst,
-               const dealii::LinearAlgebra::distributed::Vector<number> &src) const
+  ::
+  apply_add (dealii::LinearAlgebra::distributed::Vector<number> &dst,
+             const dealii::LinearAlgebra::distributed::Vector<number> &src) const
   {
     MatrixFreeOperators::Base<dim,dealii::LinearAlgebra::distributed::Vector<number>>::
     data->cell_loop(&MassMatrixOperator::local_apply, this, dst, src);
@@ -857,7 +873,8 @@ namespace aspect
   template <int dim, int degree_p, typename number>
   void
   MatrixFreeStokesOperators::MassMatrixOperator<dim,degree_p,number>
-  ::compute_diagonal ()
+  ::
+  compute_diagonal ()
   {
     this->inverse_diagonal_entries =
       std::make_shared<DiagonalMatrix<dealii::LinearAlgebra::distributed::Vector<number>>>();
@@ -948,9 +965,9 @@ namespace aspect
 
     AffineConstraints<number> dummy;
     mf_storage->reinit(mapping,
-    std::vector< const DoFHandler< dim > *> {&dof_handler_v, &dof_handler_p},
-    std::vector< const AffineConstraints< number > *> {&constraints_v, &constraints_p} ,
-    QGauss<1>(degree_v+1), additional_data);
+                       std::vector< const DoFHandler< dim > *> {&dof_handler_v, &dof_handler_p},
+                       std::vector< const AffineConstraints< number > *> {&constraints_v, &constraints_p},
+                       QGauss<1>(degree_v+1), additional_data);
 
     this->initialize(mf_storage, std::vector< unsigned int > {0}, std::vector< unsigned int > {0});
   }
@@ -970,11 +987,12 @@ namespace aspect
   template <int dim, int degree_v, typename number>
   void
   MatrixFreeStokesOperators::ABlockOperator<dim,degree_v,number>
-  ::inner_cell_operation(FEEvaluation<dim,
-                         degree_v,
-                         degree_v+1,
-                         dim,
-                         number> &velocity) const
+  ::
+  inner_cell_operation(FEEvaluation<dim,
+                       degree_v,
+                       degree_v+1,
+                       dim,
+                       number> &velocity) const
   {
     const bool use_viscosity_at_quadrature_points
       = (cell_data->viscosity.size(1) == velocity.n_q_points);
@@ -1009,11 +1027,12 @@ namespace aspect
   template <int dim, int degree_v, typename number>
   void
   MatrixFreeStokesOperators::ABlockOperator<dim,degree_v,number>
-  ::cell_operation(FEEvaluation<dim,
-                   degree_v,
-                   degree_v+1,
-                   dim,
-                   number> &velocity) const
+  ::
+  cell_operation(FEEvaluation<dim,
+                 degree_v,
+                 degree_v+1,
+                 dim,
+                 number> &velocity) const
   {
     velocity.evaluate (EvaluationFlags::gradients);
     this->inner_cell_operation(velocity);
@@ -1025,10 +1044,11 @@ namespace aspect
   template <int dim, int degree_v, typename number>
   void
   MatrixFreeStokesOperators::ABlockOperator<dim,degree_v,number>
-  ::local_apply (const dealii::MatrixFree<dim, number>                 &data,
-                 dealii::LinearAlgebra::distributed::Vector<number>       &dst,
-                 const dealii::LinearAlgebra::distributed::Vector<number> &src,
-                 const std::pair<unsigned int, unsigned int>           &cell_range) const
+  ::
+  local_apply (const dealii::MatrixFree<dim, number>                 &data,
+               dealii::LinearAlgebra::distributed::Vector<number>       &dst,
+               const dealii::LinearAlgebra::distributed::Vector<number> &src,
+               const std::pair<unsigned int, unsigned int>           &cell_range) const
   {
     FEEvaluation<dim,degree_v,degree_v+1,dim,number> velocity (data,0);
 
@@ -1052,8 +1072,9 @@ namespace aspect
   template <int dim, int degree_v, typename number>
   void
   MatrixFreeStokesOperators::ABlockOperator<dim,degree_v,number>
-  ::apply_add (dealii::LinearAlgebra::distributed::Vector<number> &dst,
-               const dealii::LinearAlgebra::distributed::Vector<number> &src) const
+  ::
+  apply_add (dealii::LinearAlgebra::distributed::Vector<number> &dst,
+             const dealii::LinearAlgebra::distributed::Vector<number> &src) const
   {
     MatrixFreeOperators::Base<dim,dealii::LinearAlgebra::distributed::Vector<number>>::
     data->cell_loop(&ABlockOperator::local_apply, this, dst, src);
@@ -1064,7 +1085,8 @@ namespace aspect
   template <int dim, int degree_v, typename number>
   void
   MatrixFreeStokesOperators::ABlockOperator<dim,degree_v,number>
-  ::compute_diagonal ()
+  ::
+  compute_diagonal ()
   {
     this->inverse_diagonal_entries =
       std::make_shared<DiagonalMatrix<dealii::LinearAlgebra::distributed::Vector<number>>>();
@@ -1098,7 +1120,8 @@ namespace aspect
   template <int dim, int degree_v, typename number>
   void
   MatrixFreeStokesOperators::ABlockOperator<dim,degree_v,number>
-  ::set_diagonal (const dealii::LinearAlgebra::distributed::Vector<number> &diag)
+  ::
+  set_diagonal (const dealii::LinearAlgebra::distributed::Vector<number> &diag)
   {
     this->inverse_diagonal_entries =
       std::make_shared<DiagonalMatrix<dealii::LinearAlgebra::distributed::Vector<number>>>();

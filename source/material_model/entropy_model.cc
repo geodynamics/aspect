@@ -39,7 +39,8 @@ namespace aspect
     namespace
     {
       template <int dim>
-      bool solver_scheme_is_supported(const Parameters<dim> &parameters)
+      bool
+      solver_scheme_is_supported(const Parameters<dim> &parameters)
       {
         // If we solve advection equations, we need to iterate them, because this material
         // models splits temperature diffusion from entropy advection.
@@ -100,7 +101,7 @@ namespace aspect
         }
 
       lateral_viscosity_prefactor_lookup = std::make_unique<internal::LateralViscosityLookup>(data_directory+lateral_viscosity_file_name,
-                                           this->get_mpi_communicator());
+                                                                                              this->get_mpi_communicator());
     }
 
 

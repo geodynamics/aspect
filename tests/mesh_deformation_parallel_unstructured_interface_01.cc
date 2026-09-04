@@ -41,7 +41,8 @@ namespace aspect
       public:
         TestExternalDeformation() = default;
 
-        void initialize() override
+        void
+        initialize() override
         {
           this->get_pcout() << "initialize()" << std::endl;
         }

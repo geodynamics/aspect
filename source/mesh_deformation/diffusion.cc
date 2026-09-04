@@ -85,11 +85,12 @@ namespace aspect
 
 
     template <int dim>
-    void Diffusion<dim>::diffuse_boundary(const DoFHandler<dim> &mesh_deformation_dof_handler,
-                                          const IndexSet &mesh_locally_owned,
-                                          const IndexSet &mesh_locally_relevant,
-                                          LinearAlgebra::Vector &output,
-                                          const std::set<types::boundary_id> &boundary_ids) const
+    void
+    Diffusion<dim>::diffuse_boundary(const DoFHandler<dim> &mesh_deformation_dof_handler,
+                                     const IndexSet &mesh_locally_owned,
+                                     const IndexSet &mesh_locally_relevant,
+                                     LinearAlgebra::Vector &output,
+                                     const std::set<types::boundary_id> &boundary_ids) const
     {
       // Check that the current timestep does not exceed the diffusion timestep
       check_diffusion_time_step(mesh_deformation_dof_handler, boundary_ids);
@@ -465,8 +466,9 @@ namespace aspect
 
 
     template <int dim>
-    void Diffusion<dim>::check_diffusion_time_step (const DoFHandler<dim> &mesh_deformation_dof_handler,
-                                                    const std::set<types::boundary_id> &boundary_ids) const
+    void
+    Diffusion<dim>::check_diffusion_time_step (const DoFHandler<dim> &mesh_deformation_dof_handler,
+                                               const std::set<types::boundary_id> &boundary_ids) const
     {
       double min_local_conduction_timestep = std::numeric_limits<double>::max();
 
@@ -557,7 +559,8 @@ namespace aspect
 
 
     template <int dim>
-    void Diffusion<dim>::declare_parameters(ParameterHandler &prm)
+    void
+    Diffusion<dim>::declare_parameters(ParameterHandler &prm)
     {
       prm.enter_subsection("Mesh deformation");
       {
@@ -582,7 +585,8 @@ namespace aspect
 
 
     template <int dim>
-    void Diffusion<dim>::parse_parameters(ParameterHandler &prm)
+    void
+    Diffusion<dim>::parse_parameters(ParameterHandler &prm)
     {
       prm.enter_subsection ("Mesh deformation");
       {

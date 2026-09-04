@@ -67,30 +67,31 @@
 namespace aspect
 {
   template <int dim>
-  void Simulator<dim>::write_plugin_graph (std::ostream &out) const
+  void
+  Simulator<dim>::write_plugin_graph (std::ostream &out) const
   {
     // write the preamble
     out << "digraph Plugins\n"
-        "{\n"
-        "  splines=line;\n"
-        "  splines=true;\n"
-        "  overlap=false;\n"
-        "  edge [fontname=\"FreeSans\",\n"
-        "        fontsize=\"10\",\n"
-        "        labelfontname=\"FreeSans\",\n"
-        "        labelfontsize=\"10\",\n"
-        "        color=\"black\",\n"
-        "        style=\"solid\"];\n"
-        "  node [fontname=\"FreeSans\",\n"
-        "        fontsize=\"10\",\n"
-        "        shape=\"rectangle\",\n"
-        "        height=0.2,\n"
-        "        width=0.4,\n"
-        "        color=\"black\",\n"
-        "        fillcolor=\"white\",\n"
-        "        style=\"filled\"];\n"
-        "  layout=neato;\n"
-        "\n";
+           "{\n"
+           "  splines=line;\n"
+           "  splines=true;\n"
+           "  overlap=false;\n"
+           "  edge [fontname=\"FreeSans\",\n"
+           "        fontsize=\"10\",\n"
+           "        labelfontname=\"FreeSans\",\n"
+           "        labelfontsize=\"10\",\n"
+           "        color=\"black\",\n"
+           "        style=\"solid\"];\n"
+           "  node [fontname=\"FreeSans\",\n"
+           "        fontsize=\"10\",\n"
+           "        shape=\"rectangle\",\n"
+           "        height=0.2,\n"
+           "        width=0.4,\n"
+           "        color=\"black\",\n"
+           "        fillcolor=\"white\",\n"
+           "        style=\"filled\"];\n"
+           "  layout=neato;\n"
+           "\n";
 
     // then also write nodes for the Simulator and SimulatorAccess classes,
     // and an arrow from the former to the latter to indicate flow of
@@ -133,7 +134,8 @@ namespace aspect
 
 
   template <int dim>
-  void Simulator<dim>::output_statistics()
+  void
+  Simulator<dim>::output_statistics()
   {
     // Only write the statistics file from processor zero
     if (Utilities::MPI::this_mpi_process(mpi_communicator)!=0)
@@ -393,7 +395,8 @@ namespace aspect
 
 
   template <int dim>
-  bool Simulator<dim>::maybe_do_initial_refinement (const unsigned int max_refinement_level)
+  bool
+  Simulator<dim>::maybe_do_initial_refinement (const unsigned int max_refinement_level)
   {
     if (pre_refinement_step < parameters.initial_adaptive_refinement)
       {
@@ -428,7 +431,8 @@ namespace aspect
 
 
   template <int dim>
-  void Simulator<dim>::exchange_refinement_flags ()
+  void
+  Simulator<dim>::exchange_refinement_flags ()
   {
     // Communicate refinement flags on ghost cells from the owner of the
     // cell. This is necessary to get consistent refinement, as mesh
@@ -438,31 +442,32 @@ namespace aspect
     = [] (const typename DoFHandler<dim>::active_cell_iterator &cell) -> std::uint8_t
     {
       if (cell->refine_flag_set())
-        return 1;
+      return 1;
       if (cell->coarsen_flag_set())
         return 2;
-      return 0;
-    };
-    auto unpack
-    = [] (const typename DoFHandler<dim>::active_cell_iterator &cell, const std::uint8_t &flag) -> void
+        return 0;
+      };
+  auto unpack
+  = [] (const typename DoFHandler<dim>::active_cell_iterator &cell, const std::uint8_t &flag) -> void
     {
       cell->clear_coarsen_flag();
       cell->clear_refine_flag();
       if (flag==1)
-        cell->set_refine_flag();
+      cell->set_refine_flag();
       else if (flag==2)
         cell->set_coarsen_flag();
-    };
+      };
 
-    GridTools::exchange_cell_data_to_ghosts<std::uint8_t, DoFHandler<dim>>
-    (dof_handler, pack, unpack);
+  GridTools::exchange_cell_data_to_ghosts<std::uint8_t, DoFHandler<dim>>
+  (dof_handler, pack, unpack);
   }
 
 
 
   template <int dim>
-  void Simulator<dim>::maybe_refine_mesh (const double new_time_step,
-                                          unsigned int &max_refinement_level)
+  void
+  Simulator<dim>::maybe_refine_mesh (const double new_time_step,
+                                     unsigned int &max_refinement_level)
   {
     /*
      * see if this is an additional refinement cycle. An additional refinement
@@ -502,7 +507,8 @@ namespace aspect
 
 
   template <int dim>
-  void Simulator<dim>::maybe_write_timing_output () const
+  void
+  Simulator<dim>::maybe_write_timing_output () const
   {
     bool write_timing_output = false;
     if (parameters.timing_output_frequency <= 1)
@@ -524,8 +530,9 @@ namespace aspect
 
 
   template <int dim>
-  bool Simulator<dim>::maybe_write_checkpoint (const std::time_t last_checkpoint_time,
-                                               const bool        force_writing_checkpoint)
+  bool
+  Simulator<dim>::maybe_write_checkpoint (const std::time_t last_checkpoint_time,
+                                          const bool        force_writing_checkpoint)
   {
     // Do a checkpoint if this is the end of simulation,
     // and the termination criteria say to checkpoint at the end.
@@ -560,7 +567,7 @@ namespace aspect
         // for a restarted computation than for one that ran straight
         // through
         rebuild_stokes_matrix =
-          rebuild_stokes_preconditioner = true;
+        rebuild_stokes_preconditioner = true;
       }
 
     // See if an additional checkpoint needs to be created. Time has already been advanced
@@ -585,7 +592,7 @@ namespace aspect
           .erase (parameters.additional_checkpoint_times.begin());
 
         rebuild_stokes_matrix =
-          rebuild_stokes_preconditioner = true;
+        rebuild_stokes_preconditioner = true;
       }
 
     return write_regular_checkpoint;
@@ -594,7 +601,8 @@ namespace aspect
 
 
   template <int dim>
-  void Simulator<dim>::advance_time (const double step_size)
+  void
+  Simulator<dim>::advance_time (const double step_size)
   {
     old_time_step = time_step;
     time_step = step_size;
@@ -698,8 +706,9 @@ namespace aspect
 
 
   template <int dim>
-  void Simulator<dim>::interpolate_onto_velocity_system(const TensorFunction<1,dim> &func,
-                                                        LinearAlgebra::Vector &vec) const
+  void
+  Simulator<dim>::interpolate_onto_velocity_system(const TensorFunction<1,dim> &func,
+                                                   LinearAlgebra::Vector &vec) const
   {
     Assert(introspection.block_indices.velocities == 0, ExcNotImplemented());
 
@@ -763,7 +772,8 @@ namespace aspect
 
 
   template <int dim>
-  double Simulator<dim>::normalize_pressure (LinearAlgebra::BlockVector &vector) const
+  double
+  Simulator<dim>::normalize_pressure (LinearAlgebra::BlockVector &vector) const
   {
     if (parameters.pressure_normalization == "no")
       return 0;
@@ -1311,7 +1321,8 @@ namespace aspect
 
 
   template <int dim>
-  void Simulator<dim>::apply_limiter_to_dg_solutions (const AdvectionField &advection_field)
+  void
+  Simulator<dim>::apply_limiter_to_dg_solutions (const AdvectionField &advection_field)
   {
     // TODO: Modify to more robust method
     // Skip if this composition field is being set from the volume_of_fluid handler
@@ -1553,9 +1564,10 @@ namespace aspect
 
 
   template <int dim>
-  void Simulator<dim>::update_solution_vectors_with_reaction_results (const unsigned int block_index,
-                                                                      const LinearAlgebra::BlockVector &distributed_vector,
-                                                                      const LinearAlgebra::BlockVector &distributed_reaction_vector)
+  void
+  Simulator<dim>::update_solution_vectors_with_reaction_results (const unsigned int block_index,
+                                                                 const LinearAlgebra::BlockVector &distributed_vector,
+                                                                 const LinearAlgebra::BlockVector &distributed_reaction_vector)
   {
     solution.block(block_index) = distributed_vector.block(block_index);
 
@@ -1588,9 +1600,10 @@ namespace aspect
 
 
   template <int dim>
-  void Simulator<dim>::compute_unique_advection_support_points(const std::vector<AdvectionField> &advection_fields,
-                                                               std::vector<Point<dim>> &unique_support_points,
-                                                               std::vector<std::vector<unsigned int>> &support_point_index_by_field) const
+  void
+  Simulator<dim>::compute_unique_advection_support_points(const std::vector<AdvectionField> &advection_fields,
+                                                          std::vector<Point<dim>> &unique_support_points,
+                                                          std::vector<std::vector<unsigned int>> &support_point_index_by_field) const
   {
     const unsigned int n_fields = advection_fields.size();
 
@@ -1635,7 +1648,8 @@ namespace aspect
 
 
   template <int dim>
-  void Simulator<dim>::compute_reactions ()
+  void
+  Simulator<dim>::compute_reactions ()
   {
     // if the time step has a length of zero, there are no reactions
     if (time_step == 0)
@@ -1958,7 +1972,8 @@ namespace aspect
 
 
   template <int dim>
-  void Simulator<dim>::initialize_current_linearization_point ()
+  void
+  Simulator<dim>::initialize_current_linearization_point ()
   {
     // Start with a simple copy of the last timestep
     current_linearization_point = old_solution;
@@ -1983,7 +1998,8 @@ namespace aspect
 
 
   template <int dim>
-  void Simulator<dim>::interpolate_material_output_into_advection_field (const std::vector<AdvectionField> &adv_fields)
+  void
+  Simulator<dim>::interpolate_material_output_into_advection_field (const std::vector<AdvectionField> &adv_fields)
   {
     // we need a temporary vector to store our updates to the advection fields in
     // before we copy them over to the solution vector in the end
@@ -2330,7 +2346,7 @@ namespace aspect
                 if (consider_fluid_velocity)
                   {
                     fe_face_values[introspection.variable("fluid velocity").extractor_vector()].get_function_values(current_linearization_point,
-                        face_current_fluid_velocity_values);
+                                                                                                                    face_current_fluid_velocity_values);
                   }
 
                 // ... check if the face is an outflow boundary by integrating the normal velocities
@@ -2410,8 +2426,9 @@ namespace aspect
      * Return whether t is an element of the given container object.
      */
     template <typename Container>
-    bool is_element (const typename Container::value_type &t,
-                     const Container                      &container)
+    bool
+    is_element (const typename Container::value_type &t,
+                const Container                      &container)
     {
       for (const auto &p : container)
         if (p == t)
@@ -2667,7 +2684,7 @@ namespace aspect
 
     // Swap old content back in:
     current_linearization_point.block(introspection.block_indices.velocities)
-    .swap(temp_velocity_linearization_point);
+                               .swap(temp_velocity_linearization_point);
 
     pcout << "   Initial Newton Stokes residual = " << initial_newton_residual << ", v = " << initial_newton_residual_vel << ", p = " << initial_newton_residual_p << std::endl << std::endl;
     return initial_newton_residual;
@@ -2676,9 +2693,10 @@ namespace aspect
 
 
   template <int dim>
-  double Simulator<dim>::perform_line_search(const DefectCorrectionResiduals &dcr,
-                                             const bool use_picard,
-                                             const LinearAlgebra::BlockVector &search_direction)
+  double
+  Simulator<dim>::perform_line_search(const DefectCorrectionResiduals &dcr,
+                                      const bool use_picard,
+                                      const LinearAlgebra::BlockVector &search_direction)
   {
     // Many parts of the solver depend on the block layout (velocity = 0,
     // pressure = 1). For example the linearized_stokes_initial_guess vector or the StokesBlock matrix

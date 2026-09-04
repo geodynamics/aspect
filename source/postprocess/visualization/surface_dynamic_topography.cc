@@ -85,7 +85,7 @@ namespace aspect
             // but that is where dynamic_topography.topography_vector() stores the values.
             // See the documentation of that function for more details.
             fe_volume_values[this->introspection().extractors.temperature].get_function_values(dynamic_topography.topography_vector(),
-                dynamic_topography_values);
+                                                                                               dynamic_topography_values);
 
             for (unsigned int q=0; q<quadrature_formula.size(); ++q)
               computed_quantities[q](0) = dynamic_topography_values[q];

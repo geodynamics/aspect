@@ -59,7 +59,7 @@ namespace aspect
       get_data_component_interpretation () const
       {
         std::vector<DataComponentInterpretation::DataComponentInterpretation> interpretation(4,
-            DataComponentInterpretation::component_is_scalar);
+                                                                                             DataComponentInterpretation::component_is_scalar);
 
         return interpretation;
       }

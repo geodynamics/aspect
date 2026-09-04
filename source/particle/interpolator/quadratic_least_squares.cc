@@ -34,7 +34,8 @@ namespace aspect
     namespace Interpolator
     {
       template <int dim>
-      double QuadraticLeastSquares<dim>::evaluate_interpolation_function(const Vector<double> &coefficients, const Point<dim> &position) const
+      double
+      QuadraticLeastSquares<dim>::evaluate_interpolation_function(const Vector<double> &coefficients, const Point<dim> &position) const
       {
         if (dim == 2)
           {
@@ -62,7 +63,8 @@ namespace aspect
 
 
       template <int dim>
-      std::pair<double, double> QuadraticLeastSquares<dim>::get_interpolation_bounds(const Vector<double> &coefficients) const
+      std::pair<double, double>
+      QuadraticLeastSquares<dim>::get_interpolation_bounds(const Vector<double> &coefficients) const
       {
         double interpolation_min = std::numeric_limits<double>::max();
         double interpolation_max = std::numeric_limits<double>::lowest();
@@ -86,7 +88,8 @@ namespace aspect
 
 
       template <int dim>
-      std::vector<Point<dim>> QuadraticLeastSquares<dim>::get_critical_points(const Vector<double> &coefficients) const
+      std::vector<Point<dim>>
+      QuadraticLeastSquares<dim>::get_critical_points(const Vector<double> &coefficients) const
       {
         std::vector<Point<dim>> critical_points;
         const double epsilon = 10. * coefficients.linfty_norm() * std::numeric_limits<double>::epsilon();
@@ -310,8 +313,8 @@ namespace aspect
           particle_handler.particles_in_cell(cell);
 
         std::vector<std::vector<double>> cell_properties(positions.size(),
-                                                          std::vector<double>(n_particle_properties,
-                                                                              numbers::signaling_nan<double>()));
+                                                         std::vector<double>(n_particle_properties,
+                                                                             numbers::signaling_nan<double>()));
 
         const unsigned int n_particles = std::distance(particle_range.begin(), particle_range.end());
 

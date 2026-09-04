@@ -74,8 +74,9 @@ namespace aspect
          * @{
          */
 
-        void evaluate(const MaterialModel::MaterialModelInputs<dim> &in,
-                      MaterialModel::MaterialModelOutputs<dim> &out) const override
+        void
+        evaluate(const MaterialModel::MaterialModelInputs<dim> &in,
+                 MaterialModel::MaterialModelOutputs<dim> &out) const override
         {
           for (unsigned int i=0; i < in.n_evaluation_points(); ++i)
             {
@@ -285,8 +286,9 @@ namespace aspect
   class TanGurnisBoundary : public BoundaryTemperature::Interface<dim>
   {
     public:
-      double boundary_temperature (const types::boundary_id /*boundary_indicator*/,
-                                   const Point<dim> &position) const override
+      double
+      boundary_temperature (const types::boundary_id /*boundary_indicator*/,
+                            const Point<dim> &position) const override
       {
         double wavenumber=1;
         return std::sin(numbers::PI*position(dim-1))*std::cos(numbers::PI*wavenumber*position(0));

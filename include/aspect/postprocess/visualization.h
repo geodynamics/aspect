@@ -42,7 +42,8 @@ namespace aspect
       /**
        * Compute the arithmetic average over q for each m of the variable quantities[q](m).
        */
-      inline void average_quantities(std::vector<Vector<double>> &quantities)
+      inline void
+      average_quantities(std::vector<Vector<double>> &quantities)
       {
         const unsigned int N = quantities.size();
         const unsigned int M = quantities[0].size();

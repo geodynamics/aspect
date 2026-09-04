@@ -25,7 +25,8 @@
  * Launch the following function when this plugin is created. Launch ASPECT
  * twice to test checkpoint/resume and then terminate the outer ASPECT run.
  */
-int f()
+int
+f()
 {
   std::cout << "* starting from beginning:" << std::endl;
 

@@ -66,14 +66,14 @@ namespace aspect
           {
             // Average among phases
             creep_parameters.prefactor = MaterialModel::MaterialUtilities::phase_average_value(phase_function_values, n_phase_transitions_per_composition,
-                                         prefactors, composition,
-                                         MaterialModel::MaterialUtilities::PhaseUtilities::logarithmic);
+                                                                                               prefactors, composition,
+                                                                                               MaterialModel::MaterialUtilities::PhaseUtilities::logarithmic);
             creep_parameters.activation_energy = MaterialModel::MaterialUtilities::phase_average_value(phase_function_values, n_phase_transitions_per_composition,
-                                                 activation_energies, composition);
+                                                                                                       activation_energies, composition);
             creep_parameters.activation_volume = MaterialModel::MaterialUtilities::phase_average_value(phase_function_values, n_phase_transitions_per_composition,
-                                                 activation_volumes , composition);
+                                                                                                       activation_volumes, composition);
             creep_parameters.stress_exponent = MaterialModel::MaterialUtilities::phase_average_value(phase_function_values, n_phase_transitions_per_composition,
-                                               stress_exponents, composition);
+                                                                                                     stress_exponents, composition);
           }
 
         return creep_parameters;

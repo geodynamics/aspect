@@ -176,7 +176,8 @@ namespace aspect
        * are all equidistantly spaced within some small tolerance.
        */
       template <int dim>
-      bool data_is_equidistant (const std::array<std::vector<double>,dim> &coordinate_values)
+      bool
+      data_is_equidistant (const std::array<std::vector<double>,dim> &coordinate_values)
       {
         bool coordinate_values_are_equidistant = true;
 
@@ -324,13 +325,13 @@ namespace aspect
                   Assert(grid_extent[d].first <
                          grid_extent[d].second,
                          ExcMessage("The interval in each coordinate direction needs "
-                                    "to have positive size"));
+                  "to have positive size"));
                 }
 
               data[c]
                 = std::make_unique<Functions::InterpolatedUniformGridData<dim>> (std::move(grid_extent),
-                                                                                  std::move(table_intervals),
-                                                                                  std::move(data_table[c]));
+                                                                                 std::move(table_intervals),
+                                                                                 std::move(data_table[c]));
             }
           else
             // Create the object and move the big objects. Due to an old design flaw,
@@ -1133,9 +1134,10 @@ namespace aspect
        * placeholder (%d). Placeholders order is first boundary_name
        * (%s), then filenumber (%d).
        */
-      std::string replace_placeholders(const std::string &filename_and_path,
-                                       const std::string &boundary_name,
-                                       const int filenumber)
+      std::string
+      replace_placeholders(const std::string &filename_and_path,
+                           const std::string &boundary_name,
+                           const int filenumber)
       {
         const int maxsize = filename_and_path.length() + 256;
         char *filename = static_cast<char *>(std::malloc (maxsize * sizeof(char)));
@@ -1183,7 +1185,7 @@ namespace aspect
       if (!fexists(result, this->get_mpi_communicator()) && fexists(compatible_result, this->get_mpi_communicator()))
         {
           this->get_pcout() << "WARNING: Filename convention concerning geometry boundary "
-                            "names changed. Please rename '" << compatible_result << "'"
+                               "names changed. Please rename '" << compatible_result << "'"
                             << " to '" << result << "'"
                             << std::endl;
           return compatible_result;
@@ -1634,7 +1636,7 @@ namespace aspect
                                   "> not found!"));
 
           lookups.push_back(std::make_unique<Utilities::StructuredDataLookup<dim-1>> (n_components,
-                                                                                       this->scale_factor));
+                                                                                      this->scale_factor));
           lookups[i]->load_file(filename,this->get_mpi_communicator());
         }
     }
@@ -1778,13 +1780,13 @@ namespace aspect
       if (slice_data == true)
         {
           slice_lookup = std::make_unique<Utilities::StructuredDataLookup<3>> (n_components,
-                                                                                this->scale_factor);
+                                                                               this->scale_factor);
           slice_lookup->load_file(filename, this->get_mpi_communicator());
         }
       else
         {
           lookup = std::make_unique<Utilities::StructuredDataLookup<dim>> (n_components,
-                                                                            this->scale_factor);
+                                                                           this->scale_factor);
           lookup->load_file(filename, this->get_mpi_communicator());
         }
     }

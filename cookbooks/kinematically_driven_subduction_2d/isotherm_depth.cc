@@ -103,7 +103,8 @@ namespace aspect
 
 
     template <int dim>
-    void IsothermDepth<dim>::declare_parameters(ParameterHandler &prm)
+    void
+    IsothermDepth<dim>::declare_parameters(ParameterHandler &prm)
     {
       prm.enter_subsection("Postprocess");
       {
@@ -122,7 +123,8 @@ namespace aspect
 
 
     template <int dim>
-    void IsothermDepth<dim>::parse_parameters(ParameterHandler &prm)
+    void
+    IsothermDepth<dim>::parse_parameters(ParameterHandler &prm)
     {
       prm.enter_subsection("Postprocess");
       {

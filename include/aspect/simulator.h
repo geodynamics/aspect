@@ -710,9 +710,10 @@ namespace aspect
        * This function is implemented in
        * <code>source/simulator/solver_schemes.cc</code>.
        */
-      std::vector<double> assemble_and_solve_composition (const std::vector<double> &initial_residual = {},
-                                                          const unsigned int nonlinear_iteration = 0,
-                                                          std::vector<double> *residual = nullptr);
+      std::vector<double>
+      assemble_and_solve_composition (const std::vector<double> &initial_residual = {},
+                                      const unsigned int nonlinear_iteration = 0,
+                                      std::vector<double> *residual = nullptr);
 
       /**
        * Assemble and solve the Stokes equation.

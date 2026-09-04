@@ -88,7 +88,8 @@ namespace aspect
 
     template <int dim>
     template <class Archive>
-    void ODEStatistics<dim>::serialize (Archive &ar, const unsigned int)
+    void
+    ODEStatistics<dim>::serialize (Archive &ar, const unsigned int)
     {
       ar &total_iteration_count;
       ar &number_of_solves;
@@ -97,7 +98,8 @@ namespace aspect
 
 
     template <int dim>
-    void ODEStatistics<dim>::save (std::map<std::string, std::string> &status_strings) const
+    void
+    ODEStatistics<dim>::save (std::map<std::string, std::string> &status_strings) const
     {
       // Serialize into a stringstream. Put the following into a code
       // block of its own to ensure the destruction of the 'oa'
@@ -115,7 +117,8 @@ namespace aspect
 
 
     template <int dim>
-    void ODEStatistics<dim>::load (const std::map<std::string, std::string> &status_strings)
+    void
+    ODEStatistics<dim>::load (const std::map<std::string, std::string> &status_strings)
     {
       // see if something was saved
       if (status_strings.find("ODEStatistics") != status_strings.end())

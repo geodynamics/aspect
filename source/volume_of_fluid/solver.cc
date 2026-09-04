@@ -29,7 +29,8 @@
 namespace aspect
 {
   template <int dim>
-  void VolumeOfFluidHandler<dim>::solve_volume_of_fluid_system (const VolumeOfFluidField<dim> &field)
+  void
+  VolumeOfFluidHandler<dim>::solve_volume_of_fluid_system (const VolumeOfFluidField<dim> &field)
   {
     const unsigned int block_idx = field.volume_fraction.block_index;
 
