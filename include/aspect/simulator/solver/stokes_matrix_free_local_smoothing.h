@@ -40,6 +40,68 @@
 
 namespace aspect
 {
+  namespace internal
+  {
+    /**
+     * A local-smoothing transfer that can be built from explicit level
+     * constraints. This is needed for rotated periodicity because
+     * MGConstrainedDoFs currently constructs identity periodic constraints.
+     */
+    template <int dim, typename Number>
+    class SphericalShellPeriodicMGTransfer : public MGTransferType<dim,Number>
+    {
+      public:
+        using VectorType = dealii::LinearAlgebra::distributed::Vector<Number>;
+
+        void
+        clear()
+        {
+          MGTransferType<dim,Number>::clear();
+          transfers.clear();
+        }
+
+        void
+        build(const DoFHandler<dim> &dof_handler,
+              const MGLevelObject<AffineConstraints<Number>> *level_constraints)
+        {
+          if (level_constraints == nullptr)
+            {
+              MGTransferType<dim,Number>::build(dof_handler);
+              return;
+            }
+
+          Assert(level_constraints->min_level() == 0, ExcInternalError());
+          const unsigned int max_level =
+            dof_handler.get_triangulation().n_global_levels()-1;
+          Assert(level_constraints->max_level() == max_level,
+                 ExcInternalError());
+
+          if (max_level == 0)
+            {
+              MGTransferType<dim,Number>::build(dof_handler);
+              return;
+            }
+
+          transfers.resize(0,max_level);
+          for (unsigned int level=1; level<=max_level; ++level)
+            transfers[level].reinit_geometric_transfer(
+              dof_handler,
+              dof_handler,
+              (*level_constraints)[level],
+              (*level_constraints)[level-1],
+              level,
+              level-1);
+
+          MGTransferType<dim,Number>::initialize_two_level_transfers(transfers);
+          MGTransferType<dim,Number>::build();
+          this->fill_and_communicate_copy_indices(dof_handler);
+        }
+
+      private:
+        MGLevelObject<MGTwoLevelTransfer<dim,VectorType>> transfers;
+    };
+  }
+
   /**
    * Main class of the Matrix-free method. Here are all the functions for
    * setup, assembly and solving the Stokes system.
@@ -231,7 +293,7 @@ namespace aspect
       MGConstrainedDoFs mg_constrained_dofs_Schur_complement;
       MGConstrainedDoFs mg_constrained_dofs_projection;
 
-      MGTransferType<dim,GMGNumberType> mg_transfer_A_block;
+      internal::SphericalShellPeriodicMGTransfer<dim,GMGNumberType> mg_transfer_A_block;
       MGTransferType<dim,GMGNumberType> mg_transfer_Schur_complement;
 
       std::vector<std::shared_ptr<MatrixFree<dim,double>>> matrix_free_objects;

@@ -23,9 +23,9 @@
 #include <aspect/simulator/solver/stokes_matrix_free.h>
 #include <aspect/simulator/solver/stokes_matrix_free_local_smoothing.h>
 #include <aspect/simulator/solver/block_stokes_preconditioner.h>
+#include <aspect/geometry_model/spherical_shell.h>
 #include <aspect/mesh_deformation/interface.h>
 
-#include <aspect/mesh_deformation/interface.h>
 #include <aspect/mesh_deformation/free_surface.h>
 #include <aspect/newton.h>
 
@@ -42,6 +42,91 @@
 
 namespace aspect
 {
+  namespace
+  {
+    template <int dim>
+    void
+    make_spherical_shell_periodicity_constraints_on_level(
+      const DoFHandler<dim> &dof_handler,
+      const unsigned int level,
+      const double opening_angle,
+      AffineConstraints<double> &constraints)
+    {
+      AssertThrow(dim == 2,
+                  ExcMessage("Rotated periodic level constraints are only "
+                             "implemented for two-dimensional spherical shells."));
+
+      FullMatrix<double> rotation(dim);
+      if (opening_angle == 90.)
+        {
+          rotation[0][1] = 1.;
+          rotation[1][0] = -1.;
+        }
+      else
+        {
+          AssertThrow(opening_angle == 180., ExcNotImplemented());
+          rotation[0][0] = -1.;
+          rotation[1][1] = -1.;
+        }
+
+      const FiniteElement<dim> &fe = dof_handler.get_fe();
+      const unsigned int face_no = 0;
+      const unsigned int dofs_per_face = fe.n_dofs_per_face(face_no);
+      const Quadrature<dim-1> support_points(fe.get_unit_face_support_points(face_no));
+      FullMatrix<double> transformation(dofs_per_face);
+
+      for (unsigned int i=0; i<dofs_per_face; ++i)
+        for (unsigned int j=0; j<dofs_per_face; ++j)
+          if (support_points.point(i) == support_points.point(j))
+            {
+              const unsigned int component_i =
+                fe.face_system_to_component_index(i,face_no).first;
+              const unsigned int component_j =
+                fe.face_system_to_component_index(j,face_no).first;
+              transformation[i][j] = rotation[component_i][component_j];
+            }
+
+      FullMatrix<double> inverse_transformation(dofs_per_face);
+      inverse_transformation.invert(transformation);
+
+      for (const auto &[first_cell, second_cell] :
+           dof_handler.get_triangulation().get_periodic_face_map())
+        {
+          if (static_cast<unsigned int>(first_cell.first->level()) != level
+              || static_cast<unsigned int>(second_cell.first.first->level()) != level
+              || first_cell.first->is_artificial_on_level()
+              || second_cell.first.first->is_artificial_on_level())
+            continue;
+
+          const types::boundary_id first_boundary =
+            first_cell.first->face(first_cell.second)->boundary_id();
+          const types::boundary_id second_boundary =
+            second_cell.first.first->face(second_cell.first.second)->boundary_id();
+
+          if (!((first_boundary == 2 && second_boundary == 3)
+                || (first_boundary == 3 && second_boundary == 2)))
+            continue;
+
+          const auto first_face =
+            first_cell.first->as_dof_handler_level_iterator(dof_handler)->face(first_cell.second);
+          const auto second_face =
+            second_cell.first.first->as_dof_handler_level_iterator(dof_handler)->face(second_cell.first.second);
+
+          const auto &slave_face = first_boundary == 3 ? first_face : second_face;
+          const auto &master_face = first_boundary == 2 ? first_face : second_face;
+
+          DoFTools::internal::set_periodicity_constraints(
+            slave_face,
+            master_face,
+            inverse_transformation,
+            constraints,
+            ComponentMask(),
+            second_cell.second,
+            1.,
+            level);
+        }
+    }
+  }
 
   template <int dim, int velocity_degree>
   void
@@ -1667,9 +1752,19 @@ namespace aspect
       Schur_complement_block_matrix.initialize(matrix_free, selected_dof_handler , selected_dof_handler);
     }
 
+    MGLevelObject<AffineConstraints<double>> transfer_constraints_v;
+    const auto *spherical_shell =
+      dynamic_cast<const GeometryModel::SphericalShell<dim> *>(
+        &this->get_geometry_model());
+    const bool use_rotated_periodic_constraints =
+      spherical_shell != nullptr
+      && !this->get_triangulation().get_periodic_face_map().empty();
+
     // Create GMG matrices and constraints for each multigrid level
     {
       const unsigned int n_levels = this->get_triangulation().n_global_levels();
+
+      transfer_constraints_v.resize(0,n_levels-1);
 
       mg_matrices_Schur_complement.clear_elements();
       mg_matrices_Schur_complement.resize(0, n_levels-1);
@@ -1698,6 +1793,28 @@ namespace aspect
             for (const auto index : mg_constrained_dofs_A_block.get_boundary_indices(level))
               level_constraints_v.constrain_dof_to_zero(index);
             level_constraints_v.close();
+
+            if (use_rotated_periodic_constraints)
+              {
+                AffineConstraints<double> periodic_level_constraints;
+#if DEAL_II_VERSION_GTE(9,6,0)
+                periodic_level_constraints.reinit(
+                  dof_handler_v.locally_owned_mg_dofs(level),
+                  relevant_dofs);
+#else
+                periodic_level_constraints.reinit(relevant_dofs);
+#endif
+                make_spherical_shell_periodicity_constraints_on_level(
+                  dof_handler_v,
+                  level,
+                  spherical_shell->opening_angle(),
+                  periodic_level_constraints);
+                periodic_level_constraints.close();
+                level_constraints_v.merge(
+                  periodic_level_constraints,
+                  AffineConstraints<double>::MergeConflictBehavior::left_object_wins);
+                level_constraints_v.close();
+              }
 
             const std::set<types::boundary_id> &no_flux_boundaries
               = this->get_boundary_velocity_manager().get_tangential_boundary_velocity_indicators();
@@ -1771,7 +1888,16 @@ namespace aspect
             level_constraints_p.reinit(dof_handler_p.locally_owned_mg_dofs(level), relevant_dofs);
 
             level_constraints_p.close();
+            if (use_rotated_periodic_constraints)
+              {
+                level_constraints_p.merge(
+                  mg_constrained_dofs_Schur_complement.get_level_constraints(level),
+                  AffineConstraints<double>::MergeConflictBehavior::left_object_wins);
+                level_constraints_p.close();
+              }
           }
+
+          transfer_constraints_v[level].copy_from(level_constraints_v);
 
           // set up MatrixFree objects for each multigrid level
           std::shared_ptr<MatrixFree<dim,GMGNumberType>> matrix_free_level = std::make_shared<MatrixFree<dim,GMGNumberType>>();
@@ -1814,7 +1940,10 @@ namespace aspect
     // Build multigrid transfer objects
     mg_transfer_A_block.clear();
     mg_transfer_A_block.initialize_constraints(mg_constrained_dofs_A_block);
-    mg_transfer_A_block.build(dof_handler_v);
+    mg_transfer_A_block.build(dof_handler_v,
+                              use_rotated_periodic_constraints
+                              ? &transfer_constraints_v
+                              : nullptr);
 
     mg_transfer_Schur_complement.clear();
     mg_transfer_Schur_complement.initialize_constraints(mg_constrained_dofs_Schur_complement);
