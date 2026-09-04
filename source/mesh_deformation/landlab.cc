@@ -423,6 +423,70 @@ namespace aspect
 
 
     template <int dim>
+    void
+    Landlab<dim>::save (std::map<std::string, std::string> &status_strings) const
+    {
+#ifdef ASPECT_WITH_LANDLAB
+      if (this_rank_runs_landlab)
+        {
+          const unsigned int checkpoint_id = this->get_checkpoint_id();
+          const std::string checkpoint_directory = this->get_output_directory() + "/landlab_checkpoints/";
+
+          PyObject *pDict = PyDict_New();
+          PyDict_SetItemString(pDict, "Current checkpoint ID", PyLong_FromLong(checkpoint_id));
+          PyDict_SetItemString(pDict, "Output directory", PyUnicode_FromString(checkpoint_directory.c_str()));
+
+          PyObject *pArgs = PyTuple_Pack(1,
+                                         pDict
+                                        );
+          Py_DECREF(pDict);
+          PyObject *pValue = PythonHelper::call_python_function(pModule, "checkpoint_model_grid", pArgs);
+          Py_DECREF(pArgs);
+          Py_DECREF(pValue);
+          status_strings["Landlab Checkpoint ID"] = std::to_string(checkpoint_id);
+        }
+#else
+      (void)status_strings;
+#endif
+    }
+
+
+    template <int dim>
+    void
+    Landlab<dim>::load (const std::map<std::string, std::string> &status_strings)
+    {
+#ifdef ASPECT_WITH_LANDLAB
+      if (this_rank_runs_landlab)
+        {
+          AssertThrow(status_strings.find("Landlab Checkpoint ID") != status_strings.end(),
+                      ExcMessage("Trying to load data for Landlab from a checkpoint, but no data seems to have been written."));
+
+          // Check to see whether ASPECT is restarting from a user defined checkpoint, or from the most recent checkpoint.
+          const unsigned int resume_checkpoint_id = this->get_parameters().resume_checkpoint_id == 0 ?
+                                                    std::stoi(status_strings.at("Landlab Checkpoint ID")) :
+                                                    this->get_parameters().resume_checkpoint_id;
+          const std::string checkpoint_directory = this->get_output_directory() + "/landlab_checkpoints/";
+
+          PyObject *pDict = PyDict_New();
+          PyDict_SetItemString(pDict, "Output directory", PyUnicode_FromString(checkpoint_directory.c_str()));
+          PyDict_SetItemString(pDict, "Resume checkpoint ID", PyLong_FromLong(resume_checkpoint_id));
+
+          PyObject *pArgs = PyTuple_Pack(1,
+                                         pDict
+                                        );
+          Py_DECREF(pDict);
+          PyObject *pValue = PythonHelper::call_python_function(pModule, "load_model_grid", pArgs);
+          Py_DECREF(pArgs);
+          Py_DECREF(pValue);
+        }
+#else
+      (void)status_strings;
+#endif
+    }
+
+
+
+    template <int dim>
     void Landlab<dim>::declare_parameters(ParameterHandler &prm)
     {
       prm.enter_subsection("Mesh deformation");
