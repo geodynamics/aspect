@@ -59,6 +59,20 @@ namespace aspect
 
       template <int dim>
       void
+      CrystalPreferredOrientation<dim>::update ()
+      {
+        // Set the random number generator seed to a different value for each MPI process and
+        // timestep to ensure that the random numbers are different for each process and timestep,
+        // but at the same time reproducible for each process and timestep. With this trick,
+        // we don't have to serialize the random number generator.
+        const unsigned int my_rank = Utilities::MPI::this_mpi_process(MPI_COMM_WORLD);
+        this->random_number_generator.seed(random_number_seed + my_rank + this->get_timestep_number() + 1234);
+      }
+
+
+
+      template <int dim>
+      void
       CrystalPreferredOrientation<dim>::compute_random_rotation_matrix(Tensor<2,3> &rotation_matrix) const
       {
 
@@ -1385,32 +1399,6 @@ namespace aspect
           prm.leave_subsection();
         }
         prm.leave_subsection ();
-      }
-
-
-
-      template <int dim>
-      void
-      CrystalPreferredOrientation<dim>::save (std::map<std::string, std::string> &status_strings) const
-      {
-        std::ostringstream os;
-        os << random_number_generator;
-        status_strings["CrystalPreferredOrientationParticleProperty"] = os.str();
-      }
-
-
-
-      template <int dim>
-      void
-      CrystalPreferredOrientation<dim>::load (const std::map<std::string, std::string> &status_strings)
-      {
-        const auto saved_state = status_strings.find("CrystalPreferredOrientationParticleProperty");
-        if (saved_state != status_strings.end())
-          {
-            std::istringstream is (saved_state->second);
-            is >> random_number_generator;
-            AssertThrow(!is.fail(), ExcMessage("Could not restore the crystal preferred orientation random number generator."));
-          }
       }
     }
   }
