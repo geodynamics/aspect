@@ -1261,7 +1261,7 @@ Physical units: None.
 
 Physical units: None.
 
-&lsquo;prescribed dilation&rsquo;: A visualization output postprocessor that outputs prescribed dilationPhysical units: $\si{\per\seconds}$.
+&lsquo;prescribed dilation&rsquo;: A visualization output postprocessor that outputs prescribed dilation. Physical units: $\si{\per\seconds}$.
 
 &lsquo;prescribed solution&rsquo;: A visualization output object that outputs whether the solution components are prescribed by the prescribed solution plugin system and if so to which value.
 
@@ -1331,7 +1331,7 @@ Physical units: $\text{Pa}$.
 
 &lsquo;temperature anomaly&rsquo;: A visualization output postprocessor that outputs the temperature minus the depth-average of the temperature.The average temperature is calculated using the lateral averaging function from the &ldquo;depth average&rdquo; postprocessor and interpolated linearly between the layers specified through &ldquo;Number of depth slices&rdquo;.
 
-The &rsquo;nonadiabatic temperature&rsquo; is another option to output temperature anomaly, but compared with the reference adiabatic temperature profile instead.Physical units: $\text{K}$.
+The &rsquo;nonadiabatic temperature&rsquo; plugin is another option to output temperature anomalies, but compared to the reference adiabatic temperature profile instead. Physical units: $\text{K}$.
 
 &lsquo;vertical heat flux&rsquo;: A visualization output object that generates output for the heat flux in the vertical direction, which is the sum of the advective and the conductive heat flux, with the sign convention of positive flux upwards.
 
@@ -1746,7 +1746,7 @@ compaction viscosity|fluid viscosity|permeability|fluid density|fluid density gr
 
 **Pattern:** [Bool]
 
-**Documentation:** If true, use the specified boundary temperatures as average temperatures at the surface. If false, extrapolate the temperature gradient between the first and second cells to the surface. This option will only work for models with a fixed surface temperature.
+**Documentation:** If true, use the maximal specified boundary temperature as the bottom boundary temperature. If false, extrapolate the temperature gradient between the last and second-to-last cells to the bottom. This option will only work correctly for models with a fixed bottom boundary temperature.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Use minimal temperature for surface<parameters:Postprocess/Visualization/Temperature_20anomaly/Use_20minimal_20temperature_20for_20surface>`
@@ -1755,7 +1755,7 @@ compaction viscosity|fluid viscosity|permeability|fluid density|fluid density gr
 
 **Pattern:** [Bool]
 
-**Documentation:** Whether to use the minimal specified boundary temperature as the bottom boundary temperature. This option will only work for models with a fixed bottom boundary temperature.
+**Documentation:** If true, use the minimal specified boundary temperature as the surface boundary temperature. If false, extrapolate the temperature gradient between the first and second cells to the surface. This option will only work correctly for models with a fixed surface boundary temperature.
 ::::
 
 (parameters:Postprocess/Visualization/Volume_20of_20Fluid)=
