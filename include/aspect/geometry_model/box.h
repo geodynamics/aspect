@@ -195,6 +195,13 @@ namespace aspect
         Point<dim> natural_to_cartesian_coordinates(const std::array<double,dim> &position) const override;
 
         /**
+        * Convert the Cartesian position @p position into depth coordinates.
+        * The first coordinate is depth, while the remaining coordinates are
+        * the horizontal Cartesian coordinates.
+        */
+        std::array<double,dim> cartesian_to_depth_coordinates (const Point<dim> &position) const override;
+
+        /**
          * Declare the parameters this class takes through input files.
          */
         static
