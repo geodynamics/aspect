@@ -183,11 +183,11 @@ namespace aspect
           /**
            * Compute the LHS and RHS dilation terms for the Stokes system.
            * LHS: $\bar\alpha\alpha / \eta^{ve}$;
-           * RHS: $\bar(2\eta^{ve}\varepsilon^{eff} - k) / \eta^{ve}$.
-           * Here $\alpha$ and $\bar\alpha$ correspond to the friction angle
+           * RHS: $\bar\alpha(2\eta^{ve}\varepsilon^{eff} - k) / \eta^{ve}$.
+           * Here $\alpha$ and $\bar\alpha$ correspond to the sine of the friction angle
            * and the dilation angle, respectively, $k$ is cohesion,
            * $\eta^{ve}$ is the non-yielding viscosity, and $\varepsilon^{eff}$
-           * is the effective viscosity.
+           * is the effective strain rate.
            */
           std::pair<double,double>
           compute_dilation_terms_for_stokes_system(const DruckerPragerParameters &drucker_prager_parameters,
