@@ -71,8 +71,8 @@ namespace aspect
           PyRun_SimpleString("sys.path.append(\".\")");
           PyRun_SimpleString("sys.path.append(\"" ASPECT_SOURCE_DIR "/contrib/python/scripts\")");
 
-          // disable floating point exceptions in Landlab Python code:
-          // TODO: Should these be re-enabled at some point after the Landlab Python code has run?
+          // disable floating point exceptions in Landlab Python code during the module import
+          // ("import landlab" crashes otherwise)
 #ifdef ASPECT_USE_FP_EXCEPTIONS
           fedisableexcept(FE_DIVBYZERO|FE_INVALID);
 #endif
@@ -82,6 +82,10 @@ namespace aspect
           if (PyErr_Occurred())
             PyErr_Print();
           AssertThrow(pModule, ExcMessage("Failed to load Python module"));
+
+#ifdef ASPECT_USE_FP_EXCEPTIONS
+          feenableexcept(FE_DIVBYZERO|FE_INVALID);
+#endif
 
           // Copy the landlab script to the output directory for reproducibility. Only do this on a single rank
           // to avoid having multiple ranks trying to write the same file.
