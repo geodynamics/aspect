@@ -132,6 +132,12 @@ namespace aspect
           mutable MaterialModel::MaterialModelOutputs<dim> material_outputs;
 
           /**
+           * Whether to track the time when a particle is first and last converted to basalt.
+           * It is read from the parameter file through a parameter called "Track basalt formation time".
+           */
+          bool if_track_basalt_formation_time;
+
+          /**
            * The indices of the compositional fields that store the basalt and
            * harzburgite chemical compositions.
            */
