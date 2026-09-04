@@ -8,7 +8,7 @@
 # Representative point lies within the domain. At x = 0.2, the initial topography
 # is namely 0.02948.
 
-include $ASPECT_SOURCE_DIR/tests/airy_isostasy.prm
+include $ASPECT_SOURCE_DIR/tests/mesh_deformation/airy_isostasy.prm
 
 set Dimension = 2
 
