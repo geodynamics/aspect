@@ -57,6 +57,14 @@ namespace aspect
         void update() override;
 
         /**
+         * Provide values for compositional fields at the boundary.
+         */
+        virtual
+        double boundary_composition (const types::boundary_id boundary_indicator,
+                                     const Point<dim> &position,
+                                     const unsigned int compositional_field) const override;
+
+        /**
          * Call into the Landlab Python module to compute the updated velocities
          * at the evaluation points.
          */
