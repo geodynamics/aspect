@@ -84,11 +84,15 @@ namespace aspect
 
 
       /**
-       * Return a list of names (separated by '|') of possible interpolator
-       * classes for particles.
+       * Return a string that consists of the names of interpolator classes
+       * for particles that can be selected.
+       * These names are separated by a vertical line '|' so
+       * that the string can be an input to the deal.II classes
+       * Patterns::Selection or Patterns::MultipleSelection.
        */
+      template <int dim>
       std::string
-      interpolator_object_names ();
+      get_valid_interpolator_names_pattern ();
 
 
       /**
@@ -114,6 +118,21 @@ namespace aspect
                                       std::unique_ptr<Interface<dim>> (*factory_function) ());
 
       /**
+       * A function that reads the name of an interpolation scheme
+       * from the parameter object and then returns a pointer
+       * to an object that describes it.
+       * Ownership of the pointer is transferred to the caller.
+       *
+       * The model object returned is not yet initialized and has not
+       * read its runtime parameters yet.
+       *
+       * @ingroup ParticleInterpolators
+       */
+      template <int dim>
+      std::unique_ptr<Interface<dim>>
+      create_particle_interpolator (ParameterHandler &prm);
+
+      /**
        * A function that given the name of a model returns a pointer to an
        * object that describes it. Ownership of the pointer is transferred to
        * the caller.
@@ -125,8 +144,7 @@ namespace aspect
        */
       template <int dim>
       std::unique_ptr<Interface<dim>>
-      create_particle_interpolator (ParameterHandler &prm);
-
+      create_particle_interpolator (const std::string &interpolator_name);
 
       /**
        * Declare the runtime parameters of the registered particle interpolators.

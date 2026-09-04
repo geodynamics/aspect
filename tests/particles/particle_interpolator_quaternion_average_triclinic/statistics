@@ -1,0 +1,39 @@
+# 1: Time step number
+# 2: Time (seconds)
+# 3: Time step size (seconds)
+# 4: Number of mesh cells
+# 5: Number of Stokes degrees of freedom
+# 6: Number of temperature degrees of freedom
+# 7: Number of degrees of freedom for all compositions
+# 8: Iterations for temperature solver
+# 9: Iterations for composition solver 6
+# 10: Iterations for Stokes solver
+# 11: Velocity iterations in Stokes preconditioner
+# 12: Schur complement iterations in Stokes preconditioner
+# 13: Visualization file name
+# 14: Number of advected particles
+# 15: Particle file name
+# 16: Particle CPO file name
+# 17: Minimal value for composition qw
+# 18: Maximal value for composition qw
+# 19: Global mass for composition qw
+# 20: Minimal value for composition qx
+# 21: Maximal value for composition qx
+# 22: Global mass for composition qx
+# 23: Minimal value for composition qy
+# 24: Maximal value for composition qy
+# 25: Global mass for composition qy
+# 26: Minimal value for composition qz
+# 27: Maximal value for composition qz
+# 28: Global mass for composition qz
+# 29: Minimal value for composition eigvalue_a1
+# 30: Maximal value for composition eigvalue_a1
+# 31: Global mass for composition eigvalue_a1
+# 32: Minimal value for composition water
+# 33: Maximal value for composition water
+# 34: Global mass for composition water
+0 0.000000000000e+00 0.000000000000e+00 16 187 81 96 0 0 7 8 8 output-particle_interpolator_quaternion_average_triclinic/solution/solution-00000  96 output-particle_interpolator_quaternion_average_triclinic/particles/particles-00000 output-particle_interpolator_quaternion_average_triclinic/particles_cpo/CPO-00000 8.63885366e-02 9.77187956e-01 6.88573880e-01 -8.15643389e-01 7.42605261e-01 -1.99768071e-02 -6.63658656e-01 7.86832340e-01 -2.30748888e-01 -4.78860785e-01 2.63682286e-01 -8.75700606e-02 5.23053394e-01 6.50156404e-01 5.79490497e-01 0.00000000e+00 0.00000000e+00 0.00000000e+00 
+1 4.928213475946e-02 4.928213475946e-02 16 187 81 96 9 0 6 7 7                                                                                "" 103                                                                                  ""                                                                                "" 7.24811824e-02 9.77207223e-01 5.78409635e-01 -6.19862362e-01 9.06631836e-01  5.52471518e-02 -7.94179667e-01 5.25533592e-01 -2.79836527e-01 -4.08998697e-01 2.70422194e-01 -1.24098709e-01 5.40153599e-01 6.69512231e-01 5.86677531e-01 0.00000000e+00 0.00000000e+00 0.00000000e+00 
+2 5.659613817161e-02 7.314003412149e-03 16 187 81 96 7 0 6 7 7                                                                                "" 106                                                                                  ""                                                                                "" 3.91753181e-03 9.49705741e-01 5.43965298e-01 -9.11771046e-01 7.18262968e-01 -2.23894296e-01 -7.96762398e-01 3.55728932e-01 -3.96684172e-01 -4.44683455e-01 1.28810721e-01 -1.15309806e-01 5.08244370e-01 6.61420946e-01 5.94396912e-01 0.00000000e+00 0.00000000e+00 0.00000000e+00 
+3 5.964363580767e-02 3.047497636062e-03 16 187 81 96 6 0 6 7 7                                                                                "" 105                                                                                  ""                                                                                "" 4.40943163e-02 9.60879928e-01 5.39153993e-01 -7.38364144e-01 7.96546070e-01 -7.05472391e-02 -8.68110748e-01 4.74135594e-01 -3.41060982e-01 -2.48294496e-01 1.67752725e-01 -4.61146711e-02 5.41550214e-01 7.32407035e-01 6.08045533e-01 0.00000000e+00 0.00000000e+00 0.00000000e+00 
+4 6.000000000000e-02 3.563641923254e-04 16 187 81 96 4 0 5 6 6                                                                                "" 105                                                                                  "" output-particle_interpolator_quaternion_average_triclinic/particles_cpo/CPO-00001 9.66467735e-03 9.86262362e-01 6.31258734e-01 -7.28323401e-01 7.81798655e-01  1.58796555e-02 -6.96213044e-01 6.96569039e-01 -1.18034264e-01 -4.31294817e-01 2.60102867e-01 -2.25176027e-02 5.44812211e-01 7.18318701e-01 6.18621858e-01 0.00000000e+00 0.00000000e+00 0.00000000e+00 

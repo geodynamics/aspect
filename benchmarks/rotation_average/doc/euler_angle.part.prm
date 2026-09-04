@@ -1,0 +1,46 @@
+# # # Compositional fields # # #
+
+# We set the compositional fields with euler angles instead of quaternions.
+# water is required for the drex algorithm to work.
+subsection Compositional fields
+  set Number of fields = 5
+  set Names of fields = phi1, theta, phi2, \
+                        eigvalue_a1, water
+  set Compositional field methods = particles, particles, particles,\
+                                    particles, static
+  set Mapped particle properties = phi1:cpo mineral 0 phi1[0], theta:cpo mineral 0 theta[0], phi2:cpo mineral 0 phi2[0], \
+  eigvalue_a1:cpo mineral 0 eigenvalues a axis[0]
+  set Types of fields = generic, generic, generic,\
+                        generic, generic
+end
+
+subsection Initial composition model
+  set List of model names = function
+
+  subsection Function
+    set Function expression = 0; 0; 0; 1/3; 0
+  end
+end
+
+# # # Discretization # # #
+
+# Also keep Euler angles as degree-0 polynomials
+# for comparability.
+subsection Discretization
+  set Composition polynomial degree = 0, 0, 0, 2, 0
+  set Use discontinuous composition discretization = true, true, true, false, true,
+end
+
+# # # Particles # # #
+
+# We output rotation as euler angles.
+# We use the cell average to interpolate the angles
+# to make it comparable to the per cell quaternion average.
+subsection Particles
+  set Interpolation scheme = cell average
+
+  subsection CPO Bingham Average
+    set Random number seed = 200
+    set output rotation as = euler angles
+  end
+end
