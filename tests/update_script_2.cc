@@ -18,7 +18,7 @@
   <http://www.gnu.org/licenses/>.
 */
 
-#include <aspect/simulator.h>
+#include <aspect/global.h>
 #include <iostream>
 
 /*

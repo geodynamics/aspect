@@ -17,9 +17,10 @@
   along with ASPECT; see the file LICENSE.  If not see
   <http://www.gnu.org/licenses/>.
 */
-#include <aspect/simulator.h>
+
 #include <aspect/material_model/simple.h>
 #include <aspect/boundary_velocity/interface.h>
+#include <aspect/gravity_model/interface.h>
 #include <aspect/simulator_access.h>
 #include <aspect/global.h>
 #include <aspect/postprocess/dynamic_topography.h>

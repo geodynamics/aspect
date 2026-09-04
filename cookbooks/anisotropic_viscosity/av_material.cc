@@ -39,7 +39,7 @@
 #include <vector>
 
 #include <aspect/simulator_access.h>
-#include <aspect/simulator.h>
+
 #include <aspect/global.h>
 
 #include <deal.II/base/quadrature_lib.h>

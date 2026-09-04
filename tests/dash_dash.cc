@@ -18,7 +18,7 @@
   <http://www.gnu.org/licenses/>.
 */
 
-#include <aspect/simulator.h>
+
 
 // create a function that is run upon loading the plugin.  as discussed in the
 // corresponding .prm file, this function simply calls ASPECT again, and then

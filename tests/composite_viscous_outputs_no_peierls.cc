@@ -18,7 +18,7 @@
   <http://www.gnu.org/licenses/>.
 */
 
-#include <aspect/simulator.h>
+
 #include <aspect/material_model/rheology/composite_visco_plastic.h>
 
 namespace aspect

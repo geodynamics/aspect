@@ -22,7 +22,7 @@
 #include <aspect/boundary_velocity/interface.h>
 #include <aspect/simulator_access.h>
 #include <aspect/global.h>
-#include <aspect/simulator.h>
+
 #include <aspect/simulator/assemblers/interface.h>
 #include <aspect/gravity_model/interface.h>
 
