@@ -51,9 +51,10 @@ namespace aspect
        * for. Note that we are not assembling a matrix (as this is a
        * matrix-free algorithm), but we are evaluating the material
        * model and storing the information necessary for a later call
-       * to solve().
+       * to solve(). The function can modify @p system_rhs to account
+       * for boundary conditions as is necessary for matrix-free methods.
        */
-      virtual void assemble()=0;
+      virtual void assemble(LinearAlgebra::BlockVector &system_rhs)=0;
 
       /**
        * Computes and sets the diagonal for both the mass matrix

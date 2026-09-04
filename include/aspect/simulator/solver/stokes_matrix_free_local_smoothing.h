@@ -117,9 +117,10 @@ namespace aspect
        * for. Note that we are not assembling a matrix (as this is a
        * matrix-free algorithm), but we are evaluating the material
        * model and storing the information necessary for a later call
-       * to solve().
+       * to solve(). The function can modify @p system_rhs to account
+       * for boundary conditions as is necessary for matrix-free methods.
        */
-      void assemble() override;
+      void assemble(LinearAlgebra::BlockVector &system_rhs) override;
 
       /**
        * Computes and sets the diagonal for both the mass matrix operator and the A-block
@@ -171,7 +172,7 @@ namespace aspect
        * Add correction to system RHS for non-zero boundary condition. See description in
        * StokesMatrixFreeHandler::correct_stokes_rhs() for more information.
        */
-      void correct_stokes_rhs();
+      void correct_stokes_rhs(LinearAlgebra::BlockVector &system_rhs);
 
 
       Simulator<dim> &sim;

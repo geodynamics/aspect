@@ -84,24 +84,23 @@ namespace aspect
 
 
   template <int dim, int velocity_degree>
-  StokesMatrixFreeHandlerGlobalCoarseningImplementation<dim, velocity_degree>::StokesMatrixFreeHandlerGlobalCoarseningImplementation (Simulator<dim> &simulator, const Parameters<dim> &parameters)
-    : sim(simulator),
+  StokesMatrixFreeHandlerGlobalCoarseningImplementation<dim, velocity_degree>::StokesMatrixFreeHandlerGlobalCoarseningImplementation (Simulator<dim> &/*simulator*/, const Parameters<dim> &parameters)
+    :
+    fe_v (FE_Q<dim>(parameters.stokes_velocity_degree), dim),
+    fe_p (FE_Q<dim>(parameters.stokes_velocity_degree-1), 1),
 
-      fe_v (FE_Q<dim>(parameters.stokes_velocity_degree), dim),
-      fe_p (FE_Q<dim>(parameters.stokes_velocity_degree-1), 1),
-
-      // The finite element used to describe the viscosity on the active level
-      // and to project the viscosity to GMG levels needs to be DGQ1 if we are
-      // using a degree 1 representation of viscosity, and DGQ0 if we are using
-      // a cellwise constant average.
-      fe_projection(FE_DGQ<dim>(parameters.material_averaging
-                                ==
-                                MaterialModel::MaterialAveraging::AveragingOperation::project_to_Q1
-                                ||
-                                parameters.material_averaging
-                                ==
-                                MaterialModel::MaterialAveraging::AveragingOperation::project_to_Q1_only_viscosity
-                                ? 1 : 0), 1)
+    // The finite element used to describe the viscosity on the active level
+    // and to project the viscosity to GMG levels needs to be DGQ1 if we are
+    // using a degree 1 representation of viscosity, and DGQ0 if we are using
+    // a cellwise constant average.
+    fe_projection(FE_DGQ<dim>(parameters.material_averaging
+                              ==
+                              MaterialModel::MaterialAveraging::AveragingOperation::project_to_Q1
+                              ||
+                              parameters.material_averaging
+                              ==
+                              MaterialModel::MaterialAveraging::AveragingOperation::project_to_Q1_only_viscosity
+                              ? 1 : 0), 1)
   {}
 
 
@@ -141,7 +140,7 @@ namespace aspect
 
 
   template <int dim, int velocity_degree>
-  void StokesMatrixFreeHandlerGlobalCoarseningImplementation<dim, velocity_degree>::assemble ()
+  void StokesMatrixFreeHandlerGlobalCoarseningImplementation<dim, velocity_degree>::assemble (LinearAlgebra::BlockVector &system_rhs)
   {
     if (this->get_parameters().mesh_deformation_enabled)
       {
@@ -155,7 +154,7 @@ namespace aspect
 
     evaluate_material_model();
 
-    correct_stokes_rhs();
+    correct_stokes_rhs(system_rhs);
   }
 
 
@@ -635,7 +634,7 @@ namespace aspect
 
 
   template <int dim, int velocity_degree>
-  void StokesMatrixFreeHandlerGlobalCoarseningImplementation<dim, velocity_degree>::correct_stokes_rhs()
+  void StokesMatrixFreeHandlerGlobalCoarseningImplementation<dim, velocity_degree>::correct_stokes_rhs(LinearAlgebra::BlockVector &system_rhs)
   {
     // We never include Newton terms in step 0 and after that we solve with zero boundary conditions.
     // Therefore, we don't need to include Newton terms here.
@@ -764,8 +763,8 @@ namespace aspect
     LinearAlgebra::BlockVector stokes_rhs_correction (this->introspection().index_sets.stokes_partitioning, this->get_mpi_communicator());
     internal::ChangeVectorTypes::copy(stokes_rhs_correction,rhs_correction);
 
-    sim.system_rhs.block(0) += stokes_rhs_correction.block(0);
-    sim.system_rhs.block(1) += stokes_rhs_correction.block(1);
+    system_rhs.block(0) += stokes_rhs_correction.block(0);
+    system_rhs.block(1) += stokes_rhs_correction.block(1);
   }
 
 
@@ -1061,13 +1060,13 @@ namespace aspect
     inverse_velocity_block_cheap(A_block_matrix,
                                  prec_A,
                                  /*do_solve_A = */ false,
-                                 sim.stokes_A_block_is_symmetric(),
+                                 this->stokes_A_block_is_symmetric(),
                                  this->get_parameters().linear_solver_A_block_tolerance);
     internal::InverseVelocityBlock<GMGPreconditioner, VectorType, ABlockMatrixType>
     inverse_velocity_block_expensive(A_block_matrix,
                                      prec_A,
                                      /*do_solve_A = */ true,
-                                     sim.stokes_A_block_is_symmetric(),
+                                     this->stokes_A_block_is_symmetric(),
                                      this->get_parameters().linear_solver_A_block_tolerance
                                     );
     using SchurApproximationType=internal::SchurApproximation<GMGPreconditioner, StokesMatrixType, SchurComplementMatrixType, VectorType>;
@@ -1344,7 +1343,8 @@ namespace aspect
         // if the solver fails trigger the post stokes solver signal and throw an exception
         catch (const std::exception &exc)
           {
-            this->get_signals().post_stokes_solver(sim,
+            // *this is converted to a pointer to SimulatorAccess for the signal
+            this->get_signals().post_stokes_solver(*this,
                                                    schur_approximation_cheap.n_iterations() + schur_approximation_expensive.n_iterations(),
                                                    inverse_velocity_block_cheap.n_iterations() + inverse_velocity_block_expensive.n_iterations(),
                                                    solver_control_cheap,
@@ -1365,8 +1365,9 @@ namespace aspect
           }
       }
 
-    //signal successful solver
-    this->get_signals().post_stokes_solver(sim,
+    // signal successful solver
+    // *this is converted to a pointer to SimulatorAccess for the signal
+    this->get_signals().post_stokes_solver(*this,
                                            schur_approximation_cheap.n_iterations() + schur_approximation_expensive.n_iterations(),
                                            inverse_velocity_block_cheap.n_iterations() + inverse_velocity_block_expensive.n_iterations(),
                                            solver_control_cheap,
@@ -1570,10 +1571,10 @@ namespace aspect
                   }
               }
 
-            sim.prescribed_solution_manager.constrain_solution(constraint);
+            this->get_prescribed_solution().constrain_solution(constraint);
 
             // Let plugins add more constraints if they so choose:
-            sim.signals.post_constraints_creation(*this, constraint);
+            this->get_signals().post_constraints_creation(*this, constraint);
 
             constraint.close();
           }

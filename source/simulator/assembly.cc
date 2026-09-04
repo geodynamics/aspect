@@ -886,7 +886,7 @@ namespace aspect
 
     // If we change the system_rhs, matrix-free Stokes must update
     if (is_stokes_matrix_free())
-      dynamic_cast<StokesMatrixFreeHandler<dim>*>(stokes_solver.get())->assemble();
+      dynamic_cast<StokesMatrixFreeHandler<dim>*>(stokes_solver.get())->assemble(system_rhs);
 
     // if the model is compressible then we need to adjust the right hand
     // side of the equation to make it compatible with the matrix on the
