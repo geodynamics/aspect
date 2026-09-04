@@ -270,6 +270,15 @@ namespace aspect
         const Tensor<1,3,double> eigvec_b = eigenvectors_b[0].second;
         const Tensor<1,3,double> eigvec_c = eigenvectors_c[0].second;
 
+        // compute cross product to check for handedness of output rotation
+        // this equals (a x b) * c = \epsilon_ijk a_i b_j c_k
+        // where the levi civita symbol \epsilon is used to compute the cross product
+        double handedness = 0;
+        for (unsigned int i1=0; i1<3; i1++)
+          for (unsigned int i2=0; i2<3; i2++)
+            for (unsigned int i3=0; i3<3; i3++)
+              handedness += Utilities::Tensors::levi_civita<3>()[i1][i2][i3]*eigvec_a[i1]*eigvec_b[i2]*eigvec_c[i3];
+
         // build rotation matrix from the eigen vectors
         Tensor<2,3> R_CPO;
         R_CPO[0][0] = eigvec_a[0];
@@ -278,9 +287,19 @@ namespace aspect
         R_CPO[0][1] = eigvec_b[0];
         R_CPO[1][1] = eigvec_b[1];
         R_CPO[2][1] = eigvec_b[2];
-        R_CPO[0][2] = eigvec_c[0];
-        R_CPO[1][2] = eigvec_c[1];
-        R_CPO[2][2] = eigvec_c[2];
+        // ensure right-handedness
+        if (handedness < 0)
+          {
+            R_CPO[0][2] = -eigvec_c[0];
+            R_CPO[1][2] = -eigvec_c[1];
+            R_CPO[2][2] = -eigvec_c[2];
+          }
+        else
+          {
+            R_CPO[0][2] = eigvec_c[0];
+            R_CPO[1][2] = eigvec_c[1];
+            R_CPO[2][2] = eigvec_c[2];
+          }
 
         // convert rotation matrix to euler angles phi1, theta, phi2
         Tensor<2,3> Rot = transpose(R_CPO);
