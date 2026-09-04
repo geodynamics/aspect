@@ -277,7 +277,7 @@ namespace aspect
                            "for a total of N+1 values, where N is the number of all compositional fields or only "
                            "those corresponding to chemical compositions. "
                            "For a value of zero, the von Mises flow rule is retrieved. "
-                           "The dilation angle should never exceed the internal friction angle.");
+                           "The dilation angle should never exceed the internal friction angle. Units: \\si{\\degree}.");
         prm.declare_entry ("Cohesions", "1e20",
                            Patterns::Anything(),
                            "List of cohesions, $C$, for background material and compositional fields, "
