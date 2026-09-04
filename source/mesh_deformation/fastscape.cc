@@ -50,8 +50,13 @@ namespace aspect
       void fastscape_init_();
 
       /**
-       * Set the x and y extent of the FastScape model.
+       * Function to select the horizontal advection scheme in FastScape
        */
+      void fastscape_set_advection_scheme_(const int *scheme);
+
+      /**
+      * Set the x and y extent of the FastScape model.
+      */
       void fastscape_set_xl_yl_(const double *xxl,
                                 const double *yyl);
 
@@ -938,6 +943,22 @@ namespace aspect
 #endif
     }
 
+    template <int dim>
+    void
+    FastScape<dim>::set_fastscape_advection_scheme() const
+    {
+#ifdef ASPECT_HAVE_FASTSCAPE_TVD_ADVECTION
+      const int int_advection_scheme = static_cast<int>(advection_scheme);
+
+      fastscape_set_advection_scheme_(&int_advection_scheme);
+#else
+      AssertThrow(advection_scheme == FastscapeAdvectionScheme::original,
+                  ExcMessage("The Fastscape TVD advection scheme was selected, "
+                             "but the linked Fastscape library does not support it. "
+                             "The TVD scheme requires Fastscape version 2.9.1dev "
+                             "or newer."));
+#endif
+    }
 
     template <int dim>
     void FastScape<dim>::initialize_fastscape(std::vector<double> &elevation,
@@ -951,11 +972,16 @@ namespace aspect
       // Initialize FastScape with grid and extent.
       fastscape_init_();
 
-      fastscape_set_nx_ny_(&fastscape_nx,
-                           &fastscape_ny);
-      fastscape_setup_();
       fastscape_set_xl_yl_(&fastscape_x_extent,
                            &fastscape_y_extent);
+
+      // Select the original or TVD advection scheme.
+      set_fastscape_advection_scheme();
+
+      fastscape_set_nx_ny_(&fastscape_nx,
+                           &fastscape_ny);
+
+      fastscape_setup_();
 
       // Set boundary conditions
       fastscape_set_bc_(&fastscape_boundary_conditions);
@@ -1953,7 +1979,9 @@ namespace aspect
                             "Select one additional Fastscape variable to output in the Fastcape vtk. "
                             "Output are in units of per year. "
                            );
-
+          prm.declare_entry("Advection scheme", "original",
+                            Patterns::Selection("original|tvd"),
+                            "Select FastScape horizontal advection scheme.");
           prm.enter_subsection ("Boundary conditions");
           {
             prm.declare_entry ("Front", "1",
@@ -2159,6 +2187,13 @@ namespace aspect
         {
           fastscape_steps_per_aspect_step = prm.get_integer("Number of fastscape timesteps per aspect timestep");
           maximum_fastscape_timestep = prm.get_double("Maximum timestep length");
+          const std::string advection_scheme_name = prm.get("Advection scheme");
+          if (advection_scheme_name == "original")
+            advection_scheme = FastscapeAdvectionScheme::original;
+          else if (advection_scheme_name == "tvd")
+            advection_scheme = FastscapeAdvectionScheme::tvd;
+          else
+            AssertThrow(false, ExcMessage("Unknown Fastscape advection scheme <" + advection_scheme_name + ">."));
           vexp = prm.get_double("Vertical exaggeration");
           additional_refinement_levels = prm.get_integer("Additional fastscape refinement");
           average_out_of_plane_surface_topography = prm.get_bool("Average out of plane surface topography in 2d");
