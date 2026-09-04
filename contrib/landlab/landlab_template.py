@@ -346,7 +346,7 @@ class LandlabTemplate:
         if ASPECT_dim == 2:
             return np.unique(self.model_grid.x_of_node)
         elif ASPECT_dim == 3:
-            return self.model_grid.x_of_node
+            return self.model_grid.x_of_node.copy()
     
     def get_grid_y(self, ASPECT_dim):
         """
@@ -364,7 +364,7 @@ class LandlabTemplate:
         if ASPECT_dim == 2:
             return np.zeros(np.unique(self.model_grid.x_of_node).size)
         elif ASPECT_dim == 3:
-            return self.model_grid.y_of_node
+            return self.model_grid.y_of_node.copy()
         
     def get_grid_z(self, ASPECT_dim):
         """
@@ -374,7 +374,7 @@ class LandlabTemplate:
         - ASPECT_dim: the dimension of the ASPECT model (2 or 3).
         """
         if ASPECT_dim == 3:
-            return self.model_grid.z_of_node
+            return self.model_grid.z_of_node.copy()
         else:
             raise ValueError("get_grid_z is only applicable for 3D ASPECT models.")
 
