@@ -360,6 +360,21 @@ namespace aspect
         get_mesh_deformation_dof_handler () const;
 
         /**
+         * Return the depth of @p positions below the current, deformed surface.
+         *
+         * The geometry model's depth() function measures depth below the
+         * undeformed reference surface. This function subtracts the locally
+         * interpolated displacement of the current surface and is therefore
+         * suitable for quantities that depend on depth below the evolving
+         * surface. If @p cell is invalid, the reference-geometry depth is
+         * returned.
+         */
+        std::vector<double>
+        depth_below_current_surface(
+          const typename DoFHandler<dim>::active_cell_iterator &cell,
+          const std::vector<Point<dim>>                        &positions) const;
+
+        /**
          * Go through the list of all mesh deformation objects that have been selected
          * in the input file (and are consequently currently active) and return
          * true if one of them has the desired type specified by the template
@@ -433,6 +448,14 @@ namespace aspect
                         << "> among the names of registered mesh deformation objects.");
 
       private:
+        /**
+         * Recompute the finite-element field that stores the signed height of
+         * the current surface along depth columns. This is called whenever
+         * mesh_displacements changes.
+         */
+        void
+        update_current_surface_heights();
+
         /**
          * Compute the initial constraints for the mesh displacement
          * on the boundaries of the domain.  This is used on the mesh
@@ -544,6 +567,14 @@ namespace aspect
          * redistributed upon mesh refinement.
          */
         LinearAlgebra::Vector mesh_displacements;
+
+        /**
+         * A vector in the mesh deformation finite element space whose first
+         * component stores the signed height of the current surface above the
+         * reference surface, extended into the volume along depth columns. The
+         * remaining components are zero.
+         */
+        LinearAlgebra::Vector current_surface_heights;
 
         /**
          * mesh_displacements from the last time step.
