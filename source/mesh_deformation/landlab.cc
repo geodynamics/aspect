@@ -29,6 +29,7 @@
 #include <aspect/gravity_model/interface.h>
 #include <aspect/geometry_model/interface.h>
 #include <deal.II/base/array_view.h>
+#include <deal.II/dofs/dof_tools.h>
 
 #include <fstream>
 
