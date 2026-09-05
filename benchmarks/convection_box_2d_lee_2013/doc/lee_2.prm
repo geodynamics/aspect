@@ -1,0 +1,5 @@
+subsection Formulation
+  set Formulation          = custom
+  set Mass conservation    = incompressible
+  set Temperature equation = reference density profile
+end
