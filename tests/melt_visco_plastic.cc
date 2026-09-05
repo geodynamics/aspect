@@ -23,7 +23,7 @@
 
 #include <algorithm>
 #include <aspect/material_model/interface.h>
-#include <aspect/simulator.h>
+
 #include <aspect/simulator_access.h>
 #include <aspect/postprocess/melt_statistics.h>
 #include <aspect/melt.h>

@@ -22,7 +22,7 @@
 #include "analytical_topography.h"
 #include <aspect/geometry_model/two_merged_boxes.h>
 #include <aspect/geometry_model/box.h>
-#include <aspect/simulator.h>
+
 #include <aspect/global.h>
 
 #include <deal.II/fe/fe_values.h>

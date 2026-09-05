@@ -18,7 +18,7 @@
   <http://www.gnu.org/licenses/>.
 */
 
-#include <aspect/simulator.h>
+
 
 /*
  * Launch the following function when this plugin is created. Launch ASPECT

@@ -23,7 +23,7 @@
 #include <aspect/geometry_model/box.h>
 #include <aspect/postprocess/heat_flux_statistics.h>
 #include <aspect/postprocess/pressure_statistics.h>
-#include <aspect/simulator.h>
+
 
 #include <utility>
 #include <limits>
