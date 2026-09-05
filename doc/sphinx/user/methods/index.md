@@ -12,6 +12,7 @@ pressure-static-dyn.md
 pressure-norm.md
 initial-conditions.md
 compositional-fields.md
+constitutive-laws/index.md
 constitutive-laws.md
 numerical-methods.md
 approximate-equations/index.md
