@@ -225,7 +225,6 @@ TEST_CASE("Reaction Chain Processing")
   prm.enter_subsection("Reaction chain");
   {
     prm.set("Kinetic models", "Interface controlled growth|Eutectoid decomposition|Interface controlled growth");
-    prm.set("Tolerance in reaction progress", "0.05");
 
     prm.enter_subsection("Interface controlled growth");
     {
@@ -246,24 +245,54 @@ TEST_CASE("Reaction Chain Processing")
 
   reaction_chain.parse_parameters(prm);
 
-  SECTION("Clamping cumulative reaction progress within custom tolerance")
+  SECTION("Clamping cumulative reaction progress to physical range")
   {
-    const std::vector<double> xi_raw = {1.04, 0.85, -0.04};
-    const std::vector<double> xi_clamped = reaction_chain.clamp_cumulative_progress(xi_raw);
-
-    const std::vector<double> expected = {1.0, 0.85, 0.0};
-    compare_vectors_approx(xi_clamped, expected);
+    compare_vectors_approx(reaction_chain.clamp_cumulative_progress({1.04, 0.85, -0.04}), {1.0, 0.85, 0.0});
   }
 
-  SECTION("Clamping throws on non-physical bounds exceeding tolerance")
+  SECTION("Without strict tolerance, out-of-range and non-monotonic values are clamped")
   {
-    CHECK_THROWS_AS(reaction_chain.clamp_cumulative_progress({1.06, 0.5, 0.1}), dealii::ExceptionBase);
-    CHECK_THROWS_AS(reaction_chain.clamp_cumulative_progress({0.8, 0.5, -0.06}), dealii::ExceptionBase);
+    // Values below 0 (reverse reaction completed) or above 1 (forward reaction completed) are clamped to [0, 1]
+    compare_vectors_approx(reaction_chain.clamp_cumulative_progress({1.06, 0.5, 0.1}), {1.0, 0.5, 0.1});
+    compare_vectors_approx(reaction_chain.clamp_cumulative_progress({0.8, 0.5, -0.06}), {0.8, 0.5, 0.0});
+
+    // Non-monotonic values are clamped to enforce xi[i] <= xi[i-1]
+    compare_vectors_approx(reaction_chain.clamp_cumulative_progress({0.80, 0.87, 0.1}), {0.80, 0.80, 0.1});
   }
 
-  SECTION("Clamping throws on non-monotonic values exceeding tolerance")
+  SECTION("With strict tolerance, out-of-range and non-monotonic values throw")
   {
-    CHECK_THROWS_AS(reaction_chain.clamp_cumulative_progress({0.80, 0.87, 0.1}), dealii::ExceptionBase);
+    dealii::ParameterHandler strict_prm;
+    ReactionChain<2> strict_reaction_chain;
+    ReactionChain<2>::declare_parameters(strict_prm);
+
+    strict_prm.enter_subsection("Reaction chain");
+    {
+      strict_prm.set("Kinetic models", "Interface controlled growth|Eutectoid decomposition|Interface controlled growth");
+      strict_prm.set("Tolerance in reaction progress", "0.05");
+
+      strict_prm.enter_subsection("Interface controlled growth");
+      {
+        strict_prm.set("Kinetic prefactors", "7.0e7|7.0e7");
+        strict_prm.set("Activation enthalpies", "274e3|274e3");
+        strict_prm.set("Activation volumes", "3.3e-6|3.3e-6");
+      }
+      strict_prm.leave_subsection();
+
+      strict_prm.enter_subsection("Eutectoid decomposition");
+      {
+        strict_prm.set("Kinetic prefactors", "2.7e-16");
+        strict_prm.set("Activation energies", "355e3");
+      }
+      strict_prm.leave_subsection();
+    }
+    strict_prm.leave_subsection();
+
+    strict_reaction_chain.parse_parameters(strict_prm);
+
+    CHECK_THROWS_AS(strict_reaction_chain.clamp_cumulative_progress({1.06, 0.5, 0.1}), dealii::ExceptionBase);
+    CHECK_THROWS_AS(strict_reaction_chain.clamp_cumulative_progress({0.8, 0.5, -0.06}), dealii::ExceptionBase);
+    CHECK_THROWS_AS(strict_reaction_chain.clamp_cumulative_progress({0.80, 0.87, 0.1}), dealii::ExceptionBase);
   }
 
   SECTION("Clamping throws on NaN or Inf input")
@@ -427,23 +456,5 @@ TEST_CASE("Reaction Chain Kinetic Models Parsing")
     prm.leave_subsection();
 
     CHECK(parsed_default == "Interface controlled growth");
-  }
-
-  SECTION("Parsing throws on invalid 'Tolerance in reaction progress'")
-  {
-    SECTION("Tolerance >= 1.0 throws")
-    {
-      dealii::ParameterHandler prm;
-      ReactionChain<2> reaction_chain;
-      ReactionChain<2>::declare_parameters(prm);
-
-      prm.enter_subsection("Reaction chain");
-      {
-        prm.set("Tolerance in reaction progress", "1.0");
-      }
-      prm.leave_subsection();
-
-      CHECK_THROWS_AS(reaction_chain.parse_parameters(prm), dealii::ExceptionBase);
-    }
   }
 }
