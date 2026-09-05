@@ -85,7 +85,7 @@ namespace aspect
     };
 
     /**
-    * Additional output fields for diffusion and dislocation viscosities.
+     * Additional output fields for diffusion and dislocation viscosities.
     */
     template <int dim>
     class ViscosityAdditionalOutputs : public NamedAdditionalMaterialOutputs<dim>
@@ -134,6 +134,23 @@ namespace aspect
          */
         std::vector<double> dislocation_viscosities;
 
+    };
+
+    /**
+     * Diagnostic outputs for the differential dynamic friction mechanism.
+     * Tectonic regime uses -1 for convergence, 0 for transform/neutral, and
+     * +1 for divergence.
+     */
+    template <int dim>
+    class TectonicRegimeAdditionalOutputs : public NamedAdditionalMaterialOutputs<dim>
+    {
+      public:
+        TectonicRegimeAdditionalOutputs(const unsigned int n_points);
+
+        std::vector<double> get_nth_output(const unsigned int idx) const override;
+
+        std::vector<double> surface_velocity_divergence;
+        std::vector<double> tectonic_regime;
     };
 
     /**
