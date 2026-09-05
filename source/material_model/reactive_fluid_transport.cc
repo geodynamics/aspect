@@ -263,6 +263,7 @@ namespace aspect
 
               const std::vector<CompositionalFieldDescription> &composition_descriptions =
                 this->introspection().get_composition_descriptions();
+
               std::vector<double> eq_free_fluid_fractions(out.n_evaluation_points());
               melt_fractions(in, eq_free_fluid_fractions, &out);
 
@@ -350,6 +351,12 @@ namespace aspect
           katz2003_model.calculate_reaction_rate_outputs(in, out);
           katz2003_model.calculate_fluid_outputs(in, out, reference_T);
         }
+
+      // If fluid extraction is enabled, updated the reaction rates above the user-specified extraction
+      // depth to remove porosity from the system. This is done after the reaction rates are computed above,
+      // so that the extraction is applied on top of any reactions that may have occurred.
+      if (extract_fluids)
+        fluid_extractor_model.calculate_reaction_rate_outputs(in, out);
     }
 
     template <int dim>
@@ -362,7 +369,6 @@ namespace aspect
         {
           prm.enter_subsection("Katz 2003 model");
           {
-            // read in melting model parameters
             ReactionModel::Katz2003MantleMelting<dim>::declare_parameters(prm);
           }
           prm.leave_subsection();
@@ -443,6 +449,10 @@ namespace aspect
                              "The reference temperature $T_0$ for the katz2003 reaction model. "
                              "The reference temperature is used in both the density and "
                              "viscosity formulas of this model. Units: \\si{\\kelvin}.");
+          prm.declare_entry ("Extract fluids", "false",
+                             Patterns::Bool(),
+                             "If true, the melt extractor reaction model will be used to extract fluids from "
+                             "if there are fluids shallower than a user-specified extraction depth.");
         }
         prm.leave_subsection();
 
@@ -473,6 +483,7 @@ namespace aspect
           fluid_compressibility             = prm.get_double ("Fluid compressibility");
           fluid_reaction_time_scale         = prm.get_double ("Fluid reaction time scale for operator splitting");
           reference_T                       = prm.get_double ("Reference temperature");
+          extract_fluids                    = prm.get_bool ("Extract fluids");
 
           // Create the base model and initialize its SimulatorAccess base
           // class; it will get a chance to read its parameters below after we
@@ -484,7 +495,10 @@ namespace aspect
           if (this->convert_output_to_years() == true)
             fluid_reaction_time_scale *= year_in_seconds;
 
-          // Reaction scheme parameter
+          // Initialize the fluid extractor, if enabled
+          if (extract_fluids)
+            fluid_extractor_model.initialize_simulator (this->get_simulator());
+
           if (prm.get ("Fluid-solid reaction scheme") == "zero solubility")
             {
               fluid_solid_reaction_scheme = zero_solubility;
@@ -501,6 +515,15 @@ namespace aspect
               {
                 tian2019_model.initialize_simulator (this->get_simulator());
                 tian2019_model.parse_parameters(prm);
+
+                if (extract_fluids)
+                  {
+                    // Pass the parameters to the fluid extractor model.
+                    const std::string reaction_scheme_name = "tian approximation";
+                    fluid_extractor_model.set_parameters(reaction_scheme_name,
+                                                         prm.get_double("Melt extraction depth"),
+                                                         prm.get("Extraction method"));
+                  }
               }
               prm.leave_subsection();
             }
@@ -511,6 +534,15 @@ namespace aspect
               {
                 katz2003_model.initialize_simulator (this->get_simulator());
                 katz2003_model.parse_parameters(prm);
+
+                if (extract_fluids)
+                  {
+                    // Pass the parameters to the fluid extractor model.
+                    const std::string reaction_scheme_name = "katz2003";
+                    fluid_extractor_model.set_parameters(reaction_scheme_name,
+                                                         prm.get_double("Melt extraction depth"),
+                                                         prm.get("Extraction method"));
+                  }
               }
               prm.leave_subsection();
             }
@@ -559,6 +591,7 @@ namespace aspect
                           ExcMessage("Material model Reactive Fluid Transport only "
                                      "works if there is a compositional field called bound_fluid."));
             }
+
           else
             {
               AssertThrow(this->introspection().compositional_name_exists("peridotite"),
@@ -586,7 +619,7 @@ namespace aspect
     void
     ReactiveFluidTransport<dim>::create_additional_named_outputs (MaterialModel::MaterialModelOutputs<dim> &out) const
     {
-      if (this->get_parameters().use_operator_splitting
+      if ((this->get_parameters().use_operator_splitting)
           && out.template has_additional_output_object<ReactionRateOutputs<dim>>() == false)
         {
           out.additional_outputs.push_back(

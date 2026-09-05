@@ -1,0 +1,104 @@
+# This is a test for the fluid extractor reaction model. This test 
+# initializes a 2D box with a uniform porosity composition and confirms
+# that all the porosity is extracted above the specified extraction depth.
+# The box is 100 km x 100 km, and the porosity is 0.01. We output the 
+# composition statistics, and if porosity is not being extracted then the
+# "mass" of composition should be 100e3 x 100e3 x 0.1 = 10e8. Because we 
+# remove 40 km of porosity, and because we use discontinuous composition
+# discretization, we expect the mass to be exactly equal to:
+# 100e3 x (100e3 - 40e3) x 0.1 = 6e8. This test returns a mass of 6.083e8,
+# mainly because of low resolution, and this mass decreases with increasing
+# resolution.
+
+set Dimension                              = 2
+set End time                               = 1e5
+set Maximum time step                      = 1e5
+set Adiabatic surface temperature          = 1613.0
+set Output directory                       = output-fluid_extractor_katz2003
+set Use operator splitting                 = true
+
+# Create a 100 x 100 km box with 10 x 10 elements.
+subsection Geometry model
+  set Model name = box
+
+  subsection Box
+    set X extent = 100e3
+    set Y extent = 100e3
+
+    set X repetitions = 1
+    set Y repetitions = 5
+  end
+end
+
+# Close all boundaries.
+subsection Boundary velocity model
+  set Tangential velocity boundary indicators = top, bottom, left, right
+end
+
+
+# Uniform gravity model.
+subsection Gravity model
+  set Model name = vertical
+  subsection Vertical
+    set Magnitude = 0.0
+  end
+end
+
+# Fixed temperature everywhere.
+subsection Boundary temperature model
+  set Fixed temperature boundary indicators = top, bottom, left, right
+  set List of model names = box
+end
+
+# Uniform initial temperature
+subsection Initial temperature model
+  set List of model names = function
+
+  subsection Function
+    set Coordinate system   = cartesian
+    set Variable names      = x, y
+    set Function expression = 293
+  end
+end
+
+# Use the reactive fluid transport material model and set `Extract fluids` to 
+# be true, which enables extraction of porosity above the defined depth.
+# Composite this with the simpler base material model.
+subsection Material model
+  set Model name = reactive fluid transport
+
+  subsection Reactive Fluid Transport Model 
+    set Fluid-solid reaction scheme = katz2003 
+    set Base model       = simpler
+    set Extract fluids   = true
+
+    subsection Katz 2003 model
+      set Melt extraction depth  = 40.0e3
+      set Extraction method      = constant
+      set Freezing rate          = 0
+    end
+
+  end
+end
+
+# Define porosity and peridotite compositional fields, which is required for the 
+# katz2003 reaction model.
+subsection Compositional fields
+  set Number of fields                   = 2
+  set Names of fields                    = porosity, peridotite
+  set Types of fields                    = chemical composition, chemical composition
+  set Compositional field methods        = field, field
+end
+
+# Initialize the porosity to a uniform value of 0.1.
+subsection Initial composition model
+  set Model name = function
+  subsection Function
+    set Coordinate system   = cartesian
+    set Function expression = 0.1; 0.0
+  end
+end
+
+subsection Postprocess
+  set List of postprocessors = composition statistics
+end
