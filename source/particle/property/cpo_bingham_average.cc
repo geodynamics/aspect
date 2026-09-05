@@ -73,34 +73,36 @@ namespace aspect
                                                                         n_samples,
                                                                         this->random_number_generator);
 
-            if (output_format == "full matrix")
+            switch (rotation_format)
               {
-                const std::array<std::array<double,6>,3> bingham_average = compute_bingham_average(weighted_rotation_matrices, std::integral_constant<int,6> {});
-                for (unsigned int i = 0; i < 3; ++i)
-                  for (unsigned int j = 0; j < 6; ++j)
-                    data.emplace_back(bingham_average[i][j]);
-              }
-            else if (output_format == "euler angles")
-              {
-                const std::array<std::array<double,4>,3> bingham_average = compute_bingham_average(weighted_rotation_matrices, std::integral_constant<int,4> {});
-                for (unsigned int i = 0; i < 3; ++i)
-                  for (unsigned int j = 0; j < 4; ++j)
-                    data.emplace_back(bingham_average[i][j]);
-              }
-            else if (output_format == "quaternion")
-              {
-                const std::pair<std::array<double, 4>, std::array<std::array<double,2>,3>> bingham_average = compute_bingham_average(weighted_rotation_matrices, std::integral_constant<int,2> {});
+                case RotationFormat::full_matrix:
+                {
+                  const std::array<std::array<double,6>,3> bingham_average = compute_bingham_average(weighted_rotation_matrices, std::integral_constant<int,6> {});
+                  for (unsigned int i = 0; i < 3; ++i)
+                    for (unsigned int j = 0; j < 6; ++j)
+                      data.emplace_back(bingham_average[i][j]);
+                  break;
+                }
+                case RotationFormat::euler_angles:
+                {
+                  const std::array<std::array<double,4>,3> bingham_average = compute_bingham_average(weighted_rotation_matrices, std::integral_constant<int,4> {});
+                  for (unsigned int i = 0; i < 3; ++i)
+                    for (unsigned int j = 0; j < 4; ++j)
+                      data.emplace_back(bingham_average[i][j]);
+                  break;
+                }
+                case RotationFormat::quaternion:
+                {
+                  const std::pair<std::array<double, 4>, std::array<std::array<double,2>,3>> bingham_average = compute_bingham_average(weighted_rotation_matrices, std::integral_constant<int,2> {});
 
-                for (unsigned int i = 0; i < 4; ++i)
-                  data.emplace_back(bingham_average.first[i]);
+                  for (unsigned int i = 0; i < 4; ++i)
+                    data.emplace_back(bingham_average.first[i]);
 
-                for (unsigned int i = 0; i < 3; ++i)
-                  for (unsigned int j = 0; j < 2; ++j)
-                    data.emplace_back(bingham_average.second[i][j]);
-              }
-            else
-              {
-                AssertThrow(false, ExcMessage(output_format + " is not a valid output type. Please choose from the list full matrix|euler angles|quaternion"));
+                  for (unsigned int i = 0; i < 3; ++i)
+                    for (unsigned int j = 0; j < 2; ++j)
+                      data.emplace_back(bingham_average.second[i][j]);
+                  break;
+                }
               }
 
           }
@@ -130,36 +132,38 @@ namespace aspect
 
                 const std::vector<Tensor<2,3>> weighted_rotation_matrices = Utilities::rotation_matrices_random_draw_volume_weighting(volume_fractions_grains, rotation_matrices_grains, n_samples, this->random_number_generator);
 
-                if (output_format == "full matrix")
+                switch (rotation_format)
                   {
-                    std::array<std::array<double,6>,3> bingham_average = compute_bingham_average(weighted_rotation_matrices, std::integral_constant<int,6> {});
+                    case RotationFormat::full_matrix:
+                    {
+                      std::array<std::array<double,6>,3> bingham_average = compute_bingham_average(weighted_rotation_matrices, std::integral_constant<int,6> {});
 
-                    for (unsigned int i = 0; i < 3; ++i)
-                      for (unsigned int j = 0; j < 6; ++j)
-                        data[this->data_position + mineral_i*18 + i*6 + j] = bingham_average[i][j];
-                  }
-                else if (output_format == "euler angles")
-                  {
-                    std::array<std::array<double,4>,3> bingham_average = compute_bingham_average(weighted_rotation_matrices, std::integral_constant<int,4> {});
+                      for (unsigned int i = 0; i < 3; ++i)
+                        for (unsigned int j = 0; j < 6; ++j)
+                          data[this->data_position + mineral_i*18 + i*6 + j] = bingham_average[i][j];
+                      break;
+                    }
+                    case RotationFormat::euler_angles:
+                    {
+                      std::array<std::array<double,4>,3> bingham_average = compute_bingham_average(weighted_rotation_matrices, std::integral_constant<int,4> {});
 
-                    for (unsigned int i = 0; i < 3; ++i)
-                      for (unsigned int j = 0; j < 4; ++j)
-                        data[this->data_position + mineral_i*12 + i*4 + j] = bingham_average[i][j];
-                  }
-                else if (output_format == "quaternion")
-                  {
-                    std::pair<std::array<double, 4>, std::array<std::array<double,2>,3>> bingham_average = compute_bingham_average(weighted_rotation_matrices, std::integral_constant<int,2> {});
+                      for (unsigned int i = 0; i < 3; ++i)
+                        for (unsigned int j = 0; j < 4; ++j)
+                          data[this->data_position + mineral_i*12 + i*4 + j] = bingham_average[i][j];
+                      break;
+                    }
+                    case RotationFormat::quaternion:
+                    {
+                      std::pair<std::array<double, 4>, std::array<std::array<double,2>,3>> bingham_average = compute_bingham_average(weighted_rotation_matrices, std::integral_constant<int,2> {});
 
-                    for (unsigned int i=0; i<4; ++i)
-                      data[this->data_position + mineral_i*10 + i] = bingham_average.first[i];
+                      for (unsigned int i=0; i<4; ++i)
+                        data[this->data_position + mineral_i*10 + i] = bingham_average.first[i];
 
-                    for (unsigned int i = 0; i < 3; ++i)
-                      for (unsigned int j = 0; j < 2; ++j)
-                        data[this->data_position + mineral_i*10 + 4 + i*2+j] = bingham_average.second[i][j];
-                  }
-                else
-                  {
-                    AssertThrow(false, ExcMessage(output_format + " is not a valid output type. Please choose from the list full matrix|euler angles|quaternion"));
+                      for (unsigned int i = 0; i < 3; ++i)
+                        for (unsigned int j = 0; j < 2; ++j)
+                          data[this->data_position + mineral_i*10 + 4 + i*2+j] = bingham_average.second[i][j];
+                      break;
+                    }
                   }
               }
           }
@@ -171,7 +175,7 @@ namespace aspect
       std::array<std::array<double,6>,3>
       CpoBinghamAverage<dim>::compute_bingham_average(std::vector<Tensor<2,3>> matrices, std::integral_constant<int,6>) const
       {
-        AssertThrow(output_format == "full matrix", ExcMessage("Must use rotation matrix when array length == 6"));
+        AssertThrow(rotation_format == RotationFormat::full_matrix, ExcMessage("Must use full matrix when array length == 6"));
 
         SymmetricTensor<2,3> sum_matrix_a;
         SymmetricTensor<2,3> sum_matrix_b;
@@ -243,7 +247,7 @@ namespace aspect
       std::array<std::array<double,4>,3>
       CpoBinghamAverage<dim>::compute_bingham_average(std::vector<Tensor<2,3>> matrices, std::integral_constant<int,4>) const
       {
-        AssertThrow(output_format == "euler angles", ExcMessage("Must use euler angles when array length == 4"));
+        AssertThrow(rotation_format == RotationFormat::euler_angles, ExcMessage("Must use euler angles when array length == 4"));
 
         SymmetricTensor<2,3> sum_matrix_a;
         SymmetricTensor<2,3> sum_matrix_b;
@@ -333,7 +337,7 @@ namespace aspect
       std::pair<std::array<double, 4>, std::array<std::array<double,2>,3>>
       CpoBinghamAverage<dim>::compute_bingham_average(std::vector<Tensor<2,3>> matrices, std::integral_constant<int,2>) const
       {
-        AssertThrow(output_format == "quaternion", ExcMessage("must use quaternion when array length == 2"));
+        AssertThrow(rotation_format == RotationFormat::quaternion, ExcMessage("must use quaternion when array length == 2"));
 
         SymmetricTensor<2,3> sum_matrix_a;
         SymmetricTensor<2,3> sum_matrix_b;
@@ -457,47 +461,48 @@ namespace aspect
       {
         std::vector<std::pair<std::string,unsigned int>> property_information;
         property_information.reserve(6*n_minerals);
-        if (output_format == "full matrix")
+        switch (rotation_format)
           {
-            for (unsigned int mineral_i = 0; mineral_i < n_minerals; ++mineral_i)
-              {
-                property_information.emplace_back("cpo mineral " + std::to_string(mineral_i) + " bingham average a axis",3);
-                property_information.emplace_back("cpo mineral " + std::to_string(mineral_i) + " eigenvalues a axis",3);
-                property_information.emplace_back("cpo mineral " + std::to_string(mineral_i) + " bingham average b axis",3);
-                property_information.emplace_back("cpo mineral " + std::to_string(mineral_i) + " eigenvalues b axis",3);
-                property_information.emplace_back("cpo mineral " + std::to_string(mineral_i) + " bingham average c axis",3);
-                property_information.emplace_back("cpo mineral " + std::to_string(mineral_i) + " eigenvalues c axis",3);
-              }
-          }
-        else if (output_format == "euler angles")
-          {
-            for (unsigned int mineral_i = 0; mineral_i < n_minerals; ++mineral_i)
-              {
-                property_information.emplace_back("cpo mineral " + std::to_string(mineral_i) + " phi1",1);
-                property_information.emplace_back("cpo mineral " + std::to_string(mineral_i) + " eigenvalues a axis",3);
-                property_information.emplace_back("cpo mineral " + std::to_string(mineral_i) + " theta",1);
-                property_information.emplace_back("cpo mineral " + std::to_string(mineral_i) + " eigenvalues b axis",3);
-                property_information.emplace_back("cpo mineral " + std::to_string(mineral_i) + " phi2",1);
-                property_information.emplace_back("cpo mineral " + std::to_string(mineral_i) + " eigenvalues c axis",3);
-              }
-          }
-        else if (output_format == "quaternion")
-          {
-            for (unsigned int mineral_i = 0; mineral_i < n_minerals; ++mineral_i)
-              {
-                // corresponds to cos(rotation_angle/2)
-                property_information.emplace_back("cpo mineral " + std::to_string(mineral_i) + " q.w",1);
-                // q.n corresponds to normalized rotation axis times sin(rotation_angle/2)
-                property_information.emplace_back("cpo mineral " + std::to_string(mineral_i) + " q.n",3);
-                property_information.emplace_back("cpo mineral " + std::to_string(mineral_i) + " eigenvalues a axis",2);
-                property_information.emplace_back("cpo mineral " + std::to_string(mineral_i) + " eigenvalues b axis",2);
-                property_information.emplace_back("cpo mineral " + std::to_string(mineral_i) + " eigenvalues c axis",2);
-              }
-
-          }
-        else
-          {
-            AssertThrow(false, ExcMessage(output_format + " is not a valid output type. Please choose from the list full matrix|euler angles|quaternion"));
+            case RotationFormat::full_matrix:
+            {
+              for (unsigned int mineral_i = 0; mineral_i < n_minerals; ++mineral_i)
+                {
+                  property_information.emplace_back("cpo mineral " + std::to_string(mineral_i) + " bingham average a axis",3);
+                  property_information.emplace_back("cpo mineral " + std::to_string(mineral_i) + " eigenvalues a axis",3);
+                  property_information.emplace_back("cpo mineral " + std::to_string(mineral_i) + " bingham average b axis",3);
+                  property_information.emplace_back("cpo mineral " + std::to_string(mineral_i) + " eigenvalues b axis",3);
+                  property_information.emplace_back("cpo mineral " + std::to_string(mineral_i) + " bingham average c axis",3);
+                  property_information.emplace_back("cpo mineral " + std::to_string(mineral_i) + " eigenvalues c axis",3);
+                }
+              break;
+            }
+            case RotationFormat::euler_angles:
+            {
+              for (unsigned int mineral_i = 0; mineral_i < n_minerals; ++mineral_i)
+                {
+                  property_information.emplace_back("cpo mineral " + std::to_string(mineral_i) + " phi1",1);
+                  property_information.emplace_back("cpo mineral " + std::to_string(mineral_i) + " eigenvalues a axis",3);
+                  property_information.emplace_back("cpo mineral " + std::to_string(mineral_i) + " theta",1);
+                  property_information.emplace_back("cpo mineral " + std::to_string(mineral_i) + " eigenvalues b axis",3);
+                  property_information.emplace_back("cpo mineral " + std::to_string(mineral_i) + " phi2",1);
+                  property_information.emplace_back("cpo mineral " + std::to_string(mineral_i) + " eigenvalues c axis",3);
+                }
+              break;
+            }
+            case RotationFormat::quaternion:
+            {
+              for (unsigned int mineral_i = 0; mineral_i < n_minerals; ++mineral_i)
+                {
+                  // corresponds to cos(rotation_angle/2)
+                  property_information.emplace_back("cpo mineral " + std::to_string(mineral_i) + " q.w",1);
+                  // q.n corresponds to normalized rotation axis times sin(rotation_angle/2)
+                  property_information.emplace_back("cpo mineral " + std::to_string(mineral_i) + " q.n",3);
+                  property_information.emplace_back("cpo mineral " + std::to_string(mineral_i) + " eigenvalues a axis",2);
+                  property_information.emplace_back("cpo mineral " + std::to_string(mineral_i) + " eigenvalues b axis",2);
+                  property_information.emplace_back("cpo mineral " + std::to_string(mineral_i) + " eigenvalues c axis",2);
+                }
+              break;
+            }
           }
 
         return property_information;
@@ -522,20 +527,21 @@ namespace aspect
                              "This determines how many samples are taken when using the random "
                              "draw volume averaging. Setting it to zero means that the number of "
                              "samples is set to be equal to the number of grains.");
-          prm.declare_entry ("Output rotation as","full matrix",
-                             Patterns::Selection("full matrix|euler angles|quaternion"),
-                             "This determines whether the orientations will be saved as"
-                             "\n1) Eigenvectors i.e. one full rotation matrix for each axis."
-                             "\n2) Euler angles in the zxz convention (not equivalent to the Bunge convention). They represent a passive rotation matrix derived from the principal eigenvectors of each axis."
-                             "\n3) A unit quaternion representing an active rotation matrix derived from the principal eigenvectors of each axis."
-                             "\nPossible options are full matrix, euler angles and quaternion");
+          prm.declare_entry ("Rotation format","full matrix",
+                             Patterns::List(Patterns::Anything()),
+                             "Options: full matrix, euler angles, quaternion. "
+                             "This determines whether the orientations will be saved as: "
+                             "full matrix: returns 3 eigenvectors, i.e. one full rotation matrix for each axis; "
+                             "Euler angles: returns one set of 3 Euler angles in the zxz convention (not equivalent to the Bunge convention); "
+                             "they represent a passive rotation matrix derived from the principal eigenvectors of each axis; "
+                             "quaternion: returns a unit quaternion representing an active rotation matrix derived from the principal eigenvectors of each axis.");
           prm.declare_entry ("Use rotation matrix","true",
                              Patterns::Bool(),
                              "This determines whether the orientations will be saved as rotation "
-                             "matrices or Euler angles."
-                             "This is a deprecated parameter please use <Output rotation as> instead.\n"
-                             "Use rotation matrix = true will be mapped to Output rotation as = full matrix.\n"
-                             "Use rotation matrix = false will be mapped to Output rotation as = euler angles.\n");
+                             "matrices or Euler angles. "
+                             "This is a deprecated parameter; please use <Rotation format> instead.\n"
+                             "Use rotation matrix = true will be mapped to Rotation format = full matrix.\n"
+                             "Use rotation matrix = false will be mapped to Rotation format = euler angles.\n");
         }
         prm.leave_subsection ();
       }
@@ -559,26 +565,50 @@ namespace aspect
           if (n_samples == 0)
             n_samples = n_grains;
 
-          output_format = prm.get("Output rotation as");
+          const std::string temp_rotation_format = prm.get("Rotation format");
+
+          if (temp_rotation_format == "full matrix")
+            {
+              rotation_format = RotationFormat::full_matrix;
+            }
+          else if (temp_rotation_format ==  "euler angles")
+            {
+              rotation_format = RotationFormat::euler_angles;
+            }
+          else if (temp_rotation_format ==  "quaternion")
+            {
+              rotation_format = RotationFormat::quaternion;
+            }
+          else
+            {
+              AssertThrow(false,
+                          ExcMessage("The Rotation output format needs to be one of the following: "
+                                     "full matrix, euler angles, quaternion"));
+            }
+
           const bool use_rotmat = prm.get_bool ("Use rotation matrix");
           if (!use_rotmat)
             {
-              if (output_format == "full matrix")
+              switch (rotation_format)
                 {
-                  if (Utilities::MPI::this_mpi_process(this->get_mpi_communicator()) == 0)
-                    {
-                      std::cout << "Warning: You are using the deprecated parameter <Use rotation matrix>. " << std::endl << "         Use the new parameter <Output rotation as> instead." << std::endl << "         Your rotation will still be output as euler angles." << std::endl;
-                    }
+                  case RotationFormat::full_matrix:
+                    this->get_pcout() << "Warning: You are using the deprecated parameter <Use rotation matrix>. " << std::endl
+                                      << "         Use the new parameter <Rotation format> instead." << std::endl
+                                      << "         Your rotation will still be output as euler angles." << std::endl;
+                    break;
+                  case RotationFormat::euler_angles:
+                    this->get_pcout() << "Warning: You are using the deprecated parameter <Use rotation matrix>. " << std::endl
+                                      << "         and the new parameter <Rotation format>." << std::endl
+                                      << "         Please only use the new parameter <Rotation format>." << std::endl;
+                    break;
+                  case RotationFormat::quaternion:
+                    this->get_pcout() << "Warning: You are using the deprecated parameter <Use rotation matrix>. " << std::endl
+                                      << "         and the new parameter <Rotation format>." << std::endl
+                                      << "         Please only use the new parameter <Rotation format>." << std::endl;
+                    break;
                 }
-              else if (output_format == "euler angles")
-                {
-                  if (Utilities::MPI::this_mpi_process(this->get_mpi_communicator()) == 0)
-                    {
-                      std::cout << "Warning: You are using the deprecated parameter <Use rotation matrix>. " << std::endl << "         and the new parameter <Output rotation as>." << std::endl << "         Please only use the new parameter <Output rotation as>." << std::endl;
-                    }
-                }
-              // set output format to desired output by the user
-              output_format = "euler angles";
+              // set rotation format to desired output by the user
+              rotation_format = RotationFormat::euler_angles;
             }
         }
         prm.leave_subsection ();

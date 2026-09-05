@@ -35,6 +35,21 @@ namespace aspect
     namespace Property
     {
 
+
+      /**
+       * @brief This determines whether the mean crystal orientation is output as
+       * a rotation matrix, euler angles, or a quaternion.
+       *
+       * full matrix: Returns 3 eigenvectors, i.e. one full rotation matrix for each axis.
+       * euler angles: Returns one set of 3 euler angles in the zxz convention (not equivalent to the Bunge convention).
+       * They represent a passive rotation matrix derived from the principal eigenvectors of each axis.
+       * quaternion: Returns a unit quaternion representing an active rotation matrix derived from the principal eigenvectors of each axis.
+       */
+      enum class RotationFormat
+      {
+        full_matrix, euler_angles, quaternion
+      };
+
       /**
        * Computes the Bingham average of the CPO particle properties.
        * See https://courses.eas.ualberta.ca/eas421/lecturepages/orientation.html for more info.
@@ -64,11 +79,11 @@ namespace aspect
        *                                          data_position + 31,
        * 12 eigenvalues of a axis of enstatite -> 3 (dim) doubles, starts at:
        *                                          data_position + 34,
-       * If "Output rotation as" is set to "euler angles" in the parameter file, the output number
+       * If "Rotation format" is set to "euler angles" in the parameter file, the output number
        * 1, 3, 5 will save the phi1, theta, phi2 or olivine and 7, 8, 9 will be the same
        * for enstatite, and they will be 1 (dim) double instead of 3 (dim) doubles.
        *
-       * If "Output rotation as" is set to "quaternion" in the parameter file, the layout of the data vector per particle is the following
+       * If "Rotation format" is set to "quaternion" in the parameter file, the layout of the data vector per particle is the following
        * 1 quaternion scalar part of olivine  -> 1 double, starts at:
        *                                         data_position + 1,
        * 2 quaternion vector part of olivine  -> 3 (dim) doubles, starts at:
@@ -234,13 +249,11 @@ namespace aspect
           unsigned int n_samples;
 
           /**
-           * This variable determines whether the orientations are represented by a rotation matrix, Euler angles or a quaternion
-           *
+           * What format to output the eigenvectors/rotation of the bingham average
            * This variable is read from the parameter file through a parameter
-           * called 'Output rotation as'.
+           * called 'Rotation format'.
            */
-          std::string output_format;
-
+          RotationFormat rotation_format;
       };
     }
   }

@@ -3459,9 +3459,9 @@ namespace aspect
         const double z = quaternion[3];
 
         Tensor<2,3> rotation_matrix;
-        rotation_matrix[0][0] = Utilities::fixed_power<2>(x)- Utilities::fixed_power<2>(y) - Utilities::fixed_power<2>(z) + Utilities::fixed_power<2>(w);
-        rotation_matrix[1][1] = Utilities::fixed_power<2>(y)- Utilities::fixed_power<2>(z) - Utilities::fixed_power<2>(x) + Utilities::fixed_power<2>(w);
-        rotation_matrix[2][2] = Utilities::fixed_power<2>(z)- Utilities::fixed_power<2>(x) - Utilities::fixed_power<2>(y) + Utilities::fixed_power<2>(w);
+        rotation_matrix[0][0] = x*x - y*y - z*z + w*w;
+        rotation_matrix[1][1] = y*y - z*z - x*x + w*w;
+        rotation_matrix[2][2] = z*z - x*x - y*y + w*w;
 
         rotation_matrix[0][1] = 2*(x*y - z*w);
         rotation_matrix[0][2] = 2*(x*z + y*w);

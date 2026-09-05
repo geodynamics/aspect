@@ -1151,7 +1151,7 @@ namespace aspect
 
           prm.declare_entry ("CPO derivatives algorithm", "Spin tensor",
                              Patterns::List(Patterns::Anything()),
-                             "Options: Spin tensor");
+                             "Options: Spin tensor, D-Rex 2004");
 
           prm.enter_subsection("Initial grains");
           {
