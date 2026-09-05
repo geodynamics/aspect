@@ -1,0 +1,401 @@
+#### This is an adaptation of the Continental Extension Cookbook
+#### using new plugins for the initial composition, temperature, 
+#### topography and initial strain of an incipient continental rift system.
+#### Additionally, we use FastScape and traction boundary condition.
+
+####  Global parameters
+set Additional shared libraries            = $ASPECT_SOURCE_DIR/cookbooks/initial_conditions_continental_rift/libinitial_conditions_continental_rift.debug.so
+set Dimension                              = 2
+set Start time                             = 0
+set End time                               = 5e6
+set Use years in output instead of seconds = true
+set Nonlinear solver scheme                = single Advection, iterated Stokes
+set Nonlinear solver tolerance             = 1e-5
+set Max nonlinear iterations               = 2
+set CFL number                             = 0.5
+set Maximum time step                      = 5000 
+set Output directory                       = output-initial_conditions_continental_rift_initial_topography_with_craton
+set Pressure normalization                 = no
+set Adiabatic surface temperature          = 1573
+
+#### Parameters describing the model
+
+# Governing equations
+subsection Formulation
+  set Formulation = Boussinesq approximation
+end
+
+# Model geometry (400x200 km, 40 km spacing)
+subsection Geometry model
+  set Model name = box
+
+  subsection Box
+    set X repetitions = 10
+    set Y repetitions = 5
+    set X extent      = 400e3
+    set Y extent      = 200e3
+  end
+
+  # With respect to the reference lithosphere,
+  # move the surface of perturbed lithosphere
+  # to obtain isostasy.
+  subsection Initial topography model
+    set Model name = lithosphere with rift
+  end
+
+end
+
+
+# Globally refine the mesh to 5 km spacing, and then
+# adaptively refine the mesh to 2.5 km spacing for the crustal layers.
+# These values ensure areas
+# undergoing brittle deformation are in the high-resolution
+# region.
+subsection Mesh refinement
+  set Initial adaptive refinement        = 1
+  set Initial global refinement          = 3
+  set Time steps between mesh refinement = 0
+  set Strategy = minimum refinement function
+
+  subsection Minimum refinement function
+    set Coordinate system   = cartesian
+    set Variable names      = x,y
+    set Function expression = if ( y>= 155e3, 4, 3)
+  end
+end
+
+
+subsection Solver parameters
+  subsection Stokes solver parameters
+    set Number of cheap Stokes solver steps = 0
+  end
+end
+
+# Use FastScape to deform the mesh.
+subsection Mesh deformation
+  set Additional tangential mesh velocity boundary indicators = right
+  set Mesh deformation boundary indicators = top: fastscape
+
+  subsection Free surface
+    set Free surface stabilization theta = 1
+  end
+  
+  subsection Fastscape
+    set Vertical exaggeration = -1
+    set Maximum timestep length = 500
+    set Number of fastscape timesteps per aspect timestep = 10
+    set Maximum surface refinement level = 4
+    set Surface refinement difference = 0
+    set Additional fastscape refinement = 0
+    set Use ghost nodes = true
+    set Y extent in 2d = 25e3
+    set Uplift and advect with fastscape = true
+
+    subsection Boundary conditions
+      set Front = 1
+      set Right = 1
+      set Back  = 1
+      set Left  = 1
+    end
+
+    subsection Erosional parameters
+      set Drainage area exponent = 0.4              #m
+      set Slope exponent = 1                        #n
+      set Multi-direction slope exponent = -1        #p
+
+      set Bedrock diffusivity = 5e-3          #kd
+      set Bedrock river incision rate = 1e-5        #kf
+      set Bedrock deposition coefficient = 1       #G
+
+      set Sediment diffusivity = -1
+      set Sediment river incision rate = -1
+      set Sediment deposition coefficient = 1        #G
+    end
+
+    set Use marine component = true
+    set Sediment rain rates = 1e-4 # m/yr
+    set Sediment rain time intervals =
+
+    # No difference between sand and silt
+    subsection Marine parameters
+      set Sea level = -200
+      set Sand porosity = 0.
+      set Silt porosity = 0.
+      set Sand e-folding depth = 3000 # m
+      set Silt e-folding depth = 3000 # m
+
+      set Sand-silt ratio = 0.5
+      set Depth averaging thickness = 1e3 # m
+      set Sand transport coefficient = 150 # m2/yr
+      set Silt transport coefficient = 150 # m2/yr
+    end
+  end
+end
+
+# Velocity on boundaries characterized by functions
+# The outward velocity (x-direction) on the left and right walls is 0.25 cm/year
+# The vertical velocity at the base is 0.25 cm/year (balances outflow on sides)
+# Velocity components parallel to the base (x-velocity) and side walls (y-velocity)
+# are unconstrained (i.e. 'free').
+subsection Boundary velocity model
+  set Prescribed velocity boundary indicators = left: function, right:function
+
+  subsection Function
+    set Variable names      = x,y
+    set Function constants  = v=0.0025, w=200.e3, d=100.e3
+    set Function expression = if (x < w/2 , -v, v) ; 0
+  end
+end
+
+subsection Boundary traction model
+  set Prescribed traction boundary indicators = bottom: initial lithostatic pressure
+  subsection Initial lithostatic pressure
+    set Representative point = 10000,0
+  end
+end
+
+# Number and names of compositional fields
+# The five compositional fields represent:
+# 1. The plastic strain that accumualates over time, with the initial plastic strain removed
+# 2. The plastic strain that accumulated over time, including the initial plastic strain values
+# 3. The upper crust
+# 4. The lower crust
+# 5. The mantle lithosphere
+subsection Compositional fields
+  set Number of fields = 5
+  set Names of fields = noninitial_plastic_strain, plastic_strain, upper, lower, mantle_L
+end
+
+# Initial values of different compositional fields
+# The upper crust (20 km thick), lower crust (15 km thick)
+# and mantle (85 km thick) are continuous horizontal layers
+# of constant thickness, except in a center area.
+# In the centre of the domain, the upper crust is thickened to 25 km,
+# while the mantle lithosphere is thinned. The transition from this
+# perturbed center to the reference thicknesses of the lithospheric
+# layers is smoothened using a Gaussian. The combined effect
+# is a hotter, weaker centre area that localizes deformation.
+# An additional thicker/stronger area is added on the right of the domain
+# to represent cratonic lithosphere. The transition in layer thicknesses
+# uses a hyperbolic tangent.
+# The non initial plastic strain is set
+# to 0 and the initial plastic strain is randomized between
+# 0.5 and 1.5 in an area around the rift axis.
+subsection Initial composition model
+  set List of model names = lithosphere with rift, rift box initial plastic strain, function
+
+  subsection Lithosphere with rift
+    # The reference layer thicknesses of the upper crust, lower crust and mantle lithosphere.
+    set Layer thicknesses                              = 20e3, 15e3, 85e3
+    # How wide the weak zone will be
+    set Standard deviation of Gaussian rift geometry   = 50e3
+    # The maximum thinning/thickening of the lithospheric layers
+    set Amplitude of Gaussian rift geometry            = -0.25, 0, 0.17647
+    # Where the rift axis should be. In this case in the centre of the domain.
+    # In 3D simulations, line segments consisting of two coordinates
+    # should be provided.
+    set Rift axis line segments                        = 200e3
+
+    # The thicknesses of the lithospheric layer within a polygon
+    set Lithospheric polygon layer thicknesses         = 20e3, 15e3 , 115.e3
+    # The segments making up the polygon
+    set Lithospheric polygons                          = 350e3 > 3000e3
+    # The half width of the transition from polygon to reference lithosphere
+    set Half width of polygon smoothing                = 10e3
+  end
+
+  # Inherited plastic strain
+  subsection Rift box initial plastic strain
+    # We focus initial strain around the rift axis
+    set Rift axis line segments                                         = 200e3
+    # The strain values follow a Gaussian distribution around the rift axis
+    # The maximum magnitude of the strain
+    set Maximum amplitude of Gaussian noise amplitude distribution      = 0.250000
+    # The sigma width of the area of strain
+    set Standard deviation of Gaussian noise amplitude distribution     = 50e3
+    # The number with which to start of the random number generator
+    set Random number generator seed                                    = 2
+    # Using a hyperbolic tangent centred around this value,
+    # we smooth out the strain with increasing depth.
+    set Depth around which Gaussian noise is smoothed out               = 50e3
+    # The halfwidth of the hyperbolic tangent.
+    set Halfwidth with which Gaussian noise is smoothed out in depth    = 10e3
+  end
+
+  subsection Function
+    set Variable names = x,y
+    set Function expression = 0; \
+                              0; \
+                              0; \
+                              0; \
+                              0
+  end
+end
+
+# Composition: fixed on bottom (inflow boundary), free on sides and top
+subsection Boundary composition model
+  set Fixed composition boundary indicators = bottom
+  set List of model names = function
+  subsection Function
+    set Function expression = 0; \
+                              0; \
+                              0; \
+                              0; \
+                              0
+  end
+end
+
+# Temperature boundary conditions
+# Top and bottom (fixed) temperatures are consistent with the initial temperature field.
+# Because we use a free surface, the height/depth of the surface can change over time,
+# meaning that if the initial temperature plugin is asked for the temperature
+# at the surface, this temperature could also vary over time. Therefore
+# we also use the box plugin and take the minimum of the initial temperature and
+# the box plugins, thus maintaining a temperature of 293 K.
+subsection Boundary temperature model
+  set Fixed temperature boundary indicators   = bottom, top
+  set List of model names = initial temperature, box
+  set List of model operators = add, minimum
+  subsection Box
+    set Top temperature    =  293
+    # Unrealistically high, so that it is always taken from initial temperature plugin
+    set Bottom temperature = 5000
+  end
+end
+
+# Initial temperature field
+# The initial temperature consists of a typical continental geotherm
+# based on equations Turcotte and Schubert Ch. 4.6.
+# Below the lithosphere-asthenosphere boundary (LAB, defined initially by the
+# bottom of the mantle lithsphere and the 1623 K isotherm,
+# we prescribe an adiabatic temperature increase.
+subsection Initial temperature model
+  set List of model names = adiabatic, lithosphere with rift
+  set List of model operators = add, replace if valid
+  subsection Lithosphere with rift
+    set LAB isotherm temperature = 1573.
+    set Surface temperature = 293.
+  end
+  subsection Adiabatic
+    # A reference profile of the compositional fields
+    # where x represents depth
+    subsection Function
+    # noninitial_plastic_strain, plastic_strain, upper, lower, mantle_L
+    set Function expression           = 0; \
+                                        0; \
+                                        if(x<20e3,1,0); \
+                                        if(x>=20e3&x<35e3,1,0); \
+                                        if(x>=35e3&x<120e3,1,0)
+    end
+  end
+
+end
+
+# Constant internal heat production values (W/m^3) for background material
+# and compositional fields.
+subsection Heating model
+  set List of model names = compositional heating
+
+  subsection Compositional heating
+    set Use compositional field for heat production averaging = 0, 0, 0, 1, 1, 1
+    set Compositional heating values = 0.0, 0.0, 0.0, 1.0e-6, 0.25e-6, 0.
+  end
+end
+
+# Material model
+# Rheology: Non-linear viscous flow and Drucker Prager Plasticity
+# Values for most rheological parameters are specified for a background material and
+# each compositional field.  Values for viscous deformation are based on dislocation
+# creep flow-laws, with distinct values for the upper crust (wet quartzite), lower
+# crust (wet anorthite) and mantle (dry olivine).  Table 1 of Naliboff and Buiter (2015),
+# Earth Planet. Sci. Lett., v.421, p. 58-67 contains values for each of these flow laws.
+subsection Material model
+  set Model name = visco plastic
+
+  subsection Visco Plastic
+    # Reference temperature and viscosity
+    set Reference temperature = 273
+
+    # The minimum strain-rate helps limit large viscosities values that arise
+    # as the strain-rate approaches zero.
+    # The reference strain-rate is used on the first non-linear iteration
+    # of the first time step when the velocity has not been determined yet.
+    set Minimum strain rate = 1.e-20
+    set Reference strain rate = 1.e-16
+
+    # Limit the viscosity with minimum and maximum values
+    set Minimum viscosity = 1e18
+    set Maximum viscosity = 1e26
+
+    # Thermal diffusivity is adjusted to match thermal conductivities
+    # assumed in assigning the initial geotherm
+    set Define thermal conductivities = true
+    set Thermal conductivities        = 2.5
+    set Heat capacities               = 750.
+
+    # Density values of 1 are assigned to "strain" fields, which are not taken into
+    # account when computing material properties.
+    set Densities                     = 3300, 1.0, 1.0, 2700,  2900, 3200
+    set Thermal expansivities         = 2e-5
+
+    # Harmonic viscosity averaging
+    set Viscosity averaging scheme = harmonic
+
+    # Choose to have the viscosity (pre-yield) follow a dislocation
+    # diffusion or composite flow law.  Here, dislocation is selected
+    # so no need to specify diffusion creep parameters below, which are
+    # only used if "diffusion" or "composite" option is selected.
+    set Viscous flow law = dislocation
+
+    # Dislocation creep parameters for
+    # 1. Background material/mantle (dry olivine)
+    #    Hirth & Kohlstedt (2004),  Geophys. Monogr. Am. Geophys. Soc., v.138, p.83-105.
+    #    "Rheology of the upper mantle and the mantle wedge:a view from the experimentalists"
+    # 2. Upper crust (wet quartzite)
+    #    Rutter & Brodie (2004), J. Struct. Geol., v.26, p.2011-2023.
+    #    "Experimental grain size-sensitive flow of hot-pressed Brazilian quartz aggregates"
+    # 3. Lower crust and weak seed (wet anorthite)
+    #    Rybacki et al. (2006), J. Geophys. Res., v.111(B3).
+    #    "Influence of water fugacity and activation volume on the flow properties of fine-grained
+    #    anorthite aggregates"
+    # Note that the viscous pre-factors below are scaled to plane strain from unixial strain experiments.
+    # For ease of identification, fields tracking strain are assigned prefactors of 1e-50
+    set Prefactors for dislocation creep          = 6.52e-16, 1.00e-50, 1.00e-50, 8.57e-28, 7.13e-18, 6.52e-16
+    set Stress exponents for dislocation creep    =      3.5,      1.0,      1.0,      4.0,      3.0,      3.5
+    set Activation energies for dislocation creep =   530.e3,      0.0,      0.0,   223.e3,   345.e3,   530.e3
+    set Activation volumes for dislocation creep  =   18.e-6,      0.0,      0.0,      0.0,      0.0,   18.e-6
+
+    # Plasticity parameters
+    set Angles of internal friction = 30
+    set Cohesions                   = 20.e6
+
+    # The parameters below weaken the friction and cohesion by a
+    # a factor of 4 between plastic strain values of 0.5 and 1.5.
+    set Strain weakening mechanism                   = plastic weakening with plastic strain only
+    set Start plasticity strain weakening intervals  = 0.5
+    set End plasticity strain weakening intervals    = 1.5
+    set Cohesion strain weakening factors            = 0.25
+    set Friction strain weakening factors            = 0.25
+  end
+end
+
+# Gravity model
+subsection Gravity model
+  set Model name = vertical
+
+  subsection Vertical
+    set Magnitude = 9.81
+  end
+end
+
+# Post processing
+subsection Postprocess
+  set List of postprocessors = composition statistics, temperature statistics, topography, velocity statistics, visualization
+
+  subsection Visualization
+    set List of output variables = density, named additional outputs, strain rate, viscosity
+    set Output format                 = vtu
+    set Time between graphical output = 100.e3
+    set Interpolate output            = true
+  end
+end
