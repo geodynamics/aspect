@@ -132,6 +132,16 @@ namespace aspect
         double height_above_reference_surface(const Point<dim> &position) const = 0;
 
         /**
+         * Return the height of the given position relative to the top
+         * boundary of the undeformed reference mesh. For most geometry
+         * models this is identical to height_above_reference_surface().
+         * Geometry models that create a coarse mesh whose top boundary is
+         * already perturbed should override this function.
+         */
+        virtual
+        double height_above_reference_mesh_surface(const Point<dim> &position) const;
+
+        /**
          * Converts a Cartesian Point into another coordinate system and returns it
          * as a NaturalCoordinate.
          */
