@@ -41,6 +41,7 @@ jobs:
             build-with-fastscape: "OFF"
             result-file: "changes-test-results-9.6.diff"
             container-options: '--user 0 --name container'
+            coverage: ""
             use-tpetra: "OFF"
           - image: "geodynamics/aspect-tester:jammy-dealii-9.7-v4"
             run-tests: "ON"
@@ -49,6 +50,7 @@ jobs:
             build-with-fastscape: "OFF"
             result-file: "changes-test-results-9.7.diff"
             container-options: '--user 0 --name container'
+            coverage: ""
             use-tpetra: "OFF"
           - image: "geodynamics/aspect-tester:jammy-dealii-master"
             run-tests: "ON"
@@ -57,6 +59,7 @@ jobs:
             build-with-fastscape: "ON"
             result-file: "changes-test-results-master.diff"
             container-options: '--user 0 --name container'
+            coverage: "--coverage"
             use-tpetra: "OFF"
           - image: "geodynamics/aspect-tester:jammy-dealii-master"
             run-tests: "ON"
@@ -65,6 +68,7 @@ jobs:
             build-with-fastscape: "OFF"
             result-file: "changes-test-results-master-tpetra.diff"
             container-options: '--user 0 --name container'
+            coverage: ""
             use-tpetra: "ON"
     container:
       image: ${{ matrix.image }}
@@ -87,7 +91,7 @@ jobs:
         cmake \
         -D CMAKE_BUILD_TYPE=Debug \
         -G 'Ninja' \
-        -D CMAKE_CXX_FLAGS='-Werror' \
+        -D CMAKE_CXX_FLAGS='-Werror ${{ matrix.coverage }}' \
         -D ASPECT_ADDITIONAL_CXX_FLAGS='-O3 -Wdeprecated-declarations' \
         -D ASPECT_TEST_GENERATOR='Ninja' \
         -D ASPECT_PRECOMPILE_HEADERS=ON \
@@ -138,3 +142,18 @@ jobs:
         else
           exit 0
         fi
+    - name: lcov
+      if: ${{ matrix.coverage != '' }}
+      run: |
+        cd build
+        pwd
+        lcov --capture --directory . --output-file coverage.info;
+        pwd
+        lcov --remove coverage.info '${{github.workspace}}/build/*' '${{github.workspace}}/include/*' '${{github.workspace}}/tests/*' '/usr/*' -o coverage_filtered.info
+    - name: Coveralls
+      if: ${{ matrix.coverage != '' }}
+      uses: coverallsapp/github-action@master
+      with:
+        parallel: true
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+        path-to-lcov: ${{github.workspace}}/build/coverage_filtered.info
