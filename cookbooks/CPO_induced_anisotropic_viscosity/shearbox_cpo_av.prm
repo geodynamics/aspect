@@ -182,7 +182,7 @@ subsection Particles
 
   subsection CPO Bingham Average
     set Random number seed = 200
-    set Use rotation matrix = false
+    set Rotation format = euler angles
   end
 end
 

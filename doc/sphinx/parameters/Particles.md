@@ -275,13 +275,25 @@ The following properties are available:
 **Documentation:** The seed used to generate random numbers. This will make sure that results are reproducible as long as the problem is run with the same amount of MPI processes. It is implemented as final seed = Random number seed + MPI Rank.
 ::::
 
+::::{dropdown} __Parameter:__ {ref}`Rotation format<parameters:Particles/CPO_20Bingham_20Average/Rotation_20format>`
+:name: parameters:Particles/CPO_20Bingham_20Average/Rotation_20format
+**Default value:** full matrix
+
+**Pattern:** [List of <[Anything]> of length 0...4294967295 (inclusive)]
+
+**Documentation:** Options: full matrix, euler angles, quaternion. This determines whether the orientations will be saved as: full matrix: returns 3 eigenvectors, i.e. one full rotation matrix for each axis; Euler angles: returns one set of 3 Euler angles in the zxz convention (not equivalent to the Bunge convention); they represent a passive rotation matrix derived from the principal eigenvectors of each axis; quaternion: returns a unit quaternion representing an active rotation matrix derived from the principal eigenvectors of each axis.
+::::
+
 ::::{dropdown} __Parameter:__ {ref}`Use rotation matrix<parameters:Particles/CPO_20Bingham_20Average/Use_20rotation_20matrix>`
 :name: parameters:Particles/CPO_20Bingham_20Average/Use_20rotation_20matrix
 **Default value:** true
 
 **Pattern:** [Bool]
 
-**Documentation:** This determines whether the orientations will be saved as rotation matrices or Euler angles. Setting it to fause means that the orientations will be saved as Euler angles.
+**Documentation:** This determines whether the orientations will be saved as rotation matrices or Euler angles. This is a deprecated parameter; please use <Rotation format> instead.
+Use rotation matrix = true will be mapped to Rotation format = full matrix.
+Use rotation matrix = false will be mapped to Rotation format = euler angles.
+
 ::::
 
 (parameters:Particles/Composition_20reaction)=
@@ -441,7 +453,7 @@ A typical example would be to set this runtime parameter to &lsquo;pi=3.14159265
 
 **Pattern:** [List of <[Anything]> of length 0...4294967295 (inclusive)]
 
-**Documentation:** Options: Spin tensor
+**Documentation:** Options: Spin tensor, D-Rex 2004
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Number of grains per particle<parameters:Particles/Crystal_20Preferred_20Orientation/Number_20of_20grains_20per_20particle>`

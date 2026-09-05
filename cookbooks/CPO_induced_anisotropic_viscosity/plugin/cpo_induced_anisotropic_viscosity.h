@@ -67,8 +67,8 @@ namespace aspect
          * These are arrays that store eigenvalues of the olivine textures in a, b, and c axis, and
          * the olivine texture represented by Euler angles. For more details, please refer to the
          * cpo_bingham_average particle property. To use the anisotropic viscosity plugin in this
-         * cookbook, the CPO Bingham Average particle property must be included and Use rotation matrix
-         * must be set to false. The resulting arrays are:
+         * cookbook, the CPO Bingham Average particle property must be included and Rotation format
+         * must be set to euler angles. The resulting arrays are:
          * cpo_bingham_avg_a = [phi, eigenvalue 1 for a-axis, eigenvalue 2 for a-axis, eigenvalue 3 for a-axis]
          * cpo_bingham_avg_b = [phi, eigenvalue 1 for b-axis, eigenvalue 2 for b-axis, eigenvalue 3 for b-axis]
          * cpo_bingham_avg_c = [phi, eigenvalue 1 for c-axis, eigenvalue 2 for c-axis, eigenvalue 3 for c-axis]

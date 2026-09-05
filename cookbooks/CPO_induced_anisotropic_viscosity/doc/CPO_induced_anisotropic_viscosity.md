@@ -52,9 +52,6 @@ A_{ij}=\frac{2}{3} \left[
 G+H & -H & -G & 0 & 0 & 0 \\
 -H & H+F & -F & 0 & 0 & 0 \\
 -G & -F & F+G & 0 & 0 & 0 \\
-G+H & -H & -G & 0 & 0 & 0 \\
--H & H+F & -F & 0 & 0 & 0 \\
--G & -F & F+G & 0 & 0 & 0 \\
 0 & 0 & 0 & L & 0 & 0 \\
 0 & 0 & 0 & 0 & M & 0 \\
 0 & 0 & 0 & 0 & 0 & N
@@ -164,9 +161,9 @@ In the isotropic case ($H_i=0.5$, $H_{i+3}=1.5$) we then have a flow law of the 
 ```{math}
 :label: eqn:isotropic_inverse_flow_law
 \begin{aligned}
-\tau_{ij} &= \eta(\dot{\varepsilon}_I) \dot{\varepsilon}^d_{ij} \text{ ,}
-\eta(\dot{\varepsilon}_I) &= \gamma^{-1/n}\dot{\epsilon}_I^{(1-n)/n}
-\left.\dot{\varepsilon}_I\right|_{\text{iso}} = \sqrt{\dot{\varepsilon}^d_{lm}\dot{\varepsilon}^d_{lm}}
+\tau_{ij} &= \eta(\dot{\varepsilon}_I) \dot{\varepsilon}^d_{ij} \text{ ,} \\
+\eta(\dot{\varepsilon}_I) &= \gamma^{-1/n}\dot{\epsilon}_I^{(1-n)/n} \\
+\left.\dot{\varepsilon}_I\right|_{\text{iso}} &= \sqrt{\dot{\varepsilon}^d_{lm}\dot{\varepsilon}^d_{lm}}
 \end{aligned}
 ```
 where ${\varepsilon}^d_{ij}$ is the deviatoric strain-rate.
@@ -188,7 +185,7 @@ Since the AV material model computes viscosity based on the evolving CPO stored 
 ```{literalinclude} cpo_particle_property.part.prm
 ```
 
-Note: These settings are similar to those used for simulations involving CPO alone. However, for the AV model, it is essential to set `Use rotation matrix = false` in the CPO Bingham Average subsection, so that the CPO is represented using Euler angles, as required.
+Note: These settings are similar to those used for simulations involving CPO alone. However, for the AV model, it is essential to set `Rotation format = euler angles` in the CPO Bingham Average subsection, so that the CPO is represented using Euler angles, as required.
 
 - **Compositional fields**: The eigenvalues and Euler angles of the CPO tensor are stored in compositional fields. This requires the following input file section:
 
