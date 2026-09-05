@@ -1,0 +1,7 @@
+New: The visco-plastic material model now provides the dominant deformation
+mechanism selected during rheology evaluation as a named additional output.
+The output contains categorical values for diffusion creep, dislocation creep,
+plastic yielding, Peierls creep, the maximum-viscosity limiter, grain-boundary
+sliding, and Frank-Kamenetskii rheology.
+<br>
+(Michael Pons, 2026/07/28)
