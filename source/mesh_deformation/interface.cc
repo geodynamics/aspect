@@ -39,6 +39,8 @@
 #include <deal.II/lac/sparsity_tools.h>
 #include <deal.II/lac/precondition.h>
 
+#include <deal.II/multigrid/mg_constrained_dofs.h>
+
 #include <deal.II/numerics/vector_tools.h>
 
 #include <limits>
@@ -753,12 +755,6 @@ namespace aspect
               model->compute_velocity_constraints_on_boundary(mesh_deformation_dof_handler,
                                                               current_plugin_constraints,
                                                               boundary_id_set);
-              if (this->is_stokes_matrix_free())
-                {
-                  mg_constrained_dofs.make_zero_boundary_constraints(mesh_deformation_dof_handler,
-                                                                     boundary_id_set);
-                }
-
               const IndexSet local_lines = current_plugin_constraints.get_local_lines();
               for (dealii::IndexSet::size_type local_line : local_lines)
                 {
@@ -847,8 +843,6 @@ namespace aspect
       AffineConstraints<double> plugin_constraints(mesh_vertex_constraints.get_local_lines());
 #endif
 
-      std::set<types::boundary_id> boundary_id_set;
-
       for (const auto &boundary_id_and_deformation_objects: mesh_deformation_objects)
         {
           for (const auto &deformation_object : boundary_id_and_deformation_objects.second)
@@ -865,9 +859,6 @@ namespace aspect
                 mesh_deformation_dof_handler,
                 boundary_id_and_deformation_objects.first,
                 current_plugin_constraints);
-
-              boundary_id_set.insert(boundary_id_and_deformation_objects.first);
-
 
               const IndexSet local_lines = current_plugin_constraints.get_local_lines();
               for (dealii::IndexSet::size_type local_line : local_lines)
@@ -889,11 +880,6 @@ namespace aspect
                     }
                 }
             }
-        }
-      if ((this->is_stokes_matrix_free()))
-        {
-          mg_constrained_dofs.make_zero_boundary_constraints(mesh_deformation_dof_handler,
-                                                             boundary_id_set);
         }
       mesh_velocity_constraints.merge(plugin_constraints,
                                       AffineConstraints<double>::left_object_wins);
@@ -1173,8 +1159,6 @@ namespace aspect
 
       SystemOperatorType laplace_operator;
 
-      MGLevelObject<SystemOperatorType> mg_matrices;
-
       typename MatrixFree<dim, double>::AdditionalData additional_data;
       additional_data.tasks_parallel_scheme =
         MatrixFree<dim, double>::AdditionalData::none;
@@ -1231,8 +1215,73 @@ namespace aspect
         }
       rhs.compress(VectorOperation::add);
 
-      // clear the level constraints of the previous time step
-      mg_constrained_dofs.clear_user_constraints();
+      mesh_velocity_constraints.set_zero(solution);
+
+      solve_mesh_deformation_local_smoothing<mesh_deformation_fe_degree>(laplace_operator,
+                                                                         rhs,
+                                                                         solution);
+
+      mesh_velocity_constraints.distribute(solution);
+      solution.update_ghost_values();
+
+      // copy solution:
+      LinearAlgebra::Vector solution_tmp;
+      solution_tmp.reinit(mesh_locally_owned, this->get_mpi_communicator());
+      internal::ChangeVectorTypes::copy(solution_tmp, solution);
+
+      // Update the mesh velocity vector
+      fs_mesh_velocity = solution_tmp;
+
+      // Update the mesh displacement vector
+      if (this->simulator_is_past_initialization())
+        {
+          // during the simulation, we add dt*solution
+          LinearAlgebra::Vector distributed_mesh_displacements(mesh_locally_owned, this->get_mpi_communicator());
+          distributed_mesh_displacements = mesh_displacements;
+          distributed_mesh_displacements.add(this->get_timestep(), solution_tmp);
+          mesh_displacements = distributed_mesh_displacements;
+        }
+      else
+        {
+          // In the initial step we apply 100% of the initial displacement
+          mesh_displacements = solution_tmp;
+        }
+
+      update_multilevel_deformation();
+    }
+
+
+
+    template <int dim>
+    template <unsigned int mesh_deformation_fe_degree,
+              typename SystemOperatorType>
+    void
+    MeshDeformationHandler<dim>::solve_mesh_deformation_local_smoothing(
+      const SystemOperatorType &laplace_operator,
+      const dealii::LinearAlgebra::distributed::Vector<double> &rhs,
+      dealii::LinearAlgebra::distributed::Vector<double> &solution)
+    {
+      MGConstrainedDoFs mg_constrained_dofs;
+      mg_constrained_dofs.initialize(mesh_deformation_dof_handler);
+
+      std::set<types::boundary_id> dirichlet_boundary_ids =
+        zero_mesh_deformation_boundary_indicators;
+      for (const auto &boundary_and_deformation_objects : mesh_deformation_objects)
+        if (!boundary_and_deformation_objects.second.empty())
+          dirichlet_boundary_ids.insert(boundary_and_deformation_objects.first);
+
+      mg_constrained_dofs.make_zero_boundary_constraints(mesh_deformation_dof_handler,
+                                                         dirichlet_boundary_ids);
+
+      using LevelOperatorType = dealii::MatrixFreeOperators::
+                                LaplaceOperator<dim,
+                                mesh_deformation_fe_degree,
+                                mesh_deformation_fe_degree + 1,
+                                dim>;
+
+      MGLevelObject<LevelOperatorType> mg_matrices;
+
+      const UpdateFlags update_flags(update_values | update_JxW_values | update_gradients);
 
       // setup GMG, following deal.II step-37:
       const unsigned int n_levels = this->get_triangulation().n_global_levels();
@@ -1245,10 +1294,6 @@ namespace aspect
                     ExcMessage("Periodic boundary constraints are not supported in computing mesh displacements using GMG."));
       }
 
-      mg_constrained_dofs.make_zero_boundary_constraints(mesh_deformation_dof_handler,
-                                                         zero_mesh_deformation_boundary_indicators);
-
-      mg_matrices.clear_elements();
       mg_matrices.resize(0, n_levels-1);
 
       for (unsigned int level = 0; level < n_levels; ++level)
@@ -1320,11 +1365,11 @@ namespace aspect
                                         level);
         }
 
-      MGTransferType<dim, double> mg_transfer(mg_constrained_dofs);
-      mg_transfer.build(mesh_deformation_dof_handler);
+      MGTransferType<dim, double> local_smoothing_mg_transfer(mg_constrained_dofs);
+      local_smoothing_mg_transfer.build(mesh_deformation_dof_handler);
 
       using SmootherType =
-        PreconditionChebyshev<SystemOperatorType, dealii::LinearAlgebra::distributed::Vector<double>>;
+        PreconditionChebyshev<LevelOperatorType, dealii::LinearAlgebra::distributed::Vector<double>>;
 
       mg::SmootherRelaxation<SmootherType, dealii::LinearAlgebra::distributed::Vector<double>> mg_smoother;
 
@@ -1366,18 +1411,18 @@ namespace aspect
 
       // set up the interface matrices
       mg::Matrix<dealii::LinearAlgebra::distributed::Vector<double>> mg_matrix(mg_matrices);
-      MGLevelObject<MatrixFreeOperators::MGInterfaceOperator<SystemOperatorType>> mg_interface_matrices;
+      MGLevelObject<MatrixFreeOperators::MGInterfaceOperator<LevelOperatorType>> mg_interface_matrices;
       mg_interface_matrices.resize(0, n_levels - 1);
       for (unsigned int level = 0; level < n_levels;
            ++level)
         mg_interface_matrices[level].initialize(mg_matrices[level]);
       mg::Matrix<dealii::LinearAlgebra::distributed::Vector<double>> mg_interface(mg_interface_matrices);
-      Multigrid<dealii::LinearAlgebra::distributed::Vector<double>> mg(mg_matrix, mg_coarse, mg_transfer, mg_smoother, mg_smoother);
+      Multigrid<dealii::LinearAlgebra::distributed::Vector<double>> mg(mg_matrix, mg_coarse, local_smoothing_mg_transfer, mg_smoother, mg_smoother);
       mg.set_edge_matrices(mg_interface, mg_interface);
       PreconditionMG<dim,
                      dealii::LinearAlgebra::distributed::Vector<double>,
                      MGTransferType<dim, double>>
-                     preconditioner(mesh_deformation_dof_handler, mg, mg_transfer);
+                     preconditioner(mesh_deformation_dof_handler, mg, local_smoothing_mg_transfer);
 
 
       // solve
@@ -1388,8 +1433,6 @@ namespace aspect
       SolverControl solver_control_mf(5 * rhs.size(),
                                       tolerance * rhs.l2_norm());
       SolverCG<dealii::LinearAlgebra::distributed::Vector<double>> cg(solver_control_mf);
-
-      mesh_velocity_constraints.set_zero(solution);
 
       try
         {
@@ -1409,33 +1452,6 @@ namespace aspect
                                                            this->get_mpi_communicator());
         }
 
-      mesh_velocity_constraints.distribute(solution);
-      solution.update_ghost_values();
-
-      // copy solution:
-      LinearAlgebra::Vector solution_tmp;
-      solution_tmp.reinit(mesh_locally_owned, this->get_mpi_communicator());
-      internal::ChangeVectorTypes::copy(solution_tmp, solution);
-
-      // Update the mesh velocity vector
-      fs_mesh_velocity = solution_tmp;
-
-      // Update the mesh displacement vector
-      if (this->simulator_is_past_initialization())
-        {
-          // during the simulation, we add dt*solution
-          LinearAlgebra::Vector distributed_mesh_displacements(mesh_locally_owned, this->get_mpi_communicator());
-          distributed_mesh_displacements = mesh_displacements;
-          distributed_mesh_displacements.add(this->get_timestep(), solution_tmp);
-          mesh_displacements = distributed_mesh_displacements;
-        }
-      else
-        {
-          // In the initial step we apply 100% of the initial displacement
-          mesh_displacements = solution_tmp;
-        }
-
-      update_multilevel_deformation();
       check_mesh_deformation ();
     }
 
@@ -1605,8 +1621,6 @@ namespace aspect
         {
           mesh_deformation_dof_handler.distribute_mg_dofs();
 
-          mg_constrained_dofs.initialize(mesh_deformation_dof_handler);
-
           const unsigned int n_levels = this->get_triangulation().n_global_levels();
 
           level_displacements.resize(0, n_levels-1);
@@ -1643,7 +1657,7 @@ namespace aspect
               level);
           });
 
-          mg_transfer.build(mesh_deformation_dof_handler);
+          local_smoothing_mg_transfer.build(mesh_deformation_dof_handler);
 
         }
 
@@ -1755,9 +1769,9 @@ namespace aspect
           level_displacements[level].zero_out_ghost_values();
         }
 
-      mg_transfer.interpolate_to_mg(mesh_deformation_dof_handler,
-                                    level_displacements,
-                                    displacements);
+      local_smoothing_mg_transfer.interpolate_to_mg(mesh_deformation_dof_handler,
+                                                    level_displacements,
+                                                    displacements);
 
       for (unsigned int level = 0; level < n_levels; ++level)
         {

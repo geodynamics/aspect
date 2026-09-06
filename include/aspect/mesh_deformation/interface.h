@@ -32,7 +32,6 @@
 #include <deal.II/base/index_set.h>
 #include <deal.II/base/mg_level_object.h>
 #include <deal.II/lac/la_parallel_vector.h>
-#include <deal.II/multigrid/mg_constrained_dofs.h>
 #include <deal.II/multigrid/mg_transfer_matrix_free.h>
 #include <deal.II/multigrid/mg_transfer_global_coarsening.templates.h>
 #include <aspect/simulator/assemblers/interface.h>
@@ -495,6 +494,17 @@ namespace aspect
         void check_mesh_deformation ();
 
         /**
+         * Solve the matrix-free mesh deformation system using a geometric
+         * multigrid preconditioner with local smoothing.
+         */
+        template <unsigned int mesh_deformation_fe_degree,
+                  typename SystemOperatorType>
+        void solve_mesh_deformation_local_smoothing(
+          const SystemOperatorType &laplace_operator,
+          const dealii::LinearAlgebra::distributed::Vector<double> &rhs,
+          dealii::LinearAlgebra::distributed::Vector<double> &solution);
+
+        /**
          * Set up the vector with initial displacements of the mesh
          * due to the initial topography, as supplied by the initial
          * topography plugin based on the surface coordinates of the
@@ -692,14 +702,10 @@ namespace aspect
         MGLevelObject<dealii::LinearAlgebra::distributed::Vector<double>> level_displacements;
 
         /**
-         * Multigrid transfer operator for the displacements
+         * Multigrid transfer operator for the displacements used by the
+         * local-smoothing GMG implementation.
          */
-        MGTransferType<dim, double> mg_transfer;
-
-        /**
-         * Multigrid level constraints for the displacements
-         */
-        MGConstrainedDoFs mg_constrained_dofs;
+        MGTransferType<dim, double> local_smoothing_mg_transfer;
 
         friend class Simulator<dim>;
         friend class SimulatorAccess<dim>;
