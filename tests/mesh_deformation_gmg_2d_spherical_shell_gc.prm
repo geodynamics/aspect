@@ -1,0 +1,15 @@
+# Test global-coarsening GMG for mesh deformation in a spherical shell.
+#
+# This is the global-coarsening counterpart of
+# mesh_deformation_gmg_2d_spherical_shell.prm. It exercises the curved
+# spherical-shell mapping together with the ascii data mesh-deformation
+# plugin.
+# MPI: 2
+
+include $ASPECT_SOURCE_DIR/tests/mesh_deformation_gmg_2d_spherical_shell.prm
+
+subsection Solver parameters
+  subsection Stokes solver parameters
+    set Stokes GMG type = global coarsening
+  end
+end

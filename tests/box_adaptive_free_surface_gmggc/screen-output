@@ -1,0 +1,83 @@
+
+Loading shared library <./libbox_adaptive_free_surface_gmggc.debug.so>
+
+Number of active cells: 512 (on 4 levels)
+Number of degrees of freedom: 20,381 (14,739+729+4,913)
+
+Number of mesh deformation degrees of freedom: 14,739
+   Solving mesh displacement system... 0 iterations.
+*** Timestep 0:  t=0 seconds, dt=0 seconds
+   Solving mesh displacement system... 0 iterations.
+   Solving Stokes system (GMG-GC)... 
+     GMG coarse size A: 81, coarse size S: 8
+     GMG levels: 4
+     Viscosity range: 0.01 - 58.7981
+     Stokes solver (GMRES): 27+0 iterations.
+     Schur complement preconditioner: 28+0 iterations.
+     A block preconditioner: 28+0 iterations.
+
+   Postprocessing:
+     System matrix memory consumption:  0.13 MB
+     Writing graphical output:          output-box_adaptive_free_surface_gmggc/solution/solution-00000
+
+Number of active cells: 1,037 (on 5 levels)
+Number of degrees of freedom: 44,772 (32,388+1,588+10,796)
+
+Number of mesh deformation degrees of freedom: 32,388
+   Solving mesh displacement system... 0 iterations.
+*** Timestep 0:  t=0 seconds, dt=0 seconds
+   Solving mesh displacement system... 0 iterations.
+   Solving Stokes system (GMG-GC)... 
+     GMG coarse size A: 81, coarse size S: 8
+     GMG levels: 5
+     Viscosity range: 0.01 - 98.1794
+     Stokes solver (GMRES): 34+0 iterations.
+     Schur complement preconditioner: 35+0 iterations.
+     A block preconditioner: 35+0 iterations.
+
+   Postprocessing:
+     System matrix memory consumption:  0.28 MB
+     Writing graphical output:          output-box_adaptive_free_surface_gmggc/solution/solution-00001
+
+Number of active cells: 2,220 (on 6 levels)
+Number of degrees of freedom: 96,479 (69,849+3,347+23,283)
+
+Number of mesh deformation degrees of freedom: 69,849
+   Solving mesh displacement system... 0 iterations.
+*** Timestep 0:  t=0 seconds, dt=0 seconds
+   Solving mesh displacement system... 0 iterations.
+   Solving Stokes system (GMG-GC)... 
+     GMG coarse size A: 81, coarse size S: 8
+     GMG levels: 6
+     Viscosity range: 0.01 - 99.7721
+     Stokes solver (GMRES): 35+0 iterations.
+     Schur complement preconditioner: 36+0 iterations.
+     A block preconditioner: 36+0 iterations.
+
+   Postprocessing:
+     System matrix memory consumption:  0.58 MB
+     Writing graphical output:          output-box_adaptive_free_surface_gmggc/solution/solution-00002
+
+Number of active cells: 4,733 (on 7 levels)
+Number of degrees of freedom: 205,368 (148,737+7,052+49,579)
+
+Number of mesh deformation degrees of freedom: 148,737
+   Solving mesh displacement system... 0 iterations.
+*** Timestep 0:  t=0 seconds, dt=0 seconds
+   Solving mesh displacement system... 0 iterations.
+   Solving Stokes system (GMG-GC)... 
+     GMG coarse size A: 81, coarse size S: 8
+     GMG levels: 7
+     Viscosity range: 0.01 - 99.7721
+     Stokes solver (GMRES): 34+0 iterations.
+     Schur complement preconditioner: 35+0 iterations.
+     A block preconditioner: 35+0 iterations.
+
+   Postprocessing:
+     System matrix memory consumption:  1.22 MB
+     Writing graphical output:          output-box_adaptive_free_surface_gmggc/solution/solution-00003
+
+Termination requested by criterion: end time
+
+
+

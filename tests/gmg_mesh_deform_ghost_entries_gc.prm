@@ -1,0 +1,13 @@
+# Test global-coarsening GMG with mesh deformation on the viscoelastic
+# cylinder benchmark. This is the global-coarsening counterpart of
+# gmg_mesh_deform_ghost_entries.prm and retains its tangential mesh motion
+# and stress compositional fields.
+# MPI: 3
+
+include $ASPECT_SOURCE_DIR/tests/gmg_mesh_deform_ghost_entries.prm
+
+subsection Solver parameters
+  subsection Stokes solver parameters
+    set Stokes GMG type = global coarsening
+  end
+end

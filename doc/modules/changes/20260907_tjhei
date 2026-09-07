@@ -1,0 +1,4 @@
+New: Mesh deformation can now be used with the global-coarsening matrix-free
+Stokes solver (GMG-GC), including geometries with periodic boundaries.
+<br>
+(Timo Heister, 2026/09/07)
