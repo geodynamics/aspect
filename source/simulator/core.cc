@@ -1538,6 +1538,11 @@ namespace aspect
       pcout.get_stream().imbue(s);
     }
 
+    // Set up the multigrid hierarchy before the mesh deformation DoFs, so that
+    // the mesh deformation handler can use the global coarsening triangulations.
+    if (is_stokes_matrix_free())
+      dynamic_cast<StokesMatrixFreeHandler<dim>*>(stokes_solver.get())->setup_multigrid_hierarchy();
+
     // We need to set up the mesh deformation degrees of freedom first if mesh deformation
     // is active, since the mapping must be in place before applying boundary
     // conditions that rely on it (such as no flux BCs).

@@ -113,6 +113,12 @@ namespace aspect
       void setup_dofs() override;
 
       /**
+       * Local smoothing does not use a sequence of triangulations.
+       */
+      const std::vector<std::shared_ptr<const Triangulation<dim, dim>>> &
+      get_multigrid_triangulations() const override;
+
+      /**
        * Perform various tasks to update the linear system to solve
        * for. Note that we are not assembling a matrix (as this is a
        * matrix-free algorithm), but we are evaluating the material

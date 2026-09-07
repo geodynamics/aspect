@@ -113,6 +113,17 @@ namespace aspect
       void setup_dofs() override;
 
       /**
+       * Set up the triangulations used by the global coarsening hierarchy.
+       */
+      void setup_multigrid_hierarchy() override;
+
+      /**
+       * Return the triangulations used by the global coarsening hierarchy.
+       */
+      const std::vector<std::shared_ptr<const Triangulation<dim, dim>>> &
+      get_multigrid_triangulations() const override;
+
+      /**
        * Perform various tasks to update the linear system to solve
        * for. Note that we are not assembling a matrix (as this is a
        * matrix-free algorithm), but we are evaluating the material

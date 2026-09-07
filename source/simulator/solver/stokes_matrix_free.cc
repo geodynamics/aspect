@@ -27,6 +27,11 @@
 namespace aspect
 {
   template <int dim>
+  void
+  StokesMatrixFreeHandler<dim>::setup_multigrid_hierarchy()
+  {}
+
+  template <int dim>
   std::unique_ptr<StokesMatrixFreeHandler<dim>> create_matrix_free_solver(Simulator<dim> &simulator, const Parameters<dim> &parameters)
   {
     if (parameters.stokes_gmg_type == Parameters<dim>::StokesGMGType::local_smoothing)

@@ -47,6 +47,17 @@ namespace aspect
       virtual void setup_dofs()=0;
 
       /**
+       * Set up the triangulations used by the multigrid hierarchy.
+       */
+      virtual void setup_multigrid_hierarchy();
+
+      /**
+       * Return the triangulations used by the multigrid hierarchy.
+       */
+      virtual const std::vector<std::shared_ptr<const Triangulation<dim, dim>>> &
+      get_multigrid_triangulations() const = 0;
+
+      /**
        * Perform various tasks to update the linear system to solve
        * for. Note that we are not assembling a matrix (as this is a
        * matrix-free algorithm), but we are evaluating the material
