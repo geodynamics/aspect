@@ -130,7 +130,7 @@ namespace aspect
          */
         std::vector<double> depth_values;
         /**
-         *  This variable is read from the parameter file through a parameter called 'Viscosity list'.
+         * This variable is read from the parameter file through a parameter called 'Viscosity list'.
          */
         std::vector<double> viscosity_values;
 

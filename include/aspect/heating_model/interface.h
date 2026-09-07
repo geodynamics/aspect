@@ -159,9 +159,9 @@ namespace aspect
         create_additional_material_model_inputs(MaterialModel::MaterialModelInputs<dim> &inputs) const;
 
         /**
-        * Let the heating model specify which material model outputs it
-        * requires for computing the heating terms.
-        */
+         * Let the heating model specify which material model outputs it
+         * requires for computing the heating terms.
+         */
         virtual
         MaterialModel::MaterialProperties::Property
         get_required_properties() const;

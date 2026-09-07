@@ -121,31 +121,31 @@ namespace aspect
            */
           double min_strain_rate;
           /**
-           *  This variable is read from the parameter file through a parameter called 'Minimum viscosity'.
+           * This variable is read from the parameter file through a parameter called 'Minimum viscosity'.
            */
           double minimum_viscosity;
           /**
-           *  This variable is read from the parameter file through a parameter called 'Maximum viscosity'.
+           * This variable is read from the parameter file through a parameter called 'Maximum viscosity'.
            */
           double maximum_viscosity;
 
           /**
-           *  This variable is read from the parameter file through a parameter called 'Strain rate residual tolerance'.
+           * This variable is read from the parameter file through a parameter called 'Strain rate residual tolerance'.
            */
           double log_strain_rate_residual_threshold;
           /**
-           *  This variable is read from the parameter file through a parameter called 'Maximum strain rate ratio iterations'.
+           * This variable is read from the parameter file through a parameter called 'Maximum strain rate ratio iterations'.
            */
           unsigned int stress_max_iteration_number;
 
           /**
-           *  This variable is read from the parameter file through a parameter called 'Grain size'.
+           * This variable is read from the parameter file through a parameter called 'Grain size'.
            */
           double grain_size;
           unsigned int n_chemical_composition_fields;
 
           /**
-           *  This variable is read from the parameter file through a parameter called 'Viscosity averaging scheme'.
+           * This variable is read from the parameter file through a parameter called 'Viscosity averaging scheme'.
            */
           MaterialUtilities::CompositionalAveragingOperation viscosity_averaging;
 

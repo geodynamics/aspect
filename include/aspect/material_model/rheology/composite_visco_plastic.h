@@ -196,15 +196,15 @@ namespace aspect
            */
           bool use_diffusion_creep;
           /**
-           *  This variable is read from the parameter file through a parameter called 'Include dislocation creep in composite rheology'.
+           * This variable is read from the parameter file through a parameter called 'Include dislocation creep in composite rheology'.
            */
           bool use_dislocation_creep;
           /**
-           *  This variable is read from the parameter file through a parameter called 'Include Peierls creep in composite rheology'.
+           * This variable is read from the parameter file through a parameter called 'Include Peierls creep in composite rheology'.
            */
           bool use_peierls_creep;
           /**
-           *  This variable is read from the parameter file through a parameter called 'Include Drucker Prager plasticity in composite rheology'.
+           * This variable is read from the parameter file through a parameter called 'Include Drucker Prager plasticity in composite rheology'.
            */
           bool use_drucker_prager;
 

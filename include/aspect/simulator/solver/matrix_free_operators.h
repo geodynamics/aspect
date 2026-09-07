@@ -305,8 +305,8 @@ namespace aspect
 
 
     /**
-    * Operator for the B^T block.
-    */
+     * Operator for the B^T block.
+     */
     template <int dim, int degree_v, typename number>
     class BTBlockOperator
       : public MatrixFreeOperators::Base<dim, dealii::LinearAlgebra::distributed::BlockVector<number>>

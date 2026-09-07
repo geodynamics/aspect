@@ -131,11 +131,11 @@ namespace aspect
       private:
 
         /**
-         *  This variable is read from the parameter file through a parameter called 'Reference temperature'.
+         * This variable is read from the parameter file through a parameter called 'Reference temperature'.
          */
         double reference_T;
         /**
-         *  This variable is read from the parameter file through a parameter called 'Thermal conductivity'.
+         * This variable is read from the parameter file through a parameter called 'Thermal conductivity'.
          */
         double thermal_conductivities;
 
@@ -165,7 +165,7 @@ namespace aspect
          */
         double minimum_viscosity;
         /**
-         *  This variable is read from the parameter file through a parameter called 'Maximum viscosity'.
+         * This variable is read from the parameter file through a parameter called 'Maximum viscosity'.
          */
         double maximum_viscosity;
 

@@ -85,16 +85,16 @@ namespace aspect
     };
 
     /**
-    * Additional output fields for diffusion and dislocation viscosities.
-    */
+     * Additional output fields for diffusion and dislocation viscosities.
+     */
     template <int dim>
     class ViscosityAdditionalOutputs : public NamedAdditionalMaterialOutputs<dim>
     {
       public:
         /**
-        * Enumeration of viscosity properties that can be exposed through
-        * additional material model outputs.
-        */
+         * Enumeration of viscosity properties that can be exposed through
+         * additional material model outputs.
+         */
         enum class Property
         {
           diffusion_viscosity,
@@ -171,8 +171,8 @@ namespace aspect
       std::vector<double> dilation_rhs_terms;
 
       /**
-      * Diffusion viscosities for each composition.
-      */
+       * Diffusion viscosities for each composition.
+       */
       std::vector<double> diffusion_viscosities;
 
       /**
@@ -272,8 +272,8 @@ namespace aspect
                                     MaterialModel::MaterialModelOutputs<dim> &out,
                                     const IsostrainViscosities &isostrain_viscosities) const;
           /**
-          * Create additional outputs for diffusion and dislocation viscosities.
-          */
+           * Create additional outputs for diffusion and dislocation viscosities.
+           */
           void
           create_viscosity_outputs(MaterialModel::MaterialModelOutputs<dim> &out) const;
 
@@ -332,7 +332,7 @@ namespace aspect
            */
           std::vector<double> minimum_viscosity;
           /**
-           *  This variable is read from the parameter file through a parameter called 'Maximum viscosity'.
+           * This variable is read from the parameter file through a parameter called 'Maximum viscosity'.
            */
           std::vector<double> maximum_viscosity;
 
@@ -350,7 +350,7 @@ namespace aspect
             minimum_diffusion_dislocation
           };
           /**
-           *  This variable is read from the parameter file through a parameter called 'Viscous flow law'.
+           * This variable is read from the parameter file through a parameter called 'Viscous flow law'.
            */
           ViscosityScheme viscous_flow_law;
 
@@ -364,7 +364,7 @@ namespace aspect
             drucker_prager
           };
           /**
-           *  This variable is read from the parameter file through a parameter called 'Yield mechanism'.
+           * This variable is read from the parameter file through a parameter called 'Yield mechanism'.
            */
           YieldScheme yield_mechanism;
 
@@ -424,7 +424,7 @@ namespace aspect
           bool use_grain_boundary_sliding;
 
           /**
-            Object for computing grain boundary sliding viscosities.
+           * Object for computing grain boundary sliding viscosities.
            */
           std::unique_ptr<Rheology::GrainBoundarySliding<dim>> grain_boundary_sliding_rheology;
 

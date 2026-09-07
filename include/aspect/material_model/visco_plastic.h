@@ -242,7 +242,7 @@ namespace aspect
         std::unique_ptr<Rheology::ViscoPlastic<dim>> rheology;
 
         /**
-         *  This variable is read from the parameter file through a parameter called 'Thermal diffusivities'.
+         * This variable is read from the parameter file through a parameter called 'Thermal diffusivities'.
          */
         std::vector<double> thermal_diffusivities;
 
@@ -254,7 +254,7 @@ namespace aspect
         bool define_conductivities;
 
         /**
-         *  This variable is read from the parameter file through a parameter called 'Thermal conductivities'.
+         * This variable is read from the parameter file through a parameter called 'Thermal conductivities'.
          */
         std::vector<double> thermal_conductivities;
 

@@ -123,11 +123,11 @@ namespace aspect
       private:
 
         /**
-         *  This variable is read from the parameter file through a parameter called 'Angle of internal friction'.
+         * This variable is read from the parameter file through a parameter called 'Angle of internal friction'.
          */
         double angle_of_internal_friction;
         /**
-         *  This variable is read from the parameter file through a parameter called 'Cohesion'.
+         * This variable is read from the parameter file through a parameter called 'Cohesion'.
          */
         double cohesion;
 
@@ -155,7 +155,7 @@ namespace aspect
          */
         double multicomponent_max_iteration;
         /**
-         *  This variable is read from the parameter file through a parameter called 'Multicomponent equilibration tolerance'.
+         * This variable is read from the parameter file through a parameter called 'Multicomponent equilibration tolerance'.
          */
         double multicomponent_tolerance;
 
@@ -165,11 +165,11 @@ namespace aspect
          */
         double min_eta;
         /**
-         *  This variable is read from the parameter file through a parameter called 'Maximum viscosity'.
+         * This variable is read from the parameter file through a parameter called 'Maximum viscosity'.
          */
         double max_eta;
         /**
-         *  This variable is read from the parameter file through a parameter called 'Maximum lateral viscosity variation'.
+         * This variable is read from the parameter file through a parameter called 'Maximum lateral viscosity variation'.
          */
         double max_lateral_eta_variation;
 
@@ -198,11 +198,11 @@ namespace aspect
          */
         std::string data_directory;
         /**
-         *  This variable is read from the parameter file through a parameter called 'Material file name'.
+         * This variable is read from the parameter file through a parameter called 'Material file name'.
          */
         std::vector<std::string> material_file_names;
         /**
-         *  This variable is read from the parameter file through a parameter called 'Lateral viscosity file name'.
+         * This variable is read from the parameter file through a parameter called 'Lateral viscosity file name'.
          */
         std::string lateral_viscosity_file_name;
 

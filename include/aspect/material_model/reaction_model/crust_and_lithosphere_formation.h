@@ -34,23 +34,23 @@ namespace aspect
     {
 
       /**
-      * A simplified model to calculate the change in composition upon melting
-      * of average mantle as it approaches the surface to produce a basaltic crust
-      * and a harzburgitic lithosphere. The model assumes that the crust is
-      * generated at a constant depth, and that the lithosphere is generated
-      * below the crust at a constant depth. The reaction producing crust and
-      * lithosphere only occurs in material that is upwelling, but does not take
-      * into account the temperature of the upwelling material.
-      *
-      * @ingroup ReactionModel
-      */
+       * A simplified model to calculate the change in composition upon melting
+       * of average mantle as it approaches the surface to produce a basaltic crust
+       * and a harzburgitic lithosphere. The model assumes that the crust is
+       * generated at a constant depth, and that the lithosphere is generated
+       * below the crust at a constant depth. The reaction producing crust and
+       * lithosphere only occurs in material that is upwelling, but does not take
+       * into account the temperature of the upwelling material.
+       *
+       * @ingroup ReactionModel
+       */
       template <int dim>
       class CrustLithosphereFormation : public ::aspect::SimulatorAccess<dim>
       {
         public:
           /**
-          * Declare the parameters this function takes through input files.
-          */
+           * Declare the parameters this function takes through input files.
+           */
           static
           void
           declare_parameters (ParameterHandler &prm);
@@ -85,7 +85,7 @@ namespace aspect
           double crust_thickness;
 
           /**
-           *  This variable is read from the parameter file through a parameter called 'Lithosphere thickness'.
+           * This variable is read from the parameter file through a parameter called 'Lithosphere thickness'.
            */
           double lithosphere_thickness;
 
@@ -117,8 +117,8 @@ namespace aspect
           };
 
           /**
-          * Selected option to compute the reference profile for composition.
-          */
+           * Selected option to compute the reference profile for composition.
+           */
           HarzburgiteProfile harzburgite_profile;
 
           /**

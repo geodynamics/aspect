@@ -131,27 +131,27 @@ namespace aspect
            */
           std::vector<double> grain_growth_activation_energy;
           /**
-           *  This variable is read from the parameter file through a parameter called 'Grain growth activation volume'.
+           * This variable is read from the parameter file through a parameter called 'Grain growth activation volume'.
            */
           std::vector<double> grain_growth_activation_volume;
           /**
-           *  This variable is read from the parameter file through a parameter called 'Grain growth rate constant'.
+           * This variable is read from the parameter file through a parameter called 'Grain growth rate constant'.
            */
           std::vector<double> grain_growth_rate_constant;
           /**
-           *  This variable is read from the parameter file through a parameter called 'Grain growth exponent'.
+           * This variable is read from the parameter file through a parameter called 'Grain growth exponent'.
            */
           std::vector<double> grain_growth_exponent;
           /**
-           *  This variable is read from the parameter file through a parameter called 'Minimum grain size'.
+           * This variable is read from the parameter file through a parameter called 'Minimum grain size'.
            */
           double              minimum_grain_size;
           /**
-           *  This variable is read from the parameter file through a parameter called 'Reciprocal required strain'.
+           * This variable is read from the parameter file through a parameter called 'Reciprocal required strain'.
            */
           std::vector<double> reciprocal_required_strain;
           /**
-           *  This variable is read from the parameter file through a parameter called 'Recrystallized grain size'.
+           * This variable is read from the parameter file through a parameter called 'Recrystallized grain size'.
            */
           std::vector<double> recrystallized_grain_size;
 
@@ -161,11 +161,11 @@ namespace aspect
            */
           std::vector<double> grain_boundary_energy;
           /**
-           *  This variable is read from the parameter file through a parameter called 'Work fraction for boundary area change'.
+           * This variable is read from the parameter file through a parameter called 'Work fraction for boundary area change'.
            */
           std::vector<double> boundary_area_change_work_fraction;
           /**
-           *  This variable is read from the parameter file through a parameter called 'Geometric constant'.
+           * This variable is read from the parameter file through a parameter called 'Geometric constant'.
            */
           std::vector<double> geometric_constant;
 
@@ -245,11 +245,11 @@ namespace aspect
            */
           double grain_size_reduction_work_fraction_exponent;
           /**
-           *  This variable is read from the parameter file through a parameter called 'Minimum grain size reduction work fraction'.
+           * This variable is read from the parameter file through a parameter called 'Minimum grain size reduction work fraction'.
            */
           double minimum_grain_size_reduction_work_fraction;
           /**
-           *  This variable is read from the parameter file through a parameter called 'Maximum grain size reduction work fraction'.
+           * This variable is read from the parameter file through a parameter called 'Maximum grain size reduction work fraction'.
            */
           double maximum_grain_size_reduction_work_fraction;
           double temperature_minimum_partitioning_power;

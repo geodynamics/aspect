@@ -43,12 +43,12 @@ namespace aspect
   namespace PrescribedSolution
   {
     /**
-    * This plugin allows the user to prescribe solution and can be
-    * thought of as prescribing temperature, velocities, etc. during the model run, equivalent to the initial
-    * conditions plugin.
-    *
-    * @ingroup PrescribedSolution
-    */
+     * This plugin allows the user to prescribe solution and can be
+     * thought of as prescribing temperature, velocities, etc. during the model run, equivalent to the initial
+     * conditions plugin.
+     *
+     * @ingroup PrescribedSolution
+     */
     template <int dim>
     class Interface : public Plugins::InterfaceBase
     {
@@ -129,9 +129,9 @@ namespace aspect
         write_plugin_graph (std::ostream &output_stream);
 
         /**
-        * Declare the parameters of all known prescribed solution plugins, as
-        * well as the ones this class has itself.
-        */
+         * Declare the parameters of all known prescribed solution plugins, as
+         * well as the ones this class has itself.
+         */
         static
         void
         declare_parameters (ParameterHandler &prm);
@@ -157,12 +157,12 @@ namespace aspect
     get_valid_model_names_pattern ();
 
     /**
-    * Given a class name, a name, and a description for the parameter file
-    * for a prescribed solution model, register it with the functions
-    * that can declare their parameters and create these objects.
-    *
-    * @ingroup PrescribedSolution
-    */
+     * Given a class name, a name, and a description for the parameter file
+     * for a prescribed solution model, register it with the functions
+     * that can declare their parameters and create these objects.
+     *
+     * @ingroup PrescribedSolution
+     */
 #define ASPECT_REGISTER_PRESCRIBED_SOLUTION(classname,name,description) \
   template class classname<2>; \
   template class classname<3>; \

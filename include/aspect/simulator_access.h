@@ -1092,14 +1092,14 @@ namespace aspect
                                    const bool limit_to_top_faces = false) const;
 
       /**
-      * Eliminate the nullspace of the velocity in the given vector. Both
-      * vectors are expected to contain the current solution.
-      *
-      * @param solution The locally relevant vector for the whole
-      * finite element, this vector will be filled at the end.
-      * @param distributed_stokes_solution only contains velocity and pressure and
-      * only locally owned elements.
-      */
+       * Eliminate the nullspace of the velocity in the given vector. Both
+       * vectors are expected to contain the current solution.
+       *
+       * @param solution The locally relevant vector for the whole
+       * finite element, this vector will be filled at the end.
+       * @param distributed_stokes_solution only contains velocity and pressure and
+       * only locally owned elements.
+       */
       void remove_nullspace(LinearAlgebra::BlockVector &solution,
                             LinearAlgebra::BlockVector &distributed_stokes_solution) const;
 

@@ -187,12 +187,12 @@ namespace aspect
         private:
 
           /**
-           *  This variable is read from the parameter file through a parameter called 'Strain weakening mechanism'.
+           * This variable is read from the parameter file through a parameter called 'Strain weakening mechanism'.
            */
           WeakeningMechanism weakening_mechanism;
 
           /**
-           *  This variable is read from the parameter file through a parameter called 'Strain healing mechanism'.
+           * This variable is read from the parameter file through a parameter called 'Strain healing mechanism'.
            */
           HealingMechanism healing_mechanism;
 
@@ -260,15 +260,15 @@ namespace aspect
            */
           std::vector<double> viscous_strain_weakening_T0;
           /**
-           *  This variable is read from the parameter file through a parameter called 'Lower temperature for maximum strain weakening'.
+           * This variable is read from the parameter file through a parameter called 'Lower temperature for maximum strain weakening'.
            */
           std::vector<double> viscous_strain_weakening_T1;
           /**
-           *  This variable is read from the parameter file through a parameter called 'Upper temperature for maximum strain weakening'.
+           * This variable is read from the parameter file through a parameter called 'Upper temperature for maximum strain weakening'.
            */
           std::vector<double> viscous_strain_weakening_T2;
           /**
-           *  This variable is read from the parameter file through a parameter called 'Upper temperature for onset of strain weakening'.
+           * This variable is read from the parameter file through a parameter called 'Upper temperature for onset of strain weakening'.
            */
           std::vector<double> viscous_strain_weakening_T3;
 

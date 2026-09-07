@@ -290,8 +290,8 @@ namespace aspect
     using BlockSparseMatrix = dealii::LinearAlgebra::TpetraWrappers::BlockSparseMatrix<double>;
 #else
     /**
-    * Typedef for the vector type used.
-    */
+     * Typedef for the vector type used.
+     */
     using Vector = dealii::TrilinosWrappers::MPI::Vector;
 
     /**

@@ -35,11 +35,11 @@ namespace aspect
   namespace internal
   {
     /**
-      * This class is used in the implementation of the right preconditioner
-      * as an approximation for the inverse of the velocity (A) block.
-      * This operator can either just apply the preconditioner (AMG)
-      * or perform an inner CG / BiCGStab solve with the same preconditioner.
-      */
+     * This class is used in the implementation of the right preconditioner
+     * as an approximation for the inverse of the velocity (A) block.
+     * This operator can either just apply the preconditioner (AMG)
+     * or perform an inner CG / BiCGStab solve with the same preconditioner.
+     */
     template <class PreconditionerA, class VectorType, class ABlockType>
     class InverseVelocityBlock
     {
@@ -94,9 +94,9 @@ namespace aspect
 
 
     /**
-    * Implements the vmult for InverseVelocityBlock. This applies the action of A^{-1} by either
-    * performing a solve with A or using a preconditioner sweep.
-    */
+     * Implements the vmult for InverseVelocityBlock. This applies the action of A^{-1} by either
+     * performing a solve with A or using a preconditioner sweep.
+     */
     template <class PreconditionerA, class VectorType, class ABlockType>
     void InverseVelocityBlock<PreconditionerA,VectorType,ABlockType>::vmult(VectorType &dst,
                                                                             const VectorType &src) const

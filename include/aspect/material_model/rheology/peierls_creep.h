@@ -220,7 +220,7 @@ namespace aspect
             exact
           };
           /**
-           *  This variable is read from the parameter file through a parameter called 'Peierls creep flow law'.
+           * This variable is read from the parameter file through a parameter called 'Peierls creep flow law'.
            */
           PeierlsCreepScheme peierls_creep_flow_law;
 
@@ -276,7 +276,7 @@ namespace aspect
           std::vector<double> glide_parameters_q;
 
           /**
-           *  This variable is read from the parameter file through a parameter called 'Cutoff stresses for Peierls creep'.
+           * This variable is read from the parameter file through a parameter called 'Cutoff stresses for Peierls creep'.
            */
           std::vector<double> stress_cutoffs;
 
@@ -295,7 +295,7 @@ namespace aspect
            */
           double strain_rate_residual_threshold;
           /**
-           *  This variable is read from the parameter file through a parameter called 'Maximum Peierls strain rate iterations'.
+           * This variable is read from the parameter file through a parameter called 'Maximum Peierls strain rate iterations'.
            */
           unsigned int stress_max_iteration_number;
 

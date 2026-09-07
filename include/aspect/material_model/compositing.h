@@ -140,7 +140,7 @@ namespace aspect
 
     /**
      * Modify the Plugins::plugin_type_matches to account for the compositing material model
-    */
+     */
     template <typename TestType, int dim>
     inline
     bool
@@ -176,7 +176,7 @@ namespace aspect
 
     /**
      * Modify the Plugins::get_plugin_as_type to account for the compositing material model
-    */
+     */
     template <typename TestType, int dim>
     inline
     const TestType &

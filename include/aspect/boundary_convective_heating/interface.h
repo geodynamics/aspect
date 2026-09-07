@@ -220,10 +220,10 @@ namespace aspect
         std::set<types::boundary_id> convective_heating_boundary_indicators;
 
         /**
-        * Names of temperature plugins.
-        *
-        * This variable is read from the parameter file through a parameter called 'List of boundary temperature model names'.
-        */
+         * Names of temperature plugins.
+         *
+         * This variable is read from the parameter file through a parameter called 'List of boundary temperature model names'.
+         */
         std::vector<std::string> temperature_plugin_names;
 
         /**
@@ -246,12 +246,12 @@ namespace aspect
 
 
     /**
-    * Given a class name, a name, and a description for the parameter file
-    * for a boundary convective heating model, register it with the functions that
-    * can declare their parameters and create these objects.
-    *
-    * @ingroup BoundaryConvectiveHeating
-    */
+     * Given a class name, a name, and a description for the parameter file
+     * for a boundary convective heating model, register it with the functions that
+     * can declare their parameters and create these objects.
+     *
+     * @ingroup BoundaryConvectiveHeating
+     */
 #define ASPECT_REGISTER_BOUNDARY_CONVECTIVE_HEATING_MODEL(classname, name, description) \
   template class classname<2>; \
   template class classname<3>; \

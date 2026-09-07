@@ -52,9 +52,9 @@ namespace aspect
         InitialTemperature ();
 
         /**
-        * Store a shared pointer to the initial temperature manager so the
-        * plugin can safely access it after initialization.
-        */
+         * Store a shared pointer to the initial temperature manager so the
+         * plugin can safely access it after initialization.
+         */
         void initialize () override;
 
         /**
