@@ -1,21 +1,21 @@
 # Release Tasklist
 
 ## Leading up to a release
-- Send out an email about problems or outstanding patches
-- Go through the list of TODOs in the source code and see what can be done
-- Go through the list of issues marked as bugs (https://github.com/geodynamics/aspect/issues?q=is%3Aissue+is%3Aopen+label%3Abug) and see which have to be fixed
-- Go through the list of open pull requests and decide which ones have to go into the release, postpone all others
-- Check that the used deal.II version for the Docker container in [contrib/docker/docker/Dockerfile](https://github.com/geodynamics/aspect/blob/main/contrib/docker/docker/Dockerfile) and in the manual is appropriate for the release
-- Check that [README.md](https://github.com/geodynamics/aspect/blob/main/README.md) and https://aspect.geodynamics.org/ is up-to-date
+- [ ] Send out an email about problems or outstanding patches
+- [ ] Go through the list of TODOs in the source code and see what can be done
+- [ ] Go through the list of issues marked as bugs (https://github.com/geodynamics/aspect/issues?q=is%3Aissue+is%3Aopen+label%3Abug) and see which have to be fixed
+- [ ] Go through the list of open pull requests and decide which ones have to go into the release, postpone all others
+- [ ] Check that the used deal.II version for the Docker container in [contrib/docker/docker/Dockerfile](https://github.com/geodynamics/aspect/blob/main/contrib/docker/docker/Dockerfile) and in the manual is appropriate for the release
+- [ ] Check that [README.md](https://github.com/geodynamics/aspect/blob/main/README.md) and https://aspect.geodynamics.org/ is up-to-date
 and the links are working
-- Run (and be patient), if any cookbooks/benchmarks fail, find a fix or open an issue as broken:
+- [ ] Run (and be patient), if any cookbooks/benchmarks fail, find a fix or open an issue as broken:
 
   ```
   cd benchmarks && make -f check.mk BUILD=$BUILDDIR -j4
   cd cookbooks && make -f check.mk BUILD=$BUILDDIR -j4
   ```
 
-- Find and fix doxygen errors:
+- [ ] Find and fix doxygen errors:
 
   ```
   git checkout -b pre-release-tasks
@@ -23,7 +23,7 @@ and the links are working
   git commit -a -m "doxygen fixes"
   ```
 
-- Build doxygen and manual, check for missing labels and for warnings, fix if possible:
+- [ ] Build doxygen and manual, check for missing labels and for warnings, fix if possible:
 
   ```
   cd doc
@@ -33,14 +33,14 @@ and the links are working
   cd ../..
   ```
 
-- Check and fix doxygen documentation. some of the changes of the script will destroy intentional indentation. Go through the list of changes manually and decide which ones to include.
+- [ ] Check and fix doxygen documentation. some of the changes of the script will destroy intentional indentation. Go through the list of changes manually and decide which ones to include.
   ```
   find . -name "*.h" -not -wholename "*/doc/modules/*" -not -wholename "*/contrib/world_builder/*" -print | while read file;do $DEALSRCDIR/contrib/utilities/wrapcomments.py $file >temp;mv temp $file;done
   git add -p
   git checkout .
   ```
 
-- Fix formatting, copyright years:
+- [ ] Fix formatting, copyright years:
 
   ```
   ./contrib/utilities/indent
@@ -48,12 +48,12 @@ and the links are working
   git commit -a -m "doxygen formatting, update copyright years"
   ```
 
-- Make sure all CI workflows on the main branch pass: https://github.com/geodynamics/aspect/actions?query=branch%3Amain
+- [ ] Make sure all CI workflows on the main branch pass: https://github.com/geodynamics/aspect/actions?query=branch%3Amain
 
-- Create a pull request with the pre release tasks
+- [ ] Create a pull request with the pre release tasks
 
 ## Create a release pull-request
-- determine new version roughly following semantic versioning: http://semver.org/
+- [ ] Determine new version roughly following semantic versioning: http://semver.org/
   - format is X.Y.Z for a release, X.Y.Z-pre for the dev version or X.Y.Z-rcW for release candidates
   - backwards incompatible changes require incrementing X, adding features incrementing Y
 
@@ -68,7 +68,7 @@ and the links are working
   export DEALSRCDIR=$DEAL_II_DIR
   ```
 
-- create branch for main PR to update changes.h in doc/modules:
+- [ ] Create branch for main PR to update changes.h in doc/modules:
 
   ```
   git checkout -b post-release-$VER
@@ -77,7 +77,7 @@ and the links are working
   git commit -m "release task: update version and changes.h"
   ```
 
-- create a branch, bump version (note, make sure the PR above is included):
+- [ ] Create a branch, bump version (note, make sure the PR above is included):
 
   ```
   git checkout post-release-$VER && \
@@ -86,10 +86,10 @@ and the links are working
   git commit -m "release task: update version info"
   ```
 
-- compile aspect, make sure you have a symlink in the main directory for the next step
+- [ ] Compile aspect, make sure you have a symlink in the main directory for the next step
   - make sure the WorldBuilder is using the included version
 
-- update parameters, plugin graph, and documentation:
+- [ ] Update parameters, plugin graph, and documentation:
 
   ```
   cd doc && ./update_parameters.sh && ./update_plugin_graph.sh && cd sphinx && make html && cd ../.. && \
@@ -98,7 +98,7 @@ and the links are working
   git commit -m "release task: update manual"
   ```
 
-- Tag a release candidate (RC):
+- [ ] Tag a release candidate (RC):
 
   ```
   export TAG=$VER-rc1
@@ -107,7 +107,7 @@ and the links are working
   git tag -s v$TAG -m "version $TAG"
   ```
 
-- Tag the release:
+- [ ] Tag the release:
 
   ```
   export TAG=$VER
@@ -116,13 +116,13 @@ and the links are working
   git tag -s v$TAG -m "version $TAG"
   ```
 
-- create a tar file:
+- [ ] Create a tar file:
   ```
   export PREFIX=aspect-$TAG && rm -rf $PREFIX.tar.gz && \
   git archive --format=tar.gz --prefix=$PREFIX/ HEAD >$PREFIX.tar.gz
   ```
 
-- build pdf doc (temporary by building html one page and print to pdf until
+- [ ] Build pdf doc (temporary by building html one page and print to pdf until
   we fix the sphinx pdf):
   ```
   cd doc/sphinx && make singlehtml && cd ../..
@@ -130,7 +130,7 @@ and the links are working
   # print to pdf
   ```
 
-- final testing by extracting tarball, compiling, and running:
+- [ ] Final testing by extracting tarball, compiling, and running:
 
   ```
   tar xf $PREFIX.tar.gz
@@ -144,14 +144,14 @@ and the links are working
   ctest -j 8 -V
   ```
 
-- make public (branch and tag):
+- [ ] Make public (branch and tag):
 
   ```
   git push upstream aspect-$VERSHORT
   git push upstream v$TAG
   ```
 
-- sign:
+- [ ] Sign:
 
   ```
   gpg --detach-sign --armor aspect-$TAG.tar.gz
@@ -159,12 +159,14 @@ and the links are working
   sha1sum aspect-$TAG.tar.gz aspect-manual-$TAG.pdf >sha1sum-$TAG.txt
   ```
 
-- create a release on github, upload .tar.gz
-- update website (www branch):
+## Steps after the release
+
+- [ ] Create a release on GitHub, upload .tar.gz
+- [ ] Update website (www branch):
   - header.include: add link to changes
   - index.html: add news entry
   - cite.html: change to current version (2x)
-- create zenodo release for source code:
+- [ ] Create Zenodo release for source code:
   - https://zenodo.org/deposit?page=1&size=20
   - title: ASPECT v2.0.0
   - license: GPL 2
@@ -172,28 +174,28 @@ and the links are working
   - add to "Computational Infrastructure for Geodynamics" community
   - update Zenodo button on main readme (see badge button on the right of zenodo page)
   - doc/sphinx/references.bib: add new zenodo entry
-- add to github release:
+- [ ] Add to GitHub release:
     - Zenodo button
     - [![pdf manual](https://img.shields.io/badge/get-PDF-green.svg)](https://doi.org/10.6084/m9.figshare.4865333)
     - [![online manual](https://img.shields.io/badge/online-manual-red)](https://aspect-documentation.readthedocs.io/en/v2.5.0/)
-- create figshare DOI for manual (just upload a new version as the same entry)
+- [ ] Create Figshare DOI for manual (just upload a new version as the same entry)
   - update doc/sphinx/references.bib entry
-- update doc/sphinx/references.bib with src and manual doi
-- update aspect.geodynamics.org/cite.html and citing.html in www repo:
+- [ ] Update doc/sphinx/references.bib with source and manual DOIs
+- [ ] Update aspect.geodynamics.org/cite.html and citing.html in www repo:
   - add new version in citing.html, search for "<option"
   - doc/make_cite_html.py:
     - add new version, update doc/zenodo dois
   - run aspect/doc/ python3 make_cite_html.py add to www
-- update http://geodynamics.org/cig/software/aspect/:
+- [ ] Update http://geodynamics.org/cig/software/aspect/:
   - update current release number
   - create entry for the new release
   - update the list of contributors
 
-- update the spack installation package with the latest tarball,
+- [ ] Update the Spack installation package with the latest tarball,
   see https://github.com/spack/spack/pull/13830 for an example:
       spack checksum aspect
 
-- announce on
+- [ ] Announce on
   - cig-all@geodynamics.org
   - https://community.geodynamics.org/c/aspect
   - dealii@googlegroups.com
@@ -1031,6 +1033,7 @@ Wolfgang Bangerth, Timo Heister, and many other contributors.
 
 
 
+
 Announcement for 1.3 (May 18, 2015)
 -----------------------------------------
 We are pleased to announce the release of ASPECT 1.3. ASPECT is the Advanced
@@ -1204,5 +1207,3 @@ available here:
   http://aspect.dealii.org/doc/doxygen/changes_between_0_81_and_0_82.html
 
 Wolfgang Bangerth, Timo Heister, and many other contributors.
-
-
