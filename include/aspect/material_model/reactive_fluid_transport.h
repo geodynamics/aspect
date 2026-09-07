@@ -67,7 +67,7 @@ namespace aspect
          * @param porosity The volume fraction of the free fluid in the solid.
          * @param solid_density The density of the solid material.
          * @param fluid_density The density of the fluid material.
-         **/
+         */
         double compute_bulk_density (const double porosity,
                                      const double solid_density,
                                      const double fluid_density) const;
@@ -79,7 +79,7 @@ namespace aspect
          * @param volume_fraction The volume fraction of the material.
          * @param material_density The density of the material (corresponding to the volume fraction).
          * @param bulk_density The density of the bulk composition.
-         **/
+         */
         double compute_mass_fraction (const double volume_fraction,
                                       const double material_density,
                                       const double bulk_density) const;
@@ -162,11 +162,11 @@ namespace aspect
          */
         double reference_rho_f;
         /**
-         *  This variable is read from the parameter file through a parameter called 'Reference fluid viscosity'.
+         * This variable is read from the parameter file through a parameter called 'Reference fluid viscosity'.
          */
         double eta_f;
         /**
-         *  This variable is read from the parameter file through a parameter called 'Fluid compressibility'.
+         * This variable is read from the parameter file through a parameter called 'Fluid compressibility'.
          */
         double fluid_compressibility;
 
@@ -179,23 +179,23 @@ namespace aspect
          */
         double shear_to_bulk_viscosity_ratio;
         /**
-         *  This variable is read from the parameter file through a parameter called 'Minimum compaction viscosity'.
+         * This variable is read from the parameter file through a parameter called 'Minimum compaction viscosity'.
          */
         double min_compaction_viscosity;
         /**
-         *  This variable is read from the parameter file through a parameter called 'Maximum compaction viscosity'.
+         * This variable is read from the parameter file through a parameter called 'Maximum compaction viscosity'.
          */
         double max_compaction_viscosity;
         /**
-         *  This variable is read from the parameter file through a parameter called 'Reference permeability'.
+         * This variable is read from the parameter file through a parameter called 'Reference permeability'.
          */
         double reference_permeability;
         /**
-         *  This variable is read from the parameter file through a parameter called 'Exponential fluid weakening factor'.
+         * This variable is read from the parameter file through a parameter called 'Exponential fluid weakening factor'.
          */
         double alpha_phi;
         /**
-         *  This variable is read from the parameter file through a parameter called 'Reference temperature'.
+         * This variable is read from the parameter file through a parameter called 'Reference temperature'.
          */
         double reference_T;
 
@@ -266,7 +266,7 @@ namespace aspect
           katz2003
         };
         /**
-         *  This variable is read from the parameter file through a parameter called 'Fluid-solid reaction scheme'.
+         * This variable is read from the parameter file through a parameter called 'Fluid-solid reaction scheme'.
          */
         ReactionScheme fluid_solid_reaction_scheme;
     };

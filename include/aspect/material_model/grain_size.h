@@ -163,23 +163,23 @@ namespace aspect
 
       private:
         /**
-         *  This variable is read from the parameter file through a parameter called 'Reference density'.
+         * This variable is read from the parameter file through a parameter called 'Reference density'.
          */
         double reference_rho;
         /**
-         *  This variable is read from the parameter file through a parameter called 'Reference temperature'.
+         * This variable is read from the parameter file through a parameter called 'Reference temperature'.
          */
         double reference_T;
         /**
-         *  This variable is read from the parameter file through a parameter called 'Viscosity'.
+         * This variable is read from the parameter file through a parameter called 'Viscosity'.
          */
         double eta;
         /**
-         *  This variable is read from the parameter file through a parameter called 'Thermal expansion coefficient'.
+         * This variable is read from the parameter file through a parameter called 'Thermal expansion coefficient'.
          */
         double thermal_alpha;
         /**
-         *  This variable is read from the parameter file through a parameter called 'Reference specific heat'.
+         * This variable is read from the parameter file through a parameter called 'Reference specific heat'.
          */
         double reference_specific_heat;
 
@@ -202,43 +202,43 @@ namespace aspect
          */
         double dislocation_viscosity_iteration_threshold;
         /**
-         *  This variable is read from the parameter file through a parameter called 'Dislocation viscosity iteration number'.
+         * This variable is read from the parameter file through a parameter called 'Dislocation viscosity iteration number'.
          */
         unsigned int dislocation_viscosity_iteration_number;
         /**
-         *  This variable is read from the parameter file through a parameter called 'Dislocation creep exponent'.
+         * This variable is read from the parameter file through a parameter called 'Dislocation creep exponent'.
          */
         std::vector<double> dislocation_creep_exponent;
         /**
-         *  This variable is read from the parameter file through a parameter called 'Dislocation activation energy'.
+         * This variable is read from the parameter file through a parameter called 'Dislocation activation energy'.
          */
         std::vector<double> dislocation_activation_energy;
         /**
-         *  This variable is read from the parameter file through a parameter called 'Dislocation activation volume'.
+         * This variable is read from the parameter file through a parameter called 'Dislocation activation volume'.
          */
         std::vector<double> dislocation_activation_volume;
         /**
-         *  This variable is read from the parameter file through a parameter called 'Dislocation creep prefactor'.
+         * This variable is read from the parameter file through a parameter called 'Dislocation creep prefactor'.
          */
         std::vector<double> dislocation_creep_prefactor;
         /**
-         *  This variable is read from the parameter file through a parameter called 'Diffusion creep exponent'.
+         * This variable is read from the parameter file through a parameter called 'Diffusion creep exponent'.
          */
         std::vector<double> diffusion_creep_exponent;
         /**
-         *  This variable is read from the parameter file through a parameter called 'Diffusion activation energy'.
+         * This variable is read from the parameter file through a parameter called 'Diffusion activation energy'.
          */
         std::vector<double> diffusion_activation_energy;
         /**
-         *  This variable is read from the parameter file through a parameter called 'Diffusion activation volume'.
+         * This variable is read from the parameter file through a parameter called 'Diffusion activation volume'.
          */
         std::vector<double> diffusion_activation_volume;
         /**
-         *  This variable is read from the parameter file through a parameter called 'Diffusion creep prefactor'.
+         * This variable is read from the parameter file through a parameter called 'Diffusion creep prefactor'.
          */
         std::vector<double> diffusion_creep_prefactor;
         /**
-         *  This variable is read from the parameter file through a parameter called 'Diffusion creep grain size exponent'.
+         * This variable is read from the parameter file through a parameter called 'Diffusion creep grain size exponent'.
          */
         std::vector<double> diffusion_creep_grain_size_exponent;
 
@@ -250,35 +250,35 @@ namespace aspect
          */
         double max_temperature_dependence_of_eta;
         /**
-         *  This variable is read from the parameter file through a parameter called 'Minimum viscosity'.
+         * This variable is read from the parameter file through a parameter called 'Minimum viscosity'.
          */
         double min_eta;
         /**
-         *  This variable is read from the parameter file through a parameter called 'Maximum viscosity'.
+         * This variable is read from the parameter file through a parameter called 'Maximum viscosity'.
          */
         double max_eta;
         /**
-         *  This variable is read from the parameter file through a parameter called 'Minimum specific heat'.
+         * This variable is read from the parameter file through a parameter called 'Minimum specific heat'.
          */
         double min_specific_heat;
         /**
-         *  This variable is read from the parameter file through a parameter called 'Maximum specific heat'.
+         * This variable is read from the parameter file through a parameter called 'Maximum specific heat'.
          */
         double max_specific_heat;
         /**
-         *  This variable is read from the parameter file through a parameter called 'Minimum thermal expansivity'.
+         * This variable is read from the parameter file through a parameter called 'Minimum thermal expansivity'.
          */
         double min_thermal_expansivity;
         /**
-         *  This variable is read from the parameter file through a parameter called 'Maximum thermal expansivity'.
+         * This variable is read from the parameter file through a parameter called 'Maximum thermal expansivity'.
          */
         double max_thermal_expansivity;
         /**
-         *  This variable is read from the parameter file through a parameter called 'Maximum latent heat substeps'.
+         * This variable is read from the parameter file through a parameter called 'Maximum latent heat substeps'.
          */
         unsigned int max_latent_heat_substeps;
         /**
-         *  This variable is read from the parameter file through a parameter called 'Minimum grain size'.
+         * This variable is read from the parameter file through a parameter called 'Minimum grain size'.
          */
         double minimum_grain_size;
 
@@ -386,24 +386,24 @@ namespace aspect
          */
         std::string datadirectory;
         /**
-         *  This variable is read from the parameter file through a parameter called 'Material file names'.
+         * This variable is read from the parameter file through a parameter called 'Material file names'.
          */
         std::vector<std::string> material_file_names;
         /**
-         *  This variable is read from the parameter file through a parameter called 'Derivatives file names'.
+         * This variable is read from the parameter file through a parameter called 'Derivatives file names'.
          */
         std::vector<std::string> derivatives_file_names;
         unsigned int n_material_data;
         /**
-         *  This variable is read from the parameter file through a parameter called 'Use table properties'.
+         * This variable is read from the parameter file through a parameter called 'Use table properties'.
          */
         bool use_table_properties;
         /**
-         *  This variable is read from the parameter file through a parameter called 'Use enthalpy for material properties'.
+         * This variable is read from the parameter file through a parameter called 'Use enthalpy for material properties'.
          */
         bool use_enthalpy;
         /**
-         *  This variable is read from the parameter file through a parameter called 'Bilinear interpolation'.
+         * This variable is read from the parameter file through a parameter called 'Bilinear interpolation'.
          */
         bool use_bilinear_interpolation;
 
@@ -418,7 +418,7 @@ namespace aspect
           hefesto
         };
         /**
-         *  This variable is read from the parameter file through a parameter called 'Material file format'.
+         * This variable is read from the parameter file through a parameter called 'Material file format'.
          */
         formats material_file_format;
 
@@ -446,7 +446,7 @@ namespace aspect
          */
         bool enable_drucker_prager_rheology;
         /**
-         *  This variable is read from the parameter file through a parameter called 'Use adiabatic pressure for yield stress'.
+         * This variable is read from the parameter file through a parameter called 'Use adiabatic pressure for yield stress'.
          */
         bool use_adiabatic_pressure_for_yielding;
         Rheology::DruckerPrager<dim> drucker_prager_plasticity;

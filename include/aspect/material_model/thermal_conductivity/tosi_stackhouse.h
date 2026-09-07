@@ -99,23 +99,23 @@ namespace aspect
            */
           std::vector<double> conductivity_transition_depths;
           /**
-           *  This variable is read from the parameter file through a parameter called 'Reference thermal conductivities'.
+           * This variable is read from the parameter file through a parameter called 'Reference thermal conductivities'.
            */
           std::vector<double> reference_thermal_conductivities;
           /**
-           *  This variable is read from the parameter file through a parameter called 'Pressure dependencies of thermal conductivity'.
+           * This variable is read from the parameter file through a parameter called 'Pressure dependencies of thermal conductivity'.
            */
           std::vector<double> conductivity_pressure_dependencies;
           /**
-           *  This variable is read from the parameter file through a parameter called 'Reference temperatures for thermal conductivity'.
+           * This variable is read from the parameter file through a parameter called 'Reference temperatures for thermal conductivity'.
            */
           std::vector<double> conductivity_reference_temperatures;
           /**
-           *  This variable is read from the parameter file through a parameter called 'Thermal conductivity exponents'.
+           * This variable is read from the parameter file through a parameter called 'Thermal conductivity exponents'.
            */
           std::vector<double> conductivity_exponents;
           /**
-           *  This variable is read from the parameter file through a parameter called 'Saturation prefactors'.
+           * This variable is read from the parameter file through a parameter called 'Saturation prefactors'.
            */
           std::vector<double> saturation_scaling;
 

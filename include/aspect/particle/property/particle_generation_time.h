@@ -57,8 +57,8 @@ namespace aspect
           late_initialization_mode () const override;
 
           /**
-          * @copydoc aspect::Particle::Property::Interface::get_property_information()
-          */
+           * @copydoc aspect::Particle::Property::Interface::get_property_information()
+           */
           std::vector<std::pair<std::string, unsigned int>>
           get_property_information() const override;
       };

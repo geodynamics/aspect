@@ -228,7 +228,7 @@ namespace aspect
           std::vector<double> cohesions;
 
           /**
-           *The prefactors for the yield stress.
+           * The prefactors for the yield stress.
            * This variable is read from the parameter file through a parameter called 'Prefactors for yield stress'.
            */
           std::vector<double> yield_stress_prefactors;

@@ -30,9 +30,9 @@ namespace aspect
   namespace Assemblers
   {
     /**
-    * A class containing the functions to assemble the Stokes preconditioner for the
-    * case of anisotropic viscosities.
-    */
+     * A class containing the functions to assemble the Stokes preconditioner for the
+     * case of anisotropic viscosities.
+     */
     template <int dim>
     class StokesPreconditionerAnisotropicViscosity : public Assemblers::Interface<dim>,
       public SimulatorAccess<dim>

@@ -103,11 +103,11 @@ namespace aspect
         private:
           unsigned int n_material_lookups;
           /**
-           *  This variable is read from the parameter file through a parameter called 'Bilinear interpolation'.
+           * This variable is read from the parameter file through a parameter called 'Bilinear interpolation'.
            */
           bool use_bilinear_interpolation;
           /**
-           *  This variable is read from the parameter file through a parameter called 'Latent heat'.
+           * This variable is read from the parameter file through a parameter called 'Latent heat'.
            */
           bool latent_heat;
 
@@ -118,11 +118,11 @@ namespace aspect
            */
           std::string data_directory;
           /**
-           *  This variable is read from the parameter file through a parameter called 'Material file names'.
+           * This variable is read from the parameter file through a parameter called 'Material file names'.
            */
           std::vector<std::string> material_file_names;
           /**
-           *  This variable is read from the parameter file through a parameter called 'Derivatives file names'.
+           * This variable is read from the parameter file through a parameter called 'Derivatives file names'.
            */
           std::vector<std::string> derivatives_file_names;
 
@@ -144,7 +144,7 @@ namespace aspect
             hefesto
           };
           /**
-           *  This variable is read from the parameter file through a parameter called 'Material file format'.
+           * This variable is read from the parameter file through a parameter called 'Material file format'.
            */
           formats material_file_format;
 

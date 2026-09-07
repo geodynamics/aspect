@@ -327,9 +327,9 @@ namespace aspect
         using InterfaceBase::save;
 
         /**
-           * Read the data of this object from a stream for the purpose of
-           * serialization.
-           */
+         * Read the data of this object from a stream for the purpose of
+         * serialization.
+         */
         template <class Archive>
         void load (Archive &ar,
                    const unsigned int version);

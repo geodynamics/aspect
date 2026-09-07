@@ -138,63 +138,63 @@ namespace aspect
         // Thermodynamic parameters of the endmember components in the equation of state,
         // needed to compute their material properties.
         /**
-         *  This variable is read from the parameter file through a parameter called 'Endmember names'.
+         * This variable is read from the parameter file through a parameter called 'Endmember names'.
          */
         std::vector<std::string> endmember_names;
         /**
-         *  This variable is read from the parameter file through a parameter called 'Molar masses'.
+         * This variable is read from the parameter file through a parameter called 'Molar masses'.
          */
         std::vector<double> molar_masses;
         /**
-         *  This variable is read from the parameter file through a parameter called 'Number of atoms'.
+         * This variable is read from the parameter file through a parameter called 'Number of atoms'.
          */
         std::vector<double> number_of_atoms;
         /**
-         *  This variable is read from the parameter file through a parameter called 'Reference volumes'.
+         * This variable is read from the parameter file through a parameter called 'Reference volumes'.
          */
         std::vector<double> reference_volumes;
         /**
-         *  This variable is read from the parameter file through a parameter called 'Reference thermal expansivities'.
+         * This variable is read from the parameter file through a parameter called 'Reference thermal expansivities'.
          */
         std::vector<double> reference_thermal_expansivities;
         /**
-         *  This variable is read from the parameter file through a parameter called 'Reference bulk moduli'.
+         * This variable is read from the parameter file through a parameter called 'Reference bulk moduli'.
          */
         std::vector<double> reference_bulk_moduli;
         /**
-         *  This variable is read from the parameter file through a parameter called 'First derivatives of the bulk modulus'.
+         * This variable is read from the parameter file through a parameter called 'First derivatives of the bulk modulus'.
          */
         std::vector<double> bulk_modulus_pressure_derivatives;
         /**
-         *  This variable is read from the parameter file through a parameter called 'Second derivatives of the bulk modulus'.
+         * This variable is read from the parameter file through a parameter called 'Second derivatives of the bulk modulus'.
          */
         std::vector<double> bulk_modulus_second_pressure_derivatives;
         /**
-         *  This variable is read from the parameter file through a parameter called 'Einstein temperatures'.
+         * This variable is read from the parameter file through a parameter called 'Einstein temperatures'.
          */
         std::vector<double> Einstein_temperatures;
         /**
-         *  This variable is read from the parameter file through a parameter called 'Reference enthalpies'.
+         * This variable is read from the parameter file through a parameter called 'Reference enthalpies'.
          */
         std::vector<double> reference_enthalpies;
         /**
-         *  This variable is read from the parameter file through a parameter called 'Reference entropies'.
+         * This variable is read from the parameter file through a parameter called 'Reference entropies'.
          */
         std::vector<double> reference_entropies;
         /**
-         *  This variable is read from the parameter file through a parameter called 'Reference specific heat capacities'.
+         * This variable is read from the parameter file through a parameter called 'Reference specific heat capacities'.
          */
         std::vector<double> reference_specific_heats;
         /**
-         *  This variable is read from the parameter file through a parameter called 'Linear coefficients for specific heat polynomial'.
+         * This variable is read from the parameter file through a parameter called 'Linear coefficients for specific heat polynomial'.
          */
         std::vector<double> specific_heat_linear_coefficients;
         /**
-         *  This variable is read from the parameter file through a parameter called 'Second coefficients for specific heat polynomial'.
+         * This variable is read from the parameter file through a parameter called 'Second coefficients for specific heat polynomial'.
          */
         std::vector<double> specific_heat_second_coefficients;
         /**
-         *  This variable is read from the parameter file through a parameter called 'Third coefficients for specific heat polynomial'.
+         * This variable is read from the parameter file through a parameter called 'Third coefficients for specific heat polynomial'.
          */
         std::vector<double> specific_heat_third_coefficients;
 
@@ -204,54 +204,54 @@ namespace aspect
 
         // Reference conditions for computing the material properties in the equation of state.
         /**
-         *  This variable is read from the parameter file through a parameter called 'Reference temperature'.
+         * This variable is read from the parameter file through a parameter called 'Reference temperature'.
          */
         double reference_temperature;
         /**
-         *  This variable is read from the parameter file through a parameter called 'Reference pressure'.
+         * This variable is read from the parameter file through a parameter called 'Reference pressure'.
          */
         double reference_pressure;
 
         // Rheological properties.
         /**
-         *  This variable is read from the parameter file through a parameter called 'Reference shear viscosity'.
+         * This variable is read from the parameter file through a parameter called 'Reference shear viscosity'.
          */
         double eta_0;
         /**
-         *  This variable is read from the parameter file through a parameter called 'Reference bulk viscosity'.
+         * This variable is read from the parameter file through a parameter called 'Reference bulk viscosity'.
          */
         double xi_0;
         /**
-         *  This variable is read from the parameter file through a parameter called 'Reference melt viscosity'.
+         * This variable is read from the parameter file through a parameter called 'Reference melt viscosity'.
          */
         double eta_f;
         /**
-         *  This variable is read from the parameter file through a parameter called 'Thermal viscosity exponent'.
+         * This variable is read from the parameter file through a parameter called 'Thermal viscosity exponent'.
          */
         double thermal_viscosity_exponent;
         /**
-         *  This variable is read from the parameter file through a parameter called 'Thermal bulk viscosity exponent'.
+         * This variable is read from the parameter file through a parameter called 'Thermal bulk viscosity exponent'.
          */
         double thermal_bulk_viscosity_exponent;
         /**
-         *  This variable is read from the parameter file through a parameter called 'Exponential melt weakening factor'.
+         * This variable is read from the parameter file through a parameter called 'Exponential melt weakening factor'.
          */
         double alpha_phi;
 
         // Transport properties that are not computed from the equation of state.
         double thermal_conductivity;
         /**
-         *  This variable is read from the parameter file through a parameter called 'Reference permeability'.
+         * This variable is read from the parameter file through a parameter called 'Reference permeability'.
          */
         double reference_permeability;
 
         // Parameters controlling melting and solidification of melt.
         /**
-         *  This variable is read from the parameter file through a parameter called 'Include melting and freezing'.
+         * This variable is read from the parameter file through a parameter called 'Include melting and freezing'.
          */
         bool include_melting_and_freezing;
         /**
-         *  This variable is read from the parameter file through a parameter called 'Melting time scale for operator splitting'.
+         * This variable is read from the parameter file through a parameter called 'Melting time scale for operator splitting'.
          */
         double melting_time_scale;
 
@@ -267,11 +267,11 @@ namespace aspect
 
         // reference melting temperature for Fe and Mg mantle endmember at the reference pressure
         /**
-         *  This variable is read from the parameter file through a parameter called 'Fe mantle melting temperature'.
+         * This variable is read from the parameter file through a parameter called 'Fe mantle melting temperature'.
          */
         double Fe_mantle_melting_temperature;
         /**
-         *  This variable is read from the parameter file through a parameter called 'Mg mantle melting temperature'.
+         * This variable is read from the parameter file through a parameter called 'Mg mantle melting temperature'.
          */
         double Mg_mantle_melting_temperature;
 
@@ -285,11 +285,11 @@ namespace aspect
 
         // Number of moles of atoms mixing on pseudosite in mantle lattice (empirical model fitting the full Boukare model).
         /**
-         *  This variable is read from the parameter file through a parameter called 'Fe number of moles'.
+         * This variable is read from the parameter file through a parameter called 'Fe number of moles'.
          */
         double Fe_number_of_moles;
         /**
-         *  This variable is read from the parameter file through a parameter called 'Mg number of moles'.
+         * This variable is read from the parameter file through a parameter called 'Mg number of moles'.
          */
         double Mg_number_of_moles;
 

@@ -148,8 +148,8 @@ namespace aspect
         };
 
         /**
-        * Selected option to compute the reference profile for composition.
-        */
+         * Selected option to compute the reference profile for composition.
+         */
         CompositionProfile reference_composition;
 
         /**

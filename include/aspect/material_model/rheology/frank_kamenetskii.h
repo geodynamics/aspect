@@ -96,11 +96,11 @@ namespace aspect
           std::vector<double> pressure_prefactors_frank_kamenetskii;
 
           /**
-           *  This variable is read from the parameter file through a parameter called 'Reference temperatures for Frank Kamenetskii'.
+           * This variable is read from the parameter file through a parameter called 'Reference temperatures for Frank Kamenetskii'.
            */
           std::vector<double> reference_temperatures;
           /**
-           *  This variable is read from the parameter file through a parameter called 'Reference pressures for Frank Kamenetskii'.
+           * This variable is read from the parameter file through a parameter called 'Reference pressures for Frank Kamenetskii'.
            */
           std::vector<double> reference_pressures;
       };

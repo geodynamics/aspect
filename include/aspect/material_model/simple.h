@@ -87,27 +87,27 @@ namespace aspect
 
       private:
         /**
-         *  This variable is read from the parameter file through a parameter called 'Reference temperature'.
+         * This variable is read from the parameter file through a parameter called 'Reference temperature'.
          */
         double reference_T;
         /**
-         *  This variable is read from the parameter file through a parameter called 'Viscosity'.
+         * This variable is read from the parameter file through a parameter called 'Viscosity'.
          */
         double eta;
         /**
-         *  This variable is read from the parameter file through a parameter called 'Composition viscosity prefactor'.
+         * This variable is read from the parameter file through a parameter called 'Composition viscosity prefactor'.
          */
         double composition_viscosity_prefactor;
         /**
-         *  This variable is read from the parameter file through a parameter called 'Thermal viscosity exponent'.
+         * This variable is read from the parameter file through a parameter called 'Thermal viscosity exponent'.
          */
         double thermal_viscosity_exponent;
         /**
-         *  This variable is read from the parameter file through a parameter called 'Maximum thermal prefactor'.
+         * This variable is read from the parameter file through a parameter called 'Maximum thermal prefactor'.
          */
         double maximum_thermal_prefactor;
         /**
-         *  This variable is read from the parameter file through a parameter called 'Minimum thermal prefactor'.
+         * This variable is read from the parameter file through a parameter called 'Minimum thermal prefactor'.
          */
         double minimum_thermal_prefactor;
 

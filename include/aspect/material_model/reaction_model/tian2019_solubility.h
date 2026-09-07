@@ -104,15 +104,15 @@ namespace aspect
            */
           double tian_max_peridotite_water;
           /**
-           *  This variable is read from the parameter file through a parameter called 'Maximum weight percent water in gabbro'.
+           * This variable is read from the parameter file through a parameter called 'Maximum weight percent water in gabbro'.
            */
           double tian_max_gabbro_water;
           /**
-           *  This variable is read from the parameter file through a parameter called 'Maximum weight percent water in MORB'.
+           * This variable is read from the parameter file through a parameter called 'Maximum weight percent water in MORB'.
            */
           double tian_max_MORB_water;
           /**
-           *  This variable is read from the parameter file through a parameter called 'Maximum weight percent water in sediment'.
+           * This variable is read from the parameter file through a parameter called 'Maximum weight percent water in sediment'.
            */
           double tian_max_sediment_water;
 
