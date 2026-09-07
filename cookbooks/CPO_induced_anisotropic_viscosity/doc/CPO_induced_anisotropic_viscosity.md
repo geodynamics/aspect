@@ -211,8 +211,8 @@ For 2d applications a pseudo 3d strain-rate for texture development is construct
 ```{math}
 
 \varepsilon_{ij}^{\text{3D}} = \begin{cases}
-    &\varepsilon_{ij}^{\text{2D}} \qquad & i,j < 3 \\
-    &0 \qquad & i,j = 3
+    \varepsilon_{ij}^{\text{2D}} \qquad & i,j < 3 \\
+    0 \qquad & i,j = 3
 \end{cases}  \text{ .}
 ```
 Then texture development, CPO frame and an inversion are computed as before. The out of plane components of the anisotropic viscosity tensor are discarded.
