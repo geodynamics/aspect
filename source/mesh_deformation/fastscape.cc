@@ -2178,8 +2178,8 @@ namespace aspect
           if (!this->convert_output_to_years())
             {
               maximum_fastscape_timestep /= year_in_seconds;
-              for (unsigned int j=0; j<sediment_rain_rates.size(); ++j)
-                sediment_rain_rates[j] *= year_in_seconds;
+              for (double &sediment_rain_rate : sediment_rain_rates)
+                sediment_rain_rate *= year_in_seconds;
             }
 
           if (sediment_rain_rates.size() != sediment_rain_times.size()+1)
