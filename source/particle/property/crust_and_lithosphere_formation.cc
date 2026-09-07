@@ -21,6 +21,7 @@
 #include <aspect/particle/property/crust_and_lithosphere_formation.h>
 #include <aspect/material_model/reaction_model/crust_and_lithosphere_formation.h>
 #include <aspect/initial_composition/interface.h>
+#include <aspect/particle/manager.h>
 
 namespace aspect
 {
@@ -70,11 +71,11 @@ namespace aspect
             // First basalt formation time. It is initialized to a value smaller than
             // the model start time so that particles that have not yet been converted
             // to basalt can be distinguished.
-            data.push_back(this->get_parameters().start_time - 1e10);
+            data.push_back(this->get_parameters().start_time - std::max(1e10, 2 * std::abs(this->get_parameters().start_time)));
             // Last basalt formation time. It is initialized to a value smaller than
             // the model start time so that particles that have not yet been converted
             // to basalt a second time can be distinguished.
-            data.push_back(this->get_parameters().start_time - 1e10);
+            data.push_back(this->get_parameters().start_time - std::max(1e10, 2 * std::abs(this->get_parameters().start_time)));
           }
       }
 
@@ -145,8 +146,8 @@ namespace aspect
                 // so that they can be identified as not yet converted to basalt.
                 if (particle.get_properties()[generation_time_index] == current_time)
                   {
-                    particle.get_properties()[this->data_position + 2] = this->get_parameters().start_time - 1e10;
-                    particle.get_properties()[this->data_position + 3] = this->get_parameters().start_time - 1e10;
+                    particle.get_properties()[this->data_position + 2] = this->get_parameters().start_time - std::max(1e10, 2 * std::abs(this->get_parameters().start_time));
+                    particle.get_properties()[this->data_position + 3] = this->get_parameters().start_time - std::max(1e10, 2 * std::abs(this->get_parameters().start_time));
                   }
 
                 // If the particle starts as basalt or has already been converted to basalt,
@@ -251,15 +252,13 @@ namespace aspect
       {
         prm.enter_subsection("Crust and lithosphere formation");
         {
-          // Add parameter for 'track basalt formation' on or off
           MaterialModel::ReactionModel::CrustLithosphereFormation<dim>::declare_parameters(prm);
 
           prm.declare_entry ("Track basalt formation time", "false",
                              Patterns::Bool (),
                              "If true, the model time when a particle is first and last converted to basalt "
-                             "will be recorded as particle properties. A value smaller than the model start time"
+                             "will be recorded as particle properties. A value smaller than the model start time "
                              "indicates that the particle has not yet been converted to basalt.");
-
         }
         prm.leave_subsection();
       }
@@ -279,7 +278,7 @@ namespace aspect
           if_track_basalt_formation_time = prm.get_bool("Track basalt formation time");
 
           // When tracking basalt formation times, we need to make sure that
-          // the particle get a correct initialization time when they are created.
+          // the particles get a correct initialization time when they are created.
           // The particle generation time property is required to identify newly generated particles
           const auto &manager = this->get_particle_manager(this->get_particle_manager_index()).get_property_manager();
           AssertThrow(if_track_basalt_formation_time == false || manager.plugin_name_exists("particle generation time"),

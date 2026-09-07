@@ -439,7 +439,7 @@ A typical example would be to set this runtime parameter to &lsquo;pi=3.14159265
 
 **Pattern:** [Bool]
 
-**Documentation:** If true, the model time when a particle is first and last converted to basalt will be recorded as particle properties. A value smaller than the model start timeindicates that the particle has not yet been converted to basalt.
+**Documentation:** If true, the model time when a particle is first and last converted to basalt will be recorded as particle properties. A value smaller than the model start time indicates that the particle has not yet been converted to basalt.
 ::::
 
 (parameters:Particles/Crystal_20Preferred_20Orientation)=
