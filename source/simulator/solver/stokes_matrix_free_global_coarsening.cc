@@ -226,7 +226,7 @@ namespace aspect
           AffineConstraints<double> cs;
           std::shared_ptr<MatrixFree<dim,double>>
           mf(new MatrixFree<dim,double>());
-          mf->reinit(get_level_triangulation_mapping(), dofhandlers_projection[l], cs, QGauss<1>(degree+1));
+          mf->reinit(get_level_triangulation_mapping(l), dofhandlers_projection[l], cs, QGauss<1>(degree+1));
           temp_ops[l].initialize(mf);
         }
 
@@ -1415,8 +1415,11 @@ namespace aspect
 
   template <int dim, int velocity_degree>
   const Mapping<dim> &
-  StokesMatrixFreeHandlerGlobalCoarseningImplementation<dim, velocity_degree>::get_level_triangulation_mapping()
+  StokesMatrixFreeHandlerGlobalCoarseningImplementation<dim, velocity_degree>::get_level_triangulation_mapping(const unsigned int level)
   {
+    if (this->get_parameters().mesh_deformation_enabled)
+      return this->get_mesh_deformation_handler().get_level_mapping(level);
+
     // Periodic spherical shells use a MappingQCache, which caches the geometry
     // of the cells of the simulator triangulation. The level triangulations
     // created by create_geometric_coarsening_sequence() are separate,
@@ -1460,11 +1463,6 @@ namespace aspect
   template <int dim, int velocity_degree>
   void StokesMatrixFreeHandlerGlobalCoarseningImplementation<dim, velocity_degree>::setup_dofs()
   {
-    // Mapping used on the level triangulations of the multigrid hierarchy;
-    // see get_level_triangulation_mapping() for why this can differ from
-    // the simulator mapping.
-    const Mapping<dim> &mapping = get_level_triangulation_mapping();
-
     // This vector will be refilled with the new MatrixFree objects below:
     matrix_free_objects.clear();
 
@@ -1487,6 +1485,7 @@ namespace aspect
       for (auto l = min_level; l <= max_level; ++l)
         {
           const auto &tria = *trias[l];
+          const Mapping<dim> &mapping = get_level_triangulation_mapping(l);
 
           // velocity:
           {

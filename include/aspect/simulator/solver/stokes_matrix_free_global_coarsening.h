@@ -244,15 +244,15 @@ namespace aspect
 
       /**
        * Return a mapping that is valid on the (repartitioned copies of the)
-       * level triangulations of the global coarsening hierarchy. The
-       * simulator mapping can be a MappingQCache, which caches geometry
-       * information for the cells of the simulator triangulation only and
-       * must not be evaluated on other triangulations. In that case an
-       * equivalent manifold-based mapping is built (and stored in
-       * #level_triangulation_mapping); otherwise the simulator mapping is
-       * returned.
+       * triangulation at @p level of the global coarsening hierarchy. When
+       * mesh deformation is active, this is the corresponding mapping from
+       * the mesh deformation handler. The simulator mapping can otherwise be
+       * a MappingQCache, which caches geometry information for the cells of
+       * the simulator triangulation only and must not be evaluated on other
+       * triangulations. In that case an equivalent manifold-based mapping is
+       * built and stored in #level_triangulation_mapping.
        */
-      const Mapping<dim> &get_level_triangulation_mapping();
+      const Mapping<dim> &get_level_triangulation_mapping(const unsigned int level);
 
       /**
        * Storage for the mapping returned by

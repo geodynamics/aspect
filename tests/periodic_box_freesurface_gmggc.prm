@@ -1,0 +1,12 @@
+# Test global-coarsening GMG with a deforming free surface and periodic side
+# boundaries.
+# MPI: 2
+
+include $ASPECT_SOURCE_DIR/tests/periodic_box_freesurface.prm
+
+subsection Solver parameters
+  subsection Stokes solver parameters
+    set Stokes solver type = block GMG
+    set Stokes GMG type = global coarsening
+  end
+end

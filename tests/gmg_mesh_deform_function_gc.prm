@@ -1,0 +1,11 @@
+# Test global-coarsening GMG with mesh deformation prescribed by a changing
+# function.
+include $ASPECT_SOURCE_DIR/tests/gmg_mesh_deform_function.prm
+
+set End time = 1e4
+
+subsection Solver parameters
+  subsection Stokes solver parameters
+    set Stokes GMG type = global coarsening
+  end
+end
