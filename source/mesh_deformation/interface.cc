@@ -41,6 +41,8 @@
 
 #include <deal.II/numerics/vector_tools.h>
 
+#include <limits>
+
 #include <aspect/melt.h>
 
 namespace aspect
@@ -1060,6 +1062,64 @@ namespace aspect
           mesh_displacements = solution;
         }
 
+      check_mesh_deformation ();
+    }
+
+
+
+    template <int dim>
+    void MeshDeformationHandler<dim>::check_mesh_deformation ()
+    {
+      // The deformed mesh is represented by the simulator's mapping, which
+      // holds the (just updated) mesh_displacements vector. Evaluate the
+      // Jacobian determinant of that mapping on every active cell to make sure
+      // the deformation has not turned any cell inside out. A negative cell
+      // measure makes the mapping ill-defined and silently corrupts the
+      // solution, so we abort with an explanatory message instead.
+      //
+      // This typically happens when the prescribed initial topography or mesh
+      // motion varies by more than the size of a cell over a single cell, e.g.
+      // a step-like (discontinuous) initial topography on a coarse mesh.
+
+      const QGauss<dim> quadrature(4);
+      const UpdateFlags update_flags = UpdateFlags(update_jacobians);
+      FEValues<dim> fe_values (this->get_mapping(), mesh_deformation_fe, quadrature, update_flags);
+
+      // The Jacobian determinant of the deformed mapping is the (signed)
+      // measure of the cell at each quadrature point. A negative value
+      // indicates that the cell has been turned inside out by the
+      // deformation.
+      double min_cell_measure = std::numeric_limits<double>::max();
+
+      for (const auto &cell : mesh_deformation_dof_handler.active_cell_iterators())
+        if (cell->is_locally_owned())
+          {
+            fe_values.reinit (cell);
+            for (unsigned int q=0; q<fe_values.n_quadrature_points; ++q)
+              min_cell_measure = std::min (min_cell_measure,
+                                           fe_values.jacobian (q).determinant ());
+          }
+
+      const double global_min_cell_measure
+        = Utilities::MPI::min (min_cell_measure, this->get_mpi_communicator());
+
+      if (global_min_cell_measure < 0.)
+        {
+          const std::string error_message
+            = "The mesh deformation produced a cell with a negative Jacobian "
+              "determinant (minimum cell measure: " +
+              std::to_string (global_min_cell_measure) +
+              "). In other words, the deformed mesh contains inverted cells, "
+              "which makes the mapping ill-defined and the computed solution "
+              "unphysical. This usually happens when the initial topography or "
+              "the prescribed mesh motion changes by more than the size of a "
+              "cell within a single cell, for example a discontinuous "
+              "(step-like) initial topography on a coarse mesh. Please refine "
+              "the mesh in regions with steep topography, or use a smoother "
+              "initial topography, so that the topography does not vary by "
+              "more than the cell size within a single cell.";
+          AssertThrow (false, ExcMessage (error_message));
+        }
     }
 
 
@@ -1376,6 +1436,7 @@ namespace aspect
         }
 
       update_multilevel_deformation();
+      check_mesh_deformation ();
     }
 
 

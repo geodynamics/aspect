@@ -487,6 +487,14 @@ namespace aspect
         void compute_mesh_displacements_gmg_for_degree();
 
         /**
+         * Check that the current mesh deformation has not produced any cells
+         * with a negative Jacobian determinant (inverted cells) in the deformed
+         * mesh. If such a cell is found, this function aborts with an
+         * explanatory error message.
+         */
+        void check_mesh_deformation ();
+
+        /**
          * Set up the vector with initial displacements of the mesh
          * due to the initial topography, as supplied by the initial
          * topography plugin based on the surface coordinates of the
