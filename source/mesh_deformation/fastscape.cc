@@ -896,7 +896,7 @@ namespace aspect
           // expects units in years, not seconds. Therefore, the factor is used to scale
           // the quantities when "Use years instead of seconds" in ASPECT is set to false.
           // In that case the transport coefficient has units ${m^2/s}$, and the river
-          // incision rate units of $m^(1-2drainage_area_exponent)/s}$, so we multiply
+          // incision rate units of $m^(1-2drainage_area_exponent)/s$, so we multiply
           // with a year in seconds.
           const double time_scaling_factor = (this->convert_output_to_years() ? 1.0 : year_in_seconds);
           // Set bedrock transport coefficient kd either from a function or a constant.
@@ -1899,7 +1899,7 @@ namespace aspect
                             "the FastScape timestep is above the maximum FastScape timestep.");
           prm.declare_entry("Maximum timestep length", "10e3",
                             Patterns::Double(0),
-                            "Maximum timestep for FastScape. Units: ${yrs}$");
+                            "Maximum timestep for FastScape. Units: $\\si{yr}$");
           prm.declare_entry("Vertical exaggeration", "-1",
                             Patterns::Double(),
                             "Vertical exaggeration for FastScape's VTK file. -1 outputs topography, basement, and sealevel.");
@@ -1926,7 +1926,7 @@ namespace aspect
                              "Flag to use the marine component of FastScape.");
           prm.declare_entry("Y extent in 2d", "100000",
                             Patterns::Double(),
-                            "FastScape Y extent when using a 2D ASPECT model. Units: ${m}$");
+                            "FastScape Y extent when using a 2D ASPECT model. Units: $\\si{m}$");
           prm.declare_entry ("Use ghost nodes", "true",
                              Patterns::Bool (),
                              "Flag to use ghost nodes.");
@@ -1940,13 +1940,13 @@ namespace aspect
                              Patterns::List (Patterns::Double(0)),
                              "Sediment rain rates given as a list 1 greater than the number of sediment rain time intervals. E.g, "
                              "If the time interval is given at 5 Myr, there will be one value for 0-5 Myr model time and a second value "
-                             "for 5+ Myr. Units: ${m/yr}$");
+                             "for 5+ Myr. Units: $\\si{m\\per\\year}$");
           prm.declare_entry ("Sediment rain time intervals", "0",
                              Patterns::List (Patterns::Double(0)),
-                             "A list of times to change the sediment rain rate. Units: ${yrs}$");
+                             "A list of times to change the sediment rain rate. Units: $\\si{\\year}$");
           prm.declare_entry("Initial noise magnitude", "5",
                             Patterns::Double(),
-                            "Maximum topography change from the initial noise. Units: ${m}$");
+                            "Maximum topography change from the initial noise. Units: $\\si{m}$");
           prm.declare_entry("Additional output variables", "river incision rate",
                             Patterns::Selection("river incision rate|transport coefficient|uplift rate"),
                             "Select one additional Fastscape variable to output in the Fastcape vtk. "
@@ -1969,16 +1969,16 @@ namespace aspect
                                "Left boundary condition, where 1 is fixed and 0 is reflective.");
             prm.declare_entry("Left mass flux", "0",
                               Patterns::Double(),
-                              "Flux per unit length through the left boundary. Units: ${m^2/yr}$ ");
+                              "Flux per unit length through the left boundary. Units: $\\si{m^2\\per\\year}$ ");
             prm.declare_entry("Right mass flux", "0",
                               Patterns::Double(),
-                              "Flux per unit length through the right boundary. Units: ${m^2/yr}$ ");
+                              "Flux per unit length through the right boundary. Units: $\\si{m^2\\per\\year}$ ");
             prm.declare_entry("Back mass flux", "0",
                               Patterns::Double(),
-                              "Flux per unit length through the back boundary. Units: ${m^2/yr}$ ");
+                              "Flux per unit length through the back boundary. Units: $\\si{m^2\\per\\year}$ ");
             prm.declare_entry("Front mass flux", "0",
                               Patterns::Double(),
-                              "Flux per unit length through the front boundary. Units: ${m^2/yr}$ ");
+                              "Flux per unit length through the front boundary. Units: $\\si{m^2\\per\\year}$ ");
             prm.declare_entry ("Back front ghost nodes periodic", "false",
                                Patterns::Bool (),
                                "Whether to set the ghost nodes at the FastScape back and front boundary "
@@ -2013,13 +2013,13 @@ namespace aspect
                               Patterns::Bool(),
                               "Whether to define bedrock river incision rate using a distribution function. "
                               "If false, a constant kf value will be used, which can be specified by setting "
-                              "the parameter ``Bedrock river incision rate''. Units: ${m^(1-2drainage_area_exponent)/yr}$ "
-                              "if ``Use years instead of seconds'' is true; otherwise, the units are ${m^(1-2drainage_area_exponent)/s}$.");
+                              "the parameter ``Bedrock river incision rate''. Units: $m^{1-2\\text{drainage\\_area\\_exponent}}\\si{\\per\\year}$ "
+                              "if ``Use years instead of seconds'' is true; otherwise, the units are $m^{1-2\\text{drainage\\_area\\_exponent}}\\si{\\per\\second}$.");
             prm.declare_entry("Bedrock river incision rate", "1e-5",
                               Patterns::Double(),
                               "River incision rate for bedrock in the Stream Power Law. "
-                              "Units: ${m^(1-2drainage_area_exponent)/yr}$ if ``Use years instead of seconds'' is true; "
-                              "otherwise, the units are ${m^(1-2drainage_area_exponent)/s}$.");
+                              "Units: $m^{1-2\\text{drainage\\_area\\_exponent}}\\si{\\per\\year}$ if ``Use years instead of seconds'' is true; "
+                              "otherwise, the units are $m^{1-2\\text{drainage\\_area\\_exponent}}\\si{\\per\\second}$.");
             prm.enter_subsection ("kf distribution function");
             {
               Functions::ParsedFunction<2>::declare_parameters(prm, 2);
@@ -2028,20 +2028,20 @@ namespace aspect
             prm.declare_entry("Sediment river incision rate", "-1",
                               Patterns::Double(),
                               "River incision rate for sediment in the Stream Power Law. A value smaller than 0 sets this to the bedrock river incision rate. "
-                              "Units: $m^(1-2drainage_area_exponent)/yr}$ if ``Use years instead of seconds'' is true; "
-                              "otherwise, the units are $m^(1-2drainage_area_exponent)/s}$.");
+                              "Units: $m^{1-2\\text{drainage\\_area\\_exponent}}\\si{\\per\\year}$ if ``Use years instead of seconds'' is true; "
+                              "otherwise, the units are $m^{1-2\\text{drainage\\_area\\_exponent}}\\si{\\per\\second}$.");
 
             // Define Bedrock transport coefficient (Kd) as a constant value of time dependent user-defined function
             prm.declare_entry("Use kd distribution function", "false",
                               Patterns::Bool(),
                               "Whether to define Bedrock transport coefficient (diffusivity) using a distribution function. "
                               "If false, a constant kd value will be used, which can be specified by setting the parameter "
-                              "``Bedrock diffusivity''. Units: ${m^2/yr}$ if ``Use years instead of seconds'' "
-                              "is true; otherwise, the units are ${m^2/s}$.");
+                              "``Bedrock diffusivity''. Units: $\\si{m^2\\per\\year}$ if ``Use years instead of seconds'' "
+                              "is true; otherwise, the units are $\\si{m^2\\per\\second}$.");
             prm.declare_entry("Bedrock diffusivity", "1e-2",
                               Patterns::Double(),
-                              "Transport coefficient (diffusivity) for bedrock. Units: ${m^2/yr}$ if ``Use years instead of seconds'' "
-                              "is true; otherwise, the units are ${m^2/s}$.");
+                              "Transport coefficient (diffusivity) for bedrock. Units: $\\si{m^2\\per\\year}$ if ``Use years instead of seconds'' "
+                              "is true; otherwise, the units are $\\si{m^2\\per\\second}$.");
             prm.enter_subsection ("kd distribution function");
             {
               Functions::ParsedFunction<2>::declare_parameters(prm, 2);
@@ -2050,14 +2050,14 @@ namespace aspect
 
             prm.declare_entry("Sediment diffusivity", "-1",
                               Patterns::Double(),
-                              "Transport coefficient (diffusivity) for sediment. -1 sets this to the bedrock diffusivity. Units: ${m^2/yr}$ "
-                              "if ``Use years instead of seconds'' is true; otherwise, the units are ${m^2/s}$.");
+                              "Transport coefficient (diffusivity) for sediment. -1 sets this to the bedrock diffusivity. Units: $\\si{m^2\\per\\year}$ "
+                              "if ``Use years instead of seconds'' is true; otherwise, the units are $\\si{m^2\\per\\second}$.");
             prm.declare_entry("Orographic elevation control", "2000",
                               Patterns::Integer(),
-                              "Above this height, the elevation factor is applied. Units: ${m}$");
+                              "Above this height, the elevation factor is applied. Units: $\\si{m}$");
             prm.declare_entry("Orographic wind barrier height", "500",
                               Patterns::Integer(),
-                              "When terrain reaches this height the wind barrier factor is applied. Units: ${m}$");
+                              "When terrain reaches this height the wind barrier factor is applied. Units: $\\si{m}$");
             prm.declare_entry("Elevation factor", "1",
                               Patterns::Double(),
                               "Amount to multiply the bedrock river incision rate and transport coefficient by past the given orographic elevation control.");
@@ -2093,7 +2093,7 @@ namespace aspect
                               "and 'Left/Right/Bottom/Top mass flux' set to 0) will be fixed to this elevation. The "
                               "reflecting boundaries (FastScape boundary condition set to 0) will not be affected, nor are the "
                               "boundaries where a mass flux is specified. \n"
-                              "Units: m");
+                              "Units: $\\si{m}$");
           }
           prm.leave_subsection();
 
@@ -2108,7 +2108,7 @@ namespace aspect
             prm.declare_entry("Sea level", "0.0",
                               Patterns::Double(),
                               "Constant sea level relative to the ASPECT surface, where the maximum Z or Y extent in ASPECT is a sea level of zero. "
-                              "Units: ${m}$ ");
+                              "Units: $\\si{m}$ ");
 
             prm.enter_subsection ("Sea level function");
             {
@@ -2124,22 +2124,22 @@ namespace aspect
                               "Porosity of silt. ");
             prm.declare_entry("Sand e-folding depth", "1e3",
                               Patterns::Double(),
-                              "E-folding depth for the exponential of the sand porosity law. Units: ${m}$");
+                              "E-folding depth for the exponential of the sand porosity law. Units: $\\si{m}$");
             prm.declare_entry("Silt e-folding depth", "1e3",
                               Patterns::Double(),
-                              "E-folding depth for the exponential of the silt porosity law. Units: ${m}$");
+                              "E-folding depth for the exponential of the silt porosity law. Units: $\\si{m}$");
             prm.declare_entry("Silt fraction", "0.5",
                               Patterns::Double(),
                               "Fraction of silt for material leaving continent. Formerly called Sand-silt ratio.");
             prm.declare_entry("Depth averaging thickness", "1e2",
                               Patterns::Double(),
-                              "Depth averaging for the sand-silt equation. Units: ${m}$");
+                              "Depth averaging for the sand-silt equation. Units: $\\si{m}$");
             prm.declare_entry("Sand transport coefficient", "5e2",
                               Patterns::Double(),
-                              "Transport coefficient (diffusivity) for sand. Units: ${m^2/yr}$");
+                              "Transport coefficient (diffusivity) for sand. Units: $\\si{m^2\\per\\year}$");
             prm.declare_entry("Silt transport coefficient", "2.5e2",
                               Patterns::Double(),
-                              "Transport coefficient (diffusivity) for silt. Units: ${m^2/yr}$ ");
+                              "Transport coefficient (diffusivity) for silt. Units: $\\si{m^2\\per\\year}$ ");
           }
           prm.leave_subsection();
         }
@@ -2238,7 +2238,7 @@ namespace aspect
             // Fastscape always expects units in years, not seconds. Therefore, scale
             // the sediment Kf and Kd when "Use years instead of seconds" in ASPECT is set to false.
             // In that case the transport coefficient has units ${m^2/s}$, and the river
-            // incision rate units of $m^(1-2drainage_area_exponent)/s}$, so we multiply
+            // incision rate units of $m^(1-2drainage_area_exponent)/s$, so we multiply
             // with a year in seconds. The bedrock values are scaled when filling the FastScape
             // arrays.
             const double time_scaling_factor = (this->convert_output_to_years() ? 1.0 : year_in_seconds);

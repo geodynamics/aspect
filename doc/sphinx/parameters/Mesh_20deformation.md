@@ -191,7 +191,7 @@ If the function you are describing represents a vector-valued function with mult
 
 **Pattern:** [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
 
-**Documentation:** Maximum topography change from the initial noise. Units: ${m}$
+**Documentation:** Maximum topography change from the initial noise. Units: $\si{m}$
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Maximum surface refinement level<parameters:Mesh_20deformation/Fastscape/Maximum_20surface_20refinement_20level>`
@@ -209,7 +209,7 @@ If the function you are describing represents a vector-valued function with mult
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
-**Documentation:** Maximum timestep for FastScape. Units: ${yrs}$
+**Documentation:** Maximum timestep for FastScape. Units: $\si{yr}$
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Node tolerance<parameters:Mesh_20deformation/Fastscape/Node_20tolerance>`
@@ -236,7 +236,7 @@ If the function you are describing represents a vector-valued function with mult
 
 **Pattern:** [List of <[Double 0...MAX_DOUBLE (inclusive)]> of length 0...4294967295 (inclusive)]
 
-**Documentation:** Sediment rain rates given as a list 1 greater than the number of sediment rain time intervals. E.g, If the time interval is given at 5 Myr, there will be one value for 0-5 Myr model time and a second value for 5+ Myr. Units: ${m/yr}$
+**Documentation:** Sediment rain rates given as a list 1 greater than the number of sediment rain time intervals. E.g, If the time interval is given at 5 Myr, there will be one value for 0-5 Myr model time and a second value for 5+ Myr. Units: $\si{m\per\year}$
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Sediment rain time intervals<parameters:Mesh_20deformation/Fastscape/Sediment_20rain_20time_20intervals>`
@@ -245,7 +245,7 @@ If the function you are describing represents a vector-valued function with mult
 
 **Pattern:** [List of <[Double 0...MAX_DOUBLE (inclusive)]> of length 0...4294967295 (inclusive)]
 
-**Documentation:** A list of times to change the sediment rain rate. Units: ${yrs}$
+**Documentation:** A list of times to change the sediment rain rate. Units: $\si{\year}$
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Surface refinement difference<parameters:Mesh_20deformation/Fastscape/Surface_20refinement_20difference>`
@@ -299,7 +299,7 @@ If the function you are describing represents a vector-valued function with mult
 
 **Pattern:** [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
 
-**Documentation:** FastScape Y extent when using a 2D ASPECT model. Units: ${m}$
+**Documentation:** FastScape Y extent when using a 2D ASPECT model. Units: $\si{m}$
 ::::
 
 (parameters:Mesh_20deformation/Fastscape/Boundary_20conditions)=
@@ -328,7 +328,7 @@ If the function you are describing represents a vector-valued function with mult
 
 **Pattern:** [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
 
-**Documentation:** Flux per unit length through the back boundary. Units: ${m^2/yr}$
+**Documentation:** Flux per unit length through the back boundary. Units: $\si{m^2\per\year}$
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Front<parameters:Mesh_20deformation/Fastscape/Boundary_20conditions/Front>`
@@ -346,7 +346,7 @@ If the function you are describing represents a vector-valued function with mult
 
 **Pattern:** [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
 
-**Documentation:** Flux per unit length through the front boundary. Units: ${m^2/yr}$
+**Documentation:** Flux per unit length through the front boundary. Units: $\si{m^2\per\year}$
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Left<parameters:Mesh_20deformation/Fastscape/Boundary_20conditions/Left>`
@@ -364,7 +364,7 @@ If the function you are describing represents a vector-valued function with mult
 
 **Pattern:** [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
 
-**Documentation:** Flux per unit length through the left boundary. Units: ${m^2/yr}$
+**Documentation:** Flux per unit length through the left boundary. Units: $\si{m^2\per\year}$
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Left right ghost nodes periodic<parameters:Mesh_20deformation/Fastscape/Boundary_20conditions/Left_20right_20ghost_20nodes_20periodic>`
@@ -391,7 +391,7 @@ If the function you are describing represents a vector-valued function with mult
 
 **Pattern:** [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
 
-**Documentation:** Flux per unit length through the right boundary. Units: ${m^2/yr}$
+**Documentation:** Flux per unit length through the right boundary. Units: $\si{m^2\per\year}$
 ::::
 
 (parameters:Mesh_20deformation/Fastscape/Erosional_20parameters)=
@@ -411,7 +411,7 @@ If the function you are describing represents a vector-valued function with mult
 
 **Pattern:** [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
 
-**Documentation:** Transport coefficient (diffusivity) for bedrock. Units: ${m^2/yr}$ if &ldquo;Use years instead of seconds&rdquo; is true; otherwise, the units are ${m^2/s}$.
+**Documentation:** Transport coefficient (diffusivity) for bedrock. Units: $\si{m^2\per\year}$ if &ldquo;Use years instead of seconds&rdquo; is true; otherwise, the units are $\si{m^2\per\second}$.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Bedrock river incision rate<parameters:Mesh_20deformation/Fastscape/Erosional_20parameters/Bedrock_20river_20incision_20rate>`
@@ -420,7 +420,7 @@ If the function you are describing represents a vector-valued function with mult
 
 **Pattern:** [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
 
-**Documentation:** River incision rate for bedrock in the Stream Power Law. Units: ${m^(1-2drainage_area_exponent)/yr}$ if &ldquo;Use years instead of seconds&rdquo; is true; otherwise, the units are ${m^(1-2drainage_area_exponent)/s}$.
+**Documentation:** River incision rate for bedrock in the Stream Power Law. Units: $m^{1-2\text{drainage\_area\_exponent}}\si{\per\year}$ if &ldquo;Use years instead of seconds&rdquo; is true; otherwise, the units are $m^{1-2\text{drainage\_area\_exponent}}\si{\per\second}$.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Drainage area exponent<parameters:Mesh_20deformation/Fastscape/Erosional_20parameters/Drainage_20area_20exponent>`
@@ -448,7 +448,7 @@ If the function you are describing represents a vector-valued function with mult
 **Pattern:** [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
 
 **Documentation:** When &rsquo;Use a fixed erosional base level&rsquo; is set to true, all ghost nodes of fixed FastScape boundaries where no mass flux is specified by the user (FastScape boundary condition set to 1 and &rsquo;Left/Right/Bottom/Top mass flux&rsquo; set to 0) will be fixed to this elevation. The reflecting boundaries (FastScape boundary condition set to 0) will not be affected, nor are the boundaries where a mass flux is specified.
-Units: m
+Units: $\si{m}$
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Flag to use orographic controls<parameters:Mesh_20deformation/Fastscape/Erosional_20parameters/Flag_20to_20use_20orographic_20controls>`
@@ -475,7 +475,7 @@ Units: m
 
 **Pattern:** [Integer range -2147483648...2147483647 (inclusive)]
 
-**Documentation:** Above this height, the elevation factor is applied. Units: ${m}$
+**Documentation:** Above this height, the elevation factor is applied. Units: $\si{m}$
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Orographic wind barrier height<parameters:Mesh_20deformation/Fastscape/Erosional_20parameters/Orographic_20wind_20barrier_20height>`
@@ -484,7 +484,7 @@ Units: m
 
 **Pattern:** [Integer range -2147483648...2147483647 (inclusive)]
 
-**Documentation:** When terrain reaches this height the wind barrier factor is applied. Units: ${m}$
+**Documentation:** When terrain reaches this height the wind barrier factor is applied. Units: $\si{m}$
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Sediment deposition coefficient<parameters:Mesh_20deformation/Fastscape/Erosional_20parameters/Sediment_20deposition_20coefficient>`
@@ -502,7 +502,7 @@ Units: m
 
 **Pattern:** [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
 
-**Documentation:** Transport coefficient (diffusivity) for sediment. -1 sets this to the bedrock diffusivity. Units: ${m^2/yr}$ if &ldquo;Use years instead of seconds&rdquo; is true; otherwise, the units are ${m^2/s}$.
+**Documentation:** Transport coefficient (diffusivity) for sediment. -1 sets this to the bedrock diffusivity. Units: $\si{m^2\per\year}$ if &ldquo;Use years instead of seconds&rdquo; is true; otherwise, the units are $\si{m^2\per\second}$.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Sediment river incision rate<parameters:Mesh_20deformation/Fastscape/Erosional_20parameters/Sediment_20river_20incision_20rate>`
@@ -511,7 +511,7 @@ Units: m
 
 **Pattern:** [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
 
-**Documentation:** River incision rate for sediment in the Stream Power Law. A value smaller than 0 sets this to the bedrock river incision rate. Units: $m^(1-2drainage_area_exponent)/yr}$ if &ldquo;Use years instead of seconds&rdquo; is true; otherwise, the units are $m^(1-2drainage_area_exponent)/s}$.
+**Documentation:** River incision rate for sediment in the Stream Power Law. A value smaller than 0 sets this to the bedrock river incision rate. Units: $m^{1-2\text{drainage\_area\_exponent}}\si{\per\year}$ if &ldquo;Use years instead of seconds&rdquo; is true; otherwise, the units are $m^{1-2\text{drainage\_area\_exponent}}\si{\per\second}$.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Slope exponent<parameters:Mesh_20deformation/Fastscape/Erosional_20parameters/Slope_20exponent>`
@@ -549,7 +549,7 @@ In the FastScape  visualization files, setting the extra base level may show up 
 
 **Pattern:** [Bool]
 
-**Documentation:** Whether to define Bedrock transport coefficient (diffusivity) using a distribution function. If false, a constant kd value will be used, which can be specified by setting the parameter &ldquo;Bedrock diffusivity&rdquo;. Units: ${m^2/yr}$ if &ldquo;Use years instead of seconds&rdquo; is true; otherwise, the units are ${m^2/s}$.
+**Documentation:** Whether to define Bedrock transport coefficient (diffusivity) using a distribution function. If false, a constant kd value will be used, which can be specified by setting the parameter &ldquo;Bedrock diffusivity&rdquo;. Units: $\si{m^2\per\year}$ if &ldquo;Use years instead of seconds&rdquo; is true; otherwise, the units are $\si{m^2\per\second}$.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Use kf distribution function<parameters:Mesh_20deformation/Fastscape/Erosional_20parameters/Use_20kf_20distribution_20function>`
@@ -558,7 +558,7 @@ In the FastScape  visualization files, setting the extra base level may show up 
 
 **Pattern:** [Bool]
 
-**Documentation:** Whether to define bedrock river incision rate using a distribution function. If false, a constant kf value will be used, which can be specified by setting the parameter &ldquo;Bedrock river incision rate&rdquo;. Units: ${m^(1-2drainage_area_exponent)/yr}$ if &ldquo;Use years instead of seconds&rdquo; is true; otherwise, the units are ${m^(1-2drainage_area_exponent)/s}$.
+**Documentation:** Whether to define bedrock river incision rate using a distribution function. If false, a constant kf value will be used, which can be specified by setting the parameter &ldquo;Bedrock river incision rate&rdquo;. Units: $m^{1-2\text{drainage\_area\_exponent}}\si{\per\year}$ if &ldquo;Use years instead of seconds&rdquo; is true; otherwise, the units are $m^{1-2\text{drainage\_area\_exponent}}\si{\per\second}$.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Wind barrier factor<parameters:Mesh_20deformation/Fastscape/Erosional_20parameters/Wind_20barrier_20factor>`
@@ -653,7 +653,7 @@ If the function you are describing represents a vector-valued function with mult
 
 **Pattern:** [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
 
-**Documentation:** Depth averaging for the sand-silt equation. Units: ${m}$
+**Documentation:** Depth averaging for the sand-silt equation. Units: $\si{m}$
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Sand e-folding depth<parameters:Mesh_20deformation/Fastscape/Marine_20parameters/Sand_20e_2dfolding_20depth>`
@@ -662,7 +662,7 @@ If the function you are describing represents a vector-valued function with mult
 
 **Pattern:** [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
 
-**Documentation:** E-folding depth for the exponential of the sand porosity law. Units: ${m}$
+**Documentation:** E-folding depth for the exponential of the sand porosity law. Units: $\si{m}$
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Sand porosity<parameters:Mesh_20deformation/Fastscape/Marine_20parameters/Sand_20porosity>`
@@ -680,7 +680,7 @@ If the function you are describing represents a vector-valued function with mult
 
 **Pattern:** [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
 
-**Documentation:** Transport coefficient (diffusivity) for sand. Units: ${m^2/yr}$
+**Documentation:** Transport coefficient (diffusivity) for sand. Units: $\si{m^2\per\year}$
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Sea level<parameters:Mesh_20deformation/Fastscape/Marine_20parameters/Sea_20level>`
@@ -689,7 +689,7 @@ If the function you are describing represents a vector-valued function with mult
 
 **Pattern:** [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
 
-**Documentation:** Constant sea level relative to the ASPECT surface, where the maximum Z or Y extent in ASPECT is a sea level of zero. Units: ${m}$
+**Documentation:** Constant sea level relative to the ASPECT surface, where the maximum Z or Y extent in ASPECT is a sea level of zero. Units: $\si{m}$
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Silt e-folding depth<parameters:Mesh_20deformation/Fastscape/Marine_20parameters/Silt_20e_2dfolding_20depth>`
@@ -698,7 +698,7 @@ If the function you are describing represents a vector-valued function with mult
 
 **Pattern:** [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
 
-**Documentation:** E-folding depth for the exponential of the silt porosity law. Units: ${m}$
+**Documentation:** E-folding depth for the exponential of the silt porosity law. Units: $\si{m}$
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Silt fraction<parameters:Mesh_20deformation/Fastscape/Marine_20parameters/Silt_20fraction>`
@@ -725,7 +725,7 @@ If the function you are describing represents a vector-valued function with mult
 
 **Pattern:** [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
 
-**Documentation:** Transport coefficient (diffusivity) for silt. Units: ${m^2/yr}$
+**Documentation:** Transport coefficient (diffusivity) for silt. Units: $\si{m^2\per\year}$
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Use sea level function<parameters:Mesh_20deformation/Fastscape/Marine_20parameters/Use_20sea_20level_20function>`
