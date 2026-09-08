@@ -222,9 +222,22 @@ and
 
 Among others this release includes the following significant changes:
 
-- ASPECT can now couple to the landscape
-  evolution library Landlab to deform the surface.
-  (Timo Heister, Wolfgang Bangerth, Daniel Douglas)
+- Support for modeling surface deformation has been significantly
+  extended. Fastscape erodibility can now vary in space and time according to
+  climate and sea level data, checkpointing functionality has been improved,
+  tangential boundary velocities along deformed boundaries are more accurate,
+  and support for initially deformed boundaries has been improved. Preliminary
+  coupling to the landscape evolution library Landlab is available as well.
+  (Liang Xue, Derek Neuharth, Michael Pons, Daniel Douglas, Zhibin Lei, Anne
+   Glerum, Ninghui Tian, Bob Myhill, Rene Gassmoeller, Timo Heister, Wolfgang
+   Bangerth)
+
+- Modeling crystal-preferred orientation and anisotropic viscosity has been
+  significantly improved. New slip systems for olivine and clinopyroxene have
+  been added and benchmarked against lab results, a cookbook for CPO-induced
+  anisotropy has been added, checkpointing of CPO has been improved.
+  (Xiaochuan Tian, Yijun Wang, Theo Haeussler, Agnes Kiraly, Daniel Douglas,
+   Menno Fraters)
 
 - There is a new plugin system for prescribed dilation and a plugin system that
   allows prescribing solution values in parts of the model domain.
@@ -262,9 +275,26 @@ Among others this release includes the following significant changes:
 
 - Checkpointing can now also be requested at specific model times. Parameters
   have been added to configure how many checkpoints to keep, restart from a
-  specific checkpoint slot, or restart from the checkpoint whose time is closest
-  to a requested model time.
-  (Anne Glerum, Ninghui Tian)
+  specific checkpoint, or restart from the checkpoint whose time is closest to
+  a specified model time. The checkpoint file structure has been improved.
+  (Anne Glerum, Ninghui Tian, Timo Heister)
+
+- The geometric multigrid (GMG) Stokes solvers no longer require material
+  property averaging and support more averaging types. The global coarsening
+  variant of GMG now supports periodic boundary conditions in Cartesian and
+  spherical geometries and supports mesh refinement on periodic boundaries.
+  (Timo Heister)
+
+- Two-phase flow simulations can now use discontinuous finite elements, Darcy
+  advection can now proceed along pressure gradients instead of purely buoyancy
+  driven. Particle properties can be interpolated into compositional fields of
+  different finite element discretizations.
+  (Ryan Stoner, Daniel Douglas, Timo Heister, Francesco Radica)
+
+- A linear solver failure strategy inside nonlinear solvers was introduced.
+  Bugfixes to adiabatic profile and strain rate calculations lead to more
+  robust linear and nonlinear Stokes solver convergence.
+  (Haoyuan Li, Ranpeng Li, Qianyi Lu, Yimin Jin)
 
 - The Geodynamic World Builder has been updated to version 1.1. Initial ASPECT
   topography can now be prescribed through the World Builder.
