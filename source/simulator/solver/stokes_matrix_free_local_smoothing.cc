@@ -1824,6 +1824,21 @@ namespace aspect
 
 
   template <int dim, int velocity_degree>
+  const std::vector<std::shared_ptr<const Triangulation<dim, dim>>> &
+  StokesMatrixFreeHandlerLocalSmoothingImplementation<dim, velocity_degree>::get_multigrid_triangulations() const
+  {
+    AssertThrow(false,
+                ExcMessage("The local smoothing matrix-free Stokes solver does not "
+                           "use a sequence of triangulations."));
+
+    // Unreachable, but it is necessary to return something:
+    static const std::vector<std::shared_ptr<const Triangulation<dim, dim>>> empty_triangulations;
+    return empty_triangulations;
+  }
+
+
+
+  template <int dim, int velocity_degree>
   void StokesMatrixFreeHandlerLocalSmoothingImplementation<dim, velocity_degree>::build_preconditioner()
   {
     this->get_computing_timer().enter_subsection("Build Stokes preconditioner");

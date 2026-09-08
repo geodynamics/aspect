@@ -1440,6 +1440,24 @@ namespace aspect
 
 
   template <int dim, int velocity_degree>
+  void
+  StokesMatrixFreeHandlerGlobalCoarseningImplementation<dim, velocity_degree>::setup_multigrid_hierarchy()
+  {
+    trias = dealii::MGTransferGlobalCoarseningTools::create_geometric_coarsening_sequence(this->get_triangulation());
+  }
+
+
+
+  template <int dim, int velocity_degree>
+  const std::vector<std::shared_ptr<const Triangulation<dim, dim>>> &
+  StokesMatrixFreeHandlerGlobalCoarseningImplementation<dim, velocity_degree>::get_multigrid_triangulations() const
+  {
+    return trias;
+  }
+
+
+
+  template <int dim, int velocity_degree>
   void StokesMatrixFreeHandlerGlobalCoarseningImplementation<dim, velocity_degree>::setup_dofs()
   {
     // Mapping used on the level triangulations of the multigrid hierarchy;
@@ -1450,7 +1468,7 @@ namespace aspect
     // This vector will be refilled with the new MatrixFree objects below:
     matrix_free_objects.clear();
 
-    trias = dealii::MGTransferGlobalCoarseningTools::create_geometric_coarsening_sequence (this->get_triangulation());
+    Assert(!trias.empty(), ExcInternalError());
     min_level = 0;
     max_level = trias.size() - 1;
     constraints_v.resize(min_level, max_level);
