@@ -50,6 +50,14 @@ jobs:
             result-file: "changes-test-results-9.7.diff"
             container-options: '--user 0 --name container'
             use-tpetra: "OFF"
+          - image: "geodynamics/aspect-tester:jammy-dealii-9.8-v1"
+            run-tests: "ON"
+            compare-tests: "OFF"
+            build-with-python: "OFF"
+            build-with-fastscape: "OFF"
+            result-file: "changes-test-results-9.8.diff"
+            container-options: '--user 0 --name container'
+            use-tpetra: "OFF"
           - image: "geodynamics/aspect-tester:jammy-dealii-master"
             run-tests: "ON"
             compare-tests: "OFF"
