@@ -1,6 +1,6 @@
 
 /*
- Copyright (C) 2015 - 2024 by the authors of the ASPECT code.
+ Copyright (C) 2015 - 2026 by the authors of the ASPECT code.
 
  This file is part of ASPECT.
 
