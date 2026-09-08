@@ -1943,7 +1943,7 @@ namespace aspect
                              "for 5+ Myr. Units: $\\si{m\\per\\year}$");
           prm.declare_entry ("Sediment rain time intervals", "0",
                              Patterns::List (Patterns::Double(0)),
-                             "A list of times to change the sediment rain rate. Units: $\\si{yr}$");
+                             "A list of times to change the sediment rain rate. Units: $\\si{\\year}$");
           prm.declare_entry("Initial noise magnitude", "5",
                             Patterns::Double(),
                             "Maximum topography change from the initial noise. Units: $\\si{m}$");
@@ -2013,13 +2013,13 @@ namespace aspect
                               Patterns::Bool(),
                               "Whether to define bedrock river incision rate using a distribution function. "
                               "If false, a constant kf value will be used, which can be specified by setting "
-                              "the parameter ``Bedrock river incision rate''. Units: ${m^{1-2\text{drainage_area_exponent}}/yr}$ "
-                              "if ``Use years instead of seconds'' is true; otherwise, the units are ${m^{1-2\text{drainage_area_exponent}}/s}$.");
+                              "the parameter ``Bedrock river incision rate''. Units: $m^{1-2\\text{drainage\\_area\\_exponent}}\\si{\\per\\year}$ "
+                              "if ``Use years instead of seconds'' is true; otherwise, the units are $m^{1-2\\text{drainage\\_area\\_exponent}}\\si{\\per\\second}$.");
             prm.declare_entry("Bedrock river incision rate", "1e-5",
                               Patterns::Double(),
                               "River incision rate for bedrock in the Stream Power Law. "
-                              "Units: ${m^{1-2\text{drainage_area_exponent}}/yr}$ if ``Use years instead of seconds'' is true; "
-                              "otherwise, the units are ${m^{1-2\text{drainage_area_exponent}}/s}$.");
+                              "Units: $m^{1-2\\text{drainage\\_area\\_exponent}}\\si{\\per\\year}$ if ``Use years instead of seconds'' is true; "
+                              "otherwise, the units are $m^{1-2\\text{drainage\\_area\\_exponent}}\\si{\\per\\second}$.");
             prm.enter_subsection ("kf distribution function");
             {
               Functions::ParsedFunction<2>::declare_parameters(prm, 2);
@@ -2028,8 +2028,8 @@ namespace aspect
             prm.declare_entry("Sediment river incision rate", "-1",
                               Patterns::Double(),
                               "River incision rate for sediment in the Stream Power Law. A value smaller than 0 sets this to the bedrock river incision rate. "
-                              "Units: $m^{1-2\text{drainage_area_exponent}}/yr}$ if ``Use years instead of seconds'' is true; "
-                              "otherwise, the units are $m^{1-2\text{drainage_area_exponent}}/s}$.");
+                              "Units: $m^{1-2\\text{drainage\\_area\\_exponent}}\\si{\\per\\year}$ if ``Use years instead of seconds'' is true; "
+                              "otherwise, the units are $m^{1-2\\text{drainage\\_area\\_exponent}}\\si{\\per\\second}$.");
 
             // Define Bedrock transport coefficient (Kd) as a constant value of time dependent user-defined function
             prm.declare_entry("Use kd distribution function", "false",

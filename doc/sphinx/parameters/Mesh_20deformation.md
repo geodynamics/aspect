@@ -245,7 +245,7 @@ If the function you are describing represents a vector-valued function with mult
 
 **Pattern:** [List of <[Double 0...MAX_DOUBLE (inclusive)]> of length 0...4294967295 (inclusive)]
 
-**Documentation:** A list of times to change the sediment rain rate. Units: $\si{yr}$
+**Documentation:** A list of times to change the sediment rain rate. Units: $\si{\year}$
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Surface refinement difference<parameters:Mesh_20deformation/Fastscape/Surface_20refinement_20difference>`
@@ -420,7 +420,7 @@ If the function you are describing represents a vector-valued function with mult
 
 **Pattern:** [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
 
-**Documentation:** River incision rate for bedrock in the Stream Power Law. Units: $\si{m^{1-2\,\mathrm{drainage\_area\_exponent}}\per\year}$ if &ldquo;Use years instead of seconds&rdquo; is true; otherwise, the units are $\si{m^{1-2\,\mathrm{drainage\_area\_exponent}}\per\second}$.
+**Documentation:** River incision rate for bedrock in the Stream Power Law. Units: $m^{1-2\text{drainage\_area\_exponent}}\si{\per\year}$ if &ldquo;Use years instead of seconds&rdquo; is true; otherwise, the units are $m^{1-2\text{drainage\_area\_exponent}}\si{\per\second}$.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Drainage area exponent<parameters:Mesh_20deformation/Fastscape/Erosional_20parameters/Drainage_20area_20exponent>`
@@ -511,7 +511,7 @@ Units: $\si{m}$
 
 **Pattern:** [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
 
-**Documentation:** River incision rate for sediment in the Stream Power Law. A value smaller than 0 sets this to the bedrock river incision rate. Units: $\si{m^{1-2\,\mathrm{drainage\_area\_exponent}}\per\year}$ if &ldquo;Use years instead of seconds&rdquo; is true; otherwise, the units are $\si{m^{1-2\,\mathrm{drainage\_area\_exponent}}\per\second}$.
+**Documentation:** River incision rate for sediment in the Stream Power Law. A value smaller than 0 sets this to the bedrock river incision rate. Units: $m^{1-2\text{drainage\_area\_exponent}}\si{\per\year}$ if &ldquo;Use years instead of seconds&rdquo; is true; otherwise, the units are $m^{1-2\text{drainage\_area\_exponent}}\si{\per\second}$.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Slope exponent<parameters:Mesh_20deformation/Fastscape/Erosional_20parameters/Slope_20exponent>`
@@ -558,7 +558,7 @@ In the FastScape  visualization files, setting the extra base level may show up 
 
 **Pattern:** [Bool]
 
-**Documentation:** Whether to define bedrock river incision rate using a distribution function. If false, a constant kf value will be used, which can be specified by setting the parameter &ldquo;Bedrock river incision rate&rdquo;. Units: $\si{m^{1-2\,\mathrm{drainage\_area\_exponent}}\per\year}$ if &ldquo;Use years instead of seconds&rdquo; is true; otherwise, the units are $\si{m^{1-2\,\mathrm{drainage\_area\_exponent}}\per\second}$.
+**Documentation:** Whether to define bedrock river incision rate using a distribution function. If false, a constant kf value will be used, which can be specified by setting the parameter &ldquo;Bedrock river incision rate&rdquo;. Units: $m^{1-2\text{drainage\_area\_exponent}}\si{\per\year}$ if &ldquo;Use years instead of seconds&rdquo; is true; otherwise, the units are $m^{1-2\text{drainage\_area\_exponent}}\si{\per\second}$.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Wind barrier factor<parameters:Mesh_20deformation/Fastscape/Erosional_20parameters/Wind_20barrier_20factor>`
