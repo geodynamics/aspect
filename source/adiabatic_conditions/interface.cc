@@ -31,6 +31,15 @@ namespace aspect
   namespace AdiabaticConditions
   {
     template <int dim>
+    double
+    Interface<dim>::pressure_at_depth(const double depth) const
+    {
+      return pressure(this->get_geometry_model().representative_point(depth));
+    }
+
+
+
+    template <int dim>
     void Interface<dim>::get_adiabatic_temperature_profile(std::vector<double> &values) const
     {
       const unsigned int num_slices = values.size();

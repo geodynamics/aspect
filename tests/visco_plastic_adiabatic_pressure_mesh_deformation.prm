@@ -1,0 +1,99 @@
+# Verify that adiabatic pressure used by plasticity and viscous creep is
+# evaluated relative to the current surface. The right half of the top boundary
+# moves down by 6 km. Yield stress and diffusion-creep viscosity along both
+# halves of the final surface should remain at their zero-pressure values.
+
+set Dimension                    = 2
+set End time                     = 1e4
+set Maximum time step            = 1e4
+set Use years instead of seconds = true
+set Pressure normalization       = no
+set Surface pressure             = 0
+
+subsection Adiabatic conditions model
+  set Model name = function
+
+  subsection Function
+    set Function expression = 1573; 3.3e4*depth; 3300
+  end
+end
+
+subsection Geometry model
+  set Model name = box
+
+  subsection Box
+    set X extent      = 100e3
+    set Y extent      = 50e3
+    set X repetitions = 2
+    set Y repetitions = 1
+  end
+end
+
+subsection Mesh refinement
+  set Initial adaptive refinement = 0
+  set Initial global refinement   = 2
+end
+
+subsection Mesh deformation
+  set Mesh deformation boundary indicators = top : free surface & boundary function
+  set Additional tangential mesh velocity boundary indicators = left, right
+
+  subsection Boundary function
+    # Move the right half down by 6 km during the single 10 kyr time step.
+    set Function expression = 0; if(x>50e3, -0.6, 0)
+  end
+end
+
+subsection Boundary temperature model
+  set Fixed temperature boundary indicators = bottom, top
+  set List of model names                    = initial temperature
+end
+
+subsection Boundary velocity model
+  set Tangential velocity boundary indicators = bottom, left, right
+end
+
+subsection Initial temperature model
+  set Model name = function
+
+  subsection Function
+    set Function expression = 1573
+  end
+end
+
+subsection Gravity model
+  set Model name = vertical
+
+  subsection Vertical
+    set Magnitude = 0
+  end
+end
+
+subsection Material model
+  set Model name = visco plastic
+
+  subsection Visco Plastic
+    set Reference strain rate                 = 1e-16
+    set Viscous flow law                      = composite
+    set Use adiabatic pressure in creep viscosity = true
+    set Use adiabatic pressure in plasticity  = true
+    set Angles of internal friction           = 10
+    set Cohesions                             = 1e6
+  end
+end
+
+subsection Formulation
+  set Formulation = Boussinesq approximation
+end
+
+subsection Postprocess
+  set List of postprocessors = visualization
+
+  subsection Visualization
+    set Time between graphical output = 0
+    set Interpolate output             = false
+    set List of output variables       = named additional outputs, depth, depth including mesh deformation
+    set Output format                  = gnuplot
+    set Number of grouped files        = 1
+  end
+end
