@@ -20,8 +20,7 @@
 
 
 #include <aspect/postprocess/visualization/depth_including_mesh_deformation.h>
-#include <aspect/geometry_model/interface.h>
-#include <aspect/postprocess/current_surface.h>
+#include <aspect/mesh_deformation/interface.h>
 
 
 
@@ -54,20 +53,17 @@ namespace aspect
         Assert (computed_quantities[0].size() == 1,                   ExcInternalError());
         Assert (input_data.solution_values[0].size() == this->introspection().n_components,           ExcInternalError());
 
-        const Postprocess::CurrentSurface<dim> &surface =
-          this->get_postprocess_manager().template get_matching_active_plugin<Postprocess::CurrentSurface<dim>>();
+        AssertThrow(this->get_parameters().mesh_deformation_enabled,
+                    ExcMessage("The 'depth including mesh deformation' "
+                               "visualization requires mesh deformation."));
+
+        const std::vector<double> depths =
+          this->get_mesh_deformation_handler().depth_below_current_surface(
+            input_data.template get_cell<dim>(),
+            input_data.evaluation_points);
 
         for (unsigned int q=0; q<n_quadrature_points; ++q)
-          computed_quantities[q](0) = surface.depth_including_mesh_deformation (input_data.evaluation_points[q]);
-      }
-
-
-
-      template <int dim>
-      std::list<std::string>
-      DepthIncludingMeshDeformation<dim>::required_other_postprocessors() const
-      {
-        return {"current surface"};
+          computed_quantities[q](0) = depths[q];
       }
     }
   }

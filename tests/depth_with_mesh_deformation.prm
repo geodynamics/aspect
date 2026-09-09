@@ -83,7 +83,7 @@ subsection Mesh refinement
 end
 
 subsection Postprocess
-  set List of postprocessors = visualization, current surface
+  set List of postprocessors = visualization
 
   subsection Visualization
     set Time between graphical output = 0

@@ -75,6 +75,15 @@ namespace aspect
 
 
     template <int dim>
+    double
+    Interface<dim>::height_above_reference_mesh_surface(const Point<dim> &position) const
+    {
+      return height_above_reference_surface(position);
+    }
+
+
+
+    template <int dim>
     std::array<double,dim>
     Interface<dim>::cartesian_to_natural_coordinates(const Point<dim> &) const
     {
