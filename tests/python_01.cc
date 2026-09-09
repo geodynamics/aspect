@@ -18,10 +18,13 @@
   <http://www.gnu.org/licenses/>.
 */
 
-#include <aspect/simulator.h>
-#include <aspect/utilities.h>
 
+#include <aspect/utilities.h>
+#include <aspect/simulator_signals.h>
+
+#include <cstdlib>
 #include <iostream>
+#include <string>
 
 #define ASPECT_NUMPY_DEFINE_API
 #include <aspect/python_helper.h>

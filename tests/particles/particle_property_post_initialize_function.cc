@@ -18,7 +18,8 @@
   <http://www.gnu.org/licenses/>.
 */
 
-#include <aspect/simulator.h>
+
+#include <aspect/particle/manager.h>
 #include <aspect/simulator_access.h>
 #include <aspect/particle/property/interface.h>
 

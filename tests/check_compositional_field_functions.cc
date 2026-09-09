@@ -18,7 +18,9 @@
   <http://www.gnu.org/licenses/>.
 */
 
-#include <aspect/simulator.h>
+
+#include <aspect/simulator_signals.h>
+#include <aspect/introspection.h>
 #include <aspect/parameters.h>
 #include <aspect/material_model/utilities.h>
 

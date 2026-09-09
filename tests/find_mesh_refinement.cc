@@ -23,7 +23,7 @@
 #include <aspect/geometry_model/box.h>
 #include <aspect/mesh_refinement/density.h>
 #include <aspect/mesh_refinement/boundary.h>
-#include <aspect/simulator.h>
+
 
 #include <utility>
 #include <limits>

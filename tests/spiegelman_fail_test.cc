@@ -19,7 +19,7 @@
 */
 
 #include <algorithm>
-#include <aspect/simulator.h>
+
 #include <deal.II/grid/tria.h>
 #include <aspect/simulator_access.h>
 #include <aspect/newton.h>

@@ -18,6 +18,8 @@
   <http://www.gnu.org/licenses/>.
 */
 
+
+#include <aspect/simulator_signals.h>
 #include <aspect/simulator.h>
 #include <aspect/material_model/interface.h>
 #include <aspect/material_model/drucker_prager.h>
