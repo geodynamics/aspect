@@ -337,7 +337,7 @@ namespace aspect
     void
     MeshDeformationHandler<dim>::update ()
     {
-      AssertThrow(sim.parameters.mesh_deformation_enabled, ExcInternalError());
+      AssertThrow(this->get_parameters().mesh_deformation_enabled, ExcInternalError());
 
       for (const auto &boundary_and_deformation_objects : mesh_deformation_objects)
         {
@@ -618,7 +618,7 @@ namespace aspect
     template <int dim>
     void MeshDeformationHandler<dim>::execute()
     {
-      AssertThrow(sim.parameters.mesh_deformation_enabled, ExcInternalError());
+      AssertThrow(this->get_parameters().mesh_deformation_enabled, ExcInternalError());
 
       this->get_computing_timer().enter_subsection("Mesh deformation");
 
@@ -679,7 +679,7 @@ namespace aspect
     template <int dim>
     void MeshDeformationHandler<dim>::make_constraints()
     {
-      AssertThrow(sim.parameters.mesh_deformation_enabled, ExcInternalError());
+      AssertThrow(this->get_parameters().mesh_deformation_enabled, ExcInternalError());
 
       // Now construct the mesh displacement constraints
       mesh_velocity_constraints.clear();
@@ -921,10 +921,10 @@ namespace aspect
 
       const QGauss<dim> quadrature(mesh_deformation_fe.degree + 1);
       UpdateFlags update_flags = UpdateFlags(update_values | update_JxW_values | update_gradients);
-      FEValues<dim> fe_values (*sim.mapping, mesh_deformation_fe, quadrature, update_flags);
+      FEValues<dim> fe_values (this->get_mapping(), mesh_deformation_fe, quadrature, update_flags);
 
       const unsigned int dofs_per_cell = fe_values.dofs_per_cell,
-                         dofs_per_face = sim.finite_element.dofs_per_face,
+                         dofs_per_face = this->get_fe().dofs_per_face,
                          n_q_points    = fe_values.n_quadrature_points;
 
       std::vector<types::global_dof_index> cell_dof_indices (dofs_per_cell);
@@ -947,7 +947,7 @@ namespace aspect
                                        dsp,
                                        mesh_velocity_constraints,
                                        false,
-                                       Utilities::MPI::this_mpi_process(sim.mpi_communicator));
+                                       Utilities::MPI::this_mpi_process(this->get_mpi_communicator()));
 
       SparsityTools::distribute_sparsity_pattern(dsp,
                                                  mesh_locally_owned,
@@ -962,8 +962,8 @@ namespace aspect
       FEValuesExtractors::Vector extract_vel(0);
 
       LinearAlgebra::Vector rhs, solution;
-      rhs.reinit(mesh_locally_owned, sim.mpi_communicator);
-      solution.reinit(mesh_locally_owned, sim.mpi_communicator);
+      rhs.reinit(mesh_locally_owned, this->get_mpi_communicator());
+      solution.reinit(mesh_locally_owned, this->get_mpi_communicator());
 
       for (const auto &cell : mesh_deformation_dof_handler.active_cell_iterators())
         if (cell->is_locally_owned())
@@ -1016,7 +1016,7 @@ namespace aspect
 
       // we solve with higher accuracy in the initial timestep:
       const double tolerance
-        = sim.parameters.linear_stokes_solver_tolerance
+        = this->get_parameters().linear_stokes_solver_tolerance
           * ((this->simulator_is_past_initialization()) ? 1.0 : 1e-5);
 
       SolverControl solver_control(5*rhs.size(), tolerance * rhs.l2_norm());
@@ -1049,7 +1049,7 @@ namespace aspect
       if (this->simulator_is_past_initialization())
         {
           // during the simulation, we add dt*solution
-          LinearAlgebra::Vector distributed_mesh_displacements(mesh_locally_owned, sim.mpi_communicator);
+          LinearAlgebra::Vector distributed_mesh_displacements(mesh_locally_owned, this->get_mpi_communicator());
           distributed_mesh_displacements = mesh_displacements;
           distributed_mesh_displacements.add(this->get_timestep(), solution);
           mesh_displacements = distributed_mesh_displacements;
@@ -1122,7 +1122,7 @@ namespace aspect
       additional_data.mapping_update_flags = update_flags;
       std::shared_ptr<MatrixFree<dim, double>> system_mf_storage
         = std::make_shared<MatrixFree<dim, double>>();
-      system_mf_storage->reinit(*sim.mapping,
+      system_mf_storage->reinit(this->get_mapping(),
                                 mesh_deformation_dof_handler,
                                 mesh_velocity_constraints,
                                 QGauss<1>(mesh_deformation_fe_degree + 1),
@@ -1175,7 +1175,7 @@ namespace aspect
       mg_constrained_dofs.clear_user_constraints();
 
       // setup GMG, following deal.II step-37:
-      const unsigned int n_levels = sim.triangulation.n_global_levels();
+      const unsigned int n_levels = this->get_triangulation().n_global_levels();
 
       // Currently does not support periodic boundary constraints
       {
@@ -1214,7 +1214,7 @@ namespace aspect
           const Mapping<dim> &mapping = get_level_mapping(level);
 
           std::set<types::boundary_id> no_flux_boundary
-            = sim.boundary_velocity_manager.get_tangential_boundary_velocity_indicators();
+            = this->get_boundary_velocity_manager().get_tangential_boundary_velocity_indicators();
           if (!no_flux_boundary.empty())
             {
               AffineConstraints<double> user_level_constraints;
@@ -1322,7 +1322,7 @@ namespace aspect
 
       // solve
       const double tolerance
-        = sim.parameters.linear_stokes_solver_tolerance
+        = this->get_parameters().linear_stokes_solver_tolerance
           * ((this->simulator_is_past_initialization()) ? 1.0 : 1e-5);
 
       SolverControl solver_control_mf(5 * rhs.size(),
@@ -1354,7 +1354,7 @@ namespace aspect
 
       // copy solution:
       LinearAlgebra::Vector solution_tmp;
-      solution_tmp.reinit(mesh_locally_owned, sim.mpi_communicator);
+      solution_tmp.reinit(mesh_locally_owned, this->get_mpi_communicator());
       internal::ChangeVectorTypes::copy(solution_tmp, solution);
 
       // Update the mesh velocity vector
@@ -1364,7 +1364,7 @@ namespace aspect
       if (this->simulator_is_past_initialization())
         {
           // during the simulation, we add dt*solution
-          LinearAlgebra::Vector distributed_mesh_displacements(mesh_locally_owned, sim.mpi_communicator);
+          LinearAlgebra::Vector distributed_mesh_displacements(mesh_locally_owned, this->get_mpi_communicator());
           distributed_mesh_displacements = mesh_displacements;
           distributed_mesh_displacements.add(this->get_timestep(), solution_tmp);
           mesh_displacements = distributed_mesh_displacements;
@@ -1384,7 +1384,7 @@ namespace aspect
     void MeshDeformationHandler<dim>::set_initial_topography()
     {
       LinearAlgebra::Vector distributed_initial_topography;
-      distributed_initial_topography.reinit(mesh_locally_owned, sim.mpi_communicator);
+      distributed_initial_topography.reinit(mesh_locally_owned, this->get_mpi_communicator());
 
       if (!include_initial_topography)
         distributed_initial_topography = 0.;
@@ -1395,7 +1395,7 @@ namespace aspect
 
           const Quadrature<dim> quad(support_points);
           const UpdateFlags update_flags = UpdateFlags(update_quadrature_points);
-          FEValues<dim> fs_fe_values (*sim.mapping, mesh_deformation_fe, quad, update_flags);
+          FEValues<dim> fs_fe_values (this->get_mapping(), mesh_deformation_fe, quad, update_flags);
 
           const unsigned int n_q_points = fs_fe_values.n_quadrature_points,
                              dofs_per_cell = fs_fe_values.dofs_per_cell;
@@ -1444,15 +1444,15 @@ namespace aspect
     {
       // Interpolate the mesh vertex velocity onto the Stokes velocity system for use in ALE corrections
       LinearAlgebra::BlockVector distributed_mesh_velocity;
-      distributed_mesh_velocity.reinit(sim.introspection.index_sets.system_partitioning, sim.mpi_communicator);
+      distributed_mesh_velocity.reinit(this->introspection().index_sets.system_partitioning, this->get_mpi_communicator());
 
       const std::vector<Point<dim>> support_points
-        = sim.finite_element.base_element(sim.introspection.component_indices.velocities[0]).get_unit_support_points();
+        = this->get_fe().base_element(this->introspection().component_indices.velocities[0]).get_unit_support_points();
 
       const Quadrature<dim> quad(support_points);
       const UpdateFlags update_flags = UpdateFlags(update_values | update_JxW_values);
-      FEValues<dim> fs_fe_values (*sim.mapping, mesh_deformation_fe, quad, update_flags);
-      FEValues<dim> fe_values (*sim.mapping, sim.finite_element, quad, update_flags);
+      FEValues<dim> fs_fe_values (this->get_mapping(), mesh_deformation_fe, quad, update_flags);
+      FEValues<dim> fe_values (this->get_mapping(), this->get_fe(), quad, update_flags);
       const unsigned int n_q_points = fe_values.n_quadrature_points,
                          dofs_per_cell = fe_values.dofs_per_cell;
 
@@ -1463,7 +1463,7 @@ namespace aspect
       typename DoFHandler<dim>::active_cell_iterator
       fscell = mesh_deformation_dof_handler.begin_active();
 
-      for (const auto &cell : sim.dof_handler.active_cell_iterators())
+      for (const auto &cell : this->get_dof_handler().active_cell_iterators())
         {
           if (cell->is_locally_owned())
             {
@@ -1476,8 +1476,8 @@ namespace aspect
                 for (unsigned int dir=0; dir<dim; ++dir)
                   {
                     const unsigned int support_point_index
-                      = sim.finite_element.component_to_system_index(/*velocity component=*/ sim.introspection.component_indices.velocities[dir],
-                                                                                             /*dof index within component=*/ j);
+                      = this->get_fe().component_to_system_index(/*velocity component=*/ this->introspection().component_indices.velocities[dir],
+                                                                                         /*dof index within component=*/ j);
                     distributed_mesh_velocity[cell_dof_indices[support_point_index]] = velocity_values[j][dir];
                   }
             }
@@ -1492,12 +1492,12 @@ namespace aspect
     template <int dim>
     void MeshDeformationHandler<dim>::setup_dofs()
     {
-      AssertThrow(sim.parameters.mesh_deformation_enabled, ExcInternalError());
+      AssertThrow(this->get_parameters().mesh_deformation_enabled, ExcInternalError());
 
       // these live in the same FE as the velocity variable:
-      mesh_velocity.reinit(sim.introspection.index_sets.system_partitioning,
-                           sim.introspection.index_sets.system_relevant_partitioning,
-                           sim.mpi_communicator);
+      mesh_velocity.reinit(this->introspection().index_sets.system_partitioning,
+                           this->introspection().index_sets.system_relevant_partitioning,
+                           this->get_mpi_communicator());
 
       mesh_deformation_dof_handler.distribute_dofs(mesh_deformation_fe);
 
@@ -1531,10 +1531,13 @@ namespace aspect
           // This design choice was made to correctly track mesh deformation in time,
           // but it requires careful synchronization between the mesh deformation DoFs,
           // the mapping, and the particle handlers.
-          for (auto &pm : sim.particle_managers)
-            pm.get_particle_handler().initialize(this->get_triangulation(),
-                                                 this->get_mapping(),
-                                                 pm.get_property_manager().get_n_property_components());
+          for (unsigned int i = 0; i < this->n_particle_managers(); ++i)
+            {
+              auto &pm = this->get_particle_manager(i);
+              pm.get_particle_handler().initialize(this->get_triangulation(),
+                                                   this->get_mapping(),
+                                                   pm.get_property_manager().get_n_property_components());
+            }
         }
 
       if (this->is_stokes_matrix_free())
@@ -1563,7 +1566,7 @@ namespace aspect
 
               level_displacements[level].reinit(mesh_deformation_dof_handler.locally_owned_mg_dofs(level),
                                                 relevant_mg_dofs,
-                                                sim.mpi_communicator);
+                                                this->get_mpi_communicator());
               level_displacements[level].update_ghost_values();
             }
 
@@ -1619,10 +1622,10 @@ namespace aspect
 
       // This will initialize the mesh displacement and free surface
       // mesh velocity vectors with zero-valued entries.
-      mesh_displacements.reinit(mesh_locally_owned, mesh_locally_relevant, sim.mpi_communicator);
-      old_mesh_displacements.reinit(mesh_locally_owned, mesh_locally_relevant, sim.mpi_communicator);
-      initial_topography.reinit(mesh_locally_owned, mesh_locally_relevant, sim.mpi_communicator);
-      fs_mesh_velocity.reinit(mesh_locally_owned, mesh_locally_relevant, sim.mpi_communicator);
+      mesh_displacements.reinit(mesh_locally_owned, mesh_locally_relevant, this->get_mpi_communicator());
+      old_mesh_displacements.reinit(mesh_locally_owned, mesh_locally_relevant, this->get_mpi_communicator());
+      initial_topography.reinit(mesh_locally_owned, mesh_locally_relevant, this->get_mpi_communicator());
+      fs_mesh_velocity.reinit(mesh_locally_owned, mesh_locally_relevant, this->get_mpi_communicator());
 
       // if we are just starting, we need to set the initial topography.
       if (this->simulator_is_past_initialization() == false ||
@@ -1685,7 +1688,7 @@ namespace aspect
 
       displacements.import_elements(rwv, VectorOperation::insert);
 
-      const unsigned int n_levels = sim.triangulation.n_global_levels();
+      const unsigned int n_levels = this->get_triangulation().n_global_levels();
       for (unsigned int level = 0; level < n_levels; ++level)
         {
           level_displacements[level].zero_out_ghost_values();
