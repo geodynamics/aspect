@@ -27,6 +27,7 @@ system-prereqs.md
 using-candi.md
 fastscape.md
 obtaining.md
+aspect-with-dependencies/index.md
 compiling.md
 documentation.md
 :::
