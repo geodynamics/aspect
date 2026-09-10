@@ -3135,6 +3135,8 @@ namespace aspect
         return symmetrize((rotation_matrix*input_tensor)*rotation_matrix_transposed);
       }
 
+
+
       SymmetricTensor<2,6>
       rotate_kelvin_tensor(const Tensor<2,3> &rotation_tensor, const SymmetricTensor<2,6> &input_tensor)
       {
@@ -3189,6 +3191,7 @@ namespace aspect
 
         return symmetrize((rotation_matrix*input_tensor)*transpose(rotation_matrix));
       }
+
 
 
       SymmetricTensor<2,6>
@@ -3418,6 +3421,63 @@ namespace aspect
     }
 
 
+
+    namespace Quaternions
+    {
+      std::array<double,4>
+      rotation_matrix_to_quaternion(const Tensor<2,3> &rotation_matrix, const double tolerance)
+      {
+        std::array<double,4> quaternion;
+        const double w = 0.5*std::sqrt(std::abs(rotation_matrix[0][0] + rotation_matrix[1][1] + rotation_matrix[2][2] + 1));
+
+        if (std::abs(w) >= tolerance)
+          {
+            quaternion[0] = w;
+            quaternion[1] = (rotation_matrix[2][1] - rotation_matrix[1][2])/(4*w);
+            quaternion[2] = (rotation_matrix[0][2] - rotation_matrix[2][0])/(4*w);
+            quaternion[3] = (rotation_matrix[1][0] - rotation_matrix[0][1])/(4*w);
+          }
+        else
+          {
+            quaternion[0] = w;
+            quaternion[1] = 0.5*std::copysign(1.0,rotation_matrix[2][1]-rotation_matrix[1][2])*std::sqrt(rotation_matrix[0][0]-rotation_matrix[1][1]-rotation_matrix[2][2]+1);
+            quaternion[2] = 0.5*std::copysign(1.0,rotation_matrix[0][2]-rotation_matrix[2][0])*std::sqrt(-rotation_matrix[0][0]+rotation_matrix[1][1]-rotation_matrix[2][2]+1);
+            quaternion[3] = 0.5*std::copysign(1.0,rotation_matrix[1][0]-rotation_matrix[0][1])*std::sqrt(-rotation_matrix[0][0]-rotation_matrix[1][1]+rotation_matrix[2][2]+1);
+          }
+
+        return quaternion;
+      }
+
+
+
+      Tensor<2,3>
+      quaternion_to_rotation_matrix(const std::array<double,4> &quaternion)
+      {
+        const double w = quaternion[0];
+        const double x = quaternion[1];
+        const double y = quaternion[2];
+        const double z = quaternion[3];
+
+        Tensor<2,3> rotation_matrix;
+        rotation_matrix[0][0] = x*x - y*y - z*z + w*w;
+        rotation_matrix[1][1] = y*y - z*z - x*x + w*w;
+        rotation_matrix[2][2] = z*z - x*x - y*y + w*w;
+
+        rotation_matrix[0][1] = 2*(x*y - z*w);
+        rotation_matrix[0][2] = 2*(x*z + y*w);
+        rotation_matrix[1][2] = 2*(y*z - x*w);
+
+        rotation_matrix[1][0] = 2*(x*y + z*w);
+        rotation_matrix[2][0] = 2*(x*z - y*w);
+        rotation_matrix[2][1] = 2*(y*z + x*w);
+
+        return rotation_matrix;
+      }
+
+    }
+
+
+
 // Explicit instantiations
 
 #define INSTANTIATE(dim) \
@@ -3530,6 +3590,13 @@ namespace aspect
     \
     template \
     double consistent_second_invariant_of_deviatoric_tensor(const SymmetricTensor<2,dim> &); \
+  } \
+  \
+  namespace Quaternions \
+  { \
+    std::array<double,4> rotation_matrix_to_quaternion(const Tensor<2,3> &rotation_matrix, const long double tolerance); \
+    \
+    Tensor<2,3> quaternion_to_rotation_matrix(const std::array<double,4> &quaternion); \
   }
 
 

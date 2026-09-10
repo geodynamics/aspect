@@ -1541,6 +1541,38 @@ namespace aspect
       consistent_second_invariant_of_deviatoric_tensor(const SymmetricTensor<2,dim> &input);
     }
 
+    namespace Quaternions
+    {
+      /**
+       * Converts an active rotation matrix to a unit quaternion.
+       * Active rotations are given by the column vectors of the new basis. R=[e1'|e2'|e3']
+       * Unit quaternions are a direct representation of rotations by the quaternion algebra
+       * (https://en.wikipedia.org/wiki/Quaternions_and_spatial_rotation)
+       * and avoid an issue known as gimbal lock (https://en.wikipedia.org/wiki/Gimbal_lock)
+       * Quaternions are often split into a scalar part q[0] and a vector part q[i] i \in {1,2,3}
+       * The scalar part is directly related to the rotation angle by q[0] = cos(rot_angle/2)
+       * The vector part corresponds to the rotation axis n by vec(q) = sin(rot_angle/2)*n.
+       * As the first quaternion component q[0] approaches zero (rotations of 180°),
+       * floating point issues can lead to problems in dividing by q[0].
+       * For this case a tolerance is installed, which if crossed reverts to a more expensive,
+       * but equivalent way of computing the quaternion from the rotation matrix.
+       * (https://en.wikipedia.org/wiki/Rotation_matrix#Quaternion)
+       * The tolerance in this expression should be set on the order of 1e-12.
+       * Quaternions are a double cover of the space of rotations, R(q) = R(-q).
+       * We choose the convention to only work with quaternions that fulfill q[0] > 0.
+       */
+      std::array<double,4> rotation_matrix_to_quaternion(const Tensor<2,3> &rotation_matrix,
+                                                         const double tolerance=1e-12);
+
+      /**
+       * Converts a unit quaternion to a rotation matrix.
+       * This relation between a unit quaternion and a rotation matrix
+       * follows from the quaternion algebra.
+       * (https://en.wikipedia.org/wiki/Quaternions_and_spatial_rotation)
+       */
+      Tensor<2,3> quaternion_to_rotation_matrix(const std::array<double,4> &quaternion);
+    }
+
   }
 #endif
 }

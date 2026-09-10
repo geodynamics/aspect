@@ -642,6 +642,41 @@ TEST_CASE("CPO elastic tensor transform functions")
     REQUIRE(aspect::Utilities::Tensors::levi_civita<3>()[2][2][1] == Approx(0.0));
     REQUIRE(aspect::Utilities::Tensors::levi_civita<3>()[2][2][2] == Approx(0.0));
   }
+
+}
+
+TEST_CASE("Quaternion forward and backward transform")
+{
+  dealii::Tensor<2,3> rotation_matrix = aspect::Utilities::zxz_euler_angles_to_rotation_matrix(34.0, 55.0, 89.0);
+  std::array<double,4> quaternion = aspect::Utilities::Quaternions::rotation_matrix_to_quaternion(rotation_matrix);
+
+  dealii::Tensor<2,3> roundtrip_rotation_matrix = aspect::Utilities::Quaternions::quaternion_to_rotation_matrix(quaternion);
+
+  for (unsigned int row = 0; row < 3; ++row)
+    {
+      for (unsigned int col = 0; col < 3; ++col)
+        {
+          INFO("array index i,j=" << col << ',' << row << ": ");
+          REQUIRE(roundtrip_rotation_matrix[row][col] == Approx(rotation_matrix[row][col]));
+        }
+    }
+
+  // second test for rotations by ~180°
+  rotation_matrix = aspect::Utilities::zxz_euler_angles_to_rotation_matrix(0.0, 0.0, 180+5e-13);
+  quaternion = aspect::Utilities::Quaternions::rotation_matrix_to_quaternion(rotation_matrix);
+
+  roundtrip_rotation_matrix = aspect::Utilities::Quaternions::quaternion_to_rotation_matrix(quaternion);
+
+  for (unsigned int row = 0; row < 3; ++row)
+    {
+      for (unsigned int col = 0; col < 3; ++col)
+        {
+          INFO("check that it does not map back exactly to 0");
+          REQUIRE(std::abs(roundtrip_rotation_matrix[row][col] - rotation_matrix[row][col])<1e-12);
+        }
+    }
+
+
 }
 
 TEST_CASE("Utilities::string_to_unsigned_int")
