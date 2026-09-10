@@ -1,0 +1,55 @@
+include $ASPECT_SOURCE_DIR/benchmarks/rotation_average/convection_box_orthorhombic.prm
+
+set Output directory = output-particle_interpolator_quaternion_average_triclinic
+set End time         = 0.06
+
+subsection Mesh refinement
+  set Initial global refinement = 2
+end
+
+subsection Postprocess
+  set List of postprocessors = visualization, particles, crystal preferred orientation, composition statistics
+
+  subsection Visualization
+    set Interpolate output = false
+    set Time between graphical output = 1
+    set List of output variables      = 
+    set Output format                 = gnuplot
+  end
+
+  subsection Crystal Preferred Orientation
+    set Time between data output    = 1
+    set Write in background thread  = true
+    set Compress cpo data files     = true
+    set Write out raw cpo data      =  
+    set Write out draw volume weighted cpo data = 
+  end
+
+  subsection Particles
+    set Time between data output  = 1
+    set Data output format        = gnuplot
+    set Exclude output properties = volume fraction, rotation_matrix
+  end
+end
+
+# # # Particles # # # 
+
+subsection Particles
+    set List of particle properties   = crystal preferred orientation, cpo bingham average
+    # We can use a triclinic average or rather a general rotation average.
+    # This average is well know in the aviation industry. 
+    # (Markley et.al. 2007, https://doi.org/10.2514/1.28949)
+    # For comparison we use the cell average instead 
+    # of a linear least squares interpolator 
+    # just to test a different base models. 
+    subsection Interpolator
+      subsection Quaternion average
+        set Base interpolation scheme = cell average
+        set Symmetry group            = triclinic
+      end
+    end
+    # set a minimum amount of particles
+    subsection Crystal Preferred Orientation
+        set Number of grains per particle = 10
+    end
+end
