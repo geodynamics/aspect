@@ -1,0 +1,5 @@
+Fixed: When setting "Use fractional melting" to true in
+the Katz2003 mantle melting reaction model, the melt
+freezing rate was not being correctly applied.
+<br>
+(Daniel Douglas, 2026/09/11)

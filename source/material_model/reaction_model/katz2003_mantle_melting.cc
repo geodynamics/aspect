@@ -187,12 +187,13 @@ namespace aspect
 
                 // calculate the melting rate as difference between the equilibrium melt fraction
                 // and the solution of the previous time step
-                double porosity_change = 0.0;
+                double porosity_change  = 0.0;
+                double eq_melt_fraction = 0.0;
                 if (fractional_melting)
                   {
                     // solidus is lowered by previous melting events (fractional melting)
                     const double solidus_change = (maximum_melt_fraction - old_porosity) * depletion_solidus_change;
-                    const double eq_melt_fraction = melt_fraction(in.temperature[i] - solidus_change, this->get_adiabatic_conditions().pressure(in.position[i]));
+                    eq_melt_fraction = melt_fraction(in.temperature[i] - solidus_change, this->get_adiabatic_conditions().pressure(in.position[i]));
                     porosity_change = eq_melt_fraction - old_porosity;
                   }
                 else
@@ -210,34 +211,34 @@ namespace aspect
                     // (peridotite field), which decreases as melt freezes, reaches the same value as the equilibrium
                     // melt fraction, whatever happens earlier. An exception is when the melt fraction is zero; in this case
                     // all melt should freeze.
-                    const double eq_melt_fraction = melt_fraction(in.temperature[i], this->get_adiabatic_conditions().pressure(in.position[i]));
-
-                    // If the porosity change is not negative, there is no freezing, and the change in porosity
-                    // is covered by the melting relation above.
-
-                    // porosity reaches the equilibrium melt fraction:
-                    const double porosity_change_wrt_melt_fraction = std::min(eq_melt_fraction - old_porosity - porosity_change,0.0);
-
-                    // depletion reaches the equilibrium melt fraction:
-                    const double porosity_change_wrt_depletion = std::min((eq_melt_fraction - std::max(maximum_melt_fraction, 0.0))
-                                                                          * (1.0 - old_porosity) / (1.0 - maximum_melt_fraction),0.0);
-                    double freezing_amount = std::max(porosity_change_wrt_melt_fraction, porosity_change_wrt_depletion);
-
-                    if (eq_melt_fraction == 0.0)
-                      freezing_amount = - old_porosity;
-
-                    porosity_change += freezing_amount;
-
-                    // Adapt time scale of freezing with respect to melting.
-                    // We have to multiply with the melting time scale here to obtain the porosity change
-                    // that happens in the time defined by the melting time scale (as opposed to a rate).
-                    // This is important because we want to perform some checks on this quantity (for example,
-                    // we want to make sure that this change does not lead to a negative porosity, see below).
-                    // Later on, the overall porosity change is then divided again by the melting time scale
-                    // to obtain the rate of melting or freezing, which is used in the operator splitting scheme.
-                    if (porosity_change < 0 )
-                      porosity_change *= freezing_rate * melting_time_scale;
+                    eq_melt_fraction = melt_fraction(in.temperature[i], this->get_adiabatic_conditions().pressure(in.position[i]));
                   }
+
+                // If the porosity change is not negative, there is no freezing, and the change in porosity
+                // is covered by the melting relation above.
+
+                // porosity reaches the equilibrium melt fraction:
+                const double porosity_change_wrt_melt_fraction = std::min(eq_melt_fraction - old_porosity - porosity_change,0.0);
+
+                // depletion reaches the equilibrium melt fraction:
+                const double porosity_change_wrt_depletion = std::min((eq_melt_fraction - std::max(maximum_melt_fraction, 0.0))
+                                                                      * (1.0 - old_porosity) / (1.0 - maximum_melt_fraction),0.0);
+                double freezing_amount = std::max(porosity_change_wrt_melt_fraction, porosity_change_wrt_depletion);
+
+                if (eq_melt_fraction == 0.0)
+                  freezing_amount = - old_porosity;
+
+                porosity_change += freezing_amount;
+
+                // Adapt time scale of freezing with respect to melting.
+                // We have to multiply with the melting time scale here to obtain the porosity change
+                // that happens in the time defined by the melting time scale (as opposed to a rate).
+                // This is important because we want to perform some checks on this quantity (for example,
+                // we want to make sure that this change does not lead to a negative porosity, see below).
+                // Later on, the overall porosity change is then divided again by the melting time scale
+                // to obtain the rate of melting or freezing, which is used in the operator splitting scheme.
+                if (porosity_change < 0 )
+                  porosity_change *= freezing_rate * melting_time_scale;
 
                 // remove melt that gets close to the surface
                 if (this->get_geometry_model().depth(in.position[i]) < extraction_depth)
