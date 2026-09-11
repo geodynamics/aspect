@@ -39,6 +39,8 @@ namespace aspect
                                              AffineConstraints<double> &mesh_velocity_constraints,
                                              const std::set<types::boundary_id> &boundary_ids) const
     {
+      this->get_computing_timer().enter_subsection("Parallel Unstructured Interface");
+
       // First compute a (global) vector that has the correct ASPECT solution at all boundary nodes.
       const std::vector<std::vector<double>> aspect_surface_solution = evaluate_aspect_solution_at_points();
 
@@ -80,6 +82,7 @@ namespace aspect
                                                          v_interpolated_ghosted(index));
               }
         }
+      this->get_computing_timer().leave_subsection("Parallel Unstructured Interface");
     }
 
 
@@ -88,6 +91,8 @@ namespace aspect
     ParallelUnstructuredInterface<dim>::
     set_evaluation_points (const std::vector<Point<dim>> &evaluation_points)
     {
+      this->get_computing_timer().enter_subsection("Parallel Unstructured Interface");
+
       // First, save a copy of the points at which we need the solution,
       // among other reasons so that we can track that input arguments
       // for later function calls describe the same number of points.
@@ -265,6 +270,7 @@ namespace aspect
         this->evaluation_points.clear();
         this->remote_point_evaluator.reset();
       });
+      this->get_computing_timer().leave_subsection("Parallel Unstructured Interface");
     }
 
 
