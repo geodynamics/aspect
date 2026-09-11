@@ -1,0 +1,58 @@
+
+Number of active cells: 256 (on 5 levels)
+Number of degrees of freedom: 8,969 (2,178+1,057+2,178+289+1,089+1,089+1,089)
+
+*** Timestep 0:  t=0 years, dt=0 years
+   Solving temperature system... 0 iterations.
+   Skipping porosity composition solve because RHS is zero.
+   Skipping peridotite composition solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 0+0 iterations.
+   Solving fluid velocity system... 0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.23575e-16, 0, 0, 0
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 1.23575e-16
+
+
+   Postprocessing:
+     Compositions min/max/mass: 0/0/0 // 0/0/0
+     Temperature min/avg/max:   1000 K, 1000 K, 1000 K
+     Writing graphical output:  output-use_fractional_melting/solution/solution-00000
+
+*** Timestep 1:  t=100000 years, dt=100000 years
+   Solving composition reactions... in 79 substep(s).
+   Solving temperature system... 0 iterations.
+   Solving porosity system ... 0 iterations.
+   Solving peridotite system ... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 0+0 iterations.
+   Solving fluid velocity system... 0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.84337e-16, 1.48935e-16, 1.48935e-16, 0
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 1.84337e-16
+
+
+   Postprocessing:
+     Compositions min/max/mass: 0.09999/0.09999/9.999e+08 // 0.09999/0.09999/9.999e+08
+     Temperature min/avg/max:   1000 K, 1000 K, 1000 K
+     Writing graphical output:  output-use_fractional_melting/solution/solution-00001
+
+*** Timestep 2:  t=200000 years, dt=100000 years
+   Solving composition reactions... in 51 substep(s).
+   Solving temperature system... 0 iterations.
+   Solving porosity system ... 0 iterations.
+   Solving peridotite system ... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 0+0 iterations.
+   Solving fluid velocity system... 0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 2.70835e-16, 1.76092e-16, 1.76092e-16, 0
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 2.70835e-16
+
+
+   Postprocessing:
+     Compositions min/max/mass: 0.09999/0.09999/9.999e+08 // 0.09999/0.09999/9.999e+08
+     Temperature min/avg/max:   1000 K, 1000 K, 1000 K
+     Writing graphical output:  output-use_fractional_melting/solution/solution-00002
+
+Termination requested by criterion: end time
+
+
+

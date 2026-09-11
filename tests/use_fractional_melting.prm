@@ -1,0 +1,15 @@
+#########################################################
+# This is a test for the use fractional melting
+# functionality in the Katz2003 reaction model. It is the
+# same as melting_rate_operator_splitting, except that it
+# uses fractional melting with a non-zero depletion
+# solidus change.
+
+include $ASPECT_SOURCE_DIR/tests/melting_rate_operator_splitting.prm
+
+subsection Material model
+  subsection Melt simple
+    set Depletion solidus change = 200.0
+    set Use fractional melting   = true
+  end
+end
