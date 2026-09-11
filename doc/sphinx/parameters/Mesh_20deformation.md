@@ -56,6 +56,15 @@ The FastScape manual (https://fastscape.org/fastscapelib-fortran/) provides more
 **Documentation:** Polynomial degree used by the MappingQEulerian object for mesh deformation. Set to &lsquo;auto&lsquo; to choose a robust default. For geometries with curved elements, the mapping order is the larger of 4 and the Stokes velocity polynomial degree. For geometries without curved elements, the mapping order is 1. Set this parameter to an integer >= 1 to explicitly enforce a mapping order. In most cases, &lsquo;auto&lsquo; is recommended. Explicit values are mainly useful for stability investigations or reproducibility studies.
 ::::
 
+::::{dropdown} __Parameter:__ {ref}`Number of initial mesh deformation substeps<parameters:Mesh_20deformation/Number_20of_20initial_20mesh_20deformation_20substeps>`
+:name: parameters:Mesh_20deformation/Number_20of_20initial_20mesh_20deformation_20substeps
+**Default value:** 1
+
+**Pattern:** [Integer range 1...2147483647 (inclusive)]
+
+**Documentation:** Number of substeps over which the initial mesh deformation is applied. The full initial deformation is split into this many equal steps. Applying the deformation gradually avoids producing inverted cells for steep initial topography but requires a linear solve in each step. The default value of 1 applies the entire initial deformation in one step.
+::::
+
 (parameters:Mesh_20deformation/Ascii_20data_20model)=
 ## **Subsection:** Mesh deformation / Ascii data model
 ::::{dropdown} __Parameter:__ {ref}`Data directory<parameters:Mesh_20deformation/Ascii_20data_20model/Data_20directory>`

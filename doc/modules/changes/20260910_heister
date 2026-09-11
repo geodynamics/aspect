@@ -1,0 +1,6 @@
+New: The mesh deformation handler can now apply the initial mesh deformation
+in a configurable number of substeps (new parameter ``Number of initial mesh
+deformation substeps'', default 1) to avoid inverted cells for steep initial
+topography.
+<br>
+(Timo Heister, 2026/09/10)

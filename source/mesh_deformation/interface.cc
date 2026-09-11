@@ -239,7 +239,8 @@ namespace aspect
         mesh_deformation_dof_handler (sim.triangulation),
         include_initial_topography(false),
         use_automatic_mapping_order(true),
-        explicit_mapping_order(1)
+        explicit_mapping_order(1),
+        initial_deformation_substeps(1)
     {
     }
 
@@ -401,6 +402,14 @@ namespace aspect
                            "Set this parameter to an integer >= 1 to explicitly enforce a mapping order. "
                            "In most cases, `auto` is recommended. Explicit values are mainly useful for "
                            "stability investigations or reproducibility studies.");
+
+        prm.declare_entry ("Number of initial mesh deformation substeps", "1",
+                           Patterns::Integer(1),
+                           "Number of substeps over which the initial mesh deformation is applied. "
+                           "The full initial deformation is split into this many equal steps. Applying "
+                           "the deformation gradually avoids producing inverted cells for steep initial "
+                           "topography but requires a linear solve in each step. The default value of 1 "
+                           "applies the entire initial deformation in one step.");
 
         prm.enter_subsection ("Free surface");
         {
@@ -584,6 +593,7 @@ namespace aspect
             explicit_mapping_order = static_cast<unsigned int>(parsed_mapping_order);
           }
 
+        initial_deformation_substeps = prm.get_integer("Number of initial mesh deformation substeps");
       }
       prm.leave_subsection ();
 
@@ -789,7 +799,7 @@ namespace aspect
 
 
     template <int dim>
-    void MeshDeformationHandler<dim>::make_initial_constraints()
+    void MeshDeformationHandler<dim>::make_initial_constraints(const double initial_deformation_scale)
     {
       AssertThrow(this->get_parameters().mesh_deformation_enabled, ExcInternalError());
 
@@ -874,17 +884,22 @@ namespace aspect
                 {
                   if (current_plugin_constraints.is_constrained(local_line))
                     {
+                      // Scale the plugin's initial deformation by the requested
+                      // fraction so that the initial topography can be applied
+                      // incrementally over a number of substeps (see
+                      // MeshDeformationHandler::setup_dofs()).
+                      const double inhomogeneity
+                        = initial_deformation_scale * current_plugin_constraints.get_inhomogeneity(local_line);
                       if (plugin_constraints.is_constrained(local_line) == false)
                         {
                           plugin_constraints.add_constraint(local_line,
                                                             {},
-                                                            current_plugin_constraints.get_inhomogeneity(local_line));
+                                                            inhomogeneity);
                         }
                       else
                         {
                           // Add the current plugin constraints to the existing inhomogeneity
-                          const double inhomogeneity = plugin_constraints.get_inhomogeneity(local_line);
-                          plugin_constraints.set_inhomogeneity(local_line, current_plugin_constraints.get_inhomogeneity(local_line) + inhomogeneity);
+                          plugin_constraints.set_inhomogeneity(local_line, inhomogeneity + plugin_constraints.get_inhomogeneity(local_line));
                         }
                     }
                 }
@@ -1714,11 +1729,28 @@ namespace aspect
         {
           this->get_computing_timer().enter_subsection("Mesh deformation initialize");
 
-          make_initial_constraints();
-          if (this->is_stokes_matrix_free())
-            compute_mesh_displacements_gmg();
-          else
-            compute_mesh_displacements();
+          // Apply the initial deformation incrementally over a number of
+          // substeps instead of all at once. On substep k of K, only a
+          // fraction k/K of the full initial topography is prescribed on the
+          // boundary, and the corresponding Laplace problem is solved on the
+          // already deformed configuration of the previous substep (this
+          // happens automatically because the simulator's mapping reads the
+          // updated mesh_displacements vector). Deforming the mesh gradually
+          // keeps the intermediate and final meshes free of inverted cells
+          // (negative Jacobian determinant), which a single-shot deformation
+          // can produce for steep initial topography.
+          //
+          // The number of substeps K is a user parameter
+          // ("Number of initial mesh deformation substeps"); K = 1 (the
+          // default) applies the entire initial deformation in a single step.
+          for (unsigned int substep = 1; substep <= initial_deformation_substeps; ++substep)
+            {
+              make_initial_constraints(double(substep) / double(initial_deformation_substeps));
+              if (this->is_stokes_matrix_free())
+                compute_mesh_displacements_gmg();
+              else
+                compute_mesh_displacements();
+            }
 
           this->get_computing_timer().leave_subsection("Mesh deformation initialize");
         }

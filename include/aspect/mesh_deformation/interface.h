@@ -439,8 +439,12 @@ namespace aspect
          * deformation boundaries to describe a displacement (initial
          * topography) to be used during the simulation. The
          * displacement is given by the active deformation plugins.
+         *
+         * The inhomogeneities contributed by the deformation plugins are
+         * multiplied by @p initial_deformation_scale. This is used to apply
+         * the initial deformation incrementally over a number of substeps.
          */
-        void make_initial_constraints ();
+        void make_initial_constraints (const double initial_deformation_scale);
 
         /**
          * Compute the constraints for the mesh velocity on the
@@ -680,6 +684,18 @@ namespace aspect
          * Explicit mapping order used when automatic selection is disabled.
          */
         unsigned int explicit_mapping_order;
+
+        /**
+         * Number of substeps over which the initial mesh deformation
+         * (initial topography) is applied. The full initial deformation is
+         * split into this many equal steps; on substep k of K only a fraction
+         * k/K of the initial topography is prescribed, and each subsequent
+         * substep is solved on the already deformed configuration. This
+         * avoids producing inverted cells (negative Jacobian determinant) for
+         * steep initial topography, which a single-shot deformation (K = 1)
+         * can create.
+         */
+        unsigned int initial_deformation_substeps;
 
         /**
          * If required, store a mapping for each multigrid level.
