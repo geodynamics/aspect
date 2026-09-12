@@ -199,6 +199,15 @@ Once derivatives are used in a Newton method, ASPECT always uses the Eisenstat W
 
 (parameters:Solver_20parameters/Operator_20splitting_20parameters)=
 ## **Subsection:** Solver parameters / Operator splitting parameters
+::::{dropdown} __Parameter:__ {ref}`Reaction solve strategy<parameters:Solver_20parameters/Operator_20splitting_20parameters/Reaction_20solve_20strategy>`
+:name: parameters:Solver_20parameters/Operator_20splitting_20parameters/Reaction_20solve_20strategy
+**Default value:** before nonlinear solver
+
+**Pattern:** [Selection before nonlinear solver|after nonlinear solver ]
+
+**Documentation:** Whether the reaction solve should be done before the nonlinear solver (default) or after the nonlinear solver. The latter strategy should be used when &ldquo;Enable elasticity&rdquo; is set to true. The strategy parameter is only considered if the parameter &ldquo;Use operator splitting&rdquo; is set to true. Units: none.
+::::
+
 ::::{dropdown} __Parameter:__ {ref}`Reaction solver relative tolerance<parameters:Solver_20parameters/Operator_20splitting_20parameters/Reaction_20solver_20relative_20tolerance>`
 :name: parameters:Solver_20parameters/Operator_20splitting_20parameters/Reaction_20solver_20relative_20tolerance
 **Default value:** 1e-6
@@ -214,7 +223,7 @@ Once derivatives are used in a Newton method, ASPECT always uses the Eisenstat W
 
 **Pattern:** [Selection ARKode|fixed step ]
 
-**Documentation:** This parameter determines what solver will be used when the reactions are computed within the operator splitting scheme. For reactions where the reaction rate is a known, finite quantity, the appropriate choice is &lsquo;ARKode&rsquo;, which uses an ODE solver from SUNDIALs ARKode (adaptive-step additive Runge Kutta ODE solver methods) to compute the solution. ARKode will pick a reasonable step size based on the reaction rate and the given &lsquo;Reaction solver relative tolerance&rsquo;. However, in some cases we have instantaneous reactions, where we know the new value of a compositional field (and the reaction rate would be infinite), or reaction where we need to know or be able to control the step size we use to compute the reactions. In theses cases, it is appropriate to use the &lsquo;fixed step&rsquo; scheme, a method that a forward Euler scheme and a fixed number of steps given by the &lsquo;Reaction time step&rsquo; and &lsquo;Reaction time steps per advection step&rsquo; parameters.
+**Documentation:** This parameter determines what solver will be used when the reactions are computed within the operator splitting scheme. For reactions where the reaction rate is a known, finite quantity, the appropriate choice is &lsquo;ARKode&rsquo;, which uses an ODE solver from SUNDIALs ARKode (adaptive-step additive Runge Kutta ODE solver methods) to compute the solution. ARKode will pick a reasonable step size based on the reaction rate and the given &lsquo;Reaction solver relative tolerance&rsquo;. However, in some cases we have instantaneous reactions, where we know the new value of a compositional field (and the reaction rate would be infinite), or reactions where we need to know or be able to control the step size we use to compute the reactions. In theses cases, it is appropriate to use the &lsquo;fixed step&rsquo; scheme, a method that uses a forward Euler scheme and a fixed number of steps given by the &lsquo;Reaction time step&rsquo; and &lsquo;Reaction time steps per advection step&rsquo; parameters.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Reaction time step<parameters:Solver_20parameters/Operator_20splitting_20parameters/Reaction_20time_20step>`

@@ -238,8 +238,6 @@ namespace aspect
 
         // Signal that particles have been restored (or we just started a time
         // step, which means they are in the same state as post restore).
-        // This signal can be used to apply operator
-        // splitting on the particle properties.
         signals.post_restore_particles(particle_manager);
 
         // Advect particles, but not if we are in the initial refinement stage
