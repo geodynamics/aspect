@@ -1,0 +1,9 @@
+# Test data for velocity points residual.
+# We use zero velocities so that the residuals are same as the 
+# solution computed by the point values postprocessor.
+# Only next line is parsed in format: [nx] because of keyword "POINTS:"
+# POINTS: 2
+# Columns: point_id x y velocity_x velocity_y
+0 0.     0.      0. 0.
+1 0.     330000. 0. 0.
+
