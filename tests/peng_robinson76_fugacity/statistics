@@ -1,0 +1,18 @@
+# 1: Time step number
+# 2: Time (years)
+# 3: Time step size (years)
+# 4: Number of mesh cells
+# 5: Number of Stokes degrees of freedom
+# 6: Number of temperature degrees of freedom
+# 7: Number of degrees of freedom for all compositions
+# 8: Number of nonlinear iterations
+# 9: Iterations for temperature solver
+# 10: Iterations for composition solver 1
+# 11: Iterations for Stokes solver
+# 12: Velocity iterations in Stokes preconditioner
+# 13: Schur complement iterations in Stokes preconditioner
+# 14: Average density (kg/m^3)
+# 15: Average viscosity (Pa s)
+# 16: Total mass (kg)
+# 17: Visualization file name
+0 0.000000000000e+00 0.000000000000e+00 256 2467 1089 1089 1 0 0 23 24 24 3.30000000e+03 9.54332420e+22 3.30000000e+13 output-peng_robinson76_fugacity/solution/solution-00000

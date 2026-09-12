@@ -4750,6 +4750,15 @@ Note that melt does not freeze unless the &rsquo;Freezing rate&rsquo; parameter 
 
 (parameters:Material_20model/Visco_20Plastic)=
 ## **Subsection:** Material model / Visco Plastic
+::::{dropdown} __Parameter:__ {ref}`Acentric factor<parameters:Material_20model/Visco_20Plastic/Acentric_20factor>`
+:name: parameters:Material_20model/Visco_20Plastic/Acentric_20factor
+**Default value:** 0.344
+
+**Pattern:** [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
+
+**Documentation:** Acentric factor of the fluid. Peng & Robinson describe kappa as a constant characteristic of each substance and correlate it against the acentric factor as kappa=0.37464+1.54226*omega-0.26992*omega^2 in equation (18) of Peng & Robinson (1976, 10.1021/i160057a011). This parameter is only used for the &rsquo;peng_robinson76_fugacity&rsquo; scheme. Units: none.
+::::
+
 ::::{dropdown} __Parameter:__ {ref}`Activation energies for Peierls creep<parameters:Material_20model/Visco_20Plastic/Activation_20energies_20for_20Peierls_20creep>`
 :name: parameters:Material_20model/Visco_20Plastic/Activation_20energies_20for_20Peierls_20creep
 **Default value:** 320e3
@@ -4874,6 +4883,24 @@ Note that melt does not freeze unless the &rsquo;Freezing rate&rsquo; parameter 
 **Pattern:** [List of <[Double 0...MAX_DOUBLE (inclusive)]> of length 0...4294967295 (inclusive)]
 
 **Documentation:** List of constant viscosity prefactors (i.e., multiplicative factors) for background material and compositional fields, for a total of N+1 where N is the number of all compositional fields or only those corresponding to chemical compositions. Units: none.
+::::
+
+::::{dropdown} __Parameter:__ {ref}`Critical pressure<parameters:Material_20model/Visco_20Plastic/Critical_20pressure>`
+:name: parameters:Material_20model/Visco_20Plastic/Critical_20pressure
+**Default value:** 22.12e6
+
+**Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
+
+**Documentation:** Critical pressure of the fluid used by the Peng-Robinson equation of state. This parameter is only used when &rsquo;Viscosity prefactor scheme&rsquo; is &rsquo;peng_robinson76_fugacity&rsquo;. Units: Pa.
+::::
+
+::::{dropdown} __Parameter:__ {ref}`Critical temperature<parameters:Material_20model/Visco_20Plastic/Critical_20temperature>`
+:name: parameters:Material_20model/Visco_20Plastic/Critical_20temperature
+**Default value:** 647.3
+
+**Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
+
+**Documentation:** Critical temperature of the fluid used by the Peng-Robinson equation of state. This parameter is only used when &rsquo;Viscosity prefactor scheme&rsquo; is &rsquo;peng_robinson76_fugacity&rsquo;. Units: K.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Cutoff stresses for Peierls creep<parameters:Material_20model/Visco_20Plastic/Cutoff_20stresses_20for_20Peierls_20creep>`
@@ -5368,6 +5395,15 @@ Note that melt does not freeze unless the &rsquo;Freezing rate&rsquo; parameter 
 **Documentation:** List of prefactors for the yield stress, for background material and compositional fields, for a total of N+1 values, where N is the number of all compositional fields or only those corresponding to chemical compositions. The prefactor is multiplied with the yield stress computed from the Drucker-Prager plasticity parameters. Default value is 1.0.
 ::::
 
+::::{dropdown} __Parameter:__ {ref}`Pressure cutoff<parameters:Material_20model/Visco_20Plastic/Pressure_20cutoff>`
+:name: parameters:Material_20model/Visco_20Plastic/Pressure_20cutoff
+**Default value:** 2.5e9
+
+**Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
+
+**Documentation:** Maximum pressure used in the Peng-Robinson fugacity calculation. Pressures above this value are set to the cutoff. Fugacity can still change with temperature above this pressure. The default is 2.5 GPa because fugacity is not constrained at higher pressures. This parameter is only used with the &rsquo;peng_robinson76_fugacity&rsquo; viscosity prefactor scheme. Units: Pa.
+::::
+
 ::::{dropdown} __Parameter:__ {ref}`Pressure prefactors for Frank Kamenetskii<parameters:Material_20model/Visco_20Plastic/Pressure_20prefactors_20for_20Frank_20Kamenetskii>`
 :name: parameters:Material_20model/Visco_20Plastic/Pressure_20prefactors_20for_20Frank_20Kamenetskii
 **Default value:** 0.0
@@ -5662,9 +5698,9 @@ If a compositional field named &rsquo;noninitial\_plastic\_strain&rsquo; is incl
 :name: parameters:Material_20model/Visco_20Plastic/Viscosity_20prefactor_20scheme
 **Default value:** none
 
-**Pattern:** [Selection none|HK04 olivine hydration|interface weakening ]
+**Pattern:** [Selection none|HK04 olivine hydration|peng_robinson76_fugacity|interface weakening ]
 
-**Documentation:** Select what type of viscosity multiplicative prefactor scheme to apply. Allowed entries are &rsquo;none&rsquo;, &rsquo;HK04 olivine hydration&rsquo;, and &rsquo;interface weakening&rsquo;. HK04 olivine hydration calculates the viscosity change due to hydrogen incorporation into olivine following Hirth & Kohlstedt 2004 (10.1029/138GM06). none does not modify the viscosity. Interface weakening reduces the viscous contribution by a constant amount to mimic the effect of a very thin, weak layer between two compositional fields. Units: none.
+**Documentation:** Select what type of viscosity multiplicative prefactor scheme to apply. Allowed entries are &rsquo;none&rsquo;, &rsquo;HK04 olivine hydration&rsquo;, &rsquo;peng_robinson76_fugacity&rsquo;, and &rsquo;interface weakening&rsquo;. &rsquo;HK04 olivine hydration&rsquo; calculates the viscosity change due to hydrogen incorporation into olivine following Hirth & Kohlstedt 2004 (10.1029/138GM06). &rsquo;peng_robinson76_fugacity&rsquo; estimates the fugacity of a configurable pure fluid from temperature and adiabatic pressure using the Peng-Robinson equation of state and applies the configured fugacity exponents to the viscosity. &rsquo;interface weakening&rsquo; reduces the viscous contribution by a constant amount to mimic a thin, weak interface between two compositional fields. &rsquo;none&rsquo; does not modify the viscosity. Units: none.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Viscosity ratios for Frank Kamenetskii<parameters:Material_20model/Visco_20Plastic/Viscosity_20ratios_20for_20Frank_20Kamenetskii>`
@@ -5691,7 +5727,7 @@ If a compositional field named &rsquo;noninitial\_plastic\_strain&rsquo; is incl
 
 **Pattern:** [List of <[Double 0...MAX_DOUBLE (inclusive)]> of length 0...4294967295 (inclusive)]
 
-**Documentation:** List of water fugacity exponents for diffusion creep for background material and compositional fields, for a total of N+1 where N is the number of all compositional fields or only those corresponding to chemical compositions. This is only applied when using the Viscosity prefactor scheme &rsquo;HK04 olivine hydration&rsquo;. Note, the water fugacity exponent required by ASPECT for diffusion creep is r/n, where n is the stress exponent for diffusion creep, which typically is 1. Units: none.
+**Documentation:** List of water fugacity exponents for diffusion creep for background material and compositional fields, for a total of N+1 where N is the number of all compositional fields or only those corresponding to chemical compositions. This is only applied when using the Viscosity prefactor scheme &rsquo;HK04 olivine hydration&rsquo; or &rsquo;peng_robinson76_fugacity&rsquo;. Note, the water fugacity exponent required by ASPECT for diffusion creep is r/n, where n is the stress exponent for diffusion creep, which typically is 1. Units: none.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Water fugacity exponents for dislocation creep<parameters:Material_20model/Visco_20Plastic/Water_20fugacity_20exponents_20for_20dislocation_20creep>`
@@ -5700,7 +5736,7 @@ If a compositional field named &rsquo;noninitial\_plastic\_strain&rsquo; is incl
 
 **Pattern:** [List of <[Double 0...MAX_DOUBLE (inclusive)]> of length 0...4294967295 (inclusive)]
 
-**Documentation:** List of water fugacity exponents for dislocation creep for background material and compositional fields, for a total of N+1 where N is the number of all compositional fields or only those corresponding to chemical compositions. This is only applied when using the Viscosity prefactor scheme &rsquo;HK04 olivine hydration&rsquo;. Note, the water fugacity exponent required by ASPECT for dislocation creep is r/n, where n is the stress exponent for dislocation creep, which typically is 3.5. Units: none.
+**Documentation:** List of water fugacity exponents for dislocation creep for background material and compositional fields, for a total of N+1 where N is the number of all compositional fields or only those corresponding to chemical compositions. This is only applied when using the Viscosity prefactor scheme &rsquo;HK04 olivine hydration&rsquo; or &rsquo;peng_robinson76_fugacity&rsquo;. Note, the water fugacity exponent required by ASPECT for dislocation creep is r/n, where n is the stress exponent for dislocation creep, which typically is 3.5. Units: none.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Yield mechanism<parameters:Material_20model/Visco_20Plastic/Yield_20mechanism>`
