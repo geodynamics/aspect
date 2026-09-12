@@ -20,10 +20,10 @@ set Adiabatic surface temperature          = 293.0
 # Add the porosity and bound fluid fields required by the reactive fluid
 # transport material model. The stress fields remain on particles.
 subsection Compositional fields
-  set Number of fields = 8
-  set Names of fields  = ve_stress_xx, ve_stress_yy, ve_stress_xy, ve_stress_xx_old, ve_stress_yy_old, ve_stress_xy_old, porosity, bound_fluid
-  set Types of fields  = stress, stress, stress, stress, stress, stress, porosity, generic
-  set Compositional field methods = particles, particles, particles, particles, particles, particles, field, field
+  set Number of fields = 5
+  set Names of fields  = ve_stress_xx, ve_stress_yy, ve_stress_xy, porosity, bound_fluid
+  set Types of fields  = stress, stress, stress, porosity, generic
+  set Compositional field methods = particles, particles, particles, field, field
 end
 
 subsection Initial composition model
@@ -31,7 +31,7 @@ subsection Initial composition model
   subsection Function
     set Variable names      = x,y
     set Function constants  =
-    set Function expression = 20e6; -20e6; 0; 20e6; -20e6; 0; 0; 0
+    set Function expression = 20e6; -20e6; 0; 0; 0
   end
 end
 
@@ -52,7 +52,7 @@ end
 # The stress fields remain discontinuous, but the porosity and bound fluid
 # fields use the default continuous discretization.
 subsection Discretization
-  set Use discontinuous composition discretization = true, true, true, true, true, true, false, false
+  set Use discontinuous composition discretization = true, true, true, false, false
 end
 
 subsection Melt settings

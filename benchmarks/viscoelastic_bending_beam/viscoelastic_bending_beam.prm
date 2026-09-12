@@ -88,9 +88,9 @@ subsection Discretization
   set Use discontinuous composition discretization = true
 
   subsection Stabilization parameters
-    set Use limiter for discontinuous composition solution = false, false, false, false, false, false, true
-    set Global composition maximum =  1.e11,  1.e11,  1.e11,  1.e11,  1.e11,  1.e11, 1.0
-    set Global composition minimum = -1.e11, -1.e11, -1.e11, -1.e11, -1.e11, -1.e11, 0.0
+    set Use limiter for discontinuous composition solution = false, false, false, true
+    set Global composition maximum =  1.e11,  1.e11,  1.e11, 1.0
+    set Global composition minimum = -1.e11, -1.e11, -1.e11, 0.0
   end
 end
 
@@ -107,9 +107,9 @@ end
 
 # Number and name of compositional fields
 subsection Compositional fields
-  set Number of fields = 7
-  set Names of fields  = ve_stress_xx, ve_stress_yy, ve_stress_xy, ve_stress_xx_old, ve_stress_yy_old, ve_stress_xy_old, beam
-  set Types of fields  = stress, stress, stress, stress, stress, stress, chemical composition
+  set Number of fields = 4
+  set Names of fields  = ve_stress_xx, ve_stress_yy, ve_stress_xy, beam
+  set Types of fields  = stress, stress, stress, chemical composition
 end
 
 # Spatial domain of different compositional fields
@@ -118,7 +118,7 @@ subsection Initial composition model
 
   subsection Function
     set Variable names      = x,y
-    set Function expression = 0; 0; 0; 0; 0; 0; if (x<=4.5e3 && y>=2.5e3 && y<=3.0e3, 1, 0)
+    set Function expression = 0; 0; 0; if (x<=4.5e3 && y>=2.5e3 && y<=3.0e3, 1, 0)
   end
 end
 

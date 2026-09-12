@@ -29,29 +29,29 @@ subsection Melt settings
 end
 
 subsection Compositional fields
-  set Number of fields = 9
-  set Names of fields  = ve_stress_xx, ve_stress_yy, ve_stress_xy, ve_stress_xx_old, ve_stress_yy_old, ve_stress_xy_old, beam, porosity, bound_fluid
-  set Types of fields  = stress, stress, stress, stress, stress, stress, chemical composition, chemical composition, chemical composition
-  set Compositional field methods = particles, particles, particles, particles, particles, particles, particles, field, field
-  set Mapped particle properties  = ve_stress_xx:ve_stress_xx, ve_stress_yy:ve_stress_yy, ve_stress_xy:ve_stress_xy, ve_stress_xx_old:ve_stress_xx_old, ve_stress_yy_old:ve_stress_yy_old, ve_stress_xy_old:ve_stress_xy_old, beam:initial beam
+  set Number of fields = 6
+  set Names of fields  = ve_stress_xx, ve_stress_yy, ve_stress_xy, beam, porosity, bound_fluid
+  set Types of fields  = stress, stress, stress, chemical composition, chemical composition, chemical composition
+  set Compositional field methods = particles, particles, particles, particles, field, field
+  set Mapped particle properties  = ve_stress_xx:ve_stress_xx, ve_stress_yy:ve_stress_yy, ve_stress_xy:ve_stress_xy, beam:initial beam
 end
 
 subsection Initial composition model
   subsection Function
-    set Function expression = 0; 0; 0; 0; 0; 0; if (x<=4.5e3 && y>=2.5e3 && y<=3.0e3, 1, 0); 0.1; 0
+    set Function expression = 0; 0; 0; if (x<=4.5e3 && y>=2.5e3 && y<=3.0e3, 1, 0); 0.1; 0
   end
 end
 
 subsection Discretization
-  set Use discontinuous composition discretization = true, true, true, true, true, true, false, false, false
+  set Use discontinuous composition discretization = true, true, true, false, false, false
   subsection Stabilization parameters
   # While the default for 'set Use limiter for discontinuous composition solution' is 'false', it still 
   # needs to be set here for all fields as the test builds on a benchmark with a different number
   # of compositional fields. Not specifying these parameters for the new number of fields will
   # result in the model crashing.
-    set Use limiter for discontinuous composition solution = false, false, false, false, false, false, false, false, false
-    set Global composition maximum =  1.e11,  1.e11,  1.e11,  1.e11,  1.e11,  1.e11, 1.0, 1.0, 1.0
-    set Global composition minimum = -1.e11, -1.e11, -1.e11, -1.e11, -1.e11, -1.e11, 0.0, 0.0, 0.0
+    set Use limiter for discontinuous composition solution = false, false, false, false, false, false
+    set Global composition maximum =  1.e11,  1.e11,  1.e11, 1.0, 1.0, 1.0
+    set Global composition minimum = -1.e11, -1.e11, -1.e11, 0.0, 0.0, 0.0
   end
 end
 

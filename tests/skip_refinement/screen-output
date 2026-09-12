@@ -1,6 +1,6 @@
 
 Number of active cells: 128 (on 3 levels)
-Number of degrees of freedom: 12,948 (1,122+153+153+1,152+1,152+1,152+1,152+1,152+1,152+1,152+1,152+1,152+1,152)
+Number of degrees of freedom: 9,492 (1,122+153+153+1,152+1,152+1,152+1,152+1,152+1,152+1,152)
 
 Number of mesh deformation degrees of freedom: 1,122
    Solving mesh displacement system... 0 iterations.
@@ -10,35 +10,29 @@ Number of mesh deformation degrees of freedom: 1,122
    Skipping ve_stress_xx composition solve because RHS is zero.
    Skipping ve_stress_yy composition solve because RHS is zero.
    Skipping ve_stress_xy composition solve because RHS is zero.
-   Skipping ve_stress_xx_old composition solve because RHS is zero.
-   Skipping ve_stress_yy_old composition solve because RHS is zero.
-   Skipping ve_stress_xy_old composition solve because RHS is zero.
    Solving LM system ... 0 iterations.
    Solving TZ system ... 0 iterations.
    Solving UM system ... 0 iterations.
    Solving Lith system ... 0 iterations.
    Solving Stokes system (GMG)... 13+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 3.65518e-16, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0.0159318
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 3.65518e-16, 0, 0, 0, 0, 0, 0, 0, 0.0159318
       Relative nonlinear residual (total system) after nonlinear iteration 1: 0.0159318
 
    Solving temperature system... 0 iterations.
    Skipping ve_stress_xx composition solve because RHS is zero.
    Skipping ve_stress_yy composition solve because RHS is zero.
    Skipping ve_stress_xy composition solve because RHS is zero.
-   Skipping ve_stress_xx_old composition solve because RHS is zero.
-   Skipping ve_stress_yy_old composition solve because RHS is zero.
-   Skipping ve_stress_xy_old composition solve because RHS is zero.
    Solving LM system ... 2 iterations.
    Solving TZ system ... 2 iterations.
    Solving UM system ... 2 iterations.
    Solving Lith system ... 1 iterations.
    Solving Stokes system (GMG)... 4+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 3.69975e-16, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 9.69989e-10
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 3.69975e-16, 0, 0, 0, 0, 0, 0, 0, 9.69989e-10
       Relative nonlinear residual (total system) after nonlinear iteration 2: 9.69989e-10
 
 
 Number of active cells: 68 (on 4 levels)
-Number of degrees of freedom: 6,984 (674+95+95+612+612+612+612+612+612+612+612+612+612)
+Number of degrees of freedom: 5,148 (674+95+95+612+612+612+612+612+612+612)
 
 Number of mesh deformation degrees of freedom: 674
    Solving mesh displacement system... 0 iterations.
@@ -48,35 +42,29 @@ Number of mesh deformation degrees of freedom: 674
    Skipping ve_stress_xx composition solve because RHS is zero.
    Skipping ve_stress_yy composition solve because RHS is zero.
    Skipping ve_stress_xy composition solve because RHS is zero.
-   Skipping ve_stress_xx_old composition solve because RHS is zero.
-   Skipping ve_stress_yy_old composition solve because RHS is zero.
-   Skipping ve_stress_xy_old composition solve because RHS is zero.
    Solving LM system ... 0 iterations.
    Solving TZ system ... 0 iterations.
    Solving UM system ... 0 iterations.
    Solving Lith system ... 0 iterations.
    Solving Stokes system (GMG)... 15+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 4.04684e-16, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0.0157264
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 4.04684e-16, 0, 0, 0, 0, 0, 0, 0, 0.0157264
       Relative nonlinear residual (total system) after nonlinear iteration 1: 0.0157264
 
    Solving temperature system... 0 iterations.
    Skipping ve_stress_xx composition solve because RHS is zero.
    Skipping ve_stress_yy composition solve because RHS is zero.
    Skipping ve_stress_xy composition solve because RHS is zero.
-   Skipping ve_stress_xx_old composition solve because RHS is zero.
-   Skipping ve_stress_yy_old composition solve because RHS is zero.
-   Skipping ve_stress_xy_old composition solve because RHS is zero.
    Solving LM system ... 2 iterations.
    Solving TZ system ... 0 iterations.
    Solving UM system ... 2 iterations.
    Solving Lith system ... 1 iterations.
    Solving Stokes system (GMG)... 0+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 4.05503e-16, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2.79922e-10
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 4.05503e-16, 0, 0, 0, 0, 0, 0, 0, 2.79922e-10
       Relative nonlinear residual (total system) after nonlinear iteration 2: 2.79922e-10
 
 
 Number of active cells: 116 (on 5 levels)
-Number of degrees of freedom: 11,918 (1,158+160+160+1,044+1,044+1,044+1,044+1,044+1,044+1,044+1,044+1,044+1,044)
+Number of degrees of freedom: 8,786 (1,158+160+160+1,044+1,044+1,044+1,044+1,044+1,044+1,044)
 
 Number of mesh deformation degrees of freedom: 1,158
    Solving mesh displacement system... 0 iterations.
@@ -86,30 +74,24 @@ Number of mesh deformation degrees of freedom: 1,158
    Skipping ve_stress_xx composition solve because RHS is zero.
    Skipping ve_stress_yy composition solve because RHS is zero.
    Skipping ve_stress_xy composition solve because RHS is zero.
-   Skipping ve_stress_xx_old composition solve because RHS is zero.
-   Skipping ve_stress_yy_old composition solve because RHS is zero.
-   Skipping ve_stress_xy_old composition solve because RHS is zero.
    Solving LM system ... 0 iterations.
    Solving TZ system ... 0 iterations.
    Solving UM system ... 0 iterations.
    Solving Lith system ... 0 iterations.
    Solving Stokes system (GMG)... 15+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 4.04751e-16, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0.0157257
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 4.04751e-16, 0, 0, 0, 0, 0, 0, 0, 0.0157257
       Relative nonlinear residual (total system) after nonlinear iteration 1: 0.0157257
 
    Solving temperature system... 0 iterations.
    Skipping ve_stress_xx composition solve because RHS is zero.
    Skipping ve_stress_yy composition solve because RHS is zero.
    Skipping ve_stress_xy composition solve because RHS is zero.
-   Skipping ve_stress_xx_old composition solve because RHS is zero.
-   Skipping ve_stress_yy_old composition solve because RHS is zero.
-   Skipping ve_stress_xy_old composition solve because RHS is zero.
    Solving LM system ... 2 iterations.
    Solving TZ system ... 0 iterations.
    Solving UM system ... 2 iterations.
    Solving Lith system ... 2 iterations.
    Solving Stokes system (GMG)... 0+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 4.05489e-16, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 7.50815e-10
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 4.05489e-16, 0, 0, 0, 0, 0, 0, 0, 7.50815e-10
       Relative nonlinear residual (total system) after nonlinear iteration 2: 7.50815e-10
 
 
@@ -121,36 +103,30 @@ Skipping mesh refinement, because no cells were flagged for refinement/coarsenin
    Skipping ve_stress_xx composition solve because RHS is zero.
    Skipping ve_stress_yy composition solve because RHS is zero.
    Skipping ve_stress_xy composition solve because RHS is zero.
-   Skipping ve_stress_xx_old composition solve because RHS is zero.
-   Skipping ve_stress_yy_old composition solve because RHS is zero.
-   Skipping ve_stress_xy_old composition solve because RHS is zero.
    Solving LM system ... 0 iterations.
    Solving TZ system ... 0 iterations.
    Solving UM system ... 0 iterations.
    Solving Lith system ... 0 iterations.
    Solving Stokes system (GMG)... 15+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 4.04751e-16, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0.0157257
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 4.04751e-16, 0, 0, 0, 0, 0, 0, 0, 0.0157257
       Relative nonlinear residual (total system) after nonlinear iteration 1: 0.0157257
 
    Solving temperature system... 0 iterations.
    Skipping ve_stress_xx composition solve because RHS is zero.
    Skipping ve_stress_yy composition solve because RHS is zero.
    Skipping ve_stress_xy composition solve because RHS is zero.
-   Skipping ve_stress_xx_old composition solve because RHS is zero.
-   Skipping ve_stress_yy_old composition solve because RHS is zero.
-   Skipping ve_stress_xy_old composition solve because RHS is zero.
    Solving LM system ... 2 iterations.
    Solving TZ system ... 0 iterations.
    Solving UM system ... 2 iterations.
    Solving Lith system ... 2 iterations.
    Solving Stokes system (GMG)... 0+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 4.05489e-16, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 7.50815e-10
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 4.05489e-16, 0, 0, 0, 0, 0, 0, 0, 7.50815e-10
       Relative nonlinear residual (total system) after nonlinear iteration 2: 7.50815e-10
 
 
    Postprocessing:
      Writing graphical output:  output-skip_refinement/solution/solution-00000
-     Compositions min/max/mass: 0/0/0 // 0/0/0 // 0/0/0 // 0/0/0 // 0/0/0 // 0/0/0 // 0/1/3.343e+12 // 0/1/3.614e+11 // 0/1/5.082e+11 // 0/1/1.242e+11
+     Compositions min/max/mass: 0/0/0 // 0/0/0 // 0/0/0 // 0/1/3.343e+12 // 0/1/3.614e+11 // 0/1/5.082e+11 // 0/1/1.242e+11
      Temperature min/avg/max:   293 K, 293 K, 293 K
      Topography min/max:        0 m, 0 m
      RMS, max velocity:         0.388 m/year, 1.57 m/year
@@ -164,50 +140,41 @@ Skipping mesh refinement, because no cells were flagged for refinement/coarsenin
    Solving ve_stress_xx system ... 2 iterations.
    Solving ve_stress_yy system ... 1 iterations.
    Solving ve_stress_xy system ... 2 iterations.
-   Solving ve_stress_xx_old system ... 2 iterations.
-   Solving ve_stress_yy_old system ... 1 iterations.
-   Solving ve_stress_xy_old system ... 1 iterations.
    Solving LM system ... 1 iterations.
    Solving TZ system ... 2 iterations.
    Solving UM system ... 2 iterations.
    Solving Lith system ... 1 iterations.
    Solving Stokes system (GMG)... 14+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 2.31491e-16, 0.000742221, 0.00148444, 3.65969e-12, 0, 0, 0, 0, 0, 0, 0, 0.00793593
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 2.31491e-16, 0.000742221, 0.00148444, 3.65969e-12, 0, 0, 0, 0, 0.00793593
       Relative nonlinear residual (total system) after nonlinear iteration 1: 0.00793593
 
    Solving temperature system... 0 iterations.
    Solving ve_stress_xx system ... 1 iterations.
    Solving ve_stress_yy system ... 2 iterations.
    Solving ve_stress_xy system ... 1 iterations.
-   Solving ve_stress_xx_old system ... 1 iterations.
-   Solving ve_stress_yy_old system ... 2 iterations.
-   Solving ve_stress_xy_old system ... 2 iterations.
    Solving LM system ... 1 iterations.
    Solving TZ system ... 2 iterations.
    Solving UM system ... 2 iterations.
    Solving Lith system ... 1 iterations.
    Solving Stokes system (GMG)... 11+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 2.26507e-16, 0.000430195, 0.000860391, 6.39436e-12, 0, 0, 0, 0, 0, 0, 0, 7.29978e-06
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 2.26507e-16, 0.000430195, 0.000860391, 6.39436e-12, 0, 0, 0, 0, 7.29978e-06
       Relative nonlinear residual (total system) after nonlinear iteration 2: 0.000860391
 
    Solving temperature system... 0 iterations.
    Solving ve_stress_xx system ... 1 iterations.
    Solving ve_stress_yy system ... 1 iterations.
    Solving ve_stress_xy system ... 1 iterations.
-   Solving ve_stress_xx_old system ... 1 iterations.
-   Solving ve_stress_yy_old system ... 1 iterations.
-   Solving ve_stress_xy_old system ... 1 iterations.
    Solving LM system ... 1 iterations.
    Solving TZ system ... 1 iterations.
    Solving UM system ... 2 iterations.
    Solving Lith system ... 1 iterations.
    Solving Stokes system (GMG)... 6+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.56115e-16, 2.24651e-07, 4.49302e-07, 1.56014e-12, 0, 0, 0, 0, 0, 0, 0, 3.79719e-09
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.56115e-16, 2.24651e-07, 4.49302e-07, 1.56014e-12, 0, 0, 0, 0, 3.79719e-09
       Relative nonlinear residual (total system) after nonlinear iteration 3: 4.49302e-07
 
 
    Postprocessing:
-     Compositions min/max/mass: -3.585e+07/9.71e+07/4.844e+18 // -1.942e+08/7.17e+07/-9.687e+18 // -1.419/1.419/4730 // -3.585e+07/9.71e+07/4.844e+18 // -1.942e+08/7.17e+07/-9.687e+18 // -1.42/1.42/4385 // 0/1/3.343e+12 // 0/1/3.614e+11 // 0/1/5.082e+11 // 0/1/1.242e+11
+     Compositions min/max/mass: -3.585e+07/9.71e+07/4.844e+18 // -1.942e+08/7.17e+07/-9.687e+18 // -1.419/1.419/4730 // 0/1/3.343e+12 // 0/1/3.614e+11 // 0/1/5.082e+11 // 0/1/1.242e+11
      Temperature min/avg/max:   293 K, 293 K, 293 K
      Topography min/max:        -3.064e-06 m, 1.045e-06 m
      RMS, max velocity:         0.161 m/year, 0.663 m/year
@@ -221,50 +188,41 @@ Skipping mesh refinement, because no cells were flagged for refinement/coarsenin
    Solving ve_stress_xx system ... 2 iterations.
    Solving ve_stress_yy system ... 1 iterations.
    Solving ve_stress_xy system ... 2 iterations.
-   Solving ve_stress_xx_old system ... 2 iterations.
-   Solving ve_stress_yy_old system ... 1 iterations.
-   Solving ve_stress_xy_old system ... 1 iterations.
    Solving LM system ... 1 iterations.
    Solving TZ system ... 2 iterations.
    Solving UM system ... 2 iterations.
    Solving Lith system ... 1 iterations.
    Solving Stokes system (GMG)... 14+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.79929e-16, 0.000177504, 0.000355009, 3.83405e-12, 0, 0, 0, 0, 0, 0, 0, 0.00588903
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.79929e-16, 0.000177504, 0.000355009, 3.83405e-12, 0, 0, 0, 0, 0.00588903
       Relative nonlinear residual (total system) after nonlinear iteration 1: 0.00588903
 
    Solving temperature system... 0 iterations.
    Solving ve_stress_xx system ... 2 iterations.
    Solving ve_stress_yy system ... 1 iterations.
    Solving ve_stress_xy system ... 1 iterations.
-   Solving ve_stress_xx_old system ... 2 iterations.
-   Solving ve_stress_yy_old system ... 1 iterations.
-   Solving ve_stress_xy_old system ... 2 iterations.
    Solving LM system ... 1 iterations.
    Solving TZ system ... 1 iterations.
    Solving UM system ... 2 iterations.
    Solving Lith system ... 1 iterations.
    Solving Stokes system (GMG)... 10+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.25984e-16, 0.000150644, 0.000301288, 5.58668e-12, 0, 0, 0, 0, 0, 0, 0, 3.6598e-06
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.25984e-16, 0.000150644, 0.000301288, 5.58668e-12, 0, 0, 0, 0, 3.6598e-06
       Relative nonlinear residual (total system) after nonlinear iteration 2: 0.000301288
 
    Solving temperature system... 0 iterations.
    Solving ve_stress_xx system ... 1 iterations.
    Solving ve_stress_yy system ... 1 iterations.
    Solving ve_stress_xy system ... 2 iterations.
-   Solving ve_stress_xx_old system ... 1 iterations.
-   Solving ve_stress_yy_old system ... 1 iterations.
-   Solving ve_stress_xy_old system ... 1 iterations.
    Solving LM system ... 1 iterations.
    Solving TZ system ... 1 iterations.
    Solving UM system ... 1 iterations.
    Solving Lith system ... 1 iterations.
    Solving Stokes system (GMG)... 6+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.69168e-16, 1.09388e-07, 2.18777e-07, 1.29062e-12, 0, 0, 0, 0, 0, 0, 0, 2.06425e-09
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.69168e-16, 1.09388e-07, 2.18777e-07, 1.29062e-12, 0, 0, 0, 0, 2.06425e-09
       Relative nonlinear residual (total system) after nonlinear iteration 3: 2.18777e-07
 
 
    Postprocessing:
-     Compositions min/max/mass: -3.61e+07/1.232e+08/5.963e+18 // -2.463e+08/7.221e+07/-1.193e+19 // -1.149/1.148/-7.898e+06 // -3.61e+07/1.232e+08/5.963e+18 // -2.463e+08/7.221e+07/-1.193e+19 // -1.149/1.148/-7.898e+06 // -1.913e-41/1/3.343e+12 // -4.233e-44/1/3.615e+11 // -1.186e-40/1/5.081e+11 // -1.464e-37/1/1.242e+11
+     Compositions min/max/mass: -3.61e+07/1.232e+08/5.963e+18 // -2.463e+08/7.221e+07/-1.193e+19 // -1.149/1.148/-7.898e+06 // -1.913e-41/1/3.343e+12 // -4.233e-44/1/3.615e+11 // -1.186e-40/1/5.081e+11 // -1.464e-37/1/1.242e+11
      Temperature min/avg/max:   293 K, 293 K, 293 K
      Topography min/max:        -5.838e-06 m, -1.655e-06 m
      RMS, max velocity:         0.0995 m/year, 0.45 m/year

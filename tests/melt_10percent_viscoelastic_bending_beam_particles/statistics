@@ -7,12 +7,12 @@
 # 7: Number of degrees of freedom for all compositions
 # 8: Number of nonlinear iterations
 # 9: Iterations for temperature solver
-# 10: Iterations for composition solver 8
-# 11: Iterations for composition solver 9
+# 10: Iterations for composition solver 5
+# 11: Iterations for composition solver 6
 # 12: Iterations for Stokes solver
 # 13: Velocity iterations in Stokes preconditioner
 # 14: Schur complement iterations in Stokes preconditioner
 # 15: RMS velocity (m/year)
 # 16: Max. velocity (m/year)
-0 0.000000000000e+00 0.000000000000e+00 25 278 36 2025 5 0  0 0 64 64 368 7.66099418e-02 1.35561099e-01 
-1 5.000000000000e+02 5.000000000000e+02 25 278 36 2025 5 0 41 0 66 66 387 8.14889195e-02 1.41784527e-01 
+0 0.000000000000e+00 0.000000000000e+00 25 278 36 1350 5 0  0 0 64 64 368 7.66099418e-02 1.35561099e-01 
+1 5.000000000000e+02 5.000000000000e+02 25 278 36 1350 5 0 41 0 66 66 387 8.14889195e-02 1.41784527e-01 

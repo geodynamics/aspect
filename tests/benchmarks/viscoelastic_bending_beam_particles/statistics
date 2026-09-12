@@ -19,20 +19,11 @@
 # 19: Minimal value for composition ve_stress_xy
 # 20: Maximal value for composition ve_stress_xy
 # 21: Global mass for composition ve_stress_xy
-# 22: Minimal value for composition ve_stress_xx_old
-# 23: Maximal value for composition ve_stress_xx_old
-# 24: Global mass for composition ve_stress_xx_old
-# 25: Minimal value for composition ve_stress_yy_old
-# 26: Maximal value for composition ve_stress_yy_old
-# 27: Global mass for composition ve_stress_yy_old
-# 28: Minimal value for composition ve_stress_xy_old
-# 29: Maximal value for composition ve_stress_xy_old
-# 30: Global mass for composition ve_stress_xy_old
-# 31: Minimal value for composition beam
-# 32: Maximal value for composition beam
-# 33: Global mass for composition beam
-# 34: Number of advected particles
-# 35: Particle file name
-0 0.000000000000e+00 0.000000000000e+00 150 1478 176 9450 2 0 164 167 167  0.00000000e+00 0.00000000e+00  0.00000000e+00  0.00000000e+00 0.00000000e+00 0.00000000e+00  0.00000000e+00 0.00000000e+00  0.00000000e+00  0.00000000e+00 0.00000000e+00  0.00000000e+00  0.00000000e+00 0.00000000e+00 0.00000000e+00  0.00000000e+00 0.00000000e+00  0.00000000e+00 0.00000000e+00 1.00000000e+00 2.25000000e+06 4474 output-viscoelastic_bending_beam_particles/particles/particles-00000 
-1 1.000000000000e+03 1.000000000000e+03 150 1478 176 9450 5 0 410 416 416 -1.67675873e+07 1.55832619e+07 -9.40991588e+11 -7.83056930e+06 8.43525286e+06 4.84007490e+11 -3.42401211e+06 1.21351434e+06 -3.75321599e+12 -1.67666356e+07 1.55942479e+07 -9.36860500e+11 -7.84155522e+06 8.43430119e+06 4.79876401e+11 -3.40449084e+06 1.20662935e+06 -3.75427591e+12 0.00000000e+00 1.00000000e+00 2.27233655e+06 4472                                                                   "" 
-2 2.000000000000e+03 1.000000000000e+03 150 1478 176 9450 5 0 408 414 414 -2.79378476e+07 2.64643203e+07 -1.12357727e+12 -1.06621603e+07 1.11852046e+07 3.39173541e+11 -4.62541150e+06 1.59144874e+06 -4.08064102e+12 -2.79371923e+07 2.64775647e+07 -1.11659917e+12 -1.06754046e+07 1.11845493e+07 3.32195446e+11 -4.60220454e+06 1.58880665e+06 -4.08160770e+12 0.00000000e+00 1.00000000e+00 2.28772136e+06 4463                                                                   "" 
+# 22: Minimal value for composition beam
+# 23: Maximal value for composition beam
+# 24: Global mass for composition beam
+# 25: Number of advected particles
+# 26: Particle file name
+0 0.000000000000e+00 0.000000000000e+00 150 1478 176 5400 2 0 164 167 167  0.00000000e+00 0.00000000e+00  0.00000000e+00  0.00000000e+00 0.00000000e+00 0.00000000e+00  0.00000000e+00 0.00000000e+00  0.00000000e+00 0.00000000e+00 1.00000000e+00 2.25000000e+06 4474 output-viscoelastic_bending_beam_particles/particles/particles-00000 
+1 1.000000000000e+03 1.000000000000e+03 150 1478 176 5400 5 0 410 416 416 -1.67675873e+07 1.55832619e+07 -9.40991588e+11 -7.83056930e+06 8.43525286e+06 4.84007490e+11 -3.42401211e+06 1.21351434e+06 -3.75321599e+12 0.00000000e+00 1.00000000e+00 2.27233655e+06 4472                                                                   "" 
+2 2.000000000000e+03 1.000000000000e+03 150 1478 176 5400 5 0 408 414 414 -2.79378476e+07 2.64643203e+07 -1.12357727e+12 -1.06621603e+07 1.11852046e+07 3.39173541e+11 -4.62541150e+06 1.59144874e+06 -4.08064102e+12 0.00000000e+00 1.00000000e+00 2.28772136e+06 4463                                                                   "" 
