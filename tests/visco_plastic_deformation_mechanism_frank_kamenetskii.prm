@@ -1,0 +1,35 @@
+# Test the Frank-Kamenetskii category of the dominant-deformation-mechanism
+# visualization. This flow law is tested separately because it is an
+# alternative to the composite diffusion-dislocation flow law used by the
+# companion test.
+
+include $ASPECT_SOURCE_DIR/tests/visco_plastic_deformation_mechanism.prm
+
+subsection Geometry model
+  subsection Box
+    set X extent = 1
+    set X repetitions = 1
+  end
+end
+
+subsection Material model
+  subsection Visco Plastic
+    set Viscous flow law = frank kamenetskii
+    set Include Peierls creep = false
+    set Include Grain Boundary Sliding = false
+
+    set Viscosity ratios for Frank Kamenetskii = 1e-30
+    set Prefactors for Frank Kamenetskii = 1e21
+    set Pressure prefactors for Frank Kamenetskii = 0
+
+    set Minimum viscosity = 1
+    set Maximum viscosity = 1e40
+    set Cohesions = 1e40
+  end
+end
+
+subsection Gravity model
+  subsection Vertical
+    set Magnitude = 10
+  end
+end

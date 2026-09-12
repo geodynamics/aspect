@@ -29,6 +29,8 @@
 #include <deal.II/base/parameter_handler.h>
 #include <deal.II/fe/fe_values.h>
 
+#include <limits>
+
 namespace aspect
 {
   namespace MaterialModel
@@ -168,6 +170,8 @@ namespace aspect
         // Initialize or fill variables used to calculate viscosities
         output_parameters.composition_yielding.resize(volume_fractions.size(), false);
         output_parameters.composition_viscosities.resize(volume_fractions.size(), numbers::signaling_nan<double>());
+        output_parameters.composition_deformation_mechanisms.resize(volume_fractions.size(),
+                                                                    DeformationMechanism::uninitialized);
         output_parameters.drucker_prager_parameters.resize(volume_fractions.size());
         output_parameters.dilation_lhs_terms.resize(volume_fractions.size(), numbers::signaling_nan<double>());
         output_parameters.dilation_rhs_terms.resize(volume_fractions.size(), numbers::signaling_nan<double>());
@@ -224,6 +228,8 @@ namespace aspect
           {
             // Step 1: viscous behavior
             double non_yielding_viscosity = numbers::signaling_nan<double>();
+            double dominant_viscous_viscosity = std::numeric_limits<double>::max();
+            DeformationMechanism dominant_viscous_mechanism = DeformationMechanism::uninitialized;
 
             // Choice of activation volume depends on whether there is an adiabatic temperature
             // gradient used when calculating the viscosity. This allows the same activation volume
@@ -284,6 +290,8 @@ namespace aspect
                     non_yielding_viscosity = compositional_viscosity_prefactors.compute_viscosity(in, viscosity_diffusion, j, i,
                                                                                                   CompositionalViscosityPrefactors<dim>::ModifiedFlowLaws::diffusion);
                     output_parameters.diffusion_viscosities[j] = non_yielding_viscosity;
+                    dominant_viscous_viscosity = non_yielding_viscosity;
+                    dominant_viscous_mechanism = DeformationMechanism::diffusion;
                     break;
                   }
                   case dislocation:
@@ -291,6 +299,8 @@ namespace aspect
                     non_yielding_viscosity = compositional_viscosity_prefactors.compute_viscosity(in, viscosity_dislocation, j, i,
                                                                                                   CompositionalViscosityPrefactors<dim>::ModifiedFlowLaws::dislocation);
                     output_parameters.dislocation_viscosities[j] = non_yielding_viscosity;
+                    dominant_viscous_viscosity = non_yielding_viscosity;
+                    dominant_viscous_mechanism = DeformationMechanism::dislocation;
                     break;
                   }
                   case frank_kamenetskii:
@@ -299,6 +309,8 @@ namespace aspect
                                                                                            pressure_for_creep,
                                                                                            this->get_adiabatic_conditions().density(this->get_geometry_model().representative_point(0)),
                                                                                            this->get_gravity_model().gravity_vector(in.position[0]).norm());
+                    dominant_viscous_viscosity = non_yielding_viscosity;
+                    dominant_viscous_mechanism = DeformationMechanism::frank_kamenetskii;
                     break;
                   }
                   case composite:
@@ -312,6 +324,17 @@ namespace aspect
 
                     output_parameters.diffusion_viscosities[j] = scaled_viscosity_diffusion;
                     output_parameters.dislocation_viscosities[j] = scaled_viscosity_dislocation;
+
+                    if (scaled_viscosity_diffusion <= scaled_viscosity_dislocation)
+                      {
+                        dominant_viscous_viscosity = scaled_viscosity_diffusion;
+                        dominant_viscous_mechanism = DeformationMechanism::diffusion;
+                      }
+                    else
+                      {
+                        dominant_viscous_viscosity = scaled_viscosity_dislocation;
+                        dominant_viscous_mechanism = DeformationMechanism::dislocation;
+                      }
                     break;
                   }
                   case minimum_diffusion_dislocation:
@@ -321,9 +344,19 @@ namespace aspect
                     const double scaled_viscosity_dislocation = compositional_viscosity_prefactors.compute_viscosity(in, viscosity_dislocation, j, i,
                                                                 CompositionalViscosityPrefactors<dim>::ModifiedFlowLaws::dislocation);
                     non_yielding_viscosity = std::min(scaled_viscosity_diffusion, scaled_viscosity_dislocation);
-
                     output_parameters.diffusion_viscosities[j] = scaled_viscosity_diffusion;
                     output_parameters.dislocation_viscosities[j] = scaled_viscosity_dislocation;
+
+                    if (scaled_viscosity_diffusion <= scaled_viscosity_dislocation)
+                      {
+                        dominant_viscous_viscosity = scaled_viscosity_diffusion;
+                        dominant_viscous_mechanism = DeformationMechanism::diffusion;
+                      }
+                    else
+                      {
+                        dominant_viscous_viscosity = scaled_viscosity_dislocation;
+                        dominant_viscous_mechanism = DeformationMechanism::dislocation;
+                      }
                     break;
                   }
                   default:
@@ -340,6 +373,11 @@ namespace aspect
                                                                                     phase_function_values,
                                                                                     n_phase_transitions_per_composition);
                   non_yielding_viscosity = (non_yielding_viscosity * viscosity_peierls) / (non_yielding_viscosity + viscosity_peierls);
+                  if (viscosity_peierls < dominant_viscous_viscosity)
+                    {
+                      dominant_viscous_viscosity = viscosity_peierls;
+                      dominant_viscous_mechanism = DeformationMechanism::peierls;
+                    }
                 }
 
               // Step 1e: compute the viscosity from the grain boundary sliding and harmonically average with current viscosities
@@ -353,6 +391,11 @@ namespace aspect
                                                                     phase_function_values,
                                                                     n_phase_transitions_per_composition);
                   non_yielding_viscosity = (non_yielding_viscosity * viscosity_grain_boundary_sliding) / (non_yielding_viscosity + viscosity_grain_boundary_sliding);
+                  if (viscosity_grain_boundary_sliding < dominant_viscous_viscosity)
+                    {
+                      dominant_viscous_viscosity = viscosity_grain_boundary_sliding;
+                      dominant_viscous_mechanism = DeformationMechanism::grain_boundary_sliding;
+                    }
                 }
             }
 
@@ -497,6 +540,13 @@ namespace aspect
                                                                MaterialModel::MaterialUtilities::PhaseUtilities::logarithmic
                                                              );
             output_parameters.composition_viscosities[j] = std::clamp(effective_viscosity, minimum_viscosity_for_composition, maximum_viscosity_for_composition);
+
+            if (output_parameters.composition_yielding[j])
+              output_parameters.composition_deformation_mechanisms[j] = DeformationMechanism::plastic_yielding;
+            else if (effective_viscosity >= maximum_viscosity_for_composition)
+              output_parameters.composition_deformation_mechanisms[j] = DeformationMechanism::maximum_viscosity;
+            else
+              output_parameters.composition_deformation_mechanisms[j] = dominant_viscous_mechanism;
 
             // Compute the dilation terms if necessary.
             if (this->get_parameters().enable_prescribed_dilation == true)
@@ -1009,6 +1059,8 @@ namespace aspect
           }
       }
 
+
+
       template <int dim>
       void
       ViscoPlastic<dim>::
@@ -1052,6 +1104,17 @@ namespace aspect
                 plastic_out->yield_stresses[i] += volume_fractions[j] * drucker_prager_plasticity.compute_yield_stress(pressure_for_plasticity,
                                                   drucker_prager_parameters);
               }
+          }
+
+        if (const std::shared_ptr<DeformationMechanismOutputs<dim>> deformation_mechanism_out =
+              out.template get_additional_output_object<DeformationMechanismOutputs<dim>>())
+          {
+            const std::vector<double>::const_iterator max_composition =
+              std::max_element(volume_fractions.begin(), volume_fractions.end());
+            const unsigned int dominant_composition =
+              std::distance(volume_fractions.begin(), max_composition);
+            deformation_mechanism_out->deformation_mechanisms[i] =
+              isostrain_viscosities.composition_deformation_mechanisms[dominant_composition];
           }
       }
 
