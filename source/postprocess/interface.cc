@@ -22,6 +22,8 @@
 #include <aspect/postprocess/interface.h>
 #include <aspect/utilities.h>
 
+#include <algorithm>
+#include <set>
 #include <typeinfo>
 
 
@@ -110,6 +112,101 @@ namespace aspect
         }
 
       return  output_list;
+    }
+
+
+
+    template <int dim>
+    std::list<std::pair<std::string,std::string>>
+    Manager<dim>::execute_selected_postprocessors(const std::set<std::string> &requested_postprocessors,
+                                                  TableHandler &statistics)
+    {
+      std::set<std::string> postprocessors_to_execute = requested_postprocessors;
+
+      bool dependency_list_changed = true;
+      while (dependency_list_changed)
+        {
+          dependency_list_changed = false;
+
+          auto plugin = this->plugin_objects.begin();
+          for (unsigned int i = 0;
+               i < this->plugin_names.size();
+               ++i, ++plugin)
+            {
+              if (postprocessors_to_execute.find(this->plugin_names[i])
+                  == postprocessors_to_execute.end())
+                continue;
+
+              for (const std::string &dependency : (*plugin)->required_other_postprocessors())
+                if (postprocessors_to_execute.insert(dependency).second)
+                  dependency_list_changed = true;
+            }
+        }
+
+      for (const std::string &postprocessor_name : postprocessors_to_execute)
+        AssertThrow(std::find(this->plugin_names.begin(),
+                              this->plugin_names.end(),
+                              postprocessor_name) != this->plugin_names.end(),
+                    ExcMessage("The selected postprocessor <" + postprocessor_name
+                               + "> is not active."));
+
+      std::list<std::pair<std::string,std::string>> output_list;
+      auto plugin = this->plugin_objects.begin();
+      for (unsigned int i = 0;
+           i < this->plugin_names.size();
+           ++i, ++plugin)
+        {
+          if (postprocessors_to_execute.find(this->plugin_names[i])
+              == postprocessors_to_execute.end())
+            continue;
+
+          try
+            {
+              (*plugin)->update();
+
+              const std::pair<std::string,std::string> output =
+                (*plugin)->execute(statistics);
+
+              if (output.first.size() + output.second.size() > 0)
+                output_list.push_back(output);
+            }
+          catch (std::exception &exc)
+            {
+              std::cerr << std::endl << std::endl
+                        << "----------------------------------------------------"
+                        << std::endl;
+              std::cerr << "Exception on MPI process <"
+                        << Utilities::MPI::this_mpi_process(MPI_COMM_WORLD)
+                        << "> while running postprocessor <"
+                        << typeid(**plugin).name()
+                        << ">: " << std::endl
+                        << exc.what() << std::endl
+                        << "Aborting!" << std::endl
+                        << "----------------------------------------------------"
+                        << std::endl;
+
+              MPI_Abort (MPI_COMM_WORLD, 1);
+            }
+          catch (...)
+            {
+              std::cerr << std::endl << std::endl
+                        << "----------------------------------------------------"
+                        << std::endl;
+              std::cerr << "Exception on MPI process <"
+                        << Utilities::MPI::this_mpi_process(MPI_COMM_WORLD)
+                        << "> while running postprocessor <"
+                        << typeid(**plugin).name()
+                        << ">: " << std::endl;
+              std::cerr << "Unknown exception!" << std::endl
+                        << "Aborting!" << std::endl
+                        << "----------------------------------------------------"
+                        << std::endl;
+
+              MPI_Abort (MPI_COMM_WORLD, 1);
+            }
+        }
+
+      return output_list;
     }
 
 
