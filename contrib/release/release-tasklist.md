@@ -202,6 +202,130 @@ and the links are working
 
 ## List of prior release notes
 
+Announcement for 3.1.0 (Oct 1, 2026)
+-----------------------------------------
+We are pleased to announce the release of ASPECT 3.1.0. ASPECT is the Advanced
+Solver for Planetary Evolution, Convection, and Tectonics. It uses modern
+numerical methods such as adaptive mesh refinement, multigrid solvers, and
+a modular software design to provide a fast, flexible, and extensible mantle
+convection solver. ASPECT is available from
+
+                   https://aspect.geodynamics.org/
+
+and the release is available from
+
+        https://geodynamics.org/resources/aspect
+
+and
+
+        https://github.com/geodynamics/aspect/releases/tag/v3.1.0
+
+Among others this release includes the following significant changes:
+
+- Support for modeling surface deformation has been significantly
+  extended. Fastscape erodibility can now vary in space and time according to
+  climate and sea level data, checkpointing functionality has been improved,
+  tangential boundary velocities along deformed boundaries are more accurate,
+  and support for initially deformed boundaries has been improved. Preliminary
+  coupling to the landscape evolution library Landlab is available as well.
+  (Liang Xue, Derek Neuharth, Michael Pons, Daniel Douglas, Zhibin Lei, Anne
+   Glerum, Ninghui Tian, Bob Myhill, Rene Gassmoeller, Timo Heister, Wolfgang
+   Bangerth)
+
+- Modeling crystal-preferred orientation and anisotropic viscosity has been
+  significantly improved. New slip systems for olivine and clinopyroxene have
+  been added and benchmarked against lab results, a cookbook for CPO-induced
+  anisotropy has been added, checkpointing of CPO has been improved.
+  (Xiaochuan Tian, Yijun Wang, Theo Haeussler, Agnes Kiraly, Daniel Douglas,
+   Menno Fraters)
+
+- There is a new plugin system for prescribed dilation and a plugin system that
+  allows prescribing solution values in parts of the model domain.
+  (Alexandr Dizov, Haoyuan Li)
+
+- A new composition type is available which is used to keep track of the state
+  of reactions, for example in models considering reaction kinetics. A cookbook
+  illustrating reaction kinetics was added.
+  (Haoyuan Li, Buchanan Kerswell)
+
+- The entropy method now supports multiple chemical compositions.
+  (Ranpeng Li, Juliane Dannberg, Rene Gassmoeller, Bob Myhill)
+
+- Different particle managers can now have different postprocessing output
+  intervals and formats. Particle managers are now created if particles are
+  used to advect compositional fields, even if the particles postprocessor is not
+  active. There is now an option to advect different particle sets with solid or
+  fluid velocities.
+  (Anne Glerum, Francesco Radica, Arijit Chakraborty)
+
+- Robin boundary conditions are now available for the temperature field, which
+  allow prescribing a linear combination of a prescribed temperature and a
+  prescribed heat flux.
+  (Juliane Dannberg)
+
+- ASPECT now has a gravity plugin and a heating plugin considering tidal
+  forces. This is useful for modeling moons orbiting a large planet.
+  (Hyunseong Kim, Antoniette Greta Grima, Wolfgang Bangerth)
+
+- Visco-elasticity and visco-elasto-plasticity have been updated to more
+  accurately track elastic stresses over time. Elasticity can now be combined
+  with two-phase melt transport.
+  (Anne Glerum, Robert Myhill, Rene Gassmoeller, Juliane Dannberg, John
+   Naliboff, Gerry Puckett, Esther Heckenbach, Ryan Stoner)
+
+- Checkpointing can now also be requested at specific model times. Parameters
+  have been added to configure how many checkpoints to keep, restart from a
+  specific checkpoint, or restart from the checkpoint whose time is closest to
+  a specified model time. The checkpoint file structure has been improved.
+  (Anne Glerum, Ninghui Tian, Timo Heister)
+
+- The geometric multigrid (GMG) Stokes solvers no longer require material
+  property averaging and support more averaging types. The global coarsening
+  variant of GMG now supports periodic boundary conditions in Cartesian and
+  spherical geometries and supports mesh refinement on periodic boundaries.
+  (Timo Heister)
+
+- Two-phase flow simulations can now use discontinuous finite elements, Darcy
+  advection can now proceed along pressure gradients instead of purely buoyancy
+  driven. Particle properties can be interpolated into compositional fields of
+  different finite element discretizations.
+  (Ryan Stoner, Daniel Douglas, Timo Heister, Francesco Radica)
+
+- A linear solver failure strategy inside nonlinear solvers was introduced.
+  Bugfixes to adiabatic profile and strain rate calculations lead to more
+  robust linear and nonlinear Stokes solver convergence.
+  (Haoyuan Li, Ranpeng Li, Qianyi Lu, Yimin Jin)
+
+- The Geodynamic World Builder has been updated to version 1.1. Initial ASPECT
+  topography can now be prescribed through the World Builder.
+  (Menno Fraters, Michael Pons, World Builder Contributors)
+
+- ASPECT now requires deal.II 9.6.0 or newer and a C++ compiler with C++17
+  support. ASPECT can now use the Tpetra solver packages provided by
+  Trilinos 17 if configured with deal.II 9.8.0 or newer.
+  (Timo Heister, Rene Gassmoeller, Wolfgang Bangerth)
+
+- The online documentation now includes the Doxygen API reference, see
+  https://aspect-documentation.readthedocs.io/en/latest/doxygen/index.html.
+  (Timo Heister)
+
+- Many new cookbooks and benchmark cases have been added.
+  Many deprecated input options and source code functions have been removed.
+  Many bugs and inconsistencies have been fixed.
+  (Many authors, see link below)
+
+A complete list of all changes and their authors can be found at
+  https://aspect.geodynamics.org/doc/doxygen/changes_between_3_80_80_and_3_81_80.html
+
+We are thankful for all feature and model contributions, code reviews,
+forum posts, bug reports, and general help provided by members of our
+community. Your contributions have helped make ASPECT what is it today.
+
+Wolfgang Bangerth, Juliane Dannberg, Daniel Douglas, Menno Fraters,
+Rene Gassmoeller, Anne Glerum, Timo Heister, Bob Myhill, John Naliboff,
+Arushi Saxena, Cedric Thieulot, and many other contributors.
+
+
 Announcement for 3.0.0 (Nov 6, 2024)
 -----------------------------------------
 We are pleased to announce the release of ASPECT 3.0.0. ASPECT is the Advanced
