@@ -1,0 +1,35 @@
+
+Loading shared library <./libmtz_kinetics.debug.so>
+
+Number of active cells: 6 (on 1 levels)
+Number of degrees of freedom: 358 (70+18+54+54+54+54+54)
+
+*** Timestep 0:  t=0 years, dt=0 years
+   Solving temperature system... 0 iterations.
+   Solving xi_olivine_wadsleyite system ... 0 iterations.
+   Solving xi_wadsleyite_ringwoodite system ... 0 iterations.
+   Solving xi_ringwoodite_postspinel system ... 0 iterations.
+   Copying properties into prescribed compositional field density_field... done.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 8+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 9.49718e-17, 7.00805e-17, 1.46071e-16, 1.46071e-16, 0, 1
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 1
+
+   Solving temperature system... 0 iterations.
+   Solving xi_olivine_wadsleyite system ... 0 iterations.
+   Solving xi_wadsleyite_ringwoodite system ... 0 iterations.
+   Solving xi_ringwoodite_postspinel system ... 0 iterations.
+   Copying properties into prescribed compositional field density_field... done.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 9+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 9.49718e-17, 7.00805e-17, 1.46071e-16, 1.46071e-16, 0, 5.22863e-06
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 5.22863e-06
+
+
+   Postprocessing:
+     Writing graphical output: output-mtz_kinetics/solution/solution-00000
+
+Termination requested by criterion: end time
+
+
+

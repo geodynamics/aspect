@@ -1,0 +1,9 @@
+include $ASPECT_SOURCE_DIR/cookbooks/mtz_kinetics/simple-subduction.prm
+
+set End time = 0
+
+subsection Mesh refinement
+  set Initial adaptive refinement        = 0
+  set Initial global refinement          = 0
+  set Time steps between mesh refinement = 0
+end
