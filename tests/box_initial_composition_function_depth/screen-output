@@ -1,0 +1,19 @@
+
+Number of active cells: 1,024 (on 6 levels)
+Number of degrees of freedom: 17,989 (8,450+1,089+4,225+4,225)
+
+   Added initial topography to grid
+
+*** Timestep 0:  t=0 seconds, dt=0 seconds
+   Solving temperature system... 0 iterations.
+   Solving C_1 system ... 0 iterations.
+   Solving Stokes system (GMG)... 10+0 iterations.
+
+   Postprocessing:
+     Compositions min/max/mass: 0/1/0.3652
+     Topography min/max:        0.05 m, 0.15 m
+
+Termination requested by criterion: end time
+
+
+
