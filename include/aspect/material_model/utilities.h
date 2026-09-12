@@ -378,6 +378,26 @@ namespace aspect
       compute_only_composition_fractions(const std::vector<double> &compositional_fields,
                                          const std::vector<unsigned int> &indices_to_use,
                                          const double minimum_fraction = -std::numeric_limits<double>::max());
+      /**
+       * For multicomponent material models: Given a vector of compositional
+       * field values of length N, of which M indices correspond to mass or
+       * volume fractions, this function returns a vector of fractions
+       * of length M+1, corresponding to the fraction of a ``background
+       * material'' as the first entry, and fractions for each of the input
+       * fields as the following entries. The returned vector will sum to one.
+       * If the sum of the compositional_fields is greater than
+       * one, we assume that there is no background field (i.e., that field value
+       * is zero). Otherwise, the difference between the sum of the compositional
+       * fields and 1.0 is assumed to be the amount of the background field.
+       * This function makes no assumptions about the units of the
+       * compositional field values; for example, they could correspond to
+       * mass or volume fractions.
+       */
+      void
+      compute_only_composition_fractions(const std::vector<double> &compositional_fields,
+                                         const std::vector<unsigned int> &indices_to_use,
+                                         std::vector<double> &volume_fractions,
+                                         const double minimum_fraction = -std::numeric_limits<double>::max());
 
       /**
        * For multicomponent material models: Given a vector of compositional
@@ -404,6 +424,31 @@ namespace aspect
       compute_composition_fractions(const std::vector<double> &compositional_fields,
                                     const ComponentMask &field_mask = ComponentMask(),
                                     const double minimum_fraction = -std::numeric_limits<double>::max());
+      /**
+             * For multicomponent material models: Given a vector of compositional
+             * field values of length N, this function returns a vector of fractions
+             * of length N+1, corresponding to the fraction of a ``background
+             * material'' as the first entry, and fractions for each of the input
+             * fields as the following entries. The returned vector will sum to one.
+             * If the sum of the compositional_fields is greater than
+             * one, we assume that there is no background field (i.e., that field value
+             * is zero). Otherwise, the difference between the sum of the compositional
+             * fields and 1.0 is assumed to be the amount of the background field.
+             * Optionally, one can input a component mask that determines which of the
+             * compositional fields to use during the computation (e.g. because
+             * some fields contain unrelated quantities (like strain,
+             * porosity, or trace elements). By default, all fields are included.
+             * This function makes no assumptions about the units of the
+             * compositional field values; for example, they could correspond to
+             * mass or volume fractions.
+             */
+
+      void
+      compute_composition_fractions(const std::vector<double> &compositional_fields,
+                                    std::vector<double> &fractions,
+                                    const ComponentMask &field_mask = ComponentMask(),
+                                    const double minimum_fraction = -std::numeric_limits<double>::max());
+
 
       /**
        * Given a vector of component masses,

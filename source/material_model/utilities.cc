@@ -33,6 +33,8 @@
 #include <aspect/utilities.h>
 
 #include <boost/lexical_cast.hpp>
+#include <deal.II/base/exception_macros.h>
+#include <deal.II/base/exceptions.h>
 #include <list>
 
 
@@ -877,7 +879,6 @@ namespace aspect
       }
 
 
-
       std::vector<double>
       compute_only_composition_fractions(const std::vector<double> &compositional_fields,
                                          const std::vector<unsigned int> &indices_to_use,
@@ -886,12 +887,30 @@ namespace aspect
         AssertThrow(minimum_fraction <= 1.0,
                     ExcMessage("The minimum composition fraction must not be greater than one."));
 
-        std::vector<double> composition_fractions(indices_to_use.size()+1);
+        static aspect::Utilities::ScratchSpace<std::vector<double>> composition_fractions_space;
+        typename aspect::Utilities::ScratchSpace<std::vector<double>>::ScopedScratchObject scoped_composition_fractions_space(composition_fractions_space);
+        std::vector<double> &composition_fractions = scoped_composition_fractions_space;
+        compute_only_composition_fractions(compositional_fields,indices_to_use,composition_fractions,minimum_fraction);
+        return composition_fractions;
+      }
+
+      void
+      compute_only_composition_fractions(const std::vector<double> &compositional_fields,
+                                         const std::vector<unsigned int> &indices_to_use,
+                                         std::vector<double> &composition_fractions,
+                                         const double minimum_fraction)
+      {
+        composition_fractions.resize(indices_to_use.size()+1);
+        std::fill(composition_fractions.begin(),composition_fractions.end(),0);
 
         // Clip the compositional fields so they are between zero and one,
         // and sum the compositional fields for normalization purposes.
         double sum_composition = 0.0;
-        std::vector<double> x_comp (indices_to_use.size());
+
+        static aspect::Utilities::ScratchSpace<std::vector<double>> x_comp_space;
+        typename aspect::Utilities::ScratchSpace<std::vector<double>>::ScopedScratchObject scoped_x_comp_space(x_comp_space);
+        std::vector<double> &x_comp = scoped_x_comp_space;
+        x_comp.resize(indices_to_use.size());
 
         for (unsigned int i=0; i < x_comp.size(); ++i)
           {
@@ -917,10 +936,7 @@ namespace aspect
             else
               composition_fractions[i+1] = x_comp[i];
           }
-
-        return composition_fractions;
       }
-
 
 
       std::vector<double>
@@ -928,10 +944,23 @@ namespace aspect
                                     const ComponentMask &field_mask,
                                     const double minimum_fraction)
       {
+        std::vector<double> volume_fractions;
+        compute_composition_fractions(compositional_fields,volume_fractions,field_mask);
+        return volume_fractions;
+      }
+
+
+      void
+      compute_composition_fractions(const std::vector<double> &compositional_fields,
+                                    std::vector<double> &composition_fractions,
+                                    const ComponentMask &field_mask,
+                                    const double minimum_fraction)
+      {
+
         AssertThrow(minimum_fraction <= 1.0,
                     ExcMessage("The minimum composition fraction must not be greater than one."));
 
-        std::vector<double> composition_fractions(compositional_fields.size()+1);
+        composition_fractions.resize(compositional_fields.size()+1);
 
         // Clip the compositional fields so they are between zero and one,
         // and sum the compositional fields for normalization purposes.
@@ -964,7 +993,6 @@ namespace aspect
                 composition_fractions[i+1] = x_comp[i];
             }
 
-        return composition_fractions;
       }
 
 

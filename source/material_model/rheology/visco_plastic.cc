@@ -18,7 +18,11 @@
   <http://www.gnu.org/licenses/>.
 */
 
+<<<<<<< HEAD
 #include <algorithm>
+=======
+#include "aspect/material_model/rheology/drucker_prager.h"
+>>>>>>> f227e5131 (reduce allocation in aspect.)
 #include <aspect/material_model/rheology/visco_plastic.h>
 #include <aspect/material_model/utilities.h>
 #include <aspect/utilities.h>
@@ -28,6 +32,7 @@
 #include <deal.II/base/signaling_nan.h>
 #include <deal.II/base/parameter_handler.h>
 #include <deal.II/fe/fe_values.h>
+#include <limits>
 
 namespace aspect
 {
@@ -164,15 +169,42 @@ namespace aspect
                                        const std::vector<unsigned int> &n_phase_transitions_per_composition) const
       {
         IsostrainViscosities output_parameters;
+        calculate_isostrain_viscosities(in,i,volume_fractions, output_parameters, phase_function_values,n_phase_transitions_per_composition);
+        return output_parameters;
+      }
 
+      template <int dim>
+      void
+      ViscoPlastic<dim>::
+      calculate_isostrain_viscosities (const MaterialModel::MaterialModelInputs<dim> &in,
+                                       const unsigned int i,
+                                       const std::vector<double> &volume_fractions,
+                                       IsostrainViscosities &output_parameters,
+                                       const std::vector<double> &phase_function_values,
+                                       const std::vector<unsigned int> &n_phase_transitions_per_composition) const
+      {
+        //IsostrainViscosities output_parameters;
+
+        //static Utilities::ScratchSpace<std::vector<double>> vector_doubles_space;
+        //static Utilities::ScratchSpace<std::vector<bool>> vector_boolss_space;
+        //static Utilities::ScratchSpace<std::vector<std::vector<Rheology::DruckerPragerParameters>>> DruckerPragerParameters_space;
+        //typename aspect::Utilities::ScratchSpace<std::vector<double>>::ScopedScratchObject scoped_volume_fractions_space(volume_fractions_space);
+        //std::vector<double>& volume_fractions = scoped_volume_fractions_space;
         // Initialize or fill variables used to calculate viscosities
         output_parameters.composition_yielding.resize(volume_fractions.size(), false);
+        std::fill( output_parameters.composition_yielding.begin(), output_parameters.composition_yielding.end(),false);
         output_parameters.composition_viscosities.resize(volume_fractions.size(), numbers::signaling_nan<double>());
+        std::fill( output_parameters.composition_viscosities.begin(), output_parameters.composition_viscosities.end(),numbers::signaling_nan<double>());
         output_parameters.drucker_prager_parameters.resize(volume_fractions.size());
+        std::fill( output_parameters.drucker_prager_parameters.begin(), output_parameters.drucker_prager_parameters.end(),DruckerPragerParameters());
         output_parameters.dilation_lhs_terms.resize(volume_fractions.size(), numbers::signaling_nan<double>());
+        std::fill(output_parameters.dilation_lhs_terms.begin(),output_parameters.dilation_lhs_terms.end(),numbers::signaling_nan<double>());
         output_parameters.dilation_rhs_terms.resize(volume_fractions.size(), numbers::signaling_nan<double>());
+        std::fill(output_parameters.dilation_rhs_terms.begin(),output_parameters.dilation_rhs_terms.end(),numbers::signaling_nan<double>());
         output_parameters.diffusion_viscosities.resize(volume_fractions.size(), std::numeric_limits<double>::max());
+        std::fill(output_parameters.diffusion_viscosities.begin(),output_parameters.diffusion_viscosities.end(),std::numeric_limits<double>::max());
         output_parameters.dislocation_viscosities.resize(volume_fractions.size(), std::numeric_limits<double>::max());
+        std::fill( output_parameters.dislocation_viscosities.begin(), output_parameters.dislocation_viscosities.end(),std::numeric_limits<double>::max());
 
         // Assemble current and old stress tensor if elastic behavior is enabled
         SymmetricTensor<2, dim> stress_0_advected = numbers::signaling_nan<SymmetricTensor<2, dim>>();
@@ -510,7 +542,6 @@ namespace aspect
               }
           }
 
-        return output_parameters;
       }
 
 
@@ -553,6 +584,7 @@ namespace aspect
 
             const SymmetricTensor<2,dim> current_strain_rate = in.strain_rate[i];
 
+
             // For each independent component, compute the derivative.
             for (unsigned int component = 0; component < SymmetricTensor<2,dim>::n_independent_components; ++component)
               {
@@ -565,9 +597,10 @@ namespace aspect
 
                 in_derivatives.strain_rate[i] = forward_strain_rate;
 
-                const IsostrainViscosities forward_isostrain_values =
-                  calculate_isostrain_viscosities(in_derivatives, i, volume_fractions,
-                                                  phase_function_values, n_phase_transitions_per_composition);
+                typename aspect::Utilities::ScratchSpace<IsostrainViscosities>::ScopedScratchObject scoped_isostrain_viscosities_space(isostrain_viscosities_space);
+                IsostrainViscosities &forward_isostrain_values = scoped_isostrain_viscosities_space;
+                calculate_isostrain_viscosities(in_derivatives, i, volume_fractions, forward_isostrain_values,
+                                                phase_function_values, n_phase_transitions_per_composition);
 
                 // For each composition of the independent component, compute the derivative.
                 for (unsigned int composition_index = 0; composition_index < n_compositions; ++composition_index)
@@ -603,9 +636,10 @@ namespace aspect
             // Modify the in_derivatives object again to take the original strain rate.
             in_derivatives.strain_rate[i] = current_strain_rate;
 
-            const IsostrainViscosities forward_isostrain_values =
-              calculate_isostrain_viscosities(in_derivatives, i, volume_fractions,
-                                              phase_function_values, n_phase_transitions_per_composition);
+            typename aspect::Utilities::ScratchSpace<IsostrainViscosities>::ScopedScratchObject scoped_isostrain_viscosities_space(isostrain_viscosities_space);
+            IsostrainViscosities &forward_isostrain_values = scoped_isostrain_viscosities_space;
+            calculate_isostrain_viscosities(in_derivatives, i, volume_fractions, forward_isostrain_values,
+                                            phase_function_values, n_phase_transitions_per_composition);
 
             for (unsigned int composition_index = 0; composition_index < n_compositions; ++composition_index)
               {
