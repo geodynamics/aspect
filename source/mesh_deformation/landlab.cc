@@ -158,7 +158,9 @@ namespace aspect
           {
             // set_mesh_information: call with None
             PyObject *pArgs = PyTuple_Pack(1, Py_None);
+            this->get_computing_timer().enter_subsection("Landlab: Run Python Code");
             PyObject *pValue = PythonHelper::call_python_function(pModule, "set_mesh_information", pArgs);
+            this->get_computing_timer().leave_subsection("Landlab: Run Python Code");
             Py_DECREF(pArgs);
             Py_DECREF(pValue);
           }
@@ -166,6 +168,7 @@ namespace aspect
           {
             // get grid:
             PyObject *pArgs = PyTuple_Pack(1, PyLong_FromLong(dim));
+            this->get_computing_timer().enter_subsection("Landlab: Run Python Code");
             PyObject *pgrid_x = PythonHelper::call_python_function(pModule, "get_grid_x", pArgs);
 
             // Depending on the ASPECT model geometry and the dimension, we need to
@@ -178,6 +181,7 @@ namespace aspect
             if (dim == 3 && is_spherical)
               pgrid_z = PythonHelper::call_python_function(pModule, "get_grid_z", pArgs);
             Py_DECREF(pArgs);
+            this->get_computing_timer().leave_subsection("Landlab: Run Python Code");
 
             // Create a C++ view of the numpy arrays
             const ArrayView<double> data_x = PythonHelper::numpy_to_array_view(pgrid_x);
@@ -298,7 +302,10 @@ namespace aspect
           // update_until() returns the change in the topography, which we convert to a mesh
           // velocity in ASPECT.
           PyObject *pArgs  = PyTuple_Pack(2, pDict_solution, pDict_auxiliary);
+
+          this->get_computing_timer().enter_subsection("Landlab: Run Python Code");
           PyObject *pValue = PythonHelper::call_python_function(pModule, "update_until", pArgs);
+          this->get_computing_timer().leave_subsection("Landlab: Run Python Code");
 
           // Remove these python objects from memory.
           Py_DECREF(pDict_solution);
@@ -390,7 +397,9 @@ namespace aspect
       if (this_rank_runs_landlab)
         {
           PyObject *pArgs  = PyTuple_Pack(1, PyLong_FromLong(dim));
+          this->get_computing_timer().enter_subsection("Landlab: Run Python Code");
           PyObject *pValue = PythonHelper::call_python_function(pModule, "get_initial_topography", pArgs);
+          this->get_computing_timer().leave_subsection("Landlab: Run Python Code");
           Py_DECREF(pArgs);
           ArrayView<double> data = PythonHelper::numpy_to_array_view(pValue);
 
