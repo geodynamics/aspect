@@ -1,0 +1,20 @@
+subsection Material model
+  subsection Reactive Fluid Transport Model
+    # This parameter sets alpha and controls weakening based on free water
+    set Exponential fluid weakening factor            = 30
+    set Base model                                    = visco plastic
+  end
+
+ subsection Visco Plastic
+   # Setting the viscosity prefactor scheme to HK04 olivine hydration enables weakening of the solid
+   # when bound water is present
+   set Viscosity prefactor scheme                     = HK04 olivine hydration
+
+   set Stress exponents for diffusion creep           = 1.0
+   set Stress exponents for dislocation creep         = 3.5
+
+   # These parameters control the amount of weakening, with higher exponents resulting in a larger weakening
+   set Water fugacity exponents for diffusion creep   = 0.7 # 0.7 / 1.0 = 0.7
+   set Water fugacity exponents for dislocation creep = 0.34285714285714286 # 1.2 / 3.5 = 0.34285714285714286
+  end
+end

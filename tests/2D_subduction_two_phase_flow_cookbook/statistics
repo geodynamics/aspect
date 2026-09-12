@@ -1,0 +1,38 @@
+# 1: Time step number
+# 2: Time (years)
+# 3: Time step size (years)
+# 4: Number of mesh cells
+# 5: Number of Stokes degrees of freedom
+# 6: Number of temperature degrees of freedom
+# 7: Number of degrees of freedom for all compositions
+# 8: Number of nonlinear iterations
+# 9: Iterations for temperature solver
+# 10: Iterations for composition solver 1
+# 11: Iterations for composition solver 2
+# 12: Iterations for composition solver 3
+# 13: Iterations for composition solver 4
+# 14: Iterations for composition solver 5
+# 15: Iterations for composition solver 6
+# 16: Iterations for Stokes solver
+# 17: Velocity iterations in Stokes preconditioner
+# 18: Schur complement iterations in Stokes preconditioner
+# 19: Minimal value for composition porosity
+# 20: Maximal value for composition porosity
+# 21: Global mass for composition porosity
+# 22: Minimal value for composition bound_fluid
+# 23: Maximal value for composition bound_fluid
+# 24: Global mass for composition bound_fluid
+# 25: Minimal value for composition peridotite
+# 26: Maximal value for composition peridotite
+# 27: Global mass for composition peridotite
+# 28: Minimal value for composition gabbro
+# 29: Maximal value for composition gabbro
+# 30: Global mass for composition gabbro
+# 31: Minimal value for composition MORB
+# 32: Maximal value for composition MORB
+# 33: Global mass for composition MORB
+# 34: Minimal value for composition sediment
+# 35: Maximal value for composition sediment
+# 36: Global mass for composition sediment
+0 0.000000000000e+00 0.000000000000e+00 48 515 225 1350 6 0 0 0 0 0 0 0 89 95 188  0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 2.10000000e-02 8.58520833e+09 0.00000000e+00 1.00000000e+00 2.48211806e+13 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 1.00000000e+00 4.08819444e+11 
+1 1.000000000000e+02 1.000000000000e+02 48 515 225 1350 1 0 9 0 0 0 0 0 10 11  22 -6.17357269e-08 6.93007567e-04 2.44781320e+08 0.00000000e+00 2.10000000e-02 8.58520833e+09 0.00000000e+00 1.00000000e+00 2.48211806e+13 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 1.00000000e+00 4.08819444e+11 
