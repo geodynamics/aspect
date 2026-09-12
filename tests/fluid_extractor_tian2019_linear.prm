@@ -1,0 +1,63 @@
+# This test checks that the fluid extractor reaction model works correctly when
+# used with the tian approximation fluid-solid reaction scheme, and with the 'linear'
+# extraction method. A key feature that this test demonstrates is that the absorption
+# of the 'porosity' above the extraction depth is correctly disabled. When no extraction
+# occurs, the 'bound_fluid' composition increases above the extraction depth, but in this
+# test that 'bound_fluid' never increases above the extraction depth, and the 'porosity'
+# is reduced. Because the 'linear' extraction method is used, a smaller amount of 'porosity'
+# is extracted near the extraction depth and more is extracted near the surface.
+
+include $ASPECT_SOURCE_DIR/tests/tian_peridotite.prm
+
+# Specify that the entire domain is peridotite, with an initial porosity
+# of 10% everywhere and 0% bound_water everywhere. Given the P-T conditions,
+# the porosity will want to partition into the bound_water phase, but above
+# the extraction depth it will not.
+subsection Initial composition model
+  set Model name = function
+
+  subsection Function
+    set Function constants  = initial_porosity=0.10, initial_bound_water=0.0
+    set Function expression = initial_porosity; \
+                              initial_bound_water; \
+                              1; \
+                              0; \
+                              0; \
+                              0
+  end
+end
+
+# Material model, using the simpler base model and selecting the tian approximation
+# as the fluid solid reaction scheme for the reactive fluid transport model.
+subsection Material model
+  set Model name = reactive fluid transport
+
+  subsection Reactive Fluid Transport Model
+    set Base model                                       = simpler
+    set Reference fluid density                          = 3000
+    set Fluid reaction time scale for operator splitting = 1e2
+    set Fluid-solid reaction scheme                      = tian approximation
+    set Extract fluids   = true
+
+    subsection Tian 2019 model
+      set Maximum weight percent water in peridotite       = 11
+      set Melt extraction depth                            = 30e3
+      set Extraction method                                = linear
+    end
+  end
+
+  subsection Simpler model
+    set Reference density             = 3000.0
+    set Thermal expansion coefficient = 1e-5
+  end
+end
+
+# Post processing
+subsection Postprocess
+  set List of postprocessors = composition statistics, visualization
+
+  subsection Visualization
+    set Time between graphical output = 0
+    set Output format                 = gnuplot
+  end
+end
