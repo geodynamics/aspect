@@ -1,0 +1,20 @@
+
+Number of active cells: 64 (on 3 levels)
+Number of degrees of freedom: 948 (578+81+289)
+
+*** Timestep 0:  t=0 years, dt=0 years
+   Solving temperature system... 0 iterations.
+
+Number of active cells: 148 (on 4 levels)
+Number of degrees of freedom: 2,153 (1,318+176+659)
+
+*** Timestep 0:  t=0 years, dt=0 years
+   Solving temperature system... 0 iterations.
+
+   Postprocessing:
+     Writing graphical output: output-isosurfaces_simple_box_2D_v/solution/solution-00000
+
+Termination requested by criterion: end time
+
+
+
