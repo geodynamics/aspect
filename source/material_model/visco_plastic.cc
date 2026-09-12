@@ -267,11 +267,7 @@ namespace aspect
             {
               // The viscosity was not requested. Poison its value, along with the other
               // quantities we set above and that would otherwise remain uninitialized
-              isostrain_viscosities.composition_yielding.clear();
-              isostrain_viscosities.composition_viscosities.clear();
-              isostrain_viscosities.drucker_prager_parameters.clear();
-              isostrain_viscosities.diffusion_viscosities.clear();
-              isostrain_viscosities.dislocation_viscosities.clear();
+              isostrain_viscosities.clear();
 
               out.viscosities[i] = numbers::signaling_nan<double>();
 

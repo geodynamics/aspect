@@ -1,0 +1,20 @@
+# This test reuses the grain_boundary_sliding test and
+# turns on additional outputs for the material model to
+# check the outputs for GBS rheology
+include $ASPECT_SOURCE_DIR/tests/grain_boundary_sliding.prm
+
+# Post processing
+# named additional outputs includes the grain boundary sliding
+subsection Postprocess
+  set List of postprocessors = velocity statistics, mass flux statistics, visualization
+
+  subsection Visualization
+    set Interpolate output = false
+    set List of output variables = material properties, strain rate, named additional outputs
+    set Output format            = gnuplot
+
+    subsection Material properties
+      set List of material properties = viscosity
+    end
+  end
+end
