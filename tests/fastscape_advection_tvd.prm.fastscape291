@@ -1,0 +1,145 @@
+# This test exercises the TVD finite-volume horizontal-advection scheme
+# introduced in Fastscape 2.9.1dev. The non-standard .fastscape291 suffix
+# intentionally prevents the ASPECT test harness from discovering this file.
+# When Fastscape 2.9.1dev or newer is available on the test machines, remove
+# the suffix from this file and its reference-output directory.
+#
+# Enable if: ASPECT_WITH_FASTSCAPE
+
+set Dimension                    = 2
+set Use years instead of seconds = true
+set End time                     = 2e5
+set Maximum time step            = 1e5
+set Nonlinear solver scheme      = no Advection, single Stokes
+set Pressure normalization       = no
+set Surface pressure             = 0
+set Output directory             = output-fastscape_advection_tvd
+
+subsection Geometry model
+  set Model name = box
+
+  subsection Box
+    set X extent      = 125e3
+    set Y extent      = 25e3
+    set X repetitions = 5
+  end
+
+  subsection Initial topography model
+    set Model name = function
+
+    subsection Function
+      set Function expression = if(x > 20e3 && x < 80e3, 2500, 0)
+    end
+  end
+end
+
+subsection Mesh refinement
+  set Initial adaptive refinement = 0
+  set Initial global refinement   = 1
+  set Minimum refinement level    = 0
+end
+
+# Extend the model at 5 cm/yr. This creates nonzero horizontal surface
+# velocities, which ASPECT passes to Fastscape and which make the selected
+# Fastscape advection scheme active.
+subsection Boundary velocity model
+  set Prescribed velocity boundary indicators = left x: function, right x: function, bottom y: function
+
+  subsection Function
+    set Variable names     = x,y
+    set Function constants = velocity=0.05, width=125e3, depth=25e3
+    set Function expression = if(x < width/2, -velocity, velocity); \
+                              velocity*2*depth/width
+  end
+end
+
+subsection Mesh deformation
+  set Mesh deformation boundary indicators = top: fastscape
+  set Additional tangential mesh velocity boundary indicators = left, right
+
+  subsection Fastscape
+    set Advection scheme = tvd
+    set Uplift and advect with fastscape = true
+
+    set Maximum surface refinement level = 1
+    set Surface refinement difference = 0
+    set Additional fastscape refinement = 0
+
+    set Number of fastscape timesteps per aspect timestep = 1
+    set Maximum timestep length = 1e5
+
+    set Initial noise magnitude = 0
+    set Fastscape seed = 1000
+    set Use ghost nodes = true
+    set Vertical exaggeration = 1
+
+    subsection Boundary conditions
+      set Front = 1
+      set Right = 1
+      set Back  = 1
+      set Left  = 1
+    end
+
+    # Disable river incision and use negligible hillslope diffusion so that
+    # this test isolates horizontal advection of the initial topographic step.
+    # The diffusivity must be positive because ghost-node initialization
+    # evaluates boundary mass flux divided by diffusivity.
+    subsection Erosional parameters
+      set Drainage area exponent = 0.4
+      set Slope exponent = 1
+      set Multi-direction slope exponent = -1
+      set Bedrock river incision rate = 0
+      set Sediment river incision rate = -1
+      set Bedrock diffusivity = 1e-20
+      set Sediment diffusivity = -1
+      set Bedrock deposition coefficient = 1
+    end
+  end
+end
+
+subsection Boundary temperature model
+  set Fixed temperature boundary indicators = bottom, top
+  set List of model names = initial temperature
+end
+
+subsection Initial temperature model
+  set Model name = function
+
+  subsection Function
+    set Function expression = 0
+  end
+end
+
+subsection Gravity model
+  set Model name = vertical
+
+  subsection Vertical
+    set Magnitude = 0
+  end
+end
+
+subsection Material model
+  set Model name = simple
+
+  subsection Simple model
+    set Reference density             = 1
+    set Reference specific heat       = 1
+    set Reference temperature         = 0
+    set Thermal conductivity          = 1
+    set Thermal expansion coefficient = 1
+    set Viscosity                     = 1
+  end
+end
+
+subsection Formulation
+  set Formulation = Boussinesq approximation
+end
+
+subsection Postprocess
+  set List of postprocessors = topography
+
+  subsection Topography
+    set Time between text output = 1e5
+    set Output to file = true
+  end
+end
