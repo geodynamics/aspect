@@ -54,9 +54,6 @@ namespace aspect
         {
           try
             {
-              // first call the update() function.
-              p->update();
-
               // call the execute() function. if it produces any output
               // then add it to the list
               std::pair<std::string,std::string> output

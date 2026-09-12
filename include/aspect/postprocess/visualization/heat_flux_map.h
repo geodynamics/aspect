@@ -56,14 +56,6 @@ namespace aspect
           initialize() override;
 
           /**
-           * Fill the temporary storage variables with the
-           * heat flux for the current time step.
-           *
-           * @copydoc Interface<dim>::update()
-           */
-          void update() override;
-
-          /**
            * Compute the heat flux for the given input cell.
            *
            * @copydoc dealii::DataPostprocessor<dim>::evaluate_vector_field()
@@ -86,6 +78,15 @@ namespace aspect
           parse_parameters (ParameterHandler &prm) override;
 
         private:
+          /**
+           * Fill the temporary storage variables with the
+           * heat flux for the current time step. We do
+           * not use the regular update() function, because
+           * we need the solution after the nonlinear
+           * solver loop, not at the beginning of the time step.
+           */
+          void update_heat_flux();
+
           /**
            * A flag that determines whether to use the point-wise
            * heat flux calculation or the cell-wise averaged calculation.
