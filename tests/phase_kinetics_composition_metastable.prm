@@ -110,6 +110,10 @@ subsection Material model
                         harzburgite: 3235.0|3372.3|3441.7|3441.7|3680.8,\
                         crust: 3000.0|3540.0|3613.0|3871.7
         set Reaction progress mapping = 0
+        subsection Reaction chain
+            set Kinetic models = Interface controlled growth
+            set Tolerance in reaction progress = 0.1
+        end
     end
 end
 
