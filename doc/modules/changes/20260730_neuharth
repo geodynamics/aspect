@@ -1,0 +1,5 @@
+New: Introduce a rheology plugin that can
+modify a pressure by a scaling term, similar to
+a pore fluid factor.
+<br>
+(Derek Neuharth, 2026/07/30)
