@@ -293,7 +293,9 @@ namespace aspect
       if (normalized_distance_to_closest_profile_point >=0.0 && normalized_distance_to_closest_profile_point < 1e-6)
         return property[i];
 
-      Assert (i+1 < property.size(), ExcInternalError());
+      // Assert (i+1 < property.size(), ExcInternalError());
+      if (i+1 >= property.size())
+        return property[property.size()-1];
 
       // now do the linear interpolation
       const double d = normalized_distance_from_surface - i;
