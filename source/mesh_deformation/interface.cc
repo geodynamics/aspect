@@ -1745,7 +1745,8 @@ namespace aspect
           // default) applies the entire initial deformation in a single step.
           for (unsigned int substep = 1; substep <= initial_deformation_substeps; ++substep)
             {
-              make_initial_constraints(double(substep) / double(initial_deformation_substeps));
+              make_initial_constraints(static_cast<double>(substep) /
+                                       static_cast<double>(initial_deformation_substeps));
               if (this->is_stokes_matrix_free())
                 compute_mesh_displacements_gmg();
               else
