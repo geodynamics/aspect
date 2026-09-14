@@ -73,6 +73,13 @@ namespace aspect
         compute_updated_velocities_at_points (const std::vector<std::vector<double>> &current_solution_at_points) const override;
 
         /**
+         * Evaluate additional derived quantities to send to Landlab.
+         */
+        void
+        evaluate_aspect_derived_quantities_at_points (std::vector<std::vector<double>> &variable_data,
+                                                      std::vector<std::string> &variable_names) const;
+
+        /**
          * Compute the initial deformation by querying the Landlab Python module for the
          * initial topography at the evaluation points, interpolating to support points, and
          * creating corresponding constraints.
@@ -126,6 +133,11 @@ namespace aspect
          * Whether the ASPECT geometry is spherical.
          */
         bool is_spherical;
+
+        /**
+         * This variable is read from the parameter file through a parameter called 'List of additional ASPECT quantities'.
+         */
+        std::vector<std::string> additional_named_quantities;
 
         /**
          * The Python module object.
