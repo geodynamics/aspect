@@ -155,7 +155,7 @@ subsection Particles
 
   subsection Generator
     subsection Ascii file
-      set Data directory = .
+      set Data directory = ./
       set Data file name = particle_one.dat
     end
   end
