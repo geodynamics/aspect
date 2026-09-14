@@ -7,8 +7,8 @@
 # 7: Number of degrees of freedom for all compositions
 # 8: Number of nonlinear iterations
 # 9: Iterations for temperature solver
-# 10: Iterations for composition solver 7
-# 11: Iterations for composition solver 8
+# 10: Iterations for composition solver 4
+# 11: Iterations for composition solver 5
 # 12: Iterations for Stokes solver
 # 13: Velocity iterations in Stokes preconditioner
 # 14: Schur complement iterations in Stokes preconditioner
@@ -21,26 +21,17 @@
 # 21: Minimal value for composition ve_stress_xy
 # 22: Maximal value for composition ve_stress_xy
 # 23: Global mass for composition ve_stress_xy
-# 24: Minimal value for composition ve_stress_xx_old
-# 25: Maximal value for composition ve_stress_xx_old
-# 26: Global mass for composition ve_stress_xx_old
-# 27: Minimal value for composition ve_stress_yy_old
-# 28: Maximal value for composition ve_stress_yy_old
-# 29: Global mass for composition ve_stress_yy_old
-# 30: Minimal value for composition ve_stress_xy_old
-# 31: Maximal value for composition ve_stress_xy_old
-# 32: Global mass for composition ve_stress_xy_old
-# 33: Minimal value for composition porosity
-# 34: Maximal value for composition porosity
-# 35: Global mass for composition porosity
-# 36: Minimal value for composition bound_fluid
-# 37: Maximal value for composition bound_fluid
-# 38: Global mass for composition bound_fluid
-# 39: RMS velocity (m/year)
-# 40: Max. velocity (m/year)
-# 41: Visualization file name
-# 42: Number of advected particles
-# 43: Particle file name
-0 0.000000000000e+00 0.000000000000e+00 100 1003 441 7200 20 0 0 0 107 107 741 2.00000000e+07 2.00000000e+07 2.00000000e+17 -2.00000000e+07 -2.00000000e+07 -2.00000000e+17  0.00000000e+00 0.00000000e+00  0.00000000e+00 2.00000000e+07 2.00000000e+07 2.00000000e+17 -2.00000000e+07 -2.00000000e+07 -2.00000000e+17  0.00000000e+00 0.00000000e+00  0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 2.44438736e-15 4.03856384e-15 output-melt_0percent_viscoelastic_relaxation_particles/solution/solution-00000 2500 output-melt_0percent_viscoelastic_relaxation_particles/particles/particles-00000 
-1 1.250000000000e+02 1.250000000000e+02 100 1003 441 7200 20 0 0 0 108 108 756 1.99214176e+07 1.99214176e+07 1.99214176e+17 -1.99214176e+07 -1.99214176e+07 -1.99214176e+17 -6.20527622e-08 3.02509801e-08 -2.99258973e+01 1.99214176e+07 1.99214176e+07 1.99214176e+17 -1.99214176e+07 -1.99214176e+07 -1.99214176e+17 -6.20002547e-08 3.02648766e-08 -2.98514788e+01 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 1.59295301e-16 6.57827471e-16                                                                    "" 2500                                                                      "" 
-2 2.500000000000e+02 1.250000000000e+02 100 1003 441 7200 20 0 0 0 106 106 742 1.98431440e+07 1.98431440e+07 1.98431440e+17 -1.98431440e+07 -1.98431440e+07 -1.98431440e+17 -4.44862859e-08 3.61196346e-08 -1.74240829e+01 1.98431440e+07 1.98431440e+07 1.98431440e+17 -1.98431440e+07 -1.98431440e+07 -1.98431440e+17 -4.44684092e-08 3.61320559e-08 -1.71471910e+01 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 3.04578797e-16 7.78112214e-16                                                                    "" 2500                                                                      "" 
+# 24: Minimal value for composition porosity
+# 25: Maximal value for composition porosity
+# 26: Global mass for composition porosity
+# 27: Minimal value for composition bound_fluid
+# 28: Maximal value for composition bound_fluid
+# 29: Global mass for composition bound_fluid
+# 30: RMS velocity (m/year)
+# 31: Max. velocity (m/year)
+# 32: Visualization file name
+# 33: Number of advected particles
+# 34: Particle file name
+0 0.000000000000e+00 0.000000000000e+00 100 1003 441 4500 20 0 0 0 107 107 741 2.00000000e+07 2.00000000e+07 2.00000000e+17 -2.00000000e+07 -2.00000000e+07 -2.00000000e+17  0.00000000e+00 0.00000000e+00  0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 2.44438736e-15 4.03856384e-15 output-melt_0percent_viscoelastic_relaxation_particles/solution/solution-00000 2500 output-melt_0percent_viscoelastic_relaxation_particles/particles/particles-00000 
+1 1.250000000000e+02 1.250000000000e+02 100 1003 441 4500 20 0 0 0 108 108 756 1.99214176e+07 1.99214176e+07 1.99214176e+17 -1.99214176e+07 -1.99214176e+07 -1.99214176e+17 -6.20527622e-08 3.02509801e-08 -2.99258973e+01 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 1.59295301e-16 6.57827471e-16                                                                             "" 2500                                                                               "" 
+2 2.500000000000e+02 1.250000000000e+02 100 1003 441 4500 20 0 0 0 106 106 742 1.98431440e+07 1.98431440e+07 1.98431440e+17 -1.98431440e+07 -1.98431440e+07 -1.98431440e+17 -4.44862859e-08 3.61196346e-08 -1.74240829e+01 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 3.04578797e-16 7.78112214e-16                                                                             "" 2500                                                                               "" 

@@ -22,9 +22,9 @@ end
 
 # Number and name of compositional fields
 subsection Compositional fields
-  set Number of fields = 8
-  set Names of fields  = ve_stress_xx, ve_stress_yy, ve_stress_xy, ve_stress_xx_old, ve_stress_yy_old, ve_stress_xy_old, plastic_strain, viscous_strain
-  set Types of fields  = stress,       stress,       stress,       stress,           stress,           stress,           strain,         strain
+  set Number of fields = 5
+  set Names of fields  = ve_stress_xx, ve_stress_yy, ve_stress_xy, plastic_strain, viscous_strain
+  set Types of fields  = stress,       stress,       stress,           strain,         strain
 end
 
 # We prescribe some initial strain at the center of the domain
@@ -34,7 +34,7 @@ subsection Initial composition model
 
   subsection Function
     set Variable names      = x,y
-    set Function expression = 0; 0; 0; 0; 0; 0; \
+    set Function expression = 0; 0; 0; \
                               if(x>=45e3&x<=55e3&y>=45.3e3&y<=55.e3,0.2,0); \
                               if(x>=35e3&x<=65e3&y>=35.e3&y<=65.e3,0.8,0)
   end

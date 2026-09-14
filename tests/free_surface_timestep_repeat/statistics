@@ -10,38 +10,26 @@
 # 10: Iterations for composition solver 1
 # 11: Iterations for composition solver 2
 # 12: Iterations for composition solver 3
-# 13: Iterations for composition solver 4
-# 14: Iterations for composition solver 5
-# 15: Iterations for composition solver 6
-# 16: Iterations for Stokes solver
-# 17: Velocity iterations in Stokes preconditioner
-# 18: Schur complement iterations in Stokes preconditioner
-# 19: Minimal value for composition ve_stress_xx
-# 20: Maximal value for composition ve_stress_xx
-# 21: Global mass for composition ve_stress_xx
-# 22: Minimal value for composition ve_stress_yy
-# 23: Maximal value for composition ve_stress_yy
-# 24: Global mass for composition ve_stress_yy
-# 25: Minimal value for composition ve_stress_xy
-# 26: Maximal value for composition ve_stress_xy
-# 27: Global mass for composition ve_stress_xy
-# 28: Minimal value for composition ve_stress_xx_old
-# 29: Maximal value for composition ve_stress_xx_old
-# 30: Global mass for composition ve_stress_xx_old
-# 31: Minimal value for composition ve_stress_yy_old
-# 32: Maximal value for composition ve_stress_yy_old
-# 33: Global mass for composition ve_stress_yy_old
-# 34: Minimal value for composition ve_stress_xy_old
-# 35: Maximal value for composition ve_stress_xy_old
-# 36: Global mass for composition ve_stress_xy_old
-# 37: Minimal temperature (K)
-# 38: Average temperature (K)
-# 39: Maximal temperature (K)
-# 40: Average nondimensional temperature (K)
-# 41: Minimum topography (m)
-# 42: Maximum topography (m)
-# 43: RMS velocity (m/year)
-# 44: Max. velocity (m/year)
-# 45: Visualization file name
-0 0.000000000000e+00 0.000000000000e+00 547 5283 607 29538 2 0 0 0 0 0 0 0  50  52  52  0.00000000e+00 0.00000000e+00 0.00000000e+00  0.00000000e+00 0.00000000e+00  0.00000000e+00  0.00000000e+00 0.00000000e+00 0.00000000e+00  0.00000000e+00 0.00000000e+00 0.00000000e+00  0.00000000e+00 0.00000000e+00  0.00000000e+00  0.00000000e+00 0.00000000e+00 0.00000000e+00 2.93000000e+02 2.93000000e+02 2.93000000e+02 0.00000000e+00  0.00000000e+00 0.00000000e+00 6.44086660e+01 2.03097897e+02 output-free_surface_timestep_repeat/solution/solution-00000 
-1 2.000000000000e-02 2.000000000000e-02 520 5055 581 28080 4 0 6 6 6 6 6 6 157 161 161 -1.61523165e+06 2.64853972e+06 7.78047134e+12 -2.64682885e+06 1.73049366e+06 -7.75918361e+12 -1.73629322e+06 3.75149199e+06 1.15439560e+17 -1.61511753e+06 2.64853972e+06 1.05936340e+13 -2.64682885e+06 1.73037954e+06 -1.05723462e+13 -1.73625755e+06 3.75147723e+06 1.15439933e+17 2.93000000e+02 2.93000000e+02 2.93000000e+02 1.95855936e-16 -4.72270003e-01 7.41144130e-01 1.49384706e+01 3.92127233e+01                                                          "" 
+# 13: Iterations for Stokes solver
+# 14: Velocity iterations in Stokes preconditioner
+# 15: Schur complement iterations in Stokes preconditioner
+# 16: Minimal value for composition ve_stress_xx
+# 17: Maximal value for composition ve_stress_xx
+# 18: Global mass for composition ve_stress_xx
+# 19: Minimal value for composition ve_stress_yy
+# 20: Maximal value for composition ve_stress_yy
+# 21: Global mass for composition ve_stress_yy
+# 22: Minimal value for composition ve_stress_xy
+# 23: Maximal value for composition ve_stress_xy
+# 24: Global mass for composition ve_stress_xy
+# 25: Minimal temperature (K)
+# 26: Average temperature (K)
+# 27: Maximal temperature (K)
+# 28: Average nondimensional temperature (K)
+# 29: Minimum topography (m)
+# 30: Maximum topography (m)
+# 31: RMS velocity (m/year)
+# 32: Max. velocity (m/year)
+# 33: Visualization file name
+0 0.000000000000e+00 0.000000000000e+00 547 5283 607 14769 2 0 0 0 0  50  52  52  0.00000000e+00 0.00000000e+00 0.00000000e+00  0.00000000e+00 0.00000000e+00  0.00000000e+00  0.00000000e+00 0.00000000e+00 0.00000000e+00 2.93000000e+02 2.93000000e+02 2.93000000e+02 0.00000000e+00  0.00000000e+00 0.00000000e+00 6.44086660e+01 2.03097897e+02 output-free_surface_timestep_repeat/solution/solution-00000 
+1 2.000000000000e-02 2.000000000000e-02 520 5055 581 14040 4 0 6 6 6 157 161 161 -1.61523165e+06 2.64853972e+06 7.78047134e+12 -2.64682885e+06 1.73049366e+06 -7.75918361e+12 -1.73629322e+06 3.75149199e+06 1.15439560e+17 2.93000000e+02 2.93000000e+02 2.93000000e+02 1.95855936e-16 -4.72270003e-01 7.41144130e-01 1.49384706e+01 3.92127233e+01                                                          "" 

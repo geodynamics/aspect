@@ -19,17 +19,8 @@
 # 19: Minimal value for composition ve_stress_xy
 # 20: Maximal value for composition ve_stress_xy
 # 21: Global mass for composition ve_stress_xy
-# 22: Minimal value for composition ve_stress_xx_old
-# 23: Maximal value for composition ve_stress_xx_old
-# 24: Global mass for composition ve_stress_xx_old
-# 25: Minimal value for composition ve_stress_yy_old
-# 26: Maximal value for composition ve_stress_yy_old
-# 27: Global mass for composition ve_stress_yy_old
-# 28: Minimal value for composition ve_stress_xy_old
-# 29: Maximal value for composition ve_stress_xy_old
-# 30: Global mass for composition ve_stress_xy_old
-# 31: Number of advected particles
-# 32: Particle file name
-0 0.000000000000e+00 0.000000000000e+00 400 3803 441 21600 2 0 57 59 59 0.00000000e+00 0.00000000e+00 0.00000000e+00  0.00000000e+00  0.00000000e+00  0.00000000e+00  0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00  0.00000000e+00  0.00000000e+00  0.00000000e+00  0.00000000e+00 0.00000000e+00 0.00000000e+00 11971 output-visco_plastic_vep_stress_build_up_yield_particles/particles/particles-00000 
-1 1.000000000000e+03 1.000000000000e+03 400 3803 441 21600 1 0  0  0  0 9.99999540e+05 1.00000040e+06 1.00000000e+16 -1.00000046e+06 -9.99999597e+05 -1.00000000e+16 -7.10520383e-01 7.56797476e-01 8.88029792e+06 9.99999540e+05 1.00000040e+06 1.00000000e+16 -1.00000046e+06 -9.99999597e+05 -1.00000000e+16 -7.10760767e-01 7.56650341e-01 8.86374900e+06 11972                                                                                 "" 
-2 2.000000000000e+03 1.000000000000e+03 400 3803 441 21600 1 0  0  0  0 9.99999534e+05 1.00000040e+06 1.00000000e+16 -1.00000047e+06 -9.99999597e+05 -1.00000000e+16 -7.31741603e-01 7.61058619e-01 8.22729677e+06 9.99999534e+05 1.00000040e+06 1.00000000e+16 -1.00000047e+06 -9.99999597e+05 -1.00000000e+16 -7.32002437e-01 7.60909560e-01 8.20961839e+06 11968                                                                                 "" 
+# 22: Number of advected particles
+# 23: Particle file name
+0 0.000000000000e+00 0.000000000000e+00 400 3803 441 10800 2 0 57 59 59 0.00000000e+00 0.00000000e+00 0.00000000e+00  0.00000000e+00  0.00000000e+00  0.00000000e+00  0.00000000e+00 0.00000000e+00 0.00000000e+00 11971 output-visco_plastic_vep_stress_build_up_yield_particles/particles/particles-00000 
+1 1.000000000000e+03 1.000000000000e+03 400 3803 441 10800 1 0  0  0  0 9.99999540e+05 1.00000040e+06 1.00000000e+16 -1.00000046e+06 -9.99999597e+05 -1.00000000e+16 -7.10520383e-01 7.56797476e-01 8.88029792e+06 11972                                                                                 "" 
+2 2.000000000000e+03 1.000000000000e+03 400 3803 441 10800 1 0  0  0  0 9.99999534e+05 1.00000040e+06 1.00000000e+16 -1.00000047e+06 -9.99999597e+05 -1.00000000e+16 -7.31741603e-01 7.61058619e-01 8.22729677e+06 11968                                                                                 "" 

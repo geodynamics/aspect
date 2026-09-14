@@ -5,6 +5,9 @@
  method for compositions. For fields, operator splitting
  has to be switched on, while in the case of particles,
  the particle property 'elastic stress' takes care of
- the stress update.
+ the stress update. If a fixed elastic time step is
+ chosen, two sets of stress fields have to be tracked
+ one for the current time step, one for the previous time
+ step.
  <br>
  (Anne Glerum, Robert Myhill, Rene Gassmoeller, Juliane Dannberg, John Naliboff, Gerry Puckett, Esther Heckenbach 2023/12/04)

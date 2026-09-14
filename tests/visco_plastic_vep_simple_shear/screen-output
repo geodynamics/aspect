@@ -1,35 +1,29 @@
 
 Number of active cells: 64 (on 3 levels)
-Number of degrees of freedom: 4,404 (578+81+289+576+576+576+576+576+576)
+Number of degrees of freedom: 2,676 (578+81+289+576+576+576)
 
 *** Timestep 0:  t=0 seconds, dt=0 seconds
    Solving temperature system... 0 iterations.
    Skipping ve_stress_xx composition solve because RHS is zero.
    Skipping ve_stress_yy composition solve because RHS is zero.
    Skipping ve_stress_xy composition solve because RHS is zero.
-   Skipping ve_stress_xx_old composition solve because RHS is zero.
-   Skipping ve_stress_yy_old composition solve because RHS is zero.
-   Skipping ve_stress_xy_old composition solve because RHS is zero.
    Rebuilding Stokes preconditioner...
    Solving Stokes system (AMG)... 2+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.6585e-16, 0, 0, 0, 0, 0, 0, 1
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.6585e-16, 0, 0, 0, 1
       Relative nonlinear residual (total system) after nonlinear iteration 1: 1
 
    Solving temperature system... 0 iterations.
    Skipping ve_stress_xx composition solve because RHS is zero.
    Skipping ve_stress_yy composition solve because RHS is zero.
    Skipping ve_stress_xy composition solve because RHS is zero.
-   Skipping ve_stress_xx_old composition solve because RHS is zero.
-   Skipping ve_stress_yy_old composition solve because RHS is zero.
-   Skipping ve_stress_xy_old composition solve because RHS is zero.
    Rebuilding Stokes preconditioner...
    Solving Stokes system (AMG)... 0+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.6585e-16, 0, 0, 0, 0, 0, 0, 1.48278e-12
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.6585e-16, 0, 0, 0, 1.48278e-12
       Relative nonlinear residual (total system) after nonlinear iteration 2: 1.48278e-12
 
 
    Postprocessing:
-     Compositions min/max/mass: 0/0/0 // 0/0/0 // 0/0/0 // 0/0/0 // 0/0/0 // 0/0/0
+     Compositions min/max/mass: 0/0/0 // 0/0/0 // 0/0/0
 
 *** Timestep 1:  t=0.01 seconds, dt=0.01 seconds
    Solving composition reactions... in 1 substep(s).
@@ -37,29 +31,23 @@ Number of degrees of freedom: 4,404 (578+81+289+576+576+576+576+576+576)
    Solving ve_stress_xx system ... 2 iterations.
    Solving ve_stress_yy system ... 2 iterations.
    Solving ve_stress_xy system ... 0 iterations.
-   Solving ve_stress_xx_old system ... 2 iterations.
-   Solving ve_stress_yy_old system ... 2 iterations.
-   Solving ve_stress_xy_old system ... 0 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system (AMG)... 0+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.49523e-16, 0.0014985, 0.0014985, 5.75639e-15, 0, 0, 0, 2.9249e-12
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.49523e-16, 0.0014985, 0.0014985, 5.75639e-15, 2.9249e-12
       Relative nonlinear residual (total system) after nonlinear iteration 1: 0.0014985
 
    Solving temperature system... 0 iterations.
    Solving ve_stress_xx system ... 0 iterations.
    Solving ve_stress_yy system ... 0 iterations.
    Solving ve_stress_xy system ... 0 iterations.
-   Solving ve_stress_xx_old system ... 0 iterations.
-   Solving ve_stress_yy_old system ... 0 iterations.
-   Solving ve_stress_xy_old system ... 0 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system (AMG)... 0+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.49523e-16, 7.39505e-19, 3.36766e-19, 5.75639e-15, 0, 0, 0, 2.9249e-12
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.49523e-16, 7.39505e-19, 3.36766e-19, 5.75639e-15, 2.9249e-12
       Relative nonlinear residual (total system) after nonlinear iteration 2: 2.9249e-12
 
 
    Postprocessing:
-     Compositions min/max/mass: 2.475e-05/2.475e-05/2.475e-05 // -2.475e-05/-2.475e-05/-2.475e-05 // 0.0495/0.0495/0.0495 // -1.777e-13/1.905e-13/1.749e-18 // -1.05e-13/9.06e-14/-8.747e-19 // 0.0495/0.0495/0.0495
+     Compositions min/max/mass: 2.475e-05/2.475e-05/2.475e-05 // -2.475e-05/-2.475e-05/-2.475e-05 // 0.0495/0.0495/0.0495
 
 *** Timestep 2:  t=0.02 seconds, dt=0.01 seconds
    Solving composition reactions... in 1 substep(s).
@@ -67,29 +55,23 @@ Number of degrees of freedom: 4,404 (578+81+289+576+576+576+576+576+576)
    Solving ve_stress_xx system ... 2 iterations.
    Solving ve_stress_yy system ... 2 iterations.
    Solving ve_stress_xy system ... 1 iterations.
-   Solving ve_stress_xx_old system ... 1 iterations.
-   Solving ve_stress_yy_old system ... 1 iterations.
-   Solving ve_stress_xy_old system ... 0 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system (AMG)... 0+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.90324e-16, 0.000496851, 0.000496851, 2.48425e-07, 0, 0, 0, 4.36989e-12
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.90324e-16, 0.000496851, 0.000496851, 2.48425e-07, 4.36989e-12
       Relative nonlinear residual (total system) after nonlinear iteration 1: 0.000496851
 
    Solving temperature system... 0 iterations.
    Solving ve_stress_xx system ... 0 iterations.
    Solving ve_stress_yy system ... 0 iterations.
    Solving ve_stress_xy system ... 0 iterations.
-   Solving ve_stress_xx_old system ... 0 iterations.
-   Solving ve_stress_yy_old system ... 0 iterations.
-   Solving ve_stress_xy_old system ... 0 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system (AMG)... 0+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.90324e-16, 3.30797e-19, 3.72269e-19, 1.13507e-12, 0, 0, 0, 4.36989e-12
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.90324e-16, 3.30797e-19, 3.72269e-19, 1.13507e-12, 4.36989e-12
       Relative nonlinear residual (total system) after nonlinear iteration 2: 4.36989e-12
 
 
    Postprocessing:
-     Compositions min/max/mass: 6.56e-05/6.56e-05/6.56e-05 // -6.56e-05/-6.56e-05/-6.56e-05 // 0.09852/0.09852/0.09852 // 2.451e-05/2.451e-05/2.451e-05 // -2.451e-05/-2.451e-05/-2.451e-05 // 0.09852/0.09852/0.09852
+     Compositions min/max/mass: 6.56e-05/6.56e-05/6.56e-05 // -6.56e-05/-6.56e-05/-6.56e-05 // 0.09852/0.09852/0.09852
 
 *** Timestep 3:  t=0.03 seconds, dt=0.01 seconds
    Solving composition reactions... in 1 substep(s).
@@ -97,29 +79,23 @@ Number of degrees of freedom: 4,404 (578+81+289+576+576+576+576+576+576)
    Solving ve_stress_xx system ... 2 iterations.
    Solving ve_stress_yy system ... 2 iterations.
    Solving ve_stress_xy system ... 1 iterations.
-   Solving ve_stress_xx_old system ... 1 iterations.
-   Solving ve_stress_yy_old system ... 1 iterations.
-   Solving ve_stress_xy_old system ... 0 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system (AMG)... 0+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.90324e-16, 0.000440365, 0.000440365, 3.29999e-07, 0, 0, 0, 5.88062e-12
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.90324e-16, 0.000440365, 0.000440365, 3.29999e-07, 5.88062e-12
       Relative nonlinear residual (total system) after nonlinear iteration 1: 0.000440365
 
    Solving temperature system... 0 iterations.
    Solving ve_stress_xx system ... 0 iterations.
    Solving ve_stress_yy system ... 0 iterations.
    Solving ve_stress_xy system ... 0 iterations.
-   Solving ve_stress_xx_old system ... 0 iterations.
-   Solving ve_stress_yy_old system ... 0 iterations.
-   Solving ve_stress_xy_old system ... 0 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system (AMG)... 0+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.90324e-16, 4.10215e-19, 5.25036e-19, 1.50777e-12, 0, 0, 0, 5.88062e-12
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.90324e-16, 4.10215e-19, 5.25036e-19, 1.50777e-12, 5.88062e-12
       Relative nonlinear residual (total system) after nonlinear iteration 2: 5.88062e-12
 
 
    Postprocessing:
-     Compositions min/max/mass: 0.0001277/0.0001277/0.0001277 // -0.0001277/-0.0001277/-0.0001277 // 0.147/0.147/0.147 // 6.495e-05/6.495e-05/6.495e-05 // -6.495e-05/-6.495e-05/-6.495e-05 // 0.147/0.147/0.147
+     Compositions min/max/mass: 0.0001277/0.0001277/0.0001277 // -0.0001277/-0.0001277/-0.0001277 // 0.147/0.147/0.147
 
 *** Timestep 4:  t=0.04 seconds, dt=0.01 seconds
    Solving composition reactions... in 1 substep(s).
@@ -127,29 +103,23 @@ Number of degrees of freedom: 4,404 (578+81+289+576+576+576+576+576+576)
    Solving ve_stress_xx system ... 2 iterations.
    Solving ve_stress_yy system ... 2 iterations.
    Solving ve_stress_xy system ... 1 iterations.
-   Solving ve_stress_xx_old system ... 1 iterations.
-   Solving ve_stress_yy_old system ... 1 iterations.
-   Solving ve_stress_xy_old system ... 0 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system (AMG)... 0+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.90324e-16, 0.000356335, 0.000356335, 3.97155e-07, 0, 0, 0, 7.5814e-12
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.90324e-16, 0.000356335, 0.000356335, 3.97155e-07, 7.5814e-12
       Relative nonlinear residual (total system) after nonlinear iteration 1: 0.000356335
 
    Solving temperature system... 0 iterations.
    Solving ve_stress_xx system ... 0 iterations.
    Solving ve_stress_yy system ... 0 iterations.
    Solving ve_stress_xy system ... 0 iterations.
-   Solving ve_stress_xx_old system ... 0 iterations.
-   Solving ve_stress_yy_old system ... 0 iterations.
-   Solving ve_stress_xy_old system ... 0 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system (AMG)... 0+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.90324e-16, 5.41154e-19, 5.25798e-19, 1.81463e-12, 0, 0, 0, 7.5814e-12
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.90324e-16, 5.41154e-19, 5.25798e-19, 1.81463e-12, 7.5814e-12
       Relative nonlinear residual (total system) after nonlinear iteration 2: 7.5814e-12
 
 
    Postprocessing:
-     Compositions min/max/mass: 0.0002123/0.0002123/0.0002123 // -0.0002123/-0.0002123/-0.0002123 // 0.1951/0.1951/0.1951 // 0.0001264/0.0001264/0.0001264 // -0.0001264/-0.0001264/-0.0001264 // 0.1951/0.1951/0.1951
+     Compositions min/max/mass: 0.0002123/0.0002123/0.0002123 // -0.0002123/-0.0002123/-0.0002123 // 0.1951/0.1951/0.1951
 
 *** Timestep 5:  t=0.05 seconds, dt=0.01 seconds
    Solving composition reactions... in 1 substep(s).
@@ -157,29 +127,23 @@ Number of degrees of freedom: 4,404 (578+81+289+576+576+576+576+576+576)
    Solving ve_stress_xx system ... 2 iterations.
    Solving ve_stress_yy system ... 2 iterations.
    Solving ve_stress_xy system ... 1 iterations.
-   Solving ve_stress_xx_old system ... 1 iterations.
-   Solving ve_stress_yy_old system ... 1 iterations.
-   Solving ve_stress_xy_old system ... 0 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system (AMG)... 0+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.90324e-16, 0.000290974, 0.000290974, 4.50942e-07, 0, 0, 0, 9.6299e-12
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.90324e-16, 0.000290974, 0.000290974, 4.50942e-07, 9.6299e-12
       Relative nonlinear residual (total system) after nonlinear iteration 1: 0.000290974
 
    Solving temperature system... 0 iterations.
    Solving ve_stress_xx system ... 0 iterations.
    Solving ve_stress_yy system ... 0 iterations.
    Solving ve_stress_xy system ... 0 iterations.
-   Solving ve_stress_xx_old system ... 0 iterations.
-   Solving ve_stress_yy_old system ... 0 iterations.
-   Solving ve_stress_xy_old system ... 0 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system (AMG)... 0+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.90324e-16, 5.82269e-19, 6.01818e-19, 2.06037e-12, 0, 0, 0, 9.6299e-12
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.90324e-16, 5.82269e-19, 6.01818e-19, 2.06037e-12, 9.6299e-12
       Relative nonlinear residual (total system) after nonlinear iteration 2: 9.6299e-12
 
 
    Postprocessing:
-     Compositions min/max/mass: 0.0003198/0.0003198/0.0003198 // -0.0003198/-0.0003198/-0.0003198 // 0.2427/0.2427/0.2427 // 0.0002102/0.0002102/0.0002102 // -0.0002102/-0.0002102/-0.0002102 // 0.2427/0.2427/0.2427
+     Compositions min/max/mass: 0.0003198/0.0003198/0.0003198 // -0.0003198/-0.0003198/-0.0003198 // 0.2427/0.2427/0.2427
 
 Termination requested by criterion: end time
 

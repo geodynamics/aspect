@@ -1,6 +1,6 @@
 
 Number of active cells: 140 (on 1 levels)
-Number of degrees of freedom: 11,898 (1,230+420+168+1,260+1,260+1,260+1,260+1,260+1,260+1,260+1,260)
+Number of degrees of freedom: 8,118 (1,230+420+168+1,260+1,260+1,260+1,260+1,260)
 
 Number of mesh deformation degrees of freedom: 1,230
    Solving mesh displacement system... 0 iterations.
@@ -10,28 +10,22 @@ Number of mesh deformation degrees of freedom: 1,230
    Skipping ve_stress_xx composition solve because RHS is zero.
    Skipping ve_stress_yy composition solve because RHS is zero.
    Skipping ve_stress_xy composition solve because RHS is zero.
-   Skipping ve_stress_xx_old composition solve because RHS is zero.
-   Skipping ve_stress_yy_old composition solve because RHS is zero.
-   Skipping ve_stress_xy_old composition solve because RHS is zero.
    Solving plate system ... 0 iterations.
    Solving inclusion system ... 0 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system (AMG)... 35+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 5.05549e-17, 0, 0, 0, 0, 0, 0, 0, 0, 1
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 5.05549e-17, 0, 0, 0, 0, 0, 1
       Relative nonlinear residual (total system) after nonlinear iteration 1: 1
 
    Solving temperature system... 0 iterations.
    Skipping ve_stress_xx composition solve because RHS is zero.
    Skipping ve_stress_yy composition solve because RHS is zero.
    Skipping ve_stress_xy composition solve because RHS is zero.
-   Skipping ve_stress_xx_old composition solve because RHS is zero.
-   Skipping ve_stress_yy_old composition solve because RHS is zero.
-   Skipping ve_stress_xy_old composition solve because RHS is zero.
    Solving plate system ... 2 iterations.
    Solving inclusion system ... 2 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system (AMG)... 0+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 4.65678e-17, 0, 0, 0, 0, 0, 0, 0, 0, 7.39828e-08
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 4.65678e-17, 0, 0, 0, 0, 0, 7.39828e-08
       Relative nonlinear residual (total system) after nonlinear iteration 2: 7.39828e-08
 
 
@@ -47,56 +41,44 @@ Number of mesh deformation degrees of freedom: 1,230
    Solving ve_stress_xx system ... 3 iterations.
    Solving ve_stress_yy system ... 3 iterations.
    Solving ve_stress_xy system ... 2 iterations.
-   Solving ve_stress_xx_old system ... 3 iterations.
-   Solving ve_stress_yy_old system ... 3 iterations.
-   Solving ve_stress_xy_old system ... 3 iterations.
    Solving plate system ... 2 iterations.
    Solving inclusion system ... 2 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system (AMG)... 32+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.60481e-16, 0.00431813, 0.00470874, 0.00543113, 0, 0, 0, 0, 0, 2.40618
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.60481e-16, 0.00431813, 0.00470874, 0.00543113, 0, 0, 2.40618
       Relative nonlinear residual (total system) after nonlinear iteration 1: 2.40618
 
    Solving temperature system... 0 iterations.
    Solving ve_stress_xx system ... 2 iterations.
    Solving ve_stress_yy system ... 2 iterations.
    Solving ve_stress_xy system ... 2 iterations.
-   Solving ve_stress_xx_old system ... 2 iterations.
-   Solving ve_stress_yy_old system ... 2 iterations.
-   Solving ve_stress_xy_old system ... 2 iterations.
    Solving plate system ... 2 iterations.
    Solving inclusion system ... 2 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system (AMG)... 28+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.55836e-16, 0.00248423, 0.00253862, 0.00189994, 0, 0, 0, 0, 0, 2.16366
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.55836e-16, 0.00248423, 0.00253862, 0.00189994, 0, 0, 2.16366
       Relative nonlinear residual (total system) after nonlinear iteration 2: 2.16366
 
    Solving temperature system... 0 iterations.
    Solving ve_stress_xx system ... 2 iterations.
    Solving ve_stress_yy system ... 2 iterations.
    Solving ve_stress_xy system ... 2 iterations.
-   Solving ve_stress_xx_old system ... 2 iterations.
-   Solving ve_stress_yy_old system ... 2 iterations.
-   Solving ve_stress_xy_old system ... 2 iterations.
    Solving plate system ... 2 iterations.
    Solving inclusion system ... 2 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system (AMG)... 16+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.51047e-16, 0.00043406, 0.000455233, 0.000427878, 0, 0, 0, 0, 0, 0.00170771
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.51047e-16, 0.00043406, 0.000455233, 0.000427878, 0, 0, 0.00170771
       Relative nonlinear residual (total system) after nonlinear iteration 3: 0.00170771
 
    Solving temperature system... 0 iterations.
    Solving ve_stress_xx system ... 1 iterations.
    Solving ve_stress_yy system ... 1 iterations.
    Solving ve_stress_xy system ... 1 iterations.
-   Solving ve_stress_xx_old system ... 1 iterations.
-   Solving ve_stress_yy_old system ... 1 iterations.
-   Solving ve_stress_xy_old system ... 1 iterations.
    Solving plate system ... 2 iterations.
    Solving inclusion system ... 2 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system (AMG)... 2+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.56084e-16, 3.23275e-07, 3.23628e-07, 2.59403e-07, 0, 0, 0, 0, 0, 8.6437e-07
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.56084e-16, 3.23275e-07, 3.23628e-07, 2.59403e-07, 0, 0, 8.6437e-07
       Relative nonlinear residual (total system) after nonlinear iteration 4: 8.6437e-07
 
 
