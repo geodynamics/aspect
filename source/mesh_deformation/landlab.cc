@@ -127,6 +127,7 @@ namespace aspect
                           const Point<dim> &/*position*/,
                           const unsigned int compositional_field) const
     {
+#ifdef ASPECT_WITH_LANDLAB
       if (boundary_indicator != this->get_geometry_model().translate_symbolic_boundary_name_to_id ("top"))
         return 0.0;
 
@@ -136,6 +137,11 @@ namespace aspect
           return this->get_parameters().convert_to_years ? this->get_time()/year_in_seconds : this->get_time();
         }
       return 0.0;
+#else
+      (void) boundary_indicator;
+      (void) compositional_field;
+      return 0.0;
+#endif
     }
 
 
