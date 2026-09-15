@@ -1,0 +1,57 @@
+
+Number of active cells: 16 (on 3 levels)
+Number of degrees of freedom: 430 (162+25+81+81+81)
+
+*** Timestep 0:  t=0 years, dt=0 years
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+
+   Postprocessing:
+     Writing particle output: output-particle_crustal_formation_basalt_generation_time/particles/particles-00000
+
+*** Timestep 1:  t=5.60183e-09 years, dt=5.60183e-09 years
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+
+   Postprocessing:
+     Number of advected particles: 948
+
+*** Timestep 2:  t=1.12037e-08 years, dt=5.60183e-09 years
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+
+   Postprocessing:
+     Number of advected particles: 896
+
+*** Timestep 3:  t=1.68055e-08 years, dt=5.60183e-09 years
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+
+   Postprocessing:
+     Number of advected particles: 860
+
+*** Timestep 4:  t=2.24073e-08 years, dt=5.60183e-09 years
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+
+   Postprocessing:
+     Number of advected particles: 848
+
+*** Timestep 5:  t=2.80092e-08 years, dt=5.60183e-09 years
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+
+   Postprocessing:
+     Number of advected particles: 847
+
+*** Timestep 6:  t=3.171e-08 years, dt=3.70085e-09 years
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+
+   Postprocessing:
+     Writing particle output: output-particle_crustal_formation_basalt_generation_time/particles/particles-00001
+
+Termination requested by criterion: end time
+
+
+
