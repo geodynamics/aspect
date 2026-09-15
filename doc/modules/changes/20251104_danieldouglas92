@@ -1,6 +1,0 @@
-Changed: The location of files output by the topography,
-sea_level, heat_flux_map, dynamic_topography, and geoid
-postprocessors are now output to postprocessor specific
-subdirectories.
-<br>
-(Daniel Douglas, 2025/11/04)
