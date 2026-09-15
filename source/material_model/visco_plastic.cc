@@ -89,7 +89,12 @@ namespace aspect
       /* The following returns whether or not the material is plastically yielding
        * as documented in evaluate.
        */
-      const IsostrainViscosities isostrain_viscosities = rheology->calculate_isostrain_viscosities(in, 0, volume_fractions, phase_function_values, phase_function.n_phase_transitions_for_each_composition());
+      const IsostrainViscosities isostrain_viscosities =
+        rheology->calculate_isostrain_viscosities(in,
+                                                  0,
+                                                  volume_fractions,
+                                                  phase_function_values,
+                                                  n_phase_transitions_for_each_chemical_composition);
 
       const std::vector<double>::const_iterator max_composition = std::max_element(volume_fractions.begin(), volume_fractions.end());
       const bool plastic_yielding = isostrain_viscosities.composition_yielding[std::distance(volume_fractions.begin(), max_composition)];
@@ -181,10 +186,11 @@ namespace aspect
 
           if (define_conductivities == false)
             {
-              double thermal_diffusivity = 0.0;
-
-              for (unsigned int j=0; j < volume_fractions.size(); ++j)
-                thermal_diffusivity += volume_fractions[j] * thermal_diffusivities[j];
+              double thermal_diffusivity = MaterialUtilities::average_value(volume_fractions,
+                                                                            phase_function_values,
+                                                                            n_phase_transitions_for_each_chemical_composition,
+                                                                            thermal_diffusivities,
+                                                                            MaterialUtilities::arithmetic);
 
               // Thermal conductivity at the given positions. If the temperature equation uses
               // the reference density profile formulation, use the reference density to
@@ -202,7 +208,11 @@ namespace aspect
             {
               // Use thermal conductivity values specified in the parameter file, if this
               // option was selected.
-              out.thermal_conductivities[i] = MaterialUtilities::average_value (volume_fractions, thermal_conductivities, MaterialUtilities::arithmetic);
+              out.thermal_conductivities[i] = MaterialUtilities::average_value(volume_fractions,
+                                                                               phase_function_values,
+                                                                               n_phase_transitions_for_each_chemical_composition,
+                                                                               thermal_conductivities,
+                                                                               MaterialUtilities::arithmetic);
             }
 
           out.compressibilities[i] = MaterialUtilities::average_value (volume_fractions, eos_outputs.compressibilities, MaterialUtilities::arithmetic);
@@ -397,11 +407,17 @@ namespace aspect
 
           // Equation of state parameters
           prm.declare_entry ("Thermal diffusivities", "0.8e-6",
-                             Patterns::List(Patterns::Double (0.)),
+                             Patterns::Anything(),
                              "List of thermal diffusivities, for background material and compositional fields, "
-                             "for a total of N+1 values, where N is the number of all compositional fields or only "
-                             "those corresponding to chemical compositions. "
-                             "If only one value is given, then all use the same value.  "
+                             "for a total of N+1 values for models with no phase transitions (or models where the "
+                             "value does not change across any of the phase transitions). For models with phase "
+                             "transitions, the list needs to contain each field name, including the background, for "
+                             "a total of N+1 names, and for each of these names, specify the value for each phase "
+                             "(giving P_c+1 values for each field, with P_c being the number of phase transitions "
+                             "for field c). Therefore, the total number of values given is N+P+1, with P = sum(P_c) "
+                             "the total number of phase transitions, summed over all phases. The format is "
+                             "background: value1|value2|...|valueP_1+1, field1:value1|...|valueP_2+1, ..., fieldN: value1|...|valueP_N+1. "
+                             "If only one value is given, then all fields/phases use the same value. "
                              "Units: \\si{\\meter\\squared\\per\\second}.");
           prm.declare_entry ("Define thermal conductivities","false",
                              Patterns::Bool (),
@@ -409,11 +425,17 @@ namespace aspect
                              "instead of calculating the values through the specified thermal diffusivities, "
                              "densities, and heat capacities. ");
           prm.declare_entry ("Thermal conductivities", "3.0",
-                             Patterns::List(Patterns::Double(0)),
+                             Patterns::Anything(),
                              "List of thermal conductivities, for background material and compositional fields, "
-                             "for a total of N+1 values, where N is the number of all compositional fields or only "
-                             "those corresponding to chemical compositions. "
-                             "If only one value is given, then all use the same value. "
+                             "for a total of N+1 values for models with no phase transitions (or models where the "
+                             "value does not change across any of the phase transitions). For models with phase "
+                             "transitions, the list needs to contain each field name, including the background, for "
+                             "a total of N+1 names, and for each of these names, specify the value for each phase "
+                             "(giving P_c+1 values for each field, with P_c being the number of phase transitions "
+                             "for field c). Therefore, the total number of values given is N+P+1, with P = sum(P_c) "
+                             "the total number of phase transitions, summed over all phases. The format is "
+                             "background: value1|value2|...|valueP_1+1, field1:value1|...|valueP_2+1, ..., fieldN: value1|...|valueP_N+1. "
+                             "If only one value is given, then all fields/phases use the same value. "
                              "Units: \\si{\\watt\\per\\meter\\per\\kelvin}.");
           prm.declare_entry ("Reaction progress mapping", "",
                              Patterns::List (Patterns::Integer(0)),
@@ -462,7 +484,7 @@ namespace aspect
           compositional_field_names.insert(compositional_field_names.begin(),"background");
 
           Utilities::MapParsing::Options options(chemical_field_names, "Thermal diffusivities");
-          options.list_of_allowed_keys = compositional_field_names;
+          options.list_of_allowed_keys = chemical_field_names;
           options.allow_multiple_values_per_key = true;
           options.n_values_per_key = n_phases_for_each_chemical_composition;
           options.check_values_per_key = (options.n_values_per_key.size() != 0);
