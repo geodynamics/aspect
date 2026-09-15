@@ -1,0 +1,6 @@
+Changed: The function 'update' of all postprocessors is now called at the
+beginning of each time step, not right before the postprocessors are
+executed. This is to make their behavior consistent with all other
+plugin systems, which call 'update' at the beginning of each time step.
+<br>
+(Rene Gassmoeller, 2026/08/07)

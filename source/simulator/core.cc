@@ -707,6 +707,8 @@ namespace aspect
     // the constraints object when calling compute_current_constraints()
     // above
     boundary_traction_manager.update();
+
+    postprocess_manager.update();
   }
 
 
