@@ -25,6 +25,7 @@
 #include <deal.II/grid/grid_tools.h>
 #include <deal.II/base/signaling_nan.h>
 #include <deal.II/lac/qr.h>
+#include <limits>
 
 namespace aspect
 {
@@ -49,9 +50,14 @@ namespace aspect
         const typename ParticleHandler<dim>::particle_iterator_range particle_range =
           particle_handler.particles_in_cell(cell);
 
-        std::vector<std::vector<double>> cell_properties(positions.size(),
-                                                          std::vector<double>(n_particle_properties,
-                                                                              numbers::signaling_nan<double>()));
+        typename aspect::Utilities::ScratchSpace<std::vector<std::vector<double>>>::ScopedScratchObject scoped_cell_properties_space(vector_vector_double_space);
+        std::vector<std::vector<double>> &cell_properties = scoped_cell_properties_space;
+        cell_properties.resize(positions.size());
+        for (std::vector<double> &cell_property : cell_properties)
+          {
+            cell_property.resize(n_particle_properties, numbers::signaling_nan<double>());
+            std::fill(cell_property.begin(),cell_property.end(),numbers::signaling_nan<double>());
+          }
 
         const unsigned int n_particles = std::distance(particle_range.begin(), particle_range.end());
         const unsigned int n_matrix_columns = (dim == 2) ? 3 : 4;
@@ -69,15 +75,45 @@ namespace aspect
         // least squares solution of Ac=r by solving the reduced QR factorization
         // Ac = QRc = b -> Q^TQRc = Rc =Q^Tb
         // A is a std::vector of Vectors(which are it's columns) so that we
-        // create what the ImplicitQR class needs.
-        std::vector<Vector<double>> A(n_matrix_columns, Vector<double>(n_particles));
-        std::vector<Vector<double>> b(n_particle_properties, Vector<double>(n_particles));
+
+        typename aspect::Utilities::ScratchSpace<std::vector<Vector<double>>>::ScopedScratchObject scoped_A_space(vector_Vector_double_space);
+        std::vector<Vector<double>> &A = scoped_A_space;
+        A.resize(n_matrix_columns);
+        for (Vector<double> &A_sub : A)
+          {
+            A_sub.grow_or_shrink(n_particles);
+            //A_sub=numbers::quite_nan<double>();
+            std::fill(A_sub.begin(),A_sub.end(),numbers::signaling_nan<double>());
+          }
+
+        typename aspect::Utilities::ScratchSpace<std::vector<Vector<double>>>::ScopedScratchObject scoped_b_space(vector_Vector_double_space);
+        std::vector<Vector<double>> &b = scoped_b_space;
+        b.resize(n_particle_properties);
+        for (Vector<double> &b_sub : b)
+          {
+            b_sub.grow_or_shrink(n_particles);
+            //b_sub=numbers::signaling_nan<double>();
+            std::fill(b_sub.begin(),b_sub.end(),numbers::signaling_nan<double>());
+          }
+
+        //std::vector<Vector<double>> A(n_matrix_columns, Vector<double>(n_particles));
+        //std::vector<Vector<double>> b(n_particle_properties, Vector<double>(n_particles));
 
         unsigned int particle_index = 0;
         // The unit cell of deal.II is [0,1]^dim. The limiter needs a 'unit' cell of [-.5,.5]^dim.
         const double unit_offset = 0.5;
-        std::vector<double> property_minimums(n_particle_properties, std::numeric_limits<double>::max());
-        std::vector<double> property_maximums(n_particle_properties, std::numeric_limits<double>::lowest());
+
+        typename aspect::Utilities::ScratchSpace<std::vector<double>>::ScopedScratchObject scoped_property_minimums_space(vector_double_space);
+        std::vector<double> &property_minimums = scoped_property_minimums_space;
+        property_minimums.resize(n_particle_properties,std::numeric_limits<double>::max());
+        std::fill(property_minimums.begin(),property_minimums.end(),std::numeric_limits<double>::max());
+
+        typename aspect::Utilities::ScratchSpace<std::vector<double>>::ScopedScratchObject scoped_property_maximums_space(vector_double_space);
+        std::vector<double> &property_maximums = scoped_property_maximums_space;
+        property_maximums.resize(n_particle_properties,std::numeric_limits<double>::lowest());
+        std::fill(property_maximums.begin(),property_maximums.end(),std::numeric_limits<double>::lowest());
+        //std::vector<double> property_minimums(n_particle_properties, std::numeric_limits<double>::max());
+        //std::vector<double> property_maximums(n_particle_properties, std::numeric_limits<double>::lowest());
         for (const auto &particle : particle_range)
           {
             const ArrayView<const double> particle_property_value = particle.get_properties();
