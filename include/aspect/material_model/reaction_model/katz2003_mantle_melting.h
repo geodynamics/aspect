@@ -40,7 +40,7 @@ namespace aspect
        * heating model is active).
        *
        * These functions can be used in the calculation of melting and melt transport
-       * in the melt_simple material model and can be extended to other material models
+       * in the melt_simple material model and can be extended to other material models.
        *
        * @ingroup ReactionModel
        */
@@ -90,8 +90,9 @@ namespace aspect
            * This function mainly fills the reaction_rate_out object but populates out.reaction_terms,
            * out.entropy_derivative_pressure and entropy_derivative_temperature
            */
-          void calculate_reaction_rate_outputs(const typename Interface<dim>::MaterialModelInputs &in,
-                                               typename Interface<dim>::MaterialModelOutputs &out) const;
+          void
+          calculate_reaction_rate_outputs (const typename Interface<dim>::MaterialModelInputs &in,
+                                           typename Interface<dim>::MaterialModelOutputs &out) const;
 
           /**
            * Compute all the fluid variables needed for a reactive transport model based on the
@@ -101,134 +102,179 @@ namespace aspect
            * to have already been computed when this function is called. Solid viscosities are also modified
            * in the out object here because the presence of melt weakens the material.
            */
-          void calculate_fluid_outputs(const typename Interface<dim>::MaterialModelInputs &in,
-                                       typename Interface<dim>::MaterialModelOutputs &out,
-                                       const double reference_T) const;
+          void
+          calculate_fluid_outputs (const typename Interface<dim>::MaterialModelInputs &in,
+                                   typename Interface<dim>::MaterialModelOutputs &out,
+                                   const double reference_T) const;
 
-
-          double reference_darcy_coefficient () const;
+          /**
+           * Return a reference Darcy coefficient at a reference melt fraction.
+           */
+          double
+          reference_darcy_coefficient () const;
 
         private:
           /**
-           * Parameters for anhydrous melting of peridotite after Katz, 2003
+           * Parameters for anhydrous melting of peridotite after Katz, 2003.
            *
            * This variable is read from the parameter file through a parameter called 'Reference melt density'.
            */
-
           double reference_rho_fluid;
+
           /**
            * This variable is read from the parameter file through a parameter called 'Reference bulk viscosity'.
            */
           double xi_0;
+
           /**
            * This variable is read from the parameter file through a parameter called 'Reference melt viscosity'.
            */
           double viscosity_fluid;
+
           /**
            * This variable is read from the parameter file through a parameter called 'Thermal bulk viscosity exponent'.
            */
           double thermal_bulk_viscosity_exponent;
+
           /**
            * This variable is read from the parameter file through a parameter called 'Exponential melt weakening factor'.
            */
           double alpha_phi;
+
           /**
            * This variable is read from the parameter file through a parameter called 'Melt extraction depth'.
            */
           double extraction_depth;
+
           /**
            * This variable is read from the parameter file through a parameter called 'Melt compressibility'.
            */
           double melt_compressibility;
+
           /**
            * This variable is read from the parameter file through a parameter called 'Melt bulk modulus derivative'.
            */
           double melt_bulk_modulus_derivative;
+
           /**
            * This variable is read from the parameter file through a parameter called 'Depletion solidus change'.
            */
           double depletion_solidus_change;
+
           /**
            * This variable is read from the parameter file through a parameter called 'Use fractional melting'.
            */
           bool fractional_melting;
+
           /**
            * This variable is read from the parameter file through a parameter called 'Freezing rate'.
            */
           double freezing_rate;
+
           /**
            * This variable is read from the parameter file through a parameter called 'Melting time scale for operator splitting'.
            */
           double melting_time_scale;
+
           /**
            * This variable is read from the parameter file through a parameter called 'Reference permeability'.
            */
           double reference_permeability;
 
-          // for the solidus temperature
           /**
+           * Coefficient for the solidus temperature, in degrees Celsius.
+           *
            * This variable is read from the parameter file through a parameter called 'A1'.
            */
-          double A1;   // °C
+          double A1;
+
           /**
+           * Coefficient for the solidus temperature, in degrees Celsius/Pa.
+           *
            * This variable is read from the parameter file through a parameter called 'A2'.
            */
-          double A2; // °C/Pa
+          double A2;
+
           /**
+           * Coefficient for the solidus temperature, in degrees Celsius/Pa^2.
+           *
            * This variable is read from the parameter file through a parameter called 'A3'.
            */
-          double A3; // °C/(Pa^2)
+          double A3;
 
-          // for the lherzolite liquidus temperature
           /**
+           * Coefficient for the lherzolite liquidus temperature, in degrees Celsius.
+           *
            * This variable is read from the parameter file through a parameter called 'B1'.
            */
-          double B1;   // °C
+          double B1;
+
           /**
+           * Coefficient for the lherzolite liquidus temperature, in degrees Celsius/Pa.
+           *
            * This variable is read from the parameter file through a parameter called 'B2'.
            */
-          double B2;   // °C/Pa
+          double B2;
+
           /**
+           * Coefficient for the lherzolite liquidus temperature, in degrees Celsius/Pa^2.
+           *
            * This variable is read from the parameter file through a parameter called 'B3'.
            */
-          double B3; // °C/(Pa^2)
+          double B3;
 
-          // for the liquidus temperature
           /**
+           * Coefficient for the liquidus temperature, in degrees Celsius.
+           *
            * This variable is read from the parameter file through a parameter called 'C1'.
            */
-          double C1;   // °C
+          double C1;
+
           /**
+           * Coefficient for the liquidus temperature, in degrees Celsius/Pa.
+           *
            * This variable is read from the parameter file through a parameter called 'C2'.
            */
-          double C2;  // °C/Pa
+          double C2;
+
           /**
+           * Coefficient for the liquidus temperature, in degrees Celsius/Pa^2.
+           *
            * This variable is read from the parameter file through a parameter called 'C3'.
            */
-          double C3; // °C/(Pa^2)
+          double C3;
 
-          // for the reaction coefficient of pyroxene
           /**
+           * Constant in the reaction coefficient of pyroxene.
+           *
            * This variable is read from the parameter file through a parameter called 'r1'.
            */
-          double r1;     // cpx/melt
+          double r1;
+
           /**
+           * Pressure dependence of the reaction coefficient of pyroxene.
+           *
            * This variable is read from the parameter file through a parameter called 'r2'.
            */
-          double r2;     // cpx/melt/GPa
+          double r2;
+
           /**
+           * Mass fraction of pyroxene.
+           *
            * This variable is read from the parameter file through a parameter called 'Mass fraction cpx'.
            */
-          double M_cpx;  // mass fraction of pyroxene
+          double M_cpx;
 
-          // melt fraction exponent
           /**
+           * Melt fraction exponent.
+           *
            * This variable is read from the parameter file through a parameter called 'beta'.
            */
           double beta;
 
-          // entropy change upon melting
           /**
+           * Entropy change upon melting.
+           *
            * This variable is read from the parameter file through a parameter called 'Peridotite melting entropy change'.
            */
           double peridotite_melting_entropy_change;
