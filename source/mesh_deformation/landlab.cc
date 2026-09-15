@@ -282,7 +282,7 @@ namespace aspect
             }
 
           // Add any additional derived outputs to the variable list before sending the data to Landlab.
-          evaluate_aspect_derived_quantities_at_points(variable_data, variable_names);
+          evaluate_derived_quantities_at_points(variable_data, variable_names);
 
           // Store the solution vector for each variable in a python dictionary to send to Landlab.
           for (unsigned int i=0; i<variable_names.size(); ++i)
@@ -376,8 +376,8 @@ namespace aspect
     template <int dim>
     void
     Landlab<dim>::
-    evaluate_aspect_derived_quantities_at_points (std::vector<std::vector<double>> &variable_data,
-                                                  std::vector<std::string> &variable_names) const
+    evaluate_derived_quantities_at_points (std::vector<std::vector<double>> &variable_data,
+                                           std::vector<std::string> &variable_names) const
     {
 #ifdef ASPECT_WITH_LANDLAB
       // If the user is not requesting additional quantities, return immediately.

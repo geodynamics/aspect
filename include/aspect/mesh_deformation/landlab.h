@@ -76,8 +76,8 @@ namespace aspect
          * Evaluate additional derived quantities to send to Landlab.
          */
         void
-        evaluate_aspect_derived_quantities_at_points (std::vector<std::vector<double>> &variable_data,
-                                                      std::vector<std::string> &variable_names) const;
+        evaluate_derived_quantities_at_points (std::vector<std::vector<double>> &variable_data,
+                                               std::vector<std::string> &variable_names) const;
 
         /**
          * Compute the initial deformation by querying the Landlab Python module for the
