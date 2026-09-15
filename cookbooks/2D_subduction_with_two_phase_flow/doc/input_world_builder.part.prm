@@ -1,0 +1,13 @@
+set World builder file = world_builder_files/static_2D_cross_section_MOD.wb
+
+subsection Initial temperature model
+  set Model name = world builder
+end
+
+subsection Initial composition model
+  set List of model names = world builder disequilibrium
+  subsection World builder
+    set List of relevant compositions = porosity, bound_fluid, peridotite, gabbro, MORB, sediment
+    set Disequilibrium percentage     = 5
+  end
+end
