@@ -69,7 +69,7 @@ namespace aspect
           PyRun_SimpleString("import sys");
           PyRun_SimpleString("sys.path.append(\"" ASPECT_SOURCE_DIR "/tests\")");
           PyRun_SimpleString("sys.path.append(\".\")");
-          PyRun_SimpleString("sys.path.append(\"" ASPECT_SOURCE_DIR "/contrib/python/scripts\")");
+          PyRun_SimpleString("sys.path.append(\"" ASPECT_SOURCE_DIR "/contrib/landlab\")");
 
           // disable floating point exceptions in Landlab Python code during the module import
           // ("import landlab" crashes otherwise)
