@@ -1,3 +1,0 @@
-Added: Swapped std::min(std::max(val, low), high) for std::clamp(val, low, high)
-<br>
-(Buchanan Kerswell, 2026/07/30)
