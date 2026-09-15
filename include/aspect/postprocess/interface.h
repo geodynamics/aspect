@@ -27,6 +27,7 @@
 #include <aspect/simulator_access.h>
 
 #include <memory>
+#include <set>
 #include <deal.II/base/table_handler.h>
 #include <deal.II/base/parameter_handler.h>
 
@@ -145,6 +146,25 @@ namespace aspect
          */
         std::list<std::pair<std::string,std::string>>
         execute (TableHandler &statistics);
+
+        /**
+         * Execute the selected postprocessors and any active postprocessors they
+         * depend on. The selected postprocessors are identified by the names used
+         * in parameter files. The function keeps the dependency order established
+         * during parse_parameters().
+         *
+         * @param requested_postprocessors The names of active postprocessors that
+         * should be executed.
+         * @param statistics The statistics object that is passed to each selected
+         * postprocessor. Selected postprocessors may add entries to this object,
+         * so callers that need the computed postprocessor state without changing
+         * the main statistics table should pass a temporary TableHandler.
+         * @return The concatenated text output returned by the selected
+         * postprocessors and their dependencies.
+         */
+        std::list<std::pair<std::string,std::string>>
+        execute_selected_postprocessors(const std::set<std::string> &requested_postprocessors,
+                                        TableHandler &statistics);
 
         /**
          * Go through the list of all postprocessors that have been selected
