@@ -66,7 +66,7 @@ Select one of the following models:
 :name: parameters:Particles_202/Interpolation_20scheme
 **Default value:** cell average
 
-**Pattern:** [Selection cell average|distance weighted average|harmonic average|linear least squares|nearest neighbor|quadratic least squares|bilinear least squares ]
+**Pattern:** [Selection cell average|distance weighted average|harmonic average|linear least squares|nearest neighbor|quadratic least squares|quaternion average|bilinear least squares ]
 
 **Documentation:** Select one of the following models:
 
@@ -81,6 +81,8 @@ Select one of the following models:
 &lsquo;nearest neighbor&rsquo;: Return the properties of the nearest neighboring particle in the current cell, or nearest particle in nearest neighboring cell if current cell is empty. In case the neighboring cells are also empty, and &rsquo;Allow cells without particles&rsquo; is set to true, the interpolator returns 0. Otherwise, an exception is thrown.
 
 &lsquo;quadratic least squares&rsquo;: Interpolates particle properties onto a vector of points using a quadratic least squares method. Note that deal.II must be configured with BLAS/LAPACK.
+
+&lsquo;quaternion average&rsquo;: Return an average rotation represented by quaternions, with the option to take into account a crystal symmetry group.All other properties are averaged with a base interpolation scheme.
 
 &lsquo;bilinear least squares&rsquo;: Deprecated, now an alias for &lsquo;linear least squares&rsquo;. This alias will be removed in the future.
 ::::
@@ -1008,6 +1010,26 @@ A typical example would be to set this runtime parameter to &lsquo;pi=3.14159265
 **Pattern:** [List of <[Bool]> of length 0...4294967295 (inclusive)]
 
 **Documentation:** Limit the interpolation of particle properties onto the cell, so that the value of each property is no smaller than its minimum and no larger than its maximum on the particles of each cell, and the average of neighboring cells. If more than one value is given, it will be treated as a list with one component per particle property.
+::::
+
+(parameters:Particles_202/Interpolator/Quaternion_20average)=
+## **Subsection:** Particles 2 / Interpolator / Quaternion average
+::::{dropdown} __Parameter:__ {ref}`Base interpolation scheme<parameters:Particles_202/Interpolator/Quaternion_20average/Base_20interpolation_20scheme>`
+:name: parameters:Particles_202/Interpolator/Quaternion_20average/Base_20interpolation_20scheme
+**Default value:** cell average
+
+**Pattern:** [Selection cell average|distance weighted average|harmonic average|linear least squares|nearest neighbor|quadratic least squares|quaternion average ]
+
+**Documentation:** Scheme used to interpolate all properties except quaternions.
+::::
+
+::::{dropdown} __Parameter:__ {ref}`Symmetry group<parameters:Particles_202/Interpolator/Quaternion_20average/Symmetry_20group>`
+:name: parameters:Particles_202/Interpolator/Quaternion_20average/Symmetry_20group
+**Default value:** triclinic
+
+**Pattern:** [Selection triclinic|orthorhombic ]
+
+**Documentation:** Symmetry group of the underlying rotations that are supposed to be averaged. This determines which symmetry operators are used to project rotations into the fundamental zone of the respective symmetry group.
 ::::
 
 (parameters:Particles_202/Melt_20particle)=
