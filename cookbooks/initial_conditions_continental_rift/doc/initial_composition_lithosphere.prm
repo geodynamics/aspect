@@ -1,0 +1,59 @@
+# Number and names of compositional fields
+# The five compositional fields represent:
+# 1. The plastic strain that accumualates over time, with the initial plastic strain removed
+# 2. The plastic strain that accumulated over time, including the initial plastic strain values
+# 3. The upper crust
+# 4. The lower crust
+# 5. The mantle lithosphere
+subsection Compositional fields
+  set Number of fields = 5
+  set Names of fields = noninitial_plastic_strain, plastic_strain, upper, lower, mantle_L
+end
+
+# Initial values of different compositional fields
+# The upper crust (20 km thick), lower crust (15 km thick)
+# and mantle (85 km thick) are continuous horizontal layers
+# of constant thickness, except in a center area.
+# In the centre of the domain, the upper crust is thickened to 25 km,
+# while the mantle lithosphere is thinned. The transition from this
+# perturbed center to the reference thicknesses of the lithospheric
+# layers is smoothened using a Gaussian. The combined effect
+# is a hotter, weaker centre area that localizes deformation.
+# An additional thicker/stronger area is added on the right of the domain
+# to represent cratonic lithosphere. The transition in layer thicknesses
+# uses a hyperbolic tangent.
+# The non initial plastic strain is set
+# to 0 and the initial plastic strain is randomized between
+# 0.5 and 1.5 in an area around the rift axis.
+subsection Initial composition model
+  set List of model names = lithosphere with rift, rift box initial plastic strain, function
+
+  subsection Lithosphere with rift
+    # The reference layer thicknesses of the upper crust, lower crust and mantle lithosphere.
+    set Layer thicknesses                              = 20e3, 15e3, 85e3
+    # How wide the weak zone will be
+    set Standard deviation of Gaussian rift geometry   = 50e3
+    # The maximum thinning/thickening of the lithospheric layers
+    set Amplitude of Gaussian rift geometry            = -0.25, 0, 0.17647
+    # Where the rift axis should be. In this case in the centre of the domain.
+    # In 3D simulations, line segments consisting of two coordinates
+    # should be provided.
+    set Rift axis line segments                        = 200e3
+
+    # The thicknesses of the lithospheric layer within a polygon
+    set Lithospheric polygon layer thicknesses         = 20e3, 15e3 , 115.e3
+    # The segments making up the polygon
+    set Lithospheric polygons                          = 550e3 > 3000e3
+    # The half width of the transition from polygon to reference lithosphere
+    set Half width of polygon smoothing                = 10e3
+  end
+
+  subsection Function
+    set Variable names = x,y
+    set Function expression = 0; \
+                              0; \
+                              0; \
+                              0; \
+                              0
+  end
+end
