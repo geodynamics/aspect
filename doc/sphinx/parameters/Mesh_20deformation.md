@@ -801,6 +801,15 @@ If the function you are describing represents a vector-valued function with mult
 
 (parameters:Mesh_20deformation/Landlab)=
 ## **Subsection:** Mesh deformation / Landlab
+::::{dropdown} __Parameter:__ {ref}`List of additional ASPECT quantities<parameters:Mesh_20deformation/Landlab/List_20of_20additional_20ASPECT_20quantities>`
+:name: parameters:Mesh_20deformation/Landlab/List_20of_20additional_20ASPECT_20quantities
+**Default value:**
+
+**Pattern:** [List of <[Selection strain rate ]> of length 0...4294967295 (inclusive)]
+
+**Documentation:** Comma-separated list of additional ASPECT quantities to send to the Landlab model. Default is &rsquo;none&rsquo;, and the allowed options are: strain rate
+::::
+
 ::::{dropdown} __Parameter:__ {ref}`MPI ranks for Landlab<parameters:Mesh_20deformation/Landlab/MPI_20ranks_20for_20Landlab>`
 :name: parameters:Mesh_20deformation/Landlab/MPI_20ranks_20for_20Landlab
 **Default value:** 1
