@@ -1,0 +1,7 @@
+# switch to AMG
+
+subsection Solver parameters
+  subsection Stokes solver parameters
+    set Stokes solver type = block AMG
+  end
+end
