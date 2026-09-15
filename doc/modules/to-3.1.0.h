@@ -197,7 +197,7 @@
  * the get_property() function. When asking for a value at a depth very close to a
  * calculated profile point, the code previously always returned the value from a point
  * at shallower depth. This is now fixed and returns the value at the correct point.
- * 
+ *
  * Added: A new test that computes an adiabatic profile using a pressure-temperature lookup table.
  * <br>
  * (Qianyi Lu and Ranpeng Li, 2026/07/26)
@@ -468,7 +468,7 @@
  * correctly include the mesh deformation when computing
  * the tangential direction, leading to flow into and out of
  * the domain. This is fixed now.
- * 
+ *
  * <br>
  * (Bob Myhill, Rene Gassmoeller and Timo Heister, 2026/01/12)
  *
@@ -694,7 +694,7 @@
  * in Fastscape Fortran using user-defined functions.
  * These parameters represent climate and rock erodibility conditions.
  * They can now vary in both space and time through 2D and time-dependent functions.
- * 
+ *
  * (Liang Xue, Derek Neuharth, 2025/06/17)
  *
  * <li> Added: The Steinberger material model now includes Drucker-Prager plasticity,
@@ -848,7 +848,7 @@
  * make clear that the calling place receiving the pointer now shares
  * ownership of the input or output object with the place that the object
  * is requested from.
- * 
+ *
  * The old functions have been retained for backward compatibility
  * purposes, but they are now deprecated.
  * <br>
