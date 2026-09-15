@@ -45,7 +45,10 @@ namespace aspect
                                         const SymmetricTensor<2,dim> &strain_rate) const
       {
         // This function calculates viscosities assuming that all the compositional fields
-        // experience the same strain rate (isostrain).
+        // experience the same strain rate (isostrain) and all the deformation mechanisms
+        // experience the same stress (isostress). The effective viscosity is calculated by
+        // solving for the stress that satisfies the strain rate given the diffusion and dislocation
+        // creep parameters for each compositional field.
 
         // If strain rate is zero (like during the first time step) set it to some very small number
         // to prevent a division-by-zero, and a floating point exception.
@@ -62,32 +65,34 @@ namespace aspect
         for (unsigned int j=0; j < n_chemical_composition_fields; ++j)
           {
             // Power law creep equation
-            // edot_ii_i = A_i * stress_ii_i^{n_i} * d^{-m} \exp\left(-\frac{E_i^\ast + PV_i^\ast}{n_iRT}\right)
+            // edot_ii_i = A_i * stress_ii^{n_i} * d^{-m_i} \exp\left(-\frac{E_i + P*V_i}{RT}\right)
             // where ii indicates the square root of the second invariant and
             // i corresponds to diffusion or dislocation creep
 
-            // For diffusion creep, viscosity is grain size dependent
+            // The creep parameters for the j-th compositional field could be dependent on
+            // the proportions of the phases present in that field, but this is not currently
+            // implemented. They are therefore state-independent.
             const Rheology::DiffusionCreepParameters diffusion_creep_parameters = diffusion_creep.compute_creep_parameters(j);
-
-            // For dislocation creep, viscosity is grain size independent (m=0)
             const Rheology::DislocationCreepParameters dislocation_creep_parameters = dislocation_creep.compute_creep_parameters(j);
 
-            // For diffusion creep, viscosity is grain size dependent
-            const double prefactor_stress_diffusion = diffusion_creep_parameters.prefactor *
-                                                      std::pow(grain_size, -diffusion_creep_parameters.grain_size_exponent) *
-                                                      std::exp(-(std::max(diffusion_creep_parameters.activation_energy + pressure*diffusion_creep_parameters.activation_volume,0.0))/
-                                                               (constants::gas_constant*temperature));
+            // The ratios of the diffusion and dislocation strain rates are not known,
+            // so the stress is also unknown. Here, we use Newton's method to find the
+            // second invariant of the stress tensor.
 
-            // Because the ratios of the diffusion and dislocation strain rates are not known, stress is also unknown
-            // We use Newton's method to find the second invariant of the stress tensor.
-            // Start with the assumption that all strain is accommodated by diffusion creep:
-            // If the diffusion creep prefactor is very small, that means that the diffusion viscosity is very large.
-            // In this case, use the maximum viscosity instead to compute the starting guess.
-            double stress_ii = (prefactor_stress_diffusion > (0.5 / maximum_viscosity)
-                                ?
-                                edot_ii/prefactor_stress_diffusion
-                                :
-                                0.5 / maximum_viscosity);
+            // Our starting guess assumes that all strain is accommodated either by diffusion creep,
+            // or by the maximum viscosity, whichever produces the smaller stress.
+
+            // Note that the diffusion creep rheology assumes that the stress exponent n=1,
+            // so the ratio of stress to strain rate is stress-independent.
+            const double stress_ii_over_edot_ii_diffusion = 1.0/(diffusion_creep_parameters.prefactor *
+                                                                 std::pow(grain_size, -diffusion_creep_parameters.grain_size_exponent) *
+                                                                 std::exp(-(std::max(diffusion_creep_parameters.activation_energy + pressure*diffusion_creep_parameters.activation_volume,0.0))/
+                                                                          (constants::gas_constant*temperature)));
+            const double stress_ii_over_edot_ii_maximum = 2.0 * maximum_viscosity;
+            double stress_ii = std::min(stress_ii_over_edot_ii_diffusion, stress_ii_over_edot_ii_maximum) * edot_ii;
+
+            // The Newton iteration is done in log space, because the relationship between
+            // log(strain rate) and log(stress) is linear for both diffusion and dislocation creep.
             double log_stress_ii = std::log(stress_ii);
             double log_strain_rate_residual = 2 * log_strain_rate_residual_threshold;
             double log_strain_rate_deriv = 0;
@@ -122,7 +127,6 @@ namespace aspect
                                                     || !numbers::is_finite(log_strain_rate_residual)
                                                     || !numbers::is_finite(log_strain_rate_deriv)
                                                     || log_strain_rate_deriv < std::numeric_limits<double>::min()
-                                                    || !numbers::is_finite(std::pow(stress_ii, diffusion_creep_parameters.stress_exponent-1))
                                                     || !numbers::is_finite(std::pow(stress_ii, dislocation_creep_parameters.stress_exponent-1))
                                                     || stress_iteration == stress_max_iteration_number;
                 if (abort_newton_iteration)
@@ -135,14 +139,14 @@ namespace aspect
                       {
                         const double old_diffusion_strain_rate = diffusion_strain_rate;
 
-                        const double diffusion_prefactor = 0.5 * std::pow(diffusion_creep_parameters.prefactor,-1.0/diffusion_creep_parameters.stress_exponent);
-                        const double diffusion_grain_size_dependence = std::pow(grain_size, diffusion_creep_parameters.grain_size_exponent/diffusion_creep_parameters.stress_exponent);
-                        const double diffusion_strain_rate_dependence = std::pow(diffusion_strain_rate, (1.-diffusion_creep_parameters.stress_exponent)/diffusion_creep_parameters.stress_exponent);
-                        const double diffusion_T_and_P_dependence = std::exp(std::max(diffusion_creep_parameters.activation_energy + pressure*diffusion_creep_parameters.activation_volume,0.0)/
-                                                                             (constants::gas_constant*temperature));
+                        // The diffusion parameters below are only correct when the stress exponent for diffusion creep n=1.
+                        const double diffusion_prefactor = 0.5 / diffusion_creep_parameters.prefactor;
+                        const double diffusion_grain_size_dependence = std::pow(grain_size, diffusion_creep_parameters.grain_size_exponent);
+                        const double diffusion_T_and_P_dependence = std::exp(std::max(diffusion_creep_parameters.activation_energy + pressure * diffusion_creep_parameters.activation_volume, 0.0) /
+                                                                             (constants::gas_constant * temperature));
 
                         const double diffusion_viscosity = std::clamp(diffusion_prefactor * diffusion_grain_size_dependence
-                                                                      * diffusion_strain_rate_dependence * diffusion_T_and_P_dependence,
+                                                                      * diffusion_T_and_P_dependence,
                                                                       minimum_viscosity, maximum_viscosity);
 
                         const double dislocation_prefactor = 0.5 * std::pow(dislocation_creep_parameters.prefactor,-1.0/dislocation_creep_parameters.stress_exponent);

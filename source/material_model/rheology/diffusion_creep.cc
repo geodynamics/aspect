@@ -37,7 +37,6 @@ namespace aspect
         : prefactor (numbers::signaling_nan<double>()),
           activation_energy (numbers::signaling_nan<double>()),
           activation_volume (numbers::signaling_nan<double>()),
-          stress_exponent (numbers::signaling_nan<double>()),
           grain_size_exponent (numbers::signaling_nan<double>())
       {}
 
@@ -62,7 +61,6 @@ namespace aspect
             creep_parameters.prefactor = prefactors[composition];
             creep_parameters.activation_energy = activation_energies[composition];
             creep_parameters.activation_volume = activation_volumes[composition];
-            creep_parameters.stress_exponent = stress_exponents[composition];
             creep_parameters.grain_size_exponent = grain_size_exponents[composition];
           }
         else
@@ -74,8 +72,6 @@ namespace aspect
                                                  activation_energies, composition);
             creep_parameters.activation_volume = MaterialModel::MaterialUtilities::phase_average_value(phase_function_values, n_phase_transitions_per_composition,
                                                  activation_volumes, composition);
-            creep_parameters.stress_exponent = MaterialModel::MaterialUtilities::phase_average_value(phase_function_values, n_phase_transitions_per_composition,
-                                               stress_exponents, composition);
             creep_parameters.grain_size_exponent = MaterialModel::MaterialUtilities::phase_average_value(phase_function_values, n_phase_transitions_per_composition,
                                                    grain_size_exponents, composition);
           }
@@ -110,8 +106,10 @@ namespace aspect
                                                                     phase_function_values,
                                                                     n_phase_transitions_per_composition);
 
-        // Power law creep equation
-        //    viscosity = 0.5 * A^(-1) * d^(m) * exp((E + P*V)/(RT))
+        // Power law creep equation (stress exponent n = 1):
+        //   edot_ii = A * stress * d^-m * exp(-(E + P*V)/(RT))
+        // by substituting stress = 2 * viscosity * edot_ii, we can solve for viscosity:
+        //   viscosity = 0.5 * A^(-1) * d^(m) * exp((E + P*V)/(RT))
         // A: prefactor,
         // d: grain size, m: grain size exponent, E: activation energy, P: pressure,
         // V; activation volume, R: gas constant, T: temperature.
@@ -159,13 +157,13 @@ namespace aspect
                                                               const double grain_size,
                                                               const DiffusionCreepParameters creep_parameters) const
       {
-        // Power law creep equation
-        //   edot_ii_partial = A * stress^n * d^-m * exp(-(E + P*V)/(RT))
-        //   d(edot_ii_partial)/d(stress) = A * n * stress^(n-1) * d^-m * exp(-(E + P*V)/(RT))
-        // A: prefactor, edot_ii_partial: square root of second invariant of deviatoric strain rate tensor attributable to the creep mechanism,
+        // Power law creep equation (stress exponent n = 1)
+        //   edot_ii = A * stress * d^-m * exp(-(E + P*V)/(RT))
+        // By differentiating with respect to stress, we get:
+        //   d(edot_ii)/d(stress) = A * d^-m * exp(-(E + P*V)/(RT))
+        // A: prefactor, edot_ii: square root of second invariant of deviatoric strain rate tensor attributable to the creep mechanism,
         // d: grain size, m: grain size exponent, E: activation energy, P: pressure,
         // V; activation volume, R: gas constant, T: temperature.
-        // For diffusion creep, n = 1 (strain rate is linearly dependent on stress).
         const double dstrain_rate_dstress = creep_parameters.prefactor *
                                             std::pow(grain_size, -creep_parameters.grain_size_exponent) *
                                             std::exp(-(creep_parameters.activation_energy + pressure * creep_parameters.activation_volume) /
@@ -198,10 +196,13 @@ namespace aspect
                                                                    const double grain_size,
                                                                    const DiffusionCreepParameters creep_parameters) const
       {
-        // Power law creep equation
-        // log(edot_ii_partial) = std::log(A) + n*std::log(stress) - m*std::log(d) - (E + P*V)/(RT)
-        //   d(log_edot_ii_partial)/d(log_stress) = n
-        // A: prefactor, edot_ii_partial: square root of second invariant of deviatoric strain rate tensor attributable to the creep mechanism,
+        // Power law creep equation (stress exponent n = 1)
+        //   edot_ii = A * stress * d^-m * exp(-(E + P*V)/(RT))
+        // By taking the logarithm:
+        //   log(edot_ii) = log(A) + log(stress) - m*log(d) - (E + P*V)/(RT)
+        // By differentiating with respect to log(stress), we get:
+        //   d(log_edot_ii)/d(log_stress) = 1
+        // A: prefactor, edot_ii: square root of second invariant of deviatoric strain rate tensor attributable to the creep mechanism,
         // d: grain size, m: grain size exponent, E: activation energy, P: pressure,
         // V; activation volume, R: gas constant, T: temperature.
         // For diffusion creep, n = 1 (strain rate is linearly dependent on stress).
@@ -234,8 +235,10 @@ namespace aspect
                            "List of stress exponents, $n_{\\text{diffusion}}$, for background mantle and compositional fields, "
                            "for a total of N+1 values, where N is the number of all compositional fields or only "
                            "those corresponding to chemical compositions. "
-                           "The stress exponent for diffusion creep is almost always equal to one. "
-                           "If only one value is given, then all use the same value.  Units: None.");
+                           "If only one value is given, then all use the same value. "
+                           "This is a deprecated parameter, as the stress exponent for diffusion creep must always equal one. "
+                           "This parameter will be removed in a future version of ASPECT. "
+                           "Units: None.");
         prm.declare_entry ("Grain size exponents for diffusion creep", "3.",
                            Patterns::Anything(),
                            "List of grain size exponents, $m_{\\text{diffusion}}$, for background material and compositional fields, "
@@ -301,8 +304,13 @@ namespace aspect
                                                                       options);
 
         options.property_name = "Stress exponents for diffusion creep";
-        stress_exponents = Utilities::MapParsing::parse_map_to_double_array(prm.get("Stress exponents for diffusion creep"),
-                                                                            options);
+        const std::vector<double> stress_exponents = Utilities::MapParsing::parse_map_to_double_array(prm.get("Stress exponents for diffusion creep"),
+                                                     options);
+
+        // Assert that all stress exponents are equal to 1 within a tolerance, as this is the only physically meaningful value for diffusion creep.
+        for (const double stress_exponent : stress_exponents)
+          AssertThrow(std::abs(stress_exponent - 1.0) < 1e-10,
+                      ExcMessage("The stress exponent for diffusion creep is only implemented for values equal to 1.0."));
 
         options.property_name = "Grain size exponents for diffusion creep";
         grain_size_exponents = Utilities::MapParsing::parse_map_to_double_array(prm.get("Grain size exponents for diffusion creep"),
