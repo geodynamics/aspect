@@ -190,9 +190,11 @@ namespace aspect
                 double porosity_change = 0.0;
                 if (fractional_melting)
                   {
-                    // solidus is lowered by previous melting events (fractional melting)
+                    // solidus is increased by previous melting events (fractional melting)
                     const double solidus_change = (maximum_melt_fraction - old_porosity) * depletion_solidus_change;
                     const double eq_melt_fraction = melt_fraction(in.temperature[i] - solidus_change, this->get_adiabatic_conditions().pressure(in.position[i]));
+
+                    // The change in porosity can be positive or negative, accounting for both melting and freezing.
                     porosity_change = eq_melt_fraction - old_porosity;
                   }
                 else
@@ -492,13 +494,18 @@ namespace aspect
                            "melting should be used (if false), assuming that the melt fraction only "
                            "depends on temperature and pressure, and how much melt has already been "
                            "generated at a given point, but not considering movement of melt in "
-                           "the melting parameterization."
+                           "the melting parameterization. Note that this is not part of the original "
+                           "Katz (2003) parameterization, but a strongly simplified way to account for "
+                           "changes in composition due to melt transport (which are not considered in "
+                           "the original parameterization)."
                            "\n\n"
-                           "Note that melt does not freeze unless the 'Freezing rate' parameter is set "
-                           "to a value larger than 0.");
+                           "Note that the 'Freezing rate' parameter is not applied in the case of "
+                           "fractional melting; melt always freezes (with the same rate it melts "
+                           "with) if the equilibrium melt fraction, accounting for depletion, is "
+                           "lower than the porosity.");
         prm.declare_entry ("Freezing rate", "0.0",
                            Patterns::Double (0.),
-                           "Freezing rate of melt when in subsolidus regions. "
+                           "Freezing rate of melt in subsolidus regions in the batch melting parameterization. "
                            "If this parameter is set to a number larger than 0.0, it specifies the "
                            "fraction of melt that will freeze per year (or per second, depending on the "
                            "``Use years instead of seconds'' parameter), as soon as the porosity "
@@ -514,6 +521,8 @@ namespace aspect
                            "freezing parameterization, but without tracking the melt composition, there "
                            "is no way to compute freezing rates accurately. "
                            "If this parameter is set to zero, no freezing will occur. "
+                           "If fractional melting is used, this parameter is ignored (i.e., freezing occurs "
+                           "at the same rate as melting). "
                            "Note that freezing can never be faster than determined by the "
                            "``Melting time scale for operator splitting''. The product of the "
                            "``Freezing rate'' and the ``Melting time scale for operator splitting'' "
@@ -597,6 +606,11 @@ namespace aspect
 
         AssertThrow(melting_time_scale > 0,
                     ExcMessage("The Melting time scale for operator splitting must be larger than 0!"));
+
+        if (fractional_melting)
+          AssertThrow(freezing_rate == 0.0,
+                      ExcMessage("The freezing rate is not taken into account in models with fractional melting. "
+                                 "Changing its value from the default of 0.0 is not allowed."));
 
         if (this->get_parameters().reaction_solver_type == Parameters<dim>::ReactionSolverType::fixed_step)
           {
