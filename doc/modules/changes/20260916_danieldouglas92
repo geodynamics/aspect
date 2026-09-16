@@ -1,0 +1,5 @@
+Added: A function to landlab.cc that enables additional
+quantities to be sent to Landlab from ASPECT. The strain
+rate on the surface of the ASPECT model can now be provided.
+<br>
+(Daniel Douglas, 2026/09/16)
