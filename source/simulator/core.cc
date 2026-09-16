@@ -251,7 +251,7 @@ namespace aspect
     dof_handler (triangulation),
 
     last_pressure_normalization_adjustment (numbers::signaling_nan<double>()),
-    pressure_scaling (numbers::signaling_nan<double>()),
+    pressure_scaling (0.0),
 
     rebuild_stokes_matrix (true),
     assemble_newton_stokes_matrix (true),
