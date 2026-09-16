@@ -2968,6 +2968,15 @@ Also note that the melting time scale has to be larger than or equal to the reac
 **Documentation:** The porosity dependence of the viscosity. Units: dimensionless.
 ::::
 
+::::{dropdown} __Parameter:__ {ref}`Extraction method<parameters:Material_20model/Melt_20simple/Extraction_20method>`
+:name: parameters:Material_20model/Melt_20simple/Extraction_20method
+**Default value:** linear
+
+**Pattern:** [Selection linear|constant ]
+
+**Documentation:** Method for extracting melt. Options are &rsquo;linear&rsquo; or &rsquo;constant&rsquo;. All methods are proportional to the volume fraction of the porosity above the extraction depth. &rsquo;linear&rsquo; increases the extraction rate from a minimum at the extraction depth to a maximum at the model surface, &rsquo;constant&rsquo; is equal to the volume fraction of the porosity above the extraction depth.
+::::
+
 ::::{dropdown} __Parameter:__ {ref}`Freezing rate<parameters:Material_20model/Melt_20simple/Freezing_20rate>`
 :name: parameters:Material_20model/Melt_20simple/Freezing_20rate
 **Default value:** 0.0
@@ -3008,9 +3017,9 @@ Also note that the melting time scale has to be larger than or equal to the reac
 :name: parameters:Material_20model/Melt_20simple/Melt_20extraction_20depth
 **Default value:** 1000.0
 
-**Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
+**Pattern:** [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
 
-**Documentation:** Depth above that melt will be extracted from the model, which is done by a negative reaction term proportional to the porosity field. Units: \si{\meter}.
+**Documentation:** Depth below the surface at which melt is extracted.Units: \si{\meter}.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Melting time scale for operator splitting<parameters:Material_20model/Melt_20simple/Melting_20time_20scale_20for_20operator_20splitting>`
@@ -3792,6 +3801,15 @@ If the function you are describing represents a vector-valued function with mult
 **Documentation:** The porosity dependence of the viscosity. Units: dimensionless.
 ::::
 
+::::{dropdown} __Parameter:__ {ref}`Extract fluids<parameters:Material_20model/Reactive_20Fluid_20Transport_20Model/Extract_20fluids>`
+:name: parameters:Material_20model/Reactive_20Fluid_20Transport_20Model/Extract_20fluids
+**Default value:** false
+
+**Pattern:** [Bool]
+
+**Documentation:** If true, the melt extractor reaction model will be used to extract fluids from if there are fluids shallower than a user-specified extraction depth.
+::::
+
 ::::{dropdown} __Parameter:__ {ref}`Fluid compressibility<parameters:Material_20model/Reactive_20Fluid_20Transport_20Model/Fluid_20compressibility>`
 :name: parameters:Material_20model/Reactive_20Fluid_20Transport_20Model/Fluid_20compressibility
 **Default value:** 0.0
@@ -3985,6 +4003,15 @@ Also note that the fluid reaction time scale has to be larger than or equal to t
 **Documentation:** The porosity dependence of the viscosity. Units: dimensionless.
 ::::
 
+::::{dropdown} __Parameter:__ {ref}`Extraction method<parameters:Material_20model/Reactive_20Fluid_20Transport_20Model/Katz_202003_20model/Extraction_20method>`
+:name: parameters:Material_20model/Reactive_20Fluid_20Transport_20Model/Katz_202003_20model/Extraction_20method
+**Default value:** linear
+
+**Pattern:** [Selection linear|constant ]
+
+**Documentation:** Method for extracting melt. Options are &rsquo;linear&rsquo; or &rsquo;constant&rsquo;. All methods are proportional to the volume fraction of the porosity above the extraction depth. &rsquo;linear&rsquo; increases the extraction rate from a minimum at the extraction depth to a maximum at the model surface, &rsquo;constant&rsquo; is equal to the volume fraction of the porosity above the extraction depth.
+::::
+
 ::::{dropdown} __Parameter:__ {ref}`Freezing rate<parameters:Material_20model/Reactive_20Fluid_20Transport_20Model/Katz_202003_20model/Freezing_20rate>`
 :name: parameters:Material_20model/Reactive_20Fluid_20Transport_20Model/Katz_202003_20model/Freezing_20rate
 **Default value:** 0.0
@@ -4025,9 +4052,9 @@ Also note that the fluid reaction time scale has to be larger than or equal to t
 :name: parameters:Material_20model/Reactive_20Fluid_20Transport_20Model/Katz_202003_20model/Melt_20extraction_20depth
 **Default value:** 1000.0
 
-**Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
+**Pattern:** [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
 
-**Documentation:** Depth above that melt will be extracted from the model, which is done by a negative reaction term proportional to the porosity field. Units: \si{\meter}.
+**Documentation:** Depth below the surface at which melt is extracted.Units: \si{\meter}.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Melting time scale for operator splitting<parameters:Material_20model/Reactive_20Fluid_20Transport_20Model/Katz_202003_20model/Melting_20time_20scale_20for_20operator_20splitting>`
@@ -4135,6 +4162,15 @@ Note that melt does not freeze unless the &rsquo;Freezing rate&rsquo; parameter 
 
 (parameters:Material_20model/Reactive_20Fluid_20Transport_20Model/Tian_202019_20model)=
 ## **Subsection:** Material model / Reactive Fluid Transport Model / Tian 2019 model
+::::{dropdown} __Parameter:__ {ref}`Extraction method<parameters:Material_20model/Reactive_20Fluid_20Transport_20Model/Tian_202019_20model/Extraction_20method>`
+:name: parameters:Material_20model/Reactive_20Fluid_20Transport_20Model/Tian_202019_20model/Extraction_20method
+**Default value:** linear
+
+**Pattern:** [Selection linear|constant ]
+
+**Documentation:** Method for extracting melt. Options are &rsquo;linear&rsquo; or &rsquo;constant&rsquo;. All methods are proportional to the volume fraction of the porosity above the extraction depth. &rsquo;linear&rsquo; increases the extraction rate from a minimum at the extraction depth to a maximum at the model surface, &rsquo;constant&rsquo; is equal to the volume fraction of the porosity above the extraction depth.
+::::
+
 ::::{dropdown} __Parameter:__ {ref}`Maximum weight percent water in MORB<parameters:Material_20model/Reactive_20Fluid_20Transport_20Model/Tian_202019_20model/Maximum_20weight_20percent_20water_20in_20MORB>`
 :name: parameters:Material_20model/Reactive_20Fluid_20Transport_20Model/Tian_202019_20model/Maximum_20weight_20percent_20water_20in_20MORB
 **Default value:** 2
@@ -4169,6 +4205,15 @@ Note that melt does not freeze unless the &rsquo;Freezing rate&rsquo; parameter 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
 **Documentation:** The maximum allowed weight percent that the sediment composition can hold.
+::::
+
+::::{dropdown} __Parameter:__ {ref}`Melt extraction depth<parameters:Material_20model/Reactive_20Fluid_20Transport_20Model/Tian_202019_20model/Melt_20extraction_20depth>`
+:name: parameters:Material_20model/Reactive_20Fluid_20Transport_20Model/Tian_202019_20model/Melt_20extraction_20depth
+**Default value:** 1000.0
+
+**Pattern:** [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
+
+**Documentation:** Depth below the surface at which melt is extracted.Units: \si{\meter}.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Use adiabatic pressure for reactions<parameters:Material_20model/Reactive_20Fluid_20Transport_20Model/Tian_202019_20model/Use_20adiabatic_20pressure_20for_20reactions>`

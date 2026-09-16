@@ -239,9 +239,6 @@ namespace aspect
                       porosity_change *= freezing_rate * melting_time_scale;
                   }
 
-                // remove melt that gets close to the surface
-                if (this->get_geometry_model().depth(in.position[i]) < extraction_depth)
-                  porosity_change = -old_porosity * (in.position[i](1) - (this->get_geometry_model().maximal_depth() - extraction_depth))/extraction_depth;
 
                 // do not allow negative porosity
                 porosity_change = std::max(porosity_change, -old_porosity);
@@ -361,6 +358,8 @@ namespace aspect
       void
       Katz2003MantleMelting<dim>::declare_parameters (ParameterHandler &prm)
       {
+        ReactionModel::FluidExtractor<dim>::declare_parameters(prm);
+
         prm.declare_entry ("A1", "1085.7",
                            Patterns::Double (),
                            "Constant parameter in the quadratic "
@@ -468,12 +467,6 @@ namespace aspect
                            "See the general documentation "
                            "of this model for a formula that states the dependence of the "
                            "viscosity on this factor, which is called $\\beta$ there.");
-        prm.declare_entry ("Melt extraction depth", "1000.0",
-                           Patterns::Double (0.),
-                           "Depth above that melt will be extracted from the model, "
-                           "which is done by a negative reaction term proportional to the "
-                           "porosity field. "
-                           "Units: \\si{\\meter}.");
         prm.declare_entry ("Melt compressibility", "0.0",
                            Patterns::Double (0.),
                            "The value of the compressibility of the melt. "
@@ -579,7 +572,6 @@ namespace aspect
         viscosity_fluid            = prm.get_double ("Reference melt viscosity");
         thermal_bulk_viscosity_exponent = prm.get_double ("Thermal bulk viscosity exponent");
         alpha_phi                  = prm.get_double ("Exponential melt weakening factor");
-        extraction_depth           = prm.get_double ("Melt extraction depth");
         melt_compressibility       = prm.get_double ("Melt compressibility");
         fractional_melting         = prm.get_bool ("Use fractional melting");
         freezing_rate              = prm.get_double ("Freezing rate");
@@ -588,6 +580,9 @@ namespace aspect
         depletion_solidus_change   = prm.get_double ("Depletion solidus change");
         reference_permeability     = prm.get_double ("Reference permeability");
 
+        // Extraction model
+        fluid_extractor.initialize_simulator (this->get_simulator());
+        fluid_extractor.parse_parameters(prm);
 
         if (this->convert_output_to_years() == true)
           {
