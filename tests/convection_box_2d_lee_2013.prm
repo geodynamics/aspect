@@ -1,0 +1,18 @@
+# Test benchmarks/convection_box_2d_lee_2013/
+
+include $ASPECT_SOURCE_DIR/benchmarks/convection_box_2d_lee_2013/lee_BA.prm
+
+set End time                               = 2e7
+
+subsection Mesh refinement
+  set Initial adaptive refinement        = 0
+  set Initial global refinement          = 2
+  set Time steps between mesh refinement = 0
+end
+
+# Post processing
+subsection Postprocess
+  set List of postprocessors = velocity statistics, temperature statistics, material statistics,\
+                               heat flux densities, viscous dissipation statistics,\
+                               heat flux statistics, pressure statistics
+end
