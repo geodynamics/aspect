@@ -1,0 +1,35 @@
+# This test reuses the visco_plastic_frank_kamenetskii and
+# turns on additional outputs for the material model to
+# check the outputs for frank kamenetskii creep rheology
+include $ASPECT_SOURCE_DIR/tests/visco_plastic_frank_kamenetskii.prm
+
+
+# Model geometry (100x100 km, 25 km spacing)
+# The resolution is coarser than the original test
+# to minimize the file size generated
+subsection Geometry model
+  set Model name = box
+
+  subsection Box
+    set X repetitions = 4
+    set Y repetitions = 4
+    set X extent      = 100e3
+    set Y extent      = 100e3
+  end
+end
+
+# Post processing
+# named additional outputs includes the peierls creep
+subsection Postprocess
+  set List of postprocessors = velocity statistics, mass flux statistics, visualization
+
+  subsection Visualization
+    set Interpolate output = false
+    set List of output variables = material properties, strain rate, named additional outputs
+    set Output format            = gnuplot
+
+    subsection Material properties
+      set List of material properties = viscosity
+    end
+  end
+end
