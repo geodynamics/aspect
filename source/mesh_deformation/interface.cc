@@ -1262,7 +1262,7 @@ namespace aspect
           mesh_displacements = solution_tmp;
         }
 
-      update_multilevel_deformation();
+      update_local_smoothing_multigrid();
       check_mesh_deformation ();
     }
 
@@ -1581,6 +1581,54 @@ namespace aspect
 
 
     template <int dim>
+    void MeshDeformationHandler<dim>::setup_local_smoothing_multigrid()
+    {
+      const unsigned int mapping_degree = get_mapping_degree();
+
+      mesh_deformation_dof_handler.distribute_mg_dofs();
+
+      const unsigned int n_levels = this->get_triangulation().n_global_levels();
+
+      level_displacements.resize(0, n_levels-1);
+      // Important! Preallocate level vectors with all needed ghost
+      // entries. While interpolate_to_mg can create these vectors
+      // automatically, they will not contain all ghost values that we
+      // need to evaluate the mapping later.
+      for (unsigned int level = 0; level < n_levels; ++level)
+        {
+#if DEAL_II_VERSION_GTE(9,7,0)
+          const IndexSet relevant_mg_dofs = DoFTools::extract_locally_relevant_level_dofs(mesh_deformation_dof_handler, level);
+#else
+          IndexSet relevant_mg_dofs;
+          DoFTools::extract_locally_relevant_level_dofs(mesh_deformation_dof_handler,
+                                                        level,
+                                                        relevant_mg_dofs);
+#endif
+
+          level_displacements[level].reinit(mesh_deformation_dof_handler.locally_owned_mg_dofs(level),
+                                            relevant_mg_dofs,
+                                            sim.mpi_communicator);
+          level_displacements[level].update_ghost_values();
+        }
+
+      // create the mappings on each level:
+      level_mappings.resize(0, n_levels-1);
+      level_mappings.apply([&](const unsigned int level, std::unique_ptr<Mapping<dim>> &object)
+      {
+        object = std::make_unique<MappingQEulerian<dim,
+        dealii::LinearAlgebra::distributed::Vector<double>>>(
+          mapping_degree,
+          mesh_deformation_dof_handler,
+          level_displacements[level],
+          level);
+      });
+
+      local_smoothing_mg_transfer.build(mesh_deformation_dof_handler);
+    }
+
+
+
+    template <int dim>
     void MeshDeformationHandler<dim>::setup_dofs()
     {
       AssertThrow(this->get_parameters().mesh_deformation_enabled, ExcInternalError());
@@ -1632,48 +1680,7 @@ namespace aspect
         }
 
       if (this->is_stokes_matrix_free())
-        {
-          mesh_deformation_dof_handler.distribute_mg_dofs();
-
-          const unsigned int n_levels = this->get_triangulation().n_global_levels();
-
-          level_displacements.resize(0, n_levels-1);
-          // Important! Preallocate level vectors with all needed ghost
-          // entries. While interpolate_to_mg can create these vectors
-          // automatically, they will not contain all ghost values that we
-          // need to evaluate the mapping later.
-          for (unsigned int level = 0; level < n_levels; ++level)
-            {
-#if DEAL_II_VERSION_GTE(9,7,0)
-              const IndexSet relevant_mg_dofs = DoFTools::extract_locally_relevant_level_dofs(mesh_deformation_dof_handler, level);
-#else
-              IndexSet relevant_mg_dofs;
-              DoFTools::extract_locally_relevant_level_dofs(mesh_deformation_dof_handler,
-                                                            level,
-                                                            relevant_mg_dofs);
-#endif
-
-              level_displacements[level].reinit(mesh_deformation_dof_handler.locally_owned_mg_dofs(level),
-                                                relevant_mg_dofs,
-                                                this->get_mpi_communicator());
-              level_displacements[level].update_ghost_values();
-            }
-
-          // create the mappings on each level:
-          level_mappings.resize(0, n_levels-1);
-          level_mappings.apply([&](const unsigned int level, std::unique_ptr<Mapping<dim>> &object)
-          {
-            object = std::make_unique<MappingQEulerian<dim,
-            dealii::LinearAlgebra::distributed::Vector<double>>>(
-              mapping_degree,
-              mesh_deformation_dof_handler,
-              level_displacements[level],
-              level);
-          });
-
-          local_smoothing_mg_transfer.build(mesh_deformation_dof_handler);
-
-        }
+        setup_local_smoothing_multigrid();
 
       {
         std::locale s = this->get_pcout().get_stream().getloc();
@@ -1770,13 +1777,13 @@ namespace aspect
         }
 
       if (this->is_stokes_matrix_free())
-        update_multilevel_deformation();
+        update_local_smoothing_multigrid();
     }
 
 
 
     template <int dim>
-    void MeshDeformationHandler<dim>::update_multilevel_deformation ()
+    void MeshDeformationHandler<dim>::update_local_smoothing_multigrid()
     {
       Assert(this->is_stokes_matrix_free(), ExcInternalError());
 
