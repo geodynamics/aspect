@@ -1,0 +1,8 @@
+Fixed: The matrix-free local-smoothing GMG solver now supports rotated
+periodicity in two-dimensional spherical-shell geometries with 90- and
+180-degree opening angles. The level operators and geometric transfers use
+the same rotated velocity constraints, while scalar pressure periodicity is
+also applied on every multigrid level. These geometries now select GMG when
+the Stokes solver type is left at its default value.
+<br>
+(Francesco Radica, 2026/07/30)

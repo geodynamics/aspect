@@ -72,6 +72,15 @@ subsection Mesh refinement
   set Strategy                                 = temperature
 end
 
+# This test checks the periodic boundary conditions independently of the
+# default-solver selection, which is covered by the dedicated periodic GMG
+# tests.
+subsection Solver parameters
+  subsection Stokes solver parameters
+    set Stokes solver type = block AMG
+  end
+end
+
 subsection Postprocess
   set List of postprocessors = velocity statistics, temperature statistics, heat flux statistics
 end
