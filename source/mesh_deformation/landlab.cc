@@ -30,8 +30,10 @@
 #include <aspect/geometry_model/interface.h>
 #include <deal.II/base/array_view.h>
 #include <deal.II/dofs/dof_tools.h>
+#include <deal.II/fe/fe_values.h>
 
 #include <fstream>
+#include <numeric>
 
 #include <cfenv>
 
@@ -284,6 +286,10 @@ namespace aspect
                   variable_data[i][j] = current_solution_at_points[j][i];
                 }
             }
+
+          // Add any additional derived outputs to the variable list before sending the data to Landlab.
+          evaluate_derived_quantities_at_points(variable_data, variable_names);
+
           // Store the solution vector for each variable in a python dictionary to send to Landlab.
           for (unsigned int i=0; i<variable_names.size(); ++i)
             {
@@ -368,6 +374,77 @@ namespace aspect
 #else
       (void) current_solution_at_points;
       return {};
+#endif
+    }
+
+
+
+    template <int dim>
+    void
+    Landlab<dim>::
+    evaluate_derived_quantities_at_points (std::vector<std::vector<double>> &variable_data,
+                                           std::vector<std::string> &variable_names) const
+    {
+#ifdef ASPECT_WITH_LANDLAB
+      // If the user is not requesting additional quantities, return immediately.
+      const unsigned int n_derived_quantities = additional_named_quantities.size();
+      if (n_derived_quantities == 0)
+        return;
+
+      // Construct a vector for storing the additional derived quantities at each evaluation point.
+      const unsigned int n_eval_points = this->evaluation_points.size();
+      std::vector<std::vector<double>> derived_quantities_at_points(n_derived_quantities, std::vector<double>(n_eval_points, 0.0));
+
+      std::vector<unsigned int> point_indices(n_eval_points);
+      std::iota(point_indices.begin(), point_indices.end(), 0);
+
+      const auto eval_func = [&](const ArrayView<const unsigned int> &values,
+                                 const typename Utilities::MPI::RemotePointEvaluation<dim>::CellData &cell_data)
+      {
+        for (unsigned int derived_quantity_index = 0; derived_quantity_index < n_derived_quantities; ++derived_quantity_index)
+          {
+            if (additional_named_quantities[derived_quantity_index] == "strain rate")
+              for (const auto cell_index : cell_data.cell_indices())
+                {
+                  const auto cell = cell_data.get_active_cell_iterator(cell_index)->as_dof_handler_iterator(this->get_dof_handler());
+                  const ArrayView<const Point<dim>> unit_points = cell_data.get_unit_points(cell_index);
+
+                  // Evaluate the strain rate at the actual requested evaluation points.
+                  const Quadrature<dim> quadrature(std::vector<Point<dim>>(unit_points.begin(), unit_points.end()));
+
+                  FEValues<dim> fe_values(this->get_mapping(),
+                                          this->get_fe(),
+                                          quadrature,
+                                          update_gradients);
+                  fe_values.reinit(cell);
+
+                  std::vector<SymmetricTensor<2,dim>> strain_rate(unit_points.size());
+                  fe_values[this->introspection().extractors.velocities].get_function_symmetric_gradients(this->get_solution(), strain_rate);
+
+                  const ArrayView<const unsigned int> local_values(values.data() + cell_data.reference_point_ptrs[cell_index],
+                                                                   cell_data.reference_point_ptrs[cell_index + 1] - cell_data.reference_point_ptrs[cell_index]);
+
+                  for (unsigned int i = 0; i < unit_points.size(); ++i)
+                    {
+                      const unsigned int point_index = local_values[i];
+                      derived_quantities_at_points[derived_quantity_index][point_index] =
+                        std::sqrt(std::fabs(Utilities::Tensors::consistent_second_invariant_of_deviatoric_tensor(
+                                              Utilities::Tensors::consistent_deviator(strain_rate[i]))));
+                    }
+                }
+          }
+      };
+
+      this->remote_point_evaluator->template process_and_evaluate<unsigned int, 1>(point_indices, eval_func, /*sort_data*/ true);
+
+      for (unsigned int derived_quantity = 0; derived_quantity < n_derived_quantities; ++derived_quantity)
+        {
+          variable_data.push_back(derived_quantities_at_points[derived_quantity]);
+          variable_names.push_back(additional_named_quantities[derived_quantity]);
+        }
+#else
+      (void) variable_data;
+      (void) variable_names;
 #endif
     }
 
@@ -465,6 +542,13 @@ namespace aspect
           prm.declare_entry("Script name", "",
                             Patterns::Anything(),
                             "Name of the Python module to load (without .py extension).");
+
+          const std::string pattern_of_names = "strain rate";
+
+          prm.declare_entry("List of additional ASPECT quantities", "",
+                            Patterns::List(Patterns::Selection(pattern_of_names)),
+                            "Comma-separated list of additional ASPECT quantities to send to the Landlab model. Default is 'none', "
+                            "and the allowed options are: " + pattern_of_names);
         }
         prm.leave_subsection();
       }
@@ -491,6 +575,13 @@ namespace aspect
 
           AssertThrow(Utilities::fexists(script_path + script_module_name + ".py"),
                       ExcMessage("The specified script path: " + script_path + script_module_name + ".py" + " for Landlab does not exist."));
+
+          additional_named_quantities = Utilities::split_string_list(prm.get ("List of additional ASPECT quantities"));
+          AssertThrow(Utilities::has_unique_entries(additional_named_quantities),
+                      ExcMessage("The list of strings for the parameter "
+                                 "'MeshDeformation/Landlab/List of additional ASPECT quantities' "
+                                 "contains entries more than once. This is not allowed. "
+                                 "Please check your parameter file."));
         }
         prm.leave_subsection ();
       }
