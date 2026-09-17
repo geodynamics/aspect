@@ -165,6 +165,18 @@ namespace aspect
         Point<dim> natural_to_cartesian_coordinates(const std::array<double,dim> &position) const;
 
         /**
+        * Convert the Cartesian position @p position into a coordinate system
+        * consisting of depth as the first coordinate and geometry-specific
+        * lateral coordinates as the remaining coordinates.
+        *
+        * The default implementation only sets the first coordinate to the depth
+        * and sets all remaining coordinates to zero. Geometry models can override
+        * this function to provide meaningful lateral coordinates.
+        */
+        virtual
+        std::array<double, dim> cartesian_to_depth_coordinates (const Point<dim> &position) const;
+
+        /**
          * Returns a representative point for a given depth. Such a point must
          * lie inside the domain for sure (assuming the given depth is valid),
          * but it is not important where exactly in the domain it is. A good
