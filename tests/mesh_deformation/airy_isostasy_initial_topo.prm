@@ -4,7 +4,7 @@
 # we see the middle column sink until isostasy is reached (if end time is increased)
 # Compared to airy_isostasy.prm, we start off with a nonzero initial topography.
 
-include $ASPECT_SOURCE_DIR/tests/airy_isostasy.prm
+include $ASPECT_SOURCE_DIR/tests/mesh_deformation/airy_isostasy.prm
 
 set Dimension = 2
 set End time                               = 3.5e-9

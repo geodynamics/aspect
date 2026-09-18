@@ -6,7 +6,7 @@
 
 
 # This test is based on
-include $ASPECT_SOURCE_DIR/tests/function_mesh_deformation_tangential_mesh_velocity.prm
+include $ASPECT_SOURCE_DIR/tests/mesh_deformation/function_mesh_deformation_tangential_mesh_velocity.prm
 
 set Dimension = 2
 

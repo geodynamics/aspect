@@ -2,7 +2,7 @@
 # that periodic boundaries are correctly interpreted as
 # tangential mesh movement boundaries.
 
-include $ASPECT_SOURCE_DIR/tests/box_initial_mesh_deformation.prm
+include $ASPECT_SOURCE_DIR/tests/mesh_deformation/box_initial_mesh_deformation.prm
 
 set Dimension                              = 2
 
