@@ -1,0 +1,201 @@
+# This cookbook illustrates the effects of growth kinetics on the olivine --> wadsleyite phase transition
+# and diffusion-controlled kinetics on the ringwoodite --> postspinel phase transition.
+# It features a simplified thermal slab, induced by cold material entering the model with a prescribed temperature.
+
+set Output directory              = $ASPECT_SOURCE_DIR/cookbooks/mtz_kinetics
+set Dimension                     = 2
+set Use years instead of seconds  = true
+set End time                      = 100e+06
+set Adiabatic surface temperature = 1706
+set Surface pressure              = 2e+09
+set Nonlinear solver scheme       = iterated Advection and Stokes
+set Nonlinear solver tolerance    = 1e-04
+set Use operator splitting        = true
+set Max nonlinear iterations      = 100
+set CFL number                    = 0.7
+set Maximum time step             = 25e+04
+set Resume computation            = auto
+set Additional shared libraries   = $ASPECT_SOURCE_DIR/cookbooks/mtz_kinetics/libmtz-kinetics.so
+
+subsection Formulation
+  set Mass conservation    = projected density field
+  set Temperature equation = real density
+end
+
+subsection Solver parameters
+  subsection Stokes solver parameters
+    set Linear solver tolerance             = 1e-6
+    set GMRES solver restart length         = 200
+    set Number of cheap Stokes solver steps = 5000
+  end
+end
+
+subsection Discretization
+  set Use locally conservative discretization      = true
+  set Use discontinuous composition discretization = true
+  set Use discontinuous temperature discretization = true
+end
+
+subsection Geometry model
+  set Model name = box
+
+  subsection Box
+    set X extent      = 1500e+03
+    set Y extent      = 1000e+03
+    set X repetitions = 3
+    set Y repetitions = 2
+  end
+end
+
+subsection Mesh refinement
+  set Initial adaptive refinement        = 3
+  set Initial global refinement          = 3
+  set Time steps between mesh refinement = 10
+end
+
+subsection Boundary velocity model
+  set Prescribed velocity boundary indicators = top:function, right x:zero velocity, left x:zero velocity, bottom x:zero velocity
+
+  subsection Function
+    set Variable names      = x, y
+    set Function constants  = x0=617000, y0=1050000, dx=105655, dy=-226577, L=250e+03, W=28025, V=5e-02, A=5e+03
+    set Function expression = V*(dx/L) * exp(-(((x-x0)*(-dy)+(y-y0)*dx)/L)^2/(2*W^2)) * 0.5*(1+tanh((L-((x-x0)*dx+(y-y0)*dy)/L)/A)); \
+                              V*(dy/L) * exp(-(((x-x0)*(-dy)+(y-y0)*dx)/L)^2/(2*W^2)) * 0.5*(1+tanh((L-((x-x0)*dx+(y-y0)*dy)/L)/A))
+  end
+end
+
+subsection Boundary composition model
+  set List of model names                   = function
+  set Fixed composition boundary indicators = top, right, bottom, left
+
+  subsection Function
+    set Variable names      = x, y
+    set Function expression = (y<6.4080e+05 ? 1 : 0); \
+                              (y<4.9385e+05 ? 1 : 0); \
+                              (y<4.0027e+05 ? 1 : 0); \
+                              3500
+  end
+end
+
+subsection Initial composition model
+  set List of model names = function
+
+  subsection Function
+    set Variable names      = x, y
+    set Function expression = (y<6.4080e+05 ? 1 : 0); \
+                              (y<4.9385e+05 ? 1 : 0); \
+                              (y<4.0027e+05 ? 1 : 0); \
+                              3500
+  end
+end
+
+subsection Compositional fields
+  set Number of fields            = 4
+  set Names of fields             = xi_olivine_wadsleyite, xi_wadsleyite_ringwoodite, xi_ringwoodite_postspinel, density_field
+  set Compositional field methods = field, field, field, prescribed field
+end
+
+subsection Boundary temperature model
+  set List of model names                   = initial temperature
+  set Fixed temperature boundary indicators = top
+end
+
+subsection Initial temperature model
+  set List of model names = adiabatic, function
+
+  subsection Function
+    set Variable names      = x, y
+    set Function constants  = x0=617000, y0=1050000, dx=105655, dy=-226577, L=250e+03, W=28025, dT=-5e+02, A=5e+03
+    set Function expression = dT * exp(-(((x-x0)*(-dy)+(y-y0)*dx)/L)^2/(2*W^2)) * 0.5*(1+tanh((L-((x-x0)*dx+(y-y0)*dy)/L)/A))
+  end
+
+  subsection Adiabatic
+    subsection Function
+      set Function expression = 0; 0; 0; 3500
+    end
+  end
+end
+
+subsection Heating model
+  set List of model names = adiabatic heating, shear heating
+end
+
+subsection Boundary traction model
+  set Prescribed traction boundary indicators = bottom y:initial lithostatic pressure, right y:initial lithostatic pressure, left y:initial lithostatic pressure
+
+  subsection Initial lithostatic pressure
+    set Representative point = 0, 0
+  end
+end
+
+subsection Gravity model
+  set Model name = function
+
+  subsection Function
+    set Function expression = 0.0; -10.0
+  end
+end
+
+subsection Adiabatic conditions model
+  subsection Compute profile
+    set Number of points = 10000
+  end
+end
+
+subsection Material model
+  set Model name = MTZ kinetics
+
+  subsection MTZ kinetics
+    set Phase viscosity prefactors  = 1.0, 1.0, 1.0, 1.0
+
+    set Viscosity                  = 1e+21
+    set Minimum viscosity          = 1e+19
+    set Maximum viscosity          = 1e+24
+    set Thermal viscosity exponent = 5
+    set Gibbs viscosity width      = 1e+03
+
+    set Data directory  = $ASPECT_SOURCE_DIR/cookbooks/mtz_kinetics/data/
+    set Data file names = olivine-wadsleyite-profile-Mg100.tsv|wadsleyite-ringwoodite-profile-Mg100.tsv|ringwoodite-postspinel-profile-Mg100.tsv
+
+    set Use dynamic pressure correction for density = false
+    set Use dynamic pressure correction for Gibbs   = false
+
+    subsection Reaction chain
+      set Kinetic models = Interface controlled growth|Interface controlled growth|Eutectoid decomposition
+
+      subsection Interface controlled growth
+        set Kinetic prefactors    = 1.4e+04|1.4e+04
+        set Activation enthalpies = 274e+03|274e+03
+        set Activation volumes    = 3.3e-06|3.3e-06
+      end
+
+      subsection Eutectoid decomposition
+        set Kinetic prefactors    = 1.6e-03
+        set Activation energies   = 355e+03
+      end
+    end
+  end
+end
+
+subsection Postprocess
+  set List of postprocessors = visualization
+
+  subsection Visualization
+    set Output format                 = vtu
+    set Time between graphical output = 1e+06
+    set Number of grouped files       = 1
+    set List of output variables      = depth, material properties, adiabat, nonadiabatic temperature, nonadiabatic pressure, stress, shear stress, strain rate, stress second invariant, named additional outputs
+
+    subsection Material properties
+      set List of material properties = density, thermal expansivity, compressibility, specific heat, viscosity
+    end
+
+    subsection Principal stress
+      set Use deviatoric stress = true
+    end
+  end
+end
+
+subsection Checkpointing
+  set Time between checkpoint = 300
+end
