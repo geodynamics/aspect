@@ -22,10 +22,31 @@
 
 #include <aspect/material_model/reaction_model/kinetics/cahn1956_eutectoid_decomposition.h>
 #include <aspect/material_model/reaction_model/kinetics/cahn1956_interface_controlled_growth.h>
+#include <aspect/material_model/reaction_model/kinetics/constant.h>
 #include <aspect/material_model/reaction_model/reaction_chain.h>
+#include <aspect/simulator.h>
 
 #include <deal.II/base/parameter_handler.h>
 #include <cmath>
+
+TEST_CASE("Constant Reaction Rate Kinetics")
+{
+  using namespace aspect::MaterialModel::ReactionModel;
+
+  ConstantReactionRate<2> kinetics;
+
+  dealii::ParameterHandler prm;
+  kinetics.declare_parameters(prm);
+
+  prm.enter_subsection("Constant reaction rate");
+  prm.set("Reaction rates", "1.25, -2.5");
+  prm.leave_subsection();
+
+  kinetics.parse_parameters(prm, 1);
+
+  CHECK(kinetics.net_forward_reaction_rate(1000.0, 1.0e9, -2000.0, 0.25, 0) == Approx(1.25));
+  CHECK(kinetics.net_forward_reaction_rate(2000.0, 2.0e9, 3000.0, 0.75, 1) == Approx(-2.5));
+}
 
 TEST_CASE("Eutectoid Decomposition Kinetics")
 {
