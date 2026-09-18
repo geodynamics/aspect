@@ -1,0 +1,129 @@
+# This is the parameter file to replicate (part of) the
+# article by Lee (2013) 10.14770/jgsk.2018.54.6.683
+
+set Dimension                              = 2
+set Use years instead of seconds           = true
+set End time                               = 2e10
+set Output directory                       = output_lee_BA
+set Pressure normalization                 = surface
+set Surface pressure                       = 0
+set Nonlinear solver scheme                = single Advection, single Stokes
+set Maximum time step                      = 1e7
+set CFL number                             = 0.5
+
+
+subsection Geometry model
+  set Model name = box
+  subsection Box
+    set X extent = 1000e3
+    set Y extent = 1000e3
+  end
+end
+
+
+subsection Initial temperature model
+  set Model name = function
+  subsection Function
+    set Variable names      = x,z
+    set Function constants  = pi=3.1415926536, Lz=1000e3, DT=3000, Lx=1000e3
+    set Function expression = 273+DT*(Lz-z)/Lz + 10*cos(pi*x/Lx) * sin(pi*z/Lz)
+  end
+end
+
+
+subsection Boundary temperature model
+  set Fixed temperature boundary indicators = bottom, top
+  set List of model names = box
+  subsection Box
+    set Bottom temperature = 3273
+    set Top temperature    = 273
+  end
+end
+
+
+subsection Boundary velocity model
+  set Tangential velocity boundary indicators = left, right, bottom, top
+end
+
+
+subsection Gravity model
+  set Model name = vertical
+  subsection Vertical
+    set Magnitude = 10
+  end
+end
+
+
+subsection Material model
+  set Model name = simple
+  subsection Simple model
+    set Reference density             = 4000
+    set Reference specific heat       = 1250 # Di=0.25
+    set Reference temperature         = 0
+    set Thermal conductivity          = 5
+    set Thermal expansion coefficient = 3.125e-5
+    set Viscosity                     = 3.750e23 # Ra=1e4
+    #set Viscosity                     = 3.750e22 # Ra=1e5
+    #set Viscosity                     = 3.750e21 # Ra=1e6
+  end
+end
+
+
+subsection Formulation
+  set Formulation          = custom # with this selection equivalent to BA
+  set Mass conservation    = incompressible
+  set Temperature equation = reference density profile
+end
+
+
+subsection Adiabatic conditions model
+  set Model name = function
+  subsection Function
+    set Function expression = 3273 ; 0 ; 4000
+  end
+end
+
+
+subsection Mesh refinement
+  set Initial global refinement                = 5
+  set Initial adaptive refinement              = 0
+  set Time steps between mesh refinement       = 0
+end
+
+
+subsection Termination criteria
+  set Termination criteria      = steady state velocity, steady state heat flux
+
+  subsection Steady state velocity
+    set Maximum relative deviation = 1e-6
+    set Time in steady state       = 500e6
+  end
+
+  subsection Steady state heat flux
+    set Maximum relative deviation = 1e-6
+    set Time in steady state       = 500e6
+    set Boundary indicators        = top
+  end
+
+end
+
+
+subsection Postprocess
+  set List of postprocessors = velocity statistics, temperature statistics, material statistics,\
+                               visualization, heat flux densities, viscous dissipation statistics,\
+                               heat flux statistics, pressure statistics
+  subsection Visualization
+    set List of output variables = material properties, heat flux map, strain rate, adiabat, heating
+    set Output format                 = vtu
+    set Interpolate output            = true
+    set Time between graphical output = 1e7
+    subsection Material properties
+      set List of material properties = density, viscosity
+    end
+  end
+  subsection Depth average
+    set Number of zones = 127
+    set Time between graphical output = 1e9
+    set List of output variables = temperature, velocity magnitude, vertical heat flux
+  end
+end
