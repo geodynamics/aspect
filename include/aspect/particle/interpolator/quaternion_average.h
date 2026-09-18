@@ -36,7 +36,7 @@ namespace aspect
        * This determines which symmetry operators are used to project rotations
        * into the fundamental zone of the respective symmetry group.
        * triclinic: equates to no symmetry or the identity as the only symmetry operator.
-       * In this case a standart average for rotations represented by quaternions is used; see Markley et al. 2007.
+       * In this case a standard average for rotations represented by quaternions is used; see Markley et al. 2007.
        * orthorhombic: symmetry group with 4 symmetry elements.
        * In this case an experimental algorithm to take into account crystal symmetries is used.
        */
