@@ -1,0 +1,5 @@
+Added: The Landlab mesh deformation plugin can now
+checkpoint and restart from a Landlab state. This is
+synced with ASPECT's checkpointing/restarting functionality.
+<br>
+(Daniel Douglas, 2026/09/04)
