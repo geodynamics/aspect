@@ -95,12 +95,16 @@ namespace aspect
                            Patterns::Selection("File|Value"),
                            "Method that is used to specify the depth of the lithosphere-asthenosphere boundary.");
         prm.declare_entry ("Maximum lithosphere depth", "200000.0",
-                           Patterns::Double (0.),"Units: \\si{\\meter}."
+                           Patterns::Double (0.),
                            "The maximum depth of the lithosphere. The model will be "
-                           "NaNs below this depth.");
+                           "NaNs below this depth. Units: \\si{\\meter}.");
         prm.declare_entry ("Data directory", "$ASPECT_SOURCE_DIR/data/initial-temperature/lithosphere-mask/",
                            Patterns::DirectoryName (),
-                           "The path to the LAB depth data file");
+                           "The path to the LAB depth data file. The path may also include the special "
+                           "text '$ASPECT_SOURCE_DIR' which will be interpreted as the path "
+                           "in which the ASPECT source files were located when ASPECT was "
+                           "compiled. This interpretation allows, for example, to reference "
+                           "files located in the 'data/' subdirectory of ASPECT.");
         prm.declare_entry ("LAB depth filename",
                            "LAB_CAM2016.txt",
                            Patterns::FileName (),
