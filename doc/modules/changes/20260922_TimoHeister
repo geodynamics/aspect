@@ -1,0 +1,5 @@
+Changed: The --validate command now initializes the simulation, including
+creating plugins, the mesh, and solvers, and performs consistency checks before
+exiting. It still stops before the first time step is taken.
+<br>
+(Timo Heister, 2026/09/22)
