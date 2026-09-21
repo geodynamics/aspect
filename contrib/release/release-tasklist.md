@@ -98,6 +98,10 @@ and the links are working
   git commit -m "release task: update manual"
   ```
 
+- [ ] Reserve Zenodo DOI:
+  - new release, reserve DOI, save draft
+  - add to README.md
+
 - [ ] Tag a release candidate (RC):
 
   ```
@@ -122,12 +126,9 @@ and the links are working
   git archive --format=tar.gz --prefix=$PREFIX/ HEAD >$PREFIX.tar.gz
   ```
 
-- [ ] Build pdf doc (temporary by building html one page and print to pdf until
-  we fix the sphinx pdf):
+- [ ] Build pdf doc:
   ```
-  cd doc/sphinx && make singlehtml && cd ../..
-  firefox ./doc/sphinx/_build/singlehtml/index.html
-  # print to pdf
+  cd doc/sphinx && make latexpdf
   ```
 
 - [ ] Final testing by extracting tarball, compiling, and running:
@@ -166,7 +167,7 @@ and the links are working
   - header.include: add link to changes
   - index.html: add news entry
   - cite.html: change to current version (2x)
-- [ ] Create Zenodo release for source code:
+- [ ] Finish Zenodo release for source code:
   - https://zenodo.org/deposit?page=1&size=20
   - title: ASPECT v2.0.0
   - license: GPL 2
@@ -202,7 +203,7 @@ and the links are working
 
 ## List of prior release notes
 
-Announcement for 3.1.0 (Oct 1, 2026)
+Announcement for 3.1.0 (Sep 19, 2026)
 -----------------------------------------
 We are pleased to announce the release of ASPECT 3.1.0. ASPECT is the Advanced
 Solver for Planetary Evolution, Convection, and Tectonics. It uses modern
