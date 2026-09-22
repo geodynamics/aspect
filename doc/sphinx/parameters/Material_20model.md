@@ -4197,7 +4197,7 @@ Note that the &rsquo;Freezing rate&rsquo; parameter is not applied in the case o
 
 **Pattern:** [DirectoryName]
 
-**Documentation:** The path to the LAB depth data file
+**Documentation:** The path to the LAB depth data file. The path may also include the special text &rsquo;$ASPECT_SOURCE_DIR&rsquo; which will be interpreted as the path in which the ASPECT source files were located when ASPECT was compiled. This interpretation allows, for example, to reference files located in the &rsquo;data/&rsquo; subdirectory of ASPECT.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Depth specification method<parameters:Material_20model/Replace_20lithosphere_20viscosity/Depth_20specification_20method>`
@@ -4224,7 +4224,7 @@ Note that the &rsquo;Freezing rate&rsquo; parameter is not applied in the case o
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
-**Documentation:** The viscosity within lithosphere, applied abovethe maximum lithosphere depth.
+**Documentation:** The viscosity within lithosphere, applied above the maximum lithosphere depth.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Maximum lithosphere depth<parameters:Material_20model/Replace_20lithosphere_20viscosity/Maximum_20lithosphere_20depth>`
@@ -4233,7 +4233,7 @@ Note that the &rsquo;Freezing rate&rsquo; parameter is not applied in the case o
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
-**Documentation:** Units: \si{\meter}.The maximum depth of the lithosphere. The model will be NaNs below this depth.
+**Documentation:** The maximum depth of the lithosphere. The model will be NaNs below this depth. Units: \si{\meter}.
 ::::
 
 (parameters:Material_20model/Simple_20compressible_20model)=

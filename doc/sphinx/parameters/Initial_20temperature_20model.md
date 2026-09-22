@@ -709,7 +709,7 @@ If the function you are describing represents a vector-valued function with mult
 
 **Pattern:** [DirectoryName]
 
-**Documentation:** The path to the LAB depth data file
+**Documentation:** The path to the LAB depth data file. The path may also include the special text &rsquo;$ASPECT_SOURCE_DIR&rsquo; which will be interpreted as the path in which the ASPECT source files were located when ASPECT was compiled. This interpretation allows, for example, to reference files located in the &rsquo;data/&rsquo; subdirectory of ASPECT.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Depth specification method<parameters:Initial_20temperature_20model/Lithosphere_20Mask/Depth_20specification_20method>`
@@ -745,7 +745,7 @@ If the function you are describing represents a vector-valued function with mult
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
-**Documentation:** Units: \si{\meter}.The maximum depth of the lithosphere. The model will be NaNs below this depth.
+**Documentation:** The maximum depth of the lithosphere. The model will be NaNs below this depth. Units: \si{\meter}.
 ::::
 
 (parameters:Initial_20temperature_20model/Patch_20on_20S40RTS)=

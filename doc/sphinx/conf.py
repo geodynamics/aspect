@@ -167,7 +167,7 @@ def _format_siunitx_unit(unit):
 def _is_inside_math(text, position):
     """Determine whether position occurs between matching dollar delimiters."""
     delimiter = None
-    for match in re.finditer(r"(?<!\\)\${1,2}", text[:position]):
+    for match in re.finditer(r"(?<!\\)\${1,2}(?!ASPECT_)", text[:position]):
         value = match.group()
         if delimiter == value:
             delimiter = None
