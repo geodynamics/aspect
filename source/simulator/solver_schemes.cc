@@ -482,7 +482,12 @@ namespace aspect
       }
 
     // Re-compute the pressure scaling factor for the Stokes assembly
-    pressure_scaling = compute_pressure_scaling_factor();
+    const double new_scaling = compute_pressure_scaling_factor();
+    if (std::isnan(pressure_scaling) || pressure_scaling != new_scaling)
+      {
+        rebuild_stokes_matrix = rebuild_stokes_preconditioner = true;
+        pressure_scaling = new_scaling;
+      }
     assemble_stokes_system ();
 
     // build the preconditioner
@@ -582,7 +587,12 @@ namespace aspect
     };
 
     // Re-compute the pressure scaling factor for the Stokes assembly
-    pressure_scaling = compute_pressure_scaling_factor();
+    const double new_scaling = compute_pressure_scaling_factor();
+    if (std::isnan(pressure_scaling) || pressure_scaling != new_scaling)
+      {
+        rebuild_stokes_matrix = rebuild_stokes_preconditioner = true;
+        pressure_scaling = new_scaling;
+      }
 
     if (nonlinear_iteration == 0)
       {
