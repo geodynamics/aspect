@@ -456,6 +456,53 @@ namespace aspect
 
     GridTools::exchange_cell_data_to_ghosts<std::uint8_t, DoFHandler<dim>>
     (dof_handler, pack, unpack);
+
+    // Local-smoothing GMG requires the cells on both sides of a periodic
+    // boundary to have matching refinement levels. Preserve this invariant
+    // while still allowing adaptive refinement away from the periodic
+    // boundary: refine both periodic partners if either one is marked, and
+    // only coarsen them if both partners are marked for coarsening.
+    //
+    // The exchange above makes the original flags available on ghost cells.
+    // Every owner can consequently compute the same result for its side of a
+    // periodic pair without modifying ghost cells directly.
+    if (parameters.stokes_solver_type == Parameters<dim>::StokesSolverType::block_gmg
+        && parameters.stokes_gmg_type == Parameters<dim>::StokesGMGType::local_smoothing
+        && !triangulation.get_periodic_face_map().empty())
+      {
+        for (const auto &cell : dof_handler.active_cell_iterators())
+          if (cell->is_locally_owned())
+            for (const unsigned int face_no : cell->face_indices())
+              if (cell->has_periodic_neighbor(face_no))
+                {
+                  const auto periodic_neighbor = cell->periodic_neighbor(face_no);
+
+                  // A level mismatch indicates a mesh that was not created
+                  // with this synchronization (for example an old restart).
+                  // Leave it untouched so that the consistency check in the
+                  // local-smoothing solver can report the problem.
+                  if (periodic_neighbor->level() != cell->level()
+                      || !periodic_neighbor->is_active())
+                    continue;
+
+                  const bool refine = cell->refine_flag_set()
+                                      || periodic_neighbor->refine_flag_set();
+                  const bool coarsen = cell->coarsen_flag_set()
+                                       && periodic_neighbor->coarsen_flag_set();
+
+                  cell->clear_refine_flag();
+                  cell->clear_coarsen_flag();
+                  if (refine)
+                    cell->set_refine_flag();
+                  else if (coarsen)
+                    cell->set_coarsen_flag();
+                }
+
+        // Refresh ghost flags because they may have changed on their owner as
+        // a result of the periodic synchronization.
+        GridTools::exchange_cell_data_to_ghosts<std::uint8_t, DoFHandler<dim>>
+        (dof_handler, pack, unpack);
+      }
   }
 
 

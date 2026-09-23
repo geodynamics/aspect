@@ -1843,6 +1843,22 @@ namespace aspect
       exchange_refinement_flags();
 
       triangulation.prepare_coarsening_and_refinement();
+
+      // Mesh smoothing can add refinement flags or remove invalid coarsening
+      // flags after periodic partners have been synchronized. For
+      // local-smoothing GMG, synchronize the resulting flags once more and
+      // regularize the now symmetric set. The final exchange keeps ghost
+      // flags consistent for solution transfer and for the preparation step
+      // performed internally by execute_coarsening_and_refinement().
+      if (parameters.stokes_solver_type == Parameters<dim>::StokesSolverType::block_gmg
+          && parameters.stokes_gmg_type == Parameters<dim>::StokesGMGType::local_smoothing
+          && !triangulation.get_periodic_face_map().empty())
+        {
+          exchange_refinement_flags();
+          triangulation.prepare_coarsening_and_refinement();
+          exchange_refinement_flags();
+        }
+
       bool any_flags_set = false;
       {
         for (const auto &cell:dof_handler.active_cell_iterators())

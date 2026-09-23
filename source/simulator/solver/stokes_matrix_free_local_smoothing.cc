@@ -1440,9 +1440,9 @@ namespace aspect
   template <int dim, int velocity_degree>
   void StokesMatrixFreeHandlerLocalSmoothingImplementation<dim, velocity_degree>::setup_dofs()
   {
-    // Periodic boundary conditions with hanging nodes on the boundary currently
-    // cause the GMG not to converge. We catch this case early to provide the
-    // user with a reasonable error message:
+    // Periodic partners are kept on matching refinement levels when ASPECT
+    // changes the mesh. Catch meshes that violate this invariant, for example
+    // when resuming from an older checkpoint with periodic hanging nodes.
     {
       bool have_periodic_hanging_nodes = false;
       for (const auto &cell : this->get_triangulation().active_cell_iterators())
@@ -1462,12 +1462,11 @@ namespace aspect
       have_periodic_hanging_nodes = (Utilities::MPI::max(have_periodic_hanging_nodes ? 1 : 0,
                                                          this->get_mpi_communicator())) == 1;
       AssertThrow(have_periodic_hanging_nodes==false,
-                  ExcMessage("The 'local smoothing' geometric multigrid solver does not "
-                             "support hanging nodes on periodic boundaries, which the "
-                             "adaptive mesh refinement has just created. Please set "
-                             "'Stokes GMG type = global coarsening' in subsection "
-                             "'Solver parameters/Stokes solver parameters' to use a "
-                             "multigrid variant that supports them."));
+                  ExcMessage("The 'local smoothing' geometric multigrid solver requires "
+                             "matching refinement levels on periodic boundaries, but this "
+                             "mesh already contains periodic hanging nodes. Start from a "
+                             "compatible mesh or use 'Stokes GMG type = global coarsening' "
+                             "in subsection 'Solver parameters/Stokes solver parameters'."));
     }
 
     // This vector will be refilled with the new MatrixFree objects below:
@@ -1574,13 +1573,52 @@ namespace aspect
       DoFRenumbering::hierarchical(dof_handler_projection);
     }
 
+    MGLevelObject<AffineConstraints<double>> explicit_level_periodicity_v;
+    bool have_explicit_level_periodicity_v = false;
+
     // Distribute multigrid DoFs and multigrid constraints
     {
       // A block
       dof_handler_v.distribute_mg_dofs();
 
+      const unsigned int n_levels = this->get_triangulation().n_global_levels();
+      explicit_level_periodicity_v.resize(0, n_levels-1);
+      for (unsigned int level=0; level<n_levels; ++level)
+        {
+#if DEAL_II_VERSION_GTE(9,7,0)
+          const IndexSet relevant_dofs =
+            DoFTools::extract_locally_relevant_level_dofs(dof_handler_v, level);
+#else
+          IndexSet relevant_dofs;
+          DoFTools::extract_locally_relevant_level_dofs(dof_handler_v, level, relevant_dofs);
+#endif
+          explicit_level_periodicity_v[level].reinit(
+            dof_handler_v.locally_owned_mg_dofs(level), relevant_dofs);
+          this->get_geometry_model().make_periodicity_constraints_on_level(
+            dof_handler_v, level, explicit_level_periodicity_v[level]);
+          explicit_level_periodicity_v[level].close();
+          have_explicit_level_periodicity_v |=
+            explicit_level_periodicity_v[level].n_constraints() > 0;
+        }
+
+      have_explicit_level_periodicity_v =
+        Utilities::MPI::max(have_explicit_level_periodicity_v ? 1 : 0,
+                            this->get_mpi_communicator()) == 1;
+
       mg_constrained_dofs_A_block.clear();
+#ifdef ASPECT_HAVE_LEVEL_PERIODICITY_CONSTRAINTS
+      mg_constrained_dofs_A_block.initialize(dof_handler_v, MGLevelObject<IndexSet>(),
+                                             !have_explicit_level_periodicity_v);
+#else
+      AssertThrow(!have_explicit_level_periodicity_v,
+                  ExcMessage("Explicit multigrid level periodicity requires the "
+                             "public level-periodicity API introduced in deal.II PR #20212."));
       mg_constrained_dofs_A_block.initialize(dof_handler_v);
+#endif
+      if (have_explicit_level_periodicity_v)
+        for (unsigned int level=0; level<n_levels; ++level)
+          mg_constrained_dofs_A_block.add_user_constraints(
+            level, explicit_level_periodicity_v[level]);
 
       std::set<types::boundary_id> dirichlet_boundaries = this->get_boundary_velocity_manager().get_zero_boundary_velocity_indicators();
       for (const auto boundary_id: this->get_boundary_velocity_manager().get_prescribed_boundary_velocity_indicators())
@@ -1694,10 +1732,15 @@ namespace aspect
             DoFTools::extract_locally_relevant_level_dofs(dof_handler_v, level, relevant_dofs);
 #endif
 
-            level_constraints_v.reinit(dof_handler_v.locally_owned_mg_dofs(level), relevant_dofs);
-            for (const auto index : mg_constrained_dofs_A_block.get_boundary_indices(level))
-              level_constraints_v.constrain_dof_to_zero(index);
-            level_constraints_v.close();
+            // Keep the established level-operator setup for Cartesian
+            // periodicity and for geometries without explicit level constraints.
+            if (!have_explicit_level_periodicity_v)
+              {
+                level_constraints_v.reinit(dof_handler_v.locally_owned_mg_dofs(level), relevant_dofs);
+                for (const auto index : mg_constrained_dofs_A_block.get_boundary_indices(level))
+                  level_constraints_v.constrain_dof_to_zero(index);
+                level_constraints_v.close();
+              }
 
             const std::set<types::boundary_id> &no_flux_boundaries
               = this->get_boundary_velocity_manager().get_tangential_boundary_velocity_indicators();
@@ -1755,10 +1798,21 @@ namespace aspect
                 mg_constrained_dofs_A_block.add_user_constraints(level,
                                                                  user_level_constraints);
 
-                // let Dirichlet values win over no normal flux:
-                level_constraints_v.merge(user_level_constraints, AffineConstraints<double>::left_object_wins);
-                level_constraints_v.close();
+                if (!have_explicit_level_periodicity_v)
+                  {
+                    // Let Dirichlet values win over no normal flux.
+                    level_constraints_v.merge(user_level_constraints, AffineConstraints<double>::left_object_wins);
+                    level_constraints_v.close();
+                  }
               }
+
+            if (have_explicit_level_periodicity_v)
+              mg_constrained_dofs_A_block.merge_constraints(
+                level_constraints_v, level,
+                /*add_boundary_indices=*/true,
+                /*add_refinement_edge_indices=*/false,
+                /*add_level_constraints=*/true,
+                /*add_user_constraints=*/true);
           }
           {
 #if DEAL_II_VERSION_GTE(9,7,0)
@@ -1770,6 +1824,8 @@ namespace aspect
 
             level_constraints_p.reinit(dof_handler_p.locally_owned_mg_dofs(level), relevant_dofs);
 
+            // The pressure level operator uses empty constraints. Scalar
+            // periodicity is handled by the Schur-complement transfer.
             level_constraints_p.close();
           }
 

@@ -1,0 +1,93 @@
+
+Number of active cells: 80 (on 3 levels)
+Number of degrees of freedom: 1,212 (738+105+369)
+
+*** Timestep 0:  t=0 seconds, dt=0 seconds
+   Skipping temperature solve because RHS is zero.
+   Advecting particles...  done.
+   Solving Stokes system (GMG)...
+     GMG coarse size A: 66, coarse size S: 12
+     GMG levels: 3
+     Viscosity range: 1 - 1
+     GMG workload imbalance: 1.00952
+     Stokes solver (GMRES): 14+0 iterations.
+     Schur complement preconditioner: 15+0 iterations.
+     A block preconditioner: 15+0 iterations.
+
+   Postprocessing:
+     Writing particle output:             output-particle_periodic_half_shell_gmg_local_smoothing/particles/particles-00000
+     RMS, max velocity:                   0.791 m/s, 1 m/s
+     Particle count per cell min/avg/max: 0, 0, 3
+
+*** Timestep 1:  t=0.02 seconds, dt=0.02 seconds
+   Skipping temperature solve because RHS is zero.
+   Advecting particles...  done.
+   Solving Stokes system (GMG)...
+     GMG coarse size A: 66, coarse size S: 12
+     GMG levels: 3
+     Viscosity range: 1 - 1
+     GMG workload imbalance: 1.00952
+     Stokes solver (GMRES): 0+0 iterations.
+     Schur complement preconditioner: 0+0 iterations.
+     A block preconditioner: 0+0 iterations.
+
+   Postprocessing:
+     Writing particle output:             output-particle_periodic_half_shell_gmg_local_smoothing/particles/particles-00001
+     RMS, max velocity:                   0.791 m/s, 1 m/s
+     Particle count per cell min/avg/max: 0, 0, 3
+
+*** Timestep 2:  t=0.04 seconds, dt=0.02 seconds
+   Skipping temperature solve because RHS is zero.
+   Advecting particles...  done.
+   Solving Stokes system (GMG)...
+     GMG coarse size A: 66, coarse size S: 12
+     GMG levels: 3
+     Viscosity range: 1 - 1
+     GMG workload imbalance: 1.00952
+     Stokes solver (GMRES): 0+0 iterations.
+     Schur complement preconditioner: 0+0 iterations.
+     A block preconditioner: 0+0 iterations.
+
+   Postprocessing:
+     Writing particle output:             output-particle_periodic_half_shell_gmg_local_smoothing/particles/particles-00002
+     RMS, max velocity:                   0.791 m/s, 1 m/s
+     Particle count per cell min/avg/max: 0, 0, 3
+
+*** Timestep 3:  t=0.06 seconds, dt=0.02 seconds
+   Skipping temperature solve because RHS is zero.
+   Advecting particles...  done.
+   Solving Stokes system (GMG)...
+     GMG coarse size A: 66, coarse size S: 12
+     GMG levels: 3
+     Viscosity range: 1 - 1
+     GMG workload imbalance: 1.00952
+     Stokes solver (GMRES): 0+0 iterations.
+     Schur complement preconditioner: 0+0 iterations.
+     A block preconditioner: 0+0 iterations.
+
+   Postprocessing:
+     Writing particle output:             output-particle_periodic_half_shell_gmg_local_smoothing/particles/particles-00003
+     RMS, max velocity:                   0.791 m/s, 1 m/s
+     Particle count per cell min/avg/max: 0, 0, 3
+
+*** Timestep 4:  t=0.08 seconds, dt=0.02 seconds
+   Skipping temperature solve because RHS is zero.
+   Advecting particles...  done.
+   Solving Stokes system (GMG)...
+     GMG coarse size A: 66, coarse size S: 12
+     GMG levels: 3
+     Viscosity range: 1 - 1
+     GMG workload imbalance: 1.00952
+     Stokes solver (GMRES): 0+0 iterations.
+     Schur complement preconditioner: 0+0 iterations.
+     A block preconditioner: 0+0 iterations.
+
+   Postprocessing:
+     Writing particle output:             output-particle_periodic_half_shell_gmg_local_smoothing/particles/particles-00004
+     RMS, max velocity:                   0.791 m/s, 1 m/s
+     Particle count per cell min/avg/max: 0, 0, 3
+
+Termination requested by criterion: end time
+
+
+
