@@ -26,7 +26,6 @@
 #include <aspect/geometry_model/interface.h>
 #include <aspect/geometry_model/box.h>
 #include <aspect/geometry_model/two_merged_boxes.h>
-#include <aspect/geometry_model/initial_topography_model/zero_topography.h>
 #include <aspect/linear_algebra_types.h>
 
 #include <deal.II/dofs/dof_tools.h>
@@ -262,16 +261,8 @@ namespace aspect
       // Vector for getting the local dim displacement values
       std::vector<Tensor<1, dim>> displacement_values(n_fs_face_q_points);
 
-      // Vector for getting the local dim initial topography values
-      std::vector<Tensor<1, dim>> initial_topography_values(n_fs_face_q_points);
-
       // The global displacements on the MeshDeformation FE
       const LinearAlgebra::Vector &displacements = this->get_mesh_deformation_handler().get_mesh_displacements();
-
-      // The global initial topography on the MeshDeformation FE
-      // TODO Once the initial mesh deformation is ready, this
-      // can be removed.
-      LinearAlgebra::Vector initial_topography = this->get_mesh_deformation_handler().get_initial_topography();
 
       // Do nothing at time zero
       if (this->get_timestep_number() < 1)
@@ -280,10 +271,6 @@ namespace aspect
       // An extractor for the dim-valued displacement vectors
       // Later on we will compute the gravity-parallel displacement
       FEValuesExtractors::Vector extract_vertical_displacements(0);
-
-      // An extractor for the dim-valued initial topography vectors
-      // Later on we will compute the gravity-parallel displacement
-      FEValuesExtractors::Vector extract_initial_topography(0);
 
       // Cell iterator over the MeshDeformation FE
       typename DoFHandler<dim>::active_cell_iterator
@@ -313,9 +300,6 @@ namespace aspect
                 // Extract the displacement values
                 fs_fe_face_values[extract_vertical_displacements].get_function_values (displacements, displacement_values);
 
-                // Extract the initial topography values
-                fs_fe_face_values[extract_initial_topography].get_function_values (initial_topography, initial_topography_values);
-
                 // Reset local rhs and matrix
                 cell_vector = 0;
                 cell_matrix = 0;
@@ -339,7 +323,7 @@ namespace aspect
 
                     // Compute the total displacement in the gravity direction,
                     // i.e. the initial topography + any additional mesh displacement.
-                    const double displacement = direction * (displacement_values[q] + initial_topography_values[q]);
+                    const double displacement = direction * displacement_values[q];
 
                     // To project onto the tangent space of the surface,
                     // we define the projection P:= I- n x n,
@@ -440,14 +424,9 @@ namespace aspect
       // The solution contains the new displacements, but we need to return a velocity.
       // Therefore, we compute v=d_displacement/d_t.
       // d_displacement are the new mesh node locations
-      // minus the old locations, which are initial_topography + displacements.
+      // minus the old locations, which are the displacements.
       LinearAlgebra::Vector velocity(mesh_locally_owned, this->get_mpi_communicator());
       velocity = solution;
-      {
-        LinearAlgebra::Vector initial_topography_distributed(mesh_locally_owned, this->get_mpi_communicator());
-        initial_topography_distributed = initial_topography;
-        velocity -= initial_topography_distributed;
-      }
       {
         LinearAlgebra::Vector displacements_distributed(mesh_locally_owned, this->get_mpi_communicator());
         displacements_distributed = displacements;
