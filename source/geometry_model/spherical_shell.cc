@@ -939,6 +939,94 @@ namespace aspect
 
     template <int dim>
     void
+    SphericalShell<dim>::make_periodicity_constraints_on_level(
+      const DoFHandler<dim> &dof_handler,
+      const unsigned int level,
+      AffineConstraints<double> &constraints) const
+    {
+      if (!periodic)
+        return;
+
+#ifdef ASPECT_HAVE_LEVEL_PERIODICITY_CONSTRAINTS
+      const FullMatrix<double> rotation_matrix =
+        phi_periodicity_rotation_matrix<dim>(phi);
+      const types::boundary_id left_boundary =
+        this->translate_symbolic_boundary_name_to_id("left");
+      const types::boundary_id right_boundary =
+        this->translate_symbolic_boundary_name_to_id("right");
+
+      for (const auto &[first_cell, second_cell] :
+           dof_handler.get_triangulation().get_periodic_face_map())
+        {
+          if (first_cell.first->is_artificial_on_level()
+              || second_cell.first.first->is_artificial_on_level()
+              || first_cell.first->level() != static_cast<int>(level)
+              || second_cell.first.first->level() != static_cast<int>(level))
+            continue;
+
+          const types::boundary_id first_boundary =
+            first_cell.first->face(first_cell.second)->boundary_id();
+          const types::boundary_id second_boundary =
+            second_cell.first.first
+            ->face(second_cell.first.second)
+            ->boundary_id();
+
+          if (!((first_boundary == left_boundary
+                 && second_boundary == right_boundary)
+                || (first_boundary == right_boundary
+                    && second_boundary == left_boundary)))
+            continue;
+
+          const auto first_face =
+            first_cell.first
+            ->as_dof_handler_level_iterator(dof_handler)
+            ->face(first_cell.second);
+          const auto second_face =
+            second_cell.first.first
+            ->as_dof_handler_level_iterator(dof_handler)
+            ->face(second_cell.first.second);
+
+          const auto &left_face =
+            first_boundary == left_boundary ? first_face : second_face;
+          const auto &right_face =
+            first_boundary == left_boundary ? second_face : first_face;
+
+          if (dof_handler.get_fe().n_components() == 1)
+            DoFTools::make_periodicity_constraints_on_level(
+              left_face,
+              right_face,
+              level,
+              constraints,
+              ComponentMask(),
+              second_cell.second);
+          else
+            DoFTools::make_periodicity_constraints_on_level(
+              left_face,
+              right_face,
+              level,
+              constraints,
+              ComponentMask(),
+              second_cell.second,
+              rotation_matrix,
+            {0});
+        }
+#else
+      (void)dof_handler;
+      (void)level;
+      (void)constraints;
+      AssertThrow(false,
+                  ExcMessage("Rotated periodicity with local-smoothing GMG requires "
+                             "the public level-periodicity API introduced in deal.II "
+                             "PR #20212. Rebuild ASPECT with a deal.II version that "
+                             "provides this API, or use block AMG or GMG with global "
+                             "coarsening."));
+#endif
+    }
+
+
+
+    template <int dim>
+    void
     SphericalShell<dim>::declare_parameters (ParameterHandler &prm)
     {
       prm.enter_subsection("Geometry model");

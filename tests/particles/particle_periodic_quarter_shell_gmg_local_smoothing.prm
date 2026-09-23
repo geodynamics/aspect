@@ -1,0 +1,102 @@
+# Test the complete GMG local-smoothing path for a 90 degree periodic
+# spherical shell. The velocity is computed by Stokes from rigid-rotation
+# boundary values. Particles start next to the periodic seam and must cross it
+# without being lost.
+
+# MPI: 2
+
+set Dimension                    = 2
+set End time                     = 0.08
+set Maximum time step            = 0.02
+set Nonlinear solver scheme      = single Advection, single Stokes
+set Use years instead of seconds = false
+
+subsection Geometry model
+  set Model name = spherical shell
+
+  subsection Spherical shell
+    set Inner radius  = 0.5
+    set Outer radius  = 1.0
+    set Opening angle = 90
+    set Phi periodic  = true
+  end
+end
+
+subsection Boundary velocity model
+  set Prescribed velocity boundary indicators = inner: function, outer: function
+
+  subsection Function
+    set Function expression = -y; x
+  end
+end
+
+subsection Gravity model
+  set Model name = radial constant
+
+  subsection Radial constant
+    set Magnitude = 0
+  end
+end
+
+subsection Material model
+  set Model name         = simple
+  set Material averaging = harmonic average only viscosity
+
+  subsection Simple model
+    set Reference density             = 1
+    set Thermal expansion coefficient = 0
+    set Viscosity                     = 1
+  end
+end
+
+subsection Initial temperature model
+  set List of model names = function
+
+  subsection Function
+    set Function expression = 0
+  end
+end
+
+subsection Mesh refinement
+  set Initial adaptive refinement        = 0
+  set Initial global refinement          = 2
+  set Time steps between mesh refinement = 0
+end
+
+subsection Solver parameters
+  subsection Stokes solver parameters
+    set Stokes solver type = block GMG
+    set Stokes GMG type    = local smoothing
+  end
+
+  subsection Matrix Free
+    set Output details = true
+  end
+end
+
+subsection Postprocess
+  set List of postprocessors = particle count statistics, particles, velocity statistics
+
+  subsection Particles
+    set Data output format       = gnuplot
+    set Time between data output = 0
+  end
+end
+
+subsection Particles
+  set Integration scheme          = rk2
+  set List of particle properties = position, initial position
+  set Particle generator name     = uniform radial
+
+  subsection Generator
+    subsection Uniform radial
+      set Minimum longitude   = 89
+      set Maximum longitude   = 89.999
+      set Minimum radius      = 0.5001
+      set Maximum radius      = 0.9999
+      set Radial layers       = 10
+      set Number of particles = 10
+    end
+  end
+end
+# Enable if: ASPECT_HAVE_LEVEL_PERIODICITY_CONSTRAINTS

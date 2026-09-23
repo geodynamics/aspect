@@ -1,0 +1,14 @@
+# Test the complete GMG local-smoothing path for a 180 degree periodic
+# spherical shell. Reuse the 90 degree rigid-rotation case and place the
+# particles next to the half-shell periodic seam.
+
+# MPI: 2
+
+include $ASPECT_SOURCE_DIR/tests/particles/particle_periodic_quarter_shell_gmg_local_smoothing.prm
+
+subsection Geometry model
+  subsection Spherical shell
+    set Opening angle = 180
+  end
+end
+# Enable if: ASPECT_HAVE_LEVEL_PERIODICITY_CONSTRAINTS

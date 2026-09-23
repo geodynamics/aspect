@@ -355,6 +355,22 @@ namespace aspect
         void
         make_periodicity_constraints(const DoFHandler<dim> &dof_handler,
                                      AffineConstraints<double> &constraints) const;
+
+        /**
+         * Collect periodic boundary constraints for the multigrid @p level
+         * of the given @p dof_handler and add them to @p constraints.
+         *
+         * The default implementation does not add constraints. Geometries
+         * whose periodicity transforms vector components can override this
+         * function and provide explicit level constraints. Cartesian
+         * periodicity is handled directly by MGConstrainedDoFs.
+         */
+        virtual
+        void
+        make_periodicity_constraints_on_level(
+          const DoFHandler<dim> &dof_handler,
+          const unsigned int level,
+          AffineConstraints<double> &constraints) const;
     };
 
 

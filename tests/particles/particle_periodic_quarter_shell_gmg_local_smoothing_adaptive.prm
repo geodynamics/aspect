@@ -1,0 +1,45 @@
+# Test GMG local smoothing on a nonuniform, adaptively refined 90 degree
+# periodic spherical shell. Particles are concentrated near the outer radius,
+# where rigid rotation reaches its maximum speed, and next to the periodic
+# seam. The particle-density criterion keeps that tracer region fine while
+# the remainder of the shell stays coarse.
+
+# MPI: 2
+
+include $ASPECT_SOURCE_DIR/tests/particles/particle_periodic_quarter_shell_gmg_local_smoothing.prm
+
+set End time = 0.20
+
+subsection Mesh refinement
+  set Initial global refinement          = 1
+  set Initial adaptive refinement        = 2
+  set Strategy                           = particle density, minimum refinement function
+  set Refinement fraction                = 0.25
+  set Coarsening fraction                = 0.75
+  set Time steps between mesh refinement = 1
+
+  subsection Minimum refinement function
+    set Coordinate system   = spherical
+    set Function constants  = frequency=4, phi0=1.553343034, width=0.30
+    set Function expression = if((r>0.85) && (cos(frequency*(phi-phi0-t))>cos(frequency*width)), 3, 1)
+    set Variable names      = r,phi,t
+  end
+end
+
+subsection Particles
+  subsection Generator
+    subsection Uniform radial
+      set Minimum radius      = 0.90
+      set Maximum radius      = 0.9999
+      set Radial layers       = 4
+      set Number of particles = 40
+    end
+  end
+end
+
+subsection Postprocess
+  subsection Particles
+    set Time between data output = 0.10
+  end
+end
+# Enable if: ASPECT_HAVE_LEVEL_PERIODICITY_CONSTRAINTS
