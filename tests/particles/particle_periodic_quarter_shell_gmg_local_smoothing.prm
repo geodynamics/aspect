@@ -99,4 +99,4 @@ subsection Particles
     end
   end
 end
-# Enable if: ASPECT_HAVE_LEVEL_PERIODICITY_CONSTRAINTS
+# Enable if: DEAL_II_VERSION_GTE_9_9_0

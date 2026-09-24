@@ -1,4 +1,4 @@
-# Enable if: ASPECT_HAVE_LEVEL_PERIODICITY_CONSTRAINTS
+# Enable if: DEAL_II_VERSION_GTE_9_9_0
 
 # Exercise local-smoothing GMG with rotated 90-degree periodicity. This test
 # uses a uniform mesh to isolate the level-periodicity constraints; separate

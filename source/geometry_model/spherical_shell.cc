@@ -947,7 +947,7 @@ namespace aspect
       if (!periodic)
         return;
 
-#ifdef ASPECT_HAVE_LEVEL_PERIODICITY_CONSTRAINTS
+#if DEAL_II_VERSION_GTE(9,9,0)
       const FullMatrix<double> rotation_matrix =
         phi_periodicity_rotation_matrix<dim>(phi);
       const types::boundary_id left_boundary =
@@ -1016,10 +1016,9 @@ namespace aspect
       (void)constraints;
       AssertThrow(false,
                   ExcMessage("Rotated periodicity with local-smoothing GMG requires "
-                             "the public level-periodicity API introduced in deal.II "
-                             "PR #20212. Rebuild ASPECT with a deal.II version that "
-                             "provides this API, or use block AMG or GMG with global "
-                             "coarsening."));
+                             "deal.II 9.9 or a current master build. Rebuild ASPECT "
+                             "with a supported deal.II version, or use block AMG "
+                             "or GMG with global coarsening."));
 #endif
     }
 
