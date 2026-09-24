@@ -1,11 +1,8 @@
-# Test the same short, nonuniform particle-following refinement with a
-# 180 degree periodic spherical shell.
+# Test asymmetric refinement on a 180 degree periodic shell.
 
 # MPI: 2
 
-include $ASPECT_SOURCE_DIR/tests/particles/particle_periodic_quarter_shell_gmg_local_smoothing.prm
-
-set End time = 0.20
+include $ASPECT_SOURCE_DIR/tests/particles/particle_periodic_quarter_shell_gmg_local_smoothing_adaptive.prm
 
 subsection Geometry model
   subsection Spherical shell
@@ -14,35 +11,8 @@ subsection Geometry model
 end
 
 subsection Mesh refinement
-  set Initial global refinement          = 1
-  set Initial adaptive refinement        = 2
-  set Strategy                           = particle density, minimum refinement function
-  set Refinement fraction                = 0.25
-  set Coarsening fraction                = 0.75
-  set Time steps between mesh refinement = 1
-
   subsection Minimum refinement function
-    set Coordinate system   = spherical
-    set Function constants  = frequency=2, phi0=1.553343034, width=0.30
-    set Function expression = if((r>0.85) && (cos(frequency*(phi-phi0-t))>cos(frequency*width)), 3, 1)
-    set Variable names      = r,phi,t
-  end
-end
-
-subsection Particles
-  subsection Generator
-    subsection Uniform radial
-      set Minimum radius      = 0.90
-      set Maximum radius      = 0.9999
-      set Radial layers       = 4
-      set Number of particles = 40
-    end
-  end
-end
-
-subsection Postprocess
-  subsection Particles
-    set Time between data output = 0.10
+    set Function expression = if(y>0, 3, 1)
   end
 end
 # Enable if: DEAL_II_VERSION_GTE_9_9_0

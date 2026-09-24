@@ -1,6 +1,4 @@
-# Test the complete GMG local-smoothing path for a 180 degree periodic
-# spherical shell. Reuse the 90 degree rigid-rotation case and place the
-# particles next to the half-shell periodic seam.
+# Repeat the rigid-rotation particle test on a 180 degree periodic shell.
 
 # MPI: 2
 

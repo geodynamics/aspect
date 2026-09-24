@@ -1,6 +1,5 @@
-# Exercise local-smoothing GMG with rotated 180-degree periodicity. This test
-# uses a uniform mesh to isolate the level-periodicity constraints; separate
-# particle tests cover compatible adaptive refinement.
+# Smoke test for local-smoothing GMG on a uniform 180 degree periodic shell.
+# The adaptive particle tests exercise mismatched refinement requests.
 
 include $ASPECT_SOURCE_DIR/tests/spherical_shell_periodic_gmg_180.prm
 

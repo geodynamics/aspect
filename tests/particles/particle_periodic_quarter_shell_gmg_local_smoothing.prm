@@ -1,7 +1,5 @@
-# Test the complete GMG local-smoothing path for a 90 degree periodic
-# spherical shell. The velocity is computed by Stokes from rigid-rotation
-# boundary values. Particles start next to the periodic seam and must cross it
-# without being lost.
+# Advect particles across the periodic seam using a Stokes solution with
+# rigid-rotation boundary velocities and local-smoothing GMG.
 
 # MPI: 2
 
