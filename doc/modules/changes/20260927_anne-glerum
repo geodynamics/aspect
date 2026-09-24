@@ -1,0 +1,7 @@
+Updated: Composition reactions (operator splitting on fields)
+are no longer automatically computed for all fields; fields tracked
+by particles are excluded. This enables the simultaneous use of
+operator splitting for fields tracked by fields and particle updates
+for fields tracked by particles.
+<br>
+(Anne Glerum, 2026/09/27)

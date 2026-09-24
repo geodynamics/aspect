@@ -1635,10 +1635,10 @@ namespace aspect
 
 
   template <int dim>
-  void Simulator<dim>::compute_reactions ()
+  void Simulator<dim>::compute_reactions (const std::vector<AdvectionField> &advection_fields_with_reactions)
   {
-    // if the time step has a length of zero, there are no reactions
-    if (time_step == 0)
+    // If the time step has a length of zero, there are no reactions.
+    if (time_step == 0 || advection_fields_with_reactions.size() == 0)
       return;
 
     computing_timer.enter_subsection("Solve composition reactions");
@@ -1665,8 +1665,8 @@ namespace aspect
     pcout << "   Solving composition reactions... " << std::flush;
 
 
-    // We want to compute reactions in each support point for all fields (compositional fields and temperature). The reaction
-    // rate for an individual field depends on the values of all other fields, so we have to step them forward in time together.
+    // We want to compute reactions in each support point for all fields listed in advection_fields_with_reactions.
+    // The reaction rate for an individual field can depend on the values of all other fields, so we have to step them forward in time together.
     // The rates come from the material and heating model, otherwise we have a simple ODE in each point on each cell to solve.
     //
     // So far so good. Except that fields can have different Finite Element discretizations (degree, continuous/discontinuous)
@@ -1678,16 +1678,13 @@ namespace aspect
     // First compute all unique support points (temperature and compositions):
     std::vector<Point<dim>> unique_support_points;
     std::vector<std::vector<unsigned int>> support_point_index_by_field;
-    std::vector<AdvectionField> advection_fields;
 
-    // First add the temperature field
-    advection_fields.push_back(AdvectionField::temperature());
-    // Then add all compositional fields
-    for (unsigned int c=0; c<introspection.n_compositional_fields; ++c)
-      advection_fields.push_back(AdvectionField::composition(c));
-
-    const unsigned int n_fields = advection_fields.size();
-    compute_unique_advection_support_points(advection_fields, unique_support_points, support_point_index_by_field);
+    // Although we only update the fields in advection_fields_with_reactions, we need to provide
+    // the material model with all fields (a total of n_fields) to compute the reaction rates.
+    const unsigned int n_fields = introspection.n_compositional_fields + 1;
+    Assert (advection_fields_with_reactions.size() <= n_fields,
+            ExcMessage("The number of fields that need reactions should be less than or equal to the total number of advection fields."));
+    compute_unique_advection_support_points(advection_fields_with_reactions, unique_support_points, support_point_index_by_field);
 
     const Quadrature<dim> combined_support_points(unique_support_points);
     FEValues<dim> fe_values (*mapping,
@@ -1825,7 +1822,7 @@ namespace aspect
                 copy_rates_into_one_vector (*reaction_rate_outputs, heating_model_outputs, ydot);
               };
 
-              // Make the reaction time steps: We have to update the values of compositional fields and the temperature.
+              // Make the reaction time steps: We have to update the values of compositional fields with reactions and the temperature
               // We can reuse the same material model inputs and outputs structure for each reaction time step.
               // We store the computed updates to temperature and composition in a separate (accumulated_reactions) vector,
               // so that we can later copy it over to the solution vector.
@@ -1835,9 +1832,12 @@ namespace aspect
               number_of_solves += 1;
 
               for (unsigned int j=0; j<n_q_points; ++j)
-                for (unsigned int f=0; f<n_fields; ++f)
+                for (const auto &field : advection_fields_with_reactions)
                   {
-                    if (f==0)
+                    // Get the index of the field in the list of all advection fields (temperature + all compositional fields).
+                    // f - 1 then is the index of the field in the list of all compositional fields.
+                    const unsigned int f = field.field_index();
+                    if (field.is_temperature())
                       {
                         in.temperature[j]          = fields[j*n_fields+f];
                         accumulated_reactions_T[j] = in.temperature[j] - initial_values_T[j];
@@ -1862,12 +1862,16 @@ namespace aspect
 
                   for (unsigned int j=0; j<n_q_points; ++j)
                     {
-                      for (unsigned int c=0; c<introspection.n_compositional_fields; ++c)
+                      for (const auto &field : advection_fields_with_reactions)
                         {
-                          // simple forward euler
-                          in.composition[j][c] = in.composition[j][c]
-                                                 + reaction_time_step_size * reaction_rate_outputs->reaction_rates[j][c];
-                          accumulated_reactions_C[j][c] += reaction_time_step_size * reaction_rate_outputs->reaction_rates[j][c];
+                          if (!field.is_temperature())
+                            {
+                              const unsigned int c = field.field_index() - 1;
+                              // simple forward euler
+                              in.composition[j][c] = in.composition[j][c]
+                                                     + reaction_time_step_size * reaction_rate_outputs->reaction_rates[j][c];
+                              accumulated_reactions_C[j][c] += reaction_time_step_size * reaction_rate_outputs->reaction_rates[j][c];
+                            }
                         }
                       in.temperature[j] = in.temperature[j]
                                           + reaction_time_step_size * heating_model_outputs.rates_of_temperature_change[j];
@@ -1883,37 +1887,40 @@ namespace aspect
             {
               const auto comp_pair = dof_handler.get_fe().system_to_component_index(dof_idx);
               const unsigned int component_idx = comp_pair.first;
-              if (component_idx>=component_idx_T) // ignore velocity, pressure, etc.
+              const unsigned int field_index = component_idx-component_idx_T;
+
+              unsigned int support_point_index = numbers::invalid_unsigned_int;
+              unsigned int field_index_in_fields_with_reactions = 0;
+              for (const auto &field: advection_fields_with_reactions)
                 {
-                  // We found a DoF that belongs to component component_idx, which is a temperature or compositional
-                  // field. That means we want to find where this DoF is in the computed reactions above to copy it
-                  // back into the global solution vector.
-
-                  // These two variables tell us the how-manyth shape function of which field (and therefore
-                  // field) this DoF is:
-                  const unsigned int index_within = comp_pair.second;
-                  const unsigned int field_index = component_idx-component_idx_T;
-                  // Now we can look up in the support_point_index_by_field data structure where this support
-                  // point is in the list of unique_support_points (and in the Quadrature):
-                  const unsigned int point_idx = support_point_index_by_field[field_index][index_within];
-
-                  // The final step is grabbing the value from the reaction computation and writing it into
-                  // the global vector (if we own it and if it is not a constrained degree of freedom).:
-                  if (dof_handler.locally_owned_dofs().is_element(local_dof_indices[dof_idx]) &&
-                      !current_constraints.is_constrained(local_dof_indices[dof_idx]))
+                  if (component_idx == field.component_index(introspection))
                     {
-                      // temperatures and compositions are stored differently:
-                      if (component_idx == component_idx_T)
-                        {
-                          distributed_vector(local_dof_indices[dof_idx]) = in.temperature[point_idx];
-                          distributed_reaction_vector(local_dof_indices[dof_idx]) = accumulated_reactions_T[point_idx];
-                        }
-                      else
-                        {
-                          const unsigned int composition = field_index-1; // 0 is temperature...
-                          distributed_vector(local_dof_indices[dof_idx]) = in.composition[point_idx][composition];
-                          distributed_reaction_vector(local_dof_indices[dof_idx]) = accumulated_reactions_C[point_idx][composition];
-                        }
+                      support_point_index = support_point_index_by_field[field_index_in_fields_with_reactions][comp_pair.second];
+                    }
+
+                  ++field_index_in_fields_with_reactions;
+                }
+
+              // This DoF does not belong to a component of an operator splitting field.
+              if (support_point_index == numbers::invalid_unsigned_int)
+                continue;
+
+              // The final step is grabbing the value from the reaction computation and write it into
+              // the global vector (if we own it and if it is not a constrained degree of freedom).:
+              if (dof_handler.locally_owned_dofs().is_element(local_dof_indices[dof_idx]) &&
+                  !current_constraints.is_constrained(local_dof_indices[dof_idx]))
+                {
+                  // temperatures and compositions are stored differently:
+                  if (component_idx == component_idx_T)
+                    {
+                      distributed_vector(local_dof_indices[dof_idx]) = in.temperature[support_point_index];
+                      distributed_reaction_vector(local_dof_indices[dof_idx]) = accumulated_reactions_T[support_point_index];
+                    }
+                  else
+                    {
+                      const unsigned int composition = field_index-1; // 0 is temperature...
+                      distributed_vector(local_dof_indices[dof_idx]) = in.composition[support_point_index][composition];
+                      distributed_reaction_vector(local_dof_indices[dof_idx]) = accumulated_reactions_C[support_point_index][composition];
                     }
                 }
             }
@@ -1929,14 +1936,10 @@ namespace aspect
     constraints.distribute(distributed_reaction_vector);
 
     // put the final values into the solution vector
-    for (unsigned int c=0; c<introspection.n_compositional_fields; ++c)
-      update_solution_vectors_with_reaction_results(introspection.block_indices.compositional_fields[c],
+    for (const auto &field : advection_fields_with_reactions)
+      update_solution_vectors_with_reaction_results(field.block_index(introspection),
                                                     distributed_vector,
                                                     distributed_reaction_vector);
-
-    update_solution_vectors_with_reaction_results(introspection.block_indices.temperature,
-                                                  distributed_vector,
-                                                  distributed_reaction_vector);
 
     double average_iteration_count = number_of_reaction_steps;
     if (parameters.reaction_solver_type == Parameters<dim>::ReactionSolverType::ARKode)
@@ -2902,7 +2905,7 @@ namespace aspect
   template void Simulator<dim>::compute_unique_advection_support_points(const std::vector<AdvectionField> &advection_fields, \
                                                                         std::vector<Point<dim>> &support_points, \
                                                                         std::vector<std::vector<unsigned int>> &support_point_index_by_field) const; \
-  template void Simulator<dim>::compute_reactions(); \
+  template void Simulator<dim>::compute_reactions(const std::vector<AdvectionField> &advection_fields_with_reactions); \
   template void Simulator<dim>::initialize_current_linearization_point (); \
   template void Simulator<dim>::interpolate_material_output_into_advection_field(const std::vector<AdvectionField> &adv_field); \
   template void Simulator<dim>::check_consistency_of_formulation(); \
