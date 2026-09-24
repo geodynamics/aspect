@@ -323,7 +323,10 @@ namespace aspect
                   if (c == last_entropy_field_index)
                     {
                       if (parameters.use_operator_splitting)
-                        compute_reactions ();
+                        {
+                          std::vector<AdvectionField> advection_fields;
+                          compute_reactions (advection_fields);
+                        }
                       const AdvectionField T_field (AdvectionField::temperature());
                       interpolate_material_output_into_advection_field({T_field});
                     }

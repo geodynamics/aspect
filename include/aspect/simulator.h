@@ -1296,10 +1296,14 @@ namespace aspect
        * so that the advection time stepping scheme will have the correct field terms
        * for the right-hand side when assembling the advection system.
        *
+       * The calling function provides a vector of the temperature field and all
+       * those compositional fields that need to be updated with the reaction results.
+       * Fields that are tracked by particles are, for example, not included.
+       *
        * This function is implemented in
        * <code>source/simulator/helper_functions.cc</code>.
        */
-      void compute_reactions ();
+      void compute_reactions (const std::vector<AdvectionField> &advection_fields_with_reactions);
 
       /**
        * Update the indicated block of the solution vector with the

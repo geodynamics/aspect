@@ -1635,7 +1635,7 @@ namespace aspect
 
 
   template <int dim>
-  void Simulator<dim>::compute_reactions ()
+  void Simulator<dim>::compute_reactions (const std::vector<AdvectionField> &advection_fields_with_reactions)
   {
     // if the time step has a length of zero, there are no reactions
     if (time_step == 0)
@@ -1680,6 +1680,7 @@ namespace aspect
     std::vector<std::vector<unsigned int>> support_point_index_by_field;
     std::vector<AdvectionField> advection_fields;
 
+    // TODO this will be replaced by the function argument
     // First add the temperature field
     advection_fields.push_back(AdvectionField::temperature());
     // Then add all compositional fields
@@ -1748,6 +1749,7 @@ namespace aspect
           if (f==0)
             fields[j*n_fields+f] = in.temperature[j];
           else
+            // TODO get correct field index here!
             fields[j*n_fields+f] = in.composition[j][f-1];
       return;
     };
@@ -1760,14 +1762,17 @@ namespace aspect
           if (f==0)
             in.temperature[j]      = fields[j*n_fields+f];
           else
+            // TODO get correct field index here!
             in.composition[j][f-1] = fields[j*n_fields+f];
       return;
     };
 
+    // TODO get correct field index here!
     auto copy_rates_into_one_vector = [n_q_points,n_fields](const MaterialModel::ReactionRateOutputs<dim> &reaction_out,
                                                             const HeatingModel::HeatingModelOutputs &heating_out,
                                                             VectorType &rates)
     {
+      // TODO get correct field index here!
       for (unsigned int j=0; j<n_q_points; ++j)
         for (unsigned int f=0; f<n_fields; ++f)
           if (f==0)
@@ -1803,6 +1808,7 @@ namespace aspect
           fe_values.reinit (cell);
           in.reinit(fe_values, cell, introspection, solution);
 
+          // TODO get correct n_field size here!
           std::vector<std::vector<double>> accumulated_reactions_C (n_q_points, std::vector<double> (introspection.n_compositional_fields));
           std::vector<double> accumulated_reactions_T (n_q_points);
 
@@ -1834,6 +1840,7 @@ namespace aspect
               total_iteration_count += iteration_count;
               number_of_solves += 1;
 
+              // TODO get correct field index here!
               for (unsigned int j=0; j<n_q_points; ++j)
                 for (unsigned int f=0; f<n_fields; ++f)
                   {
@@ -1862,6 +1869,7 @@ namespace aspect
 
                   for (unsigned int j=0; j<n_q_points; ++j)
                     {
+                      // TODO get correct field index here!
                       for (unsigned int c=0; c<introspection.n_compositional_fields; ++c)
                         {
                           // simple forward euler
@@ -1928,6 +1936,7 @@ namespace aspect
     // Apply hanging node constraints but not Dirichet bcs, while preserving periodic bcs
     constraints.distribute(distributed_reaction_vector);
 
+    // TODO get correct field index here!
     // put the final values into the solution vector
     for (unsigned int c=0; c<introspection.n_compositional_fields; ++c)
       update_solution_vectors_with_reaction_results(introspection.block_indices.compositional_fields[c],
@@ -2902,7 +2911,7 @@ namespace aspect
   template void Simulator<dim>::compute_unique_advection_support_points(const std::vector<AdvectionField> &advection_fields, \
                                                                         std::vector<Point<dim>> &support_points, \
                                                                         std::vector<std::vector<unsigned int>> &support_point_index_by_field) const; \
-  template void Simulator<dim>::compute_reactions(); \
+  template void Simulator<dim>::compute_reactions(const std::vector<AdvectionField> &advection_fields_with_reactions); \
   template void Simulator<dim>::initialize_current_linearization_point (); \
   template void Simulator<dim>::interpolate_material_output_into_advection_field(const std::vector<AdvectionField> &adv_field); \
   template void Simulator<dim>::check_consistency_of_formulation(); \
