@@ -32,6 +32,7 @@
 #include <deal.II/base/index_set.h>
 #include <deal.II/base/mg_level_object.h>
 #include <deal.II/lac/la_parallel_vector.h>
+#include <deal.II/multigrid/mg_constrained_dofs.h>
 #include <deal.II/multigrid/mg_transfer_matrix_free.h>
 #include <deal.II/multigrid/mg_transfer_global_coarsening.templates.h>
 #include <aspect/simulator/assemblers/interface.h>
@@ -509,10 +510,44 @@ namespace aspect
           dealii::LinearAlgebra::distributed::Vector<double> &solution);
 
         /**
+         * Solve the matrix-free mesh deformation system using a geometric
+         * multigrid preconditioner with global coarsening.
+         */
+        template <unsigned int mesh_deformation_fe_degree,
+                  typename SystemOperatorType>
+        void solve_mesh_deformation_global_coarsening(
+          const SystemOperatorType &laplace_operator,
+          const dealii::LinearAlgebra::distributed::Vector<double> &rhs,
+          dealii::LinearAlgebra::distributed::Vector<double> &solution);
+
+        /**
+         * Return the boundary indicators that are treated as homogeneous
+         * Dirichlet conditions for the mesh deformation Laplace problem:
+         * zero-displacement boundaries plus boundaries that have an active
+         * mesh deformation object.
+         */
+        std::set<types::boundary_id>
+        get_dirichlet_mesh_deformation_boundary_ids() const;
+
+        /**
+         * Copy @p mesh_displacements into a deal.II distributed vector on
+         * the locally owned mesh-deformation DoFs, for use with the
+         * matrix-free GMG transfers.
+         */
+        dealii::LinearAlgebra::distributed::Vector<double>
+        create_distributed_mesh_displacements() const;
+
+        /**
          * Set up the multigrid hierarchy used by the local-smoothing mesh
          * deformation solver.
          */
         void setup_local_smoothing_multigrid();
+
+        /**
+         * Set up the multigrid hierarchy used by the global-coarsening mesh
+         * deformation solver.
+         */
+        void setup_global_coarsening_multigrid();
 
         /**
          * Set up the vector with initial displacements of the mesh
@@ -541,6 +576,12 @@ namespace aspect
          * multigrid hierarchy.
          */
         void update_local_smoothing_multigrid();
+
+        /**
+         * Update the mesh deformation on the triangulations of the
+         * global-coarsening multigrid hierarchy.
+         */
+        void update_global_coarsening_multigrid();
 
         /**
          * Reference to the Simulator object to which a MeshDeformationHandler
@@ -715,6 +756,28 @@ namespace aspect
         unsigned int initial_deformation_substeps;
 
         /**
+         * Mesh deformation DoFHandlers on the triangulations of the global
+         * coarsening hierarchy.
+         */
+        MGLevelObject<DoFHandler<dim>> global_coarsening_dof_handlers;
+
+        /**
+         * Hanging-node, periodicity, and Dirichlet constraints for the mesh
+         * deformation DoFHandlers on the global coarsening hierarchy. These
+         * are used by the two-level transfers. No-flux constraints are
+         * rebuilt from the current mapping when assembling the level
+         * operators.
+         */
+        MGLevelObject<AffineConstraints<double>> global_coarsening_constraints;
+
+        /**
+         * Two-level transfer operators for the global coarsening hierarchy.
+         */
+        MGLevelObject<MGTwoLevelTransfer<dim,
+                      dealii::LinearAlgebra::distributed::Vector<double>>>
+                      global_coarsening_two_level_transfers;
+
+        /**
          * If required, store a mapping for each multigrid level.
          */
         MGLevelObject<std::unique_ptr<Mapping<dim>>> level_mappings;
@@ -725,10 +788,27 @@ namespace aspect
         MGLevelObject<dealii::LinearAlgebra::distributed::Vector<double>> level_displacements;
 
         /**
-         * Multigrid transfer operator for the displacements used by the
-         * local-smoothing GMG implementation.
+         * Dirichlet and refinement-edge constraints used to build
+         * @p local_smoothing_mg_transfer. deal.II stores a pointer to this
+         * object, so it must outlive the transfer.
          */
-        MGTransferType<dim, double> local_smoothing_mg_transfer;
+        MGConstrainedDoFs local_smoothing_mg_constrained_dofs;
+
+        /**
+         * Multigrid transfer operator for the displacements used by the
+         * local-smoothing GMG implementation. Only one of this and
+         * @p global_coarsening_mg_transfer is allocated, depending on the
+         * selected Stokes GMG type.
+         */
+        std::unique_ptr<MGTransferType<dim, double>> local_smoothing_mg_transfer;
+
+        /**
+         * Multigrid transfer operator for the displacements used by the
+         * global-coarsening GMG implementation. Only one of this and
+         * @p local_smoothing_mg_transfer is allocated, depending on the
+         * selected Stokes GMG type.
+         */
+        std::unique_ptr<GCMGTransferType<dim, double>> global_coarsening_mg_transfer;
 
         friend class Simulator<dim>;
         friend class SimulatorAccess<dim>;
