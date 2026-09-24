@@ -158,12 +158,18 @@ namespace aspect
         {
           if (!this_rank_runs_landlab)
             {
-              // This rank does not participate, so we don't own any evaluation points:
+              // This rank does not participate, so we don't own any evaluation points.
+              // Enter/leave the same timer sections in the same order as the
+              // participating-rank branch below.
+              this->get_computing_timer().enter_subsection("Landlab: Create Grid");
+              this->get_computing_timer().leave_subsection("Landlab: Create Grid");
+
               std::vector<Point<dim>> surface_points;
               this->set_evaluation_points(surface_points);
               return;
             }
 
+          this->get_computing_timer().enter_subsection("Landlab: Create Grid");
           {
             // set_mesh_information: call with None
             PyObject *pArgs = PyTuple_Pack(1, Py_None);
@@ -187,6 +193,7 @@ namespace aspect
             if (dim == 3 && is_spherical)
               pgrid_z = PythonHelper::call_python_function(pModule, "get_grid_z", pArgs);
             Py_DECREF(pArgs);
+            this->get_computing_timer().leave_subsection("Landlab: Create Grid");
 
             // Create a C++ view of the numpy arrays
             const ArrayView<double> data_x = PythonHelper::numpy_to_array_view(pgrid_x);
@@ -311,7 +318,10 @@ namespace aspect
           // update_until() returns the change in the topography, which we convert to a mesh
           // velocity in ASPECT.
           PyObject *pArgs  = PyTuple_Pack(2, pDict_solution, pDict_auxiliary);
+
+          this->get_computing_timer().enter_subsection("Landlab: update");
           PyObject *pValue = PythonHelper::call_python_function(pModule, "update_until", pArgs);
+          this->get_computing_timer().leave_subsection("Landlab: update");
 
           // Remove these python objects from memory.
           Py_DECREF(pDict_solution);
@@ -338,6 +348,11 @@ namespace aspect
             }
           // Remove the python object from memory.
           Py_DECREF(pValue);
+        }
+      else
+        {
+          this->get_computing_timer().enter_subsection("Landlab: update");
+          this->get_computing_timer().leave_subsection("Landlab: update");
         }
 
       // Produce debug output as a vtu file
@@ -474,7 +489,9 @@ namespace aspect
       if (this_rank_runs_landlab)
         {
           PyObject *pArgs  = PyTuple_Pack(1, PyLong_FromLong(dim));
+          this->get_computing_timer().enter_subsection("Landlab: Run initial_topography");
           PyObject *pValue = PythonHelper::call_python_function(pModule, "get_initial_topography", pArgs);
+          this->get_computing_timer().leave_subsection("Landlab: Run initial_topography");
           Py_DECREF(pArgs);
           ArrayView<double> data = PythonHelper::numpy_to_array_view(pValue);
 
@@ -491,6 +508,11 @@ namespace aspect
               initial_deformation[i] = data[i] * topography_direction;
             }
           Py_DECREF(pValue);
+        }
+      else
+        {
+          this->get_computing_timer().enter_subsection("Landlab: Run initial_topography");
+          this->get_computing_timer().leave_subsection("Landlab: Run initial_topography");
         }
 
       // 2. Interpolate deformation into a DoF vector:
