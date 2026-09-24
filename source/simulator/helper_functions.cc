@@ -1667,7 +1667,7 @@ namespace aspect
 
     // We want to compute reactions in each support point for all fields (compositional fields and temperature). The reaction
     // rate for an individual field depends on the values of all other fields, so we have to step them forward in time together.
-    // The rates comes from the material and heating model, otherwise we have a simple ODE in each point on each cell to solve.
+    // The rates come from the material and heating model, otherwise we have a simple ODE in each point on each cell to solve.
     //
     // So far so good. Except that fields can have different Finite Element discretizations (degree, continuous/discontinuous)
     // and will have different support points. We solve this by computing the union of all support points and evaluating all fields
@@ -1886,7 +1886,7 @@ namespace aspect
               if (component_idx>=component_idx_T) // ignore velocity, pressure, etc.
                 {
                   // We found a DoF that belongs to component component_idx, which is a temperature or compositional
-                  // field. That means we want to find where this DoF in the computed reactions above to copy it
+                  // field. That means we want to find where this DoF is in the computed reactions above to copy it
                   // back into the global solution vector.
 
                   // These two variables tell us the how-manyth shape function of which field (and therefore
@@ -1897,7 +1897,7 @@ namespace aspect
                   // point is in the list of unique_support_points (and in the Quadrature):
                   const unsigned int point_idx = support_point_index_by_field[field_index][index_within];
 
-                  // The final step is grabbing the value from the reaction computation and write it into
+                  // The final step is grabbing the value from the reaction computation and writing it into
                   // the global vector (if we own it and if it is not a constrained degree of freedom).:
                   if (dof_handler.locally_owned_dofs().is_element(local_dof_indices[dof_idx]) &&
                       !current_constraints.is_constrained(local_dof_indices[dof_idx]))
