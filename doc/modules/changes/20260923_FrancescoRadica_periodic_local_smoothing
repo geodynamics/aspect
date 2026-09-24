@@ -1,11 +1,7 @@
-New: The local-smoothing GMG solver supports rotated periodicity in 2D
-spherical shells with 90- and 180-degree opening angles. The geometry model
-supplies velocity constraints through the public deal.II level-periodicity
-API and MGConstrainedDoFs::add_user_constraints(). Adaptive refinement keeps
-periodic partners on matching levels; meshes with existing periodic hanging
-nodes are still rejected. This feature requires deal.II 9.9 or a current
-master build. Older deal.II releases can still be used for the existing
-solver paths. Solver defaults
-are unchanged: select block GMG and local smoothing explicitly.
+New: Local-smoothing GMG supports 2D periodic spherical shells with 90- and
+180-degree opening angles, using deal.II 9.9 or greater. Adaptive refinement
+keeps periodic partners at matching levels. Meshes that already have periodic
+hanging nodes remain unsupported. Solver defaults are unchanged; select
+block GMG and local smoothing explicitly.
 <br>
 (Francesco Radica, 2026/09/23)

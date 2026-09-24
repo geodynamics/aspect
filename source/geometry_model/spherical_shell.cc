@@ -1016,7 +1016,7 @@ namespace aspect
       (void)constraints;
       AssertThrow(false,
                   ExcMessage("Rotated periodicity with local-smoothing GMG requires "
-                             "deal.II 9.9 or a current master build. Rebuild ASPECT "
+                             "deal.II 9.9 or greater. Rebuild ASPECT "
                              "with a supported deal.II version, or use block AMG "
                              "or GMG with global coarsening."));
 #endif

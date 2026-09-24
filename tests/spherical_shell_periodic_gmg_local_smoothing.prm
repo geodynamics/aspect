@@ -1,8 +1,7 @@
 # Enable if: DEAL_II_VERSION_GTE_9_9_0
 
-# Exercise local-smoothing GMG with rotated 90-degree periodicity. This test
-# uses a uniform mesh to isolate the level-periodicity constraints; separate
-# particle tests cover compatible adaptive refinement.
+# Smoke test for local-smoothing GMG on a uniform 90 degree periodic shell.
+# The adaptive particle tests exercise mismatched refinement requests.
 
 include $ASPECT_SOURCE_DIR/tests/spherical_shell_periodic_gmg.prm
 

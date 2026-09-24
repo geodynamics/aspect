@@ -13,8 +13,8 @@ Number of degrees of freedom: 348 (210+33+105)
      Schur complement preconditioner: 16+0 iterations.
      A block preconditioner: 16+0 iterations.
 
-Number of active cells: 26 (on 3 levels)
-Number of degrees of freedom: 466 (282+43+141)
+Number of active cells: 56 (on 3 levels)
+Number of degrees of freedom: 898 (546+79+273)
 
 *** Timestep 0:  t=0 seconds, dt=0 seconds
    Skipping temperature solve because RHS is zero.
@@ -22,13 +22,13 @@ Number of degrees of freedom: 466 (282+43+141)
      GMG coarse size A: 66, coarse size S: 12
      GMG levels: 3
      Viscosity range: 1 - 1
-     GMG workload imbalance: 1.15152
-     Stokes solver (GMRES): 20+0 iterations.
-     Schur complement preconditioner: 21+0 iterations.
-     A block preconditioner: 21+0 iterations.
+     GMG workload imbalance: 1.23288
+     Stokes solver (GMRES): 21+0 iterations.
+     Schur complement preconditioner: 22+0 iterations.
+     A block preconditioner: 22+0 iterations.
 
-Number of active cells: 44 (on 4 levels)
-Number of degrees of freedom: 780 (474+69+237)
+Number of active cells: 194 (on 4 levels)
+Number of degrees of freedom: 2,856 (1,746+237+873)
 
 *** Timestep 0:  t=0 seconds, dt=0 seconds
    Skipping temperature solve because RHS is zero.
@@ -37,18 +37,18 @@ Number of degrees of freedom: 780 (474+69+237)
      GMG coarse size A: 66, coarse size S: 12
      GMG levels: 4
      Viscosity range: 1 - 1
-     GMG workload imbalance: 1.08772
-     Stokes solver (GMRES): 24+0 iterations.
-     Schur complement preconditioner: 25+0 iterations.
-     A block preconditioner: 25+0 iterations.
+     GMG workload imbalance: 1.13619
+     Stokes solver (GMRES): 35+0 iterations.
+     Schur complement preconditioner: 36+0 iterations.
+     A block preconditioner: 36+0 iterations.
 
    Postprocessing:
      Writing particle output:             output-particle_periodic_half_shell_gmg_local_smoothing_adaptive/particles/particles-00000
      RMS, max velocity:                   0.791 m/s, 1 m/s
      Particle count per cell min/avg/max: 0, 0, 21
 
-Number of active cells: 44 (on 4 levels)
-Number of degrees of freedom: 780 (474+69+237)
+Number of active cells: 194 (on 4 levels)
+Number of degrees of freedom: 2,856 (1,746+237+873)
 
 *** Timestep 1:  t=0.02 seconds, dt=0.02 seconds
    Skipping temperature solve because RHS is zero.
@@ -57,7 +57,7 @@ Number of degrees of freedom: 780 (474+69+237)
      GMG coarse size A: 66, coarse size S: 12
      GMG levels: 4
      Viscosity range: 1 - 1
-     GMG workload imbalance: 1.08772
+     GMG workload imbalance: 1.13619
      Stokes solver (GMRES): 0+0 iterations.
      Schur complement preconditioner: 0+0 iterations.
      A block preconditioner: 0+0 iterations.
@@ -67,8 +67,8 @@ Number of degrees of freedom: 780 (474+69+237)
      RMS, max velocity:                   0.791 m/s, 1 m/s
      Particle count per cell min/avg/max: 0, 0, 21
 
-Number of active cells: 44 (on 4 levels)
-Number of degrees of freedom: 780 (474+69+237)
+Number of active cells: 194 (on 4 levels)
+Number of degrees of freedom: 2,856 (1,746+237+873)
 
 *** Timestep 2:  t=0.04 seconds, dt=0.02 seconds
    Skipping temperature solve because RHS is zero.
@@ -77,7 +77,7 @@ Number of degrees of freedom: 780 (474+69+237)
      GMG coarse size A: 66, coarse size S: 12
      GMG levels: 4
      Viscosity range: 1 - 1
-     GMG workload imbalance: 1.08772
+     GMG workload imbalance: 1.13619
      Stokes solver (GMRES): 0+0 iterations.
      Schur complement preconditioner: 0+0 iterations.
      A block preconditioner: 0+0 iterations.
@@ -87,8 +87,8 @@ Number of degrees of freedom: 780 (474+69+237)
      RMS, max velocity:                   0.791 m/s, 1 m/s
      Particle count per cell min/avg/max: 0, 0, 21
 
-Number of active cells: 44 (on 4 levels)
-Number of degrees of freedom: 780 (474+69+237)
+Number of active cells: 194 (on 4 levels)
+Number of degrees of freedom: 2,856 (1,746+237+873)
 
 *** Timestep 3:  t=0.06 seconds, dt=0.02 seconds
    Skipping temperature solve because RHS is zero.
@@ -97,7 +97,7 @@ Number of degrees of freedom: 780 (474+69+237)
      GMG coarse size A: 66, coarse size S: 12
      GMG levels: 4
      Viscosity range: 1 - 1
-     GMG workload imbalance: 1.08772
+     GMG workload imbalance: 1.13619
      Stokes solver (GMRES): 0+0 iterations.
      Schur complement preconditioner: 0+0 iterations.
      A block preconditioner: 0+0 iterations.
@@ -107,8 +107,8 @@ Number of degrees of freedom: 780 (474+69+237)
      RMS, max velocity:                   0.791 m/s, 1 m/s
      Particle count per cell min/avg/max: 0, 0, 21
 
-Number of active cells: 44 (on 4 levels)
-Number of degrees of freedom: 780 (474+69+237)
+Number of active cells: 194 (on 4 levels)
+Number of degrees of freedom: 2,856 (1,746+237+873)
 
 *** Timestep 4:  t=0.08 seconds, dt=0.02 seconds
    Skipping temperature solve because RHS is zero.
@@ -117,7 +117,7 @@ Number of degrees of freedom: 780 (474+69+237)
      GMG coarse size A: 66, coarse size S: 12
      GMG levels: 4
      Viscosity range: 1 - 1
-     GMG workload imbalance: 1.08772
+     GMG workload imbalance: 1.13619
      Stokes solver (GMRES): 0+0 iterations.
      Schur complement preconditioner: 0+0 iterations.
      A block preconditioner: 0+0 iterations.
@@ -127,8 +127,8 @@ Number of degrees of freedom: 780 (474+69+237)
      RMS, max velocity:                   0.791 m/s, 1 m/s
      Particle count per cell min/avg/max: 0, 0, 19
 
-Number of active cells: 44 (on 4 levels)
-Number of degrees of freedom: 780 (474+69+237)
+Number of active cells: 194 (on 4 levels)
+Number of degrees of freedom: 2,856 (1,746+237+873)
 
 *** Timestep 5:  t=0.1 seconds, dt=0.02 seconds
    Skipping temperature solve because RHS is zero.
@@ -137,7 +137,7 @@ Number of degrees of freedom: 780 (474+69+237)
      GMG coarse size A: 66, coarse size S: 12
      GMG levels: 4
      Viscosity range: 1 - 1
-     GMG workload imbalance: 1.08772
+     GMG workload imbalance: 1.13619
      Stokes solver (GMRES): 0+0 iterations.
      Schur complement preconditioner: 0+0 iterations.
      A block preconditioner: 0+0 iterations.
@@ -147,8 +147,8 @@ Number of degrees of freedom: 780 (474+69+237)
      RMS, max velocity:                   0.791 m/s, 1 m/s
      Particle count per cell min/avg/max: 0, 0, 21
 
-Number of active cells: 44 (on 4 levels)
-Number of degrees of freedom: 780 (474+69+237)
+Number of active cells: 194 (on 4 levels)
+Number of degrees of freedom: 2,856 (1,746+237+873)
 
 *** Timestep 6:  t=0.12 seconds, dt=0.02 seconds
    Skipping temperature solve because RHS is zero.
@@ -157,7 +157,7 @@ Number of degrees of freedom: 780 (474+69+237)
      GMG coarse size A: 66, coarse size S: 12
      GMG levels: 4
      Viscosity range: 1 - 1
-     GMG workload imbalance: 1.08772
+     GMG workload imbalance: 1.13619
      Stokes solver (GMRES): 0+0 iterations.
      Schur complement preconditioner: 0+0 iterations.
      A block preconditioner: 0+0 iterations.
@@ -167,8 +167,8 @@ Number of degrees of freedom: 780 (474+69+237)
      RMS, max velocity:                   0.791 m/s, 1 m/s
      Particle count per cell min/avg/max: 0, 0, 21
 
-Number of active cells: 47 (on 4 levels)
-Number of degrees of freedom: 829 (504+73+252)
+Number of active cells: 194 (on 4 levels)
+Number of degrees of freedom: 2,856 (1,746+237+873)
 
 *** Timestep 7:  t=0.14 seconds, dt=0.02 seconds
    Skipping temperature solve because RHS is zero.
@@ -177,87 +177,7 @@ Number of degrees of freedom: 829 (504+73+252)
      GMG coarse size A: 66, coarse size S: 12
      GMG levels: 4
      Viscosity range: 1 - 1
-     GMG workload imbalance: 1.14754
-     Stokes solver (GMRES): 8+0 iterations.
-     Schur complement preconditioner: 9+0 iterations.
-     A block preconditioner: 9+0 iterations.
-
-   Postprocessing:
-     Number of advected particles:        40
-     RMS, max velocity:                   0.791 m/s, 1 m/s
-     Particle count per cell min/avg/max: 0, 0, 21
-
-Number of active cells: 41 (on 4 levels)
-Number of degrees of freedom: 731 (444+65+222)
-
-*** Timestep 8:  t=0.16 seconds, dt=0.02 seconds
-   Skipping temperature solve because RHS is zero.
-   Advecting particles...  done.
-   Solving Stokes system (GMG)...
-     GMG coarse size A: 66, coarse size S: 12
-     GMG levels: 4
-     Viscosity range: 1 - 1
-     GMG workload imbalance: 1.32075
-     Stokes solver (GMRES): 13+0 iterations.
-     Schur complement preconditioner: 14+0 iterations.
-     A block preconditioner: 14+0 iterations.
-
-   Postprocessing:
-     Number of advected particles:        40
-     RMS, max velocity:                   0.791 m/s, 1 m/s
-     Particle count per cell min/avg/max: 0, 0, 17
-
-Number of active cells: 41 (on 4 levels)
-Number of degrees of freedom: 731 (444+65+222)
-
-*** Timestep 9:  t=0.18 seconds, dt=0.02 seconds
-   Skipping temperature solve because RHS is zero.
-   Advecting particles...  done.
-   Solving Stokes system (GMG)...
-     GMG coarse size A: 66, coarse size S: 12
-     GMG levels: 4
-     Viscosity range: 1 - 1
-     GMG workload imbalance: 1.32075
-     Stokes solver (GMRES): 13+0 iterations.
-     Schur complement preconditioner: 14+0 iterations.
-     A block preconditioner: 14+0 iterations.
-
-   Postprocessing:
-     Number of advected particles:        40
-     RMS, max velocity:                   0.791 m/s, 1 m/s
-     Particle count per cell min/avg/max: 0, 0, 21
-
-Number of active cells: 41 (on 4 levels)
-Number of degrees of freedom: 731 (444+65+222)
-
-*** Timestep 10:  t=0.2 seconds, dt=0.02 seconds
-   Skipping temperature solve because RHS is zero.
-   Advecting particles...  done.
-   Solving Stokes system (GMG)...
-     GMG coarse size A: 66, coarse size S: 12
-     GMG levels: 4
-     Viscosity range: 1 - 1
-     GMG workload imbalance: 1.32075
-     Stokes solver (GMRES): 1+0 iterations.
-     Schur complement preconditioner: 2+0 iterations.
-     A block preconditioner: 2+0 iterations.
-
-   Postprocessing:
-     Writing particle output:             output-particle_periodic_half_shell_gmg_local_smoothing_adaptive/particles/particles-00002
-     RMS, max velocity:                   0.791 m/s, 1 m/s
-     Particle count per cell min/avg/max: 0, 0, 21
-
-Number of active cells: 41 (on 4 levels)
-Number of degrees of freedom: 731 (444+65+222)
-
-*** Timestep 11:  t=0.2 seconds, dt=2.77556e-17 seconds
-   Skipping temperature solve because RHS is zero.
-   Advecting particles...  done.
-   Solving Stokes system (GMG)...
-     GMG coarse size A: 66, coarse size S: 12
-     GMG levels: 4
-     Viscosity range: 1 - 1
-     GMG workload imbalance: 1.32075
+     GMG workload imbalance: 1.13619
      Stokes solver (GMRES): 0+0 iterations.
      Schur complement preconditioner: 0+0 iterations.
      A block preconditioner: 0+0 iterations.
@@ -267,8 +187,88 @@ Number of degrees of freedom: 731 (444+65+222)
      RMS, max velocity:                   0.791 m/s, 1 m/s
      Particle count per cell min/avg/max: 0, 0, 21
 
-Number of active cells: 41 (on 4 levels)
-Number of degrees of freedom: 731 (444+65+222)
+Number of active cells: 194 (on 4 levels)
+Number of degrees of freedom: 2,856 (1,746+237+873)
+
+*** Timestep 8:  t=0.16 seconds, dt=0.02 seconds
+   Skipping temperature solve because RHS is zero.
+   Advecting particles...  done.
+   Solving Stokes system (GMG)...
+     GMG coarse size A: 66, coarse size S: 12
+     GMG levels: 4
+     Viscosity range: 1 - 1
+     GMG workload imbalance: 1.13619
+     Stokes solver (GMRES): 0+0 iterations.
+     Schur complement preconditioner: 0+0 iterations.
+     A block preconditioner: 0+0 iterations.
+
+   Postprocessing:
+     Number of advected particles:        40
+     RMS, max velocity:                   0.791 m/s, 1 m/s
+     Particle count per cell min/avg/max: 0, 0, 17
+
+Number of active cells: 194 (on 4 levels)
+Number of degrees of freedom: 2,856 (1,746+237+873)
+
+*** Timestep 9:  t=0.18 seconds, dt=0.02 seconds
+   Skipping temperature solve because RHS is zero.
+   Advecting particles...  done.
+   Solving Stokes system (GMG)...
+     GMG coarse size A: 66, coarse size S: 12
+     GMG levels: 4
+     Viscosity range: 1 - 1
+     GMG workload imbalance: 1.13619
+     Stokes solver (GMRES): 0+0 iterations.
+     Schur complement preconditioner: 0+0 iterations.
+     A block preconditioner: 0+0 iterations.
+
+   Postprocessing:
+     Number of advected particles:        40
+     RMS, max velocity:                   0.791 m/s, 1 m/s
+     Particle count per cell min/avg/max: 0, 0, 40
+
+Number of active cells: 194 (on 4 levels)
+Number of degrees of freedom: 2,856 (1,746+237+873)
+
+*** Timestep 10:  t=0.2 seconds, dt=0.02 seconds
+   Skipping temperature solve because RHS is zero.
+   Advecting particles...  done.
+   Solving Stokes system (GMG)...
+     GMG coarse size A: 66, coarse size S: 12
+     GMG levels: 4
+     Viscosity range: 1 - 1
+     GMG workload imbalance: 1.13619
+     Stokes solver (GMRES): 0+0 iterations.
+     Schur complement preconditioner: 0+0 iterations.
+     A block preconditioner: 0+0 iterations.
+
+   Postprocessing:
+     Writing particle output:             output-particle_periodic_half_shell_gmg_local_smoothing_adaptive/particles/particles-00002
+     RMS, max velocity:                   0.791 m/s, 1 m/s
+     Particle count per cell min/avg/max: 0, 0, 40
+
+Number of active cells: 194 (on 4 levels)
+Number of degrees of freedom: 2,856 (1,746+237+873)
+
+*** Timestep 11:  t=0.2 seconds, dt=2.77556e-17 seconds
+   Skipping temperature solve because RHS is zero.
+   Advecting particles...  done.
+   Solving Stokes system (GMG)...
+     GMG coarse size A: 66, coarse size S: 12
+     GMG levels: 4
+     Viscosity range: 1 - 1
+     GMG workload imbalance: 1.13619
+     Stokes solver (GMRES): 0+0 iterations.
+     Schur complement preconditioner: 0+0 iterations.
+     A block preconditioner: 0+0 iterations.
+
+   Postprocessing:
+     Number of advected particles:        40
+     RMS, max velocity:                   0.791 m/s, 1 m/s
+     Particle count per cell min/avg/max: 0, 0, 40
+
+Number of active cells: 194 (on 4 levels)
+Number of degrees of freedom: 2,856 (1,746+237+873)
 
 Termination requested by criterion: end time
 

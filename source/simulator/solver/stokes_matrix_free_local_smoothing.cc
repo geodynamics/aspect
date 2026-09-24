@@ -1611,7 +1611,7 @@ namespace aspect
 #else
       AssertThrow(!have_explicit_level_periodicity_v,
                   ExcMessage("Explicit multigrid level periodicity requires the "
-                             "API available in deal.II 9.9 or a current master build."));
+                             "API available in deal.II 9.9 or greater."));
       mg_constrained_dofs_A_block.initialize(dof_handler_v);
 #endif
       if (have_explicit_level_periodicity_v)

@@ -457,15 +457,9 @@ namespace aspect
     GridTools::exchange_cell_data_to_ghosts<std::uint8_t, DoFHandler<dim>>
     (dof_handler, pack, unpack);
 
-    // Local-smoothing GMG requires the cells on both sides of a periodic
-    // boundary to have matching refinement levels. Preserve this invariant
-    // while still allowing adaptive refinement away from the periodic
-    // boundary: refine both periodic partners if either one is marked, and
-    // only coarsen them if both partners are marked for coarsening.
-    //
-    // The exchange above makes the original flags available on ghost cells.
-    // Every owner can consequently compute the same result for its side of a
-    // periodic pair without modifying ghost cells directly.
+    // Local-smoothing GMG needs matching refinement on periodic partners.
+    // Refine both if either is marked; coarsen only if both are marked.
+    // The ghost exchange above lets each owner update its own cells.
     if (parameters.stokes_solver_type == Parameters<dim>::StokesSolverType::block_gmg
         && parameters.stokes_gmg_type == Parameters<dim>::StokesGMGType::local_smoothing
         && !triangulation.get_periodic_face_map().empty())
@@ -477,10 +471,7 @@ namespace aspect
                 {
                   const auto periodic_neighbor = cell->periodic_neighbor(face_no);
 
-                  // A level mismatch indicates a mesh that was not created
-                  // with this synchronization (for example an old restart).
-                  // Leave it untouched so that the consistency check in the
-                  // local-smoothing solver can report the problem.
+                  // Leave existing mismatches to the solver's mesh check.
                   if (periodic_neighbor->level() != cell->level()
                       || !periodic_neighbor->is_active())
                     continue;
@@ -498,8 +489,7 @@ namespace aspect
                     cell->set_coarsen_flag();
                 }
 
-        // Refresh ghost flags because they may have changed on their owner as
-        // a result of the periodic synchronization.
+        // Propagate the updated flags to ghost cells.
         GridTools::exchange_cell_data_to_ghosts<std::uint8_t, DoFHandler<dim>>
         (dof_handler, pack, unpack);
       }
