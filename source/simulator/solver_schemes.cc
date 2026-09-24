@@ -296,8 +296,8 @@ namespace aspect
 
               current_residual[c] = solve_advection(adv_field);
 
-              // When using the entropy formulation (See Dannberg et al., 2022 and the entropy_adiabat benchmark),
-              // each components have their own entropy fields.
+              // When using the entropy formulation (see Dannberg et al., 2022 and the entropy_adiabat benchmark),
+              // each component has their own entropy field.
               // In each nonlinear iteration, we need to interpolate the temperature field again
               // after all entropy fields are solved to ensure the temperature is consistent
               // with the entropy in the output.
@@ -314,7 +314,7 @@ namespace aspect
                   // are in fact entropies:
                   const std::vector<unsigned int> &entropy_indices = introspection.get_indices_for_fields_of_type(CompositionalFieldDescription::entropy);
 
-                  // Then determine which entropy field is the one that was computed last:
+                  // Then determine which entropy field is the one that will be computed last:
                   const unsigned int last_entropy_field_index = *std::max_element(entropy_indices.begin(), entropy_indices.end());
 
                   // If the field we are currently considering (with index 'c')
