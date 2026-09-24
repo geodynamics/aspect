@@ -2020,9 +2020,12 @@ namespace aspect
         std::vector<AdvectionField> advection_fields;
         // First add the temperature field
         advection_fields.push_back(AdvectionField::temperature());
-        // Then add all compositional fields
+        // Then add all compositional fields that are not tracked by particles.
         for (unsigned int c=0; c<introspection.n_compositional_fields; ++c)
-          advection_fields.push_back(AdvectionField::composition(c));
+          {
+            if (parameters.compositional_field_methods[c] != Parameters<dim>::AdvectionFieldMethod::particles)
+              advection_fields.push_back(AdvectionField::composition(c));
+          }
         compute_reactions (advection_fields);
       }
 
