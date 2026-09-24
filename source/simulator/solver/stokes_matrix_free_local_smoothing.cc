@@ -1440,9 +1440,8 @@ namespace aspect
   template <int dim, int velocity_degree>
   void StokesMatrixFreeHandlerLocalSmoothingImplementation<dim, velocity_degree>::setup_dofs()
   {
-    // Periodic partners are kept on matching refinement levels when ASPECT
-    // changes the mesh. Catch meshes that violate this invariant, for example
-    // when resuming from an older checkpoint with periodic hanging nodes.
+    // Local smoothing requires matching refinement levels on periodic
+    // boundaries. Check the current mesh before setting up multigrid.
     {
       bool have_periodic_hanging_nodes = false;
       for (const auto &cell : this->get_triangulation().active_cell_iterators())
@@ -1606,13 +1605,13 @@ namespace aspect
                             this->get_mpi_communicator()) == 1;
 
       mg_constrained_dofs_A_block.clear();
-#ifdef ASPECT_HAVE_LEVEL_PERIODICITY_CONSTRAINTS
+#if DEAL_II_VERSION_GTE(9,9,0)
       mg_constrained_dofs_A_block.initialize(dof_handler_v, MGLevelObject<IndexSet>(),
                                              !have_explicit_level_periodicity_v);
 #else
       AssertThrow(!have_explicit_level_periodicity_v,
                   ExcMessage("Explicit multigrid level periodicity requires the "
-                             "public level-periodicity API introduced in deal.II PR #20212."));
+                             "API available in deal.II 9.9 or a current master build."));
       mg_constrained_dofs_A_block.initialize(dof_handler_v);
 #endif
       if (have_explicit_level_periodicity_v)

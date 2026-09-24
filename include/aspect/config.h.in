@@ -26,7 +26,6 @@
 
 // optional features:
 #cmakedefine ASPECT_HAVE_LINK_H
-#cmakedefine ASPECT_HAVE_LEVEL_PERIODICITY_CONSTRAINTS
 
 #cmakedefine ASPECT_WITH_FASTSCAPE
 #cmakedefine ASPECT_WITH_LIBDAP

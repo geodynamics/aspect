@@ -207,7 +207,6 @@ endif()
 
 deal_ii_initialize_cached_variables()
 
-include(cmake/check_level_periodicity.cmake)
 
 # zlib
 set(ZLIB_DIR "" CACHE PATH "An optional hint to a ZLIB installation")
