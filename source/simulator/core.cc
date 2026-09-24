@@ -1843,6 +1843,18 @@ namespace aspect
       exchange_refinement_flags();
 
       triangulation.prepare_coarsening_and_refinement();
+
+      // Mesh smoothing may change the flags. Synchronize periodic partners
+      // again, then update ghost flags before solution transfer.
+      if (parameters.stokes_solver_type == Parameters<dim>::StokesSolverType::block_gmg
+          && parameters.stokes_gmg_type == Parameters<dim>::StokesGMGType::local_smoothing
+          && !triangulation.get_periodic_face_map().empty())
+        {
+          exchange_refinement_flags();
+          triangulation.prepare_coarsening_and_refinement();
+          exchange_refinement_flags();
+        }
+
       bool any_flags_set = false;
       {
         for (const auto &cell:dof_handler.active_cell_iterators())

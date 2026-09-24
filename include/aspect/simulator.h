@@ -1525,7 +1525,9 @@ namespace aspect
 
       /**
        * Exchange coarsen/refinement flags set between processors so that
-       * we have the correct settings on all ghost cells.
+       * we have the correct settings on all ghost cells. For local-smoothing
+       * GMG, also synchronize flags between periodic partners to keep their
+       * refinement levels compatible.
        *
        * This function is implemented in
        * <code>source/simulator/helper_functions.cc</code>.

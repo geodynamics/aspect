@@ -456,6 +456,43 @@ namespace aspect
 
     GridTools::exchange_cell_data_to_ghosts<std::uint8_t, DoFHandler<dim>>
     (dof_handler, pack, unpack);
+
+    // Local-smoothing GMG needs matching refinement on periodic partners.
+    // Refine both if either is marked; coarsen only if both are marked.
+    // The ghost exchange above lets each owner update its own cells.
+    if (parameters.stokes_solver_type == Parameters<dim>::StokesSolverType::block_gmg
+        && parameters.stokes_gmg_type == Parameters<dim>::StokesGMGType::local_smoothing
+        && !triangulation.get_periodic_face_map().empty())
+      {
+        for (const auto &cell : dof_handler.active_cell_iterators())
+          if (cell->is_locally_owned())
+            for (const unsigned int face_no : cell->face_indices())
+              if (cell->has_periodic_neighbor(face_no))
+                {
+                  const auto periodic_neighbor = cell->periodic_neighbor(face_no);
+
+                  // Leave existing mismatches to the solver's mesh check.
+                  if (periodic_neighbor->level() != cell->level()
+                      || !periodic_neighbor->is_active())
+                    continue;
+
+                  const bool refine = cell->refine_flag_set()
+                                      || periodic_neighbor->refine_flag_set();
+                  const bool coarsen = cell->coarsen_flag_set()
+                                       && periodic_neighbor->coarsen_flag_set();
+
+                  cell->clear_refine_flag();
+                  cell->clear_coarsen_flag();
+                  if (refine)
+                    cell->set_refine_flag();
+                  else if (coarsen)
+                    cell->set_coarsen_flag();
+                }
+
+        // Propagate the updated flags to ghost cells.
+        GridTools::exchange_cell_data_to_ghosts<std::uint8_t, DoFHandler<dim>>
+        (dof_handler, pack, unpack);
+      }
   }
 
 

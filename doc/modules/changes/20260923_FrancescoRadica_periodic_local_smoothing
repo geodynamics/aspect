@@ -1,0 +1,7 @@
+New: Local-smoothing GMG supports 2D periodic spherical shells with 90- and
+180-degree opening angles, using deal.II 9.9 or greater. Adaptive refinement
+keeps periodic partners at matching levels. Meshes that already have periodic
+hanging nodes remain unsupported. Solver defaults are unchanged; select
+block GMG and local smoothing explicitly.
+<br>
+(Francesco Radica, 2026/09/23)

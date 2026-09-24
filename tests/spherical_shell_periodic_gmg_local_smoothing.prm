@@ -1,0 +1,20 @@
+# Enable if: DEAL_II_VERSION_GTE_9_9_0
+
+# Smoke test for local-smoothing GMG on a uniform 90 degree periodic shell.
+# The adaptive particle tests exercise mismatched refinement requests.
+
+include $ASPECT_SOURCE_DIR/tests/spherical_shell_periodic_gmg.prm
+
+set Output directory = output-spherical_shell-periodic-gmg-local-smoothing
+
+subsection Mesh refinement
+  set Initial adaptive refinement        = 0
+  set Time steps between mesh refinement = 0
+end
+
+subsection Solver parameters
+  subsection Stokes solver parameters
+    set Stokes solver type = block GMG
+    set Stokes GMG type    = local smoothing
+  end
+end

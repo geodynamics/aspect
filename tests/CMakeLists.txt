@@ -105,6 +105,7 @@ endfunction()
 # 4. "Enable if: ASPECT_WITH_PYTHON"
 # 5. "Enable if: ASPECT_WITH_LANDLAB"
 # 6. "Enable if: QUICK_TEST" - enable the test even if RUN_ALL_TESTS is false
+# 7. "Enable if: DEAL_II_VERSION_GTE_9_9_0"
 function(SHOULD_ENABLE_TEST _filename)
 
   file(STRINGS ${_filename} _input_lines
@@ -150,6 +151,12 @@ function(SHOULD_ENABLE_TEST _filename)
         AND NOT ASPECT_WITH_LANDLAB)
       set(_use_test OFF PARENT_SCOPE)
     endif()
+  endif()
+
+  file(STRINGS ${_filename} _input_lines
+       REGEX "Enable if: DEAL_II_VERSION_GTE_9_9_0")
+  if(NOT "${_input_lines}" STREQUAL "" AND DEAL_II_PACKAGE_VERSION VERSION_LESS 9.9.0)
+    set(_use_test OFF PARENT_SCOPE)
   endif()
 
   file(STRINGS ${_filename} _input_lines

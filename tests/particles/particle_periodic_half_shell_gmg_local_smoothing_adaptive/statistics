@@ -1,0 +1,29 @@
+# 1: Time step number
+# 2: Time (seconds)
+# 3: Time step size (seconds)
+# 4: Number of mesh cells
+# 5: Number of Stokes degrees of freedom
+# 6: Number of temperature degrees of freedom
+# 7: Iterations for temperature solver
+# 8: Iterations for Stokes solver
+# 9: Velocity iterations in Stokes preconditioner
+# 10: Schur complement iterations in Stokes preconditioner
+# 11: Number of advected particles
+# 12: Particle file name
+# 13: RMS velocity (m/s)
+# 14: Max. velocity (m/s)
+# 15: Minimal particles per cell:
+# 16: Average particles per cell:
+# 17: Maximal particles per cell:
+ 0 0.000000000000e+00 0.000000000000e+00 194 1983 873 0 35 36 36 40 output-particle_periodic_half_shell_gmg_local_smoothing_adaptive/particles/particles-00000 7.90566815e-01 1.00000000e+00 0 0 21
+ 1 2.000000000000e-02 2.000000000000e-02 194 1983 873 0  0  0  0 40                                                                                         "" 7.90566815e-01 1.00000000e+00 0 0 21
+ 2 4.000000000000e-02 2.000000000000e-02 194 1983 873 0  0  0  0 40                                                                                         "" 7.90566815e-01 1.00000000e+00 0 0 21
+ 3 6.000000000000e-02 2.000000000000e-02 194 1983 873 0  0  0  0 40                                                                                         "" 7.90566815e-01 1.00000000e+00 0 0 21
+ 4 8.000000000000e-02 2.000000000000e-02 194 1983 873 0  0  0  0 40                                                                                         "" 7.90566815e-01 1.00000000e+00 0 0 19
+ 5 1.000000000000e-01 2.000000000000e-02 194 1983 873 0  0  0  0 40 output-particle_periodic_half_shell_gmg_local_smoothing_adaptive/particles/particles-00001 7.90566815e-01 1.00000000e+00 0 0 21
+ 6 1.200000000000e-01 2.000000000000e-02 194 1983 873 0  0  0  0 40                                                                                         "" 7.90566815e-01 1.00000000e+00 0 0 21
+ 7 1.400000000000e-01 2.000000000000e-02 194 1983 873 0  0  0  0 40                                                                                         "" 7.90566815e-01 1.00000000e+00 0 0 21
+ 8 1.600000000000e-01 2.000000000000e-02 194 1983 873 0  0  0  0 40                                                                                         "" 7.90566815e-01 1.00000000e+00 0 0 17
+ 9 1.800000000000e-01 2.000000000000e-02 194 1983 873 0  0  0  0 40                                                                                         "" 7.90566815e-01 1.00000000e+00 0 0 40
+10 2.000000000000e-01 2.000000000000e-02 194 1983 873 0  0  0  0 40 output-particle_periodic_half_shell_gmg_local_smoothing_adaptive/particles/particles-00002 7.90566815e-01 1.00000000e+00 0 0 40
+11 2.000000000000e-01 2.775557561563e-17 194 1983 873 0  0  0  0 40                                                                                         "" 7.90566815e-01 1.00000000e+00 0 0 40
