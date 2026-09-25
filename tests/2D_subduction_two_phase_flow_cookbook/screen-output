@@ -1,0 +1,63 @@
+
+Loading shared library <./lib2D_subduction_two_phase_flow_cookbook.debug.so>
+
+Number of active cells: 48 (on 2 levels)
+Number of degrees of freedom: 2,090 (450+65+225+225+225+225+225+225+225)
+
+*** Timestep 0:  t=0 years, dt=0 years
+   Skipping porosity composition solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 19+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 0, 0, 0, 0, 0, 0, 1
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 1
+
+   Skipping porosity composition solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 16+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 0, 0, 0, 0, 0, 0, 0.0325226
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 0.0325226
+
+   Skipping porosity composition solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 15+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 0, 0, 0, 0, 0, 0, 0.0122776
+      Relative nonlinear residual (total system) after nonlinear iteration 3: 0.0122776
+
+   Skipping porosity composition solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 14+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 0, 0, 0, 0, 0, 0, 0.00470844
+      Relative nonlinear residual (total system) after nonlinear iteration 4: 0.00470844
+
+   Skipping porosity composition solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 13+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 0, 0, 0, 0, 0, 0, 0.00179746
+      Relative nonlinear residual (total system) after nonlinear iteration 5: 0.00179746
+
+   Skipping porosity composition solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 12+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 0, 0, 0, 0, 0, 0, 0.000685564
+      Relative nonlinear residual (total system) after nonlinear iteration 6: 0.000685564
+
+
+   Postprocessing:
+     Compositions min/max/mass: 0/0/0 // 0/0.021/8.585e+09 // 0/1/2.482e+13 // 0/0/0 // 0/0/0 // 0/1/4.088e+11
+
+*** Timestep 1:  t=100 years, dt=100 years
+   Solving composition reactions... in 2 substep(s).
+   Solving porosity system ... 9 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 10+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 0.000159525, 0, 0, 0, 0, 0, 0.000385553
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 0.000385553
+
+
+   Postprocessing:
+     Compositions min/max/mass: -6.174e-08/0.000693/2.448e+08 // 0/0.021/8.585e+09 // 0/1/2.482e+13 // 0/0/0 // 0/0/0 // 0/1/4.088e+11
+
+Termination requested by criterion: end time
+
+
+
