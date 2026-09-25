@@ -1,0 +1,15 @@
+subsection Termination criteria
+  set Termination criteria      = steady state velocity, steady state heat flux
+
+  subsection Steady state velocity
+    set Maximum relative deviation = 1e-6
+    set Time in steady state       = 500e6
+  end
+
+  subsection Steady state heat flux
+    set Maximum relative deviation = 1e-6
+    set Time in steady state       = 500e6
+    set Boundary indicators        = top
+  end
+
+end
