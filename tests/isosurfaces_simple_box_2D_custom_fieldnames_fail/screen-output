@@ -13,7 +13,7 @@ An error occurred in file <isosurfaces.cc> in function
 Additional information: 
     The key given for the isosurface could not be converted. The provided
     key was: C_2. The following keys are allowed for this model:
-    Temperature, field1, FieldB, fIEld_C.
+    Temperature, Norm of velocity, field1, FieldB, fIEld_C.
 
 Stacktrace:
 (rest of the output replaced by default.sh script)
