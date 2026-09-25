@@ -9,7 +9,7 @@
 # ``sediment''.
 # Enable if: ASPECT_WITH_FASTSCAPE
 
-include $ASPECT_SOURCE_DIR/tests/fastscape_test_open_ghost_nodes.prm
+include $ASPECT_SOURCE_DIR/tests/mesh_deformation/fastscape_test_open_ghost_nodes.prm
 
 ####  Global parameters
 set Dimension                              = 2

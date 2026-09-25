@@ -11,7 +11,7 @@
 # fastscape_boundary_composition.prm test.
 # Enable if: ASPECT_WITH_FASTSCAPE
 
-include $ASPECT_SOURCE_DIR/tests/fastscape_boundary_composition.prm
+include $ASPECT_SOURCE_DIR/tests/mesh_deformation/fastscape_boundary_composition.prm
 
 ####  Global parameters
 set Dimension                              = 2
