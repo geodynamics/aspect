@@ -1769,7 +1769,6 @@ namespace aspect
           if (f==0)
             in.temperature[j]      = fields[j*n_fields+f];
           else
-            // TODO get correct field index here!
             in.composition[j][f-1] = fields[j*n_fields+f];
       return;
     };
