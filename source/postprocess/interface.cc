@@ -22,6 +22,9 @@
 #include <aspect/postprocess/interface.h>
 #include <aspect/utilities.h>
 
+#include <algorithm>
+#include <iterator>
+#include <set>
 #include <typeinfo>
 
 
@@ -110,6 +113,142 @@ namespace aspect
         }
 
       return  output_list;
+    }
+
+
+
+    template <int dim>
+    std::list<std::pair<std::string,std::string>>
+    Manager<dim>::execute_selected_postprocessors(const std::set<std::string> &requested_postprocessors,
+                                                  TableHandler &statistics)
+    {
+      // Create a working set initialized with the explicitly requested
+      // postprocessors. Dependencies can then be added to this set, while
+      // std::set prevents the same postprocessor from being added more than once.
+      std::set<std::string> postprocessors_to_execute =
+        requested_postprocessors;
+
+      // Keep a separate work list of postprocessors whose dependencies have
+      // not yet been inspected. Newly discovered dependencies are appended to
+      // this list so that dependencies of dependencies are included as well.
+      std::list<std::string> postprocessors_to_check(
+        requested_postprocessors.begin(),
+        requested_postprocessors.end());
+
+      // Return the plugin object associated with an active postprocessor name.
+      //
+      // plugin_names and plugin_objects are parallel containers, so the
+      // position of a name in plugin_names identifies the corresponding entry
+      // in plugin_objects.
+      const auto find_active_postprocessor =
+        [this](const std::string &postprocessor_name)
+      {
+        const auto name_position =
+          std::find(this->plugin_names.begin(),
+                    this->plugin_names.end(),
+                    postprocessor_name);
+
+        AssertThrow(name_position != this->plugin_names.end(),
+                    ExcMessage("The selected postprocessor <" + postprocessor_name
+                               + "> is not active."));
+
+        return std::next(this->plugin_objects.begin(),
+                         std::distance(this->plugin_names.begin(),
+                                       name_position));
+      };
+
+      // Traverse the dependency graph starting from the requested
+      // postprocessors. Each postprocessor is added to postprocessors_to_check
+      // only when it is first discovered, so its dependencies are inspected at
+      // most once.
+      while (postprocessors_to_check.empty() == false)
+        {
+          const std::string postprocessor_name = postprocessors_to_check.front();
+          postprocessors_to_check.pop_front();
+
+          const auto plugin = find_active_postprocessor(postprocessor_name);
+
+          for (const std::string &dependency : (*plugin)->required_other_postprocessors())
+            {
+              // Only new dependencies need to be inspected further.
+              if (postprocessors_to_execute.insert(dependency).second)
+                postprocessors_to_check.push_back(dependency);
+            }
+        }
+
+      // Execute the selected postprocessors in the order established during
+      // parse_parameters(). That ordering already places dependencies before
+      // the postprocessors that require them.
+      std::list<std::pair<std::string,std::string>> output_list;
+      auto plugin = this->plugin_objects.begin();
+      for (unsigned int i = 0;
+           i < this->plugin_names.size();
+           ++i, ++plugin)
+        {
+          if (postprocessors_to_execute.find(this->plugin_names[i])
+              == postprocessors_to_execute.end())
+            continue;
+
+          const auto &p = *plugin;
+
+          try
+            {
+              // first call the update() function.
+              p->update();
+
+              // call the execute() function. if it produces any output
+              // then add it to the list
+              std::pair<std::string,std::string> output
+                = p->execute (statistics);
+
+              if (output.first.size() + output.second.size() > 0)
+                output_list.push_back (output);
+            }
+          // postprocessors that throw exceptions usually do not result in
+          // anything good because they result in an unwinding of the stack
+          // and, if only one processor triggers an exception, the
+          // destruction of objects often causes a deadlock. thus, if
+          // an exception is generated, catch it, print an error message,
+          // and abort the program
+          catch (std::exception &exc)
+            {
+              std::cerr << std::endl << std::endl
+                        << "----------------------------------------------------"
+                        << std::endl;
+              std::cerr << "Exception on MPI process <"
+                        << Utilities::MPI::this_mpi_process(MPI_COMM_WORLD)
+                        << "> while running postprocessor <"
+                        << typeid(*p).name()
+                        << ">: " << std::endl
+                        << exc.what() << std::endl
+                        << "Aborting!" << std::endl
+                        << "----------------------------------------------------"
+                        << std::endl;
+
+              // terminate the program!
+              MPI_Abort (MPI_COMM_WORLD, 1);
+            }
+          catch (...)
+            {
+              std::cerr << std::endl << std::endl
+                        << "----------------------------------------------------"
+                        << std::endl;
+              std::cerr << "Exception on MPI process <"
+                        << Utilities::MPI::this_mpi_process(MPI_COMM_WORLD)
+                        << "> while running postprocessor <"
+                        << typeid(*p).name()
+                        << ">: " << std::endl;
+              std::cerr << "Unknown exception!" << std::endl
+                        << "Aborting!" << std::endl
+                        << "----------------------------------------------------"
+                        << std::endl;
+
+              // terminate the program!
+              MPI_Abort (MPI_COMM_WORLD, 1);
+            }
+        }
+
+      return output_list;
     }
 
 
