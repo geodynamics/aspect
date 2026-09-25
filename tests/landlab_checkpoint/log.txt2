@@ -1,0 +1,75 @@
+-----------------------------------------------------------------------------
+--                             This is ASPECT                              --
+-- The Advanced Solver for Planetary Evolution, Convection, and Tectonics. --
+-----------------------------------------------------------------------------
+--     . version 3.1.0-pre (ll_load_save, bc00ce2ce)
+--     . using deal.II 9.7.1
+--     .       with 32 bit indices
+--     .       with vectorization level 1 (SSE2, 2 doubles, 128 bits)
+--     . using Trilinos 16.1.0
+--     . using p4est 2.8.7
+--     . using Geodynamic World Builder 1.1.1
+--     . running in DEBUG mode
+--     . running with 1 MPI process
+-----------------------------------------------------------------------------
+
+-----------------------------------------------------------------------------
+-- For information on how to cite ASPECT, see:
+--   https://aspect.geodynamics.org/citing.html?ver=3.1.0-pre&sha=bc00ce2ce&src=code
+-----------------------------------------------------------------------------
+*** Resuming from snapshot output2.tmp/restart/03/
+
+Number of active cells: 16 (on 3 levels)
+Number of degrees of freedom: 268 (187+81)
+
+Number of mesh deformation degrees of freedom: 162
+   Solving mesh displacement system... 2 iterations.
+*** Timestep 9:  t=90000 years, dt=10000 years
+   Solving mesh displacement system... 0 iterations.
+   Solving temperature system... 0 iterations.
+   Solving Stokes system (direct)... done.
+
+   Postprocessing:
+     Temperature min/avg/max: 0.9969 K, 1.04 K, 1.1 K
+     RMS, max velocity:       3.57e-09 m/year, 1.99e-08 m/year
+     Topography min/max:      1000 m, 1000 m
+
+*** Timestep 10:  t=100000 years, dt=10000 years
+   Solving mesh displacement system... 0 iterations.
+   Solving temperature system... 0 iterations.
+   Solving Stokes system (direct)... done.
+
+   Postprocessing:
+     Temperature min/avg/max: 0.9969 K, 1.04 K, 1.1 K
+     RMS, max velocity:       3.57e-09 m/year, 1.99e-08 m/year
+     Topography min/max:      1000 m, 1000 m
+
+Skipping mesh refinement, because no cells were flagged for refinement/coarsening.
+
+Termination requested by criterion: end time
+
+
++----------------------------------------------+------------+------------+
+| Total wallclock time elapsed since start     |      2.55s |            |
+|                                              |            |            |
+| Section                          | no. calls |  wall time | % of total |
++----------------------------------+-----------+------------+------------+
+| Assemble Stokes system           |         2 |   0.00107s |         0% |
+| Assemble temperature system      |         2 |   0.00139s |         0% |
+| Build temperature preconditioner |         2 |  0.000139s |         0% |
+| Initialization                   |         1 |      2.45s |        96% |
+| Mesh deformation                 |         2 |   0.00518s |       0.2% |
+| Mesh deformation initialize      |         1 |   0.00437s |      0.17% |
+| Postprocessing                   |         2 |   0.00188s |         0% |
+| Refine mesh structure, part 1    |         1 |  0.000484s |         0% |
+| Setup dof systems                |         1 |   0.00487s |      0.19% |
+| Setup matrices                   |         1 |  0.000252s |         0% |
+| Solve Stokes system              |         2 |  0.000516s |         0% |
+| Solve temperature system         |         2 |  9.65e-05s |         0% |
++----------------------------------+-----------+------------+------------+
+
+-- Total wallclock time elapsed including restarts: 7s
+-----------------------------------------------------------------------------
+-- For information on how to cite ASPECT, see:
+--   https://aspect.geodynamics.org/citing.html?ver=3.1.0-pre&sha=bc00ce2ce&src=code
+-----------------------------------------------------------------------------
