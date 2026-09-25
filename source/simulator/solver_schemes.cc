@@ -323,7 +323,18 @@ namespace aspect
                   if (c == last_entropy_field_index)
                     {
                       if (parameters.use_operator_splitting)
-                        compute_reactions ();
+                        {
+                          std::vector<AdvectionField> advection_fields;
+                          // First add the temperature field
+                          advection_fields.push_back(AdvectionField::temperature());
+                          // Then add all compositional fields that are not tracked by particles.
+                          for (unsigned int c=0; c<introspection.n_compositional_fields; ++c)
+                            {
+                              if (parameters.compositional_field_methods[c] != Parameters<dim>::AdvectionFieldMethod::particles)
+                                advection_fields.push_back(AdvectionField::composition(c));
+                            }
+                          compute_reactions (advection_fields);
+                        }
                       const AdvectionField T_field (AdvectionField::temperature());
                       interpolate_material_output_into_advection_field({T_field});
                     }

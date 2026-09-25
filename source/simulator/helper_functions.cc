@@ -1635,11 +1635,14 @@ namespace aspect
 
 
   template <int dim>
-  void Simulator<dim>::compute_reactions ()
+  void Simulator<dim>::compute_reactions (const std::vector<AdvectionField> &advection_fields_with_reactions)
   {
     // if the time step has a length of zero, there are no reactions
     if (time_step == 0)
       return;
+
+    Assert(advection_fields_with_reactions.size() > 0,
+           ExcMessage("The number of fields that need reactions should be larger than 0."));
 
     computing_timer.enter_subsection("Solve composition reactions");
 
@@ -1665,8 +1668,8 @@ namespace aspect
     pcout << "   Solving composition reactions... " << std::flush;
 
 
-    // We want to compute reactions in each support point for all fields (compositional fields and temperature). The reaction
-    // rate for an individual field depends on the values of all other fields, so we have to step them forward in time together.
+    // We want to compute reactions in each support point for the temperature field and for all compositional fields that need them.
+    // The reaction rate for an individual field can depend on the values of all other fields, so we have to step them forward in time together.
     // The rates comes from the material and heating model, otherwise we have a simple ODE in each point on each cell to solve.
     //
     // So far so good. Except that fields can have different Finite Element discretizations (degree, continuous/discontinuous)
@@ -1678,16 +1681,22 @@ namespace aspect
     // First compute all unique support points (temperature and compositions):
     std::vector<Point<dim>> unique_support_points;
     std::vector<std::vector<unsigned int>> support_point_index_by_field;
-    std::vector<AdvectionField> advection_fields;
 
-    // First add the temperature field
-    advection_fields.push_back(AdvectionField::temperature());
-    // Then add all compositional fields
-    for (unsigned int c=0; c<introspection.n_compositional_fields; ++c)
-      advection_fields.push_back(AdvectionField::composition(c));
-
-    const unsigned int n_fields = advection_fields.size();
-    compute_unique_advection_support_points(advection_fields, unique_support_points, support_point_index_by_field);
+    // n_fields_with_reactions = 1 temperature field + n_compositional_fields_with_reactions.
+    // introspection.n_compositional_fields = all compositional fields, with and without reactions needed.
+    // n_fields = introspection.n_compositional_fields + 1 = all compositional fields + 1 temperature field.
+    const unsigned int n_fields_with_reactions = advection_fields_with_reactions.size();
+    const unsigned int n_fields = introspection.n_compositional_fields + 1;
+    const unsigned int n_fields_without_reactions = n_fields - n_fields_with_reactions;
+    Assert (n_fields_with_reactions <= n_fields,
+            ExcMessage("The number of fields that need reactions should be less than or equal to the total number of advection fields."));
+    std::vector<unsigned int> compositional_field_indices_of_fields_with_reactions;
+    // We start at 1 so we skip the temperature field.
+    for (unsigned int i=1; i<n_fields_with_reactions; ++i)
+      {
+        compositional_field_indices_of_fields_with_reactions.push_back(advection_fields_with_reactions[i].compositional_variable);
+      }
+    compute_unique_advection_support_points(advection_fields_with_reactions, unique_support_points, support_point_index_by_field);
 
     const Quadrature<dim> combined_support_points(unique_support_points);
     FEValues<dim> fe_values (*mapping,
@@ -1773,8 +1782,18 @@ namespace aspect
           if (f==0)
             rates[j*n_fields+f] = heating_out.rates_of_temperature_change[j];
           else
+            // TODO check that rates are 0 for fields that do not need reactions,
+            // i.e. that are not in advection_fields_with_reactions.
             rates[j*n_fields+f] = reaction_out.reaction_rates[j][f-1];
       return;
+    };
+
+    auto compositional_field_needs_reaction = [compositional_field_indices_of_fields_with_reactions](const unsigned int f)
+    {
+      for (const auto &field_index : compositional_field_indices_of_fields_with_reactions)
+        if (f == field_index)
+          return true;
+      return false;
     };
 
     unsigned int total_iteration_count = 0;
@@ -1844,8 +1863,12 @@ namespace aspect
                       }
                     else
                       {
-                        in.composition[j][f-1]          = fields[j*n_fields+f];
-                        accumulated_reactions_C[j][f-1] = in.composition[j][f-1] - initial_values_C[j][f-1];
+                        // We only want to update the compositional fields that are in advection_fields_with_reactions.
+                        if (compositional_field_needs_reaction(f-1))
+                          {
+                            in.composition[j][f-1]          = fields[j*n_fields+f];
+                            accumulated_reactions_C[j][f-1] = in.composition[j][f-1] - initial_values_C[j][f-1];
+                          }
                       }
                   }
             }
@@ -1862,7 +1885,8 @@ namespace aspect
 
                   for (unsigned int j=0; j<n_q_points; ++j)
                     {
-                      for (unsigned int c=0; c<introspection.n_compositional_fields; ++c)
+                      // We only want to update the compositional fields that are in advection_fields_with_reactions.
+                      for (auto c : compositional_field_indices_of_fields_with_reactions)
                         {
                           // simple forward euler
                           in.composition[j][c] = in.composition[j][c]
@@ -1893,9 +1917,25 @@ namespace aspect
                   // field) this DoF is:
                   const unsigned int index_within = comp_pair.second;
                   const unsigned int field_index = component_idx-component_idx_T;
+                  // Skip any fields that do not need reactions, i.e. that are not in advection_fields_with_reactions.
+                  if (!compositional_field_needs_reaction(field_index-1) && component_idx != component_idx_T)
+                    continue;
+
                   // Now we can look up in the support_point_index_by_field data structure where this support
-                  // point is in the list of unique_support_points (and in the Quadrature):
-                  const unsigned int point_idx = support_point_index_by_field[field_index][index_within];
+                  // point is in the list of unique_support_points (and in the Quadrature).
+                  // However, support_point_index_by_field is indexed by the field index in advection_fields_with_reactions,
+                  // not by the field index in all fields. So we have to find the correct index first.
+                  unsigned int field_index_in_fields_with_reactions = field_index;
+                  if (n_fields_without_reactions > 0 && field_index > 0)
+                    {
+                      // Remove 1 from the field index to skip the temperature field.
+                      const auto field_it = std::find(compositional_field_indices_of_fields_with_reactions.begin(), compositional_field_indices_of_fields_with_reactions.end(), field_index-1);
+                      Assert (field_it != compositional_field_indices_of_fields_with_reactions.end(),
+                              ExcMessage("The field index of a compositional field that needs reactions should be in the list of compositional fields that need reactions."));
+                      // Add 1 again to include the temperature field.
+                      field_index_in_fields_with_reactions = 1 + field_it - compositional_field_indices_of_fields_with_reactions.begin();
+                    }
+                  const unsigned int point_idx = support_point_index_by_field[field_index_in_fields_with_reactions][index_within];
 
                   // The final step is grabbing the value from the reaction computation and write it into
                   // the global vector (if we own it and if it is not a constrained degree of freedom).:
@@ -1929,7 +1969,7 @@ namespace aspect
     constraints.distribute(distributed_reaction_vector);
 
     // put the final values into the solution vector
-    for (unsigned int c=0; c<introspection.n_compositional_fields; ++c)
+    for (auto c : compositional_field_indices_of_fields_with_reactions)
       update_solution_vectors_with_reaction_results(introspection.block_indices.compositional_fields[c],
                                                     distributed_vector,
                                                     distributed_reaction_vector);
@@ -2902,7 +2942,7 @@ namespace aspect
   template void Simulator<dim>::compute_unique_advection_support_points(const std::vector<AdvectionField> &advection_fields, \
                                                                         std::vector<Point<dim>> &support_points, \
                                                                         std::vector<std::vector<unsigned int>> &support_point_index_by_field) const; \
-  template void Simulator<dim>::compute_reactions(); \
+  template void Simulator<dim>::compute_reactions(const std::vector<AdvectionField> &advection_fields_with_reactions); \
   template void Simulator<dim>::initialize_current_linearization_point (); \
   template void Simulator<dim>::interpolate_material_output_into_advection_field(const std::vector<AdvectionField> &adv_field); \
   template void Simulator<dim>::check_consistency_of_formulation(); \
