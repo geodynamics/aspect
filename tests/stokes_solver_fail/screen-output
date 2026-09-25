@@ -27,16 +27,17 @@ Additional information:
     --------------------------------------------------------
 (line in output replaced by default.sh script)
 (line in output replaced by default.sh script)
-    void dealii::SolverFGMRES<VectorType>::solve(const MatrixType&,
-    VectorType&, const VectorType&, const PreconditionerType&) [with
-    MatrixType = aspect::StokesSolver::internal::StokesBlock;
-    PreconditionerType =
-    aspect::internal::BlockSchurPreconditioner<aspect::internal::InverseVelocityBlock<dealii::TrilinosWrappers::PreconditionAMG,
+    void dealii::SolverMPGMRES<VectorType>::solve_internal(const
+    MatrixType&, VectorType&, const VectorType&, const
+    dealii::SolverMPGMRES<VectorType>::IndexingStrategy&, const
+    PreconditionerTypes& ...) [with MatrixType =
+    aspect::StokesSolver::internal::StokesBlock; PreconditionerTypes =
+    {aspect::internal::BlockSchurPreconditioner<aspect::internal::InverseVelocityBlock<dealii::TrilinosWrappers::PreconditionAMG,
     dealii::TrilinosWrappers::MPI::Vector,
     dealii::TrilinosWrappers::SparseMatrix>,
     aspect::StokesSolver::internal::SchurComplementOperator,
     dealii::TrilinosWrappers::SparseMatrix,
-    dealii::TrilinosWrappers::MPI::BlockVector>; VectorType =
+    dealii::TrilinosWrappers::MPI::BlockVector>}; VectorType =
     dealii::TrilinosWrappers::MPI::BlockVector]
     Additional information:
     Iterative method reported convergence failure in step 10. The residual

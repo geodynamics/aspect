@@ -90,13 +90,13 @@ Skipping mesh refinement, because no cells were flagged for refinement/coarsenin
 
 *** Timestep 14:  t=2513.08 seconds, dt=101 seconds
    Solving temperature system... 2 iterations.
-   Solving Stokes system (GMG)... 0+0 iterations.
+   Solving Stokes system (GMG)... 1+0 iterations.
 
    Postprocessing:
 
 *** Timestep 15:  t=2614.08 seconds, dt=101 seconds
    Solving temperature system... 2 iterations.
-   Solving Stokes system (GMG)... 1+0 iterations.
+   Solving Stokes system (GMG)... 0+0 iterations.
 
    Postprocessing:
 
@@ -114,19 +114,19 @@ Skipping mesh refinement, because no cells were flagged for refinement/coarsenin
 
 *** Timestep 18:  t=2926.6 seconds, dt=107.888 seconds
    Solving temperature system... 2 iterations.
-   Solving Stokes system (GMG)... 1+0 iterations.
+   Solving Stokes system (GMG)... 0+0 iterations.
 
    Postprocessing:
 
 *** Timestep 19:  t=3040.59 seconds, dt=113.993 seconds
    Solving temperature system... 2 iterations.
-   Solving Stokes system (GMG)... 0+0 iterations.
+   Solving Stokes system (GMG)... 1+0 iterations.
 
    Postprocessing:
 
 *** Timestep 20:  t=3162.75 seconds, dt=122.155 seconds
    Solving temperature system... 2 iterations.
-   Solving Stokes system (GMG)... 0+0 iterations.
+   Solving Stokes system (GMG)... 1+0 iterations.
 
    Postprocessing:
 
@@ -140,7 +140,7 @@ Skipping mesh refinement, because no cells were flagged for refinement/coarsenin
 
 *** Timestep 22:  t=3441.28 seconds, dt=145.866 seconds
    Solving temperature system... 2 iterations.
-   Solving Stokes system (GMG)... 1+0 iterations.
+   Solving Stokes system (GMG)... 0+0 iterations.
 
    Postprocessing:
 
@@ -152,25 +152,25 @@ Skipping mesh refinement, because no cells were flagged for refinement/coarsenin
 
 *** Timestep 24:  t=3784.97 seconds, dt=181.595 seconds
    Solving temperature system... 2 iterations.
-   Solving Stokes system (GMG)... 0+0 iterations.
+   Solving Stokes system (GMG)... 1+0 iterations.
 
    Postprocessing:
 
 *** Timestep 25:  t=3989.27 seconds, dt=204.303 seconds
    Solving temperature system... 2 iterations.
-   Solving Stokes system (GMG)... 1+0 iterations.
+   Solving Stokes system (GMG)... 0+0 iterations.
 
    Postprocessing:
 
 *** Timestep 26:  t=4218.8 seconds, dt=229.526 seconds
    Solving temperature system... 2 iterations.
-   Solving Stokes system (GMG)... 1+0 iterations.
+   Solving Stokes system (GMG)... 0+0 iterations.
 
    Postprocessing:
 
 *** Timestep 27:  t=4474.28 seconds, dt=255.479 seconds
    Solving temperature system... 3 iterations.
-   Solving Stokes system (GMG)... 0+0 iterations.
+   Solving Stokes system (GMG)... 1+0 iterations.
 
    Postprocessing:
 
@@ -208,7 +208,7 @@ Skipping mesh refinement, because no cells were flagged for refinement/coarsenin
 
 *** Timestep 33:  t=6270.39 seconds, dt=305.964 seconds
    Solving temperature system... 3 iterations.
-   Solving Stokes system (GMG)... 1+0 iterations.
+   Solving Stokes system (GMG)... 0+0 iterations.
 
    Postprocessing:
 
@@ -220,7 +220,7 @@ Skipping mesh refinement, because no cells were flagged for refinement/coarsenin
 
 *** Timestep 35:  t=6883.24 seconds, dt=306.577 seconds
    Solving temperature system... 3 iterations.
-   Solving Stokes system (GMG)... 0+0 iterations.
+   Solving Stokes system (GMG)... 1+0 iterations.
 
    Postprocessing:
 
@@ -232,19 +232,19 @@ Skipping mesh refinement, because no cells were flagged for refinement/coarsenin
 
 *** Timestep 37:  t=7497.31 seconds, dt=307.19 seconds
    Solving temperature system... 3 iterations.
-   Solving Stokes system (GMG)... 0+0 iterations.
+   Solving Stokes system (GMG)... 1+0 iterations.
 
    Postprocessing:
 
 *** Timestep 38:  t=7804.81 seconds, dt=307.497 seconds
    Solving temperature system... 3 iterations.
-   Solving Stokes system (GMG)... 1+0 iterations.
+   Solving Stokes system (GMG)... 0+0 iterations.
 
    Postprocessing:
 
 *** Timestep 39:  t=8112.61 seconds, dt=307.805 seconds
    Solving temperature system... 3 iterations.
-   Solving Stokes system (GMG)... 1+0 iterations.
+   Solving Stokes system (GMG)... 0+0 iterations.
 
    Postprocessing:
 
@@ -258,7 +258,7 @@ Skipping mesh refinement, because no cells were flagged for refinement/coarsenin
 
 *** Timestep 41:  t=8729.15 seconds, dt=308.421 seconds
    Solving temperature system... 3 iterations.
-   Solving Stokes system (GMG)... 1+0 iterations.
+   Solving Stokes system (GMG)... 2+0 iterations.
 
    Postprocessing:
 
@@ -270,37 +270,37 @@ Skipping mesh refinement, because no cells were flagged for refinement/coarsenin
 
 *** Timestep 43:  t=9346.91 seconds, dt=309.038 seconds
    Solving temperature system... 3 iterations.
-   Solving Stokes system (GMG)... 1+0 iterations.
+   Solving Stokes system (GMG)... 2+0 iterations.
 
    Postprocessing:
 
 *** Timestep 44:  t=9656.26 seconds, dt=309.347 seconds
    Solving temperature system... 3 iterations.
-   Solving Stokes system (GMG)... 1+0 iterations.
+   Solving Stokes system (GMG)... 0+0 iterations.
 
    Postprocessing:
 
 *** Timestep 45:  t=9965.92 seconds, dt=309.656 seconds
    Solving temperature system... 3 iterations.
-   Solving Stokes system (GMG)... 1+0 iterations.
+   Solving Stokes system (GMG)... 2+0 iterations.
 
    Postprocessing:
 
 *** Timestep 46:  t=10275.9 seconds, dt=309.966 seconds
    Solving temperature system... 3 iterations.
-   Solving Stokes system (GMG)... 1+0 iterations.
+   Solving Stokes system (GMG)... 0+0 iterations.
 
    Postprocessing:
 
 *** Timestep 47:  t=10586.2 seconds, dt=310.276 seconds
    Solving temperature system... 3 iterations.
-   Solving Stokes system (GMG)... 0+0 iterations.
+   Solving Stokes system (GMG)... 2+0 iterations.
 
    Postprocessing:
 
 *** Timestep 48:  t=10896.7 seconds, dt=310.586 seconds
    Solving temperature system... 3 iterations.
-   Solving Stokes system (GMG)... 0+0 iterations.
+   Solving Stokes system (GMG)... 1+0 iterations.
 
    Postprocessing:
 
@@ -312,7 +312,7 @@ Skipping mesh refinement, because no cells were flagged for refinement/coarsenin
 
 *** Timestep 50:  t=11518.8 seconds, dt=311.208 seconds
    Solving temperature system... 3 iterations.
-   Solving Stokes system (GMG)... 2+0 iterations.
+   Solving Stokes system (GMG)... 1+0 iterations.
 
    Postprocessing:
 
@@ -320,13 +320,13 @@ Skipping mesh refinement, because no cells were flagged for refinement/coarsenin
 
 *** Timestep 51:  t=11830.4 seconds, dt=311.519 seconds
    Solving temperature system... 3 iterations.
-   Solving Stokes system (GMG)... 0+0 iterations.
+   Solving Stokes system (GMG)... 1+0 iterations.
 
    Postprocessing:
 
 *** Timestep 52:  t=12142.2 seconds, dt=311.83 seconds
    Solving temperature system... 3 iterations.
-   Solving Stokes system (GMG)... 2+0 iterations.
+   Solving Stokes system (GMG)... 0+0 iterations.
 
    Postprocessing:
 
@@ -368,13 +368,13 @@ Skipping mesh refinement, because no cells were flagged for refinement/coarsenin
 
 *** Timestep 59:  t=14333.8 seconds, dt=314.02 seconds
    Solving temperature system... 3 iterations.
-   Solving Stokes system (GMG)... 1+0 iterations.
+   Solving Stokes system (GMG)... 0+0 iterations.
 
    Postprocessing:
 
 *** Timestep 60:  t=14648.1 seconds, dt=314.334 seconds
    Solving temperature system... 3 iterations.
-   Solving Stokes system (GMG)... 1+0 iterations.
+   Solving Stokes system (GMG)... 2+0 iterations.
 
    Postprocessing:
 

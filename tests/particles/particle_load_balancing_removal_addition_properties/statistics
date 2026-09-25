@@ -13,6 +13,6 @@
 # 13: Number of advected particles
 # 14: Particle file name
 0 0.000000000000e+00 0.000000000000e+00 16 187 81 81 0 0 11 12 12 107 output-particle_load_balancing_removal_addition_properties/particles/particles-00000 
-1 2.484857000682e+02 2.484857000682e+02 10 132 57 57 0 8  3  4  4  70                                                                                   "" 
-2 4.560871652825e+02 2.076014652143e+02 10 132 57 57 0 8  3  4  4  73                                                                                   "" 
-3 5.000000000000e+02 4.391283471753e+01 10 132 57 57 0 8  5  6  6  74 output-particle_load_balancing_removal_addition_properties/particles/particles-00001 
+1 2.484857000682e+02 2.484857000682e+02 10 132 57 57 0 8 25 26 26  70                                                                                   "" 
+2 4.562362752842e+02 2.077505752160e+02 10 132 57 57 0 8 14 15 15  73                                                                                   "" 
+3 5.000000000000e+02 4.376372471584e+01 10 132 57 57 0 8  6  7  7  74 output-particle_load_balancing_removal_addition_properties/particles/particles-00001 
