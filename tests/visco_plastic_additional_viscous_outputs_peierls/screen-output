@@ -1,0 +1,19 @@
+
+Number of active cells: 16 (on 1 levels)
+Number of degrees of freedom: 268 (162+25+81)
+
+*** Timestep 0:  t=0 years, dt=0 years
+   Solving temperature system... 0 iterations.
+   Solving Stokes system (GMG)... 0+0 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 0
+
+
+   Postprocessing:
+     RMS, max velocity:                  0 m/year, 0 m/year
+     Mass fluxes through boundary parts: 0 kg/yr, 0 kg/yr, 0 kg/yr, 0 kg/yr
+     Writing graphical output:           output-visco_plastic_additional_viscous_outputs_peierls/solution/solution-00000
+
+Termination requested by criterion: end time
+
+
+
