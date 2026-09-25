@@ -35,6 +35,33 @@ namespace aspect
     namespace
     {
       /**
+       * Return WorldBuilder's maximum topography when the selected external
+       * WorldBuilder version provides this function.
+       */
+      template <typename WorldBuilderType>
+      auto
+      get_maximum_topography (const WorldBuilderType &world_builder, int)
+      -> decltype(world_builder.maximum_topography())
+      {
+        return world_builder.maximum_topography();
+      }
+
+
+
+      /**
+       * Older external WorldBuilder versions do not provide a maximum
+       * topography query and historically used a zero upper bound.
+       */
+      template <typename WorldBuilderType>
+      double
+      get_maximum_topography (const WorldBuilderType &, long)
+      {
+        return 0.0;
+      }
+
+
+
+      /**
        * Return the radius of the undeformed reference surface for supported
        * spherical geometry models.
        */
@@ -72,7 +99,7 @@ namespace aspect
       CitationInfo::add("GWB");
       world_builder = this->get_world_builder_pointer();
 
-      maximum_topography = world_builder->maximum_topography();
+      maximum_topography = get_maximum_topography(*world_builder, 0);
     }
 
 
