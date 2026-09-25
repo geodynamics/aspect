@@ -16,7 +16,7 @@ Number of degrees of freedom: 22,216 (8,442+1,111+4,221+4,221+4,221)
       Relative nonlinear residual (Stokes system) after nonlinear iteration 3: 5.92695e-05
 
    Solving Stokes system (GMG)... 36+0 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 4: 7.71572e-07
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 4: 7.7157e-07
 
 
    Postprocessing:
@@ -28,7 +28,7 @@ Number of degrees of freedom: 22,216 (8,442+1,111+4,221+4,221+4,221)
    Skipping C_1 composition solve because RHS is zero.
    Solving C_2 system ... 18 iterations.
    Solving Stokes system (GMG)... 0+0 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 7.99813e-08
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 7.95455e-08
 
 
    Postprocessing:
@@ -40,7 +40,7 @@ Number of degrees of freedom: 22,216 (8,442+1,111+4,221+4,221+4,221)
    Skipping C_1 composition solve because RHS is zero.
    Solving C_2 system ... 19 iterations.
    Solving Stokes system (GMG)... 0+0 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 7.99813e-08
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 7.95455e-08
 
 
    Postprocessing:
@@ -52,7 +52,7 @@ Number of degrees of freedom: 22,216 (8,442+1,111+4,221+4,221+4,221)
    Skipping C_1 composition solve because RHS is zero.
    Solving C_2 system ... 19 iterations.
    Solving Stokes system (GMG)... 0+0 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 7.99813e-08
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 7.95455e-08
 
 
    Postprocessing:
@@ -64,7 +64,7 @@ Number of degrees of freedom: 22,216 (8,442+1,111+4,221+4,221+4,221)
    Skipping C_1 composition solve because RHS is zero.
    Solving C_2 system ... 19 iterations.
    Solving Stokes system (GMG)... 0+0 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 7.99813e-08
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 7.95455e-08
 
 
    Postprocessing:
@@ -76,7 +76,7 @@ Number of degrees of freedom: 22,216 (8,442+1,111+4,221+4,221+4,221)
    Skipping C_1 composition solve because RHS is zero.
    Solving C_2 system ... 10 iterations.
    Solving Stokes system (GMG)... 0+0 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 7.99813e-08
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 7.95455e-08
 
 
    Postprocessing:

@@ -13,7 +13,7 @@ Number of mesh deformation degrees of freedom: 2,910
      Topography min/max:                   -2.794e-09 m, 0 m
      Density at top/bottom of domain:      3300 kg/m^3, 3300 kg/m^3
      Writing geoid anomaly:                output-sea_level_postprocessor/geoid/geoid_anomaly.00000
-     Non-uniform sea level change min/max: -2.134e-10 m, 2.798e-09 m
+     Non-uniform sea level change min/max: -3.258e-10 m, 3.164e-09 m
 
 
 

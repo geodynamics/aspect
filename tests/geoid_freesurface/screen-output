@@ -7,28 +7,28 @@ Number of mesh deformation degrees of freedom: 20,790
 *** Timestep 0:  t=0 seconds, dt=0 seconds
    Solving mesh displacement system... 0 iterations.
    Solving temperature system... 0 iterations.
-   Solving Stokes system (GMG)... 23+0 iterations.
+   Solving Stokes system (GMG)... 22+0 iterations.
 
    Postprocessing:
      Topography min/max:               -3.331e-16 m, 2.22e-16 m
-     RMS, max velocity:                0.015 m/s, 0.0242 m/s
-     Temperature min/avg/max:          -3.154 K, 1.944e-15 K, 6.308 K
+     RMS, max velocity:                0.0153 m/s, 0.0249 m/s
+     Temperature min/avg/max:          -3.154 K, -1.908e-15 K, 6.308 K
      Density at top/bottom of domain:  1 kg/m^3, 1 kg/m^3
-     Pressure at top/bottom of domain: 4.836e-05 Pa, 0.4944 Pa
+     Pressure at top/bottom of domain: 2.879e-08 Pa, 0.5 Pa
      Computing dynamic topography      
      Writing geoid anomaly:            output-geoid_freesurface/geoid/geoid_anomaly.00000
 
 *** Timestep 1:  t=1e-06 seconds, dt=1e-06 seconds
    Solving mesh displacement system... 8 iterations.
    Solving temperature system... 8 iterations.
-   Solving Stokes system (GMG)... 14+0 iterations.
+   Solving Stokes system (GMG)... 13+0 iterations.
 
    Postprocessing:
-     Topography min/max:               -1.142e-08 m, 2.249e-08 m
-     RMS, max velocity:                0.0149 m/s, 0.0242 m/s
-     Temperature min/avg/max:          -3.154 K, -1.262e-05 K, 6.308 K
+     Topography min/max:               -1.24e-08 m, 2.48e-08 m
+     RMS, max velocity:                0.0153 m/s, 0.0249 m/s
+     Temperature min/avg/max:          -3.154 K, -1.233e-05 K, 6.308 K
      Density at top/bottom of domain:  1 kg/m^3, 1 kg/m^3
-     Pressure at top/bottom of domain: 4.836e-05 Pa, 0.4944 Pa
+     Pressure at top/bottom of domain: 2.424e-08 Pa, 0.5 Pa
      Computing dynamic topography      
      Writing geoid anomaly:            output-geoid_freesurface/geoid/geoid_anomaly.00001
 
