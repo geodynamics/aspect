@@ -1,0 +1,27 @@
+subsection Boundary velocity model
+  set Prescribed velocity boundary indicators = left: function, right: function
+  set Tangential velocity boundary indicators =
+  subsection Function
+    set Coordinate system   = cartesian
+    set Variable names      = x,y,t
+    set Function constants  = mm=0.001, yr=1, Z=300e3, X=700e3, outflow=10
+    set Function expression = if(x<X/2,-1,1)*outflow/2*mm/yr; \
+                              0   
+  end 
+end
+
+subsection Boundary traction model
+  set Prescribed traction boundary indicators = bottom: initial lithostatic pressure
+  subsection Initial lithostatic pressure
+    set Representative point = 10000,0
+  end 
+end
+
+subsection Mesh deformation
+  set Additional tangential mesh velocity boundary indicators = right
+  set Mesh deformation boundary indicators = top: fastscape
+
+  subsection Fastscape
+  ...
+  end
+end
