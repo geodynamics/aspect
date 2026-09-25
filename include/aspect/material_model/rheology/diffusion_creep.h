@@ -44,7 +44,6 @@ namespace aspect
         double prefactor;
         double activation_energy;
         double activation_volume;
-        double stress_exponent;
         double grain_size_exponent;
 
         /**
@@ -176,12 +175,6 @@ namespace aspect
            * This variable is read from the parameter file through a parameter called 'Prefactors for diffusion creep'.
            */
           std::vector<double> prefactors;
-
-          /**
-           * List of diffusion creep stress exponents n (usually = 1).
-           * This variable is read from the parameter file through a parameter called 'Stress exponents for diffusion creep'.
-           */
-          std::vector<double> stress_exponents;
 
           /**
            * List of diffusion creep grain size exponents m.
