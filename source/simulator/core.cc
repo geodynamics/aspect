@@ -2014,8 +2014,9 @@ namespace aspect
         signals.post_mesh_deformation(*this);
       }
 
-    // Compute the reactions of compositional fields and temperature in case of operator splitting.
-    if (parameters.use_operator_splitting)
+    // Compute the reactions of compositional fields and temperature in case of operator splitting
+    // before the nonlinear solver instead of after.
+    if (parameters.use_operator_splitting && parameters.reaction_strategy == Parameters<dim>::ReactionStrategy::before_nonlinear_solver)
       compute_reactions ();
 
     try
@@ -2159,6 +2160,33 @@ namespace aspect
             default:
               AssertThrow(false, ExcNotImplemented());
           }
+      }
+
+    // Compute the reactions of compositional fields and temperature here after
+    // the nonlinear solver instead of before. This is for example used to apply
+    // the full stress update when elasticity is included.
+    if (parameters.use_operator_splitting && parameters.reaction_strategy == Parameters<dim>::ReactionStrategy::after_nonlinear_solver)
+      {
+        compute_reactions ();
+        pcout << std::endl;
+      }
+
+    // When particles are used to track the elastic stresses instead of fields,
+    // the operator splitting is done directly on the particles through the post_nonlinear_solver
+    // signal. However, the updated stress particle properties still need to be interpolated
+    // onto the fields, which we do here.
+    if (parameters.enable_elasticity == true && parameters.use_operator_splitting == false)
+      {
+        Assert((parameters.mapped_particle_properties).count(introspection.compositional_index_for_name("ve_stress_xx")),
+               ExcMessage("When elasticity is enabled and operator splitting is not used, the stresses must be tracked on particles."));
+
+        const std::vector<unsigned int> stress_field_indices = introspection.get_indices_for_fields_of_type(CompositionalFieldDescription::stress);
+        std::vector<AdvectionField> fields_advected_by_particles;
+        for (unsigned int c=0; c < stress_field_indices.size(); ++c)
+          {
+            fields_advected_by_particles.push_back(AdvectionField::composition(stress_field_indices[c]));
+          }
+        interpolate_particle_properties(fields_advected_by_particles);
       }
   }
 
