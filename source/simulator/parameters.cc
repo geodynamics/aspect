@@ -20,6 +20,7 @@
 
 
 #include <aspect/simulator.h>
+#include <aspect/adjoint/manager.h>
 #include <aspect/global.h>
 #include <aspect/utilities.h>
 #include <aspect/melt.h>
@@ -211,6 +212,7 @@ namespace aspect
                                                "first timestep only, single Stokes|" // deprecated: use "no Advection, single Stokes first timestep only" instead
                                                "no Advection, iterated Stokes|"
                                                "no Advection, iterated defect correction Stokes|"
+                                               "no Advection, adjoint Stokes|"
                                                "single Advection, no Stokes|"
                                                "single Advection, single Stokes|"
                                                "single Advection, iterated Stokes|"
@@ -238,6 +240,10 @@ namespace aspect
                        "the temperature and composition equations once at the beginning of each time step and "
                        "then iterates out the solution of the Stokes equation, using defect correction Picard "
                        "iterations for the Stokes system.\n"
+                       "The `no Advection, adjoint Stokes' scheme solves an instantaneous forward Stokes "
+                       "problem without advection, then runs the configured adjoint workflow to assemble "
+                       "objective right hand sides, solve adjoint systems, and compute adjoint kernels and "
+                       "objective values.\n"
                        "The `single Advection, no Stokes' scheme solves the temperature and other advection "
                        "systems once per timestep, and instead of solving for the Stokes system, a prescribed "
                        "velocity and pressure is used. This is useful for kinematic models and advection benchmarks.\n"
@@ -1641,6 +1647,8 @@ namespace aspect
         nonlinear_solver = NonlinearSolver::no_Advection_iterated_Stokes;
       else if (solver_scheme == "no Advection, iterated defect correction Stokes")
         nonlinear_solver = NonlinearSolver::no_Advection_iterated_defect_correction_Stokes;
+      else if (solver_scheme == "no Advection, adjoint Stokes")
+        nonlinear_solver = NonlinearSolver::no_Advection_adjoint_Stokes;
       else if (solver_scheme == "single Advection, no Stokes")
         nonlinear_solver = NonlinearSolver::single_Advection_no_Stokes;
       else if (solver_scheme == "single Advection, single Stokes")
@@ -2522,6 +2530,7 @@ namespace aspect
     Melt::Parameters<dim>::declare_parameters (prm);
     Newton::Parameters::declare_parameters (prm);
     StokesMatrixFreeHandler<dim>::declare_parameters (prm);
+    Adjoint::Manager<dim>::declare_parameters (prm);
     MeshDeformation::MeshDeformationHandler<dim>::declare_parameters (prm);
     Postprocess::Manager<dim>::declare_parameters (prm);
     MeshRefinement::Manager<dim>::declare_parameters (prm);
