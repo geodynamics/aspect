@@ -1681,20 +1681,13 @@ namespace aspect
     // First compute all unique support points (temperature and compositions):
     std::vector<Point<dim>> unique_support_points;
     std::vector<std::vector<unsigned int>> support_point_index_by_field;
-    //std::vector<AdvectionField> advection_fields;
-
-    // TODO this will be replaced by the function argument
-    // First add the temperature field
-    //advection_fields.push_back(AdvectionField::temperature());
-    // Then add all compositional fields
-    //for (unsigned int c=0; c<introspection.n_compositional_fields; ++c)
-    //  advection_fields.push_back(AdvectionField::composition(c));
 
     // n_fields_with_reactions = 1 temperature field + n_compositional_fields_with_reactions.
     // introspection.n_compositional_fields = all compositional fields, with and without reactions needed.
     // n_fields = introspection.n_compositional_fields + 1 = all compositional fields + 1 temperature field.
     const unsigned int n_fields_with_reactions = advection_fields_with_reactions.size();
     const unsigned int n_fields = introspection.n_compositional_fields + 1;
+    const unsigned int n_fields_without_reactions = n_fields - n_fields_with_reactions;
     Assert (n_fields_with_reactions <= n_fields,
             ExcMessage("The number of fields that need reactions should be less than or equal to the total number of advection fields."));
     std::vector<unsigned int> compositional_field_indices_of_fields_with_reactions;
@@ -1930,8 +1923,20 @@ namespace aspect
                     continue;
 
                   // Now we can look up in the support_point_index_by_field data structure where this support
-                  // point is in the list of unique_support_points (and in the Quadrature):
-                  const unsigned int point_idx = support_point_index_by_field[field_index][index_within];
+                  // point is in the list of unique_support_points (and in the Quadrature).
+                  // However, support_point_index_by_field is indexed by the field index in advection_fields_with_reactions,
+                  // not by the field index in all fields. So we have to find the correct index first.
+                  unsigned int field_index_in_fields_with_reactions = field_index;
+                  if (n_fields_without_reactions > 0 && field_index > 0)
+                    {
+                      // Remove 1 from the field index to skip the temperature field.
+                      const auto field_it = std::find(compositional_field_indices_of_fields_with_reactions.begin(), compositional_field_indices_of_fields_with_reactions.end(), field_index-1);
+                      Assert (field_it != compositional_field_indices_of_fields_with_reactions.end(),
+                              ExcMessage("The field index of a compositional field that needs reactions should be in the list of compositional fields that need reactions."));
+                      // Add 1 again to include the temperature field.
+                      field_index_in_fields_with_reactions = 1 + field_it - compositional_field_indices_of_fields_with_reactions.begin();
+                    }
+                  const unsigned int point_idx = support_point_index_by_field[field_index_in_fields_with_reactions][index_within];
 
                   // The final step is grabbing the value from the reaction computation and write it into
                   // the global vector (if we own it and if it is not a constrained degree of freedom).:
