@@ -19,7 +19,7 @@ Number of degrees of freedom: 23,632 (14,418+2,005+7,209)
      Temperature min/avg/max: 999 K, 999.6 K, 1001 K
 
 *** Timestep 2:  t=1.16702e+14 seconds, dt=5.83511e+13 seconds
-   Solving temperature system... 45 iterations.
+   Solving temperature system... 46 iterations.
    Solving Stokes system (GMG)... 58+0 iterations.
 
    Postprocessing:

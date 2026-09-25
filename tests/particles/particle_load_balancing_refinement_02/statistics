@@ -14,10 +14,10 @@
 # 14: Particle file name
 0 0.000000000000e+00 0.000000000000e+00 64 659 289 289 0  0 12 13 13 10 output-particle_load_balancing_refinement_02/particles/particles-00000 
 1 1.008967254620e+02 1.008967254620e+02 31 362 158 158 0 10 16 17 17 10 output-particle_load_balancing_refinement_02/particles/particles-00001 
-2 1.839602048022e+02 8.306347934023e+01 31 362 158 158 0 14 16 17 17 10                                                                     "" 
-3 2.469195657176e+02 6.295936091542e+01 10 132  57  57 0 10  5  6  6 10 output-particle_load_balancing_refinement_02/particles/particles-00002 
-4 3.295351285622e+02 8.261556284462e+01 10 132  57  57 0 12  3  4  4 10 output-particle_load_balancing_refinement_02/particles/particles-00003 
-5 3.816724398126e+02 5.213731125036e+01 10 132  57  57 0 12  7  8  8 10                                                                     "" 
-6 4.372941468549e+02 5.562170704232e+01 10 132  57  57 0 10  6  7  7 10 output-particle_load_balancing_refinement_02/particles/particles-00004 
-7 4.826279276600e+02 4.533378080506e+01 10 132  57  57 0 11  4  5  5 10                                                                     "" 
-8 5.000000000000e+02 1.737207234001e+01 10 132  57  57 0  9 13 14 14 10 output-particle_load_balancing_refinement_02/particles/particles-00005 
+2 1.839602047958e+02 8.306347933381e+01 31 362 158 158 0 14 16 17 17 10                                                                     "" 
+3 2.469195656931e+02 6.295936089727e+01 10 132  57  57 0 10  4  5  5 10 output-particle_load_balancing_refinement_02/particles/particles-00002 
+4 3.418909944245e+02 9.497142873143e+01 10 132  57  57 0 11  4  5  5 10 output-particle_load_balancing_refinement_02/particles/particles-00003 
+5 3.968332782992e+02 5.494228387473e+01 10 132  57  57 0 11 10 11 11 10                                                                     "" 
+6 4.510262823134e+02 5.419300401418e+01 10 132  57  57 0 10  4  5  5 10 output-particle_load_balancing_refinement_02/particles/particles-00004 
+7 4.936441219294e+02 4.261783961602e+01 10 132  57  57 0 11  5  6  6 10                                                                     "" 
+8 5.000000000000e+02 6.355878070591e+00 10 132  57  57 0  9  7  8  8 10 output-particle_load_balancing_refinement_02/particles/particles-00005 

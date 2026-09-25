@@ -35,15 +35,15 @@ Number of degrees of freedom: 15,942 (8,450+1,089+4,225+1,089+1,089)
    Solving porosity system ... 7 iterations.
    Solving peridotite system ... 7 iterations.
    Solving Stokes system (GMG)... 0+6 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0.000698681, 1.67358, 1.67358, 1.27188e-05
-      Relative nonlinear residual (total system) after nonlinear iteration 2: 1.67358
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0.000698681, 1.67357, 1.67357, 1.27188e-05
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 1.67357
 
    Solving temperature system... 18 iterations.
    Solving porosity system ... 7 iterations.
    Solving peridotite system ... 7 iterations.
    Solving Stokes system (GMG)... 0+5 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0.000181283, 0.991278, 0.991278, 3.26488e-06
-      Relative nonlinear residual (total system) after nonlinear iteration 3: 0.991278
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0.000181283, 0.99128, 0.99128, 3.26488e-06
+      Relative nonlinear residual (total system) after nonlinear iteration 3: 0.99128
 
    Solving temperature system... 17 iterations.
    Solving porosity system ... 7 iterations.
@@ -63,22 +63,22 @@ Number of degrees of freedom: 15,942 (8,450+1,089+4,225+1,089+1,089)
    Solving porosity system ... 7 iterations.
    Solving peridotite system ... 7 iterations.
    Solving Stokes system (GMG)... 0+4 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 4.79161e-06, 0.828453, 0.828453, 8.66699e-08
-      Relative nonlinear residual (total system) after nonlinear iteration 6: 0.828453
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 4.79161e-06, 0.828455, 0.828455, 8.66699e-08
+      Relative nonlinear residual (total system) after nonlinear iteration 6: 0.828455
 
    Solving temperature system... 14 iterations.
    Solving porosity system ... 7 iterations.
    Solving peridotite system ... 7 iterations.
    Solving Stokes system (GMG)... 0+4 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.5685e-06, 0.6316, 0.6316, 2.82618e-08
-      Relative nonlinear residual (total system) after nonlinear iteration 7: 0.6316
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.5685e-06, 0.631602, 0.631602, 2.82618e-08
+      Relative nonlinear residual (total system) after nonlinear iteration 7: 0.631602
 
    Solving temperature system... 13 iterations.
    Solving porosity system ... 7 iterations.
    Solving peridotite system ... 7 iterations.
    Solving Stokes system (GMG)... 0+4 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 5.23042e-07, 0.302627, 0.302627, 9.31505e-09
-      Relative nonlinear residual (total system) after nonlinear iteration 8: 0.302627
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 5.23042e-07, 0.302628, 0.302628, 9.31505e-09
+      Relative nonlinear residual (total system) after nonlinear iteration 8: 0.302628
 
    Solving temperature system... 12 iterations.
    Solving porosity system ... 6 iterations.
@@ -91,8 +91,8 @@ Number of degrees of freedom: 15,942 (8,450+1,089+4,225+1,089+1,089)
    Solving porosity system ... 7 iterations.
    Solving peridotite system ... 7 iterations.
    Solving Stokes system (GMG)... 0+3 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 5.57809e-08, 0.285921, 0.285921, 9.55921e-10
-      Relative nonlinear residual (total system) after nonlinear iteration 10: 0.285921
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 5.57809e-08, 0.285922, 0.285922, 9.55921e-10
+      Relative nonlinear residual (total system) after nonlinear iteration 10: 0.285922
 
    Solving temperature system... 10 iterations.
    Solving porosity system ... 7 iterations.
@@ -105,115 +105,115 @@ Number of degrees of freedom: 15,942 (8,450+1,089+4,225+1,089+1,089)
    Solving porosity system ... 6 iterations.
    Solving peridotite system ... 6 iterations.
    Solving Stokes system (GMG)... 0+2 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 5.10838e-09, 0.511585, 0.511585, 8.50267e-11
-      Relative nonlinear residual (total system) after nonlinear iteration 12: 0.511585
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 5.10837e-09, 0.511584, 0.511584, 8.50267e-11
+      Relative nonlinear residual (total system) after nonlinear iteration 12: 0.511584
 
    Solving temperature system... 8 iterations.
    Solving porosity system ... 7 iterations.
    Solving peridotite system ... 7 iterations.
    Solving Stokes system (GMG)... 0+2 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.43483e-09, 0.402727, 0.402727, 2.37749e-11
-      Relative nonlinear residual (total system) after nonlinear iteration 13: 0.402727
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.43483e-09, 0.402723, 0.402723, 2.37746e-11
+      Relative nonlinear residual (total system) after nonlinear iteration 13: 0.402723
 
    Solving temperature system... 7 iterations.
    Solving porosity system ... 7 iterations.
    Solving peridotite system ... 7 iterations.
    Solving Stokes system (GMG)... 0+1 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 3.88196e-10, 0.119219, 0.119219, 6.43779e-12
-      Relative nonlinear residual (total system) after nonlinear iteration 14: 0.119219
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 3.88192e-10, 0.119225, 0.119225, 6.43793e-12
+      Relative nonlinear residual (total system) after nonlinear iteration 14: 0.119225
 
    Solving temperature system... 7 iterations.
    Solving porosity system ... 6 iterations.
    Solving peridotite system ... 6 iterations.
    Solving Stokes system (GMG)... 0+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.41125e-10, 0.774571, 0.774571, 2.96724e-12
-      Relative nonlinear residual (total system) after nonlinear iteration 15: 0.774571
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.41131e-10, 0.774786, 0.774786, 2.96745e-12
+      Relative nonlinear residual (total system) after nonlinear iteration 15: 0.774786
 
    Solving temperature system... 2 iterations.
    Solving porosity system ... 0 iterations.
    Solving peridotite system ... 0 iterations.
    Solving Stokes system (GMG)... 0+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.03419e-13, 3.17958e-15, 3.17958e-15, 2.96576e-12
-      Relative nonlinear residual (total system) after nonlinear iteration 16: 2.96576e-12
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.03429e-13, 3.06174e-15, 3.06174e-15, 2.96598e-12
+      Relative nonlinear residual (total system) after nonlinear iteration 16: 2.96598e-12
 
 
    Postprocessing:
-     Compositions min/max/mass: -6.973e-09/1.392e-08/4.312e-06 // -6.973e-09/1.392e-08/4.312e-06
+     Compositions min/max/mass: -6.974e-09/1.393e-08/9.869e-06 // -6.974e-09/1.393e-08/9.869e-06
 
 *** Timestep 2:  t=10000 years, dt=3670.49 years
    Solving temperature system... 16 iterations.
    Solving porosity system ... 6 iterations.
    Solving peridotite system ... 6 iterations.
    Solving Stokes system (GMG)... 0+5 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0.000445624, 0.242604, 0.242604, 8.13463e-06
-      Relative nonlinear residual (total system) after nonlinear iteration 1: 0.242604
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0.000445624, 0.242611, 0.242611, 8.13463e-06
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 0.242611
 
    Solving temperature system... 14 iterations.
    Solving porosity system ... 6 iterations.
    Solving peridotite system ... 6 iterations.
    Solving Stokes system (GMG)... 0+5 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 5.48077e-05, 0.642725, 0.642725, 1.02337e-06
-      Relative nonlinear residual (total system) after nonlinear iteration 2: 0.642725
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 5.48077e-05, 0.642518, 0.642518, 1.02337e-06
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 0.642518
 
    Solving temperature system... 13 iterations.
    Solving porosity system ... 6 iterations.
    Solving peridotite system ... 6 iterations.
    Solving Stokes system (GMG)... 0+4 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 7.40617e-06, 0.345571, 0.345571, 1.38553e-07
-      Relative nonlinear residual (total system) after nonlinear iteration 3: 0.345571
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 7.40617e-06, 0.345393, 0.345393, 1.38553e-07
+      Relative nonlinear residual (total system) after nonlinear iteration 3: 0.345393
 
    Solving temperature system... 12 iterations.
    Solving porosity system ... 6 iterations.
    Solving peridotite system ... 6 iterations.
    Solving Stokes system (GMG)... 0+4 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.04317e-06, 0.131003, 0.131003, 1.95208e-08
-      Relative nonlinear residual (total system) after nonlinear iteration 4: 0.131003
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.04317e-06, 0.130935, 0.130935, 1.95208e-08
+      Relative nonlinear residual (total system) after nonlinear iteration 4: 0.130935
 
    Solving temperature system... 11 iterations.
    Solving porosity system ... 6 iterations.
    Solving peridotite system ... 6 iterations.
    Solving Stokes system (GMG)... 0+3 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.5246e-07, 0.11575, 0.11575, 2.85213e-09
-      Relative nonlinear residual (total system) after nonlinear iteration 5: 0.11575
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.5246e-07, 0.115691, 0.115691, 2.85213e-09
+      Relative nonlinear residual (total system) after nonlinear iteration 5: 0.115691
 
    Solving temperature system... 10 iterations.
    Solving porosity system ... 6 iterations.
    Solving peridotite system ... 6 iterations.
    Solving Stokes system (GMG)... 0+2 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 2.29741e-08, 0.146935, 0.146935, 4.29456e-10
-      Relative nonlinear residual (total system) after nonlinear iteration 6: 0.146935
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 2.29741e-08, 0.14686, 0.14686, 4.29456e-10
+      Relative nonlinear residual (total system) after nonlinear iteration 6: 0.14686
 
    Solving temperature system... 9 iterations.
    Solving porosity system ... 6 iterations.
    Solving peridotite system ... 6 iterations.
    Solving Stokes system (GMG)... 0+2 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 3.53615e-09, 0.193592, 0.193592, 6.60312e-11
-      Relative nonlinear residual (total system) after nonlinear iteration 7: 0.193592
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 3.53615e-09, 0.193492, 0.193492, 6.60315e-11
+      Relative nonlinear residual (total system) after nonlinear iteration 7: 0.193492
 
    Solving temperature system... 7 iterations.
    Solving porosity system ... 6 iterations.
    Solving peridotite system ... 6 iterations.
    Solving Stokes system (GMG)... 0+2 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 5.42986e-10, 0.20683, 0.20683, 1.01192e-11
-      Relative nonlinear residual (total system) after nonlinear iteration 8: 0.20683
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 5.42984e-10, 0.206723, 0.206723, 1.01191e-11
+      Relative nonlinear residual (total system) after nonlinear iteration 8: 0.206723
 
    Solving temperature system... 6 iterations.
    Solving porosity system ... 6 iterations.
    Solving peridotite system ... 6 iterations.
    Solving Stokes system (GMG)... 0+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 8.37732e-11, 0.0355513, 0.0355513, 1.55684e-12
-      Relative nonlinear residual (total system) after nonlinear iteration 9: 0.0355513
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 8.37732e-11, 0.0355337, 0.0355337, 1.55698e-12
+      Relative nonlinear residual (total system) after nonlinear iteration 9: 0.0355337
 
    Solving temperature system... 1 iterations.
    Solving porosity system ... 0 iterations.
    Solving peridotite system ... 0 iterations.
    Solving Stokes system (GMG)... 0+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 3.369e-14, 8.07239e-17, 8.07239e-17, 1.55627e-12
-      Relative nonlinear residual (total system) after nonlinear iteration 10: 1.55627e-12
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 3.36862e-14, 1.82721e-16, 1.82721e-16, 1.5564e-12
+      Relative nonlinear residual (total system) after nonlinear iteration 10: 1.5564e-12
 
 
    Postprocessing:
-     Compositions min/max/mass: -6.226e-09/1.267e-08/3.089e-06 // -6.226e-09/1.267e-08/3.089e-06
+     Compositions min/max/mass: -6.227e-09/1.267e-08/7.034e-06 // -6.227e-09/1.267e-08/7.034e-06
 
 Termination requested by criterion: end time
 

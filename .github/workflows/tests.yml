@@ -36,7 +36,7 @@ jobs:
         include:
           - image: "geodynamics/aspect-tester:jammy-dealii-9.6-v3"
             run-tests: "ON"
-            compare-tests: "ON"
+            compare-tests: "OFF"
             build-with-python: "ON"
             build-with-fastscape: "OFF"
             result-file: "changes-test-results-9.6.diff"
@@ -52,7 +52,7 @@ jobs:
             use-tpetra: "OFF"
           - image: "geodynamics/aspect-tester:jammy-dealii-9.8-v1"
             run-tests: "ON"
-            compare-tests: "OFF"
+            compare-tests: "ON"
             build-with-python: "OFF"
             build-with-fastscape: "OFF"
             result-file: "changes-test-results-9.8.diff"
