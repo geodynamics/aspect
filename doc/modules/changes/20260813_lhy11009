@@ -1,0 +1,6 @@
+Added: a new geometry model interface function to convert Cartesian positions
+to depth coordinates while preserving geometry-specific lateral coordinates.
+The box geometry now returns depth together with the horizontal Cartesian
+coordinates.
+<br>
+(Haoyuan Li, 2026/08/13)
