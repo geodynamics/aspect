@@ -84,6 +84,16 @@ namespace aspect
           late_initialization_mode () const override;
 
           /**
+           * @copydoc aspect::Particle::Property::Interface::advection_field_for_boundary_initialization()
+           *
+           * For this property we use the compositional field corresponding
+           * to the particle property component, which is consistent with how the
+           * particles are initialized in initialize_one_particle_property().
+           */
+          AdvectionField
+          advection_field_for_boundary_initialization(const unsigned int property_component) const override;
+
+          /**
            * @copydoc aspect::Particle::Property::Interface::need_update()
            */
           UpdateTimeFlags
