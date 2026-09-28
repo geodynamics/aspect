@@ -60,7 +60,7 @@ end
 
 subsection Mesh refinement
   set Initial adaptive refinement        = 0
-  set Initial global refinement          = 2
+  set Initial global refinement          = 3
 end
 
 subsection Boundary traction model
