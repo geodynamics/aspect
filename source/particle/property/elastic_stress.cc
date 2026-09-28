@@ -375,6 +375,15 @@ namespace aspect
 
 
       template <int dim>
+      InitializationModeForLateParticles
+      ElasticStress<dim>::late_initialization_mode () const
+      {
+        return interpolate_respect_boundary;
+      }
+
+
+
+      template <int dim>
       UpdateTimeFlags
       ElasticStress<dim>::need_update() const
       {
