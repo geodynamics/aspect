@@ -349,7 +349,7 @@ namespace aspect
       Interface<dim>::advection_field_for_boundary_initialization (const unsigned int /*property_component*/) const
       {
         AssertThrow (false,
-                     ExcMessage("The function compositional_index_for_boundary_evaluation() is not implemented "
+                     ExcMessage("The function advection_field_for_boundary_initialization() is not implemented "
                                 "in this particle property plugin. This function is required if the plugin makes use "
                                 "of the compositional field boundary conditions to initialize the particle properties."));
         return AdvectionField::composition(0);
