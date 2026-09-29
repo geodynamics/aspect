@@ -1203,7 +1203,7 @@ Units: \si{\pascal\second}
 
 **Pattern:** [Anything]
 
-**Documentation:** List of angles of plastic dilation, $\psi$, for background material and compositional fields, for a total of N+1 values, where N is the number of all compositional fields or only those corresponding to chemical compositions. For a value of zero, the von Mises flow rule is retrieved. The dilation angle should never exceed the internal friction angle.
+**Documentation:** List of angles of plastic dilation, $\psi$, for background material and compositional fields, for a total of N+1 values, where N is the number of all compositional fields or only those corresponding to chemical compositions. For a value of zero, the von Mises flow rule is retrieved. The dilation angle should never exceed the internal friction angle. Units: \si{\degree}.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Angles of internal friction<parameters:Material_20model/Grain_20size_20model/Angles_20of_20internal_20friction>`
@@ -4457,7 +4457,7 @@ Note that the &rsquo;Freezing rate&rsquo; parameter is not applied in the case o
 
 **Pattern:** [Anything]
 
-**Documentation:** List of angles of plastic dilation, $\psi$, for background material and compositional fields, for a total of N+1 values, where N is the number of all compositional fields or only those corresponding to chemical compositions. For a value of zero, the von Mises flow rule is retrieved. The dilation angle should never exceed the internal friction angle.
+**Documentation:** List of angles of plastic dilation, $\psi$, for background material and compositional fields, for a total of N+1 values, where N is the number of all compositional fields or only those corresponding to chemical compositions. For a value of zero, the von Mises flow rule is retrieved. The dilation angle should never exceed the internal friction angle. Units: \si{\degree}.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Angles of internal friction<parameters:Material_20model/Steinberger_20model/Angles_20of_20internal_20friction>`
@@ -4828,7 +4828,7 @@ Note that the &rsquo;Freezing rate&rsquo; parameter is not applied in the case o
 
 **Pattern:** [Anything]
 
-**Documentation:** List of angles of plastic dilation, $\psi$, for background material and compositional fields, for a total of N+1 values, where N is the number of all compositional fields or only those corresponding to chemical compositions. For a value of zero, the von Mises flow rule is retrieved. The dilation angle should never exceed the internal friction angle.
+**Documentation:** List of angles of plastic dilation, $\psi$, for background material and compositional fields, for a total of N+1 values, where N is the number of all compositional fields or only those corresponding to chemical compositions. For a value of zero, the von Mises flow rule is retrieved. The dilation angle should never exceed the internal friction angle. Units: \si{\degree}.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Angles of internal friction<parameters:Material_20model/Visco_20Plastic/Angles_20of_20internal_20friction>`

@@ -127,13 +127,14 @@ namespace aspect
                                  "average temperature.");
               prm.declare_entry ("Use maximal temperature for bottom","true",
                                  Patterns::Bool(),
-                                 "If true, use the specified boundary temperatures as average temperatures at the surface. "
-                                 "If false, extrapolate the temperature gradient between the first and second cells to the surface. "
-                                 "This option will only work for models with a fixed surface temperature. ");
+                                 "If true, use the maximal specified boundary temperature as the bottom boundary temperature. "
+                                 "If false, extrapolate the temperature gradient between the last and second-to-last cells to the bottom. "
+                                 "This option will only work correctly for models with a fixed bottom boundary temperature. ");
               prm.declare_entry ("Use minimal temperature for surface","true",
                                  Patterns::Bool(),
-                                 "Whether to use the minimal specified boundary temperature as the bottom boundary temperature. "
-                                 "This option will only work for models with a fixed bottom boundary temperature. ");
+                                 "If true, use the minimal specified boundary temperature as the surface boundary temperature. "
+                                 "If false, extrapolate the temperature gradient between the first and second cells to the surface. "
+                                 "This option will only work correctly for models with a fixed surface boundary temperature. ");
 
             }
             prm.leave_subsection();
@@ -183,8 +184,8 @@ namespace aspect
                                                   "The average temperature is calculated using the lateral averaging function from the ``depth average'' "
                                                   "postprocessor and interpolated linearly between the layers specified through ``Number of depth slices''."
                                                   "\n\n"
-                                                  "The 'nonadiabatic temperature' is another option to output temperature anomaly, but compared with the reference "
-                                                  "adiabatic temperature profile instead."
+                                                  "The 'nonadiabatic temperature' plugin is another option to output temperature anomalies, but compared to the "
+                                                  "reference adiabatic temperature profile instead. "
                                                   "Physical units: $\\text{K}$.")
     }
   }
