@@ -714,7 +714,7 @@ namespace aspect
      */
     bool                           include_melt_transport;
     bool                           enable_additional_stokes_rhs;
-    bool                           enable_prescribed_dilation;
+    bool                           enable_prescribed_plastic_dilation;
 
     /**
      * A set of boundary ids on which the boundary_heat_flux objects

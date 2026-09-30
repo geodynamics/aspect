@@ -501,7 +501,7 @@ namespace aspect
             output_parameters.composition_viscosities[j] = std::clamp(effective_viscosity, minimum_viscosity_for_composition, maximum_viscosity_for_composition);
 
             // Compute the dilation terms if necessary.
-            if (this->get_parameters().enable_prescribed_dilation == true)
+            if (this->get_parameters().enable_prescribed_plastic_dilation == true)
               {
                 output_parameters.drucker_prager_parameters[j].angle_dilation *= weakening_factors[1];
                 const std::pair<double,double> dilation_terms = drucker_prager_plasticity.compute_dilation_terms_for_stokes_system (output_parameters.drucker_prager_parameters[j],
@@ -531,7 +531,7 @@ namespace aspect
         const std::shared_ptr<MaterialModel::MaterialModelDerivatives<dim>> derivatives
           = out.template get_additional_output_object<MaterialModel::MaterialModelDerivatives<dim>>();
 
-        const bool enable_dilation = this->get_parameters().enable_prescribed_dilation;
+        const bool enable_dilation = this->get_parameters().enable_prescribed_plastic_dilation;
 
         if (derivatives != nullptr)
           {
@@ -927,7 +927,7 @@ namespace aspect
         use_adiabatic_pressure_in_plasticity = prm.get_bool("Use adiabatic pressure in plasticity");
         use_adiabatic_pressure_in_creep = prm.get_bool("Use adiabatic pressure in creep viscosity");
 
-        if (this->get_parameters().enable_prescribed_dilation)
+        if (this->get_parameters().enable_prescribed_plastic_dilation)
           AssertThrow(allow_negative_pressures_in_plasticity == true &&
                       use_adiabatic_pressure_in_plasticity == false,
                       ExcMessage("Currently, plastic dilation requires that the plastic rheology "

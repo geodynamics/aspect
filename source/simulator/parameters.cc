@@ -1895,7 +1895,7 @@ namespace aspect
 
       enable_additional_stokes_rhs = prm.get_bool ("Enable additional Stokes RHS");
       enable_elasticity = prm.get_bool("Enable elasticity");
-      enable_prescribed_dilation = prm.get_bool("Enable prescribed dilation");
+      enable_prescribed_plastic_dilation = prm.get_bool("Enable prescribed dilation");
     }
     prm.leave_subsection ();
 
