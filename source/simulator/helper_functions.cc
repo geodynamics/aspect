@@ -1844,8 +1844,7 @@ namespace aspect
                       }
                     else
                       {
-                        in.composition[j][f-1]          = fields[j*n_fields+f];
-                        accumulated_reactions_C[j][f-1] = in.composition[j][f-1] - initial_values_C[j][f-1];
+                        in.composition[j][f-1] = fields[j*n_fields+f];
                       }
                   }
             }
@@ -1867,7 +1866,6 @@ namespace aspect
                           // simple forward euler
                           in.composition[j][c] = in.composition[j][c]
                                                  + reaction_time_step_size * reaction_rate_outputs->reaction_rates[j][c];
-                          accumulated_reactions_C[j][c] += reaction_time_step_size * reaction_rate_outputs->reaction_rates[j][c];
                         }
                       in.temperature[j] = in.temperature[j]
                                           + reaction_time_step_size * heating_model_outputs.rates_of_temperature_change[j];
@@ -1875,6 +1873,15 @@ namespace aspect
                     }
                 }
             }
+
+          // Enforce physical range [0,1] and monotonic chain ordering of reaction progress fields after the operator-split integration,
+          // and recompute the reaction increments consistently from the final clamped values.
+          // Defaults to no-op if the material model has not defined a clamp_reaction_progress_fields() override.
+          material_model->clamp_reaction_progress_fields(in);
+
+          for (unsigned int j=0; j<n_q_points; ++j)
+            for (unsigned int c=0; c<introspection.n_compositional_fields; ++c)
+              accumulated_reactions_C[j][c] = in.composition[j][c] - initial_values_C[j][c];
 
           cell->get_dof_indices (local_dof_indices);
           const unsigned int component_idx_T = introspection.component_indices.temperature;

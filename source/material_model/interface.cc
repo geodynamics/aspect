@@ -158,6 +158,16 @@ namespace aspect
     template <int dim>
     void
     Interface<dim>::
+    clamp_reaction_progress_fields (MaterialModel::MaterialModelInputs<dim> &/*in*/) const
+    {
+      // by default we do nothing!
+    }
+
+
+
+    template <int dim>
+    void
+    Interface<dim>::
     fill_additional_material_model_inputs(MaterialModel::MaterialModelInputs<dim> &input,
                                           const LinearAlgebra::BlockVector        &solution,
                                           const FEValuesBase<dim>                 &fe_values,
