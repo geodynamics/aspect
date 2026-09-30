@@ -1842,18 +1842,14 @@ namespace aspect
 
       exchange_refinement_flags();
 
-      triangulation.prepare_coarsening_and_refinement();
-
-      // Mesh smoothing may change the flags. Synchronize periodic partners
-      // again, then update ghost flags before solution transfer.
+      // Finish periodic synchronization and mesh smoothing before preparing
+      // solution transfer; either operation can change the other's flags.
       if (parameters.stokes_solver_type == Parameters<dim>::StokesSolverType::block_gmg
           && parameters.stokes_gmg_type == Parameters<dim>::StokesGMGType::local_smoothing
           && !triangulation.get_periodic_face_map().empty())
-        {
-          exchange_refinement_flags();
-          triangulation.prepare_coarsening_and_refinement();
-          exchange_refinement_flags();
-        }
+        prepare_periodic_refinement();
+      else
+        triangulation.prepare_coarsening_and_refinement();
 
       bool any_flags_set = false;
       {
@@ -2241,6 +2237,11 @@ namespace aspect
             mesh_refinement_manager.tag_additional_cells ();
 
             exchange_refinement_flags();
+
+            if (parameters.stokes_solver_type == Parameters<dim>::StokesSolverType::block_gmg
+                && parameters.stokes_gmg_type == Parameters<dim>::StokesGMGType::local_smoothing
+                && !triangulation.get_periodic_face_map().empty())
+              prepare_periodic_refinement();
 
             triangulation.execute_coarsening_and_refinement();
             if (MappingQCache<dim> *map = dynamic_cast<MappingQCache<dim>*>(&(*mapping)))
