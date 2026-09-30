@@ -146,14 +146,14 @@ jobs:
       if: ${{ matrix.coverage != '' }}
       run: |
         cd build
-        pwd
         lcov --capture --directory . --output-file coverage.info;
-        pwd
-        lcov --remove coverage.info '${{github.workspace}}/build/*' '${{github.workspace}}/include/*' '${{github.workspace}}/tests/*' '/usr/*' -o coverage_filtered.info
+        lcov --remove coverage.info '${{github.workspace}}/build/*' '${{github.workspace}}/include/*' \
+        '${{github.workspace}}/tests/*' '${{github.workspace}}/unit_tests/*' '${{github.workspace}}/cookbooks/*' \
+        '${{github.workspace}}/doc/*' '${{github.workspace}}/data/*' '${{github.workspace}}/contrib/*' \
+        '${{github.workspace}}/cmake/*' '${{github.workspace}}/benchmarks/*' '/usr/*' -o coverage_filtered.info
     - name: Coveralls
       if: ${{ matrix.coverage != '' }}
       uses: coverallsapp/github-action@master
       with:
-        parallel: true
         github-token: ${{ secrets.GITHUB_TOKEN }}
         path-to-lcov: ${{github.workspace}}/build/coverage_filtered.info
