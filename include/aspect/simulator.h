@@ -1529,15 +1529,28 @@ namespace aspect
 
       /**
        * Exchange coarsen/refinement flags set between processors so that
-       * we have the correct settings on all ghost cells. For local-smoothing
-       * GMG, also synchronize flags between periodic partners to keep their
-       * refinement levels compatible.
+       * we have the correct settings on all ghost cells. This does not change
+       * the flags on locally owned cells.
        *
        * This function is implemented in
        * <code>source/simulator/helper_functions.cc</code>.
        *
        */
       void exchange_refinement_flags();
+
+
+      /**
+       * Match refinement and coarsening flags on periodic partners. Ghost
+       * flags must be up to date. Return whether locally owned flags changed.
+       */
+      bool synchronize_periodic_refinement_flags();
+
+
+      /**
+       * Prepare periodic flags and mesh smoothing until both leave the
+       * locally owned flags unchanged. Ghost flags must be up to date.
+       */
+      void prepare_periodic_refinement();
 
 
       /**

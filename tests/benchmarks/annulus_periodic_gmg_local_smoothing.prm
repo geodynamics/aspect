@@ -1,0 +1,30 @@
+# Compare the Stokes solution with the annulus benchmark and check the
+# actual velocity level constraints and transfer on a uniform periodic mesh.
+# MPI: 2
+include $ASPECT_SOURCE_DIR/tests/benchmarks/annulus.prm
+set Additional shared libraries = ./libannulus_periodic_gmg_local_smoothing.so
+subsection Geometry model
+  subsection Spherical shell
+    set Opening angle = 90
+    set Phi periodic = true
+  end
+end
+subsection Material model
+  set Material averaging = harmonic average only viscosity
+end
+subsection Solver parameters
+  subsection Stokes solver parameters
+    set Stokes solver type = block GMG
+    set Stokes GMG type = local smoothing
+  end
+  subsection Matrix Free
+    set Output details = true
+  end
+end
+subsection Postprocess
+  set List of postprocessors = visualization, velocity statistics, AnnulusPostprocessor, periodic multigrid check
+  subsection Visualization
+    set List of output variables = AnnulusVisualizationPostprocessor
+  end
+end
+# Enable if: DEAL_II_VERSION_GTE_9_9_0

@@ -1,0 +1,30 @@
+
+Loading shared library <./libannulus_periodic_gmg_local_smoothing_180.so>
+
+Number of active cells: 80 (on 3 levels)
+Number of degrees of freedom: 1,212 (738+105+369)
+
+*** Timestep 0:  t=0 seconds, dt=0 seconds
+   Solving Stokes system (GMG)... 
+     GMG coarse size A: 66, coarse size S: 12
+     GMG levels: 3
+     Viscosity range: 1 - 1
+     GMG workload imbalance: 1.00952
+     Stokes solver (GMRES): 53+0 iterations.
+     Schur complement preconditioner: 54+0 iterations.
+     A block preconditioner: 54+0 iterations.
+
+   Postprocessing:
+   Velocity level constraint error: 2.29621e-16
+   Velocity multigrid transfer error: 4.44089e-16
+     Writing graphical output:           output-annulus_periodic_gmg_local_smoothing_180/solution/solution-00000
+     RMS, max velocity:                  1.08 m/s, 2.33 m/s
+     Periodic velocity multigrid check:  passed
+     Pressure at top/bottom of domain:   -1.06e-16 Pa, 1000 Pa
+     Computing dynamic topography        
+     Errors u_L2, p_L2, rho_L2, topo_L2: 8.681570e-03, 2.491320e-01, 0.000000e+00, 2.161375e-01
+
+Termination requested by criterion: end time
+
+
+
