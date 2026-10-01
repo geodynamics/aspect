@@ -508,23 +508,33 @@ namespace aspect
                           ExcMessage("Material model Melt global with melt transport only "
                                      "works if there is a compositional field called porosity."));
 
-              AssertThrow(this->get_parameters().reaction_solver_type[this->introspection().compositional_index_for_name("porosity")] ==
-                          this->get_parameters().reaction_solver_type[this->introspection().compositional_index_for_name("peridotite")],
-                          ExcMessage("The reaction solver types for the operator splitting scheme need to be the same for "
-                                     "the fields `porosity' and `peridotite'."));
-
-              if (this->get_parameters().reaction_solver_type[this->introspection().compositional_index_for_name("porosity")] == Parameters<dim>::ReactionSolverType::fixed_step)
+              // The index in the operator splitting settings is the compositional field index
+              // plus 1 for the temperature field (which is always listed first).
+              const unsigned int porosity_index = this->introspection().compositional_index_for_name("porosity") + 1;
+              unsigned int peridotite_index = numbers::invalid_unsigned_int;
+              if (include_melting_and_freezing)
                 {
-                  AssertThrow(melting_time_scale >= this->get_parameters().reaction_time_step[this->introspection().compositional_index_for_name("porosity")],
-                              ExcMessage("The reaction time step " + Utilities::to_string(this->get_parameters().reaction_time_step[0])
+                  peridotite_index = this->introspection().compositional_index_for_name("peridotite") + 1;
+
+                  AssertThrow(this->get_parameters().reaction_solver_type[peridotite_index] ==
+                              this->get_parameters().reaction_solver_type[porosity_index],
+                              ExcMessage("The reaction solver types for the operator splitting scheme need to be the same for "
+                                         "the fields `porosity' and `peridotite'."));
+                }
+
+              if (this->get_parameters().reaction_solver_type[porosity_index] == Parameters<dim>::ReactionSolverType::fixed_step)
+                {
+                  AssertThrow(melting_time_scale >= this->get_parameters().reaction_time_step[porosity_index],
+                              ExcMessage("The reaction time step " + Utilities::to_string(this->get_parameters().reaction_time_step[porosity_index])
                                          + " in the operator splitting scheme is too large to compute melting rates! "
                                          "You have to choose it in such a way that it is smaller than the 'Melting time scale for "
                                          "operator splitting' chosen in the material model, which is currently "
                                          + Utilities::to_string(melting_time_scale) + "."));
-                  AssertThrow(this->get_parameters().reaction_time_step[this->introspection().compositional_index_for_name("porosity")] ==
-                              this->get_parameters().reaction_time_step[this->introspection().compositional_index_for_name("peridotite")],
-                              ExcMessage("The reaction time steps for the operator splitting scheme need to be the same for "
-                                         "the fields `porosity' and `peridotite'."));
+                  if (include_melting_and_freezing)
+                    AssertThrow(this->get_parameters().reaction_time_step[peridotite_index] ==
+                                this->get_parameters().reaction_time_step[porosity_index],
+                                ExcMessage("The reaction time steps for the operator splitting scheme need to be the same for "
+                                           "the fields `porosity' and `peridotite'."));
                 }
               AssertThrow(melting_time_scale > 0,
                           ExcMessage("The Melting time scale for operator splitting must be larger than 0!"));

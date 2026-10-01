@@ -296,30 +296,31 @@ namespace aspect
                                "operator splitting for stresses tracked on compositional fields or the particle property 'elastic stress' "
                                "for stresses tracked on particles. When stresses are tracked on particles, operator splitting can be used "
                                "for fields other than the stresses."));
-        // If the operator splitting scheme is used for the stresses, make sure to use its fixed step solver, as we know the update and it should be applied in one step.
-        if (!(this->get_parameters().mapped_particle_properties).count(this->introspection().compositional_index_for_name("ve_stress_xx")) && this->get_parameters().use_operator_splitting)
-          AssertThrow(this->get_parameters().reaction_solver_type == Parameters<dim>::ReactionSolverType::fixed_step,
-                      ExcMessage("If the operator splitting scheme is used, its solver should be set to 'fixed step'."));
-        // The operator split should happen at the end of the timestep,
-        // as it adds the dynamic stress update from the current time step.
-        if (this->get_parameters().use_operator_splitting)
+        // If the operator splitting scheme is used to update the stresses:
+        if (!(this->get_parameters().mapped_particle_properties).count(ve_stress_xx_idx) && this->get_parameters().use_operator_splitting)
           {
-            AssertThrow(this->get_parameters().reaction_strategy[ve_stress_xx_idx] == Parameters<dim>::ReactionStrategy::after_nonlinear_solver,
+            // 1) Make sure to use the fixed step solver, as we know the exact update and it should be applied in one step.
+            // The index in the reactions settings is the compositional field index plus 1 for the temperature field (which is always listed first).
+            AssertThrow(this->get_parameters().reaction_solver_type[ve_stress_xx_idx + 1] == Parameters<dim>::ReactionSolverType::fixed_step,
+                        ExcMessage("If the operator splitting scheme is used, its solver should be set to 'fixed step'."));
+            // 2) Check that the operator split happens at the end of the timestep,
+            // as it adds the dynamic stress update from the current time step.
+            AssertThrow(this->get_parameters().reaction_strategy[ve_stress_xx_idx + 1] == Parameters<dim>::ReactionStrategy::after_nonlinear_solver,
                         ExcMessage("The operator splitting scheme used to update the stresses should be applied at the end of each "
-                                   "time step by setting 'Reaction solve strategy' to 'after nonlinear solver'."));
+                        "time step by setting 'Reaction solve strategy' to 'after nonlinear solver'."));
 
-            // Make sure all the stresses have the same operator splitting settings.
-            // The stresses are on consecutive fields, so we can loop easily.
+            // 3) Make sure that all the stresses have the same operator splitting settings.
+            // The stresses are on consecutive fields, so we can loop over the settings easily.
             for (unsigned int n = 1; n < n_viscoelastic_stress_components; ++n)
-              {
-                AssertThrow(this->get_parameters().reaction_time_step[ve_stress_xx_idx + n] ==
-                            this->get_parameters().reaction_time_step[ve_stress_xx_idx],
-                            ExcMessage("The viscoelastic stress component compositional fields all need to use the same reaction time step."));
+          {
+            AssertThrow(this->get_parameters().reaction_time_step[ve_stress_xx_idx + 1 + n] ==
+                        this->get_parameters().reaction_time_step[ve_stress_xx_idx + 1],
+                        ExcMessage("The viscoelastic stress component compositional fields all need to use the same reaction time step."));
 
-                AssertThrow(this->get_parameters().reaction_strategy[ve_stress_xx_idx + n] ==
-                            this->get_parameters().reaction_strategy[ve_stress_xx_idx],
-                            ExcMessage("The viscoelastic stress component compositional fields all need to use the same reaction strategy."));
-              }
+              AssertThrow(this->get_parameters().reaction_strategy[ve_stress_xx_idx + 1 + n] ==
+                          this->get_parameters().reaction_strategy[ve_stress_xx_idx + 1],
+                          ExcMessage("The viscoelastic stress component compositional fields all need to use the same reaction strategy."));
+            }
           }
 
         // We need to iterate over the Advection and Stokes equations.

@@ -2014,20 +2014,16 @@ namespace aspect
         signals.post_mesh_deformation(*this);
       }
 
-    // Compute the reactions of compositional fields and temperature before the nonlinear solver loop
-    // if requested for any of the advection fields.
-    if (parameters.use_operator_splitting &&
-        (std::find (parameters.reaction_strategy.begin(),
-                    parameters.reaction_strategy.end(),
-                    Parameters<dim>::ReactionStrategy::before_nonlinear_solver) != parameters.reaction_strategy.end()))
+    // Compute the reactions of the temperature and of any compositional field for which
+    // reactions were requested before the nonlinear solver loop.
+    if (parameters.use_operator_splitting)
       {
         std::vector<AdvectionField> advection_fields;
-        // First add the temperature field
         advection_fields.push_back(AdvectionField::temperature());
-        // Then add all compositional fields that are not tracked by particles.
         for (unsigned int c=0; c<introspection.n_compositional_fields; ++c)
           {
-            if (parameters.compositional_field_methods[c] != Parameters<dim>::AdvectionFieldMethod::particles)
+            if (parameters.compositional_field_methods[c] != Parameters<dim>::AdvectionFieldMethod::particles &&
+                parameters.reaction_strategy[c] == Parameters<dim>::ReactionStrategy::before_nonlinear_solver)
               advection_fields.push_back(AdvectionField::composition(c));
           }
         compute_reactions (advection_fields);
@@ -2176,15 +2172,19 @@ namespace aspect
           }
       }
 
-    // Compute the reactions of compositional fields and temperature here after
-    // the nonlinear solver instead of before. This is for example used to apply
+    // Compute the reactions of any compositional field for which operator splitting
+    // is requested after the nonlinear solver loop instead of before. This is for example used to apply
     // the full stress update when elasticity is included.
-    if (parameters.use_operator_splitting &&
-        (std::find (parameters.reaction_strategy.begin(),
-                    parameters.reaction_strategy.end(),
-                    Parameters<dim>::ReactionStrategy::after_nonlinear_solver) != parameters.reaction_strategy.end()))
+    if (parameters.use_operator_splitting)
       {
-        compute_reactions ();
+        std::vector<AdvectionField> advection_fields;
+        for (unsigned int c=0; c<introspection.n_compositional_fields; ++c)
+          {
+            if (parameters.compositional_field_methods[c] != Parameters<dim>::AdvectionFieldMethod::particles &&
+                parameters.reaction_strategy[c] == Parameters<dim>::ReactionStrategy::after_nonlinear_solver)
+              advection_fields.push_back(AdvectionField::composition(c));
+          }
+        compute_reactions (advection_fields);
         pcout << std::endl;
       }
 
