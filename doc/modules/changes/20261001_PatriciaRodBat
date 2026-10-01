@@ -1,0 +1,5 @@
+New: Added an hydrous melt fraction visualization postprocessor that
+accounts for the effect of water on peridotite melting following the
+parameterization of Ball et al. (2022), building on Katz et al. (2003).
+<br>
+(Patricia Rodriguez Batista, 2026/10/01)
