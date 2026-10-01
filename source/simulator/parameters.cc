@@ -636,7 +636,7 @@ namespace aspect
       prm.enter_subsection ("Operator splitting parameters");
       {
         prm.declare_entry ("Reaction solver type", "ARKode",
-                           Patterns::Selection ("ARKode|fixed step"),
+                           Patterns::List (Patterns::Selection ("ARKode|fixed step")),
                            "This parameter determines what solver will be used when the reactions "
                            "are computed within the operator splitting scheme. For reactions where "
                            "the reaction rate is a known, finite quantity, the appropriate choice "
@@ -653,7 +653,7 @@ namespace aspect
                            "`Reaction time steps per advection step' parameters. ");
 
         prm.declare_entry ("Reaction solver relative tolerance", "1e-6",
-                           Patterns::Double (0.),
+                           Patterns::List (Patterns::Double (0.)),
                            "The relative solver tolerance used in the ARKode reaction solver. "
                            "This tolerance is used to adaptively determine the reaction step size. "
                            "For more details, see the ARKode documentation. This parameter is only used "
@@ -661,7 +661,7 @@ namespace aspect
                            "Units: none.");
 
         prm.declare_entry ("Reaction time step", "1000.0",
-                           Patterns::Double (0.),
+                           Patterns::List (Patterns::Double (0.)),
                            "Set a time step size for computing reactions of compositional fields and the "
                            "temperature field in case operator splitting is used. This is only used "
                            "when the parameter ``Use operator splitting'' is set to true and when the "
@@ -676,7 +676,7 @@ namespace aspect
                            "parameter.");
 
         prm.declare_entry ("Reaction time steps per advection step", "0",
-                           Patterns::Integer (0),
+                           Patterns::List (Patterns::Integer (0)),
                            "The number of reaction time steps done within one advection time step "
                            "in case operator splitting is used. This is only used if the parameter "
                            "``Use operator splitting'' is set to true and when the `fixed step' "
@@ -687,7 +687,7 @@ namespace aspect
                            "Units: none.");
 
         prm.declare_entry ("Reaction solve strategy", "before nonlinear solver",
-                           Patterns::Selection("before nonlinear solver|after nonlinear solver"),
+                           Patterns::List (Patterns::Selection("before nonlinear solver|after nonlinear solver")),
                            "Whether the reaction solve should be done before the nonlinear solver "
                            "(default) or after the nonlinear solver. The latter strategy should be "
                            "used when ``Enable elasticity'' is set to true. "
@@ -2015,6 +2015,54 @@ namespace aspect
     }
     prm.leave_subsection();
 
+    prm.enter_subsection ("Solver parameters");
+    {
+      prm.enter_subsection ("Operator splitting parameters");
+      {
+        // Read in parameters for all advection fields (= temperature plus all compositional fields).
+        const unsigned int n_advection_fields = 1 + n_compositional_fields;
+        std::vector<std::string> x_reaction_solver_type                   = Utilities::possibly_extend_from_1_to_N (Utilities::split_string_list(prm.get("Reaction solver type")),
+                                                                            n_advection_fields,
+                                                                            "Reaction solver type");
+
+        ARKode_relative_tolerance              = Utilities::possibly_extend_from_1_to_N (Utilities::string_to_double
+                                                 (Utilities::split_string_list(prm.get("Reaction solver relative tolerance"))),
+                                                 n_advection_fields,
+                                                 "Reaction solver relative tolerance");
+
+        reaction_time_step       = Utilities::possibly_extend_from_1_to_N (Utilities::string_to_double
+                                                                           (Utilities::split_string_list(prm.get("Reaction time step"))),
+                                                                           n_advection_fields,
+                                                                           "Reaction time step");
+
+        reaction_steps_per_advection_step = Utilities::possibly_extend_from_1_to_N (Utilities::string_to_unsigned_int
+                                                                                    (Utilities::split_string_list(prm.get("Reaction time steps per advection step"))),
+                                                                                    n_advection_fields,
+                                                                                    "Reaction time steps per advection step");
+        std::vector<std::string> x_reaction_strategy = Utilities::possibly_extend_from_1_to_N (Utilities::split_string_list(prm.get("Reaction solve strategy")),
+                                                       n_advection_fields,
+                                                       "Reaction solve strategy");
+
+        for (unsigned int n = 0; n<n_advection_fields; ++n)
+          {
+            AssertThrow (reaction_time_step[n] > 0,
+                         ExcMessage("Reaction time step must be greater than 0."));
+            if (convert_to_years == true)
+              reaction_time_step[n] *= year_in_seconds;
+
+            reaction_solver_type.push_back(ReactionSolverType::parse(x_reaction_solver_type[n]));
+            reaction_strategy.push_back(ReactionStrategy::parse(x_reaction_strategy[n]));
+          }
+
+        AssertThrow(reaction_strategy[0] == ReactionStrategy::before_nonlinear_solver,
+                    ExcMessage("Temperature operator splitting can only occur before the nonlinear solver loop."));
+
+
+      }
+      prm.leave_subsection ();
+    }
+    prm.leave_subsection ();
+
     prm.enter_subsection ("Discretization");
     {
       stokes_velocity_degree = prm.get_integer ("Stokes velocity polynomial degree");
@@ -2459,47 +2507,6 @@ namespace aspect
     }
     prm.leave_subsection ();
 
-    prm.enter_subsection ("Operator splitting parameters");
-    {
-      // Read in parameters for all advection fields (= temperature plus all compositional fields).
-      const unsigned int n_advection_fields = 1 + n_compositional_fields;
-      std::vector<std::string> x_reaction_solver_type                   = Utilities::possibly_extend_from_1_to_N (Utilities::split_string_list(prm.get("Reaction solver type")),
-                                                                          n_advection_fields,
-                                                                          "Reaction solver type");
-      ARKode_relative_tolerance              = Utilities::possibly_extend_from_1_to_N (Utilities::string_to_double
-                                               (Utilities::split_string_list(prm.get("Reaction solver relative tolerance"))),
-                                               n_advection_fields,
-                                               "Reaction solver relative tolerance");
-      reaction_time_step       = Utilities::possibly_extend_from_1_to_N (Utilities::string_to_double
-                                                                         (Utilities::split_string_list(prm.get("Reaction time step"))),
-                                                                         n_advection_fields,
-                                                                         "Reaction time step");
-
-      reaction_steps_per_advection_step = Utilities::possibly_extend_from_1_to_N (Utilities::string_to_unsigned_int
-                                                                                  (Utilities::split_string_list(prm.get("Reaction time steps per advection step"))),
-                                                                                  n_advection_fields,
-                                                                                  "Reaction time steps per advection step");
-      std::vector<std::string> x_reaction_strategy = Utilities::possibly_extend_from_1_to_N (Utilities::split_string_list(prm.get("Reaction solve strategy")),
-                                                     n_advection_fields,
-                                                     "Reaction solve strategy");
-
-      for (unsigned int n = 0; n<n_advection_fields; ++n)
-        {
-          AssertThrow (reaction_time_step[n] > 0,
-                       ExcMessage("Reaction time step must be greater than 0."));
-          if (convert_to_years == true)
-            reaction_time_step[n] *= year_in_seconds;
-
-          reaction_solver_type.push_back(ReactionSolverType::parse(x_reaction_solver_type[n]));
-          reaction_strategy.push_back(ReactionStrategy::parse(x_reaction_strategy[n]));
-        }
-
-      AssertThrow(reaction_strategy[0] == ReactionStrategy::before_nonlinear_solver,
-                  ExcMessage("Temperature operator splitting can only occur before the nonlinear solver loop."));
-
-
-    }
-    prm.leave_subsection ();
 
     // now also get the parameter related to material model averaging
     prm.enter_subsection ("Material model");
