@@ -52,7 +52,7 @@ namespace aspect
           MeltFractionBallH2O ();
 
           /**
-           * Melt fraction refers to the percentage of material that is molten for a given 
+           * Melt fraction refers to the percentage of material that is molten for a given
            * @p temperature and @p pressure (assuming equilibrium conditions) for a given melting model.
            */
           double
@@ -106,7 +106,7 @@ namespace aspect
            * This variable is read from the parameter file through a parameter called 'Mass fraction cpx'.
            */
           double M_cpx;
-          
+
           // melt fraction exponent
           /**
            * The beta2 parameter is taken after Ball, 2022.
@@ -115,7 +115,7 @@ namespace aspect
           double beta1;
           double beta2;
 
-          // eqn. 18 Katz et al 2003.        
+          // eqn. 18 Katz et al 2003.
           double bulk_h2o_ppm;
           double D_H2O;
           double calc_X_H2O(const double F) const;
