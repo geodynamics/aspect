@@ -1651,14 +1651,19 @@ namespace aspect
     LinearAlgebra::BlockVector distributed_reaction_vector (introspection.index_sets.system_partitioning,
                                                             mpi_communicator);
 
+    // Assume that all reactions that are computed at the same time (i.e. either before or after the
+    // nonlinear solver loop) use the same solver settings. Therefore, we use the field index of the
+    // first field in advection_fields_with_reactions to get th solver settings.
+    const unsigned int first_advection_field_with_reactions_index = advection_fields_with_reactions[0].field_index();
+
     // we use a different (potentially smaller) time step than in the advection scheme.
     // and for the fixed step scheme, we want all of our reaction time steps (within one advection step) to have the same size
-    const unsigned int number_of_reaction_steps = std::max(static_cast<unsigned int>(time_step / parameters.reaction_time_step[0]),
-                                                           std::max(parameters.reaction_steps_per_advection_step[0],1U));
+    const unsigned int number_of_reaction_steps = std::max(static_cast<unsigned int>(time_step / parameters.reaction_time_step[first_advection_field_with_reactions_index]),
+                                                           std::max(parameters.reaction_steps_per_advection_step[first_advection_field_with_reactions_index],1U));
 
     const double reaction_time_step_size = time_step / static_cast<double>(number_of_reaction_steps);
 
-    if (parameters.reaction_solver_type[0] == Parameters<dim>::ReactionSolverType::fixed_step)
+    if (parameters.reaction_solver_type[first_advection_field_with_reactions_index] == Parameters<dim>::ReactionSolverType::fixed_step)
       Assert (reaction_time_step_size > 0,
               ExcMessage("Reaction time step must be greater than 0."));
 
@@ -1808,7 +1813,7 @@ namespace aspect
           initial_values_C = in.composition;
           initial_values_T = in.temperature;
 
-          if (parameters.reaction_solver_type[0] == Parameters<dim>::ReactionSolverType::ARKode)
+          if (parameters.reaction_solver_type[first_advection_field_with_reactions_index] == Parameters<dim>::ReactionSolverType::ARKode)
             {
 
               ode.explicit_function = [&] (const double /*time*/,
@@ -1850,7 +1855,7 @@ namespace aspect
                   }
             }
 
-          else if (parameters.reaction_solver_type[0] == Parameters<dim>::ReactionSolverType::fixed_step)
+          else if (parameters.reaction_solver_type[first_advection_field_with_reactions_index] == Parameters<dim>::ReactionSolverType::fixed_step)
             {
               for (unsigned int i=0; i<number_of_reaction_steps; ++i)
                 {
@@ -1871,6 +1876,7 @@ namespace aspect
                               in.composition[j][c] = in.composition[j][c]
                                                      + reaction_time_step_size * reaction_rate_outputs->reaction_rates[j][c];
                               accumulated_reactions_C[j][c] += reaction_time_step_size * reaction_rate_outputs->reaction_rates[j][c];
+                              std::cout << "reaction rate for composition " << c << " at point " << j << " is " << reaction_rate_outputs->reaction_rates[j][c] << std::endl;
                             }
                         }
                       in.temperature[j] = in.temperature[j]
@@ -1888,6 +1894,7 @@ namespace aspect
               const auto comp_pair = dof_handler.get_fe().system_to_component_index(dof_idx);
               const unsigned int component_idx = comp_pair.first;
               const unsigned int field_index = component_idx-component_idx_T;
+              //std::cout << "dof_idx " << dof_idx << " component_idx " << component_idx << " field_index " << field_index << std::endl;
 
               unsigned int support_point_index = numbers::invalid_unsigned_int;
               unsigned int field_index_in_fields_with_reactions = 0;
@@ -1905,6 +1912,8 @@ namespace aspect
               if (support_point_index == numbers::invalid_unsigned_int)
                 continue;
 
+              std::cout << "Remaining field index " << field_index << std::endl;
+
               // The final step is grabbing the value from the reaction computation and write it into
               // the global vector (if we own it and if it is not a constrained degree of freedom).:
               if (dof_handler.locally_owned_dofs().is_element(local_dof_indices[dof_idx]) &&
@@ -1920,6 +1929,7 @@ namespace aspect
                     {
                       const unsigned int composition = field_index-1; // 0 is temperature...
                       distributed_vector(local_dof_indices[dof_idx]) = in.composition[support_point_index][composition];
+                      std::cout << "dof_idx " << dof_idx << " support_point_index " << support_point_index << " composition " << composition << " value " << in.composition[support_point_index][composition] << std::endl;
                       distributed_reaction_vector(local_dof_indices[dof_idx]) = accumulated_reactions_C[support_point_index][composition];
                     }
                 }
@@ -1942,7 +1952,7 @@ namespace aspect
                                                     distributed_reaction_vector);
 
     double average_iteration_count = number_of_reaction_steps;
-    if (parameters.reaction_solver_type[0] == Parameters<dim>::ReactionSolverType::ARKode)
+    if (parameters.reaction_solver_type[first_advection_field_with_reactions_index] == Parameters<dim>::ReactionSolverType::ARKode)
       {
         if (number_of_solves > 0)
           average_iteration_count = total_iteration_count / number_of_solves;
