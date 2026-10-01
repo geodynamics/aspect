@@ -2461,27 +2461,29 @@ namespace aspect
 
     prm.enter_subsection ("Operator splitting parameters");
     {
+      // Read in parameters for all advection fields (= temperature plus all compositional fields).
+      const unsigned int n_advection_fields = 1 + n_compositional_fields;
       std::vector<std::string> x_reaction_solver_type                   = Utilities::possibly_extend_from_1_to_N (Utilities::split_string_list(prm.get("Reaction solver type")),
-                                                                          n_compositional_fields,
+                                                                          n_advection_fields,
                                                                           "Reaction solver type");
       ARKode_relative_tolerance              = Utilities::possibly_extend_from_1_to_N (Utilities::string_to_double
                                                (Utilities::split_string_list(prm.get("Reaction solver relative tolerance"))),
-                                               n_compositional_fields,
+                                               n_advection_fields,
                                                "Reaction solver relative tolerance");
       reaction_time_step       = Utilities::possibly_extend_from_1_to_N (Utilities::string_to_double
                                                                          (Utilities::split_string_list(prm.get("Reaction time step"))),
-                                                                         n_compositional_fields,
+                                                                         n_advection_fields,
                                                                          "Reaction time step");
 
       reaction_steps_per_advection_step = Utilities::possibly_extend_from_1_to_N (Utilities::string_to_unsigned_int
                                                                                   (Utilities::split_string_list(prm.get("Reaction time steps per advection step"))),
-                                                                                  n_compositional_fields,
+                                                                                  n_advection_fields,
                                                                                   "Reaction time steps per advection step");
       std::vector<std::string> x_reaction_strategy = Utilities::possibly_extend_from_1_to_N (Utilities::split_string_list(prm.get("Reaction solve strategy")),
-                                                     n_compositional_fields,
+                                                     n_advection_fields,
                                                      "Reaction solve strategy");
 
-      for (unsigned int n = 0; n<n_compositional_fields; ++n)
+      for (unsigned int n = 0; n<n_advection_fields; ++n)
         {
           AssertThrow (reaction_time_step[n] > 0,
                        ExcMessage("Reaction time step must be greater than 0."));
@@ -2491,6 +2493,10 @@ namespace aspect
           reaction_solver_type.push_back(ReactionSolverType::parse(x_reaction_solver_type[n]));
           reaction_strategy.push_back(ReactionStrategy::parse(x_reaction_strategy[n]));
         }
+
+      AssertThrow(reaction_strategy[0] == ReactionStrategy::before_nonlinear_solver,
+                  ExcMessage("Temperature operator splitting can only occur before the nonlinear solver loop."));
+
 
     }
     prm.leave_subsection ();

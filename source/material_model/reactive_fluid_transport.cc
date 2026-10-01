@@ -546,18 +546,22 @@ namespace aspect
                           ExcMessage("The Fluid-reaction scheme zero solubility must be used with operator splitting."));
             }
 
+          // The index in the operator splitting settings is the compositional field index
+          // plus 1 for the temperature field (which is always listed first).
+          const unsigned int porosity_index = this->introspection().compositional_index_for_name("porosity") + 1;
+
           if (fluid_solid_reaction_scheme == tian_approximation)
             {
-              AssertThrow(this->get_parameters().use_operator_splitting && this->get_parameters().reaction_solver_type[this->introspection().compositional_index_for_name("porosity")] == Parameters<dim>::ReactionSolverType::fixed_step,
+              AssertThrow(this->get_parameters().use_operator_splitting && this->get_parameters().reaction_solver_type[porosity_index] == Parameters<dim>::ReactionSolverType::fixed_step,
                           ExcMessage("The Fluid-reaction scheme tian approximation must be used with operator splitting "
                                      "and 'Reaction solver type = fixed step'."));
             }
 
           if (this->get_parameters().use_operator_splitting)
             {
-              if (this->get_parameters().reaction_solver_type[this->introspection().compositional_index_for_name("porosity")] == Parameters<dim>::ReactionSolverType::fixed_step)
-                AssertThrow(fluid_reaction_time_scale >= this->get_parameters().reaction_time_step[this->introspection().compositional_index_for_name("porosity")],
-                            ExcMessage("The reaction time step " + Utilities::to_string(this->get_parameters().reaction_time_step[this->introspection().compositional_index_for_name("porosity")])
+              if (this->get_parameters().reaction_solver_type[porosity_index] == Parameters<dim>::ReactionSolverType::fixed_step)
+                AssertThrow(fluid_reaction_time_scale >= this->get_parameters().reaction_time_step[porosity_index],
+                            ExcMessage("The reaction time step " + Utilities::to_string(this->get_parameters().reaction_time_step[porosity_index])
                                        + " in the operator splitting scheme is too large to compute fluid release rates! "
                                        "You have to choose it in such a way that it is smaller than the 'Fluid reaction time scale for "
                                        "operator splitting' chosen in the material model, which is currently "
@@ -567,19 +571,21 @@ namespace aspect
 
               if (fluid_solid_reaction_scheme != katz2003)
                 {
-                  AssertThrow(this->get_parameters().reaction_solver_type[this->introspection().compositional_index_for_name("bound_fluid")] == this->get_parameters().reaction_solver_type[this->introspection().compositional_index_for_name("porosity")] &&
-                              this->get_parameters().reaction_time_step[this->introspection().compositional_index_for_name("bound_fluid")] == this->get_parameters().reaction_time_step[this->introspection().compositional_index_for_name("porosity")] &&
-                              this->get_parameters().reaction_steps_per_advection_step[this->introspection().compositional_index_for_name("bound_fluid")] == this->get_parameters().reaction_steps_per_advection_step[this->introspection().compositional_index_for_name("porosity")],
-                              ExcMessage("Material model Reactive Fluid Transport only "
-                                         "works if the reaction solver type and timestep are equal for the fields `porosity' and `bound_fluid'."));
+                  const unsigned int bound_fluid_index = this->introspection().compositional_index_for_name("bound_fluid") + 1;
+                  AssertThrow(this->get_parameters().reaction_solver_type[bound_fluid_index] == this->get_parameters().reaction_solver_type[porosity_index] &&
+                              this->get_parameters().reaction_time_step[bound_fluid_index] == this->get_parameters().reaction_time_step[porosity_index] &&
+                              this->get_parameters().reaction_steps_per_advection_step[bound_fluid_index] == this->get_parameters().reaction_steps_per_advection_step[porosity_index],
+                              ExcMessage("Material model Reactive Fluid Transport only works if the reaction solver type, "
+                                         "timestep and steps per advection step are equal for the fields `porosity' and `bound_fluid'."));
                 }
               else
                 {
-                  AssertThrow(this->get_parameters().reaction_solver_type[this->introspection().compositional_index_for_name("peridotite")] == this->get_parameters().reaction_solver_type[this->introspection().compositional_index_for_name("porosity")] &&
-                              this->get_parameters().reaction_time_step[this->introspection().compositional_index_for_name("peridotite")] == this->get_parameters().reaction_time_step[this->introspection().compositional_index_for_name("porosity")] &&
-                              this->get_parameters().reaction_steps_per_advection_step[this->introspection().compositional_index_for_name("peridotite")] == this->get_parameters().reaction_steps_per_advection_step[this->introspection().compositional_index_for_name("porosity")],
-                              ExcMessage("Material model Reactive Fluid Transport only works if the reaction solver type "
-                                         "timestep and steps per advection step are equal for the fields `porosity' and `bound_fluid'."));
+                  const unsigned int peridotite_index = this->introspection().compositional_index_for_name("peridotite") + 1;
+                  AssertThrow(this->get_parameters().reaction_solver_type[peridotite_index] == this->get_parameters().reaction_solver_type[porosity_index] &&
+                              this->get_parameters().reaction_time_step[peridotite_index] == this->get_parameters().reaction_time_step[porosity_index] &&
+                              this->get_parameters().reaction_steps_per_advection_step[peridotite_index] == this->get_parameters().reaction_steps_per_advection_step[porosity_index],
+                              ExcMessage("Material model Reactive Fluid Transport only works if the reaction solver type, "
+                                         "timestep and steps per advection step are equal for the fields `porosity' and `peridotite'."));
                 }
             }
 

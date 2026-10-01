@@ -612,8 +612,10 @@ namespace aspect
                       ExcMessage("The freezing rate is not taken into account in models with fractional melting. "
                                  "Changing its value from the default of 0.0 is not allowed."));
 
-        const unsigned int porosity_idx = this->introspection().compositional_index_for_name("porosity");
-        const unsigned int peridotite_idx = this->introspection().compositional_index_for_name("peridotite");
+        // The index in the operator splitting settings is the compositional field index
+        // plus 1 for the temperature field (which is always listed first).
+        const unsigned int porosity_idx = this->introspection().compositional_index_for_name("porosity") + 1;
+        const unsigned int peridotite_idx = this->introspection().compositional_index_for_name("peridotite") + 1;
 
         if (this->get_parameters().reaction_solver_type[porosity_idx] == Parameters<dim>::ReactionSolverType::fixed_step)
           {
@@ -630,12 +632,15 @@ namespace aspect
                                    "You have to choose it in such a way that it is smaller than the inverse of the "
                                    "'Freezing rate' chosen in the material model, which is currently "
                                    + Utilities::to_string(1.0/freezing_rate) + "."));
+
+            AssertThrow(this->get_parameters().reaction_time_step[peridotite_idx] == this->get_parameters().reaction_time_step[porosity_idx],
+                        ExcMessage("Reaction model `Katz 2003 mantle melting' only "
+                                   "works if the reaction timestep is equal for the fields `porosity' and `peridotite'."));
           }
 
-        AssertThrow(this->get_parameters().reaction_solver_type[peridotite_idx] == this->get_parameters().reaction_solver_type[porosity_idx] &&
-                    this->get_parameters().reaction_time_step[peridotite_idx] == this->get_parameters().reaction_time_step[porosity_idx],
+        AssertThrow(this->get_parameters().reaction_solver_type[peridotite_idx] == this->get_parameters().reaction_solver_type[porosity_idx],
                     ExcMessage("Reaction model `Katz 2003 mantle melting' only "
-                               "works if the reaction solver type and timestep are equal for the fields `porosity' and `bound_fluid'."));
+                               "works if the reaction solver type is equal for the fields `porosity' and `peridotite'."));
       }
     }
   }
