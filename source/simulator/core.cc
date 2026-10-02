@@ -2027,7 +2027,6 @@ namespace aspect
               advection_fields.push_back(AdvectionField::composition(c));
           }
         compute_reactions (advection_fields);
-        std::cout << "   Computing reactions for fields before nonlinear solver for " << advection_fields.size() << " fields." << std::endl;
       }
 
     try
@@ -2175,7 +2174,7 @@ namespace aspect
 
     // Compute the reactions of any compositional field for which operator splitting
     // is requested after the nonlinear solver loop instead of before. This is for example used to apply
-    // the full stress update when elasticity is included.
+    // the full stress update when elasticity is included. The temperature field is not included.
     if (parameters.use_operator_splitting)
       {
         std::vector<AdvectionField> advection_fields;
@@ -2185,7 +2184,6 @@ namespace aspect
                 parameters.reaction_strategy[c] == Parameters<dim>::ReactionStrategy::after_nonlinear_solver)
               advection_fields.push_back(AdvectionField::composition(c));
           }
-        std::cout << "   Computing reactions for fields after nonlinear solver for " << advection_fields.size() << " fields." << std::endl;
         compute_reactions (advection_fields);
         pcout << std::endl;
       }
@@ -2196,7 +2194,6 @@ namespace aspect
     // onto the fields, which we do here.
     if (timestep_number > 0 && parameters.enable_elasticity == true && (parameters.mapped_particle_properties).count(introspection.compositional_index_for_name("ve_stress_xx")))
       {
-        std::cout << "   Interpolating stress particle properties onto fields." << std::endl;
         const std::vector<unsigned int> stress_field_indices = introspection.get_indices_for_fields_of_type(CompositionalFieldDescription::stress);
         std::vector<AdvectionField> stress_fields_advected_by_particles;
         for (unsigned int c=0; c < stress_field_indices.size(); ++c)

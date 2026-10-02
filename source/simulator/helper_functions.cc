@@ -1876,7 +1876,6 @@ namespace aspect
                               in.composition[j][c] = in.composition[j][c]
                                                      + reaction_time_step_size * reaction_rate_outputs->reaction_rates[j][c];
                               accumulated_reactions_C[j][c] += reaction_time_step_size * reaction_rate_outputs->reaction_rates[j][c];
-                              std::cout << "reaction rate for composition " << c << " at point " << j << " is " << reaction_rate_outputs->reaction_rates[j][c] << std::endl;
                             }
                         }
                       in.temperature[j] = in.temperature[j]
@@ -1894,7 +1893,6 @@ namespace aspect
               const auto comp_pair = dof_handler.get_fe().system_to_component_index(dof_idx);
               const unsigned int component_idx = comp_pair.first;
               const unsigned int field_index = component_idx-component_idx_T;
-              //std::cout << "dof_idx " << dof_idx << " component_idx " << component_idx << " field_index " << field_index << std::endl;
 
               unsigned int support_point_index = numbers::invalid_unsigned_int;
               unsigned int field_index_in_fields_with_reactions = 0;
@@ -1912,8 +1910,6 @@ namespace aspect
               if (support_point_index == numbers::invalid_unsigned_int)
                 continue;
 
-              std::cout << "Remaining field index " << field_index << std::endl;
-
               // The final step is grabbing the value from the reaction computation and write it into
               // the global vector (if we own it and if it is not a constrained degree of freedom).:
               if (dof_handler.locally_owned_dofs().is_element(local_dof_indices[dof_idx]) &&
@@ -1929,7 +1925,6 @@ namespace aspect
                     {
                       const unsigned int composition = field_index-1; // 0 is temperature...
                       distributed_vector(local_dof_indices[dof_idx]) = in.composition[support_point_index][composition];
-                      std::cout << "dof_idx " << dof_idx << " support_point_index " << support_point_index << " composition " << composition << " value " << in.composition[support_point_index][composition] << std::endl;
                       distributed_reaction_vector(local_dof_indices[dof_idx]) = accumulated_reactions_C[support_point_index][composition];
                     }
                 }

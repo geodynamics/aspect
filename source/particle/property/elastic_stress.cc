@@ -99,7 +99,7 @@ namespace aspect
       void
       ElasticStress<dim>::update_particles(typename Particle::Manager<dim> &particle_manager) const
       {
-        if (this->simulator_is_past_initialization() == false)
+        if (this->simulator_is_past_initialization() == false || this->get_timestep_number() == 0)
           return;
 
         // Determine the data position of the first stress tensor component
