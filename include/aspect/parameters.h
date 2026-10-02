@@ -641,7 +641,7 @@ namespace aspect
     unsigned int                   timing_output_frequency;
     unsigned int                   max_nonlinear_iterations;
     unsigned int                   max_nonlinear_iterations_in_prerefinement;
-    bool                           use_operator_splitting;
+    std::vector<bool>              use_operator_splitting;
     std::string                    world_builder_file;
     unsigned int                   n_particle_managers;
 

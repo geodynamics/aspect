@@ -1573,8 +1573,12 @@ namespace aspect
     old_old_solution.reinit(introspection.index_sets.system_partitioning, introspection.index_sets.system_relevant_partitioning, mpi_communicator);
     current_linearization_point.reinit (introspection.index_sets.system_partitioning, introspection.index_sets.system_relevant_partitioning, mpi_communicator);
 
-    if (parameters.use_operator_splitting)
-      operator_split_reaction_vector.reinit (introspection.index_sets.system_partitioning, introspection.index_sets.system_relevant_partitioning, mpi_communicator);
+    // If at least one of the advection fields (temperature + all compositional fields).
+    // uses operator splitting, reinitialize the reaction vector.
+    if (std::find(parameters.use_operator_splitting.begin(), parameters.use_operator_splitting.end(), true) != parameters.use_operator_splitting.end())
+      {
+        operator_split_reaction_vector.reinit (introspection.index_sets.system_partitioning, introspection.index_sets.system_relevant_partitioning, mpi_communicator);
+      }
 
     if (do_pressure_rhs_compatibility_modification)
       pressure_shape_function_integrals.reinit (introspection.index_sets.system_partitioning, mpi_communicator);
@@ -2016,18 +2020,34 @@ namespace aspect
 
     // Compute the reactions of the temperature and of any compositional field for which
     // reactions were requested before the nonlinear solver loop.
-    if (parameters.use_operator_splitting)
+    // TODO precompute these two vectors in parse_parameters?
+    std::vector<AdvectionField> advection_fields_before_nonlinear_solver;
+    std::vector<AdvectionField> advection_fields_after_nonlinear_solver;
+    for (unsigned int c=0; c<parameters.use_operator_splitting.size(); ++c)
       {
-        std::vector<AdvectionField> advection_fields;
-        advection_fields.push_back(AdvectionField::temperature());
-        for (unsigned int c=0; c<introspection.n_compositional_fields; ++c)
+        if (parameters.use_operator_splitting[c])
           {
-            if (parameters.compositional_field_methods[c] != Parameters<dim>::AdvectionFieldMethod::particles &&
-                parameters.reaction_strategy[c] == Parameters<dim>::ReactionStrategy::before_nonlinear_solver)
-              advection_fields.push_back(AdvectionField::composition(c));
+            // The temperature field.
+            if (c == 0)
+              {
+                advection_fields_before_nonlinear_solver.push_back(AdvectionField::temperature());
+              }
+            else
+              {
+                if (parameters.compositional_field_methods[c-1] != Parameters<dim>::AdvectionFieldMethod::particles)
+                  {
+                    if (parameters.reaction_strategy[c] == Parameters<dim>::ReactionStrategy::before_nonlinear_solver)
+                      advection_fields_before_nonlinear_solver.push_back(AdvectionField::composition(c-1));
+                    else if (parameters.reaction_strategy[c] == Parameters<dim>::ReactionStrategy::after_nonlinear_solver)
+                      advection_fields_after_nonlinear_solver.push_back(AdvectionField::composition(c-1));
+                    else
+                      Assert(false, ExcMessage ("The Reaction Strategy for compositional field " + Utilities::int_to_string(c-1) + " should be `before nonlinear solver' "
+                                                "or `after nonlinear solver'."));
+                  }
+              }
           }
-        compute_reactions (advection_fields);
       }
+    compute_reactions (advection_fields_before_nonlinear_solver);
 
     try
       {
@@ -2175,16 +2195,9 @@ namespace aspect
     // Compute the reactions of any compositional field for which operator splitting
     // is requested after the nonlinear solver loop instead of before. This is for example used to apply
     // the full stress update when elasticity is included. The temperature field is not included.
-    if (parameters.use_operator_splitting)
+    if (advection_fields_after_nonlinear_solver.size() > 0)
       {
-        std::vector<AdvectionField> advection_fields;
-        for (unsigned int c=0; c<introspection.n_compositional_fields; ++c)
-          {
-            if (parameters.compositional_field_methods[c] != Parameters<dim>::AdvectionFieldMethod::particles &&
-                parameters.reaction_strategy[c] == Parameters<dim>::ReactionStrategy::after_nonlinear_solver)
-              advection_fields.push_back(AdvectionField::composition(c));
-          }
-        compute_reactions (advection_fields);
+        compute_reactions (advection_fields_after_nonlinear_solver);
         pcout << std::endl;
       }
 
@@ -2192,6 +2205,7 @@ namespace aspect
     // the operator splitting is done directly on the particles through the post_nonlinear_solver
     // signal. However, the updated stress particle properties still need to be interpolated
     // onto the fields, which we do here.
+    // TODO precompute stress_fields_advected_by_particles?
     if (timestep_number > 0 && parameters.enable_elasticity == true && (parameters.mapped_particle_properties).count(introspection.compositional_index_for_name("ve_stress_xx")))
       {
         const std::vector<unsigned int> stress_field_indices = introspection.get_indices_for_fields_of_type(CompositionalFieldDescription::stress);
