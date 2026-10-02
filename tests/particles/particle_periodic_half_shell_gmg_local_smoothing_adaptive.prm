@@ -1,0 +1,18 @@
+# Test asymmetric refinement on a 180 degree periodic shell.
+
+# MPI: 2
+
+include $ASPECT_SOURCE_DIR/tests/particles/particle_periodic_quarter_shell_gmg_local_smoothing_adaptive.prm
+
+subsection Geometry model
+  subsection Spherical shell
+    set Opening angle = 180
+  end
+end
+
+subsection Mesh refinement
+  subsection Minimum refinement function
+    set Function expression = if(y>0, 3, 1)
+  end
+end
+# Enable if: DEAL_II_VERSION_GTE_9_9_0

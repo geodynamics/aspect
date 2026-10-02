@@ -166,6 +166,30 @@ namespace aspect
        */
       std::size_t get_cell_data_memory_consumption() const override;
 
+      /**
+       * Return the velocity DoFHandler used by the multigrid hierarchy.
+       */
+      const DoFHandler<dim> &get_velocity_multigrid_dof_handler() const
+      {
+        return dof_handler_v;
+      }
+
+      /**
+       * Return the velocity constraints used by the multigrid hierarchy.
+       */
+      const MGConstrainedDoFs &get_velocity_multigrid_constraints() const
+      {
+        return mg_constrained_dofs_A_block;
+      }
+
+      /**
+       * Return the velocity transfer used by the multigrid hierarchy.
+       */
+      const MGTransferType<dim,GMGNumberType> &get_velocity_multigrid_transfer() const
+      {
+        return mg_transfer_A_block;
+      }
+
     private:
       /**
        * Evaluate the MaterialModel to query information like the viscosity and

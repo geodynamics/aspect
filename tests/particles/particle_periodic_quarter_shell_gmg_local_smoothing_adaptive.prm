@@ -1,0 +1,41 @@
+# Request different refinement levels on the two periodic boundaries.
+# Local-smoothing GMG must synchronize them before particles cross the seam.
+
+# MPI: 2
+
+include $ASPECT_SOURCE_DIR/tests/particles/particle_periodic_quarter_shell_gmg_local_smoothing.prm
+
+set End time = 0.20
+
+subsection Mesh refinement
+  set Initial global refinement          = 1
+  set Initial adaptive refinement        = 2
+  set Strategy                           = minimum refinement function
+  set Refinement fraction                = 0.1
+  set Coarsening fraction                = 0
+  set Time steps between mesh refinement = 1
+
+  subsection Minimum refinement function
+    set Coordinate system   = cartesian
+    set Function expression = if(y>x, 3, 1)
+    set Variable names      = x,y,t
+  end
+end
+
+subsection Particles
+  subsection Generator
+    subsection Uniform radial
+      set Minimum radius      = 0.90
+      set Maximum radius      = 0.9999
+      set Radial layers       = 4
+      set Number of particles = 40
+    end
+  end
+end
+
+subsection Postprocess
+  subsection Particles
+    set Time between data output = 0.10
+  end
+end
+# Enable if: DEAL_II_VERSION_GTE_9_9_0

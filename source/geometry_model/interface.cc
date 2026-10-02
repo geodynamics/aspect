@@ -318,6 +318,16 @@ namespace aspect
                                                  constraints);
         }
     }
+
+
+
+    template <int dim>
+    void
+    Interface<dim>::make_periodicity_constraints_on_level(
+      const DoFHandler<dim> &,
+      const unsigned int,
+      AffineConstraints<double> &) const
+    {}
   }
 }
 

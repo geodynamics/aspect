@@ -1,0 +1,10 @@
+# Check rotated velocity level constraints and transfer on a half shell.
+# MPI: 2
+include $ASPECT_SOURCE_DIR/tests/benchmarks/annulus_periodic_gmg_local_smoothing.prm
+set Additional shared libraries = ./libannulus_periodic_gmg_local_smoothing_180.so
+subsection Geometry model
+  subsection Spherical shell
+    set Opening angle = 180
+  end
+end
+# Enable if: DEAL_II_VERSION_GTE_9_9_0
