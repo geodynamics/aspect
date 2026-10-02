@@ -84,6 +84,12 @@ subsection Mesh refinement
   end
 end
 
+subsection Solver parameters
+  subsection Stokes solver parameters
+    set Stokes GMG type = global coarsening
+  end
+end
+
 subsection Boundary velocity model
   set Zero velocity boundary indicators       = 0,1,2,3,4,5
 end
