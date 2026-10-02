@@ -25,6 +25,7 @@
 #include <aspect/material_model/interface.h>
 #include <aspect/material_model/utilities.h>
 #include <aspect/material_model/rheology/strain_dependent.h>
+#include <aspect/material_model/rheology/pressure_factor.h>
 #include <aspect/material_model/rheology/friction_models.h>
 #include <aspect/material_model/rheology/diffusion_creep.h>
 #include <aspect/material_model/rheology/dislocation_creep.h>
@@ -82,6 +83,11 @@ namespace aspect
          */
         std::vector<double> yielding;
 
+        /**
+         * The N pressure factors that are used to scale the pressure for each compositional field.
+         */
+        std::vector<double> pressure_factors;
+
     };
 
     /**
@@ -133,6 +139,26 @@ namespace aspect
          * i.e., viscous flow law is either dislocation or composite.
          */
         std::vector<double> dislocation_viscosities;
+
+    };
+
+    /**
+     * Additional output fields for the plastic parameters weakened (or hardened)
+     * by strain to be added to the MaterialModel::MaterialModelOutputs structure
+     * and filled in the MaterialModel::Interface::evaluate() function.
+     */
+    template <int dim>
+    class PressureFactorAdditionalOutputs : public NamedAdditionalMaterialOutputs<dim>
+    {
+      public:
+        PressureFactorAdditionalOutputs(const unsigned int n_points);
+
+        std::vector<double> get_nth_output(const unsigned int idx) const override;
+
+        /**
+         * The N pressure factors that are used to scale the pressure for each compositional field.
+         */
+        std::vector<double> pressure_factors;
 
     };
 
@@ -287,6 +313,23 @@ namespace aspect
                                       const IsostrainViscosities &isostrain_viscosities) const;
 
           /**
+           * Create the additional material model outputs object that contains the
+           * pressure factor outputs.
+           */
+          void
+          create_pressure_factor_outputs (MaterialModel::MaterialModelOutputs<dim> &out) const;
+
+          /**
+           * A function that fills the pressure factor additional output in the
+           * MaterialModelOutputs object that is handed over, if it exists.
+           * Does nothing otherwise.
+           */
+          void fill_pressure_factor_outputs(const unsigned int point_index,
+                                            const std::vector<double> &volume_fractions,
+                                            const MaterialModel::MaterialModelInputs<dim> &in,
+                                            MaterialModel::MaterialModelOutputs<dim> &out) const;
+
+          /**
            * Minimum strain rate used to stabilize the strain rate dependent rheology.
            *
            * This variable is read from the parameter file through a parameter called 'Minimum strain rate'.
@@ -303,6 +346,11 @@ namespace aspect
            * Object for computing the strain dependence of the rheology model.
            */
           Rheology::StrainDependent<dim> strain_rheology;
+
+          /**
+           * Object for computing the pressure factor or scaled pressure of the rheology model.
+           */
+          Rheology::PressureFactor<dim> pressure_factor_model;
 
           /**
            * Object for computing the friction dependence of the rheology model.
