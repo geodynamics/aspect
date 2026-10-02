@@ -1,0 +1,15 @@
+# version with periodic b.c.
+
+set Dimension = 3
+
+include base.prm
+
+subsection Geometry model
+  subsection Box
+    set X periodic = true
+  end
+end
+
+subsection Boundary velocity model
+  set Zero velocity boundary indicators = bottom,top,front,back
+end
