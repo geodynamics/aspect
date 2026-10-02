@@ -484,7 +484,7 @@ namespace aspect
                                    && periodic_neighbor->coarsen_flag_set();
 
               flags_changed |= (refine != static_cast<bool>(cell->refine_flag_set())
-                                || (!refine && coarsen) != cell->coarsen_flag_set());
+                                || coarsen != cell->coarsen_flag_set());
               cell->clear_refine_flag();
               cell->clear_coarsen_flag();
               if (refine)

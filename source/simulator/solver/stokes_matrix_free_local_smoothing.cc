@@ -1462,10 +1462,7 @@ namespace aspect
                                                          this->get_mpi_communicator())) == 1;
       AssertThrow(have_periodic_hanging_nodes==false,
                   ExcMessage("The 'local smoothing' geometric multigrid solver requires "
-                             "matching refinement levels on periodic boundaries, but this "
-                             "mesh already contains periodic hanging nodes. Start from a "
-                             "compatible mesh or use 'Stokes GMG type = global coarsening' "
-                             "in subsection 'Solver parameters/Stokes solver parameters'."));
+                             "matching refinement levels on periodic cell pairs."));
     }
 
     // This vector will be refilled with the new MatrixFree objects below:
