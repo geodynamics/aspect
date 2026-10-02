@@ -1723,19 +1723,7 @@ namespace aspect
         AMG_output_details                     = prm.get_bool ("AMG output details");
       }
       prm.leave_subsection ();
-      // prm.enter_subsection ("Operator splitting parameters");
-      // {
-      //   reaction_solver_type                   = ReactionSolverType::parse(prm.get("Reaction solver type"));
-      //   ARKode_relative_tolerance              = prm.get_double("Reaction solver relative tolerance");
-      //   reaction_time_step       = prm.get_double("Reaction time step");
-      //   AssertThrow (reaction_time_step > 0,
-      //                ExcMessage("Reaction time step must be greater than 0."));
-      //   if (convert_to_years == true)
-      //     reaction_time_step *= year_in_seconds;
-      //   reaction_steps_per_advection_step = prm.get_integer ("Reaction time steps per advection step");
-      //   reaction_strategy = ReactionStrategy::parse(prm.get("Reaction solve strategy"));
-      // }
-      // prm.leave_subsection ();
+
       prm.enter_subsection ("Diffusion solver parameters");
       {
         diffusion_length_scale = prm.get_double("Diffusion length scale");
