@@ -385,7 +385,9 @@ namespace aspect
                        "to a cluster.");
 
     prm.declare_entry ("Use operator splitting", "false",
-                       Patterns::Bool(),
+                       Patterns::List ( Patterns::Bool()),
+                       "A list for each advection field (temperature plus compositional fields) "
+                       "indicating whether operator splitting should be used for that field. "
                        "If set to true, the advection and reactions of compositional fields and "
                        "temperature are solved separately, and can use different time steps. Note that "
                        "this will only work if the material/heating model fills the reaction\\_rates/"
@@ -664,8 +666,8 @@ namespace aspect
                            Patterns::List (Patterns::Double (0.)),
                            "Set a time step size for computing reactions of compositional fields and the "
                            "temperature field in case operator splitting is used. This is only used "
-                           "when the parameter ``Use operator splitting'' is set to true and when the "
-                           "`fixed step' reaction solver type is used. "
+                           "when the corresponding entry of the parameter ``Use operator splitting'' is "
+                           "set to true and when the `fixed step' reaction solver type is used. "
                            "The reaction time step must be greater than 0. "
                            "If you want to prescribe the reaction time step only as a relative value "
                            "compared to the advection time step as opposed to as an absolute value, you "
@@ -678,9 +680,9 @@ namespace aspect
         prm.declare_entry ("Reaction time steps per advection step", "0",
                            Patterns::List (Patterns::Integer (0)),
                            "The number of reaction time steps done within one advection time step "
-                           "in case operator splitting is used. This is only used if the parameter "
-                           "``Use operator splitting'' is set to true and when the `fixed step' "
-                           "reaction solver type is used. If set to zero, this parameter is ignored. "
+                           "in case operator splitting is used. This is only used if the corresponding "
+                           "entry of the parameter ``Use operator splitting'' is set to true and when the "
+                           "`fixed step' reaction solver type is used. If set to zero, this parameter is ignored. "
                            "Otherwise, the reaction time step size is chosen according to "
                            "this criterion and the ``Reaction time step'', whichever yields the "
                            "smaller time step. "
@@ -691,8 +693,8 @@ namespace aspect
                            "Whether the reaction solve should be done before the nonlinear solver "
                            "(default) or after the nonlinear solver. The latter strategy should be "
                            "used when ``Enable elasticity'' is set to true. "
-                           "The strategy parameter is only considered if the parameter "
-                           "``Use operator splitting'' is set to true. "
+                           "The strategy parameter is only considered if the corresponding "
+                           "entry of the parameter ``Use operator splitting'' is set to true. "
                            "Units: none.");
       }
       prm.leave_subsection ();
@@ -1807,8 +1809,6 @@ namespace aspect
     adiabatic_surface_temperature   = prm.get_double ("Adiabatic surface temperature");
     pressure_normalization          = prm.get("Pressure normalization");
 
-    use_operator_splitting          = prm.get_bool("Use operator splitting");
-
     prm.enter_subsection ("Mesh refinement");
     {
       initial_global_refinement    = prm.get_integer ("Initial global refinement");
@@ -2003,12 +2003,18 @@ namespace aspect
     }
     prm.leave_subsection();
 
+    // Read in parameters related to operator splitting
+    // for all advection fields (= temperature plus all compositional fields).
+    const unsigned int n_advection_fields = 1 + n_compositional_fields;
+    use_operator_splitting          = Utilities::possibly_extend_from_1_to_N (Utilities::string_to_bool
+                                                                              (Utilities::split_string_list(prm.get("Use operator splitting"))),
+                                                                              n_advection_fields,
+                                                                              "Use operator splitting");
+
     prm.enter_subsection ("Solver parameters");
     {
       prm.enter_subsection ("Operator splitting parameters");
       {
-        // Read in parameters for all advection fields (= temperature plus all compositional fields).
-        const unsigned int n_advection_fields = 1 + n_compositional_fields;
         std::vector<std::string> x_reaction_solver_type                   = Utilities::possibly_extend_from_1_to_N (Utilities::split_string_list(prm.get("Reaction solver type")),
                                                                             n_advection_fields,
                                                                             "Reaction solver type");

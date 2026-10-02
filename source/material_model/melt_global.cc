@@ -110,7 +110,7 @@ namespace aspect
       // we want to get the porosity field from the old solution here,
       // because we need a field that is not updated in the nonlinear iterations
       if (this->include_melt_transport() && in.current_cell.state() == IteratorState::valid
-          && this->get_timestep_number() > 0 && !this->get_parameters().use_operator_splitting)
+          && this->get_timestep_number() > 0 && !this->get_parameters().use_operator_splitting[this->introspection().compositional_index_for_name("porosity")+1])
         {
           // Prepare the field function
 
@@ -125,7 +125,7 @@ namespace aspect
                               old_porosity,
                               this->introspection().component_indices.compositional_fields[porosity_idx]);
         }
-      else if (this->get_parameters().use_operator_splitting)
+      else if (this->get_parameters().use_operator_splitting[this->introspection().compositional_index_for_name("porosity")+1])
         for (unsigned int i=0; i<in.n_evaluation_points(); ++i)
           {
             const unsigned int porosity_idx = this->introspection().compositional_index_for_name("porosity");
@@ -158,7 +158,8 @@ namespace aspect
             {
               out.reaction_terms[i][c] = 0.0;
 
-              if (this->get_parameters().use_operator_splitting && reaction_rate_out != nullptr)
+              if (this->get_parameters().use_operator_splitting[this->introspection().compositional_index_for_name("porosity")+1] &&
+                  reaction_rate_out != nullptr)
                 reaction_rate_out->reaction_rates[i][c] = 0.0;
             }
 
@@ -207,7 +208,7 @@ namespace aspect
                         out.reaction_terms[i][c] = 0.0;
 
                       // fill reaction rate outputs if the model uses operator splitting
-                      if (this->get_parameters().use_operator_splitting)
+                      if (this->get_parameters().use_operator_splitting[porosity_idx+1])
                         {
                           if (reaction_rate_out != nullptr)
                             {
@@ -502,12 +503,9 @@ namespace aspect
                 }
             }
 
-          if (this->get_parameters().use_operator_splitting)
+          if (this->introspection().compositional_name_exists("porosity") &&
+              this->get_parameters().use_operator_splitting[this->introspection().compositional_index_for_name("porosity") + 1])
             {
-              AssertThrow(this->introspection().compositional_name_exists("porosity"),
-                          ExcMessage("Material model Melt global with melt transport only "
-                                     "works if there is a compositional field called porosity."));
-
               // The index in the operator splitting settings is the compositional field index
               // plus 1 for the temperature field (which is always listed first).
               const unsigned int porosity_index = this->introspection().compositional_index_for_name("porosity") + 1;
@@ -539,6 +537,10 @@ namespace aspect
               AssertThrow(melting_time_scale > 0,
                           ExcMessage("The Melting time scale for operator splitting must be larger than 0!"));
             }
+          else if (this->introspection().compositional_name_exists("porosity") &&
+                   !(this->get_parameters().use_operator_splitting[this->introspection().compositional_index_for_name("porosity") + 1]))
+            AssertThrow(!this->include_melt_transport(), ExcMessage ("If operator splitting is not enabled for the compositional field `porosity', "
+                                                                     "melt transport cannot be enabled."));
 
         }
         prm.leave_subsection();
@@ -551,8 +553,9 @@ namespace aspect
     void
     MeltGlobal<dim>::create_additional_named_outputs (MaterialModel::MaterialModelOutputs<dim> &out) const
     {
-      if (this->get_parameters().use_operator_splitting
-          && out.template has_additional_output_object<ReactionRateOutputs<dim>>() == false)
+      if (this->introspection().compositional_name_exists("porosity") &&
+          this->get_parameters().use_operator_splitting[this->introspection().compositional_index_for_name("porosity") + 1] &&
+          out.template has_additional_output_object<ReactionRateOutputs<dim>>() == false)
         {
           const unsigned int n_points = out.n_evaluation_points();
           out.additional_outputs.push_back(

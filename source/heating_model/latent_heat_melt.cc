@@ -37,7 +37,7 @@ namespace aspect
       Assert(heating_model_outputs.heating_source_terms.size() == material_model_inputs.n_evaluation_points(),
              ExcMessage ("Heating outputs need to have the same number of entries as the material model inputs."));
 
-      const bool use_operator_split = (this->get_parameters().use_operator_splitting);
+      const bool use_operator_split = (this->get_parameters().use_operator_splitting[0]);
 
       const std::shared_ptr<const MaterialModel::ReactionRateOutputs<dim>> reaction_rate_out
         = material_model_outputs.template get_additional_output_object<MaterialModel::ReactionRateOutputs<dim>>();
@@ -117,7 +117,7 @@ namespace aspect
     get_required_properties () const
     {
       MaterialModel::MaterialProperties::Property required_properties = MaterialModel::MaterialProperties::additional_outputs;
-      if (this->get_parameters().use_operator_splitting)
+      if (this->get_parameters().use_operator_splitting[0])
         required_properties = required_properties |
                               MaterialModel::MaterialProperties::specific_heat |
                               MaterialModel::MaterialProperties::reaction_rates;

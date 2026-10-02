@@ -336,7 +336,7 @@ namespace aspect
               // Calculate the reaction rates for the operator splitting
               for (unsigned int c = 0; c < in.composition[i].size(); ++c)
                 {
-                  if (this->get_parameters().use_operator_splitting && reaction_rate_out != nullptr)
+                  if (reaction_rate_out != nullptr)
                     {
                       reaction_rate_out->reaction_rates[i][c] = 0.0;
 
@@ -361,7 +361,7 @@ namespace aspect
                                                            :
                                                            0;
 
-                      if (c_is_entropy_field == true && timestep_number > 0)
+                      if (c_is_entropy_field == true && timestep_number > 0 && this->get_parameters().use_operator_splitting[c + 1])
                         reaction_rate_out->reaction_rates[i][c] = (component_equilibrated_S[c_is_nth_entropy_field] - in.composition[i][entropy_indices[c_is_nth_entropy_field]]) / this->get_timestep();
                     }
 
@@ -589,9 +589,11 @@ namespace aspect
     {
       if (this->introspection().composition_type_exists(CompositionalFieldDescription::Type::chemical_composition))
         {
-          AssertThrow (this->get_parameters().use_operator_splitting == true,
-                       ExcMessage("The 'entropy model' material model requires the use of operator splitting for multiple chemical composition. "
-                                  "Please set the 'Use operator splitting' parameter to 1 in the material model parameters."));
+          const std::vector<unsigned int> &entropy_indices = this->introspection().get_indices_for_fields_of_type(CompositionalFieldDescription::entropy);
+          for (auto entropy_index : entropy_indices)
+            AssertThrow (this->get_parameters().use_operator_splitting[entropy_index + 1] == true,
+                         ExcMessage("The 'entropy model' material model requires the use of operator splitting for multiple chemical composition. "
+                                    "Please set the 'Use operator splitting' parameter to 1 for each of the entropy fields."));
         }
 
       prm.enter_subsection("Material model");
@@ -693,7 +695,8 @@ namespace aspect
             std::make_unique<PlasticAdditionalOutputs<dim>> (n_points));
         }
 
-      if (this->get_parameters().use_operator_splitting
+      if (this->get_parameters().use_operator_splitting.size() > 1 &&
+          std::accumulate(this->get_parameters().use_operator_splitting.begin()+1, this->get_parameters().use_operator_splitting.end(), 0) > 0
           && out.template get_additional_output_object<ReactionRateOutputs<dim>>() == nullptr)
         {
           const unsigned int n_points = out.n_evaluation_points();

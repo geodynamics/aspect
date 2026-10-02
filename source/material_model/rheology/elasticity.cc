@@ -291,13 +291,13 @@ namespace aspect
 
         // An update of the stored stresses is done in an operator splitting step for fields or by the particle property 'elastic stress'.
         const unsigned int ve_stress_xx_idx = this->introspection().compositional_index_for_name("ve_stress_xx");
-        AssertThrow((this->get_parameters().mapped_particle_properties).count(ve_stress_xx_idx) || this->get_parameters().use_operator_splitting,
+        AssertThrow((this->get_parameters().mapped_particle_properties).count(ve_stress_xx_idx) || this->get_parameters().use_operator_splitting[ve_stress_xx_idx+1],
                     ExcMessage("The viscoelastic material model and the visco-plastic material model with elasticity enabled require either "
                                "operator splitting for stresses tracked on compositional fields or the particle property 'elastic stress' "
                                "for stresses tracked on particles. When stresses are tracked on particles, operator splitting can be used "
                                "for fields other than the stresses."));
         // If the operator splitting scheme is used to update the stresses:
-        if (!(this->get_parameters().mapped_particle_properties).count(ve_stress_xx_idx) && this->get_parameters().use_operator_splitting)
+        if (!(this->get_parameters().mapped_particle_properties).count(ve_stress_xx_idx) && this->get_parameters().use_operator_splitting[ve_stress_xx_idx+1])
           {
             // 1) Make sure to use the fixed step solver, as we know the exact update and it should be applied in one step.
             // The index in the reactions settings is the compositional field index plus 1 for the temperature field (which is always listed first).
@@ -397,7 +397,7 @@ namespace aspect
         // that sets both sets of stresses to the total stress of the
         // current timestep after the nonlinear solver is done.
         if (out.template has_additional_output_object<ReactionRateOutputs<dim>>() == false &&
-            (this->get_parameters().use_operator_splitting || (this->get_parameters().mapped_particle_properties).count(this->introspection().compositional_index_for_name("ve_stress_xx"))))
+            (this->get_parameters().use_operator_splitting[this->introspection().compositional_index_for_name("ve_stress_xx")+1] || (this->get_parameters().mapped_particle_properties).count(this->introspection().compositional_index_for_name("ve_stress_xx"))))
           {
             const unsigned int n_points = out.n_evaluation_points();
             out.additional_outputs.push_back(

@@ -1226,21 +1226,12 @@ namespace aspect
 
           // The index in the operator splitting settings is the compositional field index
           // plus 1 for the temperature field (which is always listed first).
-          const unsigned int porosity_index = this->introspection().compositional_index_for_name("porosity") + 1;
           const unsigned int molar_Fe_in_solid_index = this->introspection().compositional_index_for_name("molar_Fe_in_solid") + 1;
-          const unsigned int molar_Fe_in_melt_index = this->introspection().compositional_index_for_name("molar_Fe_in_melt") + 1;
 
-          AssertThrow(this->get_parameters().use_operator_splitting &&
+          AssertThrow(this->get_parameters().use_operator_splitting[molar_Fe_in_solid_index] &&
                       this->get_parameters().reaction_solver_type[molar_Fe_in_solid_index] == Parameters<dim>::ReactionSolverType::fixed_step,
                       ExcMessage("The melt boukare material model has to be used with operator splitting, "
                                  "and the reaction solver needs to be `fixed step'."));
-
-          if (this->include_melt_transport())
-            {
-              AssertThrow(this->get_parameters().reaction_solver_type[porosity_index] == Parameters<dim>::ReactionSolverType::fixed_step &&
-                          this->get_parameters().reaction_solver_type[molar_Fe_in_melt_index] == Parameters<dim>::ReactionSolverType::fixed_step,
-                          ExcMessage("The melt boukare material model has to use the reaction solver `fixed step' for the fields `porosity'. and `molar_Fe_in_melt'."));
-            }
 
           AssertThrow(melting_time_scale >= this->get_parameters().reaction_time_step[molar_Fe_in_solid_index],
                       ExcMessage("The reaction time step " + Utilities::to_string(this->get_parameters().reaction_time_step[molar_Fe_in_solid_index])
@@ -1251,10 +1242,16 @@ namespace aspect
 
           if (this->include_melt_transport())
             {
+              const unsigned int porosity_index = this->introspection().compositional_index_for_name("porosity") + 1;
+              const unsigned int molar_Fe_in_melt_index = this->introspection().compositional_index_for_name("molar_Fe_in_melt") + 1;
+              AssertThrow(this->get_parameters().reaction_solver_type[porosity_index] == Parameters<dim>::ReactionSolverType::fixed_step &&
+                          this->get_parameters().reaction_solver_type[molar_Fe_in_melt_index] == Parameters<dim>::ReactionSolverType::fixed_step,
+                          ExcMessage("The melt boukare material model has to use the reaction solver `fixed step' for the fields `porosity' and `molar_Fe_in_melt'."));
+
               AssertThrow(this->get_parameters().reaction_time_step[porosity_index] ==
                           this->get_parameters().reaction_time_step[molar_Fe_in_melt_index] ==
                           this->get_parameters().reaction_time_step[molar_Fe_in_solid_index],
-                          ExcMessage("The melt boukare material model has to use the reaction solver `fixed step' for the fields `porosity'. and `molar_Fe_in_melt'."));
+                          ExcMessage("The melt boukare material model has to use the same reaction time step for the fields `molar_Fe_in_solid', `porosity' and `molar_Fe_in_melt'."));
             }
 
           AssertThrow(melting_time_scale > 0.0,
@@ -1272,7 +1269,7 @@ namespace aspect
     void
     MeltBoukare<dim>::create_additional_named_outputs (MaterialModel::MaterialModelOutputs<dim> &out) const
     {
-      if (this->get_parameters().use_operator_splitting
+      if (this->get_parameters().use_operator_splitting[this->introspection().compositional_index_for_name("molar_Fe_in_solid") + 1]
           && out.template has_additional_output_object<ReactionRateOutputs<dim>>() == false)
         {
           out.additional_outputs.push_back(

@@ -320,7 +320,7 @@ namespace aspect
                   // based on all elements of the entropy fields:
                   if (c == last_entropy_field_index)
                     {
-                      if (parameters.use_operator_splitting)
+                      if (parameters.use_operator_splitting[c+1])
                         {
                           std::vector<AdvectionField> advection_fields;
                           // First add the temperature field
