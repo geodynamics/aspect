@@ -43,7 +43,7 @@ Number of degrees of freedom: 268 (162+25+81)
 
    Solving temperature system... 25 iterations.
    Solving Stokes system (GMG)... 46+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0.261383, 9.19037e-07
+      Relative nonlinear residuals (temperature, Stokes system): 0.261383, 9.19039e-07
       Relative nonlinear residual (total system) after nonlinear iteration 5: 0.261383
 
    Solving temperature system... 13 iterations.
@@ -58,8 +58,8 @@ Number of degrees of freedom: 268 (162+25+81)
 
    Solving temperature system... 27 iterations.
    Solving Stokes system (GMG)... 45+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0.217423, 8.85474e-08
-      Relative nonlinear residual (total system) after nonlinear iteration 8: 0.217423
+      Relative nonlinear residuals (temperature, Stokes system): 0.217424, 8.8548e-08
+      Relative nonlinear residual (total system) after nonlinear iteration 8: 0.217424
 
    Solving temperature system... 20 iterations.
    Solving Stokes system (GMG)... 44+0 iterations.
@@ -68,8 +68,8 @@ Number of degrees of freedom: 268 (162+25+81)
 
    Solving temperature system... 27 iterations.
    Solving Stokes system (GMG)... 49+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0.285141, 2.67408e-07
-      Relative nonlinear residual (total system) after nonlinear iteration 10: 0.285141
+      Relative nonlinear residuals (temperature, Stokes system): 0.285142, 2.67407e-07
+      Relative nonlinear residual (total system) after nonlinear iteration 10: 0.285142
 
    Solving temperature system... 20 iterations.
    Solving Stokes system (GMG)... 46+0 iterations.
@@ -78,23 +78,23 @@ Number of degrees of freedom: 268 (162+25+81)
 
    Solving temperature system... 26 iterations.
    Solving Stokes system (GMG)... 47+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0.335987, 6.49991e-08
-      Relative nonlinear residual (total system) after nonlinear iteration 12: 0.335987
+      Relative nonlinear residuals (temperature, Stokes system): 0.335988, 6.49991e-08
+      Relative nonlinear residual (total system) after nonlinear iteration 12: 0.335988
 
    Solving temperature system... 22 iterations.
    Solving Stokes system (GMG)... 48+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0.287895, 5.0452e-08
+      Relative nonlinear residuals (temperature, Stokes system): 0.287895, 5.04519e-08
       Relative nonlinear residual (total system) after nonlinear iteration 13: 0.287895
 
    Solving temperature system... 24 iterations.
    Solving Stokes system (GMG)... 47+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0.231112, 4.40954e-08
+      Relative nonlinear residuals (temperature, Stokes system): 0.231112, 4.40955e-08
       Relative nonlinear residual (total system) after nonlinear iteration 14: 0.231112
 
    Solving temperature system... 27 iterations.
    Solving Stokes system (GMG)... 46+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0.457223, 1.3494e-07
-      Relative nonlinear residual (total system) after nonlinear iteration 15: 0.457223
+      Relative nonlinear residuals (temperature, Stokes system): 0.457221, 1.34939e-07
+      Relative nonlinear residual (total system) after nonlinear iteration 15: 0.457221
 
 
    WARNING: The nonlinear solver in the current timestep failed to converge.

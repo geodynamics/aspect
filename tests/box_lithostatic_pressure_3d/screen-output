@@ -24,8 +24,8 @@ Number of degrees of freedom: 25,294 (14,739+729+4,913+4,913)
      Rayleigh number:                               0
 
      RMS, max velocity:                               0.00277 m/year, 0.0331 m/year
-     Max, min, and rms velocity along boundary parts: 0.003662 m/year, 0.001259 m/year, 0.002664 m/year, 0.0008522 m/year, 3.898e-05 m/year, 0.0004613 m/year, 0.003161 m/year, 2.796e-05 m/year, 0.001515 m/year, 0.003161 m/year, 2.796e-05 m/year, 0.001515 m/year, 0.003993 m/year, 3.584e-05 m/year, 0.002295 m/year, 0.003993 m/year, 3.584e-05 m/year, 0.002295 m/year
-     Pressure at top/bottom of domain:                -8.017e-10 Pa, 9.411e+10 Pa
+     Max, min, and rms velocity along boundary parts: 0.003673 m/year, 0.001257 m/year, 0.002664 m/year, 0.0008522 m/year, 3.898e-05 m/year, 0.0004614 m/year, 0.003171 m/year, 2.793e-05 m/year, 0.001515 m/year, 0.003171 m/year, 2.793e-05 m/year, 0.001515 m/year, 0.004003 m/year, 3.586e-05 m/year, 0.002302 m/year, 0.003983 m/year, 3.582e-05 m/year, 0.002289 m/year
+     Pressure at top/bottom of domain:                -6.598e-10 Pa, 9.411e+10 Pa
 
 Termination requested by criterion: end time
 

@@ -20,7 +20,7 @@ Number of degrees of freedom: 1,836 (1,122+153+561)
    Postprocessing:
      RMS, max velocity:                  1.92e+05 m/s, 3.91e+05 m/s
      Temperature min/avg/max:            273 K, 1555 K, 2014 K
-     Heat fluxes through boundary parts: 0 W, 0 W, -5.453e+04 W, 1.06e+05 W
+     Heat fluxes through boundary parts: 0 W, 0 W, 5.658e+04 W, 7.322e+04 W
      Writing graphical output:           output-prescribed_solution_velocity_function_box/solution/solution-00001
      Writing heat flux map               output-prescribed_solution_velocity_function_box/heat_flux.00001
 

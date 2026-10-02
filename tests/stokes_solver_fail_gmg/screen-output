@@ -16,7 +16,7 @@ Additional information:
     converge.
     
     The initial residual was: 1.184089e+14
-    The final residual is: 2.514295e+01
+    The final residual is: 2.514517e+01
     The required residual for convergence is: 1.184089e-21
     See output-stokes_solver_fail_gmg/solver_history.txt for the full
     convergence history.
@@ -26,29 +26,34 @@ Additional information:
     --------------------------------------------------------
 (line in output replaced by default.sh script)
 (line in output replaced by default.sh script)
-    void dealii::SolverFGMRES<VectorType>::solve(const MatrixType&,
-    VectorType&, const VectorType&, const PreconditionerType&) [with
-    MatrixType = aspect::MatrixFreeStokesOperators::StokesOperator<2, 2,
-    double>; PreconditionerType =
-    aspect::internal::BlockSchurPreconditioner<aspect::internal::InverseVelocityBlock<dealii::PreconditionMG<2,
+    void dealii::SolverMPGMRES<VectorType>::solve_internal(const
+    MatrixType&, VectorType&, const VectorType&, const
+    dealii::SolverMPGMRES<VectorType>::IndexingStrategy&, const
+    PreconditionerTypes& ...) [with MatrixType =
+    aspect::MatrixFreeStokesOperators::StokesOperator<2, 2, double>;
+    PreconditionerTypes =
+    {aspect::internal::BlockSchurPreconditioner<aspect::internal::InverseVelocityBlock<dealii::PreconditionMG<2,
     dealii::LinearAlgebra::distributed::Vector<double,
-    dealii::MemorySpace::Host>, dealii::MGTransferMF<2, double> >,
+    dealii::MemorySpace::Host>, dealii::MGTransferMatrixFree<2, double,
+    dealii::MemorySpace::Host> >,
     dealii::LinearAlgebra::distributed::Vector<double,
     dealii::MemorySpace::Host>,
     aspect::MatrixFreeStokesOperators::ABlockOperator<2, 2, double> >,
     aspect::internal::SchurApproximation<dealii::PreconditionMG<2,
     dealii::LinearAlgebra::distributed::Vector<double,
-    dealii::MemorySpace::Host>, dealii::MGTransferMF<2, double> >,
+    dealii::MemorySpace::Host>, dealii::MGTransferMatrixFree<2, double,
+    dealii::MemorySpace::Host> >,
     aspect::MatrixFreeStokesOperators::StokesOperator<2, 2, double>,
     aspect::MatrixFreeStokesOperators::MassMatrixOperator<2, 1, double>,
     dealii::LinearAlgebra::distributed::Vector<double,
     dealii::MemorySpace::Host> >,
     aspect::MatrixFreeStokesOperators::BTBlockOperator<2, 2, double>,
-    dealii::LinearAlgebra::distributed::BlockVector<double> >; VectorType
-    = dealii::LinearAlgebra::distributed::BlockVector<double>]
+    dealii::LinearAlgebra::distributed::BlockVector<double,
+    dealii::MemorySpace::Host> >}; VectorType =
+    dealii::LinearAlgebra::distributed::BlockVector<double>]
     Additional information:
     Iterative method reported convergence failure in step 10. The residual
-    in the last step was 25.143.
+    in the last step was 25.1452.
     
     This error message can indicate that you have simply not allowed a
     sufficiently large number of iterations for your iterative solver to
