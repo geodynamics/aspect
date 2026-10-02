@@ -73,7 +73,7 @@ namespace aspect
     assemblers->stokes_preconditioner.push_back(std::make_unique<aspect::Assemblers::StokesPreconditioner<dim>>());
     assemblers->stokes_system.push_back(std::make_unique<aspect::Assemblers::StokesIncompressibleTerms<dim>>());
 
-    if (material_model->is_compressible() || parameters.enable_prescribed_dilation || prescribed_dilation_manager.get_active_plugin_names().size() > 0)
+    if (material_model->is_compressible() || parameters.enable_prescribed_plastic_dilation || prescribed_dilation_manager.get_active_plugin_names().size() > 0)
       {
         // The compressible part of the preconditioner is only necessary if we use the simplified A block
         if (parameters.use_full_A_block_preconditioner == false)
@@ -628,7 +628,7 @@ namespace aspect
 
     // initialize the material model data on the cell
     const bool need_viscosity =
-      assemble_newton_stokes_system || this->parameters.enable_prescribed_dilation || rebuild_stokes_matrix;
+      assemble_newton_stokes_system || this->parameters.enable_prescribed_plastic_dilation || rebuild_stokes_matrix;
 
     scratch.material_model_inputs.reinit  (scratch.finite_element_values,
                                            cell,

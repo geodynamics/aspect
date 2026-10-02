@@ -568,7 +568,7 @@ namespace aspect
     do_pressure_rhs_compatibility_modification = ((material_model->is_compressible() && !parameters.include_melt_transport)
                                                   ||
                                                   (parameters.include_melt_transport && !material_model->is_compressible())
-                                                  || parameters.enable_prescribed_dilation || prescribed_dilation_manager.get_active_plugin_names().size() > 0)
+                                                  || parameters.enable_prescribed_plastic_dilation || prescribed_dilation_manager.get_active_plugin_names().size() > 0)
                                                  &&
                                                  (open_velocity_boundary_indicators.size() == 0);
 
@@ -1061,7 +1061,7 @@ namespace aspect
             // in the bottom right of Stokes matrix. Make sure we have the
             // necessary entries.
             if (parameters.use_equal_order_interpolation_for_stokes == true ||
-                parameters.enable_prescribed_dilation == true)
+                parameters.enable_prescribed_plastic_dilation == true)
               coupling[x.pressure][x.pressure] = DoFTools::always;
           }
       }
