@@ -48,9 +48,13 @@ namespace aspect
     {
       Assert(in.n_evaluation_points() == 1, ExcInternalError());
 
-      const std::vector<double> volume_fractions = MaterialUtilities::compute_only_composition_fractions(in.composition[0],
-                                                   this->introspection().chemical_composition_field_indices(),
-                                                   this->get_parameters().minimum_composition_fraction);
+      static Utilities::ScratchSpace<std::vector<double>> volume_fractions_space;
+      typename aspect::Utilities::ScratchSpace<std::vector<double>>::ScopedScratchObject scoped_volume_fractions_space(volume_fractions_space);
+      std::vector<double> &volume_fractions = scoped_volume_fractions_space;
+      MaterialUtilities::compute_only_composition_fractions(in.composition[0],
+                                                            this->introspection().chemical_composition_field_indices(),
+                                                            volume_fractions,
+                                                            this->get_parameters().minimum_composition_fraction);
 
       /* The following handles phases in a similar way as in the 'evaluate' function.
        * Results then enter the calculation of plastic yielding.
@@ -89,10 +93,12 @@ namespace aspect
       /* The following returns whether or not the material is plastically yielding
        * as documented in evaluate.
        */
-      const IsostrainViscosities isostrain_viscosities = rheology->calculate_isostrain_viscosities(in, 0, volume_fractions, phase_function_values, phase_function.n_phase_transitions_for_each_composition());
+      typename aspect::Utilities::ScratchSpace<IsostrainViscosities>::ScopedScratchObject scoped_isostrain_viscosities_space(isostrain_viscosities_space);
+      IsostrainViscosities &isostrain_viscosities = scoped_isostrain_viscosities_space;
+      rheology->calculate_isostrain_viscosities(in, 0, volume_fractions,isostrain_viscosities, phase_function_values, phase_function.n_phase_transitions_for_each_composition());
 
-      const std::vector<double>::const_iterator max_composition = std::max_element(volume_fractions.begin(), volume_fractions.end());
-      const bool plastic_yielding = isostrain_viscosities.composition_yielding[std::distance(volume_fractions.begin(), max_composition)];
+      std::vector<double>::const_iterator max_composition = std::max_element(volume_fractions.begin(), volume_fractions.end());
+      const bool plastic_yielding = isostrain_viscosities.composition_yielding[std::distance(volume_fractions.cbegin(), max_composition)];
 
       return plastic_yielding;
     }
@@ -108,16 +114,23 @@ namespace aspect
       EquationOfStateOutputs<dim> eos_outputs (this->introspection().get_number_of_fields_of_type(CompositionalFieldDescription::chemical_composition)+1);
       EquationOfStateOutputs<dim> eos_outputs_all_phases (n_phases);
 
-      std::vector<double> average_elastic_shear_moduli (in.n_evaluation_points());
+      typename aspect::Utilities::ScratchSpace<std::vector<double>>::ScopedScratchObject scoped_average_elastic_shear_moduli_space(average_elastic_shear_moduli_space);
+      std::vector<double> &average_elastic_shear_moduli = scoped_average_elastic_shear_moduli_space;
+      average_elastic_shear_moduli.resize(in.n_evaluation_points());
 
       // Store value of phase function for each phase and composition
       // While the number of phases is fixed, the value of the phase function is updated for every point
-      std::vector<double> phase_function_values(phase_function.n_phase_transitions(), 0.0);
+      typename aspect::Utilities::ScratchSpace<std::vector<double>>::ScopedScratchObject scoped_phase_function_values_space(phase_function_values_space);
+      std::vector<double> &phase_function_values = scoped_phase_function_values_space;
+      phase_function_values.resize(phase_function.n_phase_transitions(), 0.0);
+      std::fill( phase_function_values.begin(), phase_function_values.end(),0);
 
       std::vector<double> phase_function_discrete_values = (use_dominant_phase_for_viscosity?
                                                             std::vector<double>(phase_function_discrete->n_phase_transitions(), 0.0): std::vector<double>());
 
 
+      typename aspect::Utilities::ScratchSpace<std::vector<double>>::ScopedScratchObject scoped_volume_fractions_space(volume_fractions_space);
+      std::vector<double> &volume_fractions = scoped_volume_fractions_space;
       // Loop through all requested points
       for (unsigned int i=0; i < in.n_evaluation_points(); ++i)
         {
@@ -169,9 +182,10 @@ namespace aspect
                                                   n_phase_transitions_for_each_chemical_composition,
                                                   eos_outputs);
 
-          const std::vector<double> volume_fractions = MaterialUtilities::compute_only_composition_fractions(in.composition[i],
-                                                       this->introspection().chemical_composition_field_indices(),
-                                                       this->get_parameters().minimum_composition_fraction);
+          MaterialUtilities::compute_only_composition_fractions(in.composition[i],
+                                                                this->introspection().chemical_composition_field_indices(),
+                                                                volume_fractions,
+                                                                this->get_parameters().minimum_composition_fraction);
 
           // not strictly correct if thermal expansivities are different, since we are interpreting
           // these compositions as volume fractions, but the error introduced should not be too bad.
@@ -213,7 +227,9 @@ namespace aspect
           // Also always compute the viscosity if additional outputs are requested, because the viscosity is needed
           // to compute the elastic force term and the elastic reaction rates.
           bool plastic_yielding = false;
-          IsostrainViscosities isostrain_viscosities;
+          typename aspect::Utilities::ScratchSpace<IsostrainViscosities>::ScopedScratchObject scoped_isostrain_viscosities_space(isostrain_viscosities_space);
+          IsostrainViscosities &isostrain_viscosities = scoped_isostrain_viscosities_space;
+          //IsostrainViscosities isostrain_viscosities;
 
           if (in.requests_property(MaterialProperties::viscosity) || in.requests_property(MaterialProperties::additional_outputs) ||
               (this->get_parameters().enable_elasticity && in.requests_property(MaterialProperties::reaction_rates) ))
@@ -232,13 +248,11 @@ namespace aspect
                       phase_inputs.phase_transition_index = j;
                       phase_function_discrete_values[j] = phase_function_discrete->compute_value(phase_inputs);
                     }
-                  isostrain_viscosities =
-                    rheology->calculate_isostrain_viscosities(in, i, volume_fractions, phase_function_discrete_values,  phase_function_discrete->n_phase_transitions_for_each_chemical_composition());
+                  rheology->calculate_isostrain_viscosities(in, i, volume_fractions,isostrain_viscosities, phase_function_discrete_values,  phase_function_discrete->n_phase_transitions_for_each_chemical_composition());
                 }
               else
                 {
-                  isostrain_viscosities =
-                    rheology->calculate_isostrain_viscosities(in, i, volume_fractions, phase_function_values, n_phase_transitions_for_each_chemical_composition);
+                  rheology->calculate_isostrain_viscosities(in, i, volume_fractions,isostrain_viscosities, phase_function_values, n_phase_transitions_for_each_chemical_composition);
                 }
 
               // The isostrain condition implies that the viscosity averaging should be arithmetic (see above).
@@ -252,7 +266,7 @@ namespace aspect
               // holds values that are either 0 or 1), but might not be consistent with the viscosity
               // averaging chosen.
               std::vector<double>::const_iterator max_composition = std::max_element(volume_fractions.begin(), volume_fractions.end());
-              plastic_yielding = isostrain_viscosities.composition_yielding[std::distance(volume_fractions.begin(), max_composition)];
+              plastic_yielding = isostrain_viscosities.composition_yielding[std::distance(volume_fractions.cbegin(), max_composition)];
 
               // Compute viscosity derivatives if they are requested
               if (const std::shared_ptr<MaterialModel::MaterialModelDerivatives<dim>> derivatives =
