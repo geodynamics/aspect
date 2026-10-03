@@ -95,6 +95,7 @@ end
 subsection Compositional fields
   set Number of fields = 2
   set Names of fields = plastic_strain, crust
+  set Types of fields = strain, chemical composition
 end
 
 # Initial composition model
@@ -125,24 +126,24 @@ subsection Material model
     set Viscosity averaging scheme = harmonic
 
     # Thermodynamic properties
-    set Thermal diffusivities = 1.474747e-6,1.474747e-6,1.190476e-6
+    set Thermal diffusivities = 1.474747e-6,1.190476e-6
     set Heat capacities = 750.
-    set Densities = 3300,3300,2800
+    set Densities = 3300,2800
     set Thermal expansivities = 0.
 
     # Viscous flow laws
     # Background: Dry olive (Hirth & Kohlstedt 2004), Crust: Wet quartzite (Rutter & Brodie 2004)
     set Viscous flow law = dislocation
-    set Prefactors for dislocation creep = 6.52e-16,6.52e-16,8.57e-28
-    set Stress exponents for dislocation creep = 3.5,3.5,4.0
-    set Activation energies for dislocation creep = 530.e3,530.e3,223.e3
-    set Activation volumes for dislocation creep = 18.e-6,18.e-6,0.
+    set Prefactors for dislocation creep = 6.52e-16,8.57e-28
+    set Stress exponents for dislocation creep = 3.5,4.0
+    set Activation energies for dislocation creep = 530.e3,223.e3
+    set Activation volumes for dislocation creep = 18.e-6,0.
 
     # Yielding mechanism and values
     set Yield mechanism = limiter
-    set Stress limiter exponents = 10, 10, 10
-    set Angles of internal friction = 0.,0.,0.
-    set Cohesions = 1.e6,1.e6,1.e6
+    set Stress limiter exponents = 10, 10
+    set Angles of internal friction = 0.,0.
+    set Cohesions = 1.e6,1.e6
 
     # Strain weakening
     set Strain weakening mechanism = plastic weakening with plastic strain only
