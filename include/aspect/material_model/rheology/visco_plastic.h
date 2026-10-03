@@ -133,7 +133,6 @@ namespace aspect
          * i.e., viscous flow law is either dislocation or composite.
          */
         std::vector<double> dislocation_viscosities;
-
     };
 
     /**
