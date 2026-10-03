@@ -2014,16 +2014,16 @@ namespace aspect
         signals.post_mesh_deformation(*this);
       }
 
-    // Compute the reactions of compositional fields and temperature in case of operator splitting.
+    // Compute the reactions of the temperature and of any compositional field for which
+    // reactions were requested before the nonlinear solver loop.
     if (parameters.use_operator_splitting)
       {
         std::vector<AdvectionField> advection_fields;
-        // First add the temperature field
         advection_fields.push_back(AdvectionField::temperature());
-        // Then add all compositional fields that are not tracked by particles.
         for (unsigned int c=0; c<introspection.n_compositional_fields; ++c)
           {
-            if (parameters.compositional_field_methods[c] != Parameters<dim>::AdvectionFieldMethod::particles)
+            if (parameters.compositional_field_methods[c] != Parameters<dim>::AdvectionFieldMethod::particles &&
+                parameters.reaction_strategy[c] == Parameters<dim>::ReactionStrategy::before_nonlinear_solver)
               advection_fields.push_back(AdvectionField::composition(c));
           }
         compute_reactions (advection_fields);
@@ -2170,6 +2170,39 @@ namespace aspect
             default:
               AssertThrow(false, ExcNotImplemented());
           }
+      }
+
+    // Compute the reactions of any compositional field for which operator splitting
+    // is requested after the nonlinear solver loop instead of before. This is for example used to apply
+    // the full stress update when elasticity is included. The temperature field is not included.
+    if (parameters.use_operator_splitting)
+      {
+        std::vector<AdvectionField> advection_fields;
+        for (unsigned int c=0; c<introspection.n_compositional_fields; ++c)
+          {
+            if (parameters.compositional_field_methods[c] != Parameters<dim>::AdvectionFieldMethod::particles &&
+                parameters.reaction_strategy[c] == Parameters<dim>::ReactionStrategy::after_nonlinear_solver)
+              advection_fields.push_back(AdvectionField::composition(c));
+          }
+        compute_reactions (advection_fields);
+        pcout << std::endl;
+      }
+
+    // When particles are used to track the elastic stresses instead of fields,
+    // the operator splitting is done directly on the particles through the post_nonlinear_solver
+    // signal. However, the updated stress particle properties still need to be interpolated
+    // onto the fields, which we do here.
+    if (timestep_number > 0 && parameters.enable_elasticity == true && (parameters.mapped_particle_properties).count(introspection.compositional_index_for_name("ve_stress_xx")))
+      {
+        const std::vector<unsigned int> stress_field_indices = introspection.get_indices_for_fields_of_type(CompositionalFieldDescription::stress);
+        std::vector<AdvectionField> stress_fields_advected_by_particles;
+        for (unsigned int c=0; c < stress_field_indices.size(); ++c)
+          {
+            Assert (parameters.compositional_field_methods[c] == Parameters<dim>::AdvectionFieldMethod::particles,
+                    ExcMessage("The stress fields are expected to be advected by particles, but the method for field " + std::to_string(c) + " is not set to particles."));
+            stress_fields_advected_by_particles.push_back(AdvectionField::composition(stress_field_indices[c]));
+          }
+        interpolate_particle_properties(stress_fields_advected_by_particles);
       }
   }
 

@@ -622,8 +622,8 @@ namespace aspect
       double reaction_fraction = 0.0;
       if (this->simulator_is_past_initialization())
         {
-          const unsigned int number_of_reaction_steps = std::max(static_cast<unsigned int>(this->get_timestep() / this->get_parameters().reaction_time_step),
-                                                                 std::max(this->get_parameters().reaction_steps_per_advection_step,1U));
+          const unsigned int number_of_reaction_steps = std::max(static_cast<unsigned int>(this->get_timestep() / this->get_parameters().reaction_time_step[Fe_melt_idx]),
+                                                                 std::max(this->get_parameters().reaction_steps_per_advection_step[Fe_melt_idx],1U));
           reaction_time_step_size = this->get_timestep() / static_cast<double>(number_of_reaction_steps);
           reaction_fraction = reaction_time_step_size / melting_time_scale;
         }
@@ -1133,20 +1133,6 @@ namespace aspect
           if (this->convert_output_to_years() == true)
             melting_time_scale *= year_in_seconds;
 
-          AssertThrow(this->get_parameters().use_operator_splitting &&
-                      this->get_parameters().reaction_solver_type == Parameters<dim>::ReactionSolverType::fixed_step,
-                      ExcMessage("The melt boukare material model has to be used with operator splitting, "
-                                 "and the reaction solver needs to be `fixed step'."));
-
-          AssertThrow(melting_time_scale >= this->get_parameters().reaction_time_step,
-                      ExcMessage("The reaction time step " + Utilities::to_string(this->get_parameters().reaction_time_step)
-                                 + " in the operator splitting scheme is too large to compute melting rates! "
-                                 "You have to choose it in such a way that it is smaller than the 'Melting time scale for "
-                                 "operator splitting' chosen in the material model, which is currently "
-                                 + Utilities::to_string(melting_time_scale) + "."));
-          AssertThrow(melting_time_scale > 0.0,
-                      ExcMessage("The Melting time scale for operator splitting must be larger than 0!"));
-
           // Equation of state parameters
           endmember_names = Utilities::split_string_list(prm.get("Endmember names"));
           AssertThrow(Utilities::has_unique_entries(endmember_names),
@@ -1237,6 +1223,43 @@ namespace aspect
                           ExcMessage("Material model melt boukare only works if there is a "
                                      "compositional field called 'molar_Fe_in_melt'."));
             }
+
+          // The index in the operator splitting settings is the compositional field index
+          // plus 1 for the temperature field (which is always listed first).
+          const unsigned int porosity_index = this->introspection().compositional_index_for_name("porosity") + 1;
+          const unsigned int molar_Fe_in_solid_index = this->introspection().compositional_index_for_name("molar_Fe_in_solid") + 1;
+          const unsigned int molar_Fe_in_melt_index = this->introspection().compositional_index_for_name("molar_Fe_in_melt") + 1;
+
+          AssertThrow(this->get_parameters().use_operator_splitting &&
+                      this->get_parameters().reaction_solver_type[molar_Fe_in_solid_index] == Parameters<dim>::ReactionSolverType::fixed_step,
+                      ExcMessage("The melt boukare material model has to be used with operator splitting, "
+                                 "and the reaction solver needs to be `fixed step'."));
+
+          if (this->include_melt_transport())
+            {
+              AssertThrow(this->get_parameters().reaction_solver_type[porosity_index] == Parameters<dim>::ReactionSolverType::fixed_step &&
+                          this->get_parameters().reaction_solver_type[molar_Fe_in_melt_index] == Parameters<dim>::ReactionSolverType::fixed_step,
+                          ExcMessage("The melt boukare material model has to use the reaction solver `fixed step' for the fields `porosity'. and `molar_Fe_in_melt'."));
+            }
+
+          AssertThrow(melting_time_scale >= this->get_parameters().reaction_time_step[molar_Fe_in_solid_index],
+                      ExcMessage("The reaction time step " + Utilities::to_string(this->get_parameters().reaction_time_step[molar_Fe_in_solid_index])
+                                 + " in the operator splitting scheme is too large to compute melting rates! "
+                                 "You have to choose it in such a way that it is smaller than the 'Melting time scale for "
+                                 "operator splitting' chosen in the material model, which is currently "
+                                 + Utilities::to_string(melting_time_scale) + "."));
+
+          if (this->include_melt_transport())
+            {
+              AssertThrow(this->get_parameters().reaction_time_step[porosity_index] ==
+                          this->get_parameters().reaction_time_step[molar_Fe_in_melt_index] ==
+                          this->get_parameters().reaction_time_step[molar_Fe_in_solid_index],
+                          ExcMessage("The melt boukare material model has to use the reaction solver `fixed step' for the fields `porosity'. and `molar_Fe_in_melt'."));
+            }
+
+          AssertThrow(melting_time_scale > 0.0,
+                      ExcMessage("The Melting time scale for operator splitting must be larger than 0!"));
+
         }
         prm.leave_subsection();
       }
