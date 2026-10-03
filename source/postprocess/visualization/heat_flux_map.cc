@@ -23,6 +23,7 @@
 #include <aspect/postprocess/heat_flux_map.h>
 #include <aspect/geometry_model/interface.h>
 #include <aspect/boundary_velocity/interface.h>
+#include <aspect/simulator_signals.h>
 
 #include <deal.II/base/quadrature_lib.h>
 #include <deal.II/fe/fe_values.h>
@@ -49,13 +50,21 @@ namespace aspect
       HeatFluxMap<dim>::initialize ()
       {
         CitationInfo::add("cbfheatflux");
+
+        // Connect the function update_heat_flux() to the signal
+        // pre_data_out_build_patches, to recompute the heat flux map
+        // before evaluating it for each cell.
+        this->get_signals().pre_data_out_build_patches.connect([&](DataOut<dim> &)
+        {
+          update_heat_flux();
+        });
       }
 
 
 
       template <int dim>
       void
-      HeatFluxMap<dim>::update ()
+      HeatFluxMap<dim>::update_heat_flux ()
       {
         if (output_point_wise_heat_flux)
           heat_flux_density_solution = Postprocess::internal::compute_dirichlet_boundary_heat_flux_solution_vector(*this);
