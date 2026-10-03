@@ -94,7 +94,9 @@ namespace aspect
                                                                       phase_function_values,
                                                                       n_phase_transitions_per_composition);
 
-        // Power law creep equation:
+        // Power law creep equation (grain size independent):
+        //    edot_ii = A * stress^n * exp(-(E + P*V)/(RT))
+        // by substituting stress = 2 * viscosity * edot_ii, we can solve for viscosity:
         //    viscosity = 0.5 * A^(-1/n) * edot_ii^((1-n)/n) * std::exp((E + P*V)/(nRT))
         // A: prefactor, edot_ii: square root of second invariant of deviatoric strain rate tensor,
         // E: activation energy, P: pressure,
@@ -129,10 +131,11 @@ namespace aspect
                                                                  const double temperature,
                                                                  const DislocationCreepParameters creep_parameters) const
       {
-        // Power law creep equation:
-        //   edot_ii_partial = A * stress^n * exp(-(E + P*V)/(RT))
-        //   d(edot_ii_partial)/d(stress) = A * n * stress^(n-1) * exp(-(E + P*V)/(RT))
-        // A: prefactor, edot_ii_partial: square root of second invariant of deviatoric strain rate tensor attributable to the creep mechanism,
+        // Power law creep equation (grain size independent):
+        //   edot_ii = A * stress^n * exp(-(E + P*V)/(RT))
+        // By differentiating with respect to stress, we get:
+        //   d(edot_ii)/d(stress) = A * n * stress^(n-1) * exp(-(E + P*V)/(RT))
+        // A: prefactor, edot_ii: square root of second invariant of deviatoric strain rate tensor attributable to the creep mechanism,
         // stress: deviatoric stress, E: activation energy, P: pressure,
         // V; activation volume, n: stress exponent, R: gas constant, T: temperature.
         const double strain_rate = creep_parameters.prefactor *
@@ -157,10 +160,13 @@ namespace aspect
                                                                      const double temperature,
                                                                      const DislocationCreepParameters creep_parameters) const
       {
-        // Power law creep equation
-        // log(edot_ii_partial) = std::log(A) + n*std::log(stress) - m*std::log(d) - (E + P*V)/(RT)
-        //   d(log_edot_ii_partial)/d(log_stress) = n
-        // A: prefactor, edot_ii_partial: square root of second invariant of deviatoric strain rate tensor attributable to the creep mechanism,
+        // Power law creep equation (grain size independent):
+        //   edot_ii = A * stress^n * exp(-(E + P*V)/(RT))
+        // By taking the logarithm:
+        //   log(edot_ii) = log(A) + n*log(stress) - (E + P*V)/(RT)
+        // By differentiating with respect to log(stress), we get:
+        //   d(log_edot_ii)/d(log_stress) = n
+        // A: prefactor, edot_ii: square root of second invariant of deviatoric strain rate tensor attributable to the creep mechanism,
         // stress: deviatoric stress, E: activation energy, P: pressure,
         // V; activation volume, n: stress exponent, R: gas constant, T: temperature.
         const double log_strain_rate = std::log(creep_parameters.prefactor) +
