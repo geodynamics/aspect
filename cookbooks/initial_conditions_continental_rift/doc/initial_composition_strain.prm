@@ -1,0 +1,22 @@
+subsection Initial composition model
+  set List of model names = lithosphere with rift, rift box initial plastic strain, function
+
+  # Inherited plastic strain
+  subsection Rift box initial plastic strain
+    # We focus initial strain around the rift axis
+    set Rift axis line segments                                         = 200e3
+    # The strain values follow a Gaussian distribution around the rift axis
+    # The maximum magnitude of the strain
+    set Maximum amplitude of Gaussian noise amplitude distribution      = 0.250000
+    # The sigma width of the area of strain
+    set Standard deviation of Gaussian noise amplitude distribution     = 50e3
+    # The number with which to start of the random number generator
+    set Random number generator seed                                    = 2
+    # Using a hyperbolic tangent centred around this value,
+    # we smooth out the strain with increasing depth.
+    set Depth around which Gaussian noise is smoothed out               = 50e3
+    # The halfwidth of the hyperbolic tangent.
+    set Halfwidth with which Gaussian noise is smoothed out in depth    = 10e3
+  end
+
+end

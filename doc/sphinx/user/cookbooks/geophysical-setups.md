@@ -103,6 +103,7 @@ cookbooks/multicomponent_steinberger/doc/multicomponent_steinberger.md
 cookbooks/morency_doin_2004/doc/morency_doin_2004.md
 cookbooks/crustal_deformation/doc/crustal_deformation.md
 cookbooks/continental_extension/doc/continental_extension.md
+cookbooks/initial_conditions_continental_rift/doc/initial_conditions_continental_rift.md
 cookbooks/inner_core_convection/doc/inner_core_convection.md
 cookbooks/lower_crustal_flow/doc/lower_crustal_flow.md
 cookbooks/global_melt/doc/global_melt.md
