@@ -1,0 +1,27 @@
+
+Number of active cells: 80 (on 3 levels)
+Number of degrees of freedom: 1,950 (738+105+369+369+369)
+
+*** Timestep 0:  t=0 years, dt=0 years
+   Solving temperature system... 0 iterations.
+   Solving porosity system ... 0 iterations.
+   Skipping peridotite composition solve because RHS is zero.
+   Solving Stokes system (GMG)... 0+0 iterations.
+
+   Postprocessing:
+     Compositions min/max/mass: 0.1/0.1/1e+09 // 0/0/0
+
+*** Timestep 1:  t=100000 years, dt=100000 years
+   Solving composition reactions... in 134 substep(s).
+   Solving temperature system... 13 iterations.
+   Solving porosity system ... 0 iterations.
+   Skipping peridotite composition solve because RHS is zero.
+   Solving Stokes system (GMG)... 0+0 iterations.
+
+   Postprocessing:
+     Compositions min/max/mass: 1.793e-12/0.1/6.083e+08 // 0/0/0
+
+Termination requested by criterion: end time
+
+
+
