@@ -34,6 +34,8 @@ namespace aspect
     void
     ViscoPlastic<dim>::initialize()
     {
+      reaction_chain.initialize();
+
       if (use_dominant_phase_for_viscosity)
         {
           phase_function_discrete->initialize();
@@ -143,7 +145,10 @@ namespace aspect
               for (unsigned int j=0; j<reaction_progress_indices.size(); ++j)
                 reaction_progress_values[j] = in.composition[i][reaction_progress_indices[j]];
 
-              reaction_progress_modify_equation_of_state_outputs(reaction_progress_values,
+              const std::vector<double> clamped_reaction_progress_values =
+                reaction_chain.clamp_cumulative_progress(reaction_progress_values);
+
+              reaction_progress_modify_equation_of_state_outputs(clamped_reaction_progress_values,
                                                                  reaction_progress_mapping,
                                                                  n_phase_transitions_for_each_chemical_composition,
                                                                  eos_outputs_all_phases);
@@ -395,6 +400,8 @@ namespace aspect
 
           Rheology::ViscoPlastic<dim>::declare_parameters(prm);
 
+          ReactionModel::ReactionChain<dim>::declare_parameters(prm);
+
           // Equation of state parameters
           prm.declare_entry ("Thermal diffusivities", "0.8e-6",
                              Patterns::List(Patterns::Double (0.)),
@@ -490,8 +497,18 @@ namespace aspect
               rheology->parse_parameters(prm, std::make_unique<std::vector<unsigned int>>(n_phases_for_each_chemical_composition));
             }
 
+          const unsigned int n_reaction_progress_fields =
+            this->introspection().get_number_of_fields_of_type(CompositionalFieldDescription::reaction_progress);
+
           reaction_progress_mapping = Utilities::string_to_unsigned_int
                                       (Utilities::split_string_list(prm.get ("Reaction progress mapping")));
+
+          AssertThrow(reaction_progress_mapping.size() == n_reaction_progress_fields,
+                      ExcMessage("The number of entries in 'Reaction progress mapping' must match the number of "
+                                 "reaction progress compositional fields."));
+
+          reaction_chain.initialize_simulator(this->get_simulator());
+          reaction_chain.parse_parameters(prm);
         }
         prm.leave_subsection();
       }
