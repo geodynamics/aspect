@@ -1,0 +1,20 @@
+/*
+{% for expression in spdx_expressions %}
+ * SPDX-License-Identifier: {{ expression }}
+{% endfor %}
+{% if copyright_lines and spdx_expressions %}
+ *
+{% endif %}
+{% for copyright_line in copyright_lines %}
+ * {{ copyright_line }}
+{% endfor %}
+{% if "GPL-2.0-or-later" in spdx_expressions %}
+ *
+ * This file is part of ASPECT.
+ *
+ * ASPECT is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2, or (at your option)
+ * any later version. See the folder LICENSES or <http://www.gnu.org/licenses/>.
+{% endif %}
+ */

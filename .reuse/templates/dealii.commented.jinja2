@@ -1,0 +1,21 @@
+// ------------------------------------------------------
+//
+{% for expression in spdx_expressions %}
+// SPDX-License-Identifier: {{ expression }}
+{% endfor %}
+{% if copyright_lines and spdx_expressions %}
+//
+{% endif %}
+{% for copyright_line in copyright_lines %}
+// {{ copyright_line }}
+{% endfor %}
+{% if "GPL-2.0-or-later" in spdx_expressions %}
+//
+// This file is part of ASPECT.
+//
+// Detailed license information governing the source code
+// and contributions can be found in the folder LICENSES
+// and in CONTRIBUTING.md at the top level directory.
+{% endif %}
+//
+// ------------------------------------------------------
