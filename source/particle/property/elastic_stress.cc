@@ -375,6 +375,27 @@ namespace aspect
 
 
       template <int dim>
+      InitializationModeForLateParticles
+      ElasticStress<dim>::late_initialization_mode () const
+      {
+        return interpolate_respect_boundary;
+      }
+
+
+
+      template <int dim>
+      AdvectionField
+      ElasticStress<dim>::advection_field_for_boundary_initialization (const unsigned int property_component) const
+      {
+        Assert (property_component < this->n_compositional_fields(),
+                ExcInternalError());
+
+        return AdvectionField::composition(property_component);
+      }
+
+
+
+      template <int dim>
       UpdateTimeFlags
       ElasticStress<dim>::need_update() const
       {

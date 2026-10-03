@@ -74,6 +74,26 @@ namespace aspect
                                       typename ParticleHandler<dim>::particle_iterator_range &particles) const override;
 
           /**
+           * @copydoc aspect::Particle::Property::Interface::late_initialization_mode()
+           *
+           * For this property the value of generated particles is interpolated from
+           * existing particles, unless the particle is in a boundary cell that has a
+           * Dirichlet boundary condition, in which case it uses the boundary condition value.
+           */
+          InitializationModeForLateParticles
+          late_initialization_mode () const override;
+
+          /**
+           * @copydoc aspect::Particle::Property::Interface::advection_field_for_boundary_initialization()
+           *
+           * For this property we use the compositional field corresponding
+           * to the particle property component, which is consistent with how the
+           * particles are initialized in initialize_one_particle_property().
+           */
+          AdvectionField
+          advection_field_for_boundary_initialization(const unsigned int property_component) const override;
+
+          /**
            * @copydoc aspect::Particle::Property::Interface::need_update()
            */
           UpdateTimeFlags

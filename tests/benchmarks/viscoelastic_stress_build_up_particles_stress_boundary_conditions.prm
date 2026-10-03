@@ -1,0 +1,76 @@
+# This parameter file modifies the benchmark viscoelastic_stress_build_up_particles.prm
+# to test that prescribed composition boundary conditions on the inflow boundary are
+# taken into account when generating new particles.
+# We prescribe a stress xx and yy component of 20 MPa, which is larger than expected
+# according to the analytical solution.
+
+include $ASPECT_SOURCE_DIR/benchmarks/viscoelastic_stress_build_up/viscoelastic_stress_build_up_particles.prm
+
+set Output directory         = output_viscoelastic_stress_build_up_particles_stress_boundary_conditions
+set End time                 = 2000
+set Maximum time step        = 1000
+set Max nonlinear iterations = 20
+
+# Number and name of compositional fields
+subsection Compositional fields
+  set Compositional field methods = particles, particles, particles
+  set Mapped particle properties  = ve_stress_xx:ve_stress_xx, ve_stress_yy:ve_stress_yy, ve_stress_xy:ve_stress_xy
+end
+
+subsection Boundary composition model
+  set Fixed composition boundary indicators = bottom
+  set List of model names = function
+  subsection Function
+    set Variable names = x,y,t
+    set Function expression =  if(t>0, 20e6, 0); if(t>0, -20e6, 0); 0
+  end
+end
+
+# Reduce resolution
+subsection Geometry model
+  set Model name = box
+
+  subsection Box
+    set X repetitions = 20
+    set Y repetitions = 20
+    set X extent      = 100e3
+    set Y extent      = 100e3
+  end
+end
+
+# Trigger adding particles by refining
+subsection Mesh refinement
+  set Initial adaptive refinement = 1
+  set Initial global refinement = 0
+  set Time steps between mesh refinement = 1
+  set Strategy = minimum refinement function
+  subsection Minimum refinement function
+    set Coordinate system = cartesian
+    set Variable names = x, y, t
+    set Function expression = if (t > 0 && y < 10e3, 1, 0)
+  end
+end
+
+# Post processing
+subsection Postprocess
+  set List of postprocessors = composition statistics, particles, velocity statistics, visualization
+
+  subsection Visualization
+    set Time between graphical output = 0e3
+    set Output format                 = gnuplot
+  end
+
+  subsection Particles
+    set Time between data output    = 0
+    set Data output format          = gnuplot
+  end
+end
+
+subsection Particles
+  set Minimum particles per cell  = 25
+  set Maximum particles per cell  = 35
+  set Load balancing strategy     = remove and add particles
+  set List of particle properties = initial composition, elastic stress
+  set Interpolation scheme        = linear least squares
+  set Particle generator name     = quadrature points
+end
