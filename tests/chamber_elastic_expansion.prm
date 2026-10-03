@@ -1,0 +1,57 @@
+# Test for magma chamber thermal expansion cookbook
+# Creates a smaller domain and reduces resolution and runtime
+include $ASPECT_SOURCE_DIR/benchmarks/magma_chamber/chamber_elastic_expansion.prm
+
+# Create smaller 10x10km box
+subsection Geometry model
+  set Model name = box
+
+  subsection Box
+    set X extent      = 10e3
+    set Y extent      = 10e3
+    set X repetitions = 1
+    set Y repetitions = 1
+    set Box origin X coordinate = -5e3
+    set Box origin Y coordinate = -6e3
+  end
+end
+
+# Reduce refinement
+subsection Mesh refinement
+  set Initial adaptive refinement              = 1
+  set Initial global refinement                = 1
+  set Time steps between mesh refinement       = 0
+  set Strategy                                 = composition threshold, velocity
+  set Minimum refinement level                 = 0
+  set Coarsening fraction                      = 0
+  set Run postprocessors on initial refinement = false
+  set Skip solvers on initial refinement       = false
+
+  subsection Composition threshold
+    set Compositional field thresholds = 1e6, 0.2, 1.e6, 1.e6, 1.e6, 1.e6, 1.e6, 1.e6
+  end
+end
+
+# Reduce outputs
+subsection Postprocess
+  set List of postprocessors = velocity statistics, basic statistics, temperature statistics, \
+    visualization
+
+  subsection Visualization
+    set Output format =  gnuplot
+    set List of output variables = material properties, surface elevation, stress
+
+    subsection Material properties
+      set List of material properties = compressibility, thermal expansivity
+    end
+
+    set Time between graphical output = 0
+    set Interpolate output = true
+  end
+end
+
+# Stop after 1 timestep
+subsection Termination criteria
+  set Termination criteria = end step
+  set End step = 1
+end
