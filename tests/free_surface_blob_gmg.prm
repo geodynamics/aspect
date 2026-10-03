@@ -1,5 +1,5 @@
 # test gmg + free surface
-include $ASPECT_SOURCE_DIR/tests/free_surface_blob.prm
+include $ASPECT_SOURCE_DIR/tests/mesh_deformation/free_surface_blob.prm
 
 set Dimension = 2
 set Output directory                       = output_free_surface_blob_gmg

@@ -18,4 +18,4 @@
   <http://www.gnu.org/licenses/>.
 */
 
-#include "box_initial_mesh_deformation.cc"
+#include "mesh_deformation/box_initial_mesh_deformation.cc"

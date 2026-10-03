@@ -4,7 +4,7 @@
 #
 # Enable if: ASPECT_WITH_FASTSCAPE
 
-include @SOURCE_DIR@/fastscape_1.prm
+include $ASPECT_SOURCE_DIR/tests/mesh_deformation/fastscape_1.prm
 
 set End time = 1e5
 

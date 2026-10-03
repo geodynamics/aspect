@@ -2,7 +2,7 @@
 # that the input parameter units are given in seconds instead of years.
 # The output should be exactly the same.
 # Enable if: ASPECT_WITH_FASTSCAPE
-include $ASPECT_SOURCE_DIR/tests/fastscape_kf_function.prm
+include $ASPECT_SOURCE_DIR/tests/mesh_deformation/fastscape_kf_function.prm
 
 set Dimension                              = 2
 set Use years instead of seconds           = false
