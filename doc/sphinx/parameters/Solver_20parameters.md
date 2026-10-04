@@ -203,16 +203,16 @@ Once derivatives are used in a Newton method, ASPECT always uses the Eisenstat W
 :name: parameters:Solver_20parameters/Operator_20splitting_20parameters/Reaction_20solve_20strategy
 **Default value:** before nonlinear solver
 
-**Pattern:** [Selection before nonlinear solver|after nonlinear solver ]
+**Pattern:** [List of <[Selection before nonlinear solver|after nonlinear solver ]> of length 0...4294967295 (inclusive)]
 
-**Documentation:** Whether the reaction solve should be done before the nonlinear solver (default) or after the nonlinear solver. The latter strategy should be used when &ldquo;Enable elasticity&rdquo; is set to true. The strategy parameter is only considered if the parameter &ldquo;Use operator splitting&rdquo; is set to true. Units: none.
+**Documentation:** Whether the reaction solve should be done before the nonlinear solver (default) or after the nonlinear solver. The latter strategy should be used when &ldquo;Enable elasticity&rdquo; is set to true. The strategy parameter is only considered if the corresponding entry of the parameter &ldquo;Use operator splitting&rdquo; is set to true. Units: none.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Reaction solver relative tolerance<parameters:Solver_20parameters/Operator_20splitting_20parameters/Reaction_20solver_20relative_20tolerance>`
 :name: parameters:Solver_20parameters/Operator_20splitting_20parameters/Reaction_20solver_20relative_20tolerance
 **Default value:** 1e-6
 
-**Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
+**Pattern:** [List of <[Double 0...MAX_DOUBLE (inclusive)]> of length 0...4294967295 (inclusive)]
 
 **Documentation:** The relative solver tolerance used in the ARKode reaction solver. This tolerance is used to adaptively determine the reaction step size. For more details, see the ARKode documentation. This parameter is only used if the &lsquo;ARKode&rsquo; reaction solver type is used. Units: none.
 ::::
@@ -221,7 +221,7 @@ Once derivatives are used in a Newton method, ASPECT always uses the Eisenstat W
 :name: parameters:Solver_20parameters/Operator_20splitting_20parameters/Reaction_20solver_20type
 **Default value:** ARKode
 
-**Pattern:** [Selection ARKode|fixed step ]
+**Pattern:** [List of <[Selection ARKode|fixed step ]> of length 0...4294967295 (inclusive)]
 
 **Documentation:** This parameter determines what solver will be used when the reactions are computed within the operator splitting scheme. For reactions where the reaction rate is a known, finite quantity, the appropriate choice is &lsquo;ARKode&rsquo;, which uses an ODE solver from SUNDIALs ARKode (adaptive-step additive Runge Kutta ODE solver methods) to compute the solution. ARKode will pick a reasonable step size based on the reaction rate and the given &lsquo;Reaction solver relative tolerance&rsquo;. However, in some cases we have instantaneous reactions, where we know the new value of a compositional field (and the reaction rate would be infinite), or reactions where we need to know or be able to control the step size we use to compute the reactions. In theses cases, it is appropriate to use the &lsquo;fixed step&rsquo; scheme, a method that uses a forward Euler scheme and a fixed number of steps given by the &lsquo;Reaction time step&rsquo; and &lsquo;Reaction time steps per advection step&rsquo; parameters.
 ::::
@@ -230,18 +230,18 @@ Once derivatives are used in a Newton method, ASPECT always uses the Eisenstat W
 :name: parameters:Solver_20parameters/Operator_20splitting_20parameters/Reaction_20time_20step
 **Default value:** 1000.0
 
-**Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
+**Pattern:** [List of <[Double 0...MAX_DOUBLE (inclusive)]> of length 0...4294967295 (inclusive)]
 
-**Documentation:** Set a time step size for computing reactions of compositional fields and the temperature field in case operator splitting is used. This is only used when the parameter &ldquo;Use operator splitting&rdquo; is set to true and when the &lsquo;fixed step&rsquo; reaction solver type is used. The reaction time step must be greater than 0. If you want to prescribe the reaction time step only as a relative value compared to the advection time step as opposed to as an absolute value, you should use the parameter &ldquo;Reaction time steps per advection step&rdquo; and set this parameter to the same (or larger) value as the &ldquo;Maximum time step&rdquo; (which is 5.69e+300 by default). Units: \si{\year} or \si{\second}, depending on the &ldquo;Use years instead of seconds&rdquo; parameter.
+**Documentation:** Set a time step size for computing reactions of compositional fields and the temperature field in case operator splitting is used. This is only used when the corresponding entry of the parameter &ldquo;Use operator splitting&rdquo; is set to true and when the &lsquo;fixed step&rsquo; reaction solver type is used. The reaction time step must be greater than 0. If you want to prescribe the reaction time step only as a relative value compared to the advection time step as opposed to as an absolute value, you should use the parameter &ldquo;Reaction time steps per advection step&rdquo; and set this parameter to the same (or larger) value as the &ldquo;Maximum time step&rdquo; (which is 5.69e+300 by default). Units: \si{\year} or \si{\second}, depending on the &ldquo;Use years instead of seconds&rdquo; parameter.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Reaction time steps per advection step<parameters:Solver_20parameters/Operator_20splitting_20parameters/Reaction_20time_20steps_20per_20advection_20step>`
 :name: parameters:Solver_20parameters/Operator_20splitting_20parameters/Reaction_20time_20steps_20per_20advection_20step
 **Default value:** 0
 
-**Pattern:** [Integer range 0...2147483647 (inclusive)]
+**Pattern:** [List of <[Integer range 0...2147483647 (inclusive)]> of length 0...4294967295 (inclusive)]
 
-**Documentation:** The number of reaction time steps done within one advection time step in case operator splitting is used. This is only used if the parameter &ldquo;Use operator splitting&rdquo; is set to true and when the &lsquo;fixed step&rsquo; reaction solver type is used. If set to zero, this parameter is ignored. Otherwise, the reaction time step size is chosen according to this criterion and the &ldquo;Reaction time step&rdquo;, whichever yields the smaller time step. Units: none.
+**Documentation:** The number of reaction time steps done within one advection time step in case operator splitting is used. This is only used if the corresponding entry of the parameter &ldquo;Use operator splitting&rdquo; is set to true and when the &lsquo;fixed step&rsquo; reaction solver type is used. If set to zero, this parameter is ignored. Otherwise, the reaction time step size is chosen according to this criterion and the &ldquo;Reaction time step&rdquo;, whichever yields the smaller time step. Units: none.
 ::::
 
 (parameters:Solver_20parameters/Stokes_20solver_20parameters)=
