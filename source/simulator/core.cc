@@ -308,6 +308,14 @@ namespace aspect
     // geometry model's description of symbolic names for boundary parts. note that
     // the geometry model is the only model whose run time parameters are already read
     // at the time it is created
+
+    // First make sure initial topography and mesh deformation are not used together.
+    if (parameters.mesh_deformation_enabled)
+      {
+        AssertThrow(Plugins::plugin_type_matches<const InitialTopographyModel::ZeroTopography<dim>>(*initial_topography_model),
+                    ExcMessage("Initial topography cannot be combined with mesh deformation ."));
+      }
+
     if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(initial_topography_model.get()))
       sim->initialize_simulator (*this);
     initial_topography_model->initialize ();
