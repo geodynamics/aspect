@@ -282,7 +282,7 @@ namespace aspect
                                "must be greater than 1 to ensure accurate mesh deformation."));
 
       // Initial topography cannot be combined with initial mesh deformation.
-      // TODO this is already caught in core.cc, could be removed.
+      // This should already be caught in core.cc.
       AssertThrow (Plugins::plugin_type_matches<InitialTopographyModel::ZeroTopography<dim>>(this->get_initial_topography_model()),
                    ExcMessage ("Initial topography cannot be combined with initial mesh deformation."));
 

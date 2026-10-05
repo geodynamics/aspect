@@ -313,7 +313,7 @@ namespace aspect
     if (parameters.mesh_deformation_enabled)
       {
         AssertThrow(Plugins::plugin_type_matches<const InitialTopographyModel::ZeroTopography<dim>>(*initial_topography_model),
-                    ExcMessage("Initial topography cannot be combined with mesh deformation ."));
+                    ExcMessage("Initial topography cannot be combined with mesh deformation."));
       }
 
     if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(initial_topography_model.get()))
