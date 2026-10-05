@@ -11,7 +11,7 @@ set Max nonlinear iterations               = 2
 set Output directory                       = vep_chemical_compositions
 
 # One operator splitting step to update the stresses
-set Use operator splitting                 = true
+set Use operator splitting                 = false, true, true, true, false, false, false
 
 # Solver settings
 subsection Solver parameters

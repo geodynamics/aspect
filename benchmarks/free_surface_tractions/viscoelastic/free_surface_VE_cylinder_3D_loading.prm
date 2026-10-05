@@ -40,7 +40,7 @@ subsection Mesh refinement
 end
 
 # One operator splitting step to update the stresses
-set Use operator splitting                 = true
+set Use operator splitting                 = false, true, true, true, true, true, true
 
 subsection Solver parameters
   # Make sure to do only 1 splitting step

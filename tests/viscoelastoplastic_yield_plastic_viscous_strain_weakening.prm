@@ -9,7 +9,7 @@ set Max nonlinear iterations               = 2
 set Output directory                       = viscoelastoplastic_yield_plastic_viscous_strain_weakening
 
 # One operator splitting step to update the stresses
-set Use operator splitting                 = true
+set Use operator splitting                 = false, true, true, true, false, false
 
 subsection Solver parameters
   # Make sure to do only 1 splitting step
