@@ -195,7 +195,7 @@ namespace aspect
       // Fill reaction rate outputs if the model uses operator splitting.
       // Specifically, change the porosity (representing the amount of free water)
       // based on the water solubility and the water content.
-      if (this->get_parameters().use_operator_splitting && reaction_rate_out != nullptr)
+      if (this->get_parameters().use_operator_splitting[porosity_idx+1] && reaction_rate_out != nullptr)
         {
           std::vector<double> eq_free_fluid_fractions(out.n_evaluation_points());
           melt_fractions(in, eq_free_fluid_fractions);
@@ -312,21 +312,6 @@ namespace aspect
           if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(base_model.get()))
             sim->initialize_simulator (this->get_simulator());
 
-          if (this->convert_output_to_years() == true)
-            fluid_reaction_time_scale *= year_in_seconds;
-
-          if (this->get_parameters().use_operator_splitting)
-            {
-              AssertThrow(fluid_reaction_time_scale >= this->get_parameters().reaction_time_step,
-                          ExcMessage("The reaction time step " + Utilities::to_string(this->get_parameters().reaction_time_step)
-                                     + " in the operator splitting scheme is too large to compute melting rates! "
-                                     "You have to choose it in such a way that it is smaller than the 'Melting time scale for "
-                                     "operator splitting' chosen in the material model, which is currently "
-                                     + Utilities::to_string(fluid_reaction_time_scale) + "."));
-              AssertThrow(fluid_reaction_time_scale > 0,
-                          ExcMessage("The Fluid reaction time scale for operator splitting must be larger than 0!"));
-            }
-
           AssertThrow(this->introspection().compositional_name_exists("porosity"),
                       ExcMessage("Material model Volatiles only "
                                  "works if there is a compositional field called porosity."));
@@ -334,6 +319,31 @@ namespace aspect
           AssertThrow(this->introspection().compositional_name_exists("water_content"),
                       ExcMessage("Material model Volatiles only "
                                  "works if there is a compositional field called water_content."));
+
+          if (this->convert_output_to_years() == true)
+            fluid_reaction_time_scale *= year_in_seconds;
+
+          const unsigned int porosity_index_reactions = this->introspection().compositional_index_for_name("porosity") + 1;
+          if (this->get_parameters().use_operator_splitting[porosity_index_reactions])
+            {
+              AssertThrow(fluid_reaction_time_scale >= this->get_parameters().reaction_time_step[porosity_index_reactions],
+                          ExcMessage("The reaction time step " + Utilities::to_string(this->get_parameters().reaction_time_step[porosity_index_reactions])
+                                     + " in the operator splitting scheme is too large to compute melting rates! "
+                                     "You have to choose it in such a way that it is smaller than the 'Melting time scale for "
+                                     "operator splitting' chosen in the material model, which is currently "
+                                     + Utilities::to_string(fluid_reaction_time_scale) + "."));
+              AssertThrow(fluid_reaction_time_scale > 0,
+                          ExcMessage("The Fluid reaction time scale for operator splitting must be larger than 0!"));
+
+              const unsigned int water_content_index_reactions = this->introspection().compositional_index_for_name("water_content") + 1;
+              AssertThrow(this->get_parameters().reaction_solver_type[water_content_index_reactions] == this->get_parameters().reaction_solver_type[porosity_index_reactions] &&
+                          this->get_parameters().reaction_time_step[water_content_index_reactions] == this->get_parameters().reaction_time_step[porosity_index_reactions] &&
+                          this->get_parameters().reaction_steps_per_advection_step[water_content_index_reactions] == this->get_parameters().reaction_steps_per_advection_step[porosity_index_reactions],
+                          ExcMessage("Material model Volatiles only works if the reaction solver type, "
+                                     "timestep and steps per advection step are equal for the fields `porosity' and `water_content'."));
+            }
+
+
         }
         prm.leave_subsection();
       }
@@ -400,7 +410,7 @@ namespace aspect
     void
     Volatiles<dim>::create_additional_named_outputs (MaterialModel::MaterialModelOutputs<dim> &out) const
     {
-      if (this->get_parameters().use_operator_splitting
+      if (this->get_parameters().use_operator_splitting[this->introspection().compositional_index_for_name("porosity") + 1]
           && out.template has_additional_output_object<ReactionRateOutputs<dim>>() == false)
         {
           const unsigned int n_points = out.n_evaluation_points();
