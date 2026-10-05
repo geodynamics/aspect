@@ -829,9 +829,15 @@ namespace aspect
             }
           else
             {
-              smoother_data_Schur[0].smoothing_range = 1e-3;
+              // The pressure mass matrix scaled by inverse diagonal has eigenvalues in
+              // [0.5^dim, 1.5^dim] for Q1 and Q2 pressure. The Lanczos eigenvalue
+              // estimate in deal.II uses a mean zero starting vector, so it misses the
+              // largest eigenvalue. Instead, we manually prescribe the eigenvalues with
+              // a safety factor:
+              smoother_data_Schur[0].max_eigenvalue = 1.2*Utilities::fixed_power<dim>(1.5);
+              smoother_data_Schur[0].smoothing_range = 1.2*Utilities::fixed_power<dim>(3.0);
+              smoother_data_Schur[0].eig_cg_n_iterations = 0;
               smoother_data_Schur[0].degree = 8;
-              smoother_data_Schur[0].eig_cg_n_iterations = 100;
             }
           smoother_data_Schur[level].preconditioner = mg_matrices_Schur_complement[level].get_matrix_diagonal_inverse();
         }
