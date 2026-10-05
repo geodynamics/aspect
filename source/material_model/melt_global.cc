@@ -125,7 +125,7 @@ namespace aspect
                               old_porosity,
                               this->introspection().component_indices.compositional_fields[porosity_idx]);
         }
-      else if (this->get_parameters().use_operator_splitting[this->introspection().compositional_index_for_name("porosity")+1])
+      else if (this->introspection().compositional_name_exists("porosity") && this->get_parameters().use_operator_splitting[this->introspection().compositional_index_for_name("porosity")+1])
         for (unsigned int i=0; i<in.n_evaluation_points(); ++i)
           {
             const unsigned int porosity_idx = this->introspection().compositional_index_for_name("porosity");
