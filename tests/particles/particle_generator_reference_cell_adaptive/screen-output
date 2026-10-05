@@ -14,7 +14,7 @@ Number of degrees of freedom: 1,444 (676+92+338+338)
    Skipping temperature solve because RHS is zero.
    Advecting particles...  done.
    Solving C_1 system ... 0 iterations.
-   Solving Stokes system (GMG)... 19+0 iterations.
+   Solving Stokes system (GMG)... 18+0 iterations.
 
    Postprocessing:
      RMS, max velocity:         0.000183 m/s, 0.000407 m/s

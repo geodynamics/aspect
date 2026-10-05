@@ -23,9 +23,9 @@ Number of degrees of freedom: 6,405 (4,617+249+1,539)
      GMG coarse size A: 81, coarse size S: 8
      GMG levels: 4
      Viscosity range: 0.01 - 44.2346
-     Stokes solver (GMRES): 27+0 iterations.
-     Schur complement preconditioner: 28+0 iterations.
-     A block preconditioner: 28+0 iterations.
+     Stokes solver (GMRES): 26+0 iterations.
+     Schur complement preconditioner: 27+0 iterations.
+     A block preconditioner: 27+0 iterations.
 
    Postprocessing:
 

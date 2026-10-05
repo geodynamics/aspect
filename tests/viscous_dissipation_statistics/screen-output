@@ -13,20 +13,20 @@ Number of degrees of freedom: 7,248 (4,215+223+1,405+1,405)
 *** Timestep 0:  t=0 seconds, dt=0 seconds
    Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 0 iterations.
-   Solving Stokes system (GMG)... 8+0 iterations.
+   Solving Stokes system (GMG)... 12+0 iterations.
 
-Number of active cells: 155 (on 5 levels)
-Number of degrees of freedom: 9,679 (5,631+294+1,877+1,877)
+Number of active cells: 176 (on 5 levels)
+Number of degrees of freedom: 10,726 (6,243+321+2,081+2,081)
 
 *** Timestep 0:  t=0 seconds, dt=0 seconds
    Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 0 iterations.
-   Solving Stokes system (GMG)... 15+0 iterations.
+   Solving Stokes system (GMG)... 12+0 iterations.
 
    Postprocessing:
      Writing graphical output:                               output-viscous_dissipation_statistics/solution/solution-00000
-     RMS, max velocity:                                      3.01e-10 m/s, 1.14e-09 m/s
-     Viscous dissipation per field and for whole domain (W): 2.342e+09 // 4.05e+11
+     RMS, max velocity:                                      6.86e-11 m/s, 1.07e-09 m/s
+     Viscous dissipation per field and for whole domain (W): 1.889e+09 // 2.231e+10
 
 Termination requested by criterion: end time
 

@@ -4,12 +4,12 @@ Number of degrees of freedom: 20,381 (14,739+729+4,913)
 
 *** Timestep 0:  t=0 seconds, dt=0 seconds
    Skipping temperature solve because RHS is zero.
-   Solving Stokes system (GMG)... 22+0 iterations.
+   Solving Stokes system (GMG)... 21+0 iterations.
 
    Postprocessing:
      RMS, max velocity:                  0.0825 m/s, 0.147 m/s
-     Pressure min/avg/max:               -2 Pa, 1.564e-12 Pa, 2 Pa
-     Mass fluxes through boundary parts: -0.07028 kg/s, 0.07029 kg/s, 0 kg/s, 0 kg/s, 0 kg/s, 0 kg/s
+     Pressure min/avg/max:               -2 Pa, -6.01e-17 Pa, 2 Pa
+     Mass fluxes through boundary parts: -0.07028 kg/s, 0.07028 kg/s, 0 kg/s, 0 kg/s, 0 kg/s, 0 kg/s
 
 Termination requested by criterion: end time
 

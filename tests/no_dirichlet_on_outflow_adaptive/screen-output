@@ -29,7 +29,7 @@ Number of degrees of freedom: 1,352 (826+113+413)
      Heat fluxes through boundary parts: 0 W, 0 W, -1.006 W, 0.5669 W
      Writing graphical output:           output-no_dirichlet_on_outflow_adaptive/solution/solution-00001
 
-*** Timestep 2:  t=0.0220875 seconds, dt=0.00512145 seconds
+*** Timestep 2:  t=0.0220875 seconds, dt=0.00512146 seconds
    Solving temperature system... 20 iterations.
    Solving Stokes system (GMG)... 13+0 iterations.
 
@@ -893,7 +893,7 @@ Number of degrees of freedom: 1,352 (826+113+413)
 
 *** Timestep 97:  t=0.0854273 seconds, dt=0.000706592 seconds
    Solving temperature system... 7 iterations.
-   Solving Stokes system (GMG)... 8+0 iterations.
+   Solving Stokes system (GMG)... 9+0 iterations.
 
    Postprocessing:
      RMS, max velocity:                  26.5 m/s, 44.6 m/s
@@ -1093,7 +1093,7 @@ Number of degrees of freedom: 1,352 (826+113+413)
      Temperature min/avg/max:            0 K, 0.635 K, 1 K
      Heat fluxes through boundary parts: 0 W, 0 W, -3.228 W, 2.212 W
 
-*** Timestep 119:  t=0.1 seconds, dt=0.00062179 seconds
+*** Timestep 119:  t=0.1 seconds, dt=0.000621791 seconds
    Solving temperature system... 6 iterations.
    Solving Stokes system (GMG)... 8+0 iterations.
 

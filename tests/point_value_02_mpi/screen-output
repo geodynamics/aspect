@@ -68,7 +68,7 @@ Number of degrees of freedom: 4,645 (2,178+289+1,089+1,089)
 *** Timestep 7:  t=3.57243e-07 years, dt=6.10576e-08 years
    Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 18 iterations.
-   Solving Stokes system (GMG)... 36+0 iterations.
+   Solving Stokes system (GMG)... 35+0 iterations.
 
    Postprocessing:
      Writing graphical output: output-point_value_02_mpi/solution/solution-00007
@@ -95,7 +95,7 @@ Number of degrees of freedom: 4,645 (2,178+289+1,089+1,089)
 *** Timestep 10:  t=5.79827e-07 years, dt=8.11074e-08 years
    Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 17 iterations.
-   Solving Stokes system (GMG)... 37+0 iterations.
+   Solving Stokes system (GMG)... 36+0 iterations.
 
    Postprocessing:
      Writing graphical output: output-point_value_02_mpi/solution/solution-00010
@@ -215,7 +215,7 @@ Number of degrees of freedom: 519 (242+35+121+121)
      Writing graphical output: output-point_value_02_mpi/solution/solution-00022
      Writing point values:     output-point_value_02_mpi/point_values.txt
 
-*** Timestep 23:  t=1.73093e-05 years, dt=2.28856e-06 years
+*** Timestep 23:  t=1.73093e-05 years, dt=2.28857e-06 years
    Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 15 iterations.
    Solving Stokes system (GMG)... 57+0 iterations.
@@ -254,7 +254,7 @@ Number of degrees of freedom: 519 (242+35+121+121)
 *** Timestep 27:  t=4.39125e-05 years, dt=1.00817e-05 years
    Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 15 iterations.
-   Solving Stokes system (GMG)... 26+0 iterations.
+   Solving Stokes system (GMG)... 25+0 iterations.
 
    Postprocessing:
      Writing graphical output: output-point_value_02_mpi/solution/solution-00027
@@ -272,16 +272,16 @@ Number of degrees of freedom: 519 (242+35+121+121)
 *** Timestep 29:  t=6.77183e-05 years, dt=1.24597e-05 years
    Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 17 iterations.
-   Solving Stokes system (GMG)... 24+0 iterations.
+   Solving Stokes system (GMG)... 23+0 iterations.
 
    Postprocessing:
      Writing graphical output: output-point_value_02_mpi/solution/solution-00029
      Writing point values:     output-point_value_02_mpi/point_values.txt
 
-*** Timestep 30:  t=7.5267e-05 years, dt=7.54865e-06 years
+*** Timestep 30:  t=7.5267e-05 years, dt=7.54866e-06 years
    Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 17 iterations.
-   Solving Stokes system (GMG)... 26+0 iterations.
+   Solving Stokes system (GMG)... 23+0 iterations.
 
    Postprocessing:
      Writing graphical output: output-point_value_02_mpi/solution/solution-00030
@@ -290,7 +290,7 @@ Number of degrees of freedom: 519 (242+35+121+121)
 Number of active cells: 16 (on 3 levels)
 Number of degrees of freedom: 349 (162+25+81+81)
 
-*** Timestep 31:  t=8.91833e-05 years, dt=1.39163e-05 years
+*** Timestep 31:  t=8.91834e-05 years, dt=1.39163e-05 years
    Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 16 iterations.
    Solving Stokes system (GMG)... 20+0 iterations.
@@ -667,7 +667,7 @@ Skipping mesh refinement, because no cells were flagged for refinement/coarsenin
      Writing graphical output: output-point_value_02_mpi/solution/solution-00071
      Writing point values:     output-point_value_02_mpi/point_values.txt
 
-*** Timestep 72:  t=0.001 years, dt=9.06056e-06 years
+*** Timestep 72:  t=0.001 years, dt=9.06052e-06 years
    Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 13 iterations.
    Solving Stokes system (GMG)... 18+0 iterations.
