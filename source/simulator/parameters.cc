@@ -2048,8 +2048,9 @@ namespace aspect
             reaction_strategy.push_back(ReactionStrategy::parse(x_reaction_strategy[n]));
           }
 
-        AssertThrow(reaction_strategy[0] == ReactionStrategy::before_nonlinear_solver,
-                    ExcMessage("Temperature operator splitting can only occur before the nonlinear solver loop."));
+        if (use_operator_splitting[0])
+          AssertThrow(reaction_strategy[0] == ReactionStrategy::before_nonlinear_solver,
+                      ExcMessage("Temperature operator splitting can only occur before the nonlinear solver loop."));
 
 
       }
