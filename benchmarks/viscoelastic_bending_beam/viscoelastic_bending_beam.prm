@@ -41,7 +41,9 @@ set Nonlinear solver scheme                = iterated Advection and Stokes
 set Nonlinear solver tolerance             = 1e-5
 set Max nonlinear iterations               = 100
 
-set Use operator splitting                 = true
+# One operator splitting step to update the stresses,
+# but not the temperature and beam fields.
+set Use operator splitting                 = false, true, true, true, false
 
 subsection Solver parameters
   # Make sure to do only 1 splitting step

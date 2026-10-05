@@ -36,7 +36,7 @@ set Max nonlinear iterations in pre-refinement = 0
 
 # To update the elastic stresses,
 # we do 1 operator splitting step.
-set Use operator splitting                 = true
+set Use operator splitting                 = false, true, true, true
 
 subsection Solver parameters
   # Make sure to do only 1 splitting step

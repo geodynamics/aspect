@@ -13,7 +13,7 @@ set CFL number                             = 0.5
 set Maximum time step                      = 1e3
 
 # One operator splitting step to update the stresses
-set Use operator splitting                 = true
+set Use operator splitting                 = false, true, true, true, true, true, true, false
 
 # Solver settings
 subsection Solver parameters

@@ -32,7 +32,7 @@ set Pressure normalization                 = no
 
 # To update the elastic stresses,
 # we do 1 operator splitting step.
-set Use operator splitting                 = true
+set Use operator splitting                 = false, true, true, true, false, false
 
 subsection Solver parameters
   # Make sure to do only 1 splitting step

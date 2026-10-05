@@ -29,7 +29,7 @@ subsection Formulation
 end
 
 # One operator splitting step to update the stresses
-set Use operator splitting                 = true
+set Use operator splitting                 = false, true, true, true
 
 # Solver settings
 subsection Solver parameters

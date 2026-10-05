@@ -15,7 +15,7 @@ set Timing output frequency                = 1
 set Pressure normalization                 = no
 
 # One operator splitting step to update the stresses
-set Use operator splitting                 = true
+set Use operator splitting                 = false, true, true, true, false, false, false
 
 subsection Solver parameters
   # Make sure to do only 1 splitting step

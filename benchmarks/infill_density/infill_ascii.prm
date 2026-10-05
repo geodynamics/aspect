@@ -29,8 +29,9 @@ set Maximum time step                      = 750
 set Output directory                       = output
 set Pressure normalization                 = no
 
-# One operator splitting step to update the stresses
-set Use operator splitting                 = true
+# One operator splitting step to update the stresses,
+# but not the temperature and lithosphere fields.
+set Use operator splitting                 = false, true, true, true, true, true, true, false
 
 subsection Solver parameters
   # Make sure to do only 1 splitting step

@@ -18,7 +18,7 @@ set Nonlinear solver failure strategy      = cut timestep size
 set Nonlinear solver tolerance             = 2e-5
 
 # One operator splitting step to update the stresses
-set Use operator splitting                 = true
+set Use operator splitting                 = false, true, true, true
 
 subsection Solver parameters
   # Make sure to do only 1 splitting step

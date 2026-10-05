@@ -19,7 +19,7 @@ set Surface pressure                       = 0.
 set Output directory                       = ve_relaxation_dt125yr_dh10km
 
 # New elasticity settings
-set Use operator splitting                 = true
+set Use operator splitting                 = false, true, true, true
 
 # Solver settings
 subsection Solver parameters

@@ -9,8 +9,9 @@ set End time                               = 500
 set Output directory                       = output_gerya_2019_vep
 set Nonlinear solver scheme                = iterated Advection and Stokes
 
-# One operator splitting step to update the stresses
-set Use operator splitting                 = true
+# One operator splitting step to update the stresses,
+# but not the temperature or chemical fields.
+set Use operator splitting                 = false, true, true, true, false, false, false
 
 subsection Solver parameters
   # Make sure to do only 1 splitting step
