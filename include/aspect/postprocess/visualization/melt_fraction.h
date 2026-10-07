@@ -82,97 +82,108 @@ namespace aspect
 
         private:
           /**
-           * Parameters for anhydrous melting of peridotite after Katz, 2003
+           * Parameters for melting of peridotite after Katz, 2003.
            */
 
-          // for the solidus temperature
           /**
-           * This variable is read from the parameter file through a parameter called 'A1'.
+           * For the solidus temperature (respectively in °C, °C/Pa, °C/(Pa^2)).
+           * These variables are read from the parameter file through parameters called 'A1', 'A2' and 'A3'.
            */
-          double A1;   // °C
-          /**
-           * This variable is read from the parameter file through a parameter called 'A2'.
-           */
-          double A2; // °C/Pa
-          /**
-           * This variable is read from the parameter file through a parameter called 'A3'.
-           */
-          double A3; // °C/(Pa^2)
+          double A1;
+          double A2;
+          double A3;
 
-          // for the lherzolite liquidus temperature
           /**
-           * This variable is read from the parameter file through a parameter called 'B1'.
+           * For the lherzolite liquidus temperature (respectively in °C, °C/Pa, °C/(Pa^2)).
+           * These variables are read from the parameter file through parameters called 'B1', 'B2' and 'B3'.
            */
-          double B1;   // °C
-          /**
-           * This variable is read from the parameter file through a parameter called 'B2'.
-           */
-          double B2;   // °C/Pa
-          /**
-           * This variable is read from the parameter file through a parameter called 'B3'.
-           */
-          double B3; // °C/(Pa^2)
+          double B1;
+          double B2;
+          double B3;
 
-          // for the liquidus temperature
           /**
-           * This variable is read from the parameter file through a parameter called 'C1'.
+           * For the liquidus temperature (respectively in °C, °C/Pa, °C/(Pa^2)).
+           * These variables are read from the parameter file through parameters called 'C1', 'C2' and 'C3'.
            */
-          double C1;   // °C
-          /**
-           * This variable is read from the parameter file through a parameter called 'C2'.
-           */
-          double C2;  // °C/Pa
-          /**
-           * This variable is read from the parameter file through a parameter called 'C3'.
-           */
-          double C3; // °C/(Pa^2)
+          double C1;
+          double C2;
+          double C3;
 
-          // for the reaction coefficient of pyroxene
           /**
-           * This variable is read from the parameter file through a parameter called 'r1'.
+           * For the reaction coefficient of pyroxene (units respectively cpx/melt and cpx/melt/GPa).
+           * These variables are read from the parameter file through parameters called 'r1' and 'r2'.
            */
-          double r1;     // cpx/melt
+          double r1;
+          double r2;
+
           /**
-           * This variable is read from the parameter file through a parameter called 'r2'.
-           */
-          double r2;     // cpx/melt/GPa
-          /**
+           * Mass fraction of pyroxenite.
            * This variable is read from the parameter file through a parameter called 'Mass fraction cpx'.
            */
-          double M_cpx;  // mass fraction of pyroxenite
+          double M_cpx;
 
-          // melt fraction exponent
           /**
-           * This variable is read from the parameter file through a parameter called 'beta'.
+           * Equations 16, 17 and 18 from Katz et al 2003 together with their variables are defined here.
+          */
+
+          /**
+           * Melt fraction exponents. The beta2 parameter is taken after Ball, 2022, the exponent when cpx is out.
+           * These variables are read from the parameter file through parameters called 'beta1' and 'beta2'.
            */
-          double beta;
+          double beta1;
+          double beta2;
+
+          /**
+           * These variables are read from the parameter file through parameters called 'bulk_h2o_ppm' and 'D_H2O'.
+           * Eqn. 18 Katz et al (2003):
+           *  Computes melt water concentration.
+           *  Katz works with is %wt, so here ppms are converted to it.
+           */
+          double bulk_h2o_ppm;
+          double D_H2O;
+          double calc_X_H2O(const double F) const;
+
+          /**
+           * These variables are read from the parameter file through parameters called 'K_H2O' and 'gamma_H2O'.
+           * Eqn. 16 Katz et al (2003):
+           *  Computes the decrease of fusion temperature due to melt deluted water.
+           */
+          double K_H2O;
+          double gamma_H2O;
+          double calc_delta_T_H2O(const double F) const;
+
+          /**
+           * These variables are read from the parameter file through parameters called 'k1_H2O', 'k2_H2O' and 'lambda_H2O'.
+           * Eqn. 17 Katz et al (2003):
+           *  This function bounds the water concentration of melt to the water saturation, and recomputes melt fraction
+           *  (using eqn. 19 Katz et al (2003)) with that value.
+           */
+          double k1_H2O;
+          double k2_H2O;
+          double lambda_H2O;
+          double check_water_saturation(const double pressure,
+                                        const double temperature,
+                                        const double F,
+                                        const double T_solidus,
+                                        const double T_lherz_liquidus) const;
 
           /**
            * Parameters for melting of pyroxenite after Sobolev et al., 2011
            */
 
-          // for the melting temperature
           /**
-           * This variable is read from the parameter file through a parameter called 'D1'.
+           * For the melting temperature (respectively in °C, °C/Pa, °C/(Pa^2)).
+           * These variables are read from the parameter file through parameters called 'D1', 'D2' and 'D3'.
            */
-          double D1;    // °C
-          /**
-           * This variable is read from the parameter file through a parameter called 'D2'.
-           */
-          double D2;  // °C/Pa
-          /**
-           * This variable is read from the parameter file through a parameter called 'D3'.
-           */
-          double D3; // °C/(Pa^2)
+          double D1;
+          double D2;
+          double D3;
 
-          // for the melt-fraction dependence of productivity
           /**
-           * This variable is read from the parameter file through a parameter called 'E1'.
+           * For the melt-fraction dependence of productivity.
+           * These variables are read from the parameter file through parameters called 'E1' and 'E2'.
            */
           double E1;
-          /**
-           * This variable is read from the parameter file through a parameter called 'E2'.
-           */
           double E2;
 
           /**
