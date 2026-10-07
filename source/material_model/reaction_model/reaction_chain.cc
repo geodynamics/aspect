@@ -152,6 +152,7 @@ namespace aspect
         return reaction.kinetics->net_forward_reaction_rate(temperature, pressure,
                                                             delta_forward_gibbs_energy,
                                                             cumulative_forward_reaction_progress,
+                                                            tolerance_in_reaction_progress,
                                                             reaction.local_reaction_index);
       }
 

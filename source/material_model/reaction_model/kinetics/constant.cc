@@ -34,10 +34,15 @@ namespace aspect
       net_forward_reaction_rate(const double,
                                 const double,
                                 const double,
-                                const double,
+                                const double cumulative_forward_reaction_progress,
+                                const double tolerance_in_reaction_progress,
                                 const unsigned int reaction_index) const
       {
         AssertIndexRange(reaction_index, reaction_rates.size());
+
+        if (cumulative_forward_reaction_progress >= 1.0 - tolerance_in_reaction_progress)
+          return 0.0;
+
         return reaction_rates[reaction_index];
       }
 
