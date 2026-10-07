@@ -1,12 +1,12 @@
-# This test checks if the postprocessor 'melt fraction ball h2o' works 
+# This test/benchmark checks if the postprocessor 'melt fraction' works
 # as intended. It is based on the test 'melt_fraction_postprocessor.prm'.
-# This postprocessor aims to extend the original melt fraction postprocessor
-# (tested in the above mentioned) by allowing the effect of water on melt 
-# fraction to be included, following Ball et al. (2022), and itself based on 
+# This version of the postprocessor aims to extend the original melt fraction postprocessor
+# (tested in the above mentioned) by allowing the effect of water on melt
+# fraction to be included, following Ball et al. (2022), and itself based on
 # Katz et al. (2003).
 
-# The visualization output is then also a p-T-diagram of the melt fraction 
-# with the temperature ranging from 1100°C to 2000°C on the x axis and the 
+# The visualization output is then also a p-T-diagram of the melt fraction
+# with the temperature ranging from 1100°C to 2000°C on the x axis and the
 # pressure ranging from 0 GPa to 8 GPa on the y axis.
 
 # The data can be plotted in gnuplot using:
@@ -14,7 +14,6 @@
 # splot "file1" using 5:6:7 with points pointtype 5 pointsize 1 palette,
 #       "file2" using 5:6:7 with points pointtype 5 pointsize 1 palette
 # MPI: 2
-
 
 set Dimension                              = 2
 
@@ -68,10 +67,10 @@ subsection Material model
 end
 
 # The initial global refinement is set to 9 because resolution was found key to reproduce
-# firmly e.g. Fig. 4 in Katz et al. (2003), one of the validation tests. A lower number 
+# firmly e.g. Fig. 4 in Katz et al. (2003), one of the validation tests. A lower number
 # also shows neat, though less accurate, results.
 subsection Mesh refinement
-  set Initial global refinement                = 6
+  set Initial global refinement                = 9
   set Initial adaptive refinement              = 0
   set Time steps between mesh refinement       = 0
 end
@@ -83,7 +82,7 @@ subsection Postprocess
     set Interpolate output = false
     set Output format = gnuplot
     set Time between graphical output = 0.01
-    set List of output variables = melt fraction ball h2o
+    set List of output variables = melt fraction
 
     # Ball et al. (2022) approach includes mainly:
     # 1. The consideration of three different types of mantle: primitive, 50/50 and depleted,
@@ -91,10 +90,10 @@ subsection Postprocess
     #    coefficient of clinopyroxene and existing bulk water in the mantle in ppm (Bulk H2O ppm).
     # 2. The addition of a second beta parameter, applied when cpx is exhausted.
     # 3. The linear coefficient of Rcpx (reaction coef. of cpx) is set to a negative number,
-    #    since it is explicited that experiments show Fcpx-out (the melt fraction value the 
+    #    since it is explicited that experiments show Fcpx-out (the melt fraction value the
     #    moment the cpx runs out) increases with pressure.
 
-    # This modifies the original melt fraction postprocessor in several parameter values, e.g the 
+    # This modifies the original melt fraction postprocessor in several parameter values, e.g the
     # linear coefficient of the Tlherz-liq (1475 to 1520.0), r1, r2 and Mass fraction cpx.
 
     subsection Melt fraction
@@ -124,8 +123,7 @@ subsection Postprocess
 
       #Primitive mantle:
       set Mass fraction cpx = 0.17127832
-      #set r1 = 0.99133219
-      set r1 = 0.8
+      set r1 = 0.99133219
       set r2 = -1.2357699e-10
       set Bulk H2O ppm = 1000
 

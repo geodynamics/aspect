@@ -1,0 +1,25 @@
+# This test checks if the postprocessor 'melt fraction' works
+# as intended. It is based on the test 'melt_fraction_postprocessor.prm'.
+# This version of the postprocessor aims to extend the original melt fraction
+# postprocessor (tested in the above mentioned) by allowing the effect of water
+# on melt fraction to be included, following Ball et al. (2022), and itself
+# based on Katz et al. (2003).
+
+# The visualization output is then also a p-T-diagram of the melt fraction
+# with the temperature ranging from 1100°C to 2000°C on the x axis and the
+# pressure ranging from 0 GPa to 8 GPa on the y axis.
+
+# The data can be plotted in gnuplot using:
+# set view map
+# splot "file1" using 5:6:7 with points pointtype 5 pointsize 1 palette,
+#       "file2" using 5:6:7 with points pointtype 5 pointsize 1 palette
+# MPI: 2
+
+include $ASPECT_SOURCE_DIR/benchmarks/melt_fraction_hydrous/melt_fraction_hydrous.prm
+
+# The initial global refinement is set to 9 in the benchmark because resolution was
+# found key to reproduce firmly e.g. Fig. 4 in Katz et al. (2003), one of the validation tests.
+# A lower number also shows neat, though less accurate, results.
+subsection Mesh refinement
+  set Initial global refinement                = 7
+end
