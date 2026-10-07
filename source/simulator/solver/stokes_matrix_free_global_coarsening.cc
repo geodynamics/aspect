@@ -1417,17 +1417,16 @@ namespace aspect
   const Mapping<dim> &
   StokesMatrixFreeHandlerGlobalCoarseningImplementation<dim, velocity_degree>::get_level_triangulation_mapping()
   {
-    // Periodic spherical shells use a MappingQCache, which caches the geometry
-    // of the cells of the simulator triangulation. The level triangulations
-    // created by create_geometric_coarsening_sequence() are separate,
-    // repartitioned triangulations, on which evaluating that cache is invalid
-    // (and crashes once the partitions differ). For periodic geometries, build
-    // an equivalent manifold-based mapping of the same degree for them
-    // instead. The level triangulations inherit the manifolds of the simulator
-    // triangulation, so both mappings describe the same geometry.
+    // A MappingQCache stores geometry for the cells of the simulator
+    // triangulation. The level triangulations created by
+    // create_geometric_coarsening_sequence() are separate, repartitioned
+    // triangulations, on which evaluating that cache is invalid (and can
+    // crash once the cell indices or partitions differ). Build an equivalent
+    // manifold-based mapping of the same degree for them instead. The level
+    // triangulations inherit the manifolds of the simulator triangulation, so
+    // both mappings describe the same geometry.
     if (const MappingQ<dim> *mapping_q = dynamic_cast<const MappingQ<dim>*>(&this->get_mapping()))
-      if (dynamic_cast<const MappingQCache<dim>*>(mapping_q) != nullptr &&
-          this->get_geometry_model().get_periodic_boundary_pairs().size() > 0)
+      if (dynamic_cast<const MappingQCache<dim>*>(mapping_q) != nullptr)
         {
           if (level_triangulation_mapping.get() == nullptr)
             level_triangulation_mapping = std::make_unique<MappingQ<dim>>(mapping_q->get_degree());

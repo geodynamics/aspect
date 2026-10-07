@@ -1,0 +1,28 @@
+
+Number of active cells: 256 (on 3 levels)
+Number of degrees of freedom: 10,809 (7,803+405+2,601)
+
+Number of active cells: 648 (on 4 levels)
+Number of degrees of freedom: 27,608 (19,974+976+6,658)
+
+Number of active cells: 816 (on 4 levels)
+Number of degrees of freedom: 34,744 (25,149+1,212+8,383)
+
+Number of active cells: 760 (on 4 levels)
+Number of degrees of freedom: 33,774 (24,435+1,194+8,145)
+
+Number of active cells: 1,264 (on 5 levels)
+Number of degrees of freedom: 52,992 (38,367+1,836+12,789)
+
+Number of active cells: 1,488 (on 5 levels)
+Number of degrees of freedom: 64,766 (46,881+2,258+15,627)
+
+*** Timestep 0:  t=0 years, dt=0 years
+   Solving Stokes system (GMG-GC)... 50+0 iterations.
+
+   Postprocessing:
+
+Termination requested by criterion: end time
+
+
+
