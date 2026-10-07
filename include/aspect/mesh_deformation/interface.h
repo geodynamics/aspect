@@ -32,6 +32,7 @@
 #include <deal.II/base/index_set.h>
 #include <deal.II/base/mg_level_object.h>
 #include <deal.II/lac/la_parallel_vector.h>
+#include <deal.II/multigrid/mg_constrained_dofs.h>
 #include <deal.II/multigrid/mg_transfer_matrix_free.h>
 #include <deal.II/multigrid/mg_transfer_global_coarsening.templates.h>
 #include <aspect/simulator/assemblers/interface.h>
@@ -509,6 +510,23 @@ namespace aspect
           dealii::LinearAlgebra::distributed::Vector<double> &solution);
 
         /**
+         * Return the boundary indicators that are treated as homogeneous
+         * Dirichlet conditions for the mesh deformation Laplace problem:
+         * zero-displacement boundaries plus boundaries that have an active
+         * mesh deformation object.
+         */
+        std::set<types::boundary_id>
+        get_dirichlet_mesh_deformation_boundary_ids() const;
+
+        /**
+         * Copy @p mesh_displacements into a deal.II distributed vector on
+         * the locally owned mesh-deformation DoFs, for use with the
+         * matrix-free GMG transfers.
+         */
+        dealii::LinearAlgebra::distributed::Vector<double>
+        create_distributed_mesh_displacements() const;
+
+        /**
          * Set up the multigrid hierarchy used by the local-smoothing mesh
          * deformation solver.
          */
@@ -725,10 +743,17 @@ namespace aspect
         MGLevelObject<dealii::LinearAlgebra::distributed::Vector<double>> level_displacements;
 
         /**
+         * Dirichlet and refinement-edge constraints used to build
+         * @p local_smoothing_mg_transfer. deal.II stores a pointer to this
+         * object, so it must outlive the transfer.
+         */
+        MGConstrainedDoFs local_smoothing_mg_constrained_dofs;
+
+        /**
          * Multigrid transfer operator for the displacements used by the
          * local-smoothing GMG implementation.
          */
-        MGTransferType<dim, double> local_smoothing_mg_transfer;
+        std::unique_ptr<MGTransferType<dim, double>> local_smoothing_mg_transfer;
 
         friend class Simulator<dim>;
         friend class SimulatorAccess<dim>;
