@@ -1,0 +1,14 @@
+# Coarse GMG-LS test for the partial-free-slip nsinker box case.
+include $ASPECT_SOURCE_DIR/benchmarks/gmg-tests/nsinker-box-3d/partial-free-slip.prm
+
+subsection Mesh refinement
+  set Initial global refinement   = 1
+  set Initial adaptive refinement = 1
+end
+
+subsection Solver parameters
+  subsection Stokes solver parameters
+    set Stokes solver type = block GMG
+    set Stokes GMG type    = local smoothing
+  end
+end

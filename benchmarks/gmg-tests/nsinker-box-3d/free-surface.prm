@@ -2,7 +2,7 @@
 
 set Dimension = 3
 
-include base.prm
+include $ASPECT_SOURCE_DIR/benchmarks/gmg-tests/nsinker-box-3d/base.prm
 
 set Pressure normalization = no
 

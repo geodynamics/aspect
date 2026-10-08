@@ -30,8 +30,6 @@ The common test problem settings are:
 - 4 sinkers
 - viscosity ratio: 1e4
 
-Stokes: Q2Q1, 
-
 Stokes GMRES iterations on the final mesh with 7.8m Stokes DoFs (10.3m total DoFs) with adaptive refinement:
 
 | boundary condition | GMG global coarsening | GMG local smoothing | AMG |
