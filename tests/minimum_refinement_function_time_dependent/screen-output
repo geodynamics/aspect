@@ -31,7 +31,7 @@ Number of degrees of freedom: 19,750 (12,138+1,543+6,069)
 
 *** Timestep 0:  t=0 years, dt=0 years
    Solving temperature system... 0 iterations.
-   Solving Stokes system (GMG)... 17+0 iterations.
+   Solving Stokes system (GMG)... 16+0 iterations.
 
    Postprocessing:
 
@@ -73,7 +73,7 @@ Number of degrees of freedom: 10,703 (6,574+842+3,287)
 
 *** Timestep 3:  t=2.92073e+09 years, dt=1.30035e+09 years
    Solving temperature system... 212 iterations.
-   Solving Stokes system (GMG)... 15+0 iterations.
+   Solving Stokes system (GMG)... 14+0 iterations.
 
    Postprocessing:
 

@@ -20,7 +20,7 @@ Number of mesh deformation degrees of freedom: 578
 *** Timestep 1:  t=2500 years, dt=2500 years
    Solving mesh displacement system... 4 iterations.
    Skipping temperature solve because RHS is zero.
-   Solving C_1 system ... 1 iterations.
+   Solving C_1 system ... 2 iterations.
    Solving Stokes system (GMG)... 7+0 iterations.
 
    Postprocessing:

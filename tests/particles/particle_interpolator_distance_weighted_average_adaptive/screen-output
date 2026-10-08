@@ -22,7 +22,7 @@ Number of degrees of freedom: 1,470 (336+48+168+306+306+306)
    Skipping temperature solve because RHS is zero.
    Advecting particles...  done.
    Solving advection_field system ... 0 iterations.
-   Solving Stokes system (GMG)... 16+0 iterations.
+   Solving Stokes system (GMG)... 15+0 iterations.
 
    Postprocessing:
      RMS, max velocity:            0.000204 m/s, 0.000525 m/s
@@ -33,7 +33,7 @@ Number of degrees of freedom: 1,470 (336+48+168+306+306+306)
    Skipping temperature solve because RHS is zero.
    Advecting particles...  done.
    Solving advection_field system ... 5 iterations.
-   Solving Stokes system (GMG)... 15+0 iterations.
+   Solving Stokes system (GMG)... 14+0 iterations.
 
    Postprocessing:
      RMS, max velocity:            0.000299 m/s, 0.000785 m/s

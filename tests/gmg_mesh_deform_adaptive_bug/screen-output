@@ -316,13 +316,13 @@ Number of mesh deformation degrees of freedom: 4,030
    Postprocessing:
      Topography min/max: -350 m, 350 m
 
-Number of active cells: 470 (on 5 levels)
-Number of degrees of freedom: 6,534 (4,006+525+2,003)
+Number of active cells: 464 (on 5 levels)
+Number of degrees of freedom: 6,469 (3,966+520+1,983)
 
-Number of mesh deformation degrees of freedom: 4,006
+Number of mesh deformation degrees of freedom: 3,966
 *** Timestep 36:  t=360000 years, dt=10000 years
    Solving mesh displacement system... 4 iterations.
-   Solving temperature system... 8 iterations.
+   Solving temperature system... 9 iterations.
    Solving Stokes system (GMG)... 35+0 iterations.
 
    Postprocessing:
@@ -330,15 +330,15 @@ Number of mesh deformation degrees of freedom: 4,006
 
 *** Timestep 37:  t=370000 years, dt=10000 years
    Solving mesh displacement system... 4 iterations.
-   Solving temperature system... 8 iterations.
-   Solving Stokes system (GMG)... 13+0 iterations.
+   Solving temperature system... 9 iterations.
+   Solving Stokes system (GMG)... 14+0 iterations.
 
    Postprocessing:
      Topography min/max: -370 m, 370 m
 
 *** Timestep 38:  t=380000 years, dt=10000 years
    Solving mesh displacement system... 4 iterations.
-   Solving temperature system... 8 iterations.
+   Solving temperature system... 9 iterations.
    Solving Stokes system (GMG)... 10+0 iterations.
 
    Postprocessing:
@@ -346,7 +346,7 @@ Number of mesh deformation degrees of freedom: 4,006
 
 *** Timestep 39:  t=390000 years, dt=10000 years
    Solving mesh displacement system... 4 iterations.
-   Solving temperature system... 8 iterations.
+   Solving temperature system... 9 iterations.
    Solving Stokes system (GMG)... 10+0 iterations.
 
    Postprocessing:
@@ -354,19 +354,19 @@ Number of mesh deformation degrees of freedom: 4,006
 
 *** Timestep 40:  t=400000 years, dt=10000 years
    Solving mesh displacement system... 4 iterations.
-   Solving temperature system... 8 iterations.
+   Solving temperature system... 9 iterations.
    Solving Stokes system (GMG)... 10+0 iterations.
 
    Postprocessing:
      Topography min/max: -400 m, 400 m
 
-Number of active cells: 470 (on 5 levels)
-Number of degrees of freedom: 6,534 (4,006+525+2,003)
+Number of active cells: 464 (on 5 levels)
+Number of degrees of freedom: 6,469 (3,966+520+1,983)
 
-Number of mesh deformation degrees of freedom: 4,006
+Number of mesh deformation degrees of freedom: 3,966
 *** Timestep 41:  t=410000 years, dt=10000 years
    Solving mesh displacement system... 4 iterations.
-   Solving temperature system... 8 iterations.
+   Solving temperature system... 9 iterations.
    Solving Stokes system (GMG)... 10+0 iterations.
 
    Postprocessing:
@@ -374,7 +374,7 @@ Number of mesh deformation degrees of freedom: 4,006
 
 *** Timestep 42:  t=420000 years, dt=10000 years
    Solving mesh displacement system... 4 iterations.
-   Solving temperature system... 8 iterations.
+   Solving temperature system... 9 iterations.
    Solving Stokes system (GMG)... 10+0 iterations.
 
    Postprocessing:
@@ -382,7 +382,7 @@ Number of mesh deformation degrees of freedom: 4,006
 
 *** Timestep 43:  t=430000 years, dt=10000 years
    Solving mesh displacement system... 4 iterations.
-   Solving temperature system... 8 iterations.
+   Solving temperature system... 9 iterations.
    Solving Stokes system (GMG)... 10+0 iterations.
 
    Postprocessing:
@@ -390,7 +390,7 @@ Number of mesh deformation degrees of freedom: 4,006
 
 *** Timestep 44:  t=440000 years, dt=10000 years
    Solving mesh displacement system... 4 iterations.
-   Solving temperature system... 8 iterations.
+   Solving temperature system... 9 iterations.
    Solving Stokes system (GMG)... 10+0 iterations.
 
    Postprocessing:
@@ -398,16 +398,16 @@ Number of mesh deformation degrees of freedom: 4,006
 
 *** Timestep 45:  t=450000 years, dt=10000 years
    Solving mesh displacement system... 4 iterations.
-   Solving temperature system... 8 iterations.
+   Solving temperature system... 9 iterations.
    Solving Stokes system (GMG)... 10+0 iterations.
 
    Postprocessing:
      Topography min/max: -450 m, 450 m
 
-Number of active cells: 470 (on 5 levels)
-Number of degrees of freedom: 6,534 (4,006+525+2,003)
+Number of active cells: 464 (on 5 levels)
+Number of degrees of freedom: 6,469 (3,966+520+1,983)
 
-Number of mesh deformation degrees of freedom: 4,006
+Number of mesh deformation degrees of freedom: 3,966
 *** Timestep 46:  t=460000 years, dt=10000 years
    Solving mesh displacement system... 4 iterations.
    Solving temperature system... 8 iterations.
@@ -426,7 +426,7 @@ Number of mesh deformation degrees of freedom: 4,006
 
 *** Timestep 48:  t=480000 years, dt=10000 years
    Solving mesh displacement system... 4 iterations.
-   Solving temperature system... 7 iterations.
+   Solving temperature system... 8 iterations.
    Solving Stokes system (GMG)... 10+0 iterations.
 
    Postprocessing:
@@ -434,7 +434,7 @@ Number of mesh deformation degrees of freedom: 4,006
 
 *** Timestep 49:  t=490000 years, dt=10000 years
    Solving mesh displacement system... 4 iterations.
-   Solving temperature system... 7 iterations.
+   Solving temperature system... 8 iterations.
    Solving Stokes system (GMG)... 10+0 iterations.
 
    Postprocessing:
@@ -442,16 +442,16 @@ Number of mesh deformation degrees of freedom: 4,006
 
 *** Timestep 50:  t=500000 years, dt=10000 years
    Solving mesh displacement system... 4 iterations.
-   Solving temperature system... 7 iterations.
-   Solving Stokes system (GMG)... 11+0 iterations.
+   Solving temperature system... 8 iterations.
+   Solving Stokes system (GMG)... 12+0 iterations.
 
    Postprocessing:
      Topography min/max: -500 m, 500 m
 
-Number of active cells: 470 (on 5 levels)
-Number of degrees of freedom: 6,534 (4,006+525+2,003)
+Number of active cells: 464 (on 5 levels)
+Number of degrees of freedom: 6,469 (3,966+520+1,983)
 
-Number of mesh deformation degrees of freedom: 4,006
+Number of mesh deformation degrees of freedom: 3,966
 Termination requested by criterion: end time
 
 

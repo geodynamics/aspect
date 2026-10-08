@@ -12,8 +12,8 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
    Solving temperature system... 0 iterations.
    Advecting particles...  done.
    Solving Stokes system (GMG)... 0+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 2.3304e-16, 7.08361e-08
-      Relative nonlinear residual (total system) after nonlinear iteration 2: 7.08361e-08
+      Relative nonlinear residuals (temperature, Stokes system): 2.3304e-16, 7.08368e-08
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 7.08368e-08
 
 
    Postprocessing:
@@ -23,8 +23,8 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
    Solving temperature system... 0 iterations.
    Advecting particles...  done.
    Solving Stokes system (GMG)... 0+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 1.81564e-13, 7.08361e-08
-      Relative nonlinear residual (total system) after nonlinear iteration 1: 7.08361e-08
+      Relative nonlinear residuals (temperature, Stokes system): 1.7e-13, 7.08368e-08
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 7.08368e-08
 
 
    Postprocessing:
@@ -34,8 +34,8 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
    Solving temperature system... 0 iterations.
    Advecting particles...  done.
    Solving Stokes system (GMG)... 0+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 1.24056e-13, 7.08361e-08
-      Relative nonlinear residual (total system) after nonlinear iteration 1: 7.08361e-08
+      Relative nonlinear residuals (temperature, Stokes system): 1.07445e-13, 7.08368e-08
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 7.08368e-08
 
 
    Postprocessing:
@@ -45,8 +45,8 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
    Solving temperature system... 0 iterations.
    Advecting particles...  done.
    Solving Stokes system (GMG)... 0+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 1.24056e-13, 7.08361e-08
-      Relative nonlinear residual (total system) after nonlinear iteration 1: 7.08361e-08
+      Relative nonlinear residuals (temperature, Stokes system): 1.07445e-13, 7.08368e-08
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 7.08368e-08
 
 
    Postprocessing:
@@ -56,8 +56,8 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
    Solving temperature system... 0 iterations.
    Advecting particles...  done.
    Solving Stokes system (GMG)... 0+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 1.24056e-13, 7.08361e-08
-      Relative nonlinear residual (total system) after nonlinear iteration 1: 7.08361e-08
+      Relative nonlinear residuals (temperature, Stokes system): 1.07445e-13, 7.08368e-08
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 7.08368e-08
 
 
    Postprocessing:
@@ -67,8 +67,8 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
    Solving temperature system... 0 iterations.
    Advecting particles...  done.
    Solving Stokes system (GMG)... 0+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 1.24056e-13, 7.08361e-08
-      Relative nonlinear residual (total system) after nonlinear iteration 1: 7.08361e-08
+      Relative nonlinear residuals (temperature, Stokes system): 1.07445e-13, 7.08368e-08
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 7.08368e-08
 
 
    Postprocessing:
@@ -78,8 +78,8 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
    Solving temperature system... 0 iterations.
    Advecting particles...  done.
    Solving Stokes system (GMG)... 0+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 1.24056e-13, 7.08361e-08
-      Relative nonlinear residual (total system) after nonlinear iteration 1: 7.08361e-08
+      Relative nonlinear residuals (temperature, Stokes system): 1.07445e-13, 7.08368e-08
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 7.08368e-08
 
 
    Postprocessing:
@@ -89,8 +89,8 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
    Solving temperature system... 0 iterations.
    Advecting particles...  done.
    Solving Stokes system (GMG)... 0+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 1.24056e-13, 7.08361e-08
-      Relative nonlinear residual (total system) after nonlinear iteration 1: 7.08361e-08
+      Relative nonlinear residuals (temperature, Stokes system): 1.07445e-13, 7.08368e-08
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 7.08368e-08
 
 
    Postprocessing:
@@ -100,8 +100,8 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
    Solving temperature system... 0 iterations.
    Advecting particles...  done.
    Solving Stokes system (GMG)... 0+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 1.24056e-13, 7.08361e-08
-      Relative nonlinear residual (total system) after nonlinear iteration 1: 7.08361e-08
+      Relative nonlinear residuals (temperature, Stokes system): 1.07445e-13, 7.08368e-08
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 7.08368e-08
 
 
    Postprocessing:
@@ -111,8 +111,8 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
    Solving temperature system... 0 iterations.
    Advecting particles...  done.
    Solving Stokes system (GMG)... 0+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 1.24056e-13, 7.08361e-08
-      Relative nonlinear residual (total system) after nonlinear iteration 1: 7.08361e-08
+      Relative nonlinear residuals (temperature, Stokes system): 1.07445e-13, 7.08368e-08
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 7.08368e-08
 
 
    Postprocessing:
@@ -122,8 +122,8 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
    Solving temperature system... 0 iterations.
    Advecting particles...  done.
    Solving Stokes system (GMG)... 0+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 1.24056e-13, 7.08361e-08
-      Relative nonlinear residual (total system) after nonlinear iteration 1: 7.08361e-08
+      Relative nonlinear residuals (temperature, Stokes system): 1.07445e-13, 7.08368e-08
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 7.08368e-08
 
 
    Postprocessing:
@@ -136,8 +136,8 @@ Number of degrees of freedom: 948 (578+81+289)
    Solving temperature system... 0 iterations.
    Advecting particles...  done.
    Solving Stokes system (GMG)... 2+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 2.9345e-14, 1.34876e-07
-      Relative nonlinear residual (total system) after nonlinear iteration 1: 1.34876e-07
+      Relative nonlinear residuals (temperature, Stokes system): 2.93314e-14, 1.34879e-07
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 1.34879e-07
 
 
    Postprocessing:
@@ -147,8 +147,8 @@ Number of degrees of freedom: 948 (578+81+289)
    Solving temperature system... 0 iterations.
    Advecting particles...  done.
    Solving Stokes system (GMG)... 2+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 4.7786e-14, 2.48532e-07
-      Relative nonlinear residual (total system) after nonlinear iteration 1: 2.48532e-07
+      Relative nonlinear residuals (temperature, Stokes system): 5.51575e-14, 2.56858e-07
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 2.56858e-07
 
 
    Postprocessing:
@@ -157,9 +157,9 @@ Number of degrees of freedom: 948 (578+81+289)
 *** Timestep 13:  t=2.32969 years, dt=0.3125 years
    Solving temperature system... 0 iterations.
    Advecting particles...  done.
-   Solving Stokes system (GMG)... 3+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 4.78011e-14, 2.26412e-07
-      Relative nonlinear residual (total system) after nonlinear iteration 1: 2.26412e-07
+   Solving Stokes system (GMG)... 0+0 iterations.
+      Relative nonlinear residuals (temperature, Stokes system): 6.32726e-14, 8.558e-08
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 8.558e-08
 
 
    Postprocessing:
@@ -168,9 +168,9 @@ Number of degrees of freedom: 948 (578+81+289)
 *** Timestep 14:  t=2.64219 years, dt=0.3125 years
    Solving temperature system... 0 iterations.
    Advecting particles...  done.
-   Solving Stokes system (GMG)... 1+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 5.2778e-14, 1.04281e-07
-      Relative nonlinear residual (total system) after nonlinear iteration 1: 1.04281e-07
+   Solving Stokes system (GMG)... 2+0 iterations.
+      Relative nonlinear residuals (temperature, Stokes system): 4.07822e-14, 1.40342e-07
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 1.40342e-07
 
 
    Postprocessing:
@@ -179,9 +179,9 @@ Number of degrees of freedom: 948 (578+81+289)
 *** Timestep 15:  t=2.95469 years, dt=0.3125 years
    Solving temperature system... 0 iterations.
    Advecting particles...  done.
-   Solving Stokes system (GMG)... 3+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 4.96752e-14, 1.84323e-07
-      Relative nonlinear residual (total system) after nonlinear iteration 1: 1.84323e-07
+   Solving Stokes system (GMG)... 0+0 iterations.
+      Relative nonlinear residuals (temperature, Stokes system): 6.41931e-14, 9.09907e-08
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 9.09907e-08
 
 
    Postprocessing:
@@ -191,8 +191,8 @@ Number of degrees of freedom: 948 (578+81+289)
    Solving temperature system... 0 iterations.
    Advecting particles...  done.
    Solving Stokes system (GMG)... 2+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 6.35879e-14, 1.11964e-07
-      Relative nonlinear residual (total system) after nonlinear iteration 1: 1.11964e-07
+      Relative nonlinear residuals (temperature, Stokes system): 4.20562e-14, 1.81629e-07
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 1.81629e-07
 
 
    Postprocessing:
@@ -201,9 +201,9 @@ Number of degrees of freedom: 948 (578+81+289)
 *** Timestep 17:  t=3.57969 years, dt=0.3125 years
    Solving temperature system... 0 iterations.
    Advecting particles...  done.
-   Solving Stokes system (GMG)... 2+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 5.77567e-14, 1.25989e-07
-      Relative nonlinear residual (total system) after nonlinear iteration 1: 1.25989e-07
+   Solving Stokes system (GMG)... 0+0 iterations.
+      Relative nonlinear residuals (temperature, Stokes system): 5.48495e-14, 9.27799e-08
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 9.27799e-08
 
 
    Postprocessing:
@@ -212,9 +212,9 @@ Number of degrees of freedom: 948 (578+81+289)
 *** Timestep 18:  t=3.89219 years, dt=0.3125 years
    Solving temperature system... 0 iterations.
    Advecting particles...  done.
-   Solving Stokes system (GMG)... 0+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 5.71396e-14, 6.68775e-08
-      Relative nonlinear residual (total system) after nonlinear iteration 1: 6.68775e-08
+   Solving Stokes system (GMG)... 2+0 iterations.
+      Relative nonlinear residuals (temperature, Stokes system): 5.32634e-14, 1.83947e-07
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 1.83947e-07
 
 
    Postprocessing:
@@ -224,8 +224,8 @@ Number of degrees of freedom: 948 (578+81+289)
    Solving temperature system... 0 iterations.
    Advecting particles...  done.
    Solving Stokes system (GMG)... 0+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 2.66731e-14, 8.85311e-08
-      Relative nonlinear residual (total system) after nonlinear iteration 1: 8.85311e-08
+      Relative nonlinear residuals (temperature, Stokes system): 1.82837e-14, 3.59422e-08
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 3.59422e-08
 
 
    Postprocessing:
