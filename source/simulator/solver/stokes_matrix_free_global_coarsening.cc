@@ -1553,9 +1553,6 @@ namespace aspect
               }
 
 
-            Assert(this->get_boundary_velocity_manager().get_active_plugins().size() == 0,
-                   ExcNotImplemented());
-
             if (this->get_boundary_velocity_manager().get_tangential_boundary_velocity_indicators().size() > 0)
               {
                 if (!this->get_parameters().mesh_deformation_enabled)
