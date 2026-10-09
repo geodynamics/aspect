@@ -1,0 +1,39 @@
+{
+  "version":"1.2",
+  "cross section":[[0,0],[1000e3,0]],
+  "coordinate system":{"model":"cartesian"},
+  "indicator properties":[
+    {"index":0,"name":"temperature"},
+    {"index":1,"name":"velocity"},
+    {"index":2,"name":"composition"}
+  ],
+  "features":[
+    {
+      "model":"oceanic plate",
+      "name":"prescribed temperature",
+      "max depth":200e3,
+      "coordinates":[[-1e3,-1e3],[500e3,-1e3],[500e3,1e3],[-1e3,1e3]],
+      "temperature models":[{"model":"uniform","temperature":1200}],
+      "indicator models":[{
+        "model":"uniform",
+        "min depth":50e3,
+        "max depth":100e3,
+        "indicators":["temperature"]
+      }]
+    },
+    {
+      "model":"oceanic plate",
+      "name":"prescribed velocity and composition",
+      "max depth":200e3,
+      "coordinates":[[500e3,-1e3],[1001e3,-1e3],[1001e3,1e3],[500e3,1e3]],
+      "composition models":[{"model":"uniform","compositions":[0]}],
+      "velocity models":[{"model":"uniform raw","velocity":[1,0,2]}],
+      "indicator models":[{
+        "model":"uniform",
+        "min depth":50e3,
+        "max depth":100e3,
+        "indicators":["velocity","composition"]
+      }]
+    }
+  ]
+}
