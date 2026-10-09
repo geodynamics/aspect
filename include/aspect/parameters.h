@@ -69,6 +69,7 @@ namespace aspect
         no_Advection_single_Stokes_first_timestep_only,
         no_Advection_iterated_Stokes,
         no_Advection_iterated_defect_correction_Stokes,
+        no_Advection_adjoint_Stokes,
         single_Advection_no_Stokes,
         single_Advection_single_Stokes,
         single_Advection_iterated_Stokes,
