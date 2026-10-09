@@ -78,6 +78,7 @@ namespace aspect
                                            const double pressure,
                                            const double delta_forward_gibbs_energy,
                                            const double cumulative_forward_reaction_progress,
+                                           const double tolerance_in_reaction_progress,
                                            const unsigned int reaction_index) const override;
 
           /**
