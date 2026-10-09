@@ -164,7 +164,7 @@ namespace aspect
                                "These need to be the same during restarting "
                                "from a checkpoint."));
 
-      bool use_operator_splitting;
+      std::vector<bool> use_operator_splitting;
       ia >> use_operator_splitting;
       AssertThrow (use_operator_splitting == parameters.use_operator_splitting,
                    ExcMessage ("The operator splitting mode that was stored "

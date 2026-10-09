@@ -520,6 +520,33 @@ namespace aspect
     };
 
     /**
+     * This enum represents the different choices for when to
+     * apply operator splitting. See @p reaction_strategy.
+     */
+    struct ReactionStrategy
+    {
+      enum Kind
+      {
+        before_nonlinear_solver,
+        after_nonlinear_solver
+      };
+
+      static
+      Kind
+      parse(const std::string &input)
+      {
+        if (input == "before nonlinear solver")
+          return before_nonlinear_solver;
+        else if (input == "after nonlinear solver")
+          return after_nonlinear_solver;
+        else
+          AssertThrow(false, ExcNotImplemented());
+
+        return Kind();
+      }
+    };
+
+    /**
      * Use the struct aspect::CompositionalFieldDescription
      */
     using CompositionalFieldDescription DEAL_II_DEPRECATED = aspect::CompositionalFieldDescription;
@@ -614,7 +641,7 @@ namespace aspect
     unsigned int                   timing_output_frequency;
     unsigned int                   max_nonlinear_iterations;
     unsigned int                   max_nonlinear_iterations_in_prerefinement;
-    bool                           use_operator_splitting;
+    std::vector<bool>              use_operator_splitting;
     std::string                    world_builder_file;
     unsigned int                   n_particle_managers;
 
@@ -656,10 +683,11 @@ namespace aspect
     bool                           AMG_output_details;
 
     // subsection: Operator splitting parameters
-    typename ReactionSolverType::Kind reaction_solver_type;
-    double                         ARKode_relative_tolerance;
-    double                         reaction_time_step;
-    unsigned int                   reaction_steps_per_advection_step;
+    std::vector<typename ReactionSolverType::Kind> reaction_solver_type;
+    std::vector<double>                            ARKode_relative_tolerance;
+    std::vector<double>                            reaction_time_step;
+    std::vector<unsigned int>                      reaction_steps_per_advection_step;
+    std::vector<typename ReactionStrategy::Kind>   reaction_strategy;
 
     // subsection: Diffusion solver parameters
     double                         diffusion_length_scale;
