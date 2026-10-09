@@ -102,7 +102,7 @@ namespace aspect
             break;
 
           case Utilities::Coordinates::depth:
-            other_coord[0] = depth(position);
+            other_coord = cartesian_to_depth_coordinates(position);
             break;
 
           case Utilities::Coordinates::ellipsoidal:
@@ -121,6 +121,15 @@ namespace aspect
               ExcMessage ("The natural_to_cartesian_coordinates function has "
                           "not been implemented in this geometry model."));
       return Point<dim>();
+    }
+
+    template <int dim>
+    std::array<double, dim>
+    Interface<dim>::cartesian_to_depth_coordinates (const Point<dim> &position) const
+    {
+      std::array<double, dim> depth_coordinates = {};
+      depth_coordinates[0] = depth(position);
+      return depth_coordinates;
     }
 
 
