@@ -62,6 +62,12 @@ namespace aspect
             index = 0;
             found = true;
           }
+        else if (property_name == "Norm of velocity")
+          {
+            type = PropertyType::Norm_of_velocity;
+            index = 0;
+            found = true;
+          }
         else
           {
             auto p = std::find(available_compositions.begin(), available_compositions.end(), property_name);
@@ -76,7 +82,7 @@ namespace aspect
           {
             // The property name has not been found. This could be because the compositional field is not present.
             // Abort and warn the user.
-            std::string key_list = "Temperature";
+            std::string key_list = "Temperature, Norm of velocity";
             for (auto &composition : available_compositions)
               key_list += ", " + composition;
 
@@ -193,6 +199,11 @@ namespace aspect
                             {
                               values[index] = in.temperature[i_quad];
                             }
+                          else if (isosurface.properties[index].type == internal::PropertyType::Norm_of_velocity)
+                            {
+                              const double time_scale = this->get_parameters().convert_to_years ? constants::year_in_seconds : 1.0;
+                              values[index] = in.velocity[i_quad].norm() * time_scale;
+                            }
                           else if (isosurface.properties[index].type == internal::PropertyType::Composition)
                             {
                               values[index] = in.composition[i_quad][isosurface.properties[index].index];
@@ -283,7 +294,11 @@ namespace aspect
                              "number behind them (e.g. min+2 or max-1). Note that you can't subtract a value from a minimum value or "
                              "add a value to the maximum value. If, for example, `max-4` drops below the minimum or `min+4` goes above the "
                              "maximum, it will simply use the global minimum and maximum values respectively. The same holds for any "
-                             "mesh refinement level below the global minimum or above the global maximum.");
+                             "mesh refinement level below the global minimum or above the global maximum."
+                             "\n\n"
+                             "Norm of velocity key word follows the unit selected from parameter 'Use years instead of seconds'. "
+                             "If ''Use years instead of seconds' is true, velocity unit is \\si{\\meter}/yr. "
+                             "If false, the unit is \\si{\\meter\\per\\second}.") ;
 
         }
         prm.leave_subsection();
@@ -366,7 +381,7 @@ namespace aspect
                                               "isosurfaces",
                                               "A mesh refinement criterion that computes "
                                               "coarsening and refinement indicators between two isosurfaces of "
-                                              "specific field entries (e.g. temperature, composition)."
+                                              "specific field entries (e.g. temperature, norm of velocity, composition)."
                                               "\n\n"
                                               "The way these indicators are derived between pairs of isosurfaces is by "
                                               "checking whether the solutions of specific "
@@ -377,8 +392,8 @@ namespace aspect
                                               "minimum and maximum refinement function onto fields that they "
                                               "are interested in."
                                               "\n\n"
-                                              "For now, only temperature and compositional fields are allowed as "
-                                              "field entries. The key words could be 'Temperature' or one of the names "
+                                              "For now, only temperature, norm of velocity and compositional fields are allowed as "
+                                              "field entries. The key words could be 'Temperature', 'Norm of velocity' or one of the names "
                                               "of the compositional fields which are either specified by user or set up "
                                               "as C\\_0, C\\_1, etc."
                                               "\n\n"
@@ -397,6 +412,10 @@ namespace aspect
                                               "The minimum and maximum refinement levels per isosurface can be provided in absolute values relative to "
                                               "the global minimum and maximum refinement. This is done with the 'min' and 'max' key words. For example: "
                                               "'set Isosurfaces = max-2,  max,    Temperature: 0 | 600 ; min + 1,min+2, Temperature: 1600 | 3000,   C\\_2 : 0.0 | 0.5'."
+                                              "\n\n"
+                                              "Norm of velocity key word follows the unit selected from parameter 'Use years instead of seconds'. "
+                                              "If ''Use years instead of seconds' is true, velocity unit is \\si{\\meter}/yr. "
+                                              "If false, the unit is \\si{\\meter\\per\\second}."
                                              )
   }
 }

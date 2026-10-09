@@ -1,0 +1,91 @@
+# This input file tests the isosurface mesh refinement plugin for norm of velocity.
+# Vertical velocity (v) varies by left and right side of the model. left half has 8 m/yr, and right side has 2 m/yr.
+# By the isosurface criterion, refinement levels are 3 for norm of velocity between 5 and 10 m/yr and 1 for norm of velocity between 0 and 5 m/yr.
+
+set Dimension = 2
+set CFL number                             = 1.0
+set End time                               = 0
+set Start time                             = 0
+set Surface pressure                       = 0
+set Use years instead of seconds           = true
+set Nonlinear solver scheme                = single Advection, no Stokes
+
+subsection Gravity model
+  set Model name = vertical
+
+  subsection Vertical
+    set Magnitude = 10
+  end
+end
+
+subsection Geometry model
+  set Model name = box
+
+  subsection Box
+    set X extent = 10000
+    set Y extent = 10000
+    set X repetitions = 2
+    set Y repetitions = 2
+  end
+end
+
+subsection Initial temperature model
+  set Model name = function
+
+  subsection Function
+    set Variable names = x, y
+    set Function constants = d= 10000
+    set Function expression = 100
+  end
+end
+
+
+subsection Boundary temperature model
+  set Fixed temperature boundary indicators = top, bottom
+  set List of model names = box
+
+  subsection Box
+    set Bottom temperature    = 100
+    set Top temperature    = 100
+  end
+end
+
+subsection Material model
+  set Model name = simple
+
+  subsection Simple model
+    set Reference density = 3340
+    set Reference specific heat = 1200
+    set Thermal expansion coefficient = 3e-5
+    set Viscosity = 1e21
+  end
+end
+
+subsection Mesh refinement
+  set Initial global refinement          = 2
+  set Initial adaptive refinement        = 1
+  set Time steps between mesh refinement = 0
+  set Strategy = isosurfaces
+
+  subsection Isosurfaces
+    set Isosurfaces = 3,    3,    Norm of velocity: 5 | 10; \
+                      1,    1,    Norm of velocity: 0 | 5
+  end
+end
+
+subsection Prescribed Stokes solution
+  set Model name =  function
+
+  subsection Velocity function
+    set Variable names = x, y, t
+    set Function expression = 0; if (x < 5000, 8, 2)
+  end
+end
+
+subsection Postprocess
+  set List of postprocessors = visualization
+
+  subsection Visualization
+    set Output format            = gnuplot
+  end
+end

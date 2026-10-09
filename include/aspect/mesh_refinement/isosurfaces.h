@@ -37,6 +37,7 @@ namespace aspect
       enum class PropertyType
       {
         Temperature,
+        Norm_of_velocity,
         Composition
       };
 
@@ -47,8 +48,8 @@ namespace aspect
            * Constructor. Converts a property name into a structure containing a property type
            * and an index. If the property contains multiple items (e.g. the property compositional field has a
            * field index) the index referring to the particular item of that property is stored in the variable index.
-           * @param property_name The name of a property, which can be Temperature for the temperature field or
-           * the name of a compositional field listed in the parameter available_compositions.
+           * @param property_name The name of a property, which can be Temperature for the temperature field, Norm of velocity
+           * for the velocity field or the name of a compositional field listed in the parameter available_compositions.
            * @param available_compositions A list of names of the available compositional fields.
            */
           Property(const std::string &property_name,
@@ -94,7 +95,7 @@ namespace aspect
      * plugin allows for setting a minimum and a maximum refinement level in
      * a part of the model domain where a variable/property (e.g. Temperature)
      * is between two values (e.g. two isotherms of 274K and 1600K). This is
-     * currently implemented for temperature and compositions.
+     * currently implemented for temperature, norm of velocity and compositions.
      *
      * @ingroup MeshRefinement
      */
