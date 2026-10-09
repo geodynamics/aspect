@@ -308,6 +308,14 @@ namespace aspect
     // geometry model's description of symbolic names for boundary parts. note that
     // the geometry model is the only model whose run time parameters are already read
     // at the time it is created
+
+    // First make sure initial topography and mesh deformation are not used together.
+    if (parameters.mesh_deformation_enabled)
+      {
+        AssertThrow(Plugins::plugin_type_matches<const InitialTopographyModel::ZeroTopography<dim>>(*initial_topography_model),
+                    ExcMessage("Initial topography cannot be combined with mesh deformation."));
+      }
+
     if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(initial_topography_model.get()))
       sim->initialize_simulator (*this);
     initial_topography_model->initialize ();
@@ -1824,7 +1832,6 @@ namespace aspect
         {
           x_fs_system.push_back (&mesh_deformation->mesh_displacements);
           x_fs_system.push_back (&mesh_deformation->old_mesh_displacements);
-          x_fs_system.push_back (&mesh_deformation->initial_topography);
 #if !DEAL_II_VERSION_GTE(9,7,0)
           mesh_deformation_trans
             = std::make_unique<parallel::distributed::SolutionTransfer<dim,LinearAlgebra::Vector>>
@@ -1929,20 +1936,16 @@ namespace aspect
           mesh_deformation->mesh_velocity = distributed_mesh_velocity;
 
           LinearAlgebra::Vector distributed_mesh_displacements,
-                        distributed_old_mesh_displacements,
-                        distributed_initial_topography;
+                        distributed_old_mesh_displacements;
 
           distributed_mesh_displacements.reinit(mesh_deformation->mesh_locally_owned,
                                                 mpi_communicator);
           distributed_old_mesh_displacements.reinit(mesh_deformation->mesh_locally_owned,
                                                     mpi_communicator);
-          distributed_initial_topography.reinit(mesh_deformation->mesh_locally_owned,
-                                                mpi_communicator);
 
           std::vector<LinearAlgebra::Vector *> system_tmp
           = { &distributed_mesh_displacements,
               &distributed_old_mesh_displacements,
-              &distributed_initial_topography
             };
 
           mesh_deformation_trans->interpolate (system_tmp);
@@ -1952,9 +1955,6 @@ namespace aspect
 
           mesh_deformation->mesh_vertex_constraints.distribute (distributed_old_mesh_displacements);
           mesh_deformation->old_mesh_displacements = distributed_old_mesh_displacements;
-
-          mesh_deformation->mesh_vertex_constraints.distribute (distributed_initial_topography);
-          mesh_deformation->initial_topography = distributed_initial_topography;
         }
 
       // Possibly load data of plugins associated with cells

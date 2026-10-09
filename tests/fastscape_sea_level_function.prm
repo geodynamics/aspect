@@ -31,13 +31,6 @@ subsection Geometry model
     set X extent      = 50e3
     set Y extent      = 10e3
   end
-  subsection Initial topography model
-    set Model name = function
-
-    subsection Function
-      set Function expression = 0
-    end
-  end
 end
 
 subsection Mesh refinement
