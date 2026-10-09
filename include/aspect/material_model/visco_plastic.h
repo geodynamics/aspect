@@ -21,6 +21,7 @@
 #ifndef _aspect_material_model_visco_plastic_h
 #define _aspect_material_model_visco_plastic_h
 
+#include "aspect/utilities.h"
 #include <aspect/simulator_access.h>
 #include <aspect/material_model/interface.h>
 #include <aspect/material_model/equation_of_state/multicomponent_incompressible.h>
@@ -294,6 +295,12 @@ namespace aspect
          * Record the mapping of reaction progress to phase transitions used in the material model
          */
         std::vector<unsigned int> reaction_progress_mapping;
+        Utilities::ScratchSpace<std::vector<double>> composition_fractions_space;
+        Utilities::ScratchSpace<std::vector<double>> phase_function_values_space;
+        Utilities::ScratchSpace<std::vector<double>>  average_elastic_shear_moduli_space;
+        Utilities::ScratchSpace<std::vector<double>> phase_function_discrete_values_space;
+        Utilities::ScratchSpace<std::vector<double>> volume_fractions_space;
+        aspect::Utilities::ScratchSpace<IsostrainViscosities> isostrain_viscosities_space;
 
     };
 

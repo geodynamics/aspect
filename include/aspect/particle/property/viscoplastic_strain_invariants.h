@@ -88,6 +88,11 @@ namespace aspect
         private:
           unsigned int n_components;
 
+          bool compositional_name_exists_plastic_strain;
+          bool compositional_name_exists_viscous_strain;
+          bool compositional_name_exists_total_strain;
+          bool compositional_name_exists_noninitial_plastic_strain;
+
           /**
            * An object that is used to compute the particle property. Since the
            * object is expensive to create and is needed often it is kept as a

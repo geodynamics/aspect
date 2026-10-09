@@ -93,6 +93,9 @@ namespace aspect
          * production computation.
          */
         bool use_background_field_for_heat_production_averaging;
+
+        Utilities::ScratchSpace<std::vector<double>> volume_fractions_space;
+
     };
   }
 }
