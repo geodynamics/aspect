@@ -1395,6 +1395,22 @@ namespace aspect
           }
       }
 
+    // here the residual should be below the tolerance, ensure this is the case
+    dealii::LinearAlgebra::distributed::BlockVector<double> residual;
+    residual.reinit(rhs_copy);
+
+    // residual = rhs_copy - A * solution_copy
+    stokes_matrix.vmult(residual, solution_copy);
+    residual.sadd(-1.0, 1.0, rhs_copy);
+
+    const double true_residual = residual.l2_norm();
+
+    AssertThrow(true_residual <= solver_tolerance,
+                ExcMessage("The true Stokes residual exceeds the solver tolerance. Reported residual: " + std::to_string(outputs.final_linear_residual) +
+                           ", true residual: " + std::to_string(true_residual) +
+                           ", tolerance: " + std::to_string(solver_tolerance)));
+
+
     // signal successful solver
     // *this is converted to a pointer to SimulatorAccess for the signal
     this->get_signals().post_stokes_solver(*this,
