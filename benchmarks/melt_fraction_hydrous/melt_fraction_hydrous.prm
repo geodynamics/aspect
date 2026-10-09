@@ -1,0 +1,144 @@
+# This test/benchmark checks if the postprocessor 'melt fraction' works
+# as intended. It is based on the test 'melt_fraction_postprocessor.prm'.
+# This version of the postprocessor aims to extend the original melt fraction postprocessor
+# (tested in the above mentioned) by allowing the effect of water on melt
+# fraction to be included, following Ball et al. (2022), and itself based on
+# Katz et al. (2003).
+
+# The visualization output is then also a p-T-diagram of the melt fraction
+# with the temperature ranging from 1100°C to 2000°C on the x axis and the
+# pressure ranging from 0 GPa to 8 GPa on the y axis.
+
+# The data can be plotted in gnuplot using:
+# set view map
+# splot "file1" using 5:6:7 with points pointtype 5 pointsize 1 palette,
+#       "file2" using 5:6:7 with points pointtype 5 pointsize 1 palette
+# MPI: 2
+
+set Dimension                              = 2
+
+set Use years instead of seconds           = false
+set End time                               = 0.0
+set Pressure normalization                 = surface
+set Surface pressure                       = 0
+set Output directory = output_ball_h2o
+
+subsection Geometry model
+  set Model name = box
+
+  subsection Box
+    set X extent = 9
+    set Y extent = 8
+  end
+end
+
+subsection Initial temperature model
+  set List of model names = function
+
+  subsection Function
+    set Variable names      = x,z
+    set Function expression = 1100+273.15+x*100
+  end
+end
+
+subsection Boundary velocity model
+  set Tangential velocity boundary indicators = 0,1,2,3
+end
+
+subsection Gravity model
+  set Model name = vertical
+
+  subsection Vertical
+    set Magnitude = 1e9
+  end
+end
+
+subsection Material model
+  set Model name = simple
+
+  subsection Simple model
+    set Reference density             = 1
+    set Reference specific heat       = 1
+    set Reference temperature         = 1600
+    set Thermal conductivity          = 1
+    set Thermal expansion coefficient = 0
+    set Viscosity                     = 1
+  end
+end
+
+# The initial global refinement is set to 9 because resolution was found key to reproduce
+# firmly e.g. Fig. 4 in Katz et al. (2003), one of the validation tests. A lower number
+# also shows neat, though less accurate, results.
+subsection Mesh refinement
+  set Initial global refinement                = 9
+  set Initial adaptive refinement              = 0
+  set Time steps between mesh refinement       = 0
+end
+
+subsection Postprocess
+  set List of postprocessors = visualization
+
+  subsection Visualization
+    set Interpolate output = false
+    set Output format = gnuplot
+    set Time between graphical output = 0.01
+    set List of output variables = melt fraction
+
+    # Ball et al. (2022) approach includes mainly:
+    # 1. The consideration of three different types of mantle: primitive, 50/50 and depleted,
+    #    each with specified mass fraction of clinopyroxene, coefficients of the reaction
+    #    coefficient of clinopyroxene and existing bulk water in the mantle in ppm (Bulk H2O ppm).
+    # 2. The addition of a second beta parameter, applied when cpx is exhausted.
+    # 3. The linear coefficient of Rcpx (reaction coef. of cpx) is set to a negative number,
+    #    since it is explicited that experiments show Fcpx-out (the melt fraction value the
+    #    moment the cpx runs out) increases with pressure.
+
+    # This modifies the original melt fraction postprocessor in several parameter values, e.g the
+    # linear coefficient of the Tlherz-liq (1475 to 1520.0), r1, r2 and Mass fraction cpx.
+
+    subsection Melt fraction
+      set A1 = 1085.7
+      set A2 = 1.329e-7
+      set A3 = -5.1e-18
+
+      set B1 = 1520.0
+      set B2 = 8.0e-8
+      set B3 = -3.2e-18
+
+      set C1 = 1780.0
+      set C2 = 4.5e-8
+      set C3 = -2.0e-18
+
+      set beta1 = 1.5
+      set beta2 = 1.2
+
+      #Water
+      set D H2O        = 0.01
+      set K H2O        = 43
+      set gamma H2O    = 0.75
+
+      set k1 H2O       = 12
+      set k2 H2O       = 1
+      set lambda H2O   = 0.6
+
+      #Primitive mantle:
+      set Mass fraction cpx = 0.17127832
+      set r1 = 0.99133219
+      set r2 = -1.2357699e-10
+      set Bulk H2O ppm = 1000
+
+      #Depleted mantle:
+      #set Mass fraction cpx = 0.16783327
+      #set r1 = 1.2471514
+      #set r2 = -1.7266209e-10
+      #set Bulk H2O ppm = 100
+
+      #50/50 = primitive + depleted mantle:
+      #set Mass fraction cpx = 0.1702248
+      #set r1= 1.09774656
+      #set r2 = -1.4365651e-10
+      #set Bulk H2O ppm = 200
+
+    end
+  end
+end
