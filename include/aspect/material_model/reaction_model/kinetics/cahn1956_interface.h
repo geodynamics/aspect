@@ -81,7 +81,7 @@ namespace aspect
       std::unique_ptr<Cahn1956Interface<dim>> create_reaction_model(const std::string &model_name);
 
       template <int dim>
-      using ReactionModelPluginList = internal::Plugins::PluginList<Cahn1956Interface<dim>>;
+      using ReactionModelPluginList = aspect::internal::Plugins::PluginList<Cahn1956Interface<dim>>;
 
 #define ASPECT_REGISTER_REACTION_MODEL(classname, name, description) \
   template class classname<2>; \
