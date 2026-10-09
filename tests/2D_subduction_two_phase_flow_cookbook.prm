@@ -1,0 +1,18 @@
+# This is a test that checks that the cookbook "2D_subduction_two_phase_flow" runs correctly. It also checks
+# that the two .cc files required for this cookbook work correctly by outputting the composition statistics.
+# The bound_fluid should be initialized with a max value of 0.021 (due to world_builder_disequilibrium_fluid.cc)
+# and this value should not decrease (due to bound_fluid_source.cc) even though the porosity becomes non-zero 
+# after 100 years.
+include $ASPECT_SOURCE_DIR/cookbooks/2D_subduction_with_two_phase_flow/fixed_slab_darcy_with_fugacity.prm
+
+set End time = 100
+
+subsection Mesh refinement
+  set Initial adaptive refinement              = 0
+  set Initial global refinement                = 1
+  set Time steps between mesh refinement       = 0
+end
+
+subsection Postprocess
+  set List of postprocessors          = composition statistics
+end
