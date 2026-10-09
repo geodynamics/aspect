@@ -294,18 +294,18 @@ namespace aspect
       // and plastic dilation
       if ((Parameters<dim>::is_defect_correction(this->get_parameters().nonlinear_solver)
            && this->get_newton_handler().parameters.newton_derivative_scaling_factor != 0)
-          || this->get_parameters().enable_prescribed_dilation)
+          || this->get_parameters().enable_prescribed_plastic_dilation)
         {
           active_cell_data.enable_newton_derivatives = (Parameters<dim>::is_defect_correction(this->get_parameters().nonlinear_solver)
                                                         && this->get_newton_handler().parameters.newton_derivative_scaling_factor != 0);
-          active_cell_data.enable_prescribed_dilation = this->get_parameters().enable_prescribed_dilation;
+          active_cell_data.enable_prescribed_plastic_dilation = this->get_parameters().enable_prescribed_plastic_dilation;
           active_cell_data.average_newton_factors = (this->get_parameters().material_averaging != MaterialModel::MaterialAveraging::none);
 
           // TODO: these are not implemented yet
           for (unsigned int level=0; level<n_levels; ++level)
             {
               level_cell_data[level].enable_newton_derivatives = false;
-              level_cell_data[level].enable_prescribed_dilation = false;
+              level_cell_data[level].enable_prescribed_plastic_dilation = false;
               level_cell_data[level].average_newton_factors = false;
             }
 
@@ -334,7 +334,7 @@ namespace aspect
               active_cell_data.newton_factor_wrt_pressure_table.reinit(TableIndices<2>(n_cells, n_q_points));
               active_cell_data.newton_factor_wrt_strain_rate_table.reinit(TableIndices<2>(n_cells, n_q_points));
 
-              if (active_cell_data.enable_prescribed_dilation)
+              if (active_cell_data.enable_prescribed_plastic_dilation)
                 {
                   active_cell_data.dilation_derivative_wrt_pressure_table.reinit(TableIndices<2>(n_cells, n_q_points));
                   active_cell_data.dilation_derivative_wrt_strain_rate_table.reinit(TableIndices<2>(n_cells, n_q_points));
@@ -347,7 +347,7 @@ namespace aspect
               active_cell_data.symmetrize_newton_system = symmetrize_newton_system;
             }
 
-          if (active_cell_data.enable_prescribed_dilation)
+          if (active_cell_data.enable_prescribed_plastic_dilation)
             {
               if (out.template has_additional_output_object<MaterialModel::PrescribedPlasticDilation<dim>>() == false)
                 out.additional_outputs.push_back(std::make_unique<MaterialModel::PrescribedPlasticDilation<dim>>(out.n_evaluation_points()));
@@ -451,7 +451,7 @@ namespace aspect
                                                   + std::to_string(active_cell_data.newton_factor_wrt_strain_rate_table(cell, q)[m][n][i])));
                               }
 
-                          if (active_cell_data.enable_prescribed_dilation)
+                          if (active_cell_data.enable_prescribed_plastic_dilation)
                             {
                               active_cell_data.dilation_derivative_wrt_pressure_table(cell,q)[i]
                                 = derivatives->dilation_derivative_wrt_pressure[q] * newton_derivative_scaling_factor;
@@ -478,14 +478,14 @@ namespace aspect
                         }
                     }
 
-                  if (active_cell_data.enable_prescribed_dilation)
+                  if (active_cell_data.enable_prescribed_plastic_dilation)
                     {
-                      const std::shared_ptr<const MaterialModel::PrescribedPlasticDilation<dim>> prescribed_dilation
+                      const std::shared_ptr<const MaterialModel::PrescribedPlasticDilation<dim>> prescribed_plastic_dilation
                         = out.template get_additional_output_object<MaterialModel::PrescribedPlasticDilation<dim>>();
 
                       for (unsigned int q = 0; q < n_q_points; ++q)
                         {
-                          active_cell_data.dilation_lhs_term_table(cell,q)[i] = prescribed_dilation->dilation_lhs_term[q];
+                          active_cell_data.dilation_lhs_term_table(cell,q)[i] = prescribed_plastic_dilation->dilation_lhs_term[q];
                           Assert(std::isfinite(active_cell_data.dilation_lhs_term_table(cell,q)[i]),
                                  ExcMessage("active_cell_data.dilation_lhs_term_table is not finite: " + std::to_string(active_cell_data.dilation_lhs_term_table(cell,q)[i])));
                         }
@@ -498,7 +498,7 @@ namespace aspect
           // delete data used for Newton derivatives and prescribed dilation
           // TODO: use Table::clear() once implemented in 10.0.pre
           active_cell_data.enable_newton_derivatives = false;
-          active_cell_data.enable_prescribed_dilation = false;
+          active_cell_data.enable_prescribed_plastic_dilation = false;
           active_cell_data.newton_factor_wrt_pressure_table.reinit(TableIndices<2>(0,0));
           active_cell_data.strain_rate_table.reinit(TableIndices<2>(0,0));
           active_cell_data.newton_factor_wrt_strain_rate_table.reinit(TableIndices<2>(0,0));
@@ -509,7 +509,7 @@ namespace aspect
           for (unsigned int level=0; level<n_levels; ++level)
             {
               level_cell_data[level].enable_newton_derivatives = false;
-              level_cell_data[level].enable_prescribed_dilation = false;
+              level_cell_data[level].enable_prescribed_plastic_dilation = false;
             }
         }
     }
@@ -683,7 +683,7 @@ namespace aspect
               sym_grad_u[d][d] -= this->get_pressure_scaling()*pres;
 
             if (is_compressible ||
-                this->get_parameters().enable_prescribed_dilation)
+                this->get_parameters().enable_prescribed_plastic_dilation)
               for (unsigned int d=0; d<dim; ++d)
                 sym_grad_u[d][d] -= viscosity_x_2/3.0*div;
 
