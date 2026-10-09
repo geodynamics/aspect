@@ -74,7 +74,7 @@ simulation[^footnote1] yields images like the ones shown in {numref}`fig:plateli
 ```{figure-md} fig:platelike
 <img src="platelike.*" style="width:30.0%" />
 
-Variable velocity boundary conditions: Temperature and velocity fields at the initial time (top left) and at various other points in time during the simulation.
+Variable velocity boundary conditions: Temperature and velocity fields at the initial time (top left) and at various other points in time (t=0,t=6,t=19,5=25,t=31,t=51,t=178) during the simulation.
 ```
 
 [^footnote1]: In fact, the pictures are generated using a twice more refined mesh to
