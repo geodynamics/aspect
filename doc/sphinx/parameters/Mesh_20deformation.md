@@ -302,6 +302,15 @@ If the function you are describing represents a vector-valued function with mult
 **Documentation:** Vertical exaggeration for FastScape&rsquo;s VTK file. -1 outputs topography, basement, and sealevel.
 ::::
 
+::::{dropdown} __Parameter:__ {ref}`Write coupling input data<parameters:Mesh_20deformation/Fastscape/Write_20coupling_20input_20data>`
+:name: parameters:Mesh_20deformation/Fastscape/Write_20coupling_20input_20data
+**Default value:** false
+
+**Pattern:** [Bool]
+
+**Documentation:** Write a full-precision text snapshot of all node-wise data and scalar parameters passed to FastScape immediately before each FastScape execution.
+::::
+
 ::::{dropdown} __Parameter:__ {ref}`Y extent in 2d<parameters:Mesh_20deformation/Fastscape/Y_20extent_20in_202d>`
 :name: parameters:Mesh_20deformation/Fastscape/Y_20extent_20in_202d
 **Default value:** 100000
