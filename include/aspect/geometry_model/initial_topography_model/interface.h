@@ -52,6 +52,39 @@ namespace aspect
     {
       public:
         /**
+        * Constructor.
+        * By default, the plugin is considered fully initialized and
+        * does not require an additional initialization step.
+        */
+        Interface ()
+          : required_initialized(true)
+        {}
+
+        /**
+        * Perform an additional initialization step after the material model,
+        * initial temperature model, initial composition model, gravity model,
+        * and adiabatic conditions have been initialized.
+        *
+        * Plugins may override this function if they need to query information
+        * from these modules before they are fully initialized.
+        */
+        virtual
+        void
+        required_initialize()
+        {}
+
+
+        /**
+         * Return whether this plugin has been initialized.
+         */
+        bool
+        is_required_initialized () const
+        {
+          return required_initialized;
+        }
+
+
+        /**
          * Return the value of the elevation at the given surface point.
          *
          * Note that different geometry models use different conventions for
@@ -69,6 +102,23 @@ namespace aspect
          */
         virtual
         double max_topography () const = 0;
+
+      protected:
+        /**
+         * Set the initialization state.
+         */
+        void
+        set_required_initialized (const bool state)
+        {
+          required_initialized = state;
+        }
+
+      private:
+        /**
+        * Whether the plugin has completed its required initialization.
+        */
+        bool required_initialized;
+
     };
 
 
