@@ -1,0 +1,179 @@
+
+set Dimension                              = 2
+#set Resume computation 			   = auto
+set Start time                             = 0
+set End time                               = 5e8
+set Use years in output instead of seconds = true
+set Adiabatic surface temperature	   = 1623
+set Use conduction timestep    		   = true
+set Output directory = ascii_perturbation
+
+
+set CFL number                             = 1
+set Nonlinear solver scheme                = single Advection, single Stokes
+subsection Solver parameters
+  subsection Stokes solver parameters
+    set Linear solver tolerance = 1e-5
+    set Number of cheap Stokes solver steps = 2000 # 200
+  end
+end
+
+subsection Formulation
+  set Mass conservation = projected density field
+  set Temperature equation = real density
+end
+
+subsection Checkpointing
+   set Steps between checkpoint 	= 100
+end
+
+
+subsection Geometry model
+  set Model name = spherical shell
+
+  subsection Spherical shell
+    set Inner radius  = 3481000
+    set Outer radius  = 6371000
+  end
+end
+
+
+subsection Boundary temperature model
+  set Fixed temperature boundary indicators = top, bottom
+  set List of model names = spherical constant
+  subsection Spherical constant
+    set Inner temperature = 3700
+    set Outer temperature = 273
+  end
+end
+
+    
+subsection Boundary velocity model
+  set Tangential velocity boundary indicators = bottom, top
+end
+
+
+subsection Gravity model
+  set Model name = ascii data
+end
+
+
+# Here we initialize the temeprature model, an adiabatic profile which we will add and subtract temperature according to the ASCII profile.
+
+subsection Initial temperature model
+  set List of model names = adiabatic, ascii data
+  subsection Adiabatic
+    set Age bottom boundary layer = 1e9
+    set Age top boundary layer    = 1e9
+    
+        subsection Function
+      set Function expression       = 0
+    end
+
+    end
+
+# Here we add the ascii file produced from the python script. Please, be sure to add the file in the path below.
+
+      subsection Ascii data model
+    set Data directory       = $ASPECT_SOURCE_DIR/data/cookbooks/ascii_perturbation
+    set Data file name       = perturbation_ascii.txt
+  end
+end
+
+
+subsection Material model
+  set Model name = Steinberger
+  set Material averaging = harmonic average
+  
+  subsection Steinberger model
+
+    set Data directory                                = $ASPECT_SOURCE_DIR/data/material-model/steinberger/
+    set Lateral viscosity file name                   = temp-viscosity-prefactor.txt
+    set Material file names                           = pyr-ringwood88.txt
+    set Radial viscosity file name                    = radial-visc-simple.txt
+    set Latent heat                                   = false
+    
+    # We decrease the Maximum lateral viscosity variation to facilitate stagnant lid subduction. This term has a relation with the "thermal viscosity prefactor".
+    
+    set Maximum lateral viscosity variation           = 1e2 
+    set Maximum viscosity                             = 5e23
+    set Minimum viscosity                             = 1e19
+    
+
+    set Use lateral average temperature for viscosity = false
+    set Thermal conductivity formulation              = p-T-dependent
+    
+    set Composition viscosity prefactors = 1
+    
+  end
+end
+
+
+subsection Heating model
+   set List of model names = adiabatic heating, shear heating
+end
+
+
+# We refine the mesh near the boundaries, and where temperature variations are
+# large. In addition, we make sure that in the transition zone, where both the
+# viscosity and the density change a lot, we use the highest refinement level.
+subsection Mesh refinement
+  set Initial adaptive refinement        = 1
+  set Initial global refinement          = 5
+  set Refinement fraction                = 0.95
+  set Coarsening fraction                = 0.05
+  set Strategy                           = temperature, boundary, minimum refinement function
+  set Time steps between mesh refinement = 5
+
+  subsection Boundary
+    set Boundary refinement indicators = top, bottom
+  end
+
+  subsection Minimum refinement function
+    set Coordinate system   = depth
+    set Variable names      = depth, phi
+    set Function expression = if(depth<700000, 6, 5)
+  end
+end
+
+subsection Boundary temperature model
+  set Fixed temperature boundary indicators   = 0,1
+end
+
+
+subsection Nullspace removal
+  set Remove nullspace = net rotation
+end
+
+subsection Compositional fields
+  set Number of fields = 1
+  set Names of fields  = density_field
+  set Types of fields = density
+  set Compositional field methods = prescribed field
+end
+
+
+
+subsection Initial composition model
+  set Model name = function
+  subsection Function
+    set Variable names      = x,y
+    set Function constants  = r_inner=3481000, r_outer=6371000
+    set Function expression = if(sqrt(x^2+y^2)<r_outer, 1, 0)
+  end
+end
+
+
+
+subsection Postprocess
+  set List of postprocessors = visualization
+
+  subsection Visualization
+    subsection Material properties
+      set List of material properties = density, viscosity
+    end
+    set List of output variables = material properties, thermal conductivity, thermal expansivity
+    set Time between graphical output = 1e6
+    set Output format = vtu
+    set Interpolate output = true
+  end
