@@ -386,10 +386,10 @@ namespace aspect
 
     prm.declare_entry ("Use operator splitting", "false",
                        Patterns::List ( Patterns::Bool()),
-                       "A list for each advection field (temperature plus compositional fields) "
-                       "indicating whether operator splitting should be used for that field. "
-                       "If set to true, the advection and reactions of compositional fields and "
-                       "temperature are solved separately, and can use different time steps. Note that "
+                       "A list indicating for each advection field (temperature plus compositional fields) "
+                       "whether operator splitting should be used for that field. "
+                       "If set to true, the advection and reactions of the compositional or temperature field "
+                       "are solved separately, and can use different time steps. Note that "
                        "this will only work if the material/heating model fills the reaction\\_rates/"
                        "heating\\_reaction\\_rates structures. Operator splitting can be used with any "
                        "existing solver schemes that solve the temperature/composition equations.");
@@ -639,10 +639,10 @@ namespace aspect
       {
         prm.declare_entry ("Reaction solver type", "ARKode",
                            Patterns::List (Patterns::Selection ("ARKode|fixed step")),
-                           "This parameter determines what solver will be used when the reactions "
-                           "are computed within the operator splitting scheme. For reactions where "
-                           "the reaction rate is a known, finite quantity, the appropriate choice "
-                           "is `ARKode', which uses an ODE solver from SUNDIALs ARKode (adaptive-step "
+                           "This parameter determines for each advection field what solver will be "
+                           "used when the reactions are computed within the operator splitting scheme. "
+                           "For reactions where the reaction rate is a known, finite quantity, the appropriate "
+                           "choice is `ARKode', which uses an ODE solver from SUNDIALs ARKode (adaptive-step "
                            "additive Runge Kutta ODE solver methods) to compute the solution. ARKode "
                            "will pick a reasonable step size based on the reaction rate and the given "
                            "`Reaction solver relative tolerance'. "
@@ -652,20 +652,21 @@ namespace aspect
                            "size we use to compute the reactions. In theses cases, it is appropriate "
                            "to use the `fixed step' scheme, a method that uses a forward Euler scheme and a "
                            "fixed number of steps given by the `Reaction time step' and "
-                           "`Reaction time steps per advection step' parameters. ");
+                           "`Reaction time steps per advection step' parameters. Entries are only used if the "
+                           "corresponding entry of the parameter ``Use operator splitting'' is set to true.");
 
         prm.declare_entry ("Reaction solver relative tolerance", "1e-6",
                            Patterns::List (Patterns::Double (0.)),
-                           "The relative solver tolerance used in the ARKode reaction solver. "
-                           "This tolerance is used to adaptively determine the reaction step size. "
-                           "For more details, see the ARKode documentation. This parameter is only used "
-                           "if the `ARKode' reaction solver type is used. "
-                           "Units: none.");
+                           "The relative solver tolerance used in the ARKode reaction solver for each "
+                           "advection field. This tolerance is used to adaptively determine the reaction step "
+                           "size. For more details, see the ARKode documentation. This parameter is only used "
+                           "if the `ARKode' reaction solver type is used and the corresponding entry of the "
+                           "parameter ``Use operator splitting'' is set to true. Units: none.");
 
         prm.declare_entry ("Reaction time step", "1000.0",
                            Patterns::List (Patterns::Double (0.)),
-                           "Set a time step size for computing reactions of compositional fields and the "
-                           "temperature field in case operator splitting is used. This is only used "
+                           "Set a time step size for computing reactions of the temperature field and "
+                           "compositional fields in case operator splitting is used. This is only used "
                            "when the corresponding entry of the parameter ``Use operator splitting'' is "
                            "set to true and when the `fixed step' reaction solver type is used. "
                            "The reaction time step must be greater than 0. "
@@ -692,8 +693,8 @@ namespace aspect
                            Patterns::List (Patterns::Selection("before nonlinear solver|after nonlinear solver")),
                            "Whether the reaction solve should be done before the nonlinear solver "
                            "(default) or after the nonlinear solver. The latter strategy should be "
-                           "used when ``Enable elasticity'' is set to true. "
-                           "The strategy parameter is only considered if the corresponding "
+                           "used for stress fields when ``Enable elasticity'' is set to true. "
+                           "Each entry of the strategy parameter is only considered if the corresponding "
                            "entry of the parameter ``Use operator splitting'' is set to true. "
                            "Units: none.");
       }

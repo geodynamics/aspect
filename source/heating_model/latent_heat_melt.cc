@@ -37,6 +37,7 @@ namespace aspect
       Assert(heating_model_outputs.heating_source_terms.size() == material_model_inputs.n_evaluation_points(),
              ExcMessage ("Heating outputs need to have the same number of entries as the material model inputs."));
 
+      // The entry for temperature is listed first in the vector use_operator_splitting.
       const bool use_operator_split = (this->get_parameters().use_operator_splitting[0]);
 
       const std::shared_ptr<const MaterialModel::ReactionRateOutputs<dim>> reaction_rate_out

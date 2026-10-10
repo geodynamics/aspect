@@ -242,8 +242,7 @@ namespace aspect
             = out.template get_additional_output_object<ReactionRateOutputs<dim>>();
 
           if (this->get_parameters().use_operator_splitting[porosity_idx+1] &&
-              this->get_parameters().use_operator_splitting[this->introspection().compositional_index_for_name("bound_fluid")+1] && reaction_rate_out != nullptr
-              && in.requests_property(MaterialProperties::reaction_rates))
+              reaction_rate_out != nullptr && in.requests_property(MaterialProperties::reaction_rates))
             {
               Assert(fluid_out != nullptr,
                      ExcMessage("The material model 'ReactiveFluidTransport' requires melt material "
@@ -541,21 +540,25 @@ namespace aspect
 
           if (fluid_solid_reaction_scheme == no_reaction)
             {
-              AssertThrow(this->get_parameters().use_operator_splitting[porosity_index_reactions] == false,
-                          ExcMessage("The Fluid-reaction scheme no reaction should not be used with operator splitting."));
+              AssertThrow(this->get_parameters().use_operator_splitting[porosity_index_reactions] == false &&
+                          this->get_parameters().use_operator_splitting[this->introspection().compositional_index_for_name("bound_fluid")+1] == false,
+                          ExcMessage("The Fluid-reaction scheme no reaction should not be used with operator splitting for the fields `porosity' and `bound_fluid'."));
             }
 
           if (fluid_solid_reaction_scheme == zero_solubility)
             {
-              AssertThrow(this->get_parameters().use_operator_splitting[porosity_index_reactions],
-                          ExcMessage("The Fluid-reaction scheme zero solubility must be used with operator splitting."));
+              AssertThrow(this->get_parameters().use_operator_splitting[porosity_index_reactions] &&
+                          this->get_parameters().use_operator_splitting[this->introspection().compositional_index_for_name("bound_fluid")+1],
+                          ExcMessage("The Fluid-reaction scheme zero solubility must be used with operator splitting for the fields `porosity' and `bound_fluid'."));
             }
 
           if (fluid_solid_reaction_scheme == tian_approximation)
             {
-              AssertThrow(this->get_parameters().use_operator_splitting[porosity_index_reactions] && this->get_parameters().reaction_solver_type[porosity_index_reactions] == Parameters<dim>::ReactionSolverType::fixed_step,
+              AssertThrow(this->get_parameters().use_operator_splitting[porosity_index_reactions] &&
+                          this->get_parameters().use_operator_splitting[this->introspection().compositional_index_for_name("bound_fluid")+1] &&
+                          this->get_parameters().reaction_solver_type[porosity_index_reactions] == Parameters<dim>::ReactionSolverType::fixed_step,
                           ExcMessage("The Fluid-reaction scheme tian approximation must be used with operator splitting "
-                                     "and 'Reaction solver type = fixed step'."));
+                                     "for the fields `porosity' and `bound_fluid' and with 'Reaction solver type = fixed step'."));
             }
 
           if (this->get_parameters().use_operator_splitting[porosity_index_reactions])
@@ -576,21 +579,10 @@ namespace aspect
                   AssertThrow(this->get_parameters().reaction_solver_type[bound_fluid_index_reactions] == this->get_parameters().reaction_solver_type[porosity_index_reactions] &&
                               this->get_parameters().reaction_time_step[bound_fluid_index_reactions] == this->get_parameters().reaction_time_step[porosity_index_reactions] &&
                               this->get_parameters().reaction_steps_per_advection_step[bound_fluid_index_reactions] == this->get_parameters().reaction_steps_per_advection_step[porosity_index_reactions],
-                              ExcMessage("Material model Reactive Fluid Transport only works if the reaction solver type, "
+                              ExcMessage("Material model Reactive Fluid Transport with operator splitting only works if the reaction solver type, "
                                          "timestep and steps per advection step are equal for the fields `porosity' and `bound_fluid'."));
                 }
-              else
-                {
-                  const unsigned int peridotite_index_reactions = this->introspection().compositional_index_for_name("peridotite") + 1;
-                  AssertThrow(this->get_parameters().reaction_solver_type[peridotite_index_reactions] == this->get_parameters().reaction_solver_type[porosity_index_reactions] &&
-                              this->get_parameters().reaction_time_step[peridotite_index_reactions] == this->get_parameters().reaction_time_step[porosity_index_reactions] &&
-                              this->get_parameters().reaction_steps_per_advection_step[peridotite_index_reactions] == this->get_parameters().reaction_steps_per_advection_step[porosity_index_reactions],
-                              ExcMessage("Material model Reactive Fluid Transport only works if the reaction solver type, "
-                                         "timestep and steps per advection step are equal for the fields `porosity' and `peridotite'."));
-                }
             }
-
-
 
 
         }
@@ -614,6 +606,7 @@ namespace aspect
     void
     ReactiveFluidTransport<dim>::create_additional_named_outputs (MaterialModel::MaterialModelOutputs<dim> &out) const
     {
+      // We check above that the porosity field exists.
       if (this->get_parameters().use_operator_splitting[this->introspection().compositional_index_for_name("porosity")+1]
           && out.template has_additional_output_object<ReactionRateOutputs<dim>>() == false)
         {

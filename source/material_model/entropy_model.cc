@@ -361,7 +361,7 @@ namespace aspect
                                                            :
                                                            0;
 
-                      if (c_is_entropy_field == true && timestep_number > 0 && this->get_parameters().use_operator_splitting[c + 1])
+                      if (c_is_entropy_field == true && timestep_number > 0)
                         reaction_rate_out->reaction_rates[i][c] = (component_equilibrated_S[c_is_nth_entropy_field] - in.composition[i][entropy_indices[c_is_nth_entropy_field]]) / this->get_timestep();
                     }
 
@@ -695,9 +695,11 @@ namespace aspect
             std::make_unique<PlasticAdditionalOutputs<dim>> (n_points));
         }
 
-      if (this->get_parameters().use_operator_splitting.size() > 1 &&
-          std::accumulate(this->get_parameters().use_operator_splitting.begin()+1, this->get_parameters().use_operator_splitting.end(), 0) > 0
-          && out.template get_additional_output_object<ReactionRateOutputs<dim>>() == nullptr)
+      // All the entropy fields need operator splitting (checked above), so we only need to check one field.
+      const std::vector<unsigned int> &entropy_indices = this->introspection().get_indices_for_fields_of_type(CompositionalFieldDescription::entropy);
+      if (entropy_indices.size() > 0 &&
+          this->get_parameters().use_operator_splitting[entropy_indices[0]] &&
+          out.template get_additional_output_object<ReactionRateOutputs<dim>>() == nullptr)
         {
           const unsigned int n_points = out.n_evaluation_points();
           out.additional_outputs.push_back(

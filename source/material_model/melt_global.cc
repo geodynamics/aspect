@@ -158,7 +158,8 @@ namespace aspect
             {
               out.reaction_terms[i][c] = 0.0;
 
-              if (this->get_parameters().use_operator_splitting[this->introspection().compositional_index_for_name("porosity")+1] &&
+              if (this->introspection().compositional_name_exists("porosity") &&
+                  this->get_parameters().use_operator_splitting[this->introspection().compositional_index_for_name("porosity")+1] &&
                   reaction_rate_out != nullptr)
                 reaction_rate_out->reaction_rates[i][c] = 0.0;
             }
@@ -508,39 +509,35 @@ namespace aspect
             {
               // The index in the operator splitting settings is the compositional field index
               // plus 1 for the temperature field (which is always listed first).
-              const unsigned int porosity_index = this->introspection().compositional_index_for_name("porosity") + 1;
-              unsigned int peridotite_index = numbers::invalid_unsigned_int;
+              const unsigned int porosity_index_reactions = this->introspection().compositional_index_for_name("porosity") + 1;
+              unsigned int peridotite_index_reactions = numbers::invalid_unsigned_int;
               if (include_melting_and_freezing)
                 {
-                  peridotite_index = this->introspection().compositional_index_for_name("peridotite") + 1;
+                  peridotite_index_reactions = this->introspection().compositional_index_for_name("peridotite") + 1;
 
-                  AssertThrow(this->get_parameters().reaction_solver_type[peridotite_index] ==
-                              this->get_parameters().reaction_solver_type[porosity_index],
+                  AssertThrow(this->get_parameters().reaction_solver_type[peridotite_index_reactions] ==
+                              this->get_parameters().reaction_solver_type[porosity_index_reactions],
                               ExcMessage("The reaction solver types for the operator splitting scheme need to be the same for "
                                          "the fields `porosity' and `peridotite'."));
                 }
 
-              if (this->get_parameters().reaction_solver_type[porosity_index] == Parameters<dim>::ReactionSolverType::fixed_step)
+              if (this->get_parameters().reaction_solver_type[porosity_index_reactions] == Parameters<dim>::ReactionSolverType::fixed_step)
                 {
-                  AssertThrow(melting_time_scale >= this->get_parameters().reaction_time_step[porosity_index],
-                              ExcMessage("The reaction time step " + Utilities::to_string(this->get_parameters().reaction_time_step[porosity_index])
+                  AssertThrow(melting_time_scale >= this->get_parameters().reaction_time_step[porosity_index_reactions],
+                              ExcMessage("The reaction time step " + Utilities::to_string(this->get_parameters().reaction_time_step[porosity_index_reactions])
                                          + " in the operator splitting scheme is too large to compute melting rates! "
                                          "You have to choose it in such a way that it is smaller than the 'Melting time scale for "
                                          "operator splitting' chosen in the material model, which is currently "
                                          + Utilities::to_string(melting_time_scale) + "."));
                   if (include_melting_and_freezing)
-                    AssertThrow(this->get_parameters().reaction_time_step[peridotite_index] ==
-                                this->get_parameters().reaction_time_step[porosity_index],
+                    AssertThrow(this->get_parameters().reaction_time_step[peridotite_index_reactions] ==
+                                this->get_parameters().reaction_time_step[porosity_index_reactions],
                                 ExcMessage("The reaction time steps for the operator splitting scheme need to be the same for "
                                            "the fields `porosity' and `peridotite'."));
                 }
               AssertThrow(melting_time_scale > 0,
                           ExcMessage("The Melting time scale for operator splitting must be larger than 0!"));
             }
-          else if (this->introspection().compositional_name_exists("porosity") &&
-                   !(this->get_parameters().use_operator_splitting[this->introspection().compositional_index_for_name("porosity") + 1]))
-            AssertThrow(!this->include_melt_transport(), ExcMessage ("If operator splitting is not enabled for the compositional field `porosity', "
-                                                                     "melt transport cannot be enabled."));
 
         }
         prm.leave_subsection();
