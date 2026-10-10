@@ -223,8 +223,9 @@ namespace aspect
     void
     CompositionReaction<dim>::create_additional_named_outputs (MaterialModel::MaterialModelOutputs<dim> &out) const
     {
-      // If there is a compositional field that uses operator splitting, we need to create a ReactionRateOutputs object.
-      if (this->get_parameters().use_operator_splitting.size() > 0 && this->get_parameters().use_operator_splitting[1]
+      // If there is at least one compositional field that uses operator splitting, we need to create a ReactionRateOutputs object.
+      // The material model assumes that only the first or first two compositional fields are involved in the reactions.
+      if (this->get_parameters().use_operator_splitting.size() > 1 && this->get_parameters().use_operator_splitting[1]
           && out.template has_additional_output_object<ReactionRateOutputs<dim>>() == false)
         {
           const unsigned int n_points = out.n_evaluation_points();

@@ -75,7 +75,7 @@ namespace aspect
                                  "works if there is a compositional field called porosity."));
           AssertThrow(this->get_parameters().use_operator_splitting[this->introspection().compositional_index_for_name("porosity")+1] &&
                       this->get_parameters().use_operator_splitting[this->introspection().compositional_index_for_name("peridotite")+1],
-                      ExcMessage("The material model ``Melt simple'' can only be used with operator splitting for the fields `porosity' and `peridote'!"));
+                      ExcMessage("Melt transport in the material model ``Melt simple'' only works with operator splitting for the fields `porosity' and `peridotite'!"));
         }
     }
 
@@ -254,7 +254,7 @@ namespace aspect
     void
     MeltSimple<dim>::create_additional_named_outputs (MaterialModel::MaterialModelOutputs<dim> &out) const
     {
-      if (this->get_parameters().use_operator_splitting[this->introspection().compositional_index_for_name("porosity")+1] &&
+      if (this->include_melt_transport() &&
           out.template has_additional_output_object<ReactionRateOutputs<dim>>() == false)
         {
           const unsigned int n_points = out.n_evaluation_points();
