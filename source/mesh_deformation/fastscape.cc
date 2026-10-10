@@ -25,6 +25,8 @@
 #include <deal.II/numerics/vector_tools.h>
 #include <aspect/postprocess/visualization.h>
 #include <ctime>
+#include <fstream>
+#include <iomanip>
 
 namespace aspect
 {
@@ -614,6 +616,19 @@ namespace aspect
                 AssertThrow(false, ExcMessage("Invalid Fastscape variable."));
             }
 
+          if (write_coupling_inputs)
+            write_coupling_input_data(elevation,
+                                      basement,
+                                      silt_fraction,
+                                      velocity_x,
+                                      velocity_y,
+                                      velocity_z,
+                                      bedrock_river_incision_rate_array,
+                                      bedrock_transport_coefficient_array,
+                                      current_sea_level,
+                                      fastscape_timestep_in_years,
+                                      fastscape_iterations);
+
           // Find timestep size, run FastScape, and make visualizations.
           execute_fastscape(elevation,
                             additional_output_field,  // corresponds to FastScape's 'HHHHH' argument
@@ -974,6 +989,84 @@ namespace aspect
       (void) silt_fraction;
       (void) restart;
 #endif
+    }
+
+
+    template <int dim>
+    void FastScape<dim>::write_coupling_input_data(const std::vector<double> &elevation,
+                                                   const std::vector<double> &basement,
+                                                   const std::vector<double> &silt_fraction,
+                                                   const std::vector<double> &velocity_x,
+                                                   const std::vector<double> &velocity_y,
+                                                   const std::vector<double> &velocity_z,
+                                                   const std::vector<double> &bedrock_river_incision_rate_array,
+                                                   const std::vector<double> &bedrock_transport_coefficient_array,
+                                                   const double current_sea_level,
+                                                   const double fastscape_timestep_in_years,
+                                                   const unsigned int fastscape_iterations) const
+    {
+      Assert (Utilities::MPI::this_mpi_process(this->get_mpi_communicator()) == 0,
+              ExcInternalError());
+
+      const std::string filename = this->get_output_directory()
+                                   + "fastscape/coupling-input-"
+                                   + Utilities::int_to_string(this->get_timestep_number(), 7)
+                                   + ".txt";
+      std::ofstream output(filename);
+      AssertThrow(output,
+                  ExcMessage("Could not open FastScape coupling input file '" + filename + "'."));
+
+      output << std::scientific
+             << std::setprecision(std::numeric_limits<double>::max_digits10);
+      output << "# ASPECT FastScape coupling input\n"
+             << "# timestep " << this->get_timestep_number() << '\n'
+             << "# model_time_years " << this->get_time() / year_in_seconds << '\n'
+             << "# aspect_timestep_years " << this->get_timestep() / year_in_seconds << '\n'
+             << "# fastscape_iterations " << fastscape_iterations << '\n'
+             << "# fastscape_timestep_years " << fastscape_timestep_in_years << '\n'
+             << "# nx " << fastscape_nx << '\n'
+             << "# ny " << fastscape_ny << '\n'
+             << "# dx " << fastscape_dx << '\n'
+             << "# dy " << fastscape_dy << '\n'
+             << "# x_extent " << fastscape_x_extent << '\n'
+             << "# y_extent " << fastscape_y_extent << '\n'
+             << "# boundary_conditions " << fastscape_boundary_conditions << '\n'
+             << "# use_ghost_nodes " << use_ghost_nodes << '\n'
+             << "# uplift_and_advection " << fastscape_advection_uplift << '\n'
+             << "# use_marine_component " << use_marine_component << '\n'
+             << "# sea_level " << current_sea_level << '\n'
+             << "# sediment_kf " << sediment_river_incision_rate << '\n'
+             << "# drainage_area_exponent_m " << drainage_area_exponent_m << '\n'
+             << "# slope_exponent_n " << slope_exponent_n << '\n'
+             << "# sediment_kd " << sediment_transport_coefficient << '\n'
+             << "# bedrock_deposition_g " << bedrock_deposition_g << '\n'
+             << "# sediment_deposition_g " << sediment_deposition_g << '\n'
+             << "# multidirection_slope_exponent_p " << slope_exponent_p << '\n'
+             << "# silt_surface_porosity " << silt_surface_porosity << '\n'
+             << "# sand_surface_porosity " << sand_surface_porosity << '\n'
+             << "# silt_efolding_depth " << silt_efold_depth << '\n'
+             << "# sand_efolding_depth " << sand_efold_depth << '\n'
+             << "# incoming_silt_fraction " << incoming_silt_fraction << '\n'
+             << "# sand_silt_averaging_depth " << sand_silt_averaging_depth << '\n'
+             << "# silt_transport_coefficient " << silt_transport_coefficient << '\n'
+             << "# sand_transport_coefficient " << sand_transport_coefficient << '\n'
+             << "# node_indexing zero_based\n"
+             << "# columns index x y elevation basement silt_fraction velocity_x velocity_y velocity_z bedrock_kf bedrock_kd\n";
+
+      for (unsigned int index = 0; index < elevation.size(); ++index)
+        output << index << ' '
+               << (index % fastscape_nx) * fastscape_dx << ' '
+               << (index / fastscape_nx) * fastscape_dy << ' '
+               << elevation[index] << ' '
+               << basement[index] << ' '
+               << silt_fraction[index] << ' '
+               << velocity_x[index] << ' '
+               << velocity_y[index] << ' '
+               << velocity_z[index] << ' '
+               << bedrock_river_incision_rate_array[index] << ' '
+               << bedrock_transport_coefficient_array[index] << '\n';
+
+      this->get_pcout() << "      Wrote FastScape coupling input: " << filename << std::endl;
     }
 
 
@@ -1933,6 +2026,10 @@ namespace aspect
           prm.declare_entry ("Uplift and advect with fastscape", "true",
                              Patterns::Bool (),
                              "Flag to use FastScape advection and uplift.");
+          prm.declare_entry ("Write coupling input data", "false",
+                             Patterns::Bool (),
+                             "Write a full-precision text snapshot of all node-wise data and scalar parameters "
+                             "passed to FastScape immediately before each FastScape execution.");
           prm.declare_entry("Node tolerance", "0.001",
                             Patterns::Double(),
                             "Node tolerance for how close an ASPECT node must be to a FastScape node for the value to be transferred.");
@@ -2168,6 +2265,7 @@ namespace aspect
           fastscape_y_extent_2d = prm.get_double("Y extent in 2d");
           use_ghost_nodes = prm.get_bool("Use ghost nodes");
           fastscape_advection_uplift = prm.get_bool("Uplift and advect with fastscape");
+          write_coupling_inputs = prm.get_bool("Write coupling input data");
           node_tolerance = prm.get_double("Node tolerance");
           noise_elevation = prm.get_double("Initial noise magnitude");
           sediment_rain_rates = Utilities::string_to_double
