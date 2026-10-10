@@ -461,6 +461,77 @@ namespace aspect
 
 
   template <int dim>
+  bool Simulator<dim>::synchronize_periodic_refinement_flags ()
+  {
+    bool flags_changed = false;
+    // Local-smoothing GMG needs matching refinement on periodic partners.
+    // Refine both if either is marked; coarsen only if both are marked.
+    for (const auto &cell : dof_handler.active_cell_iterators())
+      if (cell->is_locally_owned())
+        for (const unsigned int face_no : cell->face_indices())
+          if (cell->has_periodic_neighbor(face_no))
+            {
+              const auto periodic_neighbor = cell->periodic_neighbor(face_no);
+
+              // Leave existing mismatches to the solver's mesh check.
+              if (periodic_neighbor->level() != cell->level()
+                  || !periodic_neighbor->is_active())
+                continue;
+
+              const bool refine = cell->refine_flag_set()
+                                  || periodic_neighbor->refine_flag_set();
+              const bool coarsen = cell->coarsen_flag_set()
+                                   && periodic_neighbor->coarsen_flag_set();
+
+              flags_changed |= (refine != static_cast<bool>(cell->refine_flag_set())
+                                || coarsen != cell->coarsen_flag_set());
+              cell->clear_refine_flag();
+              cell->clear_coarsen_flag();
+              if (refine)
+                cell->set_refine_flag();
+              else if (coarsen)
+                cell->set_coarsen_flag();
+            }
+
+    exchange_refinement_flags();
+    return flags_changed;
+  }
+
+
+  template <int dim>
+  void Simulator<dim>::prepare_periodic_refinement ()
+  {
+    // Only owned changes count: smoothing may change ghost flags, which the
+    // next exchange overwrites with their owners' decisions.
+    bool flags_changed;
+    do
+      {
+        flags_changed = synchronize_periodic_refinement_flags();
+        std::vector<std::pair<RefinementCase<dim>, bool>> owned_flags;
+        owned_flags.reserve(triangulation.n_locally_owned_active_cells());
+        for (const auto &cell : dof_handler.active_cell_iterators())
+          if (cell->is_locally_owned())
+            owned_flags.emplace_back(cell->refine_flag_set(), cell->coarsen_flag_set());
+
+        triangulation.prepare_coarsening_and_refinement();
+
+        unsigned int index = 0;
+        for (const auto &cell : dof_handler.active_cell_iterators())
+          if (cell->is_locally_owned())
+            {
+              flags_changed |= owned_flags[index] !=
+                               std::make_pair(cell->refine_flag_set(), cell->coarsen_flag_set());
+              ++index;
+            }
+        exchange_refinement_flags();
+        flags_changed = Utilities::MPI::max(flags_changed ? 1 : 0, mpi_communicator) != 0;
+      }
+    while (flags_changed);
+  }
+
+
+
+  template <int dim>
   void Simulator<dim>::maybe_refine_mesh (const double new_time_step,
                                           unsigned int &max_refinement_level)
   {
@@ -2891,6 +2962,8 @@ namespace aspect
   template bool Simulator<dim>::maybe_write_checkpoint (const std::time_t, const bool); \
   template bool Simulator<dim>::maybe_do_initial_refinement (const unsigned int max_refinement_level); \
   template void Simulator<dim>::exchange_refinement_flags (); \
+  template bool Simulator<dim>::synchronize_periodic_refinement_flags (); \
+  template void Simulator<dim>::prepare_periodic_refinement (); \
   template void Simulator<dim>::maybe_refine_mesh (const double new_time_step, unsigned int &max_refinement_level); \
   template void Simulator<dim>::advance_time (const double step_size); \
   template void Simulator<dim>::make_pressure_rhs_compatible(LinearAlgebra::BlockVector &vector); \

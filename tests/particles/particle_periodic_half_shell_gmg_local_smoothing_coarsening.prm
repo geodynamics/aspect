@@ -1,0 +1,9 @@
+# Alternate refinement and coarsening on a half shell.
+# MPI: 2
+include $ASPECT_SOURCE_DIR/tests/particles/particle_periodic_quarter_shell_gmg_local_smoothing_coarsening.prm
+subsection Geometry model
+  subsection Spherical shell
+    set Opening angle = 180
+  end
+end
+# Enable if: DEAL_II_VERSION_GTE_9_9_0

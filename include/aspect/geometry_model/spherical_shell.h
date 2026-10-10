@@ -367,6 +367,15 @@ namespace aspect
         make_periodicity_constraints(const DoFHandler<dim> &dof_handler,
                                      AffineConstraints<double> &constraints) const override;
 
+        /**
+         * Collect rotated periodicity constraints for a multigrid level.
+         */
+        void
+        make_periodicity_constraints_on_level(
+          const DoFHandler<dim> &dof_handler,
+          const unsigned int level,
+          AffineConstraints<double> &constraints) const override;
+
       private:
         /**
          * Specify the radial subdivision of the spherical shell
