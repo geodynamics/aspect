@@ -247,7 +247,7 @@ For more information, see the section in the manual that discusses the general m
 
 **Pattern:** [List of <[Bool]> of length 0...4294967295 (inclusive)]
 
-**Documentation:** A list for each advection field (temperature plus compositional fields) indicating whether operator splitting should be used for that field. If set to true, the advection and reactions of compositional fields and temperature are solved separately, and can use different time steps. Note that this will only work if the material/heating model fills the reaction\_rates/heating\_reaction\_rates structures. Operator splitting can be used with any existing solver schemes that solve the temperature/composition equations.
+**Documentation:** A list indicating for each advection field (temperature plus compositional fields) whether operator splitting should be used for that field. If set to true, the advection and reactions of the compositional or temperature field are solved separately, and can use different time steps. Note that this will only work if the material/heating model fills the reaction\_rates/heating\_reaction\_rates structures. Operator splitting can be used with any existing solver schemes that solve the temperature/composition equations.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Use years in output instead of seconds<parameters:Use_20years_20in_20output_20instead_20of_20seconds>`
