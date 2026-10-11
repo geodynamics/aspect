@@ -364,7 +364,6 @@ namespace aspect
       if (parameters.mesh_deformation_enabled)
         {
           x_fs_system.push_back (&mesh_deformation->mesh_displacements);
-          x_fs_system.push_back (&mesh_deformation->initial_topography);
 
           mesh_deformation_trans
             = std::make_unique<SolutionTransfer<dim,LinearAlgebra::Vector>>
@@ -715,16 +714,12 @@ namespace aspect
         SolutionTransfer<dim, LinearAlgebra::Vector> mesh_deformation_trans( mesh_deformation->mesh_deformation_dof_handler );
         LinearAlgebra::Vector distributed_mesh_displacements( mesh_deformation->mesh_locally_owned,
                                                               mpi_communicator );
-        LinearAlgebra::Vector distributed_initial_topography( mesh_deformation->mesh_locally_owned,
-                                                              mpi_communicator );
         std::vector<LinearAlgebra::Vector *> fs_system
-        = { &distributed_mesh_displacements,
-            &distributed_initial_topography
-          };
+          = { &distributed_mesh_displacements
+            };
 
         mesh_deformation_trans.deserialize (fs_system);
         mesh_deformation->mesh_displacements = distributed_mesh_displacements;
-        mesh_deformation->initial_topography = distributed_initial_topography;
       }
 
     signals.post_resume_load_user_data(triangulation);
