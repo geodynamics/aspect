@@ -1248,9 +1248,8 @@ namespace aspect
                           this->get_parameters().reaction_solver_type[molar_Fe_in_melt_index_reactions] == Parameters<dim>::ReactionSolverType::fixed_step,
                           ExcMessage("The melt boukare material model has to use the reaction solver `fixed step' for the fields `porosity' and `molar_Fe_in_melt'."));
 
-              AssertThrow(this->get_parameters().reaction_time_step[porosity_index_reactions] ==
-                          this->get_parameters().reaction_time_step[molar_Fe_in_melt_index_reactions] ==
-                          this->get_parameters().reaction_time_step[molar_Fe_in_solid_index_reactions],
+              AssertThrow(this->get_parameters().reaction_time_step[porosity_index_reactions] == this->get_parameters().reaction_time_step[molar_Fe_in_solid_index_reactions] &&
+                          this->get_parameters().reaction_time_step[molar_Fe_in_melt_index_reactions] == this->get_parameters().reaction_time_step[molar_Fe_in_solid_index_reactions],
                           ExcMessage("The melt boukare material model has to use the same reaction time step for the fields `molar_Fe_in_solid', `porosity' and `molar_Fe_in_melt'."));
             }
 

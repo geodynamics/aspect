@@ -981,11 +981,15 @@ namespace aspect
                       ExcMessage("Material model Melt visco plastic only works if there is a "
                                  "compositional field called peridotite."));
 
+          // The index in the operator splitting settings is the compositional field index
+          // plus 1 for the temperature field (which is always listed first).
+          const unsigned int peridotite_index_reactions = this->introspection().compositional_index_for_name("peridotite") + 1;
+
           if (this->convert_output_to_years() == true)
             melting_time_scale *= year_in_seconds;
 
-          AssertThrow(melting_time_scale >= this->get_parameters().reaction_time_step,
-                      ExcMessage("The reaction time step " + Utilities::to_string(this->get_parameters().reaction_time_step)
+          AssertThrow(melting_time_scale >= this->get_parameters().reaction_time_step[peridotite_index_reactions],
+                      ExcMessage("The reaction time step " + Utilities::to_string(this->get_parameters().reaction_time_step[peridotite_index_reactions])
                                  + " in the operator splitting scheme is too large to compute melting rates! "
                                  "You have to choose it in such a way that it is smaller than the 'Melting time scale for "
                                  "operator splitting' chosen in the material model, which is currently "
@@ -998,6 +1002,22 @@ namespace aspect
               AssertThrow(this->introspection().compositional_name_exists("porosity"),
                           ExcMessage("Material model Melt visco plastic with melt transport only "
                                      "works if there is a compositional field called porosity."));
+
+              const unsigned int porosity_index_reactions = this->introspection().compositional_index_for_name("porosity") + 1;
+              AssertThrow(this->get_parameters().reaction_time_step[porosity_index_reactions] ==
+                          this->get_parameters().reaction_time_step[peridotite_index_reactions],
+                          ExcMessage("The reaction time steps for the operator splitting scheme need to be the same for "
+                                     "the fields `porosity' and `peridotite'."));
+
+              AssertThrow(this->get_parameters().reaction_solver_type[porosity_index_reactions] ==
+                          this->get_parameters().reaction_solver_type[peridotite_index_reactions],
+                          ExcMessage("The reaction solver type for the operator splitting scheme needs to be the same for "
+                                     "the fields `porosity' and `peridotite'."));
+
+              AssertThrow(this->get_parameters().reaction_strategy[porosity_index_reactions] ==
+                          this->get_parameters().reaction_strategy[peridotite_index_reactions],
+                          ExcMessage("The reaction solver strategy for the operator splitting scheme needs to be the same for "
+                                     "the fields `porosity' and `peridotite'."));
             }
 
         }
