@@ -16,8 +16,8 @@ Number of degrees of freedom: 15,044 (3,362+441+441+3,600+3,600+3,600)
    Skipping ve_stress_yy composition solve because RHS is zero.
    Skipping ve_stress_xy composition solve because RHS is zero.
    Solving Stokes system (GMG)... 4+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 8.01554e-17, 0, 0, 0, 3.38641e-08
-      Relative nonlinear residual (total system) after nonlinear iteration 2: 3.38641e-08
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 8.01554e-17, 0, 0, 0, 3.35115e-08
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 3.35115e-08
 
 
    Postprocessing:
@@ -31,8 +31,8 @@ Number of degrees of freedom: 15,044 (3,362+441+441+3,600+3,600+3,600)
    Solving ve_stress_yy system ... 1 iterations.
    Solving ve_stress_xy system ... 2 iterations.
    Solving Stokes system (GMG)... 0+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.27174e-16, 3.58863e-09, 3.44094e-09, 5.73232e-09, 9.15905e-08
-      Relative nonlinear residual (total system) after nonlinear iteration 1: 9.15905e-08
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.14756e-16, 3.75717e-09, 3.61622e-09, 5.5986e-09, 9.0946e-08
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 9.0946e-08
 
 
    Postprocessing:
@@ -46,8 +46,8 @@ Number of degrees of freedom: 15,044 (3,362+441+441+3,600+3,600+3,600)
    Solving ve_stress_yy system ... 1 iterations.
    Solving ve_stress_xy system ... 2 iterations.
    Solving Stokes system (GMG)... 0+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.2222e-16, 9.162e-12, 8.59258e-12, 1.51826e-11, 9.15857e-08
-      Relative nonlinear residual (total system) after nonlinear iteration 1: 9.15857e-08
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.21432e-16, 9.06889e-12, 8.52606e-12, 1.47826e-11, 9.09413e-08
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 9.09413e-08
 
 
    Postprocessing:
