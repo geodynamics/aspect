@@ -136,6 +136,9 @@ namespace aspect
       else
         return static_cast<typename Triangulation<dim>::MeshSmoothing>(
                  Triangulation<dim>::limit_level_difference_at_vertices |
+#if DEAL_II_VERSION_GTE(9,9,0)
+                 Triangulation<dim>::match_refinement_across_periodic_boundaries |
+#endif
                  Triangulation<dim>::smoothing_on_refinement | Triangulation<dim>::smoothing_on_coarsening
                );
     }
@@ -1840,17 +1843,7 @@ namespace aspect
       // Possibly store data of plugins associated with cells
       signals.pre_refinement_store_user_data(triangulation);
 
-      // Finish periodic synchronization and mesh smoothing before preparing
-      // solution transfer; either operation can change the other's flags.
-      if (parameters.stokes_solver_type == Parameters<dim>::StokesSolverType::block_gmg
-          && parameters.stokes_gmg_type == Parameters<dim>::StokesGMGType::local_smoothing
-          && !triangulation.get_periodic_face_map().empty())
-        {
-          exchange_refinement_flags();
-          prepare_periodic_refinement();
-        }
-      else
-        triangulation.prepare_coarsening_and_refinement();
+      triangulation.prepare_coarsening_and_refinement();
 
       bool any_flags_set = false;
       {
@@ -2247,13 +2240,6 @@ namespace aspect
                 cell->set_refine_flag ();
 
             mesh_refinement_manager.tag_additional_cells ();
-
-            exchange_refinement_flags();
-
-            if (parameters.stokes_solver_type == Parameters<dim>::StokesSolverType::block_gmg
-                && parameters.stokes_gmg_type == Parameters<dim>::StokesGMGType::local_smoothing
-                && !triangulation.get_periodic_face_map().empty())
-              prepare_periodic_refinement();
 
             triangulation.execute_coarsening_and_refinement();
             if (MappingQCache<dim> *map = dynamic_cast<MappingQCache<dim>*>(&(*mapping)))
