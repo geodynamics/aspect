@@ -7,8 +7,14 @@
 
 # Use only tracked files so generated files in build* directories are ignored.
 # Keep the list NUL-delimited to handle filenames containing whitespace.
-#mapfile -d '' files < <(git ls-files -z -- ':(glob)**/mesh_deformation/function.cc')
-files="source/mesh_deformation/landlab.cc"
+while IFS= read -r -d '' file ; do
+  files+=("$file")
+done < <(git ls-files -z -- \
+  ':(glob)**/CMakeLists.txt' \
+  ':(glob)**/*.cmake' \
+  ':(glob)**/*.cc' \
+  ':(glob)**/*.h' \
+  ':(glob)**/*.in')
 
 for i in "${files[@]}" ; do
   # get the last year this file was modified from the git log.
@@ -36,9 +42,9 @@ for i in "${files[@]}" ; do
   # print a status message and update the header
   echo "Processing $i: ${first_year} - ${last_year}"
   if test ! "${first_year}" = "${last_year}" ; then
-    reuse annotate --year="${first_year} - ${last_year}" --style="cpp"  --copyright="by the ASPECT authors."  --license="GPL-2.0-or-later"  --copyright-prefix="spdx-string-c" --template=dealii ${i}
+    reuse annotate --year="${first_year} - ${last_year}" --style="cpp"  --copyright="by the ASPECT authors."  --license="GPL-2.0-or-later" --copyright-prefix="spdx-string-c" --template=dealii ${i}
   else
-    reuse annotate --year="${first_year}" --style="cpp"  --copyright="by the ASPECT authors."  --license="GPL-2.0-or-later"  --copyright-prefix="spdx-string-c" --template=dealii ${i}
+    reuse annotate --year="${first_year}" --style="cpp"  --copyright="by the ASPECT authors."  --license="GPL-2.0-or-later" --copyright-prefix="spdx-string-c" --template=dealii ${i}
   fi
 
   # delete old copyright statement if present
