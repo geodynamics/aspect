@@ -1840,14 +1840,15 @@ namespace aspect
       // Possibly store data of plugins associated with cells
       signals.pre_refinement_store_user_data(triangulation);
 
-      exchange_refinement_flags();
-
       // Finish periodic synchronization and mesh smoothing before preparing
       // solution transfer; either operation can change the other's flags.
       if (parameters.stokes_solver_type == Parameters<dim>::StokesSolverType::block_gmg
           && parameters.stokes_gmg_type == Parameters<dim>::StokesGMGType::local_smoothing
           && !triangulation.get_periodic_face_map().empty())
-        prepare_periodic_refinement();
+        {
+          exchange_refinement_flags();
+          prepare_periodic_refinement();
+        }
       else
         triangulation.prepare_coarsening_and_refinement();
 
