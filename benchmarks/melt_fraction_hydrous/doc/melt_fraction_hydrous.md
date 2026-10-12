@@ -22,7 +22,7 @@ compares the numerical results with published references.
 
 ## Example setup
 The relevant parameters for the hydrous melting formulation are in the parameter file:
-```{literalinclude} melt_fraction_hydrous.prm.
+```{literalinclude} melt_fraction_hydrous.prm
 ```
 However, the posterior validation files (.py and figures) shown here make use of specific parameter configurations, although all derived from the same setup, in order to make fair comparisons.
 
