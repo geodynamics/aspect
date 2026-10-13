@@ -90,7 +90,7 @@ subsection Postprocess
     #    coefficient of clinopyroxene and existing bulk water in the mantle in ppm (Bulk H2O ppm).
     # 2. The addition of a second beta parameter, applied when cpx is exhausted.
     # 3. The linear coefficient of Rcpx (reaction coef. of cpx) is set to a negative number,
-    #    since it is explicited that experiments show Fcpx-out (the melt fraction value the
+    #    since it is explained that experiments show Fcpx-out (the melt fraction value the
     #    moment the cpx runs out) increases with pressure.
 
     # This modifies the original melt fraction postprocessor in several parameter values, e.g the

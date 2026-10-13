@@ -1594,7 +1594,7 @@ viscosity|density|thermal expansivity|specific heat|thermal conductivity|thermal
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
-**Documentation:** Bulk water content of the mantle source in ppm.
+**Documentation:** Bulk water content of the mantle source.Units: ppm.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`C1<parameters:Postprocess/Visualization/Melt_20fraction/C1>`
@@ -1628,9 +1628,9 @@ viscosity|density|thermal expansivity|specific heat|thermal conductivity|thermal
 :name: parameters:Postprocess/Visualization/Melt_20fraction/D_20H2O
 **Default value:** 0.01
 
-**Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
+**Pattern:** [Double 0...1 (inclusive)]
 
-**Documentation:** Bulk partition coefficient of water.
+**Documentation:** Bulk partition coefficient of water. Units: dimensionless.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`D1<parameters:Postprocess/Visualization/Melt_20fraction/D1>`
@@ -1684,7 +1684,7 @@ viscosity|density|thermal expansivity|specific heat|thermal conductivity|thermal
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
-**Documentation:** Water-induced melting temperature depression coefficient.
+**Documentation:** Water-induced melting temperature depression coefficient. Units: K/(wt%)^gamma_H2O.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`List of melting compositions other than peridotite<parameters:Postprocess/Visualization/Melt_20fraction/List_20of_20melting_20compositions_20other_20than_20peridotite>`
@@ -1727,36 +1727,36 @@ viscosity|density|thermal expansivity|specific heat|thermal conductivity|thermal
 :name: parameters:Postprocess/Visualization/Melt_20fraction/gamma_20H2O
 **Default value:** 0.75
 
-**Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
+**Pattern:** [Double 0...1 (inclusive)]
 
-**Documentation:** Exponent for the water-induced melting temperature depression.
+**Documentation:** Exponent for the water-induced melting temperature depression. It has to be larger than 0 and smaller than 1. Units: dimensionless.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`k1 H2O<parameters:Postprocess/Visualization/Melt_20fraction/k1_20H2O>`
 :name: parameters:Postprocess/Visualization/Melt_20fraction/k1_20H2O
 **Default value:** 12
 
-**Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
+**Pattern:** [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
 
-**Documentation:** Non-linear pressure coefficient for the melting water saturation.
+**Documentation:** Non-linear pressure coefficient for the melting water saturation limit. Units: wt%/GPa^lambda_H2O.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`k2 H2O<parameters:Postprocess/Visualization/Melt_20fraction/k2_20H2O>`
 :name: parameters:Postprocess/Visualization/Melt_20fraction/k2_20H2O
 **Default value:** 1
 
-**Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
+**Pattern:** [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
 
-**Documentation:** Linear pressure coefficient for the melting water saturation.
+**Documentation:** Linear pressure coefficient for the melting water saturation limit. Units: wt%/Gpa.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`lambda H2O<parameters:Postprocess/Visualization/Melt_20fraction/lambda_20H2O>`
 :name: parameters:Postprocess/Visualization/Melt_20fraction/lambda_20H2O
 **Default value:** 0.6
 
-**Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
+**Pattern:** [Double 0...1 (inclusive)]
 
-**Documentation:** Exponent for the non-linear pressure of the water saturation expression.
+**Documentation:** Exponent for the non-linear pressure of the water saturation expression. It has to be larger than 0 and smaller than 1. Units: dimensionless.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`r1<parameters:Postprocess/Visualization/Melt_20fraction/r1>`
@@ -1774,7 +1774,7 @@ viscosity|density|thermal expansivity|specific heat|thermal conductivity|thermal
 
 **Pattern:** [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
 
-**Documentation:** Prefactor of the linear pressure term in the linear function that approximates the clinopyroxene reaction coefficient. A negative value is expected in Ball et al 2022 implementation. Units: $\frac{1}{\text{Pa}}$.
+**Documentation:** Prefactor of the linear pressure term in the linear function that approximates the clinopyroxene reaction coefficient. Note that both positive and negative values are possible,as in the implementation of Ball et al., 2022.Units: $\frac{1}{\text{Pa}}$.
 ::::
 
 (parameters:Postprocess/Visualization/Melt_20material_20properties)=
