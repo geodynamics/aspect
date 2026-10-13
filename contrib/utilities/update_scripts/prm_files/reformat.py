@@ -24,9 +24,9 @@ import os
 import re
 import argparse
 
-__author__ = 'The authors of the ASPECT code'
-__copyright__ = 'Copyright 2023, ASPECT'
-__license__ = 'GNU GPL 2 or later'
+__author__ = 'The ASPECT authors'
+__copyright__ = 'Copyright (C) 2023 by the ASPECT authors'
+__license__ = 'GPL-2.0-or-later'
 
 # Add the ASPECT root directory to the path so we can import from the aspect_data module
 sys.path.append(os.path.join(os.path.dirname(__file__), '..', '..', '..'))

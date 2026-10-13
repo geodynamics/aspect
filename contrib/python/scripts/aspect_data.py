@@ -7,9 +7,9 @@ import numpy as np
 import pandas as pd
 import os
 
-__author__ = 'The authors of the ASPECT code'
-__copyright__ = 'Copyright 2023, ASPECT'
-__license__ = 'GNU GPL 2 or later'
+__author__ = 'The ASPECT authors'
+__copyright__ = 'Copyright (C) 2023 by the ASPECT authors'
+__license__ = 'GPL-2.0-or-later'
 
 
 
