@@ -42,6 +42,7 @@ namespace aspect
        * The member functions are all implementations of those declared in the
        * base class. See there for their meaning.
        */
+
       template <int dim>
       class MeltFraction
         : public DataPostprocessorScalar<dim>,
@@ -134,33 +135,59 @@ namespace aspect
           double beta2;
 
           /**
+          * Bulk water concentrarion in the source rock, in ppm, and partition coefficient of water between solid and melt, dimensionless.
            * These variables are read from the parameter file through parameters called 'bulk_h2o_ppm' and 'D_H2O'.
-           * Eqn. 18 Katz et al (2003):
-           *  Computes melt water concentration.
-           *  Katz works with is %wt, so here ppms are converted to it.
            */
           double bulk_h2o_ppm;
           double D_H2O;
+
+
+          /**
+                 * Computes melt water concentration (after Eq. 18 of Katz et al (2003)).
+           * @param F Melt fraction, dimensionless.
+           *
+           * @returns Melt water concentration, in wt%.
+                 */
           double calc_X_H2O(const double F) const;
 
           /**
+          * Coefficient controlling the magnitude of the water-induced melting temperature depression, in K/(wt%)^gamma_H2O,
+          * and exponent controlling its dependence on melt water concentration, dimensionless.
            * These variables are read from the parameter file through parameters called 'K_H2O' and 'gamma_H2O'.
-           * Eqn. 16 Katz et al (2003):
-           *  Computes the decrease of fusion temperature due to melt deluted water.
-           */
+          */
           double K_H2O;
           double gamma_H2O;
+
+
+          /**
+                 * Computes the decrease of fusion temperature due to dissolved water in the melt (after Eq. 16 of Katz et al (2003)).
+           * @param F Melt fraction, dimensionless.
+           *
+           * @returns Decrease in melting temperature, in K.
+                 */
           double calc_delta_T_H2O(const double F) const;
 
           /**
+          * Coefficients controlling the pressure dependence of the water saturation limit in
+          * the melt (in wt%/GPa^lambda_H2O and wt%/GPa respectively), and the corresponding pressure exponent, dimensionless.
            * These variables are read from the parameter file through parameters called 'k1_H2O', 'k2_H2O' and 'lambda_H2O'.
-           * Eqn. 17 Katz et al (2003):
-           *  This function bounds the water concentration of melt to the water saturation, and recomputes melt fraction
-           *  (using eqn. 19 Katz et al (2003)) with that value.
-           */
+          */
           double k1_H2O;
           double k2_H2O;
           double lambda_H2O;
+
+
+          /**
+                 * Bounds the water concentration of melt to the water saturation limit follwing Eq. 17 of Katz et al. (2003).
+           * If the saturation is exceeded, recomputes melt fraction (using eqn. 19 Katz et al (2003)).
+           * @param pressure Pressure, in Pa.
+           * @param temperature Temperature, in K.
+           * @param F Melt fraction, dimensionless.
+           * @param T_solidus Peridotite solidus temperature, in K.
+           * @param T_lherz_liquidus Lherzolite liquidus temperature, in K.
+           *
+           * @returns Melt fraction corrected for water saturation, dimensionless.
+                 */
           double check_water_saturation(const double pressure,
                                         const double temperature,
                                         const double F,
