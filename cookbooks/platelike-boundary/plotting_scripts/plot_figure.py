@@ -14,8 +14,9 @@ from cmcrameri import cm  # Fabio Crameri's color maps
 pv.set_plot_theme("document")
 
 # inputs/config
-solution_file = "../output-platelike-boundary/solution/solution-00000.pvtu"
-output_png    = "../doc/visit0000.png"
+timestep = 178
+solution_file = f"../output-platelike-boundary/solution/solution-{timestep:05d}.pvtu"
+output_png    = f"../doc/temperature{timestep:05d}.png"
 
 # load the solution and compute the domain size used to fit the camera
 mesh = pv.read(solution_file)
