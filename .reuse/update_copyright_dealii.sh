@@ -10,8 +10,6 @@
 while IFS= read -r -d '' file ; do
   files+=("$file")
 done < <(git ls-files -z -- \
-  ':(glob)**/CMakeLists.txt' \
-  ':(glob)**/*.cmake' \
   ':(glob)**/*.cc' \
   ':(glob)**/*.h' \
   ':(glob)**/*.in')
