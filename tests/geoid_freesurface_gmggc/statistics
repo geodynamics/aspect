@@ -1,0 +1,23 @@
+# 1: Time step number
+# 2: Time (seconds)
+# 3: Time step size (seconds)
+# 4: Number of mesh cells
+# 5: Number of Stokes degrees of freedom
+# 6: Number of temperature degrees of freedom
+# 7: Iterations for temperature solver
+# 8: Iterations for Stokes solver
+# 9: Velocity iterations in Stokes preconditioner
+# 10: Schur complement iterations in Stokes preconditioner
+# 11: Minimum topography (m)
+# 12: Maximum topography (m)
+# 13: RMS velocity (m/s)
+# 14: Max. velocity (m/s)
+# 15: Minimal temperature (K)
+# 16: Average temperature (K)
+# 17: Maximal temperature (K)
+# 18: Density at top (kg/m^3)
+# 19: Density at bottom (kg/m^3)
+# 20: Pressure at top (Pa)
+# 21: Pressure at bottom (Pa)
+0 0.000000000000e+00 0.000000000000e+00 768 21760 6930  0 23 24 24 -3.33066907e-16 2.22044605e-16 1.49502036e-02 2.42450837e-02 -3.15391565e+00  7.51924063e-16 6.30783131e+00 1.00000000e+00 1.00000000e+00 4.83630187e-05 4.94353615e-01 
+1 1.000000000000e-06 1.000000000000e-06 768 21760 6930 10 14 15 15 -1.14216340e-08 2.24875261e-08 1.49499940e-02 2.42446322e-02 -3.15391885e+00 -1.26169858e-05 6.30782754e+00 1.00000072e+00 1.00000298e+00 4.83582508e-05 4.94354331e-01 
