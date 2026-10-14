@@ -1594,7 +1594,7 @@ viscosity|density|thermal expansivity|specific heat|thermal conductivity|thermal
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
-**Documentation:** Bulk water content of the mantle source.Units: ppm.
+**Documentation:** Bulk water content of the mantle source. Must be a value greater than or equal to 0. Units: ppm.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`C1<parameters:Postprocess/Visualization/Melt_20fraction/C1>`
@@ -1630,7 +1630,7 @@ viscosity|density|thermal expansivity|specific heat|thermal conductivity|thermal
 
 **Pattern:** [Double 0...1 (inclusive)]
 
-**Documentation:** Bulk partition coefficient of water. Units: dimensionless.
+**Documentation:** Bulk partition coefficient of water. Must be a value in (0, 1]. Units: dimensionless.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`D1<parameters:Postprocess/Visualization/Melt_20fraction/D1>`
@@ -1684,7 +1684,7 @@ viscosity|density|thermal expansivity|specific heat|thermal conductivity|thermal
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
-**Documentation:** Water-induced melting temperature depression coefficient. Units: K/(wt%)^gamma_H2O.
+**Documentation:** Water-induced melting temperature depression coefficient. Must be a value greater than or equal to 0. Units: K/(wt%)^gamma_H2O.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`List of melting compositions other than peridotite<parameters:Postprocess/Visualization/Melt_20fraction/List_20of_20melting_20compositions_20other_20than_20peridotite>`
@@ -1729,7 +1729,7 @@ viscosity|density|thermal expansivity|specific heat|thermal conductivity|thermal
 
 **Pattern:** [Double 0...1 (inclusive)]
 
-**Documentation:** Exponent for the water-induced melting temperature depression. It has to be larger than 0 and smaller than 1. Units: dimensionless.
+**Documentation:** Exponent for the water-induced melting temperature depression. Must be a value in (0, 1). Units: dimensionless.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`k1 H2O<parameters:Postprocess/Visualization/Melt_20fraction/k1_20H2O>`
@@ -1756,7 +1756,7 @@ viscosity|density|thermal expansivity|specific heat|thermal conductivity|thermal
 
 **Pattern:** [Double 0...1 (inclusive)]
 
-**Documentation:** Exponent for the non-linear pressure of the water saturation expression. It has to be larger than 0 and smaller than 1. Units: dimensionless.
+**Documentation:** Exponent for the non-linear pressure of the water saturation expression. Must be a value in (0, 1). Units: dimensionless.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`r1<parameters:Postprocess/Visualization/Melt_20fraction/r1>`

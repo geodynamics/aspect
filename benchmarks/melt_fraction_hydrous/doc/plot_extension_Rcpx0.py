@@ -35,7 +35,7 @@ T_C = data[:, 5] - 273.15
 F = data[:, 6]
 
 # Pressure range around R_cpx = 0
-mask = (P_GPa >= 6.5) & (P_GPa <= 8.0)
+mask = (P_GPa >= 6.5) & (P_GPa <= 13.0)
 
 P_GPa = P_GPa[mask]
 T_C = T_C[mask]
@@ -70,7 +70,7 @@ plt.axvline(P_rcpx0, linestyle="--", linewidth=1.5, label=r"$R_{cpx}=0$")
 
 plt.xlabel("Pressure (GPa)")
 plt.ylabel("Melt fraction F")
-plt.xlim(6.5, 8.0)
+plt.xlim(6.5, 13.0)
 plt.ylim(bottom=0)
 plt.grid(True)
 plt.legend()
