@@ -28,8 +28,8 @@ Number of mesh deformation degrees of freedom: 156,774
      Reference thermal diffusivity (m^2/s):         9.54198e-07
      Rayleigh number:                               2.62453e+07
 
-     RMS, max velocity:                2.11 m/year, 4.76 m/year
-     Pressure at top/bottom of domain: 2.789e+07 Pa, 9.513e+10 Pa
+     RMS, max velocity:                2.07 m/year, 4.25 m/year
+     Pressure at top/bottom of domain: 2.73e+07 Pa, 9.54e+10 Pa
      Density at top/bottom of domain:  3359 kg/m^3, 3260 kg/m^3
      Computing dynamic topography      
      Writing geoid anomaly:            output-ascii_data_boundary_traction_3d_shell_spherical/geoid/geoid_anomaly.00000
