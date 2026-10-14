@@ -483,7 +483,7 @@ namespace aspect
                                  "Units: non-dimensional.");
               prm.declare_entry ("Bulk H2O ppm", "0",
                                  Patterns::Double (0),
-                                 "Bulk water content of the mantle source."
+                                 "Bulk water content of the mantle source. Must be a value greater than or equal to 0. "
                                  "Units: ppm.");
               prm.declare_entry ("Mass fraction cpx", "0.15",
                                  Patterns::Double (),
@@ -537,16 +537,15 @@ namespace aspect
                                 "which compositional field corresponds to which melting model. ");
               prm.declare_entry ("D H2O", "0.01",
                                  Patterns::Double (0, 1),
-                                 "Bulk partition coefficient of water. "
+                                 "Bulk partition coefficient of water. Must be a value in (0, 1]. "
                                  "Units: dimensionless.");
               prm.declare_entry ("K H2O", "43",
                                  Patterns::Double (0),
-                                 "Water-induced melting temperature depression coefficient. "
+                                 "Water-induced melting temperature depression coefficient. Must be a value greater than or equal to 0. "
                                  "Units: K/(wt%)^gamma_H2O.");
               prm.declare_entry ("gamma H2O", "0.75",
                                  Patterns::Double (0, 1),
-                                 "Exponent for the water-induced melting temperature depression. "
-                                 "It has to be larger than 0 and smaller than 1. "
+                                 "Exponent for the water-induced melting temperature depression. Must be a value in (0, 1). "
                                  "Units: dimensionless.");
               prm.declare_entry ("k1 H2O", "12",
                                  Patterns::Double (),
@@ -558,8 +557,7 @@ namespace aspect
                                  "Units: wt%/Gpa.");
               prm.declare_entry ("lambda H2O", "0.6",
                                  Patterns::Double (0, 1),
-                                 "Exponent for the non-linear pressure of the water saturation expression. "
-                                 "It has to be larger than 0 and smaller than 1. "
+                                 "Exponent for the non-linear pressure of the water saturation expression. Must be a value in (0, 1). "
                                  "Units: dimensionless.");
             }
             prm.leave_subsection();
