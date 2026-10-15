@@ -15,4 +15,4 @@
 # 15: Max. velocity (m/year)
 # 16: Minimum topography (m)
 # 17: Maximum topography (m)
-0 0.000000000000e+00 0.000000000000e+00 192 1968 864 1 15 6 7 7 output-mesh_deformation_gmg_2d_spherical_shell_gc/solution/solution-00000 output-mesh_deformation_gmg_2d_spherical_shell_gc/solution_surface/solution_surface-00000 6.94485462e-02 2.57635429e-01 3.00000000e+03 3.99948531e+05 
+0 0.000000000000e+00 0.000000000000e+00 192 1968 864 1 15 6 7 7 output-mesh_deformation_gmg_2d_spherical_shell_gc/solution/solution-00000 output-mesh_deformation_gmg_2d_spherical_shell_gc/solution_surface/solution_surface-00000 5.97478752e-02 2.24998686e-01 3.00000000e+03 3.99948531e+05 
