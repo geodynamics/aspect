@@ -159,9 +159,10 @@ jobs:
         '${{github.workspace}}/tests/*' '${{github.workspace}}/unit_tests/*' '${{github.workspace}}/cookbooks/*' \
         '${{github.workspace}}/doc/*' '${{github.workspace}}/data/*' '${{github.workspace}}/contrib/*' \
         '${{github.workspace}}/cmake/*' '${{github.workspace}}/benchmarks/*' '/usr/*' -o coverage_filtered.info
-    - name: Coveralls
+        genhtml -o html_report coverage_filtered.info
+    - name: archive coverage report
       if: ${{ matrix.coverage != '' }}
-      uses: coverallsapp/github-action@master
+      uses: actions/upload-artifact@v7
       with:
-        github-token: ${{ secrets.GITHUB_TOKEN }}
-        path-to-lcov: ${{github.workspace}}/build/coverage_filtered.info
+        name: coverage-html
+        path: build/html_report
