@@ -30,7 +30,9 @@
 #include <aspect/structured_data.h>
 
 #include <cmath>
+#include <fstream>
 #include <limits>
+#include <sstream>
 
 // TODO:
 // Include geoid anomaly of surface load.

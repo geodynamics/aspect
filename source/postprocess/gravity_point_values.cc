@@ -35,6 +35,8 @@
 #include <boost/archive/text_iarchive.hpp>
 #include <boost/lexical_cast.hpp>
 
+#include <fstream>
+#include <sstream>
 
 namespace aspect
 {

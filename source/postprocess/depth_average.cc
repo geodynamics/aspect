@@ -34,6 +34,7 @@
 
 
 #include <cmath>
+#include <fstream>
 
 namespace aspect
 {

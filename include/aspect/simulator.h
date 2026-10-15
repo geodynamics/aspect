@@ -22,6 +22,8 @@
 #ifndef _aspect_simulator_h
 #define _aspect_simulator_h
 
+#include <fstream>
+
 #include <deal.II/base/timer.h>
 #include <deal.II/base/parameter_handler.h>
 #include <deal.II/base/conditional_ostream.h>
