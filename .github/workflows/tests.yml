@@ -159,6 +159,12 @@ jobs:
         '${{github.workspace}}/tests/*' '${{github.workspace}}/unit_tests/*' '${{github.workspace}}/cookbooks/*' \
         '${{github.workspace}}/doc/*' '${{github.workspace}}/data/*' '${{github.workspace}}/contrib/*' \
         '${{github.workspace}}/cmake/*' '${{github.workspace}}/benchmarks/*' '/usr/*' -o coverage_filtered.info
+        genhtml -o html_report coverage_filtered.info
+    - name: archive coverage report
+      if: ${{ matrix.coverage != '' }}
+      uses: actions/upload-artifact@v7
+        name: coverage-html
+        path: build/html_report
     - name: Coveralls
       if: ${{ matrix.coverage != '' }}
       uses: coverallsapp/github-action@master
