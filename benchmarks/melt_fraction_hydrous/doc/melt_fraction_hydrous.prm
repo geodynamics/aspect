@@ -1,0 +1,39 @@
+subsection Postprocess
+  set List of postprocessors = visualization
+
+  subsection Visualization
+    set List of output variables = melt fraction
+
+    subsection Melt fraction
+      set A1 = 1085.7
+      set A2 = 1.329e-7
+      set A3 = -5.1e-18
+
+      set B1 = 1520.0
+      set B2 = 8.0e-8
+      set B3 = -3.2e-18
+
+      set C1 = 1780.0
+      set C2 = 4.5e-8
+      set C3 = -2.0e-18
+
+      set beta1 = 1.5
+      set beta2 = 1.2
+
+      #Water
+      set D H2O        = 0.01
+      set K H2O        = 43
+      set gamma H2O    = 0.75
+
+      set k1 H2O       = 12
+      set k2 H2O       = 1
+      set lambda H2O   = 0.6
+
+      #Primitive mantle:
+      set Mass fraction cpx = 0.17127832
+      set r1 = 0.99133219
+      set r2 = -1.2357699e-10
+      set Bulk H2O ppm = 1000
+    end
+  end
+end
