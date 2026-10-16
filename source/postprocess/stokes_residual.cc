@@ -23,6 +23,9 @@
 
 #include <aspect/simulator_signals.h>
 
+#include <fstream>
+#include <sstream>
+
 namespace aspect
 {
   namespace Postprocess

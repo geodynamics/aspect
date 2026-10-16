@@ -24,6 +24,7 @@
 #include <aspect/simulator_access.h>
 #include <aspect/adiabatic_conditions/interface.h>
 
+#include <fstream>
 
 namespace aspect
 {

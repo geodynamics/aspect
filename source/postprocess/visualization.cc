@@ -37,6 +37,7 @@
 #include <boost/archive/text_iarchive.hpp>
 
 #include <cmath>
+#include <fstream>
 #include <unistd.h>
 
 #include <algorithm>

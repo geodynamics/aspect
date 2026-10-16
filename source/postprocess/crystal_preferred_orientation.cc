@@ -26,6 +26,8 @@
 #include <boost/iostreams/copy.hpp>
 #include <boost/iostreams/filter/gzip.hpp>
 
+#include <fstream>
+#include <sstream>
 #include <unistd.h>
 
 namespace aspect

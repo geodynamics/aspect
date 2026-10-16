@@ -31,6 +31,8 @@
 #include <deal.II/base/quadrature_lib.h>
 #include <deal.II/fe/fe_values.h>
 
+#include <fstream>
+#include <sstream>
 
 namespace aspect
 {
