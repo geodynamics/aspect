@@ -61,6 +61,7 @@ namespace aspect
             case Parameters<dim>::NonlinearSolver::Kind::single_Advection_iterated_defect_correction_Stokes:
             case Parameters<dim>::NonlinearSolver::Kind::single_Advection_iterated_Newton_Stokes:
             case Parameters<dim>::NonlinearSolver::Kind::single_Advection_no_Stokes:
+            case Parameters<dim>::NonlinearSolver::Kind::no_Advection_adjoint_Stokes:
               return false;
           }
         Assert(false, ExcNotImplemented());
