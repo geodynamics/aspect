@@ -35,11 +35,15 @@ namespace aspect
               const MaterialModel::MaterialModelOutputs<dim> &/*material_model_outputs*/,
               HeatingModel::HeatingModelOutputs &heating_model_outputs) const
     {
+      typename aspect::Utilities::ScratchSpace<std::vector<double>>::ScopedScratchObject scoped_volume_fractions_space(volume_fractions_space);
+      std::vector<double> &volume_fractions = scoped_volume_fractions_space;
+
+      //std::vector<double> volume_fractions;
       for (unsigned int q = 0; q < heating_model_outputs.heating_source_terms.size(); ++q)
         {
           // Compute compositional volume fractions
-          const std::vector<double> volume_fractions = MaterialModel::MaterialUtilities::compute_composition_fractions(material_model_inputs.composition[q],
-                                                       ComponentMask(fields_used_in_heat_production_averaging));
+          MaterialModel::MaterialUtilities::compute_composition_fractions(material_model_inputs.composition[q],volume_fractions,
+                                                                          ComponentMask(fields_used_in_heat_production_averaging));
 
           // Calculate average compositional heat production
           double compositional_heat_production = 0.;
