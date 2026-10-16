@@ -109,7 +109,7 @@ namespace aspect
       /**
        * If true, plastic dilation terms are part of the operator.
        */
-      bool enable_prescribed_dilation;
+      bool enable_prescribed_plastic_dilation;
 
       /**
        * Symmetrize the Newton system when it's true (i.e., the
