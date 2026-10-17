@@ -40,8 +40,7 @@ Stokes GMRES iterations on the final mesh with 7.8m Stokes DoFs (10.3m total DoF
 | partial-set | 32 | 33 | 62 |
 | open | 42 | 44 | 88 |
 | periodic | 33 | - | 85 |
-| free-surface | - | 78 | 195 |
+| free-surface | 67 | 78 | 195 |
 
 Currently unsupported cases:
 - GMG-LS: no support for periodic boundaries
-- GMG-GC: No support for mesh deformation (free surface)
