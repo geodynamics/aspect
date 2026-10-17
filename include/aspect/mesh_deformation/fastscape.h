@@ -190,6 +190,22 @@ namespace aspect
                                const unsigned int &fastscape_iterations) const;
 
         /**
+         * Write the complete node-wise state and scalar parameters passed from
+         * ASPECT to FastScape immediately before FastScape is executed.
+         */
+        void write_coupling_input_data(const std::vector<double> &elevation,
+                                       const std::vector<double> &basement,
+                                       const std::vector<double> &silt_fraction,
+                                       const std::vector<double> &velocity_x,
+                                       const std::vector<double> &velocity_y,
+                                       const std::vector<double> &velocity_z,
+                                       const std::vector<double> &bedrock_river_incision_rate_array,
+                                       const std::vector<double> &bedrock_transport_coefficient_array,
+                                       const double current_sea_level,
+                                       const double fastscape_timestep_in_years,
+                                       const unsigned int fastscape_iterations) const;
+
+        /**
          * Function to apply orographic (mountain related, e.g., wind or elevation)
          * controls to the FastScape model.
          */
@@ -351,6 +367,12 @@ namespace aspect
          * This variable is read from the parameter file through a parameter called 'Uplift and advect with fastscape'.
          */
         bool fastscape_advection_uplift;
+
+        /**
+         * Whether to write a full-precision snapshot of the data passed to
+         * FastScape before every call to FastScape.
+         */
+        bool write_coupling_inputs;
 
         /**
          * Node tolerance for how close a ASPECT node must be to the FastScape node
