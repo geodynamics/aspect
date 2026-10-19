@@ -1,0 +1,24 @@
+
+Number of active cells: 64 (on 4 levels)
+Number of degrees of freedom: 948 (578+81+289)
+
+*** Timestep 0:  t=0 years, dt=0 years
+   Solving temperature system... 0 iterations.
+   Solving Stokes system (GMG)... 10+0 iterations.
+      Relative nonlinear residuals (temperature, Stokes system): 1.54779e-16, 0.031397
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 0.031397
+
+   Solving temperature system... 0 iterations.
+   Solving Stokes system (GMG)... 3+0 iterations.
+      Relative nonlinear residuals (temperature, Stokes system): 1.54779e-16, 1.18859e-09
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 1.18859e-09
+
+
+   Postprocessing:
+     RMS, max velocity:       3.93e-05 m/year, 0.000221 m/year
+     Temperature min/avg/max: 273 K, 1032 K, 3273 K
+
+Termination requested by criterion: end time
+
+
+
