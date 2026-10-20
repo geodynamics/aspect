@@ -2026,6 +2026,7 @@ namespace aspect
     // Compute the reactions of compositional fields and temperature in case of operator splitting.
     if (parameters.use_operator_splitting)
       {
+        signals.pre_compute_reactions(*this);
         std::vector<AdvectionField> advection_fields;
         // First add the temperature field
         advection_fields.push_back(AdvectionField::temperature());

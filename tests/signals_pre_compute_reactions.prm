@@ -1,0 +1,3 @@
+# Check that the pre compute reactions signal triggers
+
+include $ASPECT_SOURCE_DIR/tests/tian_peridotite.prm

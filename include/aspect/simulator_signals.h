@@ -299,6 +299,13 @@ namespace aspect
                                   const unsigned int iteration_count)> post_ARKode_solve;
 
     /**
+     * A signal that is triggered before reactions are computed.
+     * The arguments to this signal is a reference to the SimulatorAccess
+     * object.
+     */
+    boost::signals2::signal<void (const SimulatorAccess<dim> &)> pre_compute_reactions;
+
+    /**
      * A signal that is triggered when mesh deformation has occurred.
      * The arguments to this signal is a reference to the SimulatorAccess
      * object.
