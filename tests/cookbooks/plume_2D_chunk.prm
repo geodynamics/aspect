@@ -1,5 +1,5 @@
 # Test for the plume_2D_chunk cookbook, reduced to a single time step
-# on a coarse mesh so that it runs quickly. See issue #7285.
+# on a coarse mesh so that it runs quickly.
 include $ASPECT_SOURCE_DIR/cookbooks/plume_2D_chunk/plume2D.prm
 
 set End time = 0
