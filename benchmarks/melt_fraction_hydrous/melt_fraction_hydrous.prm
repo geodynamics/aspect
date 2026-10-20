@@ -85,7 +85,7 @@ subsection Postprocess
     set List of output variables = melt fraction
 
     # Ball et al. (2022) approach includes mainly:
-    # 1. The consideration of three different types of mantle: primitive, 50/50 and depleted,
+    # 1. The consideration of three different types of material: primitive mantle, depleted mantle, and a 50/50 mix of the two,
     #    each with specified mass fraction of clinopyroxene, coefficients of the reaction
     #    coefficient of clinopyroxene and existing bulk water in the mantle in ppm (Bulk H2O ppm).
     # 2. The addition of a second beta parameter, applied when cpx is exhausted.
