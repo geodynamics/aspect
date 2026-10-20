@@ -5,7 +5,7 @@
 # fraction to be included, following Ball et al. (2022), and itself based on
 # Katz et al. (2003).
 
-# The visualization output is then also a p-T-diagram of the melt fraction
+# The visualization output is a p-T-diagram of the melt fraction
 # with the temperature ranging from 1100°C to 2000°C on the x axis and the
 # pressure ranging from 0 GPa to 8 GPa on the y axis.
 
