@@ -178,7 +178,7 @@ namespace aspect
 
 
           /**
-                 * Bounds the water concentration of melt to the water saturation limit follwing Eq. 17 of Katz et al. (2003).
+                 * Bounds the water concentration of melt to the water saturation limit following Eq. 17 of Katz et al. (2003).
            * If the saturation is exceeded, recomputes melt fraction (using eqn. 19 Katz et al (2003)).
            * @param pressure Pressure, in Pa.
            * @param temperature Temperature, in K.
