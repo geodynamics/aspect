@@ -161,7 +161,7 @@ This ASPECT implementation therefore sets
 F_{\mathrm{cpx-out}} = 1 \qquad \text{when} \qquad R_{\mathrm{cpx}} \leq 0.
 ```
 
-In the code, $F_{\mathrm{cpx-out}}$ is constrained to the physical range $0 \leq F_{\mathrm{cpx-out}} \leq 1$, meaning that once the expression would exceed 1, it is kept at 1, and once it drops below 0, it is kept at 0. Thus, this extension is consistent with the limiting behaviour as $R_{\mathrm{cpx}}$ decreases and avoids the artificial jump. It was also verified that the extension mantains the original model behaviour when $R_{\mathrm{cpx}}>0$.
+In the code, $F_{\mathrm{cpx-out}}$ is constrained to the physical range $0 \leq F_{\mathrm{cpx-out}} \leq 1$, meaning that once the expression would exceed 1, it is kept at 1, and once it drops below 0, it is kept at 0. Thus, this extension is consistent with the limiting behaviour as $R_{\mathrm{cpx}}$ decreases and avoids the artificial jump. It was also verified that the extension maintains the original model behaviour when $R_{\mathrm{cpx}}>0$.
 
 To verify that this extension does not introduce an artificial discontinuity in melt fraction, $F$ is evaluated around the pressure at which $R_{\mathrm{cpx}}=0$. The four selected temperatures (approximately 1700, 1750, 1800, and 1900 °C) span conditions from no melting to high melt fractions. Only the example of the depleted mantle is shown here although the same output arises with the 50/50 setting (due to its parametrization, the primitive mantle is not affected by this issue).
 
