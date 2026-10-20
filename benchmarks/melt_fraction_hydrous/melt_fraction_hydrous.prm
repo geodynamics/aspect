@@ -93,7 +93,7 @@ subsection Postprocess
     #    since it is explained that experiments show Fcpx-out (the melt fraction value the
     #    moment the cpx runs out) increases with pressure.
 
-    # This modifies the original melt fraction postprocessor in several parameter values, e.g the
+    # This modifies the default melt fraction postprocessor in several parameter values, e.g the
     # linear coefficient of the Tlherz-liq (1475 to 1520.0), r1, r2 and Mass fraction cpx.
 
     subsection Melt fraction
