@@ -128,7 +128,7 @@ namespace aspect
           */
 
           /**
-           * Melt fraction exponents. The beta2 parameter is taken after Ball, 2022, the exponent when cpx is out.
+           * Melt fraction exponents. The beta2 parameter is taken after Ball et al., 2022, the exponent when cpx is out.
            * These variables are read from the parameter file through parameters called 'beta1' and 'beta2'.
            */
           double beta1;
