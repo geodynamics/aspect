@@ -4,13 +4,19 @@ import matplotlib.pyplot as plt
 import glob
 import os
 
+# This script requires the BDD21 Python implementation of the melting parameterization from Ball et al. (2022).
+# The code associated with the revised publication is archived at: https://doi.org/10.5281/zenodo.6339594
+# Repository: https://github.com/Patol75/BDD21
+# Reference: https://doi.org/10.1029/2022GC010421
+# The benchmark results presented here were generated using commit 1b61b5f.
+
 sys.path.insert(0, "BDD21/src/Ball_Duvernay_Davies_2022")
 from Melt import Katz
 
 model = Katz()
 
 cases = [
-    ("Primitive", "primitive", {
+    ("Primitive mantle", "primitive", {
         "B1": 1520 + 273.15,
         "beta2": 1.2,
         "M_cpx": 0.17127832,
@@ -28,7 +34,7 @@ cases = [
         "X_H2O_bulk": 0.02,
     }),
 
-    ("Depleted", "depleted", {
+    ("Depleted mantle", "depleted", {
         "B1": 1520 + 273.15,
         "beta2": 1.2,
         "M_cpx": 0.16783327,
@@ -99,8 +105,8 @@ for i, (name, case_id, mantle_params) in enumerate(cases):
 
     order = np.argsort(T)
 
-    plt.plot(T[order], original[order], color=colors_original[i], label=f"Ball original {name}")
-    plt.plot(T[order], aspect[order], "--", color=colors_aspect[i], label=f"ASPECT {name}")
+    plt.plot(T[order], original[order], color=colors_original[i], label=f"{name}, Ball et al. 2022")
+    plt.plot(T[order], aspect[order], "--", color=colors_aspect[i], label=f"{name}, ASPECT implementation")
 
 plt.xlabel("Temperature (°C)")
 plt.ylabel("Melt fraction F")

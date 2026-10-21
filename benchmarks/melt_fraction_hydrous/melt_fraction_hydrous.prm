@@ -84,7 +84,8 @@ subsection Postprocess
     set Time between graphical output = 0.01
     set List of output variables = melt fraction
 
-    # Ball et al. (2022) approach includes mainly:
+    # The parameters below differ from the default parameters of the postprocessor, defined in Katz et al. (2003),
+    # due to the modifications proposed in Ball et al. (2022), namely:
     # 1. The consideration of three different types of material: primitive mantle, depleted mantle, and a 50/50 mix of the two,
     #    each with specified mass fraction of clinopyroxene, coefficients of the reaction
     #    coefficient of clinopyroxene and existing bulk water in the mantle in ppm (Bulk H2O ppm).
@@ -125,7 +126,7 @@ subsection Postprocess
       set Mass fraction cpx = 0.17127832
       set r1 = 0.99133219
       set r2 = -1.2357699e-10
-      set Bulk H2O ppm = 1000
+      set Bulk H2O ppm = 280
 
       #Depleted mantle:
       #set Mass fraction cpx = 0.16783327

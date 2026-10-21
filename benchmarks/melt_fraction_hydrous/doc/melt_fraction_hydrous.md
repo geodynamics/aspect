@@ -9,8 +9,8 @@ feature:melt
 This benchmark validates the hydrous extension of the melt fraction
 visualization postprocessor. The implementation extends the existing
 anhydrous melting parameterization by accounting for the effect of
-water on peridotite melting following Ball et al. (2022), building on
-the melting formulation of Katz et al. (2003).
+water on peridotite melting following {cite:t}`ball:etal:2022`, building on
+the melting formulation of {cite:t}`katz:etal:2003`.
 
 The domain is a 2d Cartesian box that is not intended to represent any
 geological domain, but rather a numerical representation of pressure-temperature
@@ -24,7 +24,7 @@ compares the numerical results with published references.
 The relevant parameters for the hydrous melting formulation are in the parameter file:
 ```{literalinclude} melt_fraction_hydrous.prm
 ```
-However, the posterior validation files (.py and figures) shown here make use of specific parameter configurations, although all derived from the same setup, in order to make fair comparisons.
+For the validation comparisons, the Python scripts use the parameter values corresponding to each reference case (Katz et al. (2003) or Ball et al. (2022)). The corresponding ASPECT simulations use the same values to ensure a fair direct comparison.
 
 ## Hydrous formulation
 In Katz et al. (2003) dry formulation, melting prior to clinopyroxene exhaustion is expressed in terms of the normalized temperature
@@ -42,7 +42,7 @@ The hydrous extension accounts for the depression of the solidus caused by water
 \Delta T_{\mathrm{H_2O}} = K X_{\mathrm{H_2O}}^{\gamma},
 ```
 
-and the corresponding normalized temperature and melt fraction become
+where $X_{\mathrm{H_{2}O}}$ is the water concentration in the melt, and the corresponding normalized temperature and melt fraction become
 ```{math}
 T'_{\mathrm{hydrous}} = \frac{T-\left(T_{\mathrm{solidus}}-\Delta T_{\mathrm{H_2O}}\right)}{T_{\mathrm{lherzolite\ liquidus}}-T_{\mathrm{solidus}}}\quad\text{and}\quad
 F = \left(T'_{\mathrm{hydrous}}\right)^{\beta_1}.
@@ -56,7 +56,7 @@ D_{\mathrm{H_2O}} + F\left(1-D_{\mathrm{H_2O}}\right)}.
 
 As a consequence, this hydrous formulation introduces an **implicit dependence**: the melt fraction controls the water concentration in the melt, while the water concentration modifies the solidus depression and therefore the melt fraction. This requires an **iterative solution**, as discussed below.
 
-Katz et al. (2003) formulation after clinopyroxene-exhaustion is kept in this approach. The reaction coefficient and melt fraction at which cpx is exhausted vary with pressure as
+The formulation of Katz et al. (2003) for the post-clinopyroxene-exhaustion regime is also followed in our implementation. The reaction coefficient and the melt fraction at which cpx is exhausted vary with pressure as
 ```{math}
 :label: eq:rcpx
 R_{\mathrm{cpx}}(P) = r_0 + r_1 P \quad\text{and}\quad
@@ -70,14 +70,14 @@ F = F_{\mathrm{cpx-out}} + \left(1-F_{\mathrm{cpx-out}}\right)
 \left(\frac{T-T_{\mathrm{cpx-out}}}{T_{\mathrm{liquidus}}-T_{\mathrm{cpx-out}}}\right)^{\beta_2},
 ```
 
-where $T_{\mathrm{cpx-out}}$ is the clinopyroxene exhaustion temperature. The parameter `beta 2` as exponent is a novelty Ball et al. (2022) introduces with respect to Katz at al. (2003).
+where $T_{\mathrm{cpx-out}}$ is the clinopyroxene exhaustion temperature. Setting a different value for the parameter $\beta_2$ is a modification introduced by Ball et al. (2022) to allow for different progression of melting in the cpx branch compared to the opx branch.
 
 By adding the term $K X_{\mathrm{H_2O}}^{\gamma}$ on the fraction numerator, the expression takes its hydrous form.
 
-Therefore, this hydrous formulation introduces the additional parameters `Bulk H2O ppm`, `D H2O`, `K H2O`, `gamma H2O`, `k1 H2O`, `k2 H2O`, and `lambda H2O`. They describe, respectively, the bulk water content, water partitioning coefficient, the magnitude and exponent of the water-induced solidus depression, and the water saturation limit coefficient and exponent.
+Therefore, this hydrous formulation introduces the additional parameters `Bulk H2O ppm`, `D H2O`, `K H2O`, `gamma H2O`, `beta2`, `k1 H2O`, `k2 H2O`, and `lambda H2O`. They describe, respectively, the bulk water content, water partitioning coefficient, the magnitude and exponent of the water-induced solidus depression, and the water saturation limit coefficient and exponent.
 
 ### Iterative algorithm:
-Briefly explained, the implicit melt fraction equation is solved in two steps. First, a bracket containing the root is identified by searching the interval from $F=0$ to $F_{\mathrm{cpx-out}}$ (or from $F_{\mathrm{cpx-out}}$ to $F=1$ after clinopyroxene exhaustion), progressively reducing the search increment from $10^{-1}$ to $10^{-9}$. Once a sign-changing bracket is found, this post processor uses the Boost TOMS Algorithm 748 root finder to find F. In contrast, the original Ball et al. (2022) implementation uses Brent's method.
+Briefly explained, the implicit melt fraction equation is solved in two steps. First, a bracket containing the current melt fraction is identified by searching the interval from $F=0$ to $F_{\mathrm{cpx-out}}$ (or from $F_{\mathrm{cpx-out}}$ to $F=1$ after clinopyroxene exhaustion), progressively reducing the search increment from $10^{-1}$ to $10^{-9}$. Once a sign-changing bracket is found, this post processor uses the Boost TOMS Algorithm 748 root finder {cite:p}`alefeld:etal:1995` to find $F$. In contrast, the original implementation of Ball et al. (2022) uses Brent's method {cite:p}`brent:1973`.
 
 
 ### Mantle compositions
@@ -94,7 +94,7 @@ The respective values are:
 
 ## Validation
 ### Katz et al. (2003)
-The implementation is first validated against the original Katz et al. (2003) parameterization by reproducing their Figure 4, where melt fraction is compared as a function of temperature at a constant pressure of 1 GPa for several bulk water contents (0, 200, 500, 1000, and 3000 ppm).
+The implementation is first validated against the original parameterization of {cite:t}`katz:etal:2003` by reproducing their Figure 4, where melt fraction is compared as a function of temperature at a constant pressure of 1 GPa for several bulk water contents (0, 200, 500, 1000, and 3000 ppm).
 
 Comparisons between two different resolutions are presented to visualize the convergence of the ASPECT implementation toward the original Katz et al. (2003).
 
@@ -116,7 +116,7 @@ The figures were generated with
 {download}`plot_katz.py <plot_katz.py>`.
 
 ### Ball et al. (2022)
-The implementation is further validated against the Ball et al. (2022) code using the three mantle configurations described above.
+The implementation is further validated against the code of {cite:t}`ball:etal:2022` using the three mantle configurations described above.
 It is worth mentioning that for each ASPECT temperature value, the Ball et al. (2022) formulation is evaluated exactly at the same pressure and temperature, allowing a direct point-by-point comparison.
 
 **First**, with Fig 4 of Katz et al. (2003) as inspiration, melt fraction is again compared as a function of temperature at a constant pressure of 1 GPa.
@@ -173,10 +173,3 @@ Melt fraction across $R_{\mathrm{cpx}}=0$ for depleted mantle at approximately 1
 ```
 The figure was generated with
 {download}`plot_extension_Rcpx0.py <plot_extension_Rcpx0.py>`.
-
-
-## References
-The aforementioned:
-- Katz, R. F., Spiegelman, M., & Langmuir, C. H. (2003). A new parameterization of hydrous mantle melting. *Geochemistry, Geophysics, Geosystems*, 4(9), 1073. https://doi.org/10.1029/2002GC000433
-
-- Ball, P. W., Duvernay, T., & Davies, D. R. (2022). A coupled geochemical-geodynamic approach for predicting mantle melting in space and time. *Geochemistry, Geophysics, Geosystems*, 23(4), e2022GC010421. https://doi.org/10.1029/2022GC010421

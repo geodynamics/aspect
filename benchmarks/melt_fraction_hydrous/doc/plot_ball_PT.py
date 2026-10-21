@@ -5,6 +5,12 @@ import matplotlib.ticker as ticker
 import glob
 import os
 
+# This script requires the BDD21 Python implementation of the melting parameterization from Ball et al. (2022).
+# The code associated with the revised publication is archived at: https://doi.org/10.5281/zenodo.6339594
+# Repository: https://github.com/Patol75/BDD21
+# Reference: https://doi.org/10.1029/2022GC010421
+# The benchmark results presented here were generated using commit 1b61b5f.
+
 sys.path.insert(0, "BDD21/src/Ball_Duvernay_Davies_2022")
 from Melt import Katz
 
@@ -64,7 +70,6 @@ for name, case_id, P_max, mantle_params in cases:
     P_pa = data[:, 4]
     T_K = data[:, 5]
     F_aspect = data[:, 6]
-
     P_GPa = P_pa / 1e9
 
     mask = (P_pa >= 0) & (P_GPa < P_max)

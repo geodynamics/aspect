@@ -33,7 +33,7 @@ subsection Postprocess
       set Mass fraction cpx = 0.17127832
       set r1 = 0.99133219
       set r2 = -1.2357699e-10
-      set Bulk H2O ppm = 1000
+      set Bulk H2O ppm = 280
     end
   end
 end

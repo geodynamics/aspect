@@ -3,14 +3,18 @@ import matplotlib.pyplot as plt
 import glob
 import os
 
+# This script requires output generated with the original code implementation of the melting parameterization from Katz et al. (2003).
+# The code implementation is available in: https://foalab.earth.ox.ac.uk/publications.php under "Code, Errata, etc." -> "Code implementations"
+# Reference: https://doi.org/10.1029/2002GC000433
+
 KATZ_DIR = "katz_original_code/meltParam/src"
 
 cases = [
-    ("0 wt%", "0ppm", os.path.join(KATZ_DIR, "katz_original_M017_0wt.dat")),
-    ("0.02 wt%", "200ppm", os.path.join(KATZ_DIR, "katz_original_M017_0p02wt.dat")),
-    ("0.05 wt%", "500ppm", os.path.join(KATZ_DIR, "katz_original_M017_0p05wt.dat")),
-    ("0.10 wt%", "1000ppm", os.path.join(KATZ_DIR, "katz_original_M017_0p10wt.dat")),
-    ("0.30 wt%", "3000ppm", os.path.join(KATZ_DIR, "katz_original_M017_0p30wt.dat")),
+    ("0 wt% H2O", "0ppm", os.path.join(KATZ_DIR, "katz_original_M017_0wt.dat")),
+    ("0.02 wt% H2O", "200ppm", os.path.join(KATZ_DIR, "katz_original_M017_0p02wt.dat")),
+    ("0.05 wt% H2O", "500ppm", os.path.join(KATZ_DIR, "katz_original_M017_0p05wt.dat")),
+    ("0.10 wt% H2O", "1000ppm", os.path.join(KATZ_DIR, "katz_original_M017_0p10wt.dat")),
+    ("0.30 wt% H2O", "3000ppm", os.path.join(KATZ_DIR, "katz_original_M017_0p30wt.dat")),
 ]
 
 resolutions = ["Res7", "Res9"]
@@ -75,8 +79,8 @@ for resolution in resolutions:
 
         order = np.argsort(T)
 
-        plt.plot(T_original, F_original, color=color_original[i], label=f"Katz original {name}")
-        plt.plot(T[order], aspect[order], "--", color=color_aspect[i], label=f"ASPECT {name}")
+        plt.plot(T_original, F_original, color=color_original[i], label=f"{name}, Katz et al. 2003")
+        plt.plot(T[order], aspect[order], "--", color=color_aspect[i], label=f"{name}, ASPECT implementation")
 
     plt.xlabel("Temperature (°C)")
     plt.ylabel("Melt fraction F")
