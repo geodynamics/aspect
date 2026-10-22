@@ -110,14 +110,14 @@ namespace aspect
         // Because Katz et al. use an implicit formula for the melt fraction we need to use an iterative solver to find the correct melt fraction.
         // See the benchmark melt_fraction_hydrous for more details.
         const double T_solidus  = A1 + 273.15
-                                + A2 * pressure
-                                + A3 * pressure * pressure;
+                                  + A2 * pressure
+                                  + A3 * pressure * pressure;
         const double T_lherz_liquidus = B1 + 273.15
-                                      + B2 * pressure
-                                      + B3 * pressure * pressure;
+                                        + B2 * pressure
+                                        + B3 * pressure * pressure;
         const double T_liquidus = C1 + 273.15
-                                + C2 * pressure
-                                + C3 * pressure * pressure;
+                                  + C2 * pressure
+                                  + C3 * pressure * pressure;
 
         // Eqn. 7 Katz et al 2003, reaction coefficient of pyroxene.
         const double R_cpx = r1 + r2 * std::max(0.0, pressure);
@@ -314,8 +314,8 @@ namespace aspect
           {
             // melting of pyroxenite after Sobolev et al., 2011
             const double T_melting = D1 + 273.15
-                                   + D2 * pressure
-                                   + D3 * pressure * pressure;
+                                     + D2 * pressure
+                                     + D3 * pressure * pressure;
 
             const double discriminant = E1*E1/(E2*E2*4) + (temperature-T_melting)/E2;
 
