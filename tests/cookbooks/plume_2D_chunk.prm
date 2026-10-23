@@ -1,0 +1,14 @@
+# Test for the plume_2D_chunk cookbook, reduced to a single time step
+# on a coarse mesh so that it runs quickly.
+include $ASPECT_SOURCE_DIR/cookbooks/plume_2D_chunk/plume2D.prm
+
+set End time = 0
+
+subsection Mesh refinement
+  set Initial global refinement = 3
+  set Initial adaptive refinement = 0
+end
+
+subsection Postprocess
+  set List of postprocessors = velocity statistics, temperature statistics
+end
