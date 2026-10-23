@@ -1,0 +1,13 @@
+include $ASPECT_SOURCE_DIR/cookbooks/shell_simple_3d/shell_simple_3d.prm
+
+set End time = 0
+set Output directory = output-shell_simple_3d
+
+subsection Mesh refinement
+  set Initial global refinement = 1
+  set Initial adaptive refinement = 0
+end
+
+subsection Postprocess
+  set List of postprocessors = velocity statistics, temperature statistics, heat flux statistics, basic statistics
+end
