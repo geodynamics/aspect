@@ -1,0 +1,19 @@
+# 1: Time step number
+# 2: Time (seconds)
+# 3: Time step size (seconds)
+# 4: Number of mesh cells
+# 5: Number of Stokes degrees of freedom
+# 6: Number of temperature degrees of freedom
+# 7: Number of degrees of freedom for all compositions
+# 8: Iterations for temperature solver
+# 9: Iterations for composition solver 6
+# 10: Iterations for Stokes solver
+# 11: Velocity iterations in Stokes preconditioner
+# 12: Schur complement iterations in Stokes preconditioner
+# 13: Visualization file name
+# 14: Number of advected particles
+# 15: Particle file name
+# 16: Particle CPO file name
+0 0.000000000000e+00 0.000000000000e+00 1 22 9 6 0 0 0 0 0 output-particle_interpolator_quaternion_average_shear_box/solution/solution-00000 3 output-particle_interpolator_quaternion_average_shear_box/particles/particles-00000 output-particle_interpolator_quaternion_average_shear_box/particles_cpo/CPO-00000 
+1 1.000000000000e-01 1.000000000000e-01 1 22 9 6 0 0 0 0 0 output-particle_interpolator_quaternion_average_shear_box/solution/solution-00001 3                                                                                  ""                                                                                "" 
+2 2.000000000000e-01 1.000000000000e-01 1 22 9 6 0 0 0 0 0 output-particle_interpolator_quaternion_average_shear_box/solution/solution-00002 3                                                                                  "" output-particle_interpolator_quaternion_average_shear_box/particles_cpo/CPO-00001 
