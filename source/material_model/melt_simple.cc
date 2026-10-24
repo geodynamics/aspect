@@ -22,6 +22,7 @@
 #include <aspect/adiabatic_conditions/interface.h>
 #include <aspect/material_model/melt_simple.h>
 #include <aspect/material_model/reaction_model/katz2003_mantle_melting.h>
+#include <aspect/material_model/reaction_model/fluid_extractor.h>
 #include <aspect/utilities.h>
 #include <deal.II/base/parameter_handler.h>
 #include <deal.II/numerics/fe_field_function.h>
@@ -142,6 +143,7 @@ namespace aspect
 
       katz2003_model.calculate_reaction_rate_outputs(in, out);
       katz2003_model.calculate_fluid_outputs(in, out, reference_T);
+      fluid_extractor_model.calculate_reaction_rate_outputs(in, out);
     }
 
 
@@ -155,6 +157,8 @@ namespace aspect
         {
           // Melt Fraction Parameters
           ReactionModel::Katz2003MantleMelting<dim>::declare_parameters(prm);
+          // Melt Extraction Parameters
+          ReactionModel::FluidExtractor<dim>::declare_parameters(prm);
 
 
           prm.declare_entry ("Use full compressibility", "false",
@@ -242,6 +246,12 @@ namespace aspect
           katz2003_model.initialize_simulator (this->get_simulator());
           katz2003_model.parse_parameters(prm);
 
+          fluid_extractor_model.initialize_simulator (this->get_simulator());
+
+          const std::string reaction_scheme_name = "katz2003";
+          fluid_extractor_model.set_parameters(reaction_scheme_name,
+                                               prm.get_double("Melt extraction depth"),
+                                               prm.get("Extraction method"));
         }
         prm.leave_subsection();
       }
