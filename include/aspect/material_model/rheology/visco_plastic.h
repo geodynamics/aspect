@@ -24,6 +24,7 @@
 #include <aspect/global.h>
 #include <aspect/material_model/interface.h>
 #include <aspect/material_model/utilities.h>
+#include <aspect/material_model/additional_outputs/deformation_mechanism.h>
 #include <aspect/material_model/rheology/strain_dependent.h>
 #include <aspect/material_model/rheology/friction_models.h>
 #include <aspect/material_model/rheology/diffusion_creep.h>
@@ -152,6 +153,11 @@ namespace aspect
       std::vector<bool> composition_yielding;
 
       /**
+       * The dominant deformation mechanism for each composition.
+       */
+      std::vector<DeformationMechanism> composition_deformation_mechanisms;
+
+      /**
        * All the drucker prager plasticity parameters.
        */
       std::vector<Rheology::DruckerPragerParameters> drucker_prager_parameters;
@@ -261,9 +267,9 @@ namespace aspect
           create_plastic_outputs (MaterialModel::MaterialModelOutputs<dim> &out) const;
 
           /**
-           * A function that fills the plastic additional output in the
-           * MaterialModelOutputs object that is handed over, if it exists.
-           * Does nothing otherwise.
+           * A function that fills the plastic and deformation mechanism
+           * additional outputs in the MaterialModelOutputs object that is
+           * handed over, if they exist. Does nothing otherwise.
            */
           void fill_plastic_outputs(const unsigned int point_index,
                                     const std::vector<double> &volume_fractions,
