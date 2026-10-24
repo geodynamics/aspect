@@ -16,6 +16,14 @@
  */
 
 /**
+ * @defgroup Adjoint Adjoint methods
+ *
+ * This group contains all classes, namespaces and functions that have to do
+ * with adjoint workflows. This includes objective functionals, adjoint state
+ * solves, kernel calculations, parameterizations, and optimization methods.
+ */
+
+/**
  * @defgroup Visualization Visualizing solutions
  *
  * This group contains all classes, namespaces and functions that have to do

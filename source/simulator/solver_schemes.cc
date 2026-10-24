@@ -20,6 +20,7 @@
 
 
 #include <aspect/simulator.h>
+#include <aspect/adjoint/manager.h>
 #include <aspect/global.h>
 #include <aspect/mesh_deformation/free_surface.h>
 #include <aspect/volume_of_fluid/handler.h>
@@ -796,6 +797,17 @@ namespace aspect
 
 
   template <int dim>
+  void Simulator<dim>::solve_stokes_adjoint ()
+  {
+    Assert (adjoint_manager != nullptr,
+            ExcInternalError());
+
+    adjoint_manager->solve_instantaneous_stokes();
+  }
+
+
+
+  template <int dim>
   void Simulator<dim>::solve_no_advection_no_stokes ()
   {
     if (parameters.run_postprocessors_on_nonlinear_iterations)
@@ -1506,6 +1518,7 @@ namespace aspect
   template void Simulator<dim>::solve_no_advection_single_stokes_first_timestep_only(); \
   template void Simulator<dim>::solve_no_advection_iterated_stokes(); \
   template void Simulator<dim>::solve_no_advection_iterated_defect_correction_stokes(); \
+  template void Simulator<dim>::solve_stokes_adjoint(); \
   template void Simulator<dim>::solve_single_advection_no_stokes(); \
   template void Simulator<dim>::solve_single_advection_single_stokes(); \
   template void Simulator<dim>::solve_single_advection_iterated_stokes(); \
