@@ -322,6 +322,23 @@ if(ASPECT_WITH_FASTSCAPE)
     if(${FASTSCAPE_VERSION} VERSION_LESS 2.8)
       message(FATAL_ERROR "The linked FastScape version is ${FASTSCAPE_VERSION}, however at least 2.8.0 is required.")
     endif()
+    
+    # The selectable horizontal-advection scheme was added to
+    # Fastscape beginning with version 2.9.1dev. The version parser
+    # above converts "2.9.1dev" to "2.9.1".
+    if("${FASTSCAPE_VERSION}" VERSION_LESS "2.9.1")
+      set(ASPECT_HAVE_FASTSCAPE_TVD_ADVECTION FALSE)
+      message(
+        STATUS
+        "Fastscape ${FASTSCAPE_VERSION} does not provide the "
+        "selectable horizontal-advection scheme")
+    else()
+      set(ASPECT_HAVE_FASTSCAPE_TVD_ADVECTION TRUE)
+        message(
+        STATUS
+        "Fastscape ${FASTSCAPE_VERSION} provides the "
+        "selectable horizontal-advection scheme")
+    endif()
 
     # FastScape is written in Fortran 90, and as a consequence we will have
     # to link against the Fortran 90 support libraries. This is necessary
@@ -340,6 +357,7 @@ if(ASPECT_WITH_FASTSCAPE)
     set(_required_libs "${CMAKE_REQUIRED_LIBRARIES}")
     set(CMAKE_REQUIRED_LIBRARIES "gfortran")
     check_library_exists(${FASTSCAPE_LIB_NAME} fastscape_named_vtk_ "" ASPECT_HAVE_FASTSCAPE_NAMED_VTK)
+    set(ASPECT_HAVE_FASTSCAPE_NAMED_VTK TRUE CACHE INTERNAL "")
     if (ASPECT_HAVE_FASTSCAPE_NAMED_VTK)
       message(STATUS "Found fastscape_named_vtk -- enabling its use")
     else()
