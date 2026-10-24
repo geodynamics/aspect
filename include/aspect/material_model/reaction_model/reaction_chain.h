@@ -79,8 +79,7 @@ namespace aspect
           std::vector<std::shared_ptr<Cahn1956Interface<dim>>> kinetics_models;
 
           /**
-           * Allowed excursion/slack before a reaction progress value is considered unphysical or violates monotonicity ordering.
-           * Accepts values between [0, 1)
+           * Allowed excursion/slack before a reaction progress value is considered too extreme for a given timestep.
            */
           double tolerance_in_reaction_progress;
       };
