@@ -152,6 +152,7 @@ namespace aspect
         return reaction.kinetics->net_forward_reaction_rate(temperature, pressure,
                                                             delta_forward_gibbs_energy,
                                                             cumulative_forward_reaction_progress,
+                                                            tolerance_in_reaction_progress,
                                                             reaction.local_reaction_index);
       }
 
@@ -216,6 +217,7 @@ namespace aspect
               const std::vector<unsigned int> &global_indices = global_indices_by_model[model_name];
 
               std::shared_ptr<Cahn1956Interface<dim>> kinetics(create_reaction_model<dim>(model_name).release());
+              kinetics->initialize_simulator(this->get_simulator());
               kinetics->parse_parameters(prm, global_indices.size());
               kinetics_models.push_back(kinetics);
 
