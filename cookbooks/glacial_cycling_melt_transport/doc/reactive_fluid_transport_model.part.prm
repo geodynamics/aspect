@@ -1,0 +1,16 @@
+subsection Material model
+  set Model name =  reactive fluid transport
+
+  subsection Reactive Fluid Transport Model
+    set Base model = visco plastic
+    set Fluid-solid reaction scheme = katz2003
+
+    # Katz 2003 melting model
+    subsection Katz 2003 model
+      set Reference permeability = 1e-7
+      set Melt extraction depth = 30.0e3
+      set Freezing rate         = 0.5
+      set Melting time scale for operator splitting = 10e2
+      set Exponential melt weakening factor = 20
+    end
+  end
