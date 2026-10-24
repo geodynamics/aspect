@@ -13,6 +13,8 @@
 // ------------------------------------------------------
 
 #include <aspect/postprocess/gravity_point_values.h>
+#include <aspect/postprocess/dynamic_topography.h>
+#include <aspect/mesh_deformation/interface.h>
 #include <aspect/geometry_model/spherical_shell.h>
 #include <aspect/geometry_model/sphere.h>
 #include <aspect/geometry_model/chunk.h>
@@ -81,6 +83,35 @@ namespace aspect
         {
           model_outer_radius = 1;
           model_inner_radius = 0;
+        }
+
+      // Determine whether the top and bottom boundaries are deformed by
+      // the mesh deformation plugins. In that case the topography mass is
+      // already contained in the volume integral over the deformed mesh.
+      surface_is_deformed = false;
+      bottom_is_deformed = false;
+      if (include_surface_topography || include_bottom_topography)
+        {
+          const std::map<std::string,types::boundary_id> boundary_names
+            = this->get_geometry_model().get_symbolic_boundary_names_map();
+
+          AssertThrow (!include_surface_topography || boundary_names.find("top") != boundary_names.end(),
+                       ExcMessage ("The surface topography contribution to gravity can only be "
+                                   "included if the geometry model has a boundary named 'top'."));
+          AssertThrow (!include_bottom_topography || boundary_names.find("bottom") != boundary_names.end(),
+                       ExcMessage ("The bottom topography contribution to gravity can only be "
+                                   "included if the geometry model has a boundary named 'bottom'."));
+
+          if (this->get_parameters().mesh_deformation_enabled)
+            {
+              const std::set<types::boundary_id> deformed_boundaries
+                = this->get_mesh_deformation_handler().get_active_mesh_deformation_boundary_indicators();
+
+              if (include_surface_topography)
+                surface_is_deformed = (deformed_boundaries.find(boundary_names.at("top")) != deformed_boundaries.end());
+              if (include_bottom_topography)
+                bottom_is_deformed = (deformed_boundaries.find(boundary_names.at("bottom")) != deformed_boundaries.end());
+            }
         }
 
 
@@ -242,6 +273,10 @@ namespace aspect
       std::vector<Tensor<1,dim>>          local_g_anomaly (n_satellites);
       std::vector<SymmetricTensor<2,dim>> local_g_gradient (n_satellites);
 
+      // Contributions of the boundary topography (only used if requested):
+      std::vector<Tensor<1,dim>>          local_g_surface_topography (n_satellites);
+      std::vector<Tensor<1,dim>>          local_g_bottom_topography (n_satellites);
+
       std::vector<double> G_times_density_times_JxW (n_quadrature_points_per_cell);
       std::vector<double> G_times_density_anomaly_times_JxW (n_quadrature_points_per_cell);
 
@@ -312,6 +347,123 @@ namespace aspect
               }
           }
 
+      // If requested, add the contribution of the mass associated with the
+      // dynamic topography of the top and/or bottom boundary. Each boundary
+      // quadrature point is treated as a point mass G * sigma * dA, where
+      // sigma = delta_rho * h is the surface mass density of the deflected
+      // boundary. delta_rho uses the 'Density above' and 'Density below'
+      // parameters of the 'dynamic topography' postprocessor, i.e., the same
+      // density contrasts that were used to compute h. The sign convention
+      // for the bottom boundary follows the one of the 'geoid' postprocessor.
+      // Boundaries that are deformed by mesh deformation are skipped, because
+      // their topography mass is already part of the volume integral above.
+      const bool add_surface_topography = include_surface_topography && !surface_is_deformed;
+      const bool add_bottom_topography  = include_bottom_topography  && !bottom_is_deformed;
+
+      if (add_surface_topography || add_bottom_topography)
+        {
+          const Postprocess::DynamicTopography<dim> &dynamic_topography =
+            this->get_postprocess_manager().template get_matching_active_plugin<Postprocess::DynamicTopography<dim>>();
+
+          const LinearAlgebra::BlockVector &topography_vector = dynamic_topography.topography_vector();
+          const double density_above = dynamic_topography.get_density_above();
+          const double density_below = dynamic_topography.get_density_below();
+
+          const std::map<std::string,types::boundary_id> boundary_names
+            = this->get_geometry_model().get_symbolic_boundary_names_map();
+          const types::boundary_id top_id
+            = (add_surface_topography ? boundary_names.at("top") : numbers::invalid_boundary_id);
+          const types::boundary_id bottom_id
+            = (add_bottom_topography ? boundary_names.at("bottom") : numbers::invalid_boundary_id);
+
+          const QGauss<dim-1> face_quadrature_formula (degree);
+          FEFaceValues<dim> fe_face_values (this->get_mapping(),
+                                            this->get_fe(),
+                                            face_quadrature_formula,
+                                            update_values |
+                                            update_gradients |
+                                            update_quadrature_points |
+                                            update_JxW_values);
+
+          const unsigned int n_face_q_points = face_quadrature_formula.size();
+
+          MaterialModel::MaterialModelInputs<dim> face_in(n_face_q_points,
+                                                          this->n_compositional_fields());
+          MaterialModel::MaterialModelOutputs<dim> face_out(n_face_q_points,
+                                                            this->n_compositional_fields());
+          face_in.requested_properties = MaterialModel::MaterialProperties::density;
+
+          std::vector<double> topography_values (n_face_q_points);
+
+          for (const auto &cell : this->get_dof_handler().active_cell_iterators())
+            if (cell->is_locally_owned() && cell->at_boundary())
+              for (const unsigned int face_no : cell->face_indices())
+                {
+                  if (cell->face(face_no)->at_boundary() == false)
+                    continue;
+
+                  const types::boundary_id boundary_id = cell->face(face_no)->boundary_id();
+                  const bool at_top    = (add_surface_topography && boundary_id == top_id);
+                  const bool at_bottom = (add_bottom_topography && boundary_id == bottom_id);
+
+                  if (!at_top && !at_bottom)
+                    continue;
+
+                  fe_face_values.reinit (cell, face_no);
+
+                  // The dynamic topography postprocessor stores the topography
+                  // in the temperature component of its solution vector.
+                  fe_face_values[this->introspection().extractors.temperature]
+                  .get_function_values (topography_vector, topography_values);
+
+                  face_in.reinit (fe_face_values, cell, this->introspection(), this->get_solution());
+                  this->get_material_model().evaluate (face_in, face_out);
+
+                  for (unsigned int q = 0; q < n_face_q_points; ++q)
+                    {
+                      const double delta_rho = (at_top
+                                                ?
+                                                face_out.densities[q] - density_above
+                                                :
+                                                density_below - face_out.densities[q]);
+
+                      const double G_sigma_dA = G * delta_rho * topography_values[q] * fe_face_values.JxW(q);
+
+                      for (unsigned int p=0; p < n_satellites; ++p)
+                        {
+                          const Tensor<1,dim> r_vector = satellite_positions_cartesian[p] - fe_face_values.quadrature_point(q);
+
+                          const double r_squared = r_vector.norm_square();
+                          const double r = std::sqrt(r_squared);
+                          const double r_cubed = r * r_squared;
+                          const double r_to_the_5 = r_squared * r_cubed;
+
+                          const Tensor<1,dim> g_contribution = - G_sigma_dA / r_cubed * r_vector;
+
+                          // The topography mass is not part of the reference
+                          // density model, so it contributes to both the full
+                          // gravity and the gravity anomaly:
+                          local_g[p] += g_contribution;
+                          local_g_anomaly[p] += g_contribution;
+
+                          if (at_top)
+                            local_g_surface_topography[p] += g_contribution;
+                          else
+                            local_g_bottom_topography[p] += g_contribution;
+
+                          local_g_potential[p] -= G_sigma_dA / r;
+
+                          const double grad_KK = G_sigma_dA / r_to_the_5;
+                          for (unsigned int e=0; e<dim; ++e)
+                            for (unsigned int f=e; f<dim; ++f)
+                              local_g_gradient[p][e][f] += grad_KK * (3.0
+                                                                      * r_vector[e] * r_vector[f]
+                                                                      - (e==f ? r_squared : 0));
+                        }
+                    }
+                }
+        }
+
       // Sum local gravity components over global domain and compute
       // some max and mins. We can directly call Utilities::MPI::sum()
       // for a vector of doubles, but for the other data types we have
@@ -351,6 +503,20 @@ namespace aspect
                    (local_g_gradient,
                     this->get_mpi_communicator(),
                     tensor_sum);
+
+      const std::vector<Tensor<1,dim>>
+      g_surface_topography = Utilities::MPI::all_reduce<decltype(local_g_surface_topography)>
+                             (local_g_surface_topography,
+                              this->get_mpi_communicator(),
+                              tensor_sum);
+
+      const std::vector<Tensor<1,dim>>
+      g_bottom_topography = Utilities::MPI::all_reduce<decltype(local_g_bottom_topography)>
+                            (local_g_bottom_topography,
+                             this->get_mpi_communicator(),
+                             tensor_sum);
+
+      const bool output_topography_contributions = include_surface_topography || include_bottom_topography;
 
       double sum_g = 0;
       double min_g = std::numeric_limits<double>::max();
@@ -483,8 +649,17 @@ namespace aspect
                  << "# 26: gravity_gradient_theory_zz" << '\n'
                  << "# 27: gravity_gradient_theory_xy" << '\n'
                  << "# 28: gravity_gradient_theory_xz" << '\n'
-                 << "# 29: gravity_gradient_theory_yz" << '\n'
-                 << '\n';
+                 << "# 29: gravity_gradient_theory_yz" << '\n';
+
+          if (output_topography_contributions)
+            output << "# 30: gravity_surface_topography_x" << '\n'
+                   << "# 31: gravity_surface_topography_y" << '\n'
+                   << "# 32: gravity_surface_topography_z" << '\n'
+                   << "# 33: gravity_bottom_topography_x" << '\n'
+                   << "# 34: gravity_bottom_topography_y" << '\n'
+                   << "# 35: gravity_bottom_topography_z" << '\n';
+
+          output << '\n';
 
           for (unsigned int p=0; p < n_satellites; ++p)
             {
@@ -517,8 +692,13 @@ namespace aspect
                      << g_gradient_theory[p][2][2] *1e9 << ' '
                      << g_gradient_theory[p][0][1] *1e9 << ' '
                      << g_gradient_theory[p][0][2] *1e9 << ' '
-                     << g_gradient_theory[p][1][2] *1e9 << ' '
-                     << '\n';
+                     << g_gradient_theory[p][1][2] *1e9 << ' ';
+
+              if (output_topography_contributions)
+                output << g_surface_topography[p] << ' '
+                       << g_bottom_topography[p] << ' ';
+
+              output << '\n';
             }
 
           // Now push the entire buffer into the output file in one swoop fell:
@@ -563,6 +743,18 @@ namespace aspect
       set_last_output_time (this->get_time());
       last_output_timestep = this->get_timestep_number();
       return std::pair<std::string, std::string> ("Writing gravity output:", filename);
+    }
+
+
+
+    template <int dim>
+    std::list<std::string>
+    GravityPointValues<dim>::required_other_postprocessors () const
+    {
+      std::list<std::string> deps;
+      if (include_surface_topography || include_bottom_topography)
+        deps.emplace_back ("dynamic topography");
+      return deps;
     }
 
 
@@ -649,6 +841,37 @@ namespace aspect
                              Patterns::Double (0.0),
                              "Gravity anomalies may be computed using density "
                              "anomalies relative to a reference density.");
+          prm.declare_entry ("Include surface topography contribution", "false",
+                             Patterns::Bool (),
+                             "Whether to include the gravitational contribution of the mass "
+                             "associated with the dynamic topography of the top boundary. "
+                             "The topography is taken from the 'dynamic topography' "
+                             "postprocessor, which is then automatically enabled, and is "
+                             "treated as a thin sheet of mass with surface density "
+                             "$(\\rho - \\rho_{above}) h$, where $\\rho_{above}$ is the "
+                             "'Density above' parameter of the dynamic topography "
+                             "postprocessor. If the top boundary is deformed by a mesh "
+                             "deformation plugin (e.g., a free surface), this contribution "
+                             "is already included through the deformed mesh and is not "
+                             "added again. The contribution is added to the gravity, "
+                             "gravity anomaly, potential and gradients, and is also "
+                             "written as separate columns in the output file. Note that "
+                             "the gravitational acceleration of a mass sheet jumps by "
+                             "$4 \\pi G \\sigma$ across the sheet, so the acceleration "
+                             "should be evaluated at points above the surface rather "
+                             "than exactly on it; the potential is continuous.");
+          prm.declare_entry ("Include bottom topography contribution", "false",
+                             Patterns::Bool (),
+                             "Whether to include the gravitational contribution of the mass "
+                             "associated with the dynamic topography of the bottom boundary. "
+                             "The topography is taken from the 'dynamic topography' "
+                             "postprocessor, which is then automatically enabled, and is "
+                             "treated as a thin sheet of mass with surface density "
+                             "$(\\rho_{below} - \\rho) h$, where $\\rho_{below}$ is the "
+                             "'Density below' parameter of the dynamic topography "
+                             "postprocessor. If the bottom boundary is deformed by a mesh "
+                             "deformation plugin, this contribution is already included "
+                             "through the deformed mesh and is not added again.");
           prm.declare_entry ("Precision in gravity output", "12",
                              Patterns::Integer (1),
                              "Set the precision of gravity acceleration, potential "
@@ -727,6 +950,8 @@ namespace aspect
           maximum_colatitude  = prm.get_double ("Maximum latitude") + 90.;
           reference_density   = prm.get_double ("Reference density");
           precision = prm.get_integer ("Precision in gravity output");
+          include_surface_topography = prm.get_bool ("Include surface topography contribution");
+          include_bottom_topography  = prm.get_bool ("Include bottom topography contribution");
           radius_list    = Utilities::string_to_double(Utilities::split_string_list(prm.get("List of radius")));
           longitude_list = Utilities::string_to_double(Utilities::split_string_list(prm.get("List of longitude")));
           latitude_list  = Utilities::string_to_double(Utilities::split_string_list(prm.get("List of latitude")));

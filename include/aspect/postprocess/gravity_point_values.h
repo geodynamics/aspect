@@ -67,6 +67,15 @@ namespace aspect
         std::pair<std::string,std::string> execute (TableHandler &) override;
 
         /**
+         * If the contribution of the deflected surface or bottom boundary
+         * is requested, this postprocessor needs the topography computed
+         * by the 'dynamic topography' postprocessor. Let the postprocess
+         * manager know about this dependency.
+         */
+        std::list<std::string>
+        required_other_postprocessors () const override;
+
+        /**
          * Declare the parameters this class takes through input files.
          */
         static
@@ -250,6 +259,40 @@ namespace aspect
          * This variable is read from the parameter file through a parameter called 'Reference density'.
          */
         double reference_density;
+
+        /**
+         * Whether to include the gravitational contribution of the mass
+         * associated with the dynamic topography of the top (surface)
+         * boundary. The topography h is taken from the 'dynamic topography'
+         * postprocessor and is treated as a thin sheet of surface mass
+         * density (rho - rho_above) * h located at the boundary.
+         *
+         * This variable is read from the parameter file through a parameter
+         * called 'Include surface topography contribution'.
+         */
+        bool include_surface_topography;
+
+        /**
+         * Whether to include the gravitational contribution of the mass
+         * associated with the dynamic topography of the bottom boundary.
+         * The topography h is taken from the 'dynamic topography'
+         * postprocessor and is treated as a thin sheet of surface mass
+         * density (rho_below - rho) * h located at the boundary.
+         *
+         * This variable is read from the parameter file through a parameter
+         * called 'Include bottom topography contribution'.
+         */
+        bool include_bottom_topography;
+
+        /**
+         * Whether the top or bottom boundaries are deformed by the mesh
+         * deformation (e.g., free surface) plugins. If so, the mass
+         * associated with the boundary topography is already part of the
+         * volume integral over the deformed mesh, and the boundary
+         * contribution must not be added a second time.
+         */
+        bool surface_is_deformed;
+        bool bottom_is_deformed;
 
         /**
          * Specify the sampling scheme determining if gravity calculation is performed.

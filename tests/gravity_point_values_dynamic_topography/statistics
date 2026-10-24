@@ -1,0 +1,21 @@
+# 1: Time step number
+# 2: Time (years)
+# 3: Time step size (years)
+# 4: Number of mesh cells
+# 5: Number of Stokes degrees of freedom
+# 6: Number of temperature degrees of freedom
+# 7: Number of nonlinear iterations
+# 8: Iterations for Stokes solver
+# 9: Velocity iterations in Stokes preconditioner
+# 10: Schur complement iterations in Stokes preconditioner
+# 11: Density at top (kg/m^3)
+# 12: Density at bottom (kg/m^3)
+# 13: Pressure at top (Pa)
+# 14: Pressure at bottom (Pa)
+# 15: Average gravity acceleration (m/s^2)
+# 16: Minimum gravity acceleration (m/s^2)
+# 17: Maximum gravity acceleration (m/s^2)
+# 18: Average gravity potential (m^2/s^2)
+# 19: Minimum gravity potential (m^2/s^2)
+# 20: Maximum gravity potential (m^2/s^2)
+0 0.000000000000e+00 0.000000000000e+00 768 21760 6930 2 35 36 36 1.00000000e+00 1.00000000e+00 3.60791356e-10 1.96000001e+06 7.939293068811e-05 7.527989217372e-05 8.204486221091e-05 -3.503287069977e+01 -3.538613958293e+01 -3.449960095343e+01 
