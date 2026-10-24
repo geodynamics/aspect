@@ -162,9 +162,8 @@ namespace aspect
         prm.enter_subsection("Reaction chain");
         {
           prm.declare_entry("Kinetic models",
-                            "Interface controlled growth",
-                            Patterns::List(Patterns::Selection(ReactionModelPluginList<dim>::get_pattern_of_names()),
-                                           1, Patterns::List::max_int_value, "|"),
+                            "",
+                            Patterns::List(Patterns::Anything()),
                             "'|'-separated list of registered reaction kinetics model names, one per reaction in the chain. The number of entries "
                             "sets the number of reactions N, which must equal the number of compositional fields tracking reaction progress.");
 
@@ -194,7 +193,12 @@ namespace aspect
           const std::vector<std::string> kinetic_model_names = Utilities::split_string_list(prm.get("Kinetic models"), '|');
           const unsigned int n_reactions = kinetic_model_names.size();
 
-          AssertThrow(n_reactions > 0, ExcMessage("'Reaction chain/Kinetic models' must contain at least one entry."));
+          const unsigned int n_reaction_progress_fields =
+            this->introspection().get_number_of_fields_of_type(CompositionalFieldDescription::reaction_progress);
+
+          AssertThrow(n_reactions == n_reaction_progress_fields,
+                      ExcMessage("The number of reactions configured in 'Reaction chain/Kinetic models' must match "
+                                 "the number of reaction progress compositional fields."));
 
           reactions.resize(n_reactions);
           kinetics_models.clear();
