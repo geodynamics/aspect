@@ -99,5 +99,6 @@ benchmarks/viscoelastic_plate_flexure/doc/README.md
 benchmarks/elastic_line_load/doc/elastic_line_load.md
 benchmarks/free_surface_tractions/viscoelastic/README.md
 benchmarks/free_surface_tractions/viscous/README.md
+benchmarks/convection_box_2d_lee_2013/doc/convection_box_2d_lee_2013.md
 benchmarks/zhong_et_al_93/README.md
 :::

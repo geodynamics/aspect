@@ -1,0 +1,7 @@
+include lee_BA.prm
+
+set Output directory = output_lee_EBA
+
+subsection Heating model
+  set List of model names = shear heating, adiabatic heating
+end
