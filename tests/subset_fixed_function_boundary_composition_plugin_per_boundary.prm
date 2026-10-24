@@ -1,0 +1,32 @@
+# A test for specifying fixed compositions with the
+# 'function' boundary composition plugin for only
+# a subset of the compositional fields. 
+include $ASPECT_SOURCE_DIR/tests/boundary_composition_plugin_per_boundary.prm
+set Dimension                              = 2
+
+subsection Compositional fields
+  set Number of fields = 3
+  set Names of fields = field1, field2, field3
+end
+
+subsection Boundary composition model
+  set List of model names = box, initial composition
+  set List of model operators = maximum, subtract
+  set Fixed composition boundary indicators   = top[field1]:box,\
+                                                top[field2]:box+function,\
+                                                left,\
+                                                bottom[field1|field2]:function,\
+                                                bottom[field3]:box+initial composition,\
+                                                right
+
+  subsection Box
+    set Left composition = 15, 15, 15
+    set Right composition = 0, 0, 0
+    set Top composition = 0, 0
+    set Bottom composition = 7
+  end
+
+  subsection Function
+    set Function expression = if (x>500000,3,0); if (x>500000,6,0)
+  end
+end

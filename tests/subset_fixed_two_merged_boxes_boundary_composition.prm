@@ -1,0 +1,53 @@
+# This input file tests that the 'box with lithosphere boundary indicators'
+# boundary composition plugin works correctly when different fields are
+# fixed on different boundaries with two different plugins.
+include $ASPECT_SOURCE_DIR/tests/two_merged_boxes_initial_topography.prm
+
+set Dimension = 3
+
+subsection Compositional fields
+  set Number of fields = 3
+  set Names of fields = field0, field1, field2
+end
+
+subsection Initial composition model
+  subsection Function
+    set Function expression = 1; 1; 1
+  end
+end
+
+subsection Boundary composition model
+  # Spaces are okay to include
+  set Fixed composition boundary indicators   = bottom[field0|field1]:box with lithosphere boundary indicators,\
+                                                bottom[field2]:function,\
+                                                left[field0|field1|field2]:box with lithosphere boundary indicators, \
+                                                left lithosphere[field0|field1|field2]:box with lithosphere boundary indicators, \
+                                                right[field0|field1|field2]:box with lithosphere boundary indicators, \
+                                                right lithosphere[field0|field1|field2]:box with lithosphere boundary indicators, \
+                                                top[field0|field1|field2] :function, \
+                                                front [field1]:box with lithosphere boundary indicators, \
+                                                front[field0|field2]: function, \
+                                                front lithosphere [field0|field1|field2]: function, \
+                                                back[field0|field1] : box with lithosphere boundary indicators, \
+                                                back[field2] : function, \
+                                                back lithosphere[field0|field1|field2] : box with lithosphere boundary indicators, \
+
+  subsection Box with lithosphere boundary indicators
+    set Bottom composition = 0, 0
+    set Left composition = 5, 5, 5
+    set Left composition lithosphere = 15, 25, 35
+    set Right composition = 10, 10, 10
+    set Right composition lithosphere = 20, 20, 20
+    set Front composition = 15
+    set Back composition = 20, 20
+    set Back composition lithosphere = 30, 30, 30
+  end
+
+  subsection Function
+    set Function expression = 0;0;0
+  end
+end
+
+subsection Postprocess
+  set List of postprocessors = composition statistics, visualization
+end
