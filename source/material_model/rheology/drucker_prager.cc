@@ -359,7 +359,7 @@ namespace aspect
                                    "composition " + Utilities::to_string(i) + "."));
 
             if (angles_dilation[i] > 0.0)
-              AssertThrow(this->get_parameters().enable_prescribed_dilation == true,
+              AssertThrow(this->get_parameters().enable_prescribed_plastic_dilation == true,
                           ExcMessage("ASPECT detected a nonzero dilation angle, but dilation is "
                                      "not enabled. Please set parameter entry 'Enable prescribed "
                                      "dilation' to 'true'."));
