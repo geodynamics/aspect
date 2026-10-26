@@ -27,13 +27,13 @@ Number of active cells: 15 (on 3 levels)
 Number of degrees of freedom: 986 (705+46+235)
 
 Number of mesh deformation degrees of freedom: 705
-   Solving mesh displacement system... 4 iterations.
+   Solving mesh displacement system... 6 iterations.
 *** Timestep 0:  t=0 seconds, dt=0 seconds
    Solving mesh displacement system... 0 iterations.
    Solving Stokes system (GMG-GC)... 
      GMG coarse size A: 81, coarse size S: 8
      GMG levels: 3
-     Viscosity range: 0.01 - 0.0962182
+     Viscosity range: 0.01 - 0.0961615
      Stokes solver (GMRES): 19+0 iterations.
      Schur complement preconditioner: 20+0 iterations.
      A block preconditioner: 20+0 iterations.
