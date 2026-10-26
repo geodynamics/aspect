@@ -1,0 +1,16 @@
+# This test makes sure the cookbook free_surface runs
+# as expected.
+
+include $ASPECT_SOURCE_DIR/cookbooks/free_surface/free_surface.prm
+
+set End time = 0
+
+subsection Mesh refinement
+  set Initial adaptive refinement        = 0
+  set Initial global refinement          = 1
+  set Time steps between mesh refinement = 0
+end
+
+subsection Postprocess
+  set List of postprocessors = velocity statistics, topography
+end
