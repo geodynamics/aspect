@@ -1,0 +1,34 @@
+# 1: Time step number
+# 2: Time (years)
+# 3: Time step size (years)
+# 4: Number of mesh cells
+# 5: Number of Stokes degrees of freedom
+# 6: Number of temperature degrees of freedom
+# 7: Number of degrees of freedom for all compositions
+# 8: Iterations for temperature solver
+# 9: Iterations for composition solver 1
+# 10: Iterations for composition solver 2
+# 11: Iterations for composition solver 3
+# 12: Iterations for composition solver 4
+# 13: Iterations for Stokes solver
+# 14: Velocity iterations in Stokes preconditioner
+# 15: Schur complement iterations in Stokes preconditioner
+# 16: Minimal value for composition strain_xx
+# 17: Maximal value for composition strain_xx
+# 18: Global mass for composition strain_xx
+# 19: Minimal value for composition strain_xy
+# 20: Maximal value for composition strain_xy
+# 21: Global mass for composition strain_xy
+# 22: Minimal value for composition strain_yx
+# 23: Maximal value for composition strain_yx
+# 24: Global mass for composition strain_yx
+# 25: Minimal value for composition strain_yy
+# 26: Maximal value for composition strain_yy
+# 27: Global mass for composition strain_yy
+# 28: RMS velocity (m/year)
+# 29: Max. velocity (m/year)
+# 30: Minimal temperature (K)
+# 31: Average temperature (K)
+# 32: Maximal temperature (K)
+# 33: Average nondimensional temperature (K)
+0 0.000000000000e+00 0.000000000000e+00 12 151 65 260 0 0 0 0 0 3 3 4 1.00000000e+00 1.00000000e+00 2.52300000e+13 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 1.00000000e+00 1.00000000e+00 2.52300000e+13 3.16702287e-04 8.67324933e-04 2.93000000e+02 1.58945736e+03 2.78000000e+03 5.21293671e-01 

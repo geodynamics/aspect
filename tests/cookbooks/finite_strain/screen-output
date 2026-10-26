@@ -1,0 +1,24 @@
+
+Loading shared library <./libfinite_strain.debug.so>
+
+Number of active cells: 12 (on 2 levels)
+Number of degrees of freedom: 476 (130+21+65+65+65+65+65)
+
+*** Timestep 0:  t=0 years, dt=0 years
+   Solving temperature system... 0 iterations.
+   Solving strain_xx system ... 0 iterations.
+   Skipping strain_xy composition solve because RHS is zero.
+   Skipping strain_yx composition solve because RHS is zero.
+   Solving strain_yy system ... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 3+0 iterations.
+
+   Postprocessing:
+     Compositions min/max/mass: 1/1/2.523e+13 // 0/0/0 // 0/0/0 // 1/1/2.523e+13
+     RMS, max velocity:         0.000317 m/year, 0.000867 m/year
+     Temperature min/avg/max:   293 K, 1589 K, 2780 K
+
+Termination requested by criterion: end time
+
+
+
