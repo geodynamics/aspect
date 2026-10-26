@@ -1,6 +1,6 @@
 
 
-   Loading Ascii data boundary file /Users/dougld/software/aspect/data/geometry-model/initial-topography-model/ascii-data/test/box_3d_top.0.txt.
+   Loading Ascii data boundary file $ASPECT_SOURCE_DIR/data/geometry-model/initial-topography-model/ascii-data/test/box_3d_top.0.txt.
 
 Number of active cells: 1 (on 1 levels)
 Number of degrees of freedom: 116 (81+8+27)
@@ -43,10 +43,11 @@ Number of mesh deformation degrees of freedom: 8,943
    Solving Stokes system (GMG)... 14+0 iterations.
 
    Postprocessing:
-     Writing graphical output: output/solution/solution-00000
+     Writing graphical output: output-box_initial_mesh_deformation_ascii_data_AMR/solution/solution-00000
      RMS, max velocity:        0.471 m/year, 1.53 m/year
      Topography min/max:       2e+04 m, 5.5e+04 m
 
 Termination requested by criterion: end time
+
 
 
