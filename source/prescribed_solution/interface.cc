@@ -73,7 +73,7 @@ namespace aspect
       const Quadrature<dim> quadrature (aspect::Utilities::get_unit_support_points(*this));
       const auto &finite_element = this->get_fe();
 
-      FEValues<dim> fe_values (finite_element, quadrature, update_quadrature_points);
+      FEValues<dim> fe_values (this->get_mapping(), finite_element, quadrature, update_quadrature_points);
 
       const unsigned int n_dofs = quadrature.size();
       std::vector<unsigned int> component_indices(n_dofs);
