@@ -1709,7 +1709,7 @@ viscosity|density|thermal expansivity|specific heat|thermal conductivity|thermal
 :name: parameters:Postprocess/Visualization/Melt_20fraction/beta1
 **Default value:** 1.5
 
-**Pattern:** [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
+**Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
 **Documentation:** Exponent of the melting temperature in the melt fraction calculation before clinopyroxene exhaustion. Units: non-dimensional.
 ::::
@@ -1718,7 +1718,7 @@ viscosity|density|thermal expansivity|specific heat|thermal conductivity|thermal
 :name: parameters:Postprocess/Visualization/Melt_20fraction/beta2
 **Default value:** 1.2
 
-**Pattern:** [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
+**Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
 **Documentation:** Exponent of the melting temperature in the melt fraction calculation after clinopyroxene exhaustion. Units: non-dimensional.
 ::::
