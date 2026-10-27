@@ -486,12 +486,12 @@ namespace aspect
               prm.declare_entry ("beta1", "1.5",
                                  Patterns::Double (0),
                                  "Exponent of the melting temperature in the melt "
-                                 "fraction calculation before clinopyroxene exhaustion. "
+                                 "fraction calculation before clinopyroxene exhaustion. Must be greater than 0. "
                                  "Units: non-dimensional.");
               prm.declare_entry ("beta2", "1.2",
                                  Patterns::Double (0),
                                  "Exponent of the melting temperature in the melt "
-                                 "fraction calculation after clinopyroxene exhaustion. "
+                                 "fraction calculation after clinopyroxene exhaustion. Must be greater than 0. "
                                  "Units: non-dimensional.");
               prm.declare_entry ("Bulk H2O ppm", "0",
                                  Patterns::Double (0),
