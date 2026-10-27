@@ -28,8 +28,6 @@ namespace aspect
     void
     ViscoPlastic<dim>::initialize()
     {
-      reaction_chain.initialize();
-
       if (use_dominant_phase_for_viscosity)
         {
           phase_function_discrete->initialize();
@@ -513,8 +511,11 @@ namespace aspect
                       ExcMessage("The number of entries in 'Reaction progress mapping' must match the number of "
                                  "reaction progress compositional fields."));
 
-          reaction_chain.initialize_simulator(this->get_simulator());
           reaction_chain.parse_parameters(prm);
+
+          AssertThrow(reaction_chain.n_reactions() == n_reaction_progress_fields,
+                      ExcMessage("The number of reactions configured in 'Reaction chain/Kinetic models' must match "
+                                 "the number of reaction progress compositional fields."));
         }
         prm.leave_subsection();
       }

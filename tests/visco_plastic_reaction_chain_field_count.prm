@@ -1,0 +1,14 @@
+# Check that the material model rejects a reaction count that does not
+# match its reaction-progress fields, even though the chain parses alone.
+# EXPECT FAILURE
+
+include $ASPECT_SOURCE_DIR/tests/phase_kinetics_composition_metastable.prm
+
+subsection Material model
+  subsection Visco Plastic
+    subsection Reaction chain
+      # The included case has one reaction-progress field.
+      set Kinetic models =
+    end
+  end
+end

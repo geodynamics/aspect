@@ -315,7 +315,10 @@ TEST_CASE("Reaction Chain Processing")
       ReactionChain<2> single_reaction_chain;
       ReactionChain<2>::declare_parameters(single_prm);
 
-      single_reaction_chain.parse_parameters(single_prm); // 1 default reaction
+      single_prm.enter_subsection("Reaction chain");
+      single_prm.set("Kinetic models", "Interface controlled growth");
+      single_prm.leave_subsection();
+      single_reaction_chain.parse_parameters(single_prm);
 
       const std::vector<double> xi = {0.3};
       const std::vector<double> densities = {3000.0, 3000.0};
@@ -420,7 +423,12 @@ TEST_CASE("Reaction Chain Kinetic Models Parsing")
     const std::string parsed_default = prm.get("Kinetic models");
     prm.leave_subsection();
 
-    CHECK(parsed_default == "Interface controlled growth");
+    CHECK(parsed_default.empty());
+
+    ReactionChain<2> reaction_chain;
+    reaction_chain.parse_parameters(prm);
+    CHECK(reaction_chain.n_reactions() == 0);
+    CHECK(reaction_chain.reactions.empty());
   }
 
   SECTION("Parsing throws on invalid 'Tolerance in reaction progress'")

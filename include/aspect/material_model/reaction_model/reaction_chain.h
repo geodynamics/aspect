@@ -41,17 +41,19 @@ namespace aspect
        *
        * N is set by the number of entries in "Reaction chain/Kinetic models" (see Cahn1956Interface).
        *
+       * Parsing and evaluating the chain do not require a simulator. The
+       * calling material model must validate the reaction count against its
+       * reaction-progress compositional fields.
+       *
        * Independent linear chains only. Branching networks (a phase produced/consumed by more than one reaction) or competing back-reaction
        * pathways need a stoichiometry-matrix mass balance and are out of scope here.
        */
       template <int dim>
-      class ReactionChain : public ::aspect::SimulatorAccess<dim>
+      class ReactionChain
       {
         public:
           std::vector<ReactionStep<dim>> reactions;
 
-          void
-          initialize();
 
           unsigned int
           n_reactions() const;

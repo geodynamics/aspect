@@ -24,18 +24,6 @@ namespace aspect
     namespace ReactionModel
     {
       template <int dim>
-      void
-      ReactionChain<dim>::initialize()
-      {
-        for (auto &kinetics : kinetics_models)
-          {
-            kinetics->initialize_simulator(this->get_simulator());
-          }
-      }
-
-
-
-      template <int dim>
       unsigned int
       ReactionChain<dim>::n_reactions() const
       {
@@ -202,12 +190,7 @@ namespace aspect
           const std::vector<std::string> kinetic_model_names = Utilities::split_string_list(prm.get("Kinetic models"), '|');
           const unsigned int n_reactions = kinetic_model_names.size();
 
-          const unsigned int n_reaction_progress_fields =
-            this->introspection().get_number_of_fields_of_type(CompositionalFieldDescription::reaction_progress);
-
-          AssertThrow(n_reactions == n_reaction_progress_fields,
-                      ExcMessage("The number of reactions configured in 'Reaction chain/Kinetic models' must match "
-                                 "the number of reaction progress compositional fields."));
+          AssertThrow(n_reactions > 0, ExcMessage("'Reaction chain/Kinetic models' must contain at least one entry."));
 
           reactions.resize(n_reactions);
           kinetics_models.clear();
