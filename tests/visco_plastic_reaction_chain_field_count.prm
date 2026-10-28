@@ -7,8 +7,8 @@ include $ASPECT_SOURCE_DIR/tests/phase_kinetics_composition_metastable.prm
 subsection Material model
   subsection Visco Plastic
     subsection Reaction chain
-      # The included case has one reaction-progress field.
-      set Kinetic models =
+      # The included case has one reaction-progress field, but two reactions.
+      set Kinetic models = Interface controlled growth|Eutectoid decomposition
     end
   end
 end

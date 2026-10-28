@@ -511,11 +511,25 @@ namespace aspect
                       ExcMessage("The number of entries in 'Reaction progress mapping' must match the number of "
                                  "reaction progress compositional fields."));
 
-          reaction_chain.parse_parameters(prm);
+          if (n_reaction_progress_fields > 0)
+            {
+              reaction_chain.parse_parameters(prm);
 
-          AssertThrow(reaction_chain.n_reactions() == n_reaction_progress_fields,
-                      ExcMessage("The number of reactions configured in 'Reaction chain/Kinetic models' must match "
-                                 "the number of reaction progress compositional fields."));
+              AssertThrow(reaction_chain.n_reactions() == n_reaction_progress_fields,
+                          ExcMessage("The number of reactions configured in 'Reaction chain/Kinetic models' must match "
+                                     "the number of reaction progress compositional fields."));
+            }
+          else
+            {
+              prm.enter_subsection("Reaction chain");
+              const std::vector<std::string> kinetic_models =
+                Utilities::split_string_list(prm.get("Kinetic models"), '|');
+              prm.leave_subsection();
+
+              AssertThrow(kinetic_models.empty(),
+                          ExcMessage("'Reaction chain/Kinetic models' must be empty "
+                                     "when no reaction-progress compositional fields are configured."));
+            }
         }
         prm.leave_subsection();
       }

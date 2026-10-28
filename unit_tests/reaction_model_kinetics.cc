@@ -426,9 +426,10 @@ TEST_CASE("Reaction Chain Kinetic Models Parsing")
     CHECK(parsed_default.empty());
 
     ReactionChain<2> reaction_chain;
-    reaction_chain.parse_parameters(prm);
-    CHECK(reaction_chain.n_reactions() == 0);
-    CHECK(reaction_chain.reactions.empty());
+    // A standalone chain requires a model. ViscoPlastic skips chain parsing
+    // entirely when there are no reaction-progress fields.
+    CHECK_THROWS_WITH(reaction_chain.parse_parameters(prm),
+                      Contains("must contain at least one entry"));
   }
 
   SECTION("Parsing throws on invalid 'Tolerance in reaction progress'")
