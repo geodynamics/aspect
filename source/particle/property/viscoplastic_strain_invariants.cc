@@ -54,16 +54,44 @@ namespace aspect
 
         // Find out which fields are used.
         if (this->introspection().compositional_name_exists("plastic_strain"))
-          n_components += 1;
+          {
+            compositional_name_exists_plastic_strain = true;
+            n_components += 1;
+          }
+        else
+          {
+            compositional_name_exists_plastic_strain = false;
+          }
 
         if (this->introspection().compositional_name_exists("viscous_strain"))
-          n_components += 1;
+          {
+            compositional_name_exists_viscous_strain = true;
+            n_components += 1;
+          }
+        else
+          {
+            compositional_name_exists_viscous_strain = false;
+          }
 
         if (this->introspection().compositional_name_exists("total_strain"))
-          n_components += 1;
+          {
+            compositional_name_exists_total_strain = true;
+            n_components += 1;
+          }
+        else
+          {
+            compositional_name_exists_total_strain = false;
+          }
 
         if (this->introspection().compositional_name_exists("noninitial_plastic_strain"))
-          n_components += 1;
+          {
+            compositional_name_exists_noninitial_plastic_strain = true;
+            n_components += 1;
+          }
+        else
+          {
+            compositional_name_exists_noninitial_plastic_strain = false;
+          }
 
         if (n_components == 0)
           AssertThrow(false,
@@ -80,16 +108,16 @@ namespace aspect
                                                                          std::vector<double> &data) const
       {
         // Give each strain field its initial composition if one is prescribed.
-        if (this->introspection().compositional_name_exists("plastic_strain"))
+        if (compositional_name_exists_plastic_strain)
           data.push_back(this->get_initial_composition_manager().initial_composition(position,this->introspection().compositional_index_for_name("plastic_strain")));
 
-        if (this->introspection().compositional_name_exists("viscous_strain"))
+        if (compositional_name_exists_viscous_strain)
           data.push_back(this->get_initial_composition_manager().initial_composition(position,this->introspection().compositional_index_for_name("viscous_strain")));
 
-        if (this->introspection().compositional_name_exists("total_strain"))
+        if (compositional_name_exists_total_strain)
           data.push_back(this->get_initial_composition_manager().initial_composition(position,this->introspection().compositional_index_for_name("total_strain")));
 
-        if (this->introspection().compositional_name_exists("noninitial_plastic_strain"))
+        if (compositional_name_exists_noninitial_plastic_strain)
           data.push_back(this->get_initial_composition_manager().initial_composition(position,this->introspection().compositional_index_for_name("noninitial_plastic_strain")));
 
       }
@@ -155,10 +183,10 @@ namespace aspect
              * If these assumptions change in the future, they will need to be updated.
              * */
 
-            if (this->introspection().compositional_name_exists("plastic_strain") && plastic_yielding == true)
+            if (compositional_name_exists_plastic_strain && plastic_yielding == true)
               data[data_position] += strain_update;
 
-            if (this->introspection().compositional_name_exists("viscous_strain") && plastic_yielding == false)
+            if (compositional_name_exists_viscous_strain && plastic_yielding == false)
               {
                 // Not yielding and only one field, which tracks the viscous strain.
                 if (n_components == 1)
@@ -176,11 +204,11 @@ namespace aspect
 
             // Only one field, which tracks total strain and is updated regardless of whether the
             // material is yielding or not.
-            if (this->introspection().compositional_name_exists("total_strain"))
+            if (compositional_name_exists_total_strain)
               data[data_position] += strain_update;
 
             // Yielding, and noninitial plastic strain (last data position, updated below) is tracked.
-            if (this->introspection().compositional_name_exists("noninitial_plastic_strain") && plastic_yielding == true)
+            if (compositional_name_exists_noninitial_plastic_strain && plastic_yielding == true)
               data[data_position+(n_components-1)] += strain_update;
 
             ++p;
