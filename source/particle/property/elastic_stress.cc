@@ -87,8 +87,17 @@ namespace aspect
         this->get_signals().post_nonlinear_solver.connect(
           [&](const SolverControl &)
         {
-          Particle::Manager<dim> &particle_manager = this->get_particle_manager(this->get_particle_manager_index());
-          this->update_particles(particle_manager);
+          if (this->get_timestep_number() > 0)
+            {
+              std::vector<AdvectionField> stress_fields_to_interpolate;
+              for (auto c: this->introspection().get_indices_for_fields_of_type(CompositionalFieldDescription::stress))
+                {
+                  stress_fields_to_interpolate.push_back(AdvectionField::composition(c));
+                }
+              Particle::Manager<dim> &particle_manager = this->get_particle_manager(this->get_particle_manager_index());
+              this->update_particles(particle_manager);
+              this->interpolate_particle_properties(stress_fields_to_interpolate);
+            }
         }
         );
       }
