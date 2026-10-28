@@ -8,6 +8,10 @@ include $ASPECT_SOURCE_DIR/benchmarks/free_surface_tractions/viscoelastic/free_s
 set Dimension                              = 2
 set End time = 10
 
+# One operator splitting step to update the stresses,
+# not the temperature.
+set Use operator splitting                 = false, true, true, true, true, true, true
+
 # Number and name of compositional fields
 subsection Compositional fields
   set Number of fields = 6
