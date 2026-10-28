@@ -332,6 +332,18 @@ namespace aspect
       // If we use the full strain tensor, compute the change in the individual tensor components.
       rheology->strain_rheology.compute_finite_strain_reaction_terms(in, out);
 
+      // Set all reaction rates to zero, reaction rates for the elastic stress fields
+      // are filled below.
+      const std::shared_ptr<ReactionRateOutputs<dim>> reaction_rate_out
+        = out.template get_additional_output_object<ReactionRateOutputs<dim>>();
+
+      // Reaction rates are also named additional outputs.
+      if (reaction_rate_out != nullptr &&
+          (in.requests_property(MaterialProperties::reaction_rates) || in.requests_property(MaterialProperties::additional_outputs)) )
+        for (unsigned int i = 0; i < in.n_evaluation_points(); ++i)
+          for (unsigned int c = 0; c < in.composition[i].size(); ++c)
+            reaction_rate_out->reaction_rates[i][c] = 0.0;
+
       if (this->get_parameters().enable_elasticity)
         {
           // Fill the elastic outputs with the body force term for the RHS, the viscoelastic strain rate
