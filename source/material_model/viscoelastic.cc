@@ -85,6 +85,16 @@ namespace aspect
           out.viscosities[i] =  MaterialUtilities::average_value(volume_fractions, viscoelastic_viscosities, viscosity_averaging);
         }
 
+      // Set all reaction rates to zero, reaction rates for the elastic stress fields
+      // are filled below.
+      const std::shared_ptr<ReactionRateOutputs<dim>> reaction_rate_out
+        = out.template get_additional_output_object<ReactionRateOutputs<dim>>();
+
+      if (reaction_rate_out != nullptr && in.requests_property(MaterialProperties::reaction_rates))
+        for (unsigned int i = 0; i < in.n_evaluation_points(); ++i)
+          for (unsigned int c = 0; c < in.composition[i].size(); ++c)
+            reaction_rate_out->reaction_rates[i][c] = 0.0;
+
       // Fill the body force term, viscoelastic strain rate and viscous dissipation.
       elastic_rheology.fill_elastic_outputs(in, average_elastic_shear_moduli, out);
       // Fill the elastic additional outputs with the shear modulus, elastic viscosity
