@@ -1,0 +1,29 @@
+
+
+   Loading Ascii data initial file /home/dealii/aspect/data/initial-composition/ascii-data/test/jelly.txt.
+
+Number of active cells: 16 (on 3 levels)
+Number of degrees of freedom: 349 (162+25+81+81)
+
+*** Timestep 0:  t=0 years, dt=0 years
+   Solving temperature system... 0 iterations.
+   Solving C_1 system ... 0 iterations.
+   Solving Stokes system (GMG)... 11+0 iterations.
+
+Number of active cells: 64 (on 4 levels)
+Number of degrees of freedom: 1,237 (578+81+289+289)
+
+*** Timestep 0:  t=0 years, dt=0 years
+   Solving temperature system... 0 iterations.
+   Solving C_1 system ... 0 iterations.
+   Solving Stokes system (GMG)... 14+0 iterations.
+
+   Postprocessing:
+     RMS, max velocity:                  1 m/year, 1 m/year
+     Temperature min/avg/max:            0 K, 1833 K, 1913 K
+     Heat fluxes through boundary parts: -2.435e+06 W, 2.435e+06 W, 1.175e+05 W, 1.175e+05 W
+
+Termination requested by criterion: end time
+
+
+
