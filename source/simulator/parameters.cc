@@ -1423,6 +1423,7 @@ namespace aspect
                          "phase transition controlled by reaction kinetics. It will only be "
                          "considered in material models that include models for time-dependent "
                          "reaction progress."
+                         "\n"
                          "* ``generic'': The generic type is intended to be a placeholder type "
                          "that is not used by any component of ASPECT unless in user-"
                          "provided source code."
