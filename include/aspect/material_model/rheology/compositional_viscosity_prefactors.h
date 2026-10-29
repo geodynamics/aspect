@@ -67,7 +67,15 @@ namespace aspect
           } modified_flow_laws;
 
           /**
-           * Compute the viscosity.
+           * Return @p base_viscosity multiplied by the viscosity factor for
+           * composition @p composition_index at evaluation point @p q. For
+           * the Peng-Robinson scheme, the viscosity is calculated as
+           * $\eta=\eta_{\mathrm{base}}f_{\mathrm{H_2O}}^{-r/n}$. The fugacity
+           * $f_{\mathrm{H_2O}}$ depends only on temperature and pressure and
+           * is therefore independent of composition, although $r/n$ may be
+           * configured separately for each compositional field. The
+           * @p modified_flow_laws argument selects the exponent for diffusion
+           * or dislocation creep.
            */
           double
           compute_viscosity (const MaterialModel::MaterialModelInputs<dim> &in,
@@ -75,6 +83,42 @@ namespace aspect
                              const unsigned int composition_index,
                              const unsigned int q,
                              const ModifiedFlowLaws &modified_flow_laws) const;
+
+          /**
+           * Compute the fugacity of the configured pure fluid from the
+           * Peng-Robinson equation of state at @p temperature in K and
+           * absolute @p pressure in Pa.
+           * The calculation is independent of composition: at a given
+           * temperature and pressure, every composition has the same fugacity.
+           * The returned fugacity is in Pa. An exception is raised if the pressure
+           * exceeds the equation of state limit of 2.5 GPa.
+           * Fluid-saturated conditions are assumed.
+           */
+          double
+          compute_fugacity (const double temperature, const double pressure) const;
+
+          /**
+           * Return whether the selected viscosity prefactor scheme computes
+           * fugacity with the Peng-Robinson equation of state.
+           */
+          bool
+          uses_peng_robinson_fugacity () const;
+
+          /**
+           * Create the named Peng-Robinson fugacity output when the
+           * corresponding viscosity-prefactor scheme is selected.
+           */
+          void
+          create_fugacity_outputs (MaterialModel::MaterialModelOutputs<dim> &out) const;
+
+          /**
+           * Fill the named Peng-Robinson fugacity output at evaluation point
+           * @p point_index, if the output object was requested.
+           */
+          void
+          fill_fugacity_outputs (const MaterialModel::MaterialModelInputs<dim> &in,
+                                 const unsigned int point_index,
+                                 MaterialModel::MaterialModelOutputs<dim> &out) const;
 
         private:
           /**
@@ -88,9 +132,21 @@ namespace aspect
            * water in the solid, which is used to compute an atomic ratio of H/Si ppm
            * assuming 90 mol% forsterite and 10 mol% fayalite, and finally calculates
            * a water fugacity.
-           * The prefactor for a given compositional field is multiplied with a
-           * base_viscosity value provided by the material model, which is then returned
-           * to the material model.
+           * peng_robinson76_fugacity: estimate a viscosity modification
+           * using the fugacity of a pure fluid at a given temperature and
+           * pressure determined using the
+           * Peng-Robinson equation of state introduced by Peng & Robinson
+           * (1976, 10.1021/i160057a011). The viscosity modification
+           * assumes that the material is saturated in the pure fluid. The viscosity is
+           * calculated as
+           * $\eta=\eta_{\mathrm{base}}f_{\mathrm{H_2O}}^{-r/n}$. Fugacity is
+           * composition-independent because it depends only on temperature
+           * and pressure, although $r/n$ may be different for
+           * each compositional field. This formulation approximates the experimentally
+           * observed weakening of minerals by water (e.g., Karato et al., 1986,
+           * 10.1029/JB091iB08p08151), with the water-fugacity term in the
+           * creep flow law following Mei & Kohlstedt (2000,
+           * 10.1029/2000JB900180).
            * interface weakening: calculate the viscosity change due to the presence of
            * a sub-grid scale weak layer present at the interface of two other compositions.
            */
@@ -98,6 +154,7 @@ namespace aspect
           {
             none,
             hk04_olivine_hydration,
+            peng_robinson76_fugacity,
             interface_weakening,
           };
           /**
@@ -134,6 +191,40 @@ namespace aspect
           // in olivine.
           const double molar_mass_olivine = 0.1470027; // kg/mol
           const double molar_mass_H2O = 0.01801528; // kg/mol
+
+          /**
+           * Critical temperature of the fluid in K for the Peng-Robinson
+           * equation of state. This value is fluid-specific and user defined.
+           */
+          double critical_temperature;
+
+          /**
+           * Critical pressure of the fluid in Pa for the Peng-Robinson
+           * equation of state. This value is fluid-specific and user defined.
+           */
+          double critical_pressure;
+
+          /**
+           * Peng-Robinson substance constant calculated from the acentric
+           * factor using equation (18) of Peng & Robinson (1976,
+           * 10.1021/i160057a011).
+           */
+          double kappa;
+
+          /**
+           * Acentric factor of the fluid. Peng & Robinson describe kappa as
+           * a constant characteristic of each substance and correlate it
+           * against the acentric factor in equation (18) of Peng & Robinson
+           * (1976, 10.1021/i160057a011).
+           */
+          double acentric_factor;
+
+          /**
+           * Maximum pressure in Pa used in the Peng-Robinson fugacity calculation.
+           * Pressures above this value are set to the cutoff.
+           */
+          double pressure_cutoff;
+
       };
     }
   }

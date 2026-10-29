@@ -137,7 +137,6 @@ namespace aspect
           case Property::dislocation_viscosity:
             return dislocation_viscosities;
         }
-
       DEAL_II_ASSERT_UNREACHABLE();
 
       return {};
@@ -1055,6 +1054,7 @@ namespace aspect
                                                   drucker_prager_parameters);
               }
           }
+        compositional_viscosity_prefactors.fill_fugacity_outputs(in, i, out);
       }
 
       template <int dim>
@@ -1088,6 +1088,7 @@ namespace aspect
                 n_points,
                 active_properties));
           }
+        compositional_viscosity_prefactors.create_fugacity_outputs(out);
       }
 
 
