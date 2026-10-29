@@ -1,0 +1,14 @@
+# This test makes sure the cookbook geomIO runs
+# as expected.
+
+include $ASPECT_SOURCE_DIR/cookbooks/geomIO/geomIO.prm
+
+subsection Mesh refinement
+  set Initial adaptive refinement        = 1
+  set Initial global refinement          = 2
+  set Time steps between mesh refinement = 0
+end
+
+subsection Postprocess
+  set List of postprocessors = velocity statistics, temperature statistics, heat flux statistics
+end
