@@ -84,6 +84,16 @@ namespace aspect
     {
       public:
         /**
+         * Default constructor.
+         */
+        Manager();
+
+        /**
+         * Default destructor.
+         */
+        ~Manager() override;
+
+        /**
          * Declare the parameters of all known boundary composition plugins, as
          * well as the ones this class has itself.
          */
@@ -212,6 +222,60 @@ namespace aspect
         bool
         allows_fixed_composition_on_outflow_boundaries() const;
 
+        /*
+         * Return whether on the boundary with the given boundary id,
+         * the given field is fixed.
+         */
+        bool
+        field_is_fixed_on_boundary(const types::boundary_id boundary_id,
+                                   const unsigned int compositional_field) const;
+
+        /*
+         * Return whether there are boundaries where only a subset
+         * of the compositional fields is prescribed. If false,
+         * either there are no fixed boundary compositions, or all fields
+         * are fixed on the fixed composition boundaries.
+         */
+        bool
+        boundaries_with_fixed_subset_of_fields_exist() const;
+
+        /*
+         * Return a list of the fields that are fixed on the boundary
+         * identified by the function argument.
+         */
+        std::set<unsigned int>
+        get_fixed_fields_on_boundary (const types::boundary_id boundary_id) const;
+
+        /*
+         * Return the set of indicators of the boundaries on which the given field
+         * is fixed.
+         */
+        std::set<types::boundary_id>
+        get_fixed_boundaries_for_field (const unsigned int compositional_field) const;
+
+        /*
+         * Return the set of compositional fields whose values are prescribed
+         * by the boundary composition plugin identified by the function argument
+         * (the name of the plugin).
+         */
+        std::set<unsigned int>
+        get_fixed_compositional_fields_for_plugin (const std::string &plugin_name) const;
+
+        /*
+         * Return the set of compositional fields whose values are prescribed on the
+         * boundary identified by the input boundary id (second function argument) by
+         * the boundary composition plugin identified by the first function argument.
+         */
+        std::set<unsigned int>
+        get_fixed_compositional_fields_for_plugin_on_boundary (const std::string &plugin_name, const types::boundary_id boundary_id) const;
+
+        /*
+         * Return the set of boundary indicators identifying boundaries on which fields are
+         * prescribed by the plugin identified by the function argument (the name of the plugin).
+         */
+        std::set<types::boundary_id>
+        get_fixed_composition_boundaries_for_plugin (const std::string &plugin_name) const;
+
         /**
          * For the current plugin subsystem, write a connection graph of all of the
          * plugins we know about, in the format that the
@@ -235,25 +299,60 @@ namespace aspect
                         << arg1
                         << "> among the names of registered boundary composition objects.");
       private:
+
         /**
-         * A list of enums of boundary composition operators that have been
+         * A list of boundary indicators that indicate for
+         * each plugin in the list of plugin_objects which boundary ids
+         * it is responsible for. By default each plugin
+         * is active for all boundaries, but this list
+         * can be modified from the input file and by
+         * derived classes to limit the application
+         * of plugins to specific boundaries.
+         */
+        std::vector <std::vector<types::boundary_id>> boundary_indicators;
+
+        /**
+         * A list of masks that specify for each plugin object
+         * for each boundary it applies to which compositional fields
+         * are prescribed (true) and which are not (false).
+         */
+        std::vector <std::vector<ComponentMask>> masks_fields;
+
+        /**
+         * A list of enums of boundary composition operators for each
+         * boundary indicator associated with a boundary composition plugin that has been
          * requested in the parameter file. Each name is associated
          * with a model_name, and is used to modify the composition
          * boundary with the values from the current plugin.
          */
-        std::vector<aspect::Utilities::Operator> model_operators;
+        std::vector <std::vector<aspect::Utilities::Operator>> model_operators;
 
         /**
          * A set of boundary ids on which the boundary_composition_objects
-         * will be applied.
+         * will be applied. This set does not distinguish between boundaries
+         * on which only a subset of the fields are fixed and boundaries on
+         * which all fields are fixed. Any boundary with at least one fixed
+         * field is included.
          */
         std::set<types::boundary_id> fixed_composition_boundary_indicators;
+
+        /**
+         * A set of compositional field numbers of fields that are fixed on at least one
+         * of the boundaries, i.e. potentially a subset of n_compositional_fields.
+         */
+        std::set<unsigned int> fixed_compositional_fields;
 
         /**
          * Whether we allow the composition to be fixed on parts of the boundary
          * where material flows out of the domain.
          */
         bool allow_fixed_composition_on_outflow_boundaries;
+
+        /**
+         * Whether one or more boundaries only have fixed boundary conditions
+         * for a subset of fields, instead of all fields.
+         */
+        bool do_boundaries_with_fixed_subset_of_fields_exist;
     };
 
 
