@@ -1,0 +1,19 @@
+# This test makes sure the cookbook free_surface_with_crust runs
+# as expected.
+
+set Additional shared libraries            =
+set Dimension                              = 2
+
+include $ASPECT_SOURCE_DIR/cookbooks/free_surface_with_crust/free_surface_with_crust.prm
+
+set End time                               = 0
+
+subsection Mesh refinement
+  set Initial adaptive refinement        = 0
+  set Initial global refinement          = 1
+  set Time steps between mesh refinement = 0
+end
+
+subsection Postprocess
+  set List of postprocessors = velocity statistics, topography
+end
