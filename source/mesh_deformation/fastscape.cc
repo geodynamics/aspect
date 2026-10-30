@@ -931,7 +931,7 @@ namespace aspect
           const double y = grid_extent[1].first + (iy - use_ghost_nodes) * fastscape_dy;
 
           if (use_kf_distribution_function)
-            bedrock_river_incision_rate_array[i] = time_scaling_factor * kf_distribution_function.value(Point<2>(x, y)); 
+            bedrock_river_incision_rate_array[i] = time_scaling_factor * kf_distribution_function.value(Point<2>(x, y));
           if (use_kd_distribution_function)
             bedrock_transport_coefficient_array[i] = time_scaling_factor * kd_distribution_function.value(Point<2>(x, y));
 
