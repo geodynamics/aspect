@@ -20,7 +20,6 @@
 
 
 #include <aspect/simulator.h>
-#include <aspect/advection_field.h>
 #include <aspect/mesh_deformation/free_surface.h>
 #include <aspect/mesh_deformation/interface.h>
 #include <aspect/simulator/solver/stokes_matrix_free.h>
@@ -999,6 +998,14 @@ namespace aspect
                                          LinearAlgebra::BlockVector &distributed_stokes_solution) const
   {
     simulator->remove_nullspace(solution, distributed_stokes_solution);
+  }
+
+
+  template <int dim>
+  void
+  SimulatorAccess<dim>::interpolate_particle_properties (const std::vector<AdvectionField> &advection_fields)
+  {
+    const_cast<Simulator<dim> &>(*simulator).interpolate_particle_properties(advection_fields);
   }
 }
 

@@ -102,7 +102,7 @@ namespace aspect
 
               // Fill reaction rate outputs instead of the reaction terms if we use operator splitting
               // (and then set the latter to zero).
-              if (this->get_parameters().use_operator_splitting)
+              if (this->get_parameters().use_operator_splitting[c])
                 {
                   if (reaction_rate_out != nullptr)
                     reaction_rate_out->reaction_rates[i][c] = (this->get_timestep_number() > 0
@@ -223,7 +223,9 @@ namespace aspect
     void
     CompositionReaction<dim>::create_additional_named_outputs (MaterialModel::MaterialModelOutputs<dim> &out) const
     {
-      if (this->get_parameters().use_operator_splitting
+      // If there is at least one compositional field that uses operator splitting, we need to create a ReactionRateOutputs object.
+      // The material model assumes that only the first or first two compositional fields are involved in the reactions.
+      if (this->get_parameters().use_operator_splitting.size() > 1 && this->get_parameters().use_operator_splitting[1]
           && out.template has_additional_output_object<ReactionRateOutputs<dim>>() == false)
         {
           const unsigned int n_points = out.n_evaluation_points();

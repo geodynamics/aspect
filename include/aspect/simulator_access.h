@@ -25,6 +25,7 @@
 #include <aspect/global.h>
 #include <aspect/parameters.h>
 #include <aspect/introspection.h>
+#include <aspect/advection_field.h>
 
 #include <deal.II/base/table_handler.h>
 #include <deal.II/base/timer.h>
@@ -1129,6 +1130,13 @@ namespace aspect
        */
       void denormalize_pressure(const double                      pressure_adjustment,
                                 LinearAlgebra::BlockVector       &vector) const;
+
+      /**
+      * Call the corresponding simulator function to interpolate the particle
+      * properties into the given
+      * @p advection_fields solution fields.
+      */
+      void interpolate_particle_properties (const std::vector<AdvectionField> &advection_fields);
 
       /** @} */
 

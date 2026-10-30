@@ -238,8 +238,6 @@ namespace aspect
 
         // Signal that particles have been restored (or we just started a time
         // step, which means they are in the same state as post restore).
-        // This signal can be used to apply operator
-        // splitting on the particle properties.
         signals.post_restore_particles(particle_manager);
 
         // Advect particles, but not if we are in the initial refinement stage
@@ -322,7 +320,7 @@ namespace aspect
                   // based on all elements of the entropy fields:
                   if (c == last_entropy_field_index)
                     {
-                      if (parameters.use_operator_splitting)
+                      if (parameters.use_operator_splitting[c+1])
                         {
                           std::vector<AdvectionField> advection_fields;
                           // First add the temperature field

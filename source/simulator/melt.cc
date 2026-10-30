@@ -330,7 +330,7 @@ namespace aspect
         const double fluid_density    = melt_out->fluid_densities[q_point];
         double melting_rate           = scratch.material_model_outputs.reaction_terms[q_point][porosity_index];
 
-        if (simulator_access->get_parameters().use_operator_splitting)
+        if (simulator_access->get_parameters().use_operator_splitting[porosity_index+1])
           melting_rate = (simulator_access->get_timestep() > 0
                           ?
                           operator_split_reaction * solid_density / simulator_access->get_timestep()
@@ -410,7 +410,7 @@ namespace aspect
 
       std::vector<double> reactions(n_q_points, numbers::signaling_nan<double>());
       const unsigned int porosity_index = introspection.compositional_index_for_name("porosity");
-      if (this->get_parameters().use_operator_splitting)
+      if (this->get_parameters().use_operator_splitting[porosity_index+1])
         scratch.finite_element_values[introspection.extractors.compositional_fields[porosity_index]].get_function_values(this->get_reaction_vector(),
             reactions);
 
