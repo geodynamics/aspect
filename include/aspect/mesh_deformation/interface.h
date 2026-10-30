@@ -756,6 +756,12 @@ namespace aspect
         unsigned int initial_deformation_substeps;
 
         /**
+         * True while setup_dofs() is solving for the initial deformation,
+         * including on each initial adaptive refinement cycle.
+         */
+        bool computing_initial_deformation;
+
+        /**
          * Mesh deformation DoFHandlers on the triangulations of the global
          * coarsening hierarchy.
          */

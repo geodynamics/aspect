@@ -1,0 +1,5 @@
+Fixed: When determining initial deformation of a mesh during pre-refinement,
+mesh deformation is re-computed for each refinement step instead of interpolating
+from the previous mesh.
+<br>
+(Daniel Douglas, 2026/10/23)

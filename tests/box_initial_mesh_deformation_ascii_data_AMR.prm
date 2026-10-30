@@ -1,0 +1,16 @@
+# This tests that when computing initial deformation with adaptive refinement
+# that the mesh deformation is recomputed every refinement step.
+include $ASPECT_SOURCE_DIR/tests/box_initial_mesh_deformation_ascii_data.prm
+
+# Refine in the top half of the domain, where the initial deformation is prescribed.
+subsection Mesh refinement
+  set Initial adaptive refinement        = 3
+  set Initial global refinement          = 0
+  set Strategy                           = minimum refinement function
+
+  subsection Minimum refinement function
+    set Coordinate system   = cartesian
+    set Variable names      = x,y,z
+    set Function expression = if(z>=330000, 3, 0)
+  end
+end

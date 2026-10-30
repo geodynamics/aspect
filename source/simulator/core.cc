@@ -1956,14 +1956,20 @@ namespace aspect
 
           mesh_deformation_trans->interpolate (system_tmp);
 
-          mesh_deformation->mesh_vertex_constraints.distribute (distributed_mesh_displacements);
-          mesh_deformation->mesh_displacements = distributed_mesh_displacements;
+          // During initial pre-refinements we do not want to distribute the
+          // mesh deformation as this will result in the initial coarse mesh solution
+          // being interpolated onto the adaptively refined mesh.
+          if (pre_refinement_step >= parameters.initial_adaptive_refinement)
+            {
+              mesh_deformation->mesh_vertex_constraints.distribute (distributed_mesh_displacements);
+              mesh_deformation->mesh_displacements = distributed_mesh_displacements;
 
-          mesh_deformation->mesh_vertex_constraints.distribute (distributed_old_mesh_displacements);
-          mesh_deformation->old_mesh_displacements = distributed_old_mesh_displacements;
+              mesh_deformation->mesh_vertex_constraints.distribute (distributed_old_mesh_displacements);
+              mesh_deformation->old_mesh_displacements = distributed_old_mesh_displacements;
 
-          mesh_deformation->mesh_vertex_constraints.distribute (distributed_initial_topography);
-          mesh_deformation->initial_topography = distributed_initial_topography;
+              mesh_deformation->mesh_vertex_constraints.distribute (distributed_initial_topography);
+              mesh_deformation->initial_topography = distributed_initial_topography;
+            }
         }
 
       // Possibly load data of plugins associated with cells
