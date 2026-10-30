@@ -49,6 +49,6 @@ for i in "${files[@]}" ; do
   # different
   echo "Processing $i: ${first_year} - ${last_year}"
   if test ! "${first_year}" = "${last_year}" ; then
-    perl -pi -e "s/(Copyright \(C\) \d{4})( - \d{4})?(, \d{4}( - \d{4})?)*/\1 - ${last_year}/g;" -- "$i"
+    perl -pi -e "s/(Copyright \(C\) \d{4})(-\d{4})?(, \d{4}(-\d{4})?)*/\1-${last_year}/g;" -- "$i"
   fi
 done
