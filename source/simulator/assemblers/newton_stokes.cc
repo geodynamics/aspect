@@ -68,12 +68,12 @@ namespace aspect
         AssertThrow(elastic_out != nullptr,
                     ExcMessage("Error: The Newton method requires ElasticOutputs when elasticity is enabled."));
 
-      const bool enable_prescribed_dilation = this->get_parameters().enable_prescribed_dilation;
+      const bool enable_prescribed_plastic_dilation = this->get_parameters().enable_prescribed_plastic_dilation;
 
       const std::shared_ptr<const MaterialModel::PrescribedPlasticDilation<dim>>
-      prescribed_dilation = enable_prescribed_dilation ?
-                            scratch.material_model_outputs.template get_additional_output_object<MaterialModel::PrescribedPlasticDilation<dim>>()
-                            : nullptr;
+      prescribed_plastic_dilation = enable_prescribed_plastic_dilation ?
+                                    scratch.material_model_outputs.template get_additional_output_object<MaterialModel::PrescribedPlasticDilation<dim>>()
+                                    : nullptr;
 
       const std::shared_ptr<const MaterialModel::MaterialModelDerivatives<dim>> derivatives
         = scratch.material_model_outputs.template get_additional_output_object<MaterialModel::MaterialModelDerivatives<dim>>();
@@ -125,8 +125,8 @@ namespace aspect
 
           const double eta = scratch.material_model_outputs.viscosities[q];
           const double one_over_eta = 1. / eta;
-          const double dilation_lhs_term = (prescribed_dilation == nullptr ? 0.0 :
-                                            prescribed_dilation->dilation_lhs_term[q]);
+          const double dilation_lhs_term = (prescribed_plastic_dilation == nullptr ? 0.0 :
+                                            prescribed_plastic_dilation->dilation_lhs_term[q]);
           const double JxW = scratch.finite_element_values.JxW(q);
 
           // TODO: Find out why in this version of ASPECT adding the derivative to the preconditioning
@@ -189,10 +189,10 @@ namespace aspect
 
               // pre-compute the Newton factor for plastic dilation
               const double dilation_newton_factor =
-                (prescribed_dilation != nullptr)
+                (prescribed_plastic_dilation != nullptr)
                 ?
                 (derivatives->dilation_derivative_wrt_pressure[q] * derivative_scaling_factor
-                 - prescribed_dilation->dilation_lhs_term[q])
+                 - prescribed_plastic_dilation->dilation_lhs_term[q])
                 :
                 0.0;
 
@@ -281,7 +281,7 @@ namespace aspect
             std::make_unique<MaterialModel::ElasticOutputs<dim>> (outputs.n_evaluation_points()));
         }
 
-      if (this->get_parameters().enable_prescribed_dilation &&
+      if (this->get_parameters().enable_prescribed_plastic_dilation &&
           outputs.template has_additional_output_object<MaterialModel::PrescribedPlasticDilation<dim>>() == false)
         {
           outputs.additional_outputs.push_back(
@@ -458,10 +458,10 @@ namespace aspect
         AssertThrow(elastic_out != nullptr,
                     ExcMessage("Error: The Newton method requires ElasticOutputs when elasticity is enabled."));
 
-      const bool enable_prescribed_dilation = this->get_parameters().enable_prescribed_dilation;
+      const bool enable_prescribed_plastic_dilation = this->get_parameters().enable_prescribed_plastic_dilation;
 
-      const std::shared_ptr<const MaterialModel::PrescribedPlasticDilation<dim>> prescribed_dilation
-        = enable_prescribed_dilation ?
+      const std::shared_ptr<const MaterialModel::PrescribedPlasticDilation<dim>> prescribed_plastic_dilation
+        = enable_prescribed_plastic_dilation ?
           scratch.material_model_outputs.template get_additional_output_object<MaterialModel::PrescribedPlasticDilation<dim>>()
           : nullptr;
 
@@ -558,11 +558,11 @@ namespace aspect
               // when using Newton method or defect correction method, not only the RHS
               // dilation term, but also the LHS dilation term should be included in the
               // system residual
-              if (enable_prescribed_dilation)
+              if (enable_prescribed_plastic_dilation)
                 data.local_rhs(i) += (
                                        - pressure_scaling
-                                       * (prescribed_dilation->dilation_rhs_term[q] -
-                                          prescribed_dilation->dilation_lhs_term[q] *
+                                       * (prescribed_plastic_dilation->dilation_rhs_term[q] -
+                                          prescribed_plastic_dilation->dilation_lhs_term[q] *
                                           scratch.material_model_inputs.pressure[q])
                                        * scratch.phi_p[i]
                                      ) * JxW;
@@ -571,8 +571,8 @@ namespace aspect
           // and then the matrix, if necessary
           if (scratch.rebuild_newton_stokes_matrix)
             {
-              const double dilation_lhs_term = (prescribed_dilation == nullptr ? 0.0 :
-                                                prescribed_dilation->dilation_lhs_term[q]);
+              const double dilation_lhs_term = (prescribed_plastic_dilation == nullptr ? 0.0 :
+                                                prescribed_plastic_dilation->dilation_lhs_term[q]);
               // always compute the common terms in the Newton matrix
               for (unsigned int i=0; i<stokes_dofs_per_cell; ++i)
                 for (unsigned int j=0; j<stokes_dofs_per_cell; ++j)
@@ -655,7 +655,7 @@ namespace aspect
                         }
                     }
 
-                  if (enable_prescribed_dilation)
+                  if (enable_prescribed_plastic_dilation)
                     {
                       std::vector<double> dilation_differentiations(stokes_dofs_per_cell);
                       for (unsigned int k=0; k<stokes_dofs_per_cell; ++k)
@@ -747,14 +747,14 @@ namespace aspect
              ExcInternalError());
 
       // prescribed dilation:
-      if (this->get_parameters().enable_prescribed_dilation
+      if (this->get_parameters().enable_prescribed_plastic_dilation
           && outputs.template has_additional_output_object<MaterialModel::PrescribedPlasticDilation<dim>>() == false)
         {
           outputs.additional_outputs.push_back(
             std::make_unique<MaterialModel::PrescribedPlasticDilation<dim>> (n_points));
         }
 
-      Assert(!this->get_parameters().enable_prescribed_dilation
+      Assert(!this->get_parameters().enable_prescribed_plastic_dilation
              ||
              (outputs.template get_additional_output_object<MaterialModel::PrescribedPlasticDilation<dim>>()->dilation_lhs_term.size() == n_points &&
               outputs.template get_additional_output_object<MaterialModel::PrescribedPlasticDilation<dim>>()->dilation_rhs_term.size() == n_points),
