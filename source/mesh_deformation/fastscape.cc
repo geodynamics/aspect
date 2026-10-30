@@ -834,6 +834,18 @@ namespace aspect
     {
       const double time_scaling_factor = (this->convert_output_to_years() ? 1.0 : year_in_seconds);
 
+      // Initialize every node, including ghost nodes.
+      // Compositional values overwrite these defaults at physical nodes below.
+      if (!use_kf_distribution_function)
+        std::fill(bedrock_river_incision_rate_array.begin(),
+                  bedrock_river_incision_rate_array.end(),
+                  time_scaling_factor * constant_bedrock_river_incision_rate[0]);
+
+      if (!use_kd_distribution_function)
+        std::fill(bedrock_transport_coefficient_array.begin(),
+                  bedrock_transport_coefficient_array.end(),
+                  time_scaling_factor * constant_bedrock_transport_coefficient[0]);
+
       for (unsigned int i=0; i<local_aspect_values[1].size(); ++i)
         {
           // In get_aspect_values(), we store an integer value in local_aspect_values[1][...].
@@ -918,17 +930,9 @@ namespace aspect
           const double x = grid_extent[0].first + (ix - use_ghost_nodes) * fastscape_dx;
           const double y = grid_extent[1].first + (iy - use_ghost_nodes) * fastscape_dy;
 
-          if (!use_kf_distribution_function)
-            {
-              bedrock_river_incision_rate_array[i] = time_scaling_factor * constant_bedrock_river_incision_rate[0];
-            }
-          else
-            bedrock_river_incision_rate_array[i] = time_scaling_factor * kf_distribution_function.value(Point<2>(x, y));
-          if (!use_kd_distribution_function)
-            {
-              bedrock_transport_coefficient_array[i] = time_scaling_factor * constant_bedrock_transport_coefficient[0];
-            }
-          else
+          if (use_kf_distribution_function)
+            bedrock_river_incision_rate_array[i] = time_scaling_factor * kf_distribution_function.value(Point<2>(x, y)); 
+          if (use_kd_distribution_function)
             bedrock_transport_coefficient_array[i] = time_scaling_factor * kd_distribution_function.value(Point<2>(x, y));
 
           if (elevation[i] == std::numeric_limits<double>::max() && !is_ghost_node(i,false) || std::isnan(elevation[i]))
