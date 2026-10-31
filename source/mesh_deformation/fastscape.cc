@@ -1313,13 +1313,17 @@ namespace aspect
               // will set it equal to the node next to it, and finally adjust based on user-defined
               // influx if necessary. FastScape calculates the slope by looking at all
               // nodes surrounding the point so we need to consider the slope over 2 dx.
-              slope = left_flux/bedrock_transport_coefficient_array[j];
+              slope = (left_flux == 0.0)
+                      ? 0.0
+                      : left_flux / bedrock_transport_coefficient_array[index_left + 1];
               if (left == 1 && use_fixed_erosional_base)
                 elevation[index_left] = h_erosional_base;
               else
                 elevation[index_left] = elevation[index_left+1] + slope*2*fastscape_dx;
 
-              slope = right_flux/bedrock_transport_coefficient_array[j];
+              slope = (right_flux == 0.0)
+                      ? 0.0
+                      : right_flux / bedrock_transport_coefficient_array[index_right - 1];
               if (right == 1 && use_fixed_erosional_base)
                 elevation[index_right] = h_erosional_base;
               else
@@ -1468,13 +1472,20 @@ namespace aspect
 
           if (init)
             {
-              slope = top_flux / bedrock_transport_coefficient_array[j];
+              const unsigned int inner_column =
+                std::min(std::max(j, 1u), fastscape_nx - 2);
+
+              slope = (top_flux == 0.0)
+                      ? 0.0
+                      : top_flux / bedrock_transport_coefficient_array[fastscape_nx * (fastscape_ny - 2) + inner_column];
               if (top == 1 && use_fixed_erosional_base)
                 elevation[index_top] = h_erosional_base;
               else
                 elevation[index_top] = elevation[index_top-fastscape_nx] + slope*2*fastscape_dx;
 
-              slope = bottom_flux / bedrock_transport_coefficient_array[j];
+              slope = (bottom_flux == 0.0)
+                      ? 0.0
+                      : bottom_flux / bedrock_transport_coefficient_array[fastscape_nx + inner_column];
               if (bottom == 1 && use_fixed_erosional_base)
                 elevation[index_bot] = h_erosional_base;
               else
