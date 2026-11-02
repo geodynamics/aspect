@@ -261,27 +261,33 @@ namespace aspect
   namespace LinearAlgebra
   {
 #ifdef ASPECT_USE_TPETRA
+#ifdef ASPECT_USE_TPETRA_GPU
+    using ASPECTMemorySpace = MemorySpace::Default;
+#else
+    using ASPECTMemorySpace = MemorySpace::Host;
+#endif
+
     /**
      * Typedef for the vector type used.
      */
-    using Vector = dealii::LinearAlgebra::TpetraWrappers::Vector<double>;
+    using Vector = dealii::LinearAlgebra::TpetraWrappers::Vector<double, ASPECTMemorySpace>;
 
     /**
      * Typedef for the type used to describe vectors that consist of multiple
      * blocks.
      */
-    using BlockVector = dealii::LinearAlgebra::TpetraWrappers::BlockVector<double>;
+    using BlockVector = dealii::LinearAlgebra::TpetraWrappers::BlockVector<double, ASPECTMemorySpace>;
 
     /**
      * Typedef for the sparse matrix type used.
      */
-    using SparseMatrix = dealii::LinearAlgebra::TpetraWrappers::SparseMatrix<double>;
+    using SparseMatrix = dealii::LinearAlgebra::TpetraWrappers::SparseMatrix<double, ASPECTMemorySpace>;
 
     /**
      * Typedef for the type used to describe sparse matrices that consist of
      * multiple blocks.
      */
-    using BlockSparseMatrix = dealii::LinearAlgebra::TpetraWrappers::BlockSparseMatrix<double>;
+    using BlockSparseMatrix = dealii::LinearAlgebra::TpetraWrappers::BlockSparseMatrix<double, ASPECTMemorySpace>;
 #else
     /**
      * Typedef for the vector type used.
