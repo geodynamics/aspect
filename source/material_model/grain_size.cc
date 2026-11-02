@@ -1,24 +1,18 @@
-/*
-  Copyright (C) 2014 - 2024 by the authors of the ASPECT code.
+// ------------------------------------------------------
+//
+// SPDX-License-Identifier: GPL-2.0-or-later
+//
+// SPDX-FileCopyrightText: Copyright (C) 2014-2026 by the ASPECT authors.
+//
+// This file is part of ASPECT.
+//
+// Detailed license information governing the source code and
+// contributions can be found in the folder LICENSES and in
+// LICENSE and CONTRIBUTING.md at the top level directory.
+//
+// ------------------------------------------------------
 
-  This file is part of ASPECT.
-
-  ASPECT is free software; you can redistribute it and/or modify
-  it under the terms of the GNU General Public License as published by
-  the Free Software Foundation; either version 2, or (at your option)
-  any later version.
-
-  ASPECT is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  GNU General Public License for more details.
-
-  You should have received a copy of the GNU General Public License
-  along with ASPECT; see the file doc/COPYING.  If not see
-  <http://www.gnu.org/licenses/>.
-*/
-
-
+#include <algorithm>
 #include <aspect/material_model/grain_size.h>
 #include <aspect/adiabatic_conditions/interface.h>
 #include <aspect/gravity_model/interface.h>
@@ -399,7 +393,7 @@ namespace aspect
                 alpha += compositional_fields[i] * material_lookup[i]->thermal_expansivity(temperature,pressure);
             }
         }
-      alpha = std::max(std::min(alpha,max_thermal_expansivity),min_thermal_expansivity);
+      alpha = std::clamp(alpha, min_thermal_expansivity, max_thermal_expansivity);
       return alpha;
     }
 
@@ -426,7 +420,7 @@ namespace aspect
                 cp += compositional_fields[i] * material_lookup[i]->specific_heat(temperature,pressure);
             }
         }
-      cp = std::max(std::min(cp,max_specific_heat),min_specific_heat);
+      cp = std::clamp(cp, min_specific_heat, max_specific_heat);
       return cp;
     }
 
@@ -618,14 +612,14 @@ namespace aspect
                     }
                 }
 
-              out.viscosities[i] = std::min(std::max(min_eta,effective_viscosity),max_eta);
+              out.viscosities[i] = std::clamp(effective_viscosity, min_eta, max_eta);
 
               if (const std::shared_ptr<DislocationViscosityOutputs<dim>> disl_viscosities_out
                   = out.template get_additional_output_object<DislocationViscosityOutputs<dim>>())
                 if (in.requests_property(MaterialProperties::additional_outputs))
                   {
-                    disl_viscosities_out->dislocation_viscosities[i] = std::min(std::max(min_eta,disl_viscosity),1e300);
-                    disl_viscosities_out->diffusion_viscosities[i] = std::min(std::max(min_eta,diff_viscosity),1e300);
+                    disl_viscosities_out->dislocation_viscosities[i] = std::clamp(disl_viscosity, min_eta, 1e300);
+                    disl_viscosities_out->diffusion_viscosities[i] = std::clamp(diff_viscosity, min_eta, 1e300);
                   }
 
             }
@@ -736,8 +730,8 @@ namespace aspect
               out.specific_heat[i] = specific_heat(in.temperature[i], adiabatic_pressures[i], in.composition[i], in.position[i]);
             }
 
-          out.thermal_expansion_coefficients[i] = std::max(std::min(out.thermal_expansion_coefficients[i],max_thermal_expansivity),min_thermal_expansivity);
-          out.specific_heat[i] = std::max(std::min(out.specific_heat[i],max_specific_heat),min_specific_heat);
+          out.thermal_expansion_coefficients[i] = std::clamp(out.thermal_expansion_coefficients[i], min_thermal_expansivity, max_thermal_expansivity);
+          out.specific_heat[i] = std::clamp(out.specific_heat[i], min_specific_heat, max_specific_heat);
         }
     }
 
@@ -754,30 +748,30 @@ namespace aspect
           prm.declare_entry ("Reference density", "3300",
                              Patterns::Double (0.),
                              "The reference density $\\rho_0$. "
-                             "Units: $\\frac{\\text{kg}}{\\text{m}^3}$.");
+                             "Units: \\si{\\kilogram\\per\\meter\\cubed}.");
           prm.declare_entry ("Reference temperature", "293.",
                              Patterns::Double (0.),
-                             "The reference temperature $T_0$. Units: $\\text{K}$.");
+                             "The reference temperature $T_0$. Units: \\si{\\kelvin}.");
           prm.declare_entry ("Viscosity", "5e24",
                              Patterns::Double (0.),
                              "The value of the constant viscosity. "
-                             "Units: $\\text{Pa}\\text{s}$.");
+                             "Units: \\si{\\pascal\\second}.");
           prm.declare_entry ("Thermal conductivity", "4.7",
                              Patterns::Double (0.),
                              "The value of the thermal conductivity $k$. "
-                             "Units: $\\frac{\\text{W}}{\\text{m}\\text{K}}$.");
+                             "Units: \\si{\\watt\\per\\meter\\per\\kelvin}.");
           prm.declare_entry ("Reference specific heat", "1250.",
                              Patterns::Double (0.),
                              "The value of the specific heat $cp$. "
-                             "Units: $\\frac{\\text{J}}{\\text{K}\\text{kg}}$.");
+                             "Units: \\si{\\joule\\per\\kelvin\\per\\kilogram}.");
           prm.declare_entry ("Thermal expansion coefficient", "2e-5",
                              Patterns::Double (0.),
                              "The value of the thermal expansion coefficient $\\alpha$. "
-                             "Units: $\\frac{1}{\\text{K}}$.");
+                             "Units: \\si{\\per\\kelvin}.");
           prm.declare_entry ("Reference compressibility", "4e-12",
                              Patterns::Double (0.),
                              "The value of the reference compressibility. "
-                             "Units: $\\frac{1}{\\text{Pa}}$.");
+                             "Units: \\si{\\per\\pascal}.");
 
           MaterialUtilities::PhaseFunction<dim>::declare_parameters(prm);
 
@@ -805,12 +799,12 @@ namespace aspect
                              Patterns::List (Patterns::Double (0.)),
                              "The activation energy for dislocation creep $E_{dis}$. "
                              "List must have one more entry than the Phase transition depths. "
-                             "Units: $\\frac{\\text{J}}{\\text{mol}}$.");
+                             "Units: \\si{\\joule\\per\\mole}.");
           prm.declare_entry ("Dislocation activation volume", "1.1e-5",
                              Patterns::List (Patterns::Double (0.)),
                              "The activation volume for dislocation creep $V_{dis}$. "
                              "List must have one more entry than the Phase transition depths. "
-                             "Units: $\\frac{\\text{m}^3}{\\text{mol}}$.");
+                             "Units: \\si{\\meter\\cubed\\per\\mole}.");
           prm.declare_entry ("Dislocation creep prefactor", "4.5e-15",
                              Patterns::List (Patterns::Double (0.)),
                              "The prefactor for the dislocation creep law $A_{dis}$. "
@@ -830,7 +824,7 @@ namespace aspect
                              Patterns::List (Patterns::Double (0.)),
                              "The activation volume for diffusion creep $V_{diff}$. "
                              "List must have one more entry than the Phase transition depths. "
-                             "Units: $\\frac{\\text{m}^3}{\\text{mol}}$.");
+                             "Units: \\si{\\meter\\cubed\\per\\mole}.");
           prm.declare_entry ("Diffusion creep prefactor", "7.4e-15",
                              Patterns::List (Patterns::Double (0.)),
                              "The prefactor for the diffusion creep law $A_{diff}$. "
@@ -853,27 +847,27 @@ namespace aspect
           prm.declare_entry ("Minimum viscosity", "1e18",
                              Patterns::Double (0.),
                              "The minimum viscosity that is allowed in the whole model domain. "
-                             "Units: Pa \\, s.");
+                             "Units: \\si{\\pascal\\second}.");
           prm.declare_entry ("Maximum viscosity", "1e26",
                              Patterns::Double (0.),
                              "The maximum viscosity that is allowed in the whole model domain. "
-                             "Units: Pa \\, s.");
+                             "Units: \\si{\\pascal\\second}.");
           prm.declare_entry ("Minimum specific heat", "500.",
                              Patterns::Double (0.),
                              "The minimum specific heat that is allowed in the whole model domain. "
-                             "Units: J/kg/K.");
+                             "Units: \\si{\\joule\\per\\kelvin\\per\\kilogram}.");
           prm.declare_entry ("Maximum specific heat", "6000.",
                              Patterns::Double (0.),
                              "The maximum specific heat that is allowed in the whole model domain. "
-                             "Units: J/kg/K.");
+                             "Units: \\si{\\joule\\per\\kelvin\\per\\kilogram}.");
           prm.declare_entry ("Minimum thermal expansivity", "1e-5",
                              Patterns::Double (),
                              "The minimum thermal expansivity that is allowed in the whole model domain. "
-                             "Units: 1/K.");
+                             "Units: \\si{\\per\\kelvin}.");
           prm.declare_entry ("Maximum thermal expansivity", "1e-3",
                              Patterns::Double (),
                              "The maximum thermal expansivity that is allowed in the whole model domain. "
-                             "Units: 1/K.");
+                             "Units: \\si{\\per\\kelvin}.");
           prm.declare_entry ("Maximum latent heat substeps", "1",
                              Patterns::Integer (1),
                              "The maximum number of substeps over the temperature pressure range "
@@ -883,7 +877,7 @@ namespace aspect
                              "The minimum grain size that is used for the material model. This parameter "
                              "is introduced to limit local viscosity contrasts, but still allows for a widely "
                              "varying viscosity over the whole mantle range. "
-                             "Units: $\\text{m}$.");
+                             "Units: \\si{\\meter}.");
           prm.declare_entry ("Lower mantle grain size scaling", "1.0",
                              Patterns::Double (0.),
                              "This option does not exist any more.");

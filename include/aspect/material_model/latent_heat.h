@@ -1,22 +1,16 @@
-/*
-  Copyright (C) 2013 - 2022 by the authors of the ASPECT code.
-
-  This file is part of ASPECT.
-
-  ASPECT is free software; you can redistribute it and/or modify
-  it under the terms of the GNU General Public License as published by
-  the Free Software Foundation; either version 2, or (at your option)
-  any later version.
-
-  ASPECT is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  GNU General Public License for more details.
-
-  You should have received a copy of the GNU General Public License
-  along with ASPECT; see the file LICENSE.  If not see
-  <http://www.gnu.org/licenses/>.
-*/
+// ------------------------------------------------------
+//
+// SPDX-License-Identifier: GPL-2.0-or-later
+//
+// SPDX-FileCopyrightText: Copyright (C) 2013-2026 by the ASPECT authors.
+//
+// This file is part of ASPECT.
+//
+// Detailed license information governing the source code and
+// contributions can be found in the folder LICENSES and in
+// LICENSE and CONTRIBUTING.md at the top level directory.
+//
+// ------------------------------------------------------
 
 #ifndef _aspect_material_model_latent_heat_h
 #define _aspect_material_model_latent_heat_h
@@ -92,27 +86,68 @@ namespace aspect
          */
 
       private:
+        /**
+         * This variable is read from the parameter file through a parameter called 'Reference density'.
+         */
         double reference_rho;
+        /**
+         * This variable is read from the parameter file through a parameter called 'Reference temperature'.
+         */
         double reference_T;
+        /**
+         * This variable is read from the parameter file through a parameter called 'Viscosity'.
+         */
         double eta;
+        /**
+         * This variable is read from the parameter file through a parameter called 'Composition viscosity prefactor'.
+         */
         double composition_viscosity_prefactor;
+        /**
+         * This variable is read from the parameter file through a parameter called 'Thermal viscosity exponent'.
+         */
         double thermal_viscosity_exponent;
+        /**
+         * This variable is read from the parameter file through a parameter called 'Thermal expansion coefficient'.
+         */
         double thermal_alpha;
+        /**
+         * This variable is read from the parameter file through a parameter called 'Reference specific heat'.
+         */
         double reference_specific_heat;
+        /**
+         * This variable is read from the parameter file through a parameter called 'Compressibility'.
+         */
         double reference_compressibility;
+        /**
+         * This variable is read from the parameter file through a parameter called 'Maximum viscosity'.
+         */
         double maximum_viscosity;
+        /**
+         * This variable is read from the parameter file through a parameter called 'Minimum viscosity'.
+         */
         double minimum_viscosity;
 
         /**
          * The thermal conductivity.
+         *
+         * This variable is read from the parameter file through a parameter called 'Thermal conductivity'.
          */
         double k_value;
 
+        /**
+         * This variable is read from the parameter file through a parameter called 'Density differential for compositional field 1'.
+         */
         double compositional_delta_rho;
 
         // list of depth (or pressure), width and Clapeyron slopes
         // for the different phase transitions
+        /**
+         * This variable is read from the parameter file through a parameter called 'Phase transition density jumps'.
+         */
         std::vector<double> density_jumps;
+        /**
+         * This variable is read from the parameter file through a parameter called 'Corresponding phase for density jump'.
+         */
         std::vector<int> transition_phases;
         std::vector<double> phase_prefactors;
 

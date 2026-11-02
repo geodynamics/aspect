@@ -8,7 +8,7 @@ include $ASPECT_SOURCE_DIR/tests/tian_peridotite.prm
 
 
 subsection Initial composition model
-  set Model name = function
+  set List of model names = function
 
   subsection Function
     set Function expression = initial_porosity; \

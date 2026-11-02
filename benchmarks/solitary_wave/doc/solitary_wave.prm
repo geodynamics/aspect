@@ -34,7 +34,7 @@ end
 # solitary wave plugin and choose a wave with an amplitude of
 # 0.01 and a background porosity of 0.001.
 subsection Initial composition model
-  set Model name = Solitary wave initial condition
+  set List of model names = Solitary wave initial condition
 
   subsection Solitary wave initial condition
     set Offset = 200

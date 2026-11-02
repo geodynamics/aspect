@@ -1,22 +1,16 @@
-/*
-  Copyright (C) 2011 - 2024 by the authors of the ASPECT code.
-
-  This file is part of ASPECT.
-
-  ASPECT is free software; you can redistribute it and/or modify
-  it under the terms of the GNU General Public License as published by
-  the Free Software Foundation; either version 2, or (at your option)
-  any later version.
-
-  ASPECT is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  GNU General Public License for more details.
-
-  You should have received a copy of the GNU General Public License
-  along with ASPECT; see the file LICENSE.  If not see
-  <http://www.gnu.org/licenses/>.
-*/
+// ------------------------------------------------------
+//
+// SPDX-License-Identifier: GPL-2.0-or-later
+//
+// SPDX-FileCopyrightText: Copyright (C) 2011-2026 by the ASPECT authors.
+//
+// This file is part of ASPECT.
+//
+// Detailed license information governing the source code and
+// contributions can be found in the folder LICENSES and in
+// LICENSE and CONTRIBUTING.md at the top level directory.
+//
+// ------------------------------------------------------
 
 
 #ifndef _aspect_postprocess_interface_h
@@ -83,8 +77,11 @@ namespace aspect
          * @return A pair of strings that will be printed to the screen after
          * running the postprocessor in two columns; typically the first
          * column contains a description of what the data is and the second
-         * contains a numerical value of this data. If there is nothing to
-         * print, simply return two empty strings.
+         * contains a numerical value of this data. Each string may contain
+         * multiple lines separated by newline characters. Corresponding lines
+         * are printed in the same row; missing lines in either column are
+         * left blank. If there is nothing to print, simply return two empty
+         * strings.
          */
         virtual
         std::pair<std::string,std::string>

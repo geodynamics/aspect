@@ -1,22 +1,16 @@
-/*
-  Copyright (C) 2011 - 2023 by the authors of the ASPECT code.
-
-  This file is part of ASPECT.
-
-  ASPECT is free software; you can redistribute it and/or modify
-  it under the terms of the GNU General Public License as published by
-  the Free Software Foundation; either version 2, or (at your option)
-  any later version.
-
-  ASPECT is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  GNU General Public License for more details.
-
-  You should have received a copy of the GNU General Public License
-  along with ASPECT; see the file LICENSE.  If not see
-  <http://www.gnu.org/licenses/>.
-*/
+// ------------------------------------------------------
+//
+// SPDX-License-Identifier: GPL-2.0-or-later
+//
+// SPDX-FileCopyrightText: Copyright (C) 2011-2026 by the ASPECT authors.
+//
+// This file is part of ASPECT.
+//
+// Detailed license information governing the source code and
+// contributions can be found in the folder LICENSES and in
+// LICENSE and CONTRIBUTING.md at the top level directory.
+//
+// ------------------------------------------------------
 
 
 #ifndef _aspect_heating_model_shear_heating_h
@@ -88,9 +82,18 @@ namespace aspect
          * in the DruckerPrager rheology model can be used to define a
          * maximum stress computed from the given cohesion and friction
          * angle.
+         *
+         * This variable is read from the parameter file through the 'Limit
+         * stress contribution to shear heating' parameter.
          */
         bool limit_stress;
+        /**
+         * This variable is read from the parameter file through a parameter called 'Cohesion for maximum shear stress'.
+         */
         double cohesion;
+        /**
+         * This variable is read from the parameter file through a parameter called 'Friction angle for maximum shear stress'.
+         */
         double friction_angle;
         MaterialModel::Rheology::DruckerPrager<dim> drucker_prager_plasticity;
     };
@@ -142,7 +145,7 @@ namespace aspect
          * If this object is created and filled by the material model
          * it will replace the default viscous dissipation rate
          * computed by the shear heating model.
-        */
+         */
         std::vector<double> prescribed_shear_heating_rates;
     };
   }

@@ -8,19 +8,18 @@ Number of degrees of freedom: 120 (50+9+36+25)
    Solving Stokes system (GMG)... 7+0 iterations.
 
    Postprocessing:
-      
-Total system matrix memory consumption: 0.03 MB.
-Total system matrix nnz: 1,261
-system matrix nnz by block: 
-           0           0           0           0
-           0           0           0           0
-           0           0         972           0
-           0           0           0         289
-
-Total system preconditioner matrix memory consumption: 0.00 MB.
-Total system preconditioner matrix nnz: 0
-system preconditioner matrix nnz by block: 
-
+     
+     Total system matrix memory consumption: 0.03 MB.
+     Total system matrix nnz: 1,261
+     system matrix nnz by block: 
+                0           0           0           0
+                0           0           0           0
+                0           0         972           0
+                0           0           0         289
+     
+     Total system preconditioner matrix memory consumption: 0.00 MB.
+     Total system preconditioner matrix nnz: 0
+     system preconditioner matrix nnz by block: 
 
 Termination requested by criterion: end time
 

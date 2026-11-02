@@ -178,22 +178,30 @@ A benchmark case demonstrating the propagation of solitary waves can be
 found in {ref}`sec:benchmarks:solitary_wave`.
 
 (sec:methods:darcy-flow)=
-# Calculations with Darcy flow
-To calculate fluid transport, ASPECT can advect compositional fields with the fluid velocity
-computed using Darcy's Law (derived in McKenzie 1984). Currently, this method approximates the fluid
-pressure gradient as the lithostatic pressure, so the expression used for the fluid velocity is:
+# Calculations with approximated Darcy flow
+To simulate two-phase fluid transport, ASPECT can advect compositional fields with the fluid
+velocity computed using an approximate form of Darcy's Law (derived in McKenzie 1984). This
+advection scheme either approximates the fluid pressure gradient as being equal to the solid
+pressure gradient:
+
+```{math}
+\mathbf{u}_f = \mathbf{u}_s - \frac{K_D}{\phi} \left(\nabla p_s - \rho_f \right)\mathbf{g}
+```
+
+or further approximates the fluid pressure gradient as being strictly equal to the buoyancy
+difference between the solid and fluid phases:
 
 ```{math}
 \mathbf{u}_f = \mathbf{u}_s - \frac{K_D}{\phi} \left(\rho_s - \rho_f \right)\mathbf{g}
 ```
 
-Where $\mathbf{u}_s$ is the solid velocity, $K_D$ is the Darcy Coefficient, $\phi$ is the porosity,
-$\mathbf{g}$ is the gravity vector, $\rho_s$ is the solid density, and $\rho_f$ is the fluid density.
-The implementation of this method shares some similarities with the melt implementation, but is much
-simpler and as a consequence has several limitations. Currently, in the absence of solid motion,
-the fluid phase will only be advected parallel to the gravity vector based on buoyancy forces. An
-additional limitation is that solid compaction with varying porosity is not calculated with the
-current implementation, and so mass is not conserved as fluid leaves the solid matrix at a given
-point. For small porosities, this does not pose too much of an issue, but this approximation would
-break down at high porosities. The advantage of this method is that it is relatively cheap, and it can be used in
-scenarios where porosities are small and fluid pressures can be approximated by $\rho_s \mathbf{g}$.
+In the above equations, $\mathbf{u}_s$ is the solid velocity, $K_D$ is the Darcy Coefficient, $\phi$
+is the porosity, $\mathbf{g}$ is the gravity vector, $\nabla p_s$ is the solid pressure gradient,
+$\rho_s$ is the solid density, and $\rho_f$ is the fluid density. The implementation of this method
+shares some similarities with the melt implementation, but is much simpler and as a consequence has
+several limitations. An additional limitation is that solid compaction with varying porosity is not
+calculated with the current implementation, and so mass is not conserved as fluid leaves the solid
+matrix at a given point. For small porosities, this does not pose too much of an issue, but this
+approximation would break down at high porosities. The advantage of this method is that it is
+relatively cheap, and it can be used in scenarios where porosities are small and fluid pressures
+can be approximated by $\rho_s \mathbf{g}$.

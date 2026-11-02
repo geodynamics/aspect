@@ -1,0 +1,45 @@
+<?xml version="1.0" ?> 
+<!-- 
+# vtk DataFile Version 3.0
+#This file was generated 
+<VTKFile type="UnstructuredGrid" version="0.1" compressor="vtkZLibDataCompressor" byte_order="LittleEndian">
+<UnstructuredGrid>
+<FieldData>
+<DataArray type="Float32" Name="CYCLE" NumberOfTuples="1" format="ascii">0</DataArray>
+<DataArray type="Float32" Name="TIME" NumberOfTuples="1" format="ascii">0</DataArray>
+</FieldData>
+<Piece NumberOfPoints="1" NumberOfCells="1" >
+  <Points>
+    <DataArray type="Float32" NumberOfComponents="3" format="binary">
+AQAAAAwAAAAMAAAADwAAAA==eAFjYGCwZ4BgBgADfgB/
+    </DataArray>
+  </Points>
+
+  <Cells>
+    <DataArray type="Int32" Name="connectivity" format="binary">
+AQAAAAQAAAAEAAAADAAAAA==eAFjYGBgAAAABAAB
+    </DataArray>
+    <DataArray type="Int32" Name="offsets" format="binary">
+AQAAAAQAAAAEAAAADAAAAA==eAFjZGBgAAAACAAC
+    </DataArray>
+    <DataArray type="UInt8" Name="types" format="binary">
+AQAAAAEAAAABAAAACQAAAA==eAFjBAAAAgAC
+    </DataArray>
+  </Cells>
+  <PointData Scalars="scalars">
+    <DataArray type="Float32" Name="initial position" NumberOfComponents="3" format="binary">
+AQAAAAwAAAAMAAAADwAAAA==eAFjYGCwZ4BgBgADfgB/
+    </DataArray>
+    <DataArray type="Float32" Name="id" format="binary">
+AQAAAAQAAAAEAAAADAAAAA==eAFjYGBgAAAABAAB
+    </DataArray>
+    <DataArray type="Float32" Name="function" format="binary">
+AQAAAAQAAAAEAAAADAAAAA==eAFjYGBgAAAABAAB
+    </DataArray>
+    <DataArray type="Float32" Name="initial C_1" format="binary">
+AQAAAAQAAAAEAAAADAAAAA==eAFjUJirCQABxwDn
+    </DataArray>
+  </PointData>
+ </Piece>
+ </UnstructuredGrid>
+</VTKFile>

@@ -1,22 +1,16 @@
-/*
-  Copyright (C) 2023 by the authors of the ASPECT code.
-
-  This file is part of ASPECT.
-
-  ASPECT is free software; you can redistribute it and/or modify
-  it under the terms of the GNU General Public License as published by
-  the Free Software Foundation; either version 2, or (at your option)
-  any later version.
-
-  ASPECT is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  GNU General Public License for more details.
-
-  You should have received a copy of the GNU General Public License
-  along with ASPECT; see the file LICENSE.  If not see
-  <http://www.gnu.org/licenses/>.
-*/
+// ------------------------------------------------------
+//
+// SPDX-License-Identifier: GPL-2.0-or-later
+//
+// SPDX-FileCopyrightText: Copyright (C) 2023-2026 by the ASPECT authors.
+//
+// This file is part of ASPECT.
+//
+// Detailed license information governing the source code and
+// contributions can be found in the folder LICENSES and in
+// LICENSE and CONTRIBUTING.md at the top level directory.
+//
+// ------------------------------------------------------
 
 
 #include <aspect/global.h>
@@ -296,19 +290,26 @@ namespace aspect
           return property.front();
         }
 
-      const double floating_index = z/delta_z;
-      const unsigned int i = static_cast<unsigned int>(floating_index);
+      const double normalized_distance_from_surface = z/delta_z;
+      // This value is index of the point immediately above the depth z
+      // It is also the normalized distance from the surface to the point at index i.
+      const unsigned int i = static_cast<unsigned int>(normalized_distance_from_surface);
 
-      // If p is close to an existing value use that one. This prevents
-      // asking for values at i+1 while initializing i+1 (when p is at the
-      // depth of index i).
-      if (std::abs(floating_index-std::floor(floating_index+0.5)) < 1e-6)
+      // Check if p is close to, and immediately beyond, an existing value.
+      // If so, use that one. This prevents asking for values at i+1 while
+      // initializing i+1 (when p is at the depth of index i).
+
+      // This value is negative if it is closer to i+1 than to i.
+      // It is positive if it is closer to i than to i+1 or it is
+      // larger than i+1.
+      const double normalized_distance_to_closest_profile_point = normalized_distance_from_surface-std::floor(normalized_distance_from_surface+0.5);
+      if (normalized_distance_to_closest_profile_point >=0.0 && normalized_distance_to_closest_profile_point < 1e-6)
         return property[i];
 
       Assert (i+1 < property.size(), ExcInternalError());
 
       // now do the linear interpolation
-      const double d = floating_index - i;
+      const double d = normalized_distance_from_surface - i;
       Assert ((d>=0) && (d<=1), ExcInternalError());
 
       return d*property[i+1] + (1.-d)*property[i];

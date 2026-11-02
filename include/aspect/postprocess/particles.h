@@ -1,22 +1,16 @@
-/*
-  Copyright (C) 2011 - 2024 by the authors of the ASPECT code.
-
-  This file is part of ASPECT.
-
-  ASPECT is free software; you can redistribute it and/or modify
-  it under the terms of the GNU General Public License as published by
-  the Free Software Foundation; either version 2, or (at your option)
-  any later version.
-
-  ASPECT is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  GNU General Public License for more details.
-
-  You should have received a copy of the GNU General Public License
-  along with ASPECT; see the file LICENSE.  If not see
-  <http://www.gnu.org/licenses/>.
- */
+// ------------------------------------------------------
+//
+// SPDX-License-Identifier: GPL-2.0-or-later
+//
+// SPDX-FileCopyrightText: Copyright (C) 2011-2026 by the ASPECT authors.
+//
+// This file is part of ASPECT.
+//
+// Detailed license information governing the source code and
+// contributions can be found in the folder LICENSES and in
+// LICENSE and CONTRIBUTING.md at the top level directory.
+//
+// ------------------------------------------------------
 
 #ifndef _aspect_postprocess_particle_h
 #define _aspect_postprocess_particle_h
@@ -183,6 +177,8 @@ namespace aspect
         /**
          * List of interval between output (in years if appropriate simulation
          * parameter is set, otherwise seconds) for each particle manager.
+         *
+         * This variable is read from the parameter file through a parameter called 'Time between data output'.
          */
         std::vector<double> output_interval;
 
@@ -192,14 +188,16 @@ namespace aspect
         std::vector<double> last_output_time;
 
         /**
-         * Set the time output was supposed to be written. In the simplest
-         * case, this is the previous last output time plus the interval, but
-         * in general we'd like to ensure that it is the largest supposed
-         * output time, which is smaller than the current time, to avoid
-         * falling behind with last_output_time and having to catch up once
-         * the time step becomes larger. This is done after every output.
+         * Set the time output was supposed to be written for the given
+         * particle manager. In the simplest case, this is the previous last
+         * output time plus the interval, but in general we'd like to ensure
+         * that it is the largest supposed output time, which is smaller than
+         * the current time, to avoid falling behind with last_output_time and
+         * having to catch up once the time step becomes larger. This is done
+         * after every output.
          */
-        void set_last_output_time (const double current_time);
+        void set_last_output_time (const unsigned int particle_manager,
+                                   const double current_time);
 
         /**
          * Consecutively counted number indicating the how-manyth time we will
@@ -251,6 +249,7 @@ namespace aspect
          * file using MPI I/O when writing on a parallel filesystem. 0 means
          * no grouping (and no parallel I/O). 1 will generate one big file
          * containing the whole solution.
+         * This variable is read from the parameter file through a parameter called 'Number of grouped files'.
          */
         unsigned int group_files;
 
@@ -260,6 +259,7 @@ namespace aspect
          * move this file to a network file system. If this variable is
          * set to a non-empty string it will be interpreted as a temporary
          * storage location.
+         * This variable is read from the parameter file through a parameter called 'Temporary output location'.
          */
         std::string temporary_output_location;
 
@@ -268,6 +268,7 @@ namespace aspect
          * progress of the rest of the model run. Setting this variable to
          * 'true' moves this process into a background thread, while the
          * rest of the model continues.
+         * This variable is read from the parameter file through a parameter called 'Write in background thread'.
          */
         bool write_in_background_thread;
 
@@ -280,6 +281,8 @@ namespace aspect
         /**
          * Stores the particle property fields which are excluded from output
          * to the visualization file for each particle manager.
+         *
+         * This variable is read from the parameter file through a parameter called 'Exclude output properties'.
          */
         std::vector<std::vector<std::string>> exclude_output_properties;
 

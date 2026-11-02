@@ -23,7 +23,7 @@ subsection Boundary temperature model
 end
 
 subsection Initial temperature model
-  set Model name = adiabatic
+  set List of model names = adiabatic
 
   subsection Adiabatic
     set Age top boundary layer = 3.16e15

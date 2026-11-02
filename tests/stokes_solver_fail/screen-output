@@ -16,9 +16,9 @@ Additional information:
     The iterative Stokes solver in Simulator::solve_stokes did not
     converge.
     
-    The initial residual was: 1.169088e+14
-    The final residual is: 3.666996e+11
-    The required residual for convergence is: 1.169088e-21
+    The initial residual was: 1.184089e+14
+    The final residual is: 3.008808e+11
+    The required residual for convergence is: 1.184089e-21
     See output-stokes_solver_fail/solver_history.txt for the full
     convergence history.
     
@@ -27,19 +27,21 @@ Additional information:
     --------------------------------------------------------
 (line in output replaced by default.sh script)
 (line in output replaced by default.sh script)
-    void dealii::SolverFGMRES<VectorType>::solve(const MatrixType&,
-    VectorType&, const VectorType&, const PreconditionerType&) [with
-    MatrixType = aspect::internal::StokesBlock; PreconditionerType =
-    aspect::internal::BlockSchurPreconditioner<aspect::internal::InverseVelocityBlock<dealii::TrilinosWrappers::PreconditionAMG,
+    void dealii::SolverMPGMRES<VectorType>::solve_internal(const
+    MatrixType&, VectorType&, const VectorType&, const
+    dealii::SolverMPGMRES<VectorType>::IndexingStrategy&, const
+    PreconditionerTypes& ...) [with MatrixType =
+    aspect::StokesSolver::internal::StokesBlock; PreconditionerTypes =
+    {aspect::internal::BlockSchurPreconditioner<aspect::internal::InverseVelocityBlock<dealii::TrilinosWrappers::PreconditionAMG,
     dealii::TrilinosWrappers::MPI::Vector,
     dealii::TrilinosWrappers::SparseMatrix>,
-    aspect::internal::SchurComplementOperator,
+    aspect::StokesSolver::internal::SchurComplementOperator,
     dealii::TrilinosWrappers::SparseMatrix,
-    dealii::TrilinosWrappers::MPI::BlockVector>; VectorType =
+    dealii::TrilinosWrappers::MPI::BlockVector>}; VectorType =
     dealii::TrilinosWrappers::MPI::BlockVector]
     Additional information:
     Iterative method reported convergence failure in step 10. The residual
-    in the last step was 3.667e+11.
+    in the last step was 3.00881e+11.
     
     This error message can indicate that you have simply not allowed a
     sufficiently large number of iterations for your iterative solver to

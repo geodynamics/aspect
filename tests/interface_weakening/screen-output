@@ -1,0 +1,58 @@
+
+Number of active cells: 200 (on 2 levels)
+Number of degrees of freedom: 3,276 (1,722+231+861+231+231)
+
+Number of mesh deformation degrees of freedom: 1,722
+   Solving mesh displacement system... 0 iterations.
+*** Timestep 0:  t=0 years, dt=0 years
+   Solving mesh displacement system... 0 iterations.
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 40+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.81785e-16, 0, 0, 1
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 1
+
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 39+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.81785e-16, 0, 0, 31.6813
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 31.6813
+
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 2+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.81785e-16, 0, 0, 4.02108e-07
+      Relative nonlinear residual (total system) after nonlinear iteration 3: 4.02108e-07
+
+
+   Postprocessing:
+     Average density / Average viscosity / Total mass:  3173 kg/m^3, 9e+19 Pa s, 6.346e+13 kg
+
+*** Timestep 1:  t=10000 years, dt=10000 years
+   Solving mesh surface diffusion
+   Solving mesh displacement system... 1 iterations.
+   Solving temperature system... 7 iterations.
+   Advecting particles...  done.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 46+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0.000169107, 0, 0, 0.000275951
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 0.000275951
+
+   Solving temperature system... 3 iterations.
+   Advecting particles...  done.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 0+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 4.11533e-09, 0, 0, 9.74379e-09
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 9.74379e-09
+
+
+   Postprocessing:
+     Average density / Average viscosity / Total mass:  3173 kg/m^3, 9e+19 Pa s, 6.346e+13 kg
+
+Termination requested by criterion: end time
+
+
+

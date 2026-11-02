@@ -1,0 +1,29 @@
+
+
+   Loading Ascii data boundary file $ASPECT_SOURCE_DIR/data/geometry-model/initial-topography-model/ascii-data/test/box_2d_top_step.0.txt.
+
+Number of active cells: 1,024 (on 5 levels)
+Number of degrees of freedom: 13,876 (8,514+1,105+4,257)
+
+Number of mesh deformation degrees of freedom: 8,514
+   Solving mesh displacement system... 6 iterations.
+
+
+Exception 'ExcMessage (error_message)' on rank 0 on processing: 
+
+An error occurred in line <1121> of file <$ASPECT_SOURCE_DIR/source/mesh_deformation/interface.cc> in function
+(line in output replaced by default.sh script)
+Additional information: 
+    The mesh deformation produced a cell with a negative Jacobian
+    determinant (minimum cell measure: -1855498.687009). In other words,
+    the deformed mesh contains inverted cells, which makes the mapping
+    ill-defined and the computed solution unphysical. This usually happens
+    when the initial topography or the prescribed mesh motion changes by
+    more than the size of a cell within a single cell, for example a
+    discontinuous (step-like) initial topography on a coarse mesh. Please
+    refine the mesh in regions with steep topography, or use a smoother
+    initial topography, so that the topography does not vary by more than
+    the cell size within a single cell.
+
+Stacktrace:
+(rest of the output replaced by default.sh script)

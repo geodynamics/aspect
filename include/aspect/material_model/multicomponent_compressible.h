@@ -1,22 +1,16 @@
-/*
-  Copyright (C) 2014 - 2022 by the authors of the ASPECT code.
-
-  This file is part of ASPECT.
-
-  ASPECT is free software; you can redistribute it and/or modify
-  it under the terms of the GNU General Public License as published by
-  the Free Software Foundation; either version 2, or (at your option)
-  any later version.
-
-  ASPECT is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  GNU General Public License for more details.
-
-  You should have received a copy of the GNU General Public License
-  along with ASPECT; see the file LICENSE.  If not see
-  <http://www.gnu.org/licenses/>.
-*/
+// ------------------------------------------------------
+//
+// SPDX-License-Identifier: GPL-2.0-or-later
+//
+// SPDX-FileCopyrightText: Copyright (C) 2014-2026 by the ASPECT authors.
+//
+// This file is part of ASPECT.
+//
+// Detailed license information governing the source code and
+// contributions can be found in the folder LICENSES and in
+// LICENSE and CONTRIBUTING.md at the top level directory.
+//
+// ------------------------------------------------------
 
 #ifndef _aspect_material_model_multicomponent_compressible_h
 #define _aspect_material_model_multicomponent_compressible_h
@@ -107,10 +101,10 @@ namespace aspect
          */
 
         /**
-        * Creates additional output objects of type PrescribedFieldOutput filled with
-        * the densities (necessary for the projected density approximation of
-        * the Stokes equation).
-        */
+         * Creates additional output objects of type PrescribedFieldOutput filled with
+         * the densities (necessary for the projected density approximation of
+         * the Stokes equation).
+         */
         void
         create_additional_named_outputs (MaterialModel::MaterialModelOutputs<dim> &out) const override;
 
@@ -118,16 +112,21 @@ namespace aspect
       private:
         /**
          * Enumeration for selecting which viscosity averaging scheme to use.
+         *
+         * This variable is read from the parameter file through a parameter called 'Viscosity averaging scheme'.
          */
         MaterialUtilities::CompositionalAveragingOperation viscosity_averaging;
 
         /**
          * Vector for field viscosities, read from parameter file.
+         * This variable is read from the parameter file through a parameter called 'Viscosities'.
          */
         std::vector<double> viscosities;
 
         /**
          * Vector for field thermal conductivities, read from parameter file.
+         *
+         * This variable is read from the parameter file through a parameter called 'Thermal conductivities'.
          */
         std::vector<double> thermal_conductivities;
 

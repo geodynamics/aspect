@@ -1,0 +1,100 @@
+# Check global coarsening GMG for an adaptively refined 3d box with periodic boundaries
+#
+# This used to crash
+#
+# MPI: 2
+
+set Dimension = 3
+
+
+set Additional shared libraries            = ./libnsinker.so
+set Dimension                              = 3
+set End time                               = 0
+set Pressure normalization                 = volume
+set Nonlinear solver scheme                = no Advection, single Stokes
+set Max nonlinear iterations               = 1
+set Use years instead of seconds           = false
+set Output directory = output-gmg
+
+# Follow as closely as possible the parameters from Rudi et al. (2017)
+subsection Solver parameters
+  subsection Stokes solver parameters
+    set Stokes solver type = block GMG
+    set Stokes GMG type = global coarsening
+    set Number of cheap Stokes solver steps             = 1000
+    set Maximum number of expensive Stokes solver steps = 0
+    set Linear solver tolerance                         = 1e-8
+    set GMRES solver restart length                     = 100
+  end
+
+  subsection Matrix Free
+    set Output details = true
+  end
+end
+
+subsection Discretization
+  set Use locally conservative discretization = false
+end
+
+subsection Geometry model
+  set Model name = box
+
+  subsection Box
+    set X periodic = true
+    set X extent = 1
+    set Y extent = 1
+    set Z extent = 1
+  end
+end
+
+subsection Material model
+  set Model name = nsinker
+  set Material averaging = harmonic average
+
+  subsection NSinker
+    set Number of sinkers = 4
+    set Dynamic viscosity ratio = 1e4
+  end
+end
+
+subsection Gravity model
+  set Model name = vertical
+
+  subsection Vertical
+    set Magnitude = 1
+  end
+end
+
+subsection Initial temperature model
+  set List of model names = function
+end
+
+subsection Mesh refinement
+  set Initial global refinement = 3
+  set Initial adaptive refinement = 3
+  set Adapt by fraction of cells = true
+  set Strategy = velocity
+  set Run postprocessors on initial refinement = true
+  set Coarsening fraction       = 0.0
+  set Refinement fraction       = 0.147 #0.14285714285
+end
+
+subsection Postprocess
+  set List of postprocessors = memory statistics, visualization
+
+  subsection Memory statistics
+    set Output peak virtual memory (VmPeak) = true
+  end
+
+  subsection Visualization
+    set List of output variables = material properties
+
+    subsection Material properties
+      set List of material properties = viscosity
+    end
+  end
+end
+
+subsection Boundary velocity model
+  set Zero velocity boundary indicators = bottom,top,front,back
+end

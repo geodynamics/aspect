@@ -1,6 +1,6 @@
 
 
-   Loading Ascii data initial file ASPECT_DIR/data/initial-temperature/patch-on-S40RTS/test/upper_shell_3d.txt.
+   Loading Ascii data initial file $ASPECT_SOURCE_DIR/data/initial-temperature/patch-on-S40RTS/test/upper_shell_3d.txt.
 
 Number of active cells: 96 (on 1 levels)
 Number of degrees of freedom: 4,030 (2,910+150+970)

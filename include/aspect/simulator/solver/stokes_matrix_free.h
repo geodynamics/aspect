@@ -1,36 +1,23 @@
-/*
-  Copyright (C) 2011 - 2025 by the authors of the ASPECT code.
-
-  This file is part of ASPECT.
-
-  ASPECT is free software; you can redistribute it and/or modify
-  it under the terms of the GNU General Public License as published by
-  the Free Software Foundation; either version 2, or (at your option)
-  any later version.
-
-  ASPECT is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  GNU General Public License for more details.
-
-  You should have received a copy of the GNU General Public License
-  along with ASPECT; see the file LICENSE.  If not see
-  <http://www.gnu.org/licenses/>.
-*/
+// ------------------------------------------------------
+//
+// SPDX-License-Identifier: GPL-2.0-or-later
+//
+// SPDX-FileCopyrightText: Copyright (C) 2011-2026 by the ASPECT authors.
+//
+// This file is part of ASPECT.
+//
+// Detailed license information governing the source code and
+// contributions can be found in the folder LICENSES and in
+// LICENSE and CONTRIBUTING.md at the top level directory.
+//
+// ------------------------------------------------------
 
 #ifndef _aspect_simulator_solver_stokes_matrix_free_h
 #define _aspect_simulator_solver_stokes_matrix_free_h
 
-#include <aspect/simulator/solver/matrix_free_operators.h>
 #include <aspect/global.h>
 #include <aspect/parameters.h>
 #include <aspect/simulator/solver/interface.h>
-#include <aspect/utilities.h>
-
-#include <deal.II/multigrid/mg_transfer_matrix_free.h>
-#include <deal.II/multigrid/mg_transfer_global_coarsening.templates.h>
-
-#include <deal.II/lac/solver_bicgstab.h>
 
 namespace aspect
 {
@@ -54,13 +41,25 @@ namespace aspect
       virtual void setup_dofs()=0;
 
       /**
+       * Set up the triangulations used by the multigrid hierarchy.
+       */
+      virtual void setup_multigrid_hierarchy();
+
+      /**
+       * Return the triangulations used by the multigrid hierarchy.
+       */
+      virtual const std::vector<std::shared_ptr<const Triangulation<dim, dim>>> &
+      get_multigrid_triangulations() const = 0;
+
+      /**
        * Perform various tasks to update the linear system to solve
        * for. Note that we are not assembling a matrix (as this is a
        * matrix-free algorithm), but we are evaluating the material
        * model and storing the information necessary for a later call
-       * to solve().
+       * to solve(). The function can modify @p system_rhs to account
+       * for boundary conditions as is necessary for matrix-free methods.
        */
-      virtual void assemble()=0;
+      virtual void assemble(LinearAlgebra::BlockVector &system_rhs)=0;
 
       /**
        * Computes and sets the diagonal for both the mass matrix

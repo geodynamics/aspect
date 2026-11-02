@@ -5,6 +5,33 @@ include $ASPECT_SOURCE_DIR/benchmarks/viscoelastic_plate_flexure/viscoelastic_pl
 set End time                               = 5
 set Output directory                       = elastic_stabilization_time_scale_factor
 
+subsection Discretization
+  subsection Stabilization parameters
+    set Use limiter for discontinuous composition solution = false, false, false, false, false, false, true, true
+    set Global composition maximum =  1.e11,  1.e11,  1.e11,1.e11,  1.e11,  1.e11, 1.0, 1.0
+    set Global composition minimum = -1.e11, -1.e11, -1.e11,-1.e11, -1.e11, -1.e11, 0.0, 0.0
+  end
+end
+
+# Number and name of compositional fields
+subsection Compositional fields
+  set Number of fields = 8
+  set Names of fields  = ve_stress_xx, ve_stress_yy, ve_stress_xy, ve_stress_xx_old, ve_stress_yy_old, ve_stress_xy_old, plate, inclusion
+  set Types of fields  = stress, stress, stress, stress, stress, stress, chemical composition, chemical composition
+end
+
+# Spatial domain of different compositional fields
+subsection Initial composition model
+  set List of model names = function
+
+  subsection Function
+    set Variable names      = x,y
+    set Function expression = 0; 0; 0; 0; 0; 0; \
+                              if (y>12.5e3, 1, 0); \
+                              if (x>=45e3 && y>=7.5e3 && y<=12.5e3, 1, 0);
+  end
+end
+
 # Implement the new time scale factor
 subsection Material model
   subsection Viscoelastic

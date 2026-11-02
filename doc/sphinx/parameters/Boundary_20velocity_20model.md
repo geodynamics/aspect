@@ -268,5 +268,5 @@ If the function you are describing represents a vector-valued function with mult
 
 **Pattern:** [Anything]
 
-**Documentation:** The file name of the material data. Provide file in format: (Velocity file name).\%d.gpml where \%d is any sprintf integer qualifier, specifying the format of the current file number.
+**Documentation:** The file name of the material data. Provide file in format: some_file_name.\%d.gpml where \%d will be replaced by the current file number. (Only \%d is allowed here, not any of the other printf-style format specifiers.)
 ::::

@@ -39,7 +39,7 @@ end
 ############### Parameters describing the temperature field
 
 subsection Initial temperature model
-  set Model name = perturbed box
+  set List of model names = perturbed box
 end
 
 ############### Parameters describing the discretization
@@ -67,11 +67,11 @@ subsection Compositional fields
 end
 
 subsection Initial composition model
-  set Model name = function
+  set List of model names = function
 
   subsection Function
     set Variable names      = x,z
-    set Function constants  = pi=3.1415926, eta_b=1e6
+    set Function constants  =  eta_b=1e6
     set Function expression = -1 * sin(2*z) * cos(3*pi*x); exp(log(eta_b)*z)
   end
 end
@@ -108,7 +108,7 @@ subsection Particles
   subsection Function
     set Number of components = 2
     set Variable names      = x, z
-    set Function constants  = pi=3.1415926, eta_b=1e6
+    set Function constants  =  eta_b=1e6
     set Function expression =  -1 * sin(2*z) * cos(3*pi*x); exp(log(eta_b)*z)
   end
 

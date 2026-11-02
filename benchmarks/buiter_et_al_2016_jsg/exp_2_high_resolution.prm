@@ -13,7 +13,7 @@ set Dimension                                        = 2
 set Start time                                       = 0
 set End time                                         = 14400 #Equivalent to ~10 cm of shortening
 set Use years instead of seconds                     = false
-set CFL number                                       = 0.5
+set CFL number                                       = 0.25
 set Output directory                                 = output-Brittle_thrust_wedge_exp2
 set Pressure normalization                           = no
 set Timing output frequency                          = 20
@@ -119,7 +119,7 @@ end
 # free surface.
 
 subsection Initial composition model
-  set Model name                                     = function
+  set List of model names                            = function
 
   subsection Function
     set Variable names                               = x,y
@@ -142,7 +142,7 @@ end
 
 # Initial temperature field
 subsection Initial temperature model
-  set Model name                                     = function
+  set List of model names                            = function
 
   subsection Function
     set Function expression                          = 293

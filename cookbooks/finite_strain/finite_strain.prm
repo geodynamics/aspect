@@ -32,7 +32,7 @@ subsection Boundary composition model
 end
 
 subsection Initial composition model
-  set Model name = function
+  set List of model names = function
 
   subsection Function
     set Function expression = 1.0;0.0;0.0;1.0
@@ -60,7 +60,7 @@ subsection Gravity model
 end
 
 subsection Initial temperature model
-  set Model name = adiabatic
+  set List of model names = adiabatic
 
   subsection Adiabatic
     set Age bottom boundary layer = 5e8

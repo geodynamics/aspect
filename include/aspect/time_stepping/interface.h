@@ -1,22 +1,16 @@
-/*
-  Copyright (C) 2019 - 2024 by the authors of the ASPECT code.
-
-  This file is part of ASPECT.
-
-  ASPECT is free software; you can redistribute it and/or modify
-  it under the terms of the GNU General Public License as published by
-  the Free Software Foundation; either version 2, or (at your option)
-  any later version.
-
-  ASPECT is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  GNU General Public License for more details.
-
-  You should have received a copy of the GNU General Public License
-  along with ASPECT; see the file LICENSE.  If not see
-  <http://www.gnu.org/licenses/>.
- */
+// ------------------------------------------------------
+//
+// SPDX-License-Identifier: GPL-2.0-or-later
+//
+// SPDX-FileCopyrightText: Copyright (C) 2019-2026 by the ASPECT authors.
+//
+// This file is part of ASPECT.
+//
+// Detailed license information governing the source code and
+// contributions can be found in the folder LICENSES and in
+// LICENSE and CONTRIBUTING.md at the top level directory.
+//
+// ------------------------------------------------------
 
 
 #ifndef _aspect_time_stepping_interface_h
@@ -188,6 +182,13 @@ namespace aspect
         void
         parse_parameters (ParameterHandler &prm) override;
 
+        template <class Archive>
+        void
+        serialize (Archive &ar, const unsigned int)
+        {
+          ar &termination_manager;
+        }
+
         /**
          * For the current plugin subsystem, write a connection graph of all of the
          * plugins we know about, in the format that the
@@ -240,12 +241,18 @@ namespace aspect
 
         /**
          * The minimum time step size specified by the user (in seconds).
+         *
+         * This variable is read from the parameter file through a parameter
+         * called 'Minimum time step size'.
          */
         double minimum_time_step_size;
 
         /**
          * Whether to do a final checkpoint before termination. This is
          * specified in the parameters.
+         *
+         * This variable is read from the parameter file through a parameter
+         * called 'Checkpoint on termination'.
          */
         bool do_checkpoint_on_terminate;
 

@@ -1,22 +1,16 @@
-/*
-  Copyright (C) 2011 - 2024 by the authors of the ASPECT code.
-
-  This file is part of ASPECT.
-
-  ASPECT is free software; you can redistribute it and/or modify
-  it under the terms of the GNU General Public License as published by
-  the Free Software Foundation; either version 2, or (at your option)
-  any later version.
-
-  ASPECT is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  GNU General Public License for more details.
-
-  You should have received a copy of the GNU General Public License
-  along with ASPECT; see the file LICENSE.  If not see
-  <http://www.gnu.org/licenses/>.
-*/
+// ------------------------------------------------------
+//
+// SPDX-License-Identifier: GPL-2.0-or-later
+//
+// SPDX-FileCopyrightText: Copyright (C) 2011-2026 by the ASPECT authors.
+//
+// This file is part of ASPECT.
+//
+// Detailed license information governing the source code and
+// contributions can be found in the folder LICENSES and in
+// LICENSE and CONTRIBUTING.md at the top level directory.
+//
+// ------------------------------------------------------
 
 
 #ifndef _aspect_simulator_access_h
@@ -54,6 +48,11 @@ namespace aspect
   }
 
   namespace HeatingModel
+  {
+    template <int dim> class Manager;
+  }
+
+  namespace PrescribedDilation
   {
     template <int dim> class Manager;
   }
@@ -145,6 +144,11 @@ namespace aspect
   namespace Particle
   {
     template <int dim> class Manager;
+  }
+
+  namespace StokesSolver
+  {
+    template <int dim> class Interface;
   }
 
   namespace TimeStepping
@@ -833,6 +837,14 @@ namespace aspect
       get_heating_model_manager () const;
 
       /**
+       * Return a pointer to the manager of the prescribed dilation.
+       * This can then, for example, be used to get the names of the dilation models
+       * used in a computation.
+       */
+      const PrescribedDilation::Manager<dim> &
+      get_prescribed_dilation_manager () const;
+
+      /**
        * Return a reference to the manager of the mesh refinement strategies.
        * this can then, for example, be used to get the names of the active refinement
        * strategies for such purposes as confirming that a particular one has
@@ -965,6 +977,16 @@ namespace aspect
       pressure_rhs_needs_compatibility_modification() const;
 
       /**
+       * Return whether to the best of our knowledge the A block of the
+       * Stokes system is symmetric. This is the case for most models, except
+       * if additional non-symmetric terms are added by special assemblers
+       * (e.g., the free surface stabilization term). This can be important
+       * information for picking the preconditioner of the A block.
+       */
+      bool
+      stokes_A_block_is_symmetric() const;
+
+      /**
        * Return whether the model uses a prescribed Stokes solution.
        */
       bool
@@ -1025,7 +1047,7 @@ namespace aspect
       /**
        * Return true if using the block GMG Stokes solver.
        */
-      bool is_stokes_matrix_free();
+      bool is_stokes_matrix_free() const;
 
       /**
        * Return a reference to the StokesMatrixFreeHandler that controls the
@@ -1033,6 +1055,12 @@ namespace aspect
        */
       const StokesMatrixFreeHandler<dim> &
       get_stokes_matrix_free () const;
+
+      /**
+       * Return a reference to the active Stokes solver.
+       */
+      const StokesSolver::Interface<dim> &
+      get_stokes_solver () const;
 
       /**
        * Return a reference to the PrescribedSolution::Manager that manages the
@@ -1058,14 +1086,14 @@ namespace aspect
                                    const bool limit_to_top_faces = false) const;
 
       /**
-      * Eliminate the nullspace of the velocity in the given vector. Both
-      * vectors are expected to contain the current solution.
-      *
-      * @param solution The locally relevant vector for the whole
-      * finite element, this vector will be filled at the end.
-      * @param distributed_stokes_solution only contains velocity and pressure and
-      * only locally owned elements.
-      */
+       * Eliminate the nullspace of the velocity in the given vector. Both
+       * vectors are expected to contain the current solution.
+       *
+       * @param solution The locally relevant vector for the whole
+       * finite element, this vector will be filled at the end.
+       * @param distributed_stokes_solution only contains velocity and pressure and
+       * only locally owned elements.
+       */
       void remove_nullspace(LinearAlgebra::BlockVector &solution,
                             LinearAlgebra::BlockVector &distributed_stokes_solution) const;
 

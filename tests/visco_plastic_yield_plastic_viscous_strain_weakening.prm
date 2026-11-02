@@ -54,7 +54,7 @@ subsection Boundary velocity model
 end
 
 subsection Initial temperature model
-  set Model name = function
+  set List of model names = function
 
   subsection Function
     set Function expression = 273
@@ -69,7 +69,7 @@ end
 
 # We prescribe some initial strain at the center of the domain
 subsection Initial composition model
-  set Model name = function
+  set List of model names = function
 
   subsection Function
     set Variable names      = x,y

@@ -1,22 +1,16 @@
-/*
-  Copyright (C) 2011 - 2022 by the authors of the ASPECT code.
-
-  This file is part of ASPECT.
-
-  ASPECT is free software; you can redistribute it and/or modify
-  it under the terms of the GNU General Public License as published by
-  the Free Software Foundation; either version 2, or (at your option)
-  any later version.
-
-  ASPECT is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  GNU General Public License for more details.
-
-  You should have received a copy of the GNU General Public License
-  along with ASPECT; see the file LICENSE.  If not see
-  <http://www.gnu.org/licenses/>.
-*/
+// ------------------------------------------------------
+//
+// SPDX-License-Identifier: GPL-2.0-or-later
+//
+// SPDX-FileCopyrightText: Copyright (C) 2011-2026 by the ASPECT authors.
+//
+// This file is part of ASPECT.
+//
+// Detailed license information governing the source code and
+// contributions can be found in the folder LICENSES and in
+// LICENSE and CONTRIBUTING.md at the top level directory.
+//
+// ------------------------------------------------------
 
 #ifndef _aspect_material_model_equation_of_state_thermodynamic_table_lookup_h
 #define _aspect_material_model_equation_of_state_thermodynamic_table_lookup_h
@@ -102,19 +96,35 @@ namespace aspect
 
         private:
           unsigned int n_material_lookups;
+          /**
+           * This variable is read from the parameter file through a parameter called 'Bilinear interpolation'.
+           */
           bool use_bilinear_interpolation;
+          /**
+           * This variable is read from the parameter file through a parameter called 'Latent heat'.
+           */
           bool latent_heat;
 
           /**
            * Information about the location of data files.
+           *
+           * This variable is read from the parameter file through a parameter called 'Data directory'.
            */
           std::string data_directory;
+          /**
+           * This variable is read from the parameter file through a parameter called 'Material file names'.
+           */
           std::vector<std::string> material_file_names;
+          /**
+           * This variable is read from the parameter file through a parameter called 'Derivatives file names'.
+           */
           std::vector<std::string> derivatives_file_names;
 
           /**
            * The maximum number of substeps over the temperature pressure range
            * to calculate the averaged enthalpy gradient over a cell
+           *
+           * This variable is read from the parameter file through a parameter called 'Maximum latent heat substeps'.
            */
           unsigned int max_latent_heat_substeps;
 
@@ -126,7 +136,11 @@ namespace aspect
           {
             perplex,
             hefesto
-          } material_file_format;
+          };
+          /**
+           * This variable is read from the parameter file through a parameter called 'Material file format'.
+           */
+          formats material_file_format;
 
           /**
            * List of pointers to objects that read and process data we get from

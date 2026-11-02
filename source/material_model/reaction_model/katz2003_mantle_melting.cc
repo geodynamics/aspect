@@ -1,24 +1,18 @@
-/*
-  Copyright (C) 2024 by the authors of the ASPECT code.
+// ------------------------------------------------------
+//
+// SPDX-License-Identifier: GPL-2.0-or-later
+//
+// SPDX-FileCopyrightText: Copyright (C) 2024-2026 by the ASPECT authors.
+//
+// This file is part of ASPECT.
+//
+// Detailed license information governing the source code and
+// contributions can be found in the folder LICENSES and in
+// LICENSE and CONTRIBUTING.md at the top level directory.
+//
+// ------------------------------------------------------
 
-  This file is part of ASPECT.
-
-  ASPECT is free software; you can redistribute it and/or modify
-  it under the terms of the GNU General Public License as published by
-  the Free Software Foundation; either version 2, or (at your option)
-  any later version.
-
-  ASPECT is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  GNU General Public License for more details.
-
-  You should have received a copy of the GNU General Public License
-  along with ASPECT; see the file LICENSE.  If not see
-  <http://www.gnu.org/licenses/>.
-*/
-
-
+#include <algorithm>
 #include <aspect/material_model/reaction_model/katz2003_mantle_melting.h>
 #include <aspect/utilities.h>
 #include <aspect/gravity_model/interface.h>
@@ -190,9 +184,11 @@ namespace aspect
                 double porosity_change = 0.0;
                 if (fractional_melting)
                   {
-                    // solidus is lowered by previous melting events (fractional melting)
+                    // solidus is increased by previous melting events (fractional melting)
                     const double solidus_change = (maximum_melt_fraction - old_porosity) * depletion_solidus_change;
                     const double eq_melt_fraction = melt_fraction(in.temperature[i] - solidus_change, this->get_adiabatic_conditions().pressure(in.position[i]));
+
+                    // The change in porosity can be positive or negative, accounting for both melting and freezing.
                     porosity_change = eq_melt_fraction - old_porosity;
                   }
                 else
@@ -322,14 +318,14 @@ namespace aspect
                                                        * this->get_gravity_model().gravity_vector(in.position[i]);
 
                 const double phi_0 = 0.05;
-                porosity = std::max(std::min(porosity,0.995),1e-4);
+                porosity = std::clamp(porosity, 1e-4, 0.995);
                 melt_out->compaction_viscosities[i] = xi_0 * phi_0 / porosity;
 
                 double visc_temperature_dependence = 1.0;
                 if (this->include_adiabatic_heating ())
                   {
                     const double delta_temp = in.temperature[i]-this->get_adiabatic_conditions().temperature(in.position[i]);
-                    visc_temperature_dependence = std::max(std::min(std::exp(-thermal_bulk_viscosity_exponent*delta_temp/this->get_adiabatic_conditions().temperature(in.position[i])),1e4),1e-4);
+                    visc_temperature_dependence = std::clamp(std::exp(-thermal_bulk_viscosity_exponent*delta_temp/this->get_adiabatic_conditions().temperature(in.position[i])), 1e-4, 1e4);
                   }
                 else
                   {
@@ -339,7 +335,7 @@ namespace aspect
                                                  0.0
                                                  :
                                                  thermal_bulk_viscosity_exponent*delta_temp/reference_T);
-                    visc_temperature_dependence = std::max(std::min(std::exp(-T_dependence),1e4),1e-4);
+                    visc_temperature_dependence = std::clamp(std::exp(-T_dependence), 1e-4, 1e4);
                   }
                 melt_out->compaction_viscosities[i] *= visc_temperature_dependence;
               }
@@ -431,7 +427,7 @@ namespace aspect
                            "Prefactor of the linear pressure term "
                            "in the linear function that approximates "
                            "the clinopyroxene reaction coefficient. "
-                           "Units: $\\frac{1}{\\text{Pa}}$.");
+                           "Units: \\si{\\per\\pascal}.");
         prm.declare_entry ("beta", "1.5",
                            Patterns::Double (),
                            "Exponent of the melting temperature in "
@@ -446,19 +442,19 @@ namespace aspect
                            Patterns::Double (),
                            "The entropy change for the phase transition "
                            "from solid to melt of peridotite. "
-                           "Units: $\\frac{\\text{J}}{\\text{K}\\text{kg}}$.");
+                           "Units: \\si{\\joule\\per\\kelvin\\per\\kilogram}.");
         prm.declare_entry ("Reference melt density", "2500.",
                            Patterns::Double (0.),
                            "Reference density of the melt/fluid$\\rho_{f,0}$. "
-                           "Units: $\\frac{\\text{kg}}{\\text{m}^3}$.");
+                           "Units: \\si{\\kilogram\\per\\meter\\cubed}.");
         prm.declare_entry ("Reference bulk viscosity", "1e22",
                            Patterns::Double (0.),
                            "The value of the constant bulk viscosity $\\xi_0$ of the solid matrix. "
                            "This viscosity may be modified by both temperature and porosity "
-                           "dependencies. Units: $\\text{Pa}\\text{s}$.");
+                           "dependencies. Units: \\si{\\pascal\\second}.");
         prm.declare_entry ("Reference melt viscosity", "10.",
                            Patterns::Double (0.),
-                           "The value of the constant melt viscosity $\\eta_f$. Units: $\\text{Pa}\\text{s}$.");
+                           "The value of the constant melt viscosity $\\eta_f$. Units: \\si{\\pascal\\second}.");
         prm.declare_entry ("Exponential melt weakening factor", "27.",
                            Patterns::Double (0.),
                            "The porosity dependence of the viscosity. Units: dimensionless.");
@@ -477,7 +473,7 @@ namespace aspect
         prm.declare_entry ("Melt compressibility", "0.0",
                            Patterns::Double (0.),
                            "The value of the compressibility of the melt. "
-                           "Units: $\\frac{1}{\\text{Pa}}$.");
+                           "Units: \\si{\\per\\pascal}.");
         prm.declare_entry ("Melt bulk modulus derivative", "0.0",
                            Patterns::Double (0.),
                            "The value of the pressure derivative of the melt bulk "
@@ -492,13 +488,18 @@ namespace aspect
                            "melting should be used (if false), assuming that the melt fraction only "
                            "depends on temperature and pressure, and how much melt has already been "
                            "generated at a given point, but not considering movement of melt in "
-                           "the melting parameterization."
+                           "the melting parameterization. Note that this is not part of the original "
+                           "Katz (2003) parameterization, but a strongly simplified way to account for "
+                           "changes in composition due to melt transport (which are not considered in "
+                           "the original parameterization)."
                            "\n\n"
-                           "Note that melt does not freeze unless the 'Freezing rate' parameter is set "
-                           "to a value larger than 0.");
+                           "Note that the 'Freezing rate' parameter is not applied in the case of "
+                           "fractional melting; melt always freezes (with the same rate it melts "
+                           "with) if the equilibrium melt fraction, accounting for depletion, is "
+                           "lower than the porosity.");
         prm.declare_entry ("Freezing rate", "0.0",
                            Patterns::Double (0.),
-                           "Freezing rate of melt when in subsolidus regions. "
+                           "Freezing rate of melt in subsolidus regions in the batch melting parameterization. "
                            "If this parameter is set to a number larger than 0.0, it specifies the "
                            "fraction of melt that will freeze per year (or per second, depending on the "
                            "``Use years instead of seconds'' parameter), as soon as the porosity "
@@ -514,6 +515,8 @@ namespace aspect
                            "freezing parameterization, but without tracking the melt composition, there "
                            "is no way to compute freezing rates accurately. "
                            "If this parameter is set to zero, no freezing will occur. "
+                           "If fractional melting is used, this parameter is ignored (i.e., freezing occurs "
+                           "at the same rate as melting). "
                            "Note that freezing can never be faster than determined by the "
                            "``Melting time scale for operator splitting''. The product of the "
                            "``Freezing rate'' and the ``Melting time scale for operator splitting'' "
@@ -544,7 +547,7 @@ namespace aspect
                            "(depletion) and lowered for a negative peridotite field (enrichment). "
                            "Scaling with depletion is linear. Only active when fractional melting "
                            "is used. "
-                           "Units: $\\text{K}$.");
+                           "Units: \\si{\\kelvin}.");
         prm.declare_entry ("Reference permeability", "1e-8",
                            Patterns::Double(),
                            "Reference permeability of the solid host rock."
@@ -597,6 +600,11 @@ namespace aspect
 
         AssertThrow(melting_time_scale > 0,
                     ExcMessage("The Melting time scale for operator splitting must be larger than 0!"));
+
+        if (fractional_melting)
+          AssertThrow(freezing_rate == 0.0,
+                      ExcMessage("The freezing rate is not taken into account in models with fractional melting. "
+                                 "Changing its value from the default of 0.0 is not allowed."));
 
         if (this->get_parameters().reaction_solver_type == Parameters<dim>::ReactionSolverType::fixed_step)
           {

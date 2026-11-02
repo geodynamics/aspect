@@ -42,7 +42,7 @@ end
 # second material is obstacle
 
 subsection Initial composition model
-  set Model name = function
+  set List of model names = function
 
   subsection Function
     set Variable names      = x,y,z
@@ -85,7 +85,7 @@ end
 ############### Parameters describing the temperature field
 
 subsection Initial temperature model
-  set Model name = function
+  set List of model names = function
 
   subsection Function
     set Function expression = 0

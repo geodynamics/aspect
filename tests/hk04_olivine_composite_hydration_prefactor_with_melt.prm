@@ -14,7 +14,7 @@ end
 # set a bound_fluid of 1% everywhere, and a porosity of 0% everywhere. The bound_fluid
 # composition is what determines the water fugacity.
 subsection Initial composition model
-  set Model name = function
+  set List of model names = function
 
   subsection Function
     set Function expression = 0.01; 0

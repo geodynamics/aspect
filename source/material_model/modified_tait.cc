@@ -1,22 +1,16 @@
-/*
-  Copyright (C) 2011 - 2024 by the authors of the ASPECT code.
-
-  This file is part of ASPECT.
-
-  ASPECT is free software; you can redistribute it and/or modify
-  it under the terms of the GNU General Public License as published by
-  the Free Software Foundation; either version 2, or (at your option)
-  any later version.
-
-  ASPECT is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  GNU General Public License for more details.
-
-  You should have received a copy of the GNU General Public License
-  along with ASPECT; see the file LICENSE.  If not see
-  <http://www.gnu.org/licenses/>.
-*/
+// ------------------------------------------------------
+//
+// SPDX-License-Identifier: GPL-2.0-or-later
+//
+// SPDX-FileCopyrightText: Copyright (C) 2011-2026 by the ASPECT authors.
+//
+// This file is part of ASPECT.
+//
+// Detailed license information governing the source code and
+// contributions can be found in the folder LICENSES and in
+// LICENSE and CONTRIBUTING.md at the top level directory.
+//
+// ------------------------------------------------------
 
 #include <aspect/material_model/modified_tait.h>
 #include <aspect/adiabatic_conditions/interface.h>
@@ -139,11 +133,11 @@ namespace aspect
                              "Reference pressure $P_0$. Units: \\si{\\pascal}.");
           prm.declare_entry ("Reference temperature", "298.15",
                              Patterns::Double (0.),
-                             "Reference temperature $T_0$. Units: $\\text{K}$.");
+                             "Reference temperature $T_0$. Units: \\si{\\kelvin}.");
           prm.declare_entry ("Reference density", "3300.",
                              Patterns::Double (0.),
                              "The density at the reference pressure and temperature. "
-                             "Units: $\\frac{\\text{kg}}{\\text{m}^3}$.");
+                             "Units: \\si{\\kilogram\\per\\meter\\cubed}.");
           prm.declare_entry ("Reference isothermal bulk modulus", "125e9",
                              Patterns::Double (0.),
                              "The isothermal bulk modulus at the reference pressure and temperature. "
@@ -156,19 +150,19 @@ namespace aspect
           prm.declare_entry ("Reference thermal expansivity", "2e-5",
                              Patterns::Double (0.),
                              "The thermal expansion coefficient at the reference pressure and temperature. "
-                             "Units: $\\frac{1}{\\text{K}}$.");
+                             "Units: \\si{\\per\\kelvin}.");
           prm.declare_entry ("Einstein temperature", "600.",
                              Patterns::Double (0.),
                              "The Einstein temperature at the reference pressure and temperature. "
-                             "Units: $\\text{K}$.");
+                             "Units: \\si{\\kelvin}.");
           prm.declare_entry ("Viscosity", "1e21",
                              Patterns::Double (0.),
                              "The value of the constant viscosity $\\eta_0$. "
-                             "Units: $\\text{Pa}\\text{s}$.");
+                             "Units: \\si{\\pascal\\second}.");
           prm.declare_entry ("Thermal conductivity", "4.7",
                              Patterns::Double (0.),
                              "The value of the constant thermal conductivity $k$. "
-                             "Units: $\\frac{\\text{W}}{\\text{m}\\text{K}}$.");
+                             "Units: \\si{\\watt\\per\\meter\\per\\kelvin}.");
 
           prm.enter_subsection("Reference heat capacity function");
           {

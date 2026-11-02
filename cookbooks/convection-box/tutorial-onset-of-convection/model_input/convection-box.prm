@@ -54,11 +54,11 @@ end
 #   p, k - values related to the small temperature perturbation
 
 subsection Initial temperature model
-  set Model name = function
+  set List of model names = function
 
   subsection Function
     set Variable names      = x,z
-    set Function constants  = p=0.01, L=1, pi=3.1415926536, k=1
+    set Function constants  = p=0.01, L=1, k=1
     set Function expression = (1.0-z) - p*cos(k*pi*x/L)*sin(pi*z)
   end
 end

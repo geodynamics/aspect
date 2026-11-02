@@ -93,7 +93,7 @@ subsection Boundary velocity model
 end
 
 subsection Initial temperature model
-  set Model name = function
+  set List of model names = function
 
   subsection Function
     set Function expression = 0
@@ -102,10 +102,9 @@ subsection Initial temperature model
 end
 
 subsection Initial composition model
-  set Model name = function
+  set List of model names = function
 
   subsection Function
-    set Function constants = pi=3.14159265359
 
     #    set Function expression = if(abs(x)==1 || abs(z)==1, 0.1000000000e-1 + 0.1000000000e0 * exp(-0.40e1 * ((x + 0.20e1 * z)^ 0.2e1)), 0)
     #    set Function expression = 0.1000000000e-1 + 0.1000000000e0 * exp(-0.40e1 * ((x + 0.20e1 * z)^ 0.2e1))

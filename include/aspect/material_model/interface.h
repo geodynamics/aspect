@@ -1,22 +1,16 @@
-/*
-  Copyright (C) 2011 - 2024 by the authors of the ASPECT code.
-
-  This file is part of ASPECT.
-
-  ASPECT is free software; you can redistribute it and/or modify
-  it under the terms of the GNU General Public License as published by
-  the Free Software Foundation; either version 2, or (at your option)
-  any later version.
-
-  ASPECT is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  GNU General Public License for more details.
-
-  You should have received a copy of the GNU General Public License
-  along with ASPECT; see the file LICENSE.  If not see
-  <http://www.gnu.org/licenses/>.
-*/
+// ------------------------------------------------------
+//
+// SPDX-License-Identifier: GPL-2.0-or-later
+//
+// SPDX-FileCopyrightText: Copyright (C) 2011-2026 by the ASPECT authors.
+//
+// This file is part of ASPECT.
+//
+// Detailed license information governing the source code and
+// contributions can be found in the folder LICENSES and in
+// LICENSE and CONTRIBUTING.md at the top level directory.
+//
+// ------------------------------------------------------
 
 #ifndef _aspect_material_model_interface_h
 #define _aspect_material_model_interface_h
@@ -302,6 +296,24 @@ namespace aspect
                             const bool compute_strain_rate = true);
 
         /**
+         * Resize the internal data structures to provide sufficient memory
+         * to store (at least) @p n_points points and @p n_comp compositions.
+         * If possible reallocation of memory will be avoided.
+         * All entries will be reset to signaling NaNs.
+         * This function is not supported if AdditionalMaterialInputs are
+         * attached.
+         *
+         * @param n_points The number of quadrature points for which input
+         * quantities will be provided.
+         * @param n_comp The number of vector quantities (in the order in which
+         * the Introspection class reports them) for which input will be
+         * provided.
+         */
+        void
+        resize(const unsigned int n_points,
+               const unsigned int n_comp);
+
+        /**
          * Copy constructor. This constructor copies all data members of the
          * source object except for the additional input data (of type
          * AdditionalMaterialInputs) pointers, stored in the
@@ -516,14 +528,40 @@ namespace aspect
          * Constructor. Initialize the various arrays of this structure with the
          * given number of quadrature points and (finite element) components.
          *
-         * @param n_points The number of quadrature points for which input
+         * @param n_points The number of quadrature points for which output
          * quantities will be provided.
          * @param n_comp The number of vector quantities (in the order in which
-         * the Introspection class reports them) for which input will be
+         * the Introspection class reports them) for which output will be
          * provided.
          */
         MaterialModelOutputs (const unsigned int n_points,
                               const unsigned int n_comp);
+
+        /**
+         * Resize the internal data structures to provide sufficient memory
+         * to store (at least) @p n_points points and @p n_comp compositions.
+         * If possible reallocation of memory will be avoided.
+         * All entries will be reset to signaling NaNs.
+         * This function is not supported if AdditionalMaterialOutputs are
+         * attached.
+         *
+         * @param n_points The number of quadrature points for which output
+         * quantities will be computed.
+         * @param n_comp The number of vector quantities (in the order in which
+         * the Introspection class reports them) for which output will be
+         * computed.
+         * @param remove_additional_outputs If set to true, any additional outputs
+         *   attached to this object will be removed. In that case, the resulting
+         *   MaterialModelOutputs object will be as if it had been constructed from
+         *   scratch via the constructor that takes the number of quadrature
+         *   points and number of compositions as arguments. If set to false,
+         *   and if additional outputs are attached, these objects will remain
+         *   untouched.
+         */
+        void
+        resize(const unsigned int n_points,
+               const unsigned int n_comp,
+               const bool remove_additional_outputs = true);
 
         /**
          * Copy constructor. This constructor copies all data members of the
@@ -923,12 +961,14 @@ namespace aspect
      * Some material models can compute things that are not used anywhere
      * in the physics modules of ASPECT, but that may be of interest for
      * visualization purposes. An example would be a material model that can
-     * compute seismic velocities -- these are irrelevant to the rest of
-     * ASPECT, but would be nice to have for postprocessing.
+     * compute seismic velocities -- these are irrelevant to the core of
+     * ASPECT (say, for assembling matrices), but would be nice to have
+     * for postprocessing where we may want to look at these derived
+     * quantities during visualization of the solution.
      *
      * This class is a base class for material models to provide this kind
      * of information. It follows the scheme laid out by
-     * AdditionalMaterialModelOutputs but also provides an interface by which
+     * AdditionalMaterialOutputs but also provides an interface by which
      * consumers of these objects (e.g., the
      * Postprocess::Visualization::NamedAdditionalOutputs class) can query the
      * names and values material models have put into these additional
@@ -937,8 +977,9 @@ namespace aspect
      * names. Consequently, the material models have to describe what
      * values and how many values they can produce.)
      *
-     * This class is then this base class for additional named material model outputs
-     * to be added to the MaterialModel::MaterialModelOutputs structure.
+     * This class is then this base class for additional named
+     * material model outputs to be added to the
+     * MaterialModel::MaterialModelOutputs structure.
      */
     template <int dim>
     class NamedAdditionalMaterialOutputs : public AdditionalMaterialOutputs<dim>

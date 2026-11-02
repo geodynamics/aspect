@@ -1,30 +1,25 @@
-/*
-  Copyright (C) 2020 - 2024 by the authors of the ASPECT code.
-
-  This file is part of ASPECT.
-
-  ASPECT is free software; you can redistribute it and/or modify
-  it under the terms of the GNU General Public License as published by
-  the Free Software Foundation; either version 2, or (at your option)
-  any later version.
-
-  ASPECT is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  GNU General Public License for more details.
-
-  You should have received a copy of the GNU General Public License
-  along with ASPECT; see the file LICENSE.  If not see
-  <http://www.gnu.org/licenses/>.
- */
+// ------------------------------------------------------
+//
+// SPDX-License-Identifier: GPL-2.0-or-later
+//
+// SPDX-FileCopyrightText: Copyright (C) 2020-2026 by the ASPECT authors.
+//
+// This file is part of ASPECT.
+//
+// Detailed license information governing the source code and
+// contributions can be found in the folder LICENSES and in
+// LICENSE and CONTRIBUTING.md at the top level directory.
+//
+// ------------------------------------------------------
 
 
 #include <aspect/mesh_deformation/diffusion.h>
+
+#include <aspect/boundary_velocity/interface.h>
 #include <aspect/gravity_model/interface.h>
 #include <aspect/geometry_model/interface.h>
 #include <aspect/geometry_model/box.h>
 #include <aspect/geometry_model/two_merged_boxes.h>
-#include <aspect/simulator.h>
 #include <aspect/geometry_model/initial_topography_model/zero_topography.h>
 #include <aspect/linear_algebra_types.h>
 
@@ -440,10 +435,18 @@ namespace aspect
       // Therefore, we compute v=d_displacement/d_t.
       // d_displacement are the new mesh node locations
       // minus the old locations, which are initial_topography + displacements.
-      LinearAlgebra::Vector velocity(mesh_locally_owned, mesh_locally_relevant, this->get_mpi_communicator());
+      LinearAlgebra::Vector velocity(mesh_locally_owned, this->get_mpi_communicator());
       velocity = solution;
-      velocity -= initial_topography;
-      velocity -= displacements;
+      {
+        LinearAlgebra::Vector initial_topography_distributed(mesh_locally_owned, this->get_mpi_communicator());
+        initial_topography_distributed = initial_topography;
+        velocity -= initial_topography_distributed;
+      }
+      {
+        LinearAlgebra::Vector displacements_distributed(mesh_locally_owned, this->get_mpi_communicator());
+        displacements_distributed = displacements;
+        velocity -= displacements_distributed;
+      }
 
       // The velocity
       if (this->get_timestep() > 0.)
@@ -529,14 +532,9 @@ namespace aspect
           if (mesh_velocity_constraints.can_store_line(index))
             if (mesh_velocity_constraints.is_constrained(index)==false)
               {
-#if DEAL_II_VERSION_GTE(9,6,0)
                 mesh_velocity_constraints.add_constraint(index,
                                                          {},
                                                          boundary_velocity[index]);
-#else
-                mesh_velocity_constraints.add_line(index);
-                mesh_velocity_constraints.set_inhomogeneity(index, boundary_velocity[index]);
-#endif
               }
         }
     }

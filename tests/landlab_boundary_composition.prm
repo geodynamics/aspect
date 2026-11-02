@@ -1,0 +1,111 @@
+# This tests a Boundary Composition plugin that
+# uses the ``mesh deformation`` plugin to get the  ``sediment_age''
+# from landlab.
+#
+# copied from fastscape_boundary_composition.prm
+# Enable if: ASPECT_WITH_LANDLAB
+
+include $ASPECT_SOURCE_DIR/tests/fastscape_test_open_ghost_nodes.prm
+
+####  Global parameters
+set Dimension                              = 2
+set End time                               = 1.4e5
+
+#### Add more refinement at the top boundary
+subsection Mesh refinement
+  set Initial adaptive refinement        = 2
+  set Initial global refinement          = 0
+  set Time steps between mesh refinement = 0
+  set Strategy = minimum refinement function
+
+  subsection Minimum refinement function
+    set Coordinate system   = cartesian
+    set Variable names      = x,y
+    set Function expression = if ( y>=90e3, 2, if (y >=50e3, 1, 0))
+  end
+end
+
+subsection Mesh deformation
+  set Mesh deformation boundary indicators = top: landlab
+
+  subsection Landlab
+    set Script name = landlab_boundary_composition
+    set Script path = $ASPECT_SOURCE_DIR/tests/
+  end
+end
+
+subsection Boundary velocity model
+  set Prescribed velocity boundary indicators = left x: function, right x:function
+  set Tangential velocity boundary indicators = bottom
+
+  subsection Function
+    set Variable names      = x,y
+    set Function constants  = v=0.01, w=200.e3, d=100.e3
+    set Function expression = if (x < w/2 , -v, v) ; v*2*d/w
+  end
+end
+
+subsection Compositional fields
+  set Number of fields = 8
+  set Names of fields = noninitial_plastic_strain, plastic_strain, crust_upper, crust_lower, mantle_lithosphere, sediment, sediment_age, deposition_depth
+  set Types of fields = strain, strain, chemical composition, chemical composition, chemical composition, chemical composition, generic, generic
+end
+
+subsection Initial composition model
+  set List of model names = function
+
+  subsection Function
+    set Variable names      = x,y
+    set Function expression = 0; \
+                              if(x>50.e3 && x<150.e3 && y>50.e3, 0.5 + rand_seed(1), 0); \
+                              if(y>=80.e3, 1, 0); \
+                              if(y<80.e3 && y>=60.e3, 1, 0); \
+                              if(y<60.e3, 1, 0); \
+                              0; \
+                              0; \
+                              0;
+  end
+end
+
+subsection Boundary composition model
+  # TODO only set the composition for the sediment-related fields
+  # when this option becomes available.
+  set Fixed composition boundary indicators = top
+  set List of model names = mesh deformation, function
+  subsection Function
+    set Function expression = 0; 0; 0; 0; 0; 1; 0; 0
+  end
+end
+
+subsection Heating model
+  set List of model names = compositional heating
+
+  subsection Compositional heating
+    set Use compositional field for heat production averaging = 0, 0, 0, 1, 1, 1, 1, 0, 0
+    set Compositional heating values = 0.0, 0.0, 0.0, 1.0e-6, 0.25e-6, 0., 0.25e-6, 0, 0
+  end
+end
+
+subsection Material model
+  set Model name = visco plastic
+
+  subsection Visco Plastic
+    set Densities                     = 3300, 1.0, 1.0, 2700,  2900, 3300, 2500, 2500, 2500
+
+    set Prefactors for dislocation creep          = 6.52e-16, 1.00e-50, 1.00e-50, 8.57e-28, 7.13e-18, 6.52e-16, 8.57e-28, 8.57e-28, 8.57e-28
+    set Stress exponents for dislocation creep    =      3.5,      1.0,      1.0,      4.0,      3.0,      3.5,      4.0,      4.0,      4.0
+    set Activation energies for dislocation creep =   530.e3,      0.0,      0.0,   223.e3,   345.e3,   530.e3,   223.e3,   223.e3,   223.e3
+    set Activation volumes for dislocation creep  =   18.e-6,      0.0,      0.0,      0.0,      0.0,   18.e-6,      0.0,      0.0,      0.0
+  end
+end
+
+#### Output topography and the values of the fields
+#### so that we can check the age and deposition depth
+#### min/max values.
+subsection Postprocess
+  set List of postprocessors = topography, composition statistics, visualization
+
+  subsection Visualization
+    set Time between graphical output = 0
+  end
+end

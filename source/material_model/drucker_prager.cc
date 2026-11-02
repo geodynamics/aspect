@@ -1,22 +1,16 @@
-/*
-  Copyright (C) 2015 - 2023 by the authors of the ASPECT code.
-
-  This file is part of ASPECT.
-
-  ASPECT is free software; you can redistribute it and/or modify
-  it under the terms of the GNU General Public License as published by
-  the Free Software Foundation; either version 2, or (at your option)
-  any later version.
-
-  ASPECT is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  GNU General Public License for more details.
-
-  You should have received a copy of the GNU General Public License
-  along with ASPECT; see the file LICENSE.  If not see
-  <http://www.gnu.org/licenses/>.
-*/
+// ------------------------------------------------------
+//
+// SPDX-License-Identifier: GPL-2.0-or-later
+//
+// SPDX-FileCopyrightText: Copyright (C) 2015-2026 by the ASPECT authors.
+//
+// This file is part of ASPECT.
+//
+// Detailed license information governing the source code and
+// contributions can be found in the folder LICENSES and in
+// LICENSE and CONTRIBUTING.md at the top level directory.
+//
+// ------------------------------------------------------
 
 
 #include <aspect/material_model/drucker_prager.h>
@@ -216,7 +210,7 @@ namespace aspect
                                "The value of the angle of internal friction $\\phi$. "
                                "For a value of zero, in 2d the von Mises "
                                "criterion is retrieved. Angles higher than 30 degrees are "
-                               "harder to solve numerically. Units: degrees.");
+                               "harder to solve numerically. Units: \\si{\\degree}.");
             prm.declare_entry ("Cohesion", "2e7",
                                Patterns::Double (0.),
                                "The value of the cohesion $C$. Units: \\si{\\pascal}.");

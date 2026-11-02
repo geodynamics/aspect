@@ -62,7 +62,7 @@ subsection Gravity model
 end
 
 subsection Initial temperature model
-  set Model name = world builder
+  set List of model names = world builder
 end
 
 subsection Initial composition model

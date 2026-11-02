@@ -42,7 +42,9 @@ To take advantage of the GMG solver, you need to:
 
 ```md
 -----------------------------------------------------------------------------
--- This is ASPECT, the Advanced Solver for Problems in Earth's ConvecTion.
+--                             This is ASPECT                              --
+-- The Advanced Solver for Planetary Evolution, Convection, and Tectonics. --
+-----------------------------------------------------------------------------
 --     . version 2.3.0-pre
 --     . using deal.II 9.2.0
 --     .       with 64 bit indices and vectorization level 3 (512 bits)

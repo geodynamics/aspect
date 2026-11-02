@@ -1,0 +1,25 @@
+# Including the bending beam benchmark with 10% porosity and an exponential
+# fluid weakening factor (27 here) tests the melt weakening law. The
+# counterpart test melt_10percent_alpha0_viscoelastic_bending_beam_particles is
+# identical except that the weakening factor is 0. In both models the
+# permeability is negligible (1e-20, not 0, so that all cells remain melt
+# cells), which removes fluid segregation from the comparison.
+#
+# Both the shear and the compaction viscosity are scaled by
+# exp(-\alpha_\phi \phi), so at the first timestep, where the elastic
+# stresses are still zero, the velocities of the two models differ by
+# exactly that factor:
+#     max. velocity ratio = 1.487973171e1 (exp(27*0.1) = 1.487973172e1)
+# The ratio increases once elastic stresses build up (14.93 after 1000 yr,
+# 16.11 after 2000 yr in longer versions of this model).
+
+include $ASPECT_SOURCE_DIR/tests/melt_10percent_viscoelastic_bending_beam_particles.prm
+
+set Output directory = melt_10percent_alpha27_viscoelastic_bending_beam_particles
+
+subsection Material model
+  subsection Reactive Fluid Transport Model
+    set Reference permeability             = 1e-20
+    set Exponential fluid weakening factor = 27
+  end
+end

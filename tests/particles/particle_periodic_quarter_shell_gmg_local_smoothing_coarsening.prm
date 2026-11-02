@@ -1,0 +1,18 @@
+# Start with asymmetric refinement flags, then alternate refinement and
+# coarsening while particles cross the periodic seam.
+# MPI: 2
+include $ASPECT_SOURCE_DIR/tests/particles/particle_periodic_quarter_shell_gmg_local_smoothing.prm
+
+subsection Mesh refinement
+  set Initial adaptive refinement = 1
+  set Strategy = periodic refinement cycle
+  set Refinement fraction = 0.2
+  set Coarsening fraction = 0.2
+  set Minimum refinement level = 1
+  set Time steps between mesh refinement = 1
+end
+
+subsection Postprocess
+  set List of postprocessors = particle count statistics, particles, velocity statistics, periodic refinement check
+end
+# Enable if: DEAL_II_VERSION_GTE_9_9_0

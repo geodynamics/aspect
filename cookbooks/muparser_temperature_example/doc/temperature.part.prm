@@ -10,7 +10,7 @@
 # kappa is the thermal diffusivity (m^2/s)
 
 subsection Initial temperature model
-  set Model name = function
+  set List of model names = function
 
   subsection Function
     set Variable names = x,y

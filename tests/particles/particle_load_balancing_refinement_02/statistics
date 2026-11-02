@@ -1,0 +1,23 @@
+# 1: Time step number
+# 2: Time (seconds)
+# 3: Time step size (seconds)
+# 4: Number of mesh cells
+# 5: Number of Stokes degrees of freedom
+# 6: Number of temperature degrees of freedom
+# 7: Number of degrees of freedom for all compositions
+# 8: Iterations for temperature solver
+# 9: Iterations for composition solver 1
+# 10: Iterations for Stokes solver
+# 11: Velocity iterations in Stokes preconditioner
+# 12: Schur complement iterations in Stokes preconditioner
+# 13: Number of advected particles
+# 14: Particle file name
+0 0.000000000000e+00 0.000000000000e+00 64 659 289 289 0  0 12 13 13 10 output-particle_load_balancing_refinement_02/particles/particles-00000 
+1 1.008967254620e+02 1.008967254620e+02 31 362 158 158 0 10 15 16 16 10 output-particle_load_balancing_refinement_02/particles/particles-00001 
+2 1.839602046262e+02 8.306347916420e+01 31 362 158 158 0 14 15 16 16 10                                                                     "" 
+3 2.469195653267e+02 6.295936070051e+01 10 132  57  57 0 10 15 16 16 10 output-particle_load_balancing_refinement_02/particles/particles-00002 
+4 3.326110228255e+02 8.569145749883e+01 10 132  57  57 0 11 15 16 16 10 output-particle_load_balancing_refinement_02/particles/particles-00003 
+5 3.980536562020e+02 6.544263337645e+01 10 132  57  57 0 11 13 14 14 10                                                                     "" 
+6 4.517230369825e+02 5.366938078050e+01 10 132  57  57 0 10 13 14 14 10 output-particle_load_balancing_refinement_02/particles/particles-00004 
+7 4.953148948452e+02 4.359185786279e+01 10 132  57  57 0 10 13 14 14 10                                                                     "" 
+8 5.000000000000e+02 4.685105154754e+00 10 132  57  57 0  9 12 13 13 10 output-particle_load_balancing_refinement_02/particles/particles-00005 

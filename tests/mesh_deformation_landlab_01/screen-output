@@ -1,0 +1,97 @@
+
+importing 'mesh_deformation_landlab_cartesian' ...
+Number of active cells: 64 (on 3 levels)
+Number of degrees of freedom: 3,041 (2,187+125+729)
+
+Number of mesh deformation degrees of freedom: 2,187
+* Creating HexModelGrid ...
+* The number of Landlab grid nodes is:  30
+* The node coordinates (in meters) are: [0.  0.2 0.4 0.6 0.8 1.  0.1 0.3 0.5 0.7 0.9 1.1 0.  0.2 0.4 0.6 0.8 1.
+ 0.1 0.3 0.5 0.7 0.9 1.1 0.  0.2 0.4 0.6 0.8 1. ] [0.       0.       0.       0.       0.       0.       0.173205 0.173205
+ 0.173205 0.173205 0.173205 0.173205 0.34641  0.34641  0.34641  0.34641
+ 0.34641  0.34641  0.519615 0.519615 0.519615 0.519615 0.519615 0.519615
+ 0.69282  0.69282  0.69282  0.69282  0.69282  0.69282 ]
+* Creating topographic elevation ...
+* Creating LinearDiffuser ... with D = 0.01
+* Done initializing Landlab mesh.
+WARNING: not all evaluation points were found inside the domain!
+Evaluation points not found:
+Point 11: 1.1 0.173205 1
+Point 23: 1.1 0.519615 1
+   Solving mesh displacement system... 6 iterations.
+*** Timestep 0:  t=0 seconds, dt=0 seconds
+Landlab running update_until: end_time = 0.0
+   Solving mesh displacement system... 0 iterations.
+
+   Postprocessing:
+     Writing graphical output: output-mesh_deformation_landlab_01/solution/solution-00000
+     Topography min/max:       0 m, 1000 m
+
+*** Timestep 1:  t=0.0005 seconds, dt=0.0005 seconds
+Landlab running update_until: end_time = 0.0005
+   Solving mesh displacement system... 0 iterations.
+
+   Postprocessing:
+     Writing graphical output: output-mesh_deformation_landlab_01/solution/solution-00001
+     Topography min/max:       0 m, 1000 m
+
+*** Timestep 2:  t=0.001 seconds, dt=0.0005 seconds
+Landlab running update_until: end_time = 0.001
+   Solving mesh displacement system... 0 iterations.
+
+   Postprocessing:
+     Writing graphical output: output-mesh_deformation_landlab_01/solution/solution-00002
+     Topography min/max:       0 m, 1000 m
+
+*** Timestep 3:  t=0.0015 seconds, dt=0.0005 seconds
+Landlab running update_until: end_time = 0.0015
+   Solving mesh displacement system... 0 iterations.
+
+   Postprocessing:
+     Writing graphical output: output-mesh_deformation_landlab_01/solution/solution-00003
+     Topography min/max:       0 m, 1000 m
+
+*** Timestep 4:  t=0.002 seconds, dt=0.0005 seconds
+Landlab running update_until: end_time = 0.002
+   Solving mesh displacement system... 0 iterations.
+
+   Postprocessing:
+     Writing graphical output: output-mesh_deformation_landlab_01/solution/solution-00004
+     Topography min/max:       0 m, 1000 m
+
+*** Timestep 5:  t=0.0025 seconds, dt=0.0005 seconds
+Landlab running update_until: end_time = 0.0025
+   Solving mesh displacement system... 0 iterations.
+
+   Postprocessing:
+     Writing graphical output: output-mesh_deformation_landlab_01/solution/solution-00005
+     Topography min/max:       0 m, 1000 m
+
+*** Timestep 6:  t=0.003 seconds, dt=0.0005 seconds
+Landlab running update_until: end_time = 0.003
+   Solving mesh displacement system... 0 iterations.
+
+   Postprocessing:
+     Writing graphical output: output-mesh_deformation_landlab_01/solution/solution-00006
+     Topography min/max:       0 m, 1000 m
+
+*** Timestep 7:  t=0.0035 seconds, dt=0.0005 seconds
+Landlab running update_until: end_time = 0.0035
+   Solving mesh displacement system... 0 iterations.
+
+   Postprocessing:
+     Writing graphical output: output-mesh_deformation_landlab_01/solution/solution-00007
+     Topography min/max:       0 m, 1000 m
+
+*** Timestep 8:  t=0.004 seconds, dt=0.0005 seconds
+Landlab running update_until: end_time = 0.004
+   Solving mesh displacement system... 0 iterations.
+
+   Postprocessing:
+     Writing graphical output: output-mesh_deformation_landlab_01/solution/solution-00008
+     Topography min/max:       0 m, 1000 m
+
+Termination requested by criterion: end time
+
+
+

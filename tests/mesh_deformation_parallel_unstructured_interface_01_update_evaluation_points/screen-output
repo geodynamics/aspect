@@ -1,0 +1,471 @@
+
+Loading shared library <./libmesh_deformation_parallel_unstructured_interface_01_update_evaluation_points.debug.so>
+
+initialize()
+Number of active cells: 64 (on 4 levels)
+Number of degrees of freedom: 948 (578+81+289)
+
+Number of mesh deformation degrees of freedom: 578
+   Solving mesh displacement system... 6 iterations.
+*** Timestep 0:  t=0 seconds, dt=0 seconds
+update()
+	setting points
+map_dof_to_eval_point (dof, evaluation_point_index, component): 
+	398 0 0
+	399 0 1
+	400 1 0
+	401 1 1
+	406 0 0
+	407 0 1
+	410 2 0
+	411 2 1
+	414 2 0
+	415 2 1
+	434 4 0
+	435 4 1
+	438 3 0
+	439 3 1
+	442 5 0
+	443 5 1
+	446 4 0
+	447 4 1
+	530 6 0
+	531 6 1
+	534 6 0
+	535 6 1
+	538 8 0
+	539 8 1
+	542 7 0
+	543 7 1
+	562 9 0
+	563 9 1
+	566 8 0
+	567 8 1
+	570 10 0
+	571 10 1
+	574 10 0
+	575 10 1
+compute_updated_velocities_at_points()
+Solution at evaluation points:
+rank 0:
+0.05 1 0 0 0 100.05
+0.140909 1 0 0 0 100.141
+0.231818 1 0 0 0 100.232
+0.322727 1 0 0 5.34767e-17 100.323
+0.413636 1 0 0 0 100.414
+0.504545 1 0 0 0 100.505
+0.595455 1 0 0 0 100.595
+0.686364 1 0 0 0 100.686
+0.777273 1 0 0 0 100.777
+0.868182 1 0 0 0 100.868
+0.959091 1 0 0 0 100.959
+   Solving mesh displacement system... 4 iterations.
+   Solving temperature system... 0 iterations.
+   Solving Stokes system (GMG)... 19+0 iterations.
+
+   Postprocessing:
+     Writing graphical output: output-mesh_deformation_parallel_unstructured_interface_01_update_evaluation_points/solution/solution-00000
+     Topography min/max:       0 m, 0.1 m
+
+*** Timestep 1:  t=0.0004 seconds, dt=0.0004 seconds
+update()
+compute_updated_velocities_at_points()
+Solution at evaluation points:
+rank 0:
+0.05 1 -2.31322e-08 0 0.0252856 100.05
+0.140909 1 -6.73498e-08 0 0.0252857 100.141
+0.231818 1 -1.17681e-07 0 0.0252859 100.232
+0.322727 1 -1.81836e-07 -4.64196e-23 0.0252863 100.323
+0.413636 1 -2.66168e-07 3.7664e-09 0.0252876 100.414
+0.504545 1 -5.14947e-07 -2.84434e-08 0.0247572 100.505
+0.595455 1 -7.33661e-07 -1.27864e-07 0.0141017 100.595
+0.686364 1 -2.58677e-07 -7.22655e-08 -0.00672455 100.686
+0.777273 1 -1.81298e-08 8.15198e-09 -0.0324418 100.777
+0.868182 1 1.132e-06 2.29218e-07 -0.0581448 100.868
+0.959091 1 6.26295e-08 -4.49088e-09 -0.0699105 100.959
+   Solving mesh displacement system... 4 iterations.
+   Solving temperature system... 4 iterations.
+   Solving Stokes system (GMG)... 19+0 iterations.
+
+   Postprocessing:
+     Writing graphical output: output-mesh_deformation_parallel_unstructured_interface_01_update_evaluation_points/solution/solution-00001
+     Topography min/max:       -0.002 m, 0.1 m
+
+*** Timestep 2:  t=0.0008 seconds, dt=0.0004 seconds
+update()
+compute_updated_velocities_at_points()
+Solution at evaluation points:
+rank 0:
+0.05 1 -1.41111e-08 -1.64259e-09 0.0221854 100.05
+0.140909 1 -4.74584e-08 2.12337e-09 0.0165122 100.141
+0.231818 1 -4.87317e-09 1.42149e-09 0.0252403 100.232
+0.322727 1 -1.81472e-07 2.58513e-09 0.028152 100.323
+0.413636 1 -2.7908e-07 3.64032e-09 0.0283713 100.414
+0.504545 1 -8.45072e-07 -7.07331e-08 0.0263099 100.505
+0.595455 1 -5.73731e-07 -1.09999e-07 0.012745 100.595
+0.686364 1 -2.94318e-07 -7.34093e-08 -0.00705873 100.686
+0.777273 1 -1.09837e-07 -2.39667e-08 -0.0307365 100.777
+0.868182 1 5.05068e-07 1.01624e-07 -0.0564446 100.868
+0.959091 1 1.69164e-08 -3.36406e-09 -0.0682178 100.959
+   Solving mesh displacement system... 4 iterations.
+   Solving temperature system... 5 iterations.
+   Solving Stokes system (GMG)... 20+0 iterations.
+
+   Postprocessing:
+     Writing graphical output: output-mesh_deformation_parallel_unstructured_interface_01_update_evaluation_points/solution/solution-00002
+     Topography min/max:       -0.004 m, 0.1 m
+
+*** Timestep 3:  t=0.0012 seconds, dt=0.0004 seconds
+update()
+compute_updated_velocities_at_points()
+Solution at evaluation points:
+rank 0:
+0.05 1 1.12406e-07 2.46501e-08 0.0190495 100.05
+0.140909 1 1.60715e-07 -1.40238e-08 0.00770179 100.141
+0.231818 1 7.68789e-07 -9.97184e-08 0.0251621 100.232
+0.322727 1 1.48486e-07 1.12774e-09 0.0309881 100.323
+0.413636 1 5.22659e-09 7.37978e-09 0.0314256 100.414
+0.504545 1 -8.0045e-07 -8.67468e-08 0.0278304 100.505
+0.595455 1 -1.14288e-07 -2.99372e-08 0.0113579 100.595
+0.686364 1 -3.59838e-08 -7.85329e-09 -0.00742546 100.686
+0.777273 1 5.48088e-08 2.51975e-08 -0.0290654 100.777
+0.868182 1 8.56612e-07 1.74376e-07 -0.0547747 100.868
+0.959091 1 5.01835e-08 -2.95482e-09 -0.0665439 100.959
+   Solving mesh displacement system... 4 iterations.
+   Solving temperature system... 4 iterations.
+   Solving Stokes system (GMG)... 20+0 iterations.
+
+   Postprocessing:
+     Writing graphical output: output-mesh_deformation_parallel_unstructured_interface_01_update_evaluation_points/solution/solution-00003
+     Topography min/max:       -0.006 m, 0.1 m
+
+*** Timestep 4:  t=0.0016 seconds, dt=0.0004 seconds
+update()
+compute_updated_velocities_at_points()
+Solution at evaluation points:
+rank 0:
+0.05 1 1.85032e-07 6.08918e-08 0.0159141 100.05
+0.140909 1 2.69962e-07 -3.23433e-08 -0.00110605 100.141
+0.231818 1 1.03538e-06 -2.03122e-07 0.0250833 100.232
+0.322727 1 3.83871e-07 -5.61102e-09 0.0338178 100.323
+0.413636 1 2.84823e-07 1.18545e-08 0.034473 100.414
+0.504545 1 -1.82698e-07 -2.23954e-08 0.0293508 100.505
+0.595455 1 2.84828e-07 5.67122e-08 0.00997064 100.595
+0.686364 1 4.42658e-07 8.24201e-08 -0.00779691 100.686
+0.777273 1 6.21838e-07 1.83649e-07 -0.0274012 100.777
+0.868182 1 2.1071e-06 4.31834e-07 -0.053103 100.868
+0.959091 1 1.74128e-07 -1.18077e-09 -0.0648597 100.959
+   Solving mesh displacement system... 4 iterations.
+   Solving temperature system... 4 iterations.
+   Solving Stokes system (GMG)... 20+0 iterations.
+
+   Postprocessing:
+     Writing graphical output: output-mesh_deformation_parallel_unstructured_interface_01_update_evaluation_points/solution/solution-00004
+     Topography min/max:       -0.008 m, 0.1 m
+
+*** Timestep 5:  t=0.002 seconds, dt=0.0004 seconds
+update()
+compute_updated_velocities_at_points()
+Solution at evaluation points:
+rank 0:
+0.05 1 1.66299e-07 7.30495e-08 0.0128092 100.05
+0.140909 1 2.41955e-07 -3.56439e-08 -0.0098825 100.141
+0.231818 1 8.15304e-07 -2.13332e-07 0.0250323 100.232
+0.322727 1 4.09771e-07 -1.19593e-08 0.0366733 100.323
+0.413636 1 4.16273e-07 1.72409e-08 0.0375455 100.414
+0.504545 1 2.5984e-07 4.53644e-08 0.030897 100.505
+0.595455 1 7.24215e-07 1.63663e-07 0.00860856 100.595
+0.686364 1 8.98046e-07 1.38551e-07 -0.00813966 100.686
+0.777273 1 1.17033e-06 3.17628e-07 -0.0257055 100.777
+0.868182 1 2.72654e-06 5.61975e-07 -0.0514033 100.868
+0.959091 1 2.58913e-07 2.48812e-09 -0.0631557 100.959
+   Solving mesh displacement system... 4 iterations.
+   Solving temperature system... 4 iterations.
+   Solving Stokes system (GMG)... 20+0 iterations.
+
+   Postprocessing:
+     Writing graphical output: output-mesh_deformation_parallel_unstructured_interface_01_update_evaluation_points/solution/solution-00005
+     Topography min/max:       -0.01 m, 0.1 m
+
+Number of active cells: 88 (on 5 levels)
+Number of degrees of freedom: 1,347 (822+114+411)
+
+Number of mesh deformation degrees of freedom: 822
+*** Timestep 6:  t=0.0024 seconds, dt=0.0004 seconds
+update()
+	setting points
+map_dof_to_eval_point (dof, evaluation_point_index, component): 
+	424 0 0
+	425 0 1
+	426 0 0
+	427 0 1
+	432 0 0
+	433 0 1
+	436 1 0
+	437 1 1
+	466 2 0
+	467 2 1
+	470 1 0
+	471 1 1
+	474 2 0
+	475 2 1
+	478 2 0
+	479 2 1
+	520 3 0
+	521 3 1
+	528 4 0
+	529 4 1
+	532 3 0
+	533 3 1
+	558 4 0
+	559 4 1
+	562 4 0
+	563 4 1
+	566 5 0
+	567 5 1
+	676 6 0
+	677 6 1
+	680 5 0
+	681 5 1
+	684 6 0
+	685 6 1
+	688 6 0
+	689 6 1
+	714 7 0
+	715 7 1
+	718 7 0
+	719 7 1
+	722 8 0
+	723 8 1
+	768 8 0
+	769 8 1
+	772 8 0
+	773 8 1
+	776 9 0
+	777 9 1
+	780 9 0
+	781 9 1
+	806 10 0
+	807 10 1
+	814 10 0
+	815 10 1
+	818 10 0
+	819 10 1
+compute_updated_velocities_at_points()
+Solution at evaluation points:
+rank 0:
+0.05 1 1.74244e-07 9.59246e-08 0.00975562 100.05
+0.140909 1 2.5451e-07 -4.3447e-08 -0.0186081 100.141
+0.231818 1 7.7664e-07 -2.53193e-07 0.0250333 100.232
+0.322727 1 5.05929e-07 -2.22555e-08 0.0395826 100.323
+0.413636 1 6.32991e-07 3.13022e-08 0.0406712 100.414
+0.504545 1 6.39418e-07 1.26333e-07 0.0324923 100.505
+0.595455 1 1.49756e-06 3.58741e-07 0.00729718 100.595
+0.686364 1 1.4933e-06 1.83214e-07 -0.00842739 100.686
+0.777273 1 1.72755e-06 4.38795e-07 -0.0239523 100.777
+0.868182 1 3.03942e-06 6.31534e-07 -0.049651 100.868
+0.959091 1 3.2304e-07 6.96721e-09 -0.0614026 100.959
+   Solving mesh displacement system... 9 iterations.
+   Solving temperature system... 4 iterations.
+   Solving Stokes system (GMG)... 25+0 iterations.
+
+   Postprocessing:
+     Writing graphical output: output-mesh_deformation_parallel_unstructured_interface_01_update_evaluation_points/solution/solution-00006
+     Topography min/max:       -0.012 m, 0.1 m
+
+*** Timestep 7:  t=0.0028 seconds, dt=0.0004 seconds
+update()
+compute_updated_velocities_at_points()
+Solution at evaluation points:
+rank 0:
+0.05 1 1.55079e-06 1.00547e-06 0.0305628 100.05
+0.140909 1 -1.61433e-06 1.12938e-06 -0.0227479 100.141
+0.231818 1 -1.18175e-05 -7.83257e-07 0.0310643 100.232
+0.322727 1 -7.25694e-06 9.84558e-07 0.0330679 100.323
+0.413636 1 -4.97742e-06 -1.39125e-07 0.0431569 100.414
+0.504545 1 -9.47191e-06 -3.24486e-06 0.0294652 100.505
+0.595455 1 -5.21754e-06 -8.66731e-07 -0.00194353 100.595
+0.686364 1 -7.2489e-06 -5.42644e-07 0.000609013 100.686
+0.777273 1 -1.38958e-05 -4.27175e-06 -0.026407 100.777
+0.868182 1 -1.1133e-05 -2.5412e-06 -0.0515447 100.868
+0.959091 1 -3.42171e-06 -2.6935e-07 -0.0653158 100.959
+   Solving mesh displacement system... 6 iterations.
+   Solving temperature system... 4 iterations.
+   Solving Stokes system (GMG)... 24+0 iterations.
+
+   Postprocessing:
+     Writing graphical output: output-mesh_deformation_parallel_unstructured_interface_01_update_evaluation_points/solution/solution-00007
+     Topography min/max:       -0.014 m, 0.1 m
+
+*** Timestep 8:  t=0.0032 seconds, dt=0.0004 seconds
+update()
+compute_updated_velocities_at_points()
+Solution at evaluation points:
+rank 0:
+0.05 1 9.07765e-07 8.29541e-07 0.0319625 100.05
+0.140909 1 -5.40992e-07 5.85061e-07 -0.0302946 100.141
+0.231818 1 -1.01693e-05 -7.42588e-07 0.0324927 100.232
+0.322727 1 -5.37829e-06 8.25304e-07 0.0347969 100.323
+0.413636 1 -3.72363e-06 -1.33786e-07 0.0465336 100.414
+0.504545 1 -8.92779e-06 -3.46854e-06 0.030577 100.505
+0.595455 1 -3.73127e-06 -6.17715e-07 -0.0044926 100.595
+0.686364 1 -6.26513e-06 -2.71057e-07 0.00196075 100.686
+0.777273 1 -1.33033e-05 -4.08984e-06 -0.0249926 100.777
+0.868182 1 -1.09411e-05 -2.49743e-06 -0.0501247 100.868
+0.959091 1 -3.38822e-06 -2.66692e-07 -0.0638953 100.959
+   Solving mesh displacement system... 6 iterations.
+   Solving temperature system... 4 iterations.
+   Solving Stokes system (GMG)... 23+0 iterations.
+
+   Postprocessing:
+     Writing graphical output: output-mesh_deformation_parallel_unstructured_interface_01_update_evaluation_points/solution/solution-00008
+     Topography min/max:       -0.016 m, 0.1 m
+
+*** Timestep 9:  t=0.0036 seconds, dt=0.0004 seconds
+update()
+compute_updated_velocities_at_points()
+Solution at evaluation points:
+rank 0:
+0.05 1 4.11686e-07 6.70435e-07 0.033525 100.05
+0.140909 1 4.1191e-07 8.23774e-08 -0.0376746 100.141
+0.231818 1 -8.86054e-06 -7.14984e-07 0.0340738 100.232
+0.322727 1 -3.84821e-06 6.4197e-07 0.0366831 100.323
+0.413636 1 -2.74513e-06 -1.28793e-07 0.0500663 100.414
+0.504545 1 -8.5175e-06 -3.67317e-06 0.0318361 100.505
+0.595455 1 -2.43566e-06 -4.05922e-07 -0.00687181 100.595
+0.686364 1 -5.71213e-06 -7.64747e-08 0.00346185 100.686
+0.777273 1 -1.28592e-05 -3.95347e-06 -0.0234238 100.777
+0.868182 1 -1.07925e-05 -2.46354e-06 -0.048552 100.868
+0.959091 1 -3.3609e-06 -2.64514e-07 -0.0623225 100.959
+   Solving mesh displacement system... 6 iterations.
+   Solving temperature system... 4 iterations.
+   Solving Stokes system (GMG)... 23+0 iterations.
+
+   Postprocessing:
+     Writing graphical output: output-mesh_deformation_parallel_unstructured_interface_01_update_evaluation_points/solution/solution-00009
+     Topography min/max:       -0.018 m, 0.108 m
+
+Number of active cells: 136 (on 6 levels)
+Number of degrees of freedom: 2,138 (1,306+179+653)
+
+Number of mesh deformation degrees of freedom: 1,306
+*** Timestep 10:  t=0.004 seconds, dt=0.0004 seconds
+update()
+	setting points
+map_dof_to_eval_point (dof, evaluation_point_index, component): 
+	452 0 0
+	453 0 1
+	462 0 0
+	463 0 1
+	466 0 0
+	467 0 1
+	500 1 0
+	501 1 1
+	552 1 0
+	553 1 1
+	556 1 0
+	557 1 1
+	590 2 0
+	591 2 1
+	598 2 0
+	599 2 1
+	602 2 0
+	603 2 1
+	674 3 0
+	675 3 1
+	704 3 0
+	705 3 1
+	708 3 0
+	709 3 1
+	764 4 0
+	765 4 1
+	772 4 0
+	773 4 1
+	776 4 0
+	777 4 1
+	810 5 0
+	811 5 1
+	942 5 0
+	943 5 1
+	946 5 0
+	947 5 1
+	980 6 0
+	981 6 1
+	988 6 0
+	989 6 1
+	992 6 0
+	993 6 1
+	1040 7 0
+	1041 7 1
+	1048 7 0
+	1049 7 1
+	1052 7 0
+	1053 7 1
+	1086 8 0
+	1087 8 1
+	1154 8 0
+	1155 8 1
+	1158 8 0
+	1159 8 1
+	1192 9 0
+	1193 9 1
+	1200 9 0
+	1201 9 1
+	1204 9 0
+	1205 9 1
+	1260 10 0
+	1261 10 1
+	1290 10 0
+	1291 10 1
+	1294 10 0
+	1295 10 1
+compute_updated_velocities_at_points()
+Solution at evaluation points:
+rank 0:
+0.05 1 -6.42679e-10 5.19263e-07 0.0352467 100.05
+0.140909 1 1.27126e-06 -3.68801e-07 -0.0448953 100.141
+0.231818 1 -7.7832e-06 -6.95769e-07 0.0358066 100.232
+0.322727 1 -2.55068e-06 4.34478e-07 0.0387245 100.323
+0.413636 1 -1.94649e-06 -1.24189e-07 0.0537542 100.414
+0.504545 1 -8.2233e-06 -3.8645e-06 0.0332398 100.505
+0.595455 1 -1.32077e-06 -2.28054e-07 -0.00907922 100.595
+0.686364 1 -5.59446e-06 8.36868e-08 0.0051063 100.686
+0.777273 1 -1.25572e-05 -3.86075e-06 -0.0217021 100.777
+0.868182 1 -1.06984e-05 -2.44208e-06 -0.0468275 100.868
+0.959091 1 -3.34573e-06 -2.63287e-07 -0.0605979 100.959
+   Solving mesh displacement system... 15 iterations.
+   Solving temperature system... 7 iterations.
+   Solving Stokes system (GMG)... 26+0 iterations.
+
+   Postprocessing:
+     Writing graphical output: output-mesh_deformation_parallel_unstructured_interface_01_update_evaluation_points/solution/solution-00010
+     Topography min/max:       -0.02125 m, 0.12 m
+
+*** Timestep 11:  t=0.0044 seconds, dt=0.0004 seconds
+update()
+compute_updated_velocities_at_points()
+Solution at evaluation points:
+rank 0:
+0.05 1 -1.05332e-05 -3.13505e-06 0.0408417 100.05
+0.140909 1 6.92284e-05 -8.59457e-05 -0.0671035 100.141
+0.231818 1 3.4772e-05 7.59159e-06 0.0434998 100.232
+0.322727 1 2.68823e-05 -2.32927e-06 0.0391107 100.323
+0.413636 1 1.78667e-05 1.21256e-07 0.0574596 100.414
+0.504545 1 -6.44369e-06 -2.06934e-06 0.035642 100.505
+0.595455 1 2.06686e-05 5.50758e-06 -0.0147334 100.595
+0.686364 1 1.20566e-05 1.78248e-06 0.00669078 100.686
+0.777273 1 -8.78759e-06 -2.69871e-06 -0.0202959 100.777
+0.868182 1 -1.17799e-05 -2.78476e-06 -0.0447627 100.868
+0.959091 1 -4.22594e-06 -3.31471e-07 -0.0589641 100.959
+   Solving mesh displacement system... 6 iterations.
+   Solving temperature system... 7 iterations.
+   Solving Stokes system (GMG)... 27+0 iterations.
+
+   Postprocessing:
+     Writing graphical output: output-mesh_deformation_parallel_unstructured_interface_01_update_evaluation_points/solution/solution-00011
+     Topography min/max:       -0.02325 m, 0.132 m
+
+Termination requested by criterion: end time
+
+
+

@@ -68,7 +68,7 @@ end
 #   p, k - values related to the small temperature perturbation
 
 subsection Initial temperature model
-  set Model name = adiabatic
+  set List of model names = adiabatic
 end
 
 # Then follows a section that describes the boundary conditions

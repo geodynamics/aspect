@@ -101,7 +101,7 @@ Number of degrees of freedom: 1,526 (578+81+289+289+289)
    Postprocessing:
      Compositions min/max/mass: -0.3146/10.66/3.298 // 0.7169/10.59/3.968
 
-Skipping mesh refinement, because the mesh did not change.
+Skipping mesh refinement, because no cells were flagged for refinement/coarsening.
 
 *** Timestep 11:  t=0.6875 seconds, dt=0.0625 seconds
    Solving temperature system... 13 iterations.

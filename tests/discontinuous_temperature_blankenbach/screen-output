@@ -2,7 +2,7 @@
 Loading shared library <./libdiscontinuous_temperature_blankenbach.debug.so>
 
 
-   Loading Ascii data initial file ASPECT_DIR/benchmarks/blankenbach/initial_temperature_case1c.txt.
+   Loading Ascii data initial file $ASPECT_SOURCE_DIR/benchmarks/blankenbach/initial_temperature_case1c.txt.
 
 Number of active cells: 64 (on 4 levels)
 Number of degrees of freedom: 1,235 (578+81+576)

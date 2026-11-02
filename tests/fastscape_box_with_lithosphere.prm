@@ -1,0 +1,30 @@
+# This test verifies that FastScape supports the box with lithosphere boundary
+# indicators geometry model and uses the geometry's dimensions and coarse-grid
+# repetitions.
+#
+# Enable if: ASPECT_WITH_FASTSCAPE
+
+include @SOURCE_DIR@/fastscape_1.prm
+
+set End time = 1e5
+
+subsection Geometry model
+  set Model name = box with lithosphere boundary indicators
+
+  subsection Box with lithosphere boundary indicators
+    set Lithospheric thickness = 5e3
+    set X extent = 125e3
+    set Y extent = 25e3
+    set X repetitions = 5
+    set Y repetitions = 1
+    set Y repetitions lithosphere = 1
+  end
+end
+
+subsection Mesh deformation
+  set Additional tangential mesh velocity boundary indicators = left, right, left lithosphere, right lithosphere
+end
+
+subsection Boundary velocity model
+  set Tangential velocity boundary indicators = bottom, left, right, left lithosphere, right lithosphere
+end

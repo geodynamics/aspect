@@ -49,11 +49,11 @@ end
 # matches the boundary conditions defined below plus
 # a small perturbation with amplitude A.
 subsection Initial temperature model
-  set Model name = function
+  set List of model names = function
 
   subsection Function
     set Variable names      = x,z
-    set Function constants  = A=0.01, pi=3.1415926536
+    set Function constants  = A=0.01
     set Function expression = (1.0-z) + A*cos(pi*x)*sin(pi*z)
   end
 end

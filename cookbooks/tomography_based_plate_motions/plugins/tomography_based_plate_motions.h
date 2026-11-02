@@ -1,22 +1,16 @@
-/*
-  Copyright (C) 2023 - 2024 by the authors of the ASPECT code.
-
-  This file is part of ASPECT.
-
-  ASPECT is free software; you can redistribute it and/or modify
-  it under the terms of the GNU General Public License as published by
-  the Free Software Foundation; either version 2, or (at your option)
-  any later version.
-
-  ASPECT is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  GNU General Public License for more details.
-
-  You should have received a copy of the GNU General Public License
-  along with ASPECT; see the file doc/COPYING.  If not see
-  <http://www.gnu.org/licenses/>.
-*/
+// ------------------------------------------------------
+//
+// SPDX-License-Identifier: GPL-2.0-or-later
+//
+// SPDX-FileCopyrightText: Copyright (C) 2023-2026 by the ASPECT authors.
+//
+// This file is part of ASPECT.
+//
+// Detailed license information governing the source code and
+// contributions can be found in the folder LICENSES and in
+// LICENSE and CONTRIBUTING.md at the top level directory.
+//
+// ------------------------------------------------------
 
 
 #ifndef _aspect_cookbooks_tomography_based_plate_motions_h
@@ -521,19 +515,19 @@ namespace aspect
         double trench_viscosity;
 
         /**
-        * Parameter that determines the thickness of weak zones above the slabs
-        * in the slab2 model.
-        */
+         * Parameter that determines the thickness of weak zones above the slabs
+         * in the slab2 model.
+         */
         double trench_weak_zone_thickness;
 
         /**
-        * Parameter that determines the depth to the top of the mid mantle layer
-        */
+         * Parameter that determines the depth to the top of the mid mantle layer
+         */
         double depth_to_top_of_mid_mantle_viscosity_layer;
 
         /**
-        * Parameter that determines the depth to the base of the mid mantle layer
-        */
+         * Parameter that determines the depth to the base of the mid mantle layer
+         */
         double depth_to_base_of_mid_mantle_viscosity_layer;
 
         /**

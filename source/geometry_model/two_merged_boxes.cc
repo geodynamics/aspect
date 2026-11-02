@@ -1,24 +1,18 @@
-/*
-  Copyright (C) 2011 - 2023 by the authors of the ASPECT code.
+// ------------------------------------------------------
+//
+// SPDX-License-Identifier: GPL-2.0-or-later
+//
+// SPDX-FileCopyrightText: Copyright (C) 2011-2026 by the ASPECT authors.
+//
+// This file is part of ASPECT.
+//
+// Detailed license information governing the source code and
+// contributions can be found in the folder LICENSES and in
+// LICENSE and CONTRIBUTING.md at the top level directory.
+//
+// ------------------------------------------------------
 
-  This file is part of ASPECT.
-
-  ASPECT is free software; you can redistribute it and/or modify
-  it under the terms of the GNU General Public License as published by
-  the Free Software Foundation; either version 2, or (at your option)
-  any later version.
-
-  ASPECT is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  GNU General Public License for more details.
-
-  You should have received a copy of the GNU General Public License
-  along with ASPECT; see the file LICENSE.  If not see
-  <http://www.gnu.org/licenses/>.
-*/
-
-
+#include <algorithm>
 #include <aspect/geometry_model/two_merged_boxes.h>
 #include <aspect/geometry_model/initial_topography_model/zero_topography.h>
 
@@ -334,6 +328,17 @@ namespace aspect
       return extents;
     }
 
+
+
+    template <int dim>
+    const std::array<unsigned int, dim> &
+    TwoMergedBoxes<dim>::get_repetitions () const
+    {
+      return lower_repetitions;
+    }
+
+
+
     template <int dim>
     Point<dim>
     TwoMergedBoxes<dim>::get_origin () const
@@ -357,7 +362,7 @@ namespace aspect
 
       const double topo = get_topography_at_point(position);
       const double d = extents[dim-1] + topo - (position(dim-1)-lower_box_origin[dim-1]);
-      return std::min (std::max (d, 0.), maximal_depth());
+      return std::clamp(d, 0., maximal_depth());
     }
 
 

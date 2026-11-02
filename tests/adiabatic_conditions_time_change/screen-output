@@ -4,7 +4,7 @@ Number of degrees of freedom: 2,724 (1,666+225+833)
 
 *** Timestep 0:  t=0 seconds, dt=0 seconds
    Solving temperature system... 0 iterations.
-   Solving Stokes system (GMG)... 14+0 iterations.
+   Solving Stokes system (GMG)... 13+0 iterations.
 
    Postprocessing:
 
@@ -23,19 +23,19 @@ Number of degrees of freedom: 2,724 (1,666+225+833)
      Rayleigh number:                               0
 
      Writing graphical output:           output-adiabatic_conditions_time_change/solution/solution-00000
-     RMS, max velocity:                  2.17e-17 m/s, 1.3e-16 m/s
+     RMS, max velocity:                  1.49e-19 m/s, 4.21e-19 m/s
      Temperature min/avg/max:            1613 K, 1613 K, 1613 K
-     Heat fluxes through boundary parts: 9.377e-18 W, 1.464e-18 W, 0 W, 0 W
+     Heat fluxes through boundary parts: 1.419e-19 W, -4.941e-20 W, 0 W, 0 W
 
 *** Timestep 1:  t=1e-05 seconds, dt=1e-05 seconds
    Solving temperature system... 0 iterations.
-   Solving Stokes system (GMG)... 15+0 iterations.
+   Solving Stokes system (GMG)... 11+0 iterations.
 
    Postprocessing:
      Writing graphical output:           output-adiabatic_conditions_time_change/solution/solution-00001
-     RMS, max velocity:                  1.49e-19 m/s, 4.2e-19 m/s
+     RMS, max velocity:                  1.48e-19 m/s, 4.2e-19 m/s
      Temperature min/avg/max:            1613 K, 1613 K, 1613 K
-     Heat fluxes through boundary parts: 1.42e-19 W, -4.945e-20 W, 0 W, 0 W
+     Heat fluxes through boundary parts: 1.415e-19 W, -4.948e-20 W, 0 W, 0 W
 
 Termination requested by criterion: end time
 

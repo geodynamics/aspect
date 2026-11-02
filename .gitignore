@@ -1,5 +1,6 @@
 *#
 *~
+/.venv/
 /**/CMakeCache.txt
 /**/CMakeFiles/
 /**/cmake_install.cmake
@@ -10,6 +11,7 @@
 /.vscode/
 /.cache/
 **/.DS_Store
+**/__pycache__/
 /AspectConfig.cmake
 /CMakeLists.txt.user*
 /CTestTestfile.cmake

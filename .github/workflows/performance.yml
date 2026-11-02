@@ -1,0 +1,134 @@
+name: performance
+
+on: [pull_request]
+
+concurrency:
+  group: ${{ github.actor }}-${{ github.ref }}-performance
+  cancel-in-progress: true
+
+env:
+  OMPI_MCA_btl_base_warn_component_unused: 0
+  OMPI_MCA_mpi_yield_when_idle: 1
+  OMPI_MCA_rmaps_base_oversubscribe: 1
+  OMPI_ALLOW_RUN_AS_ROOT: 1
+  OMPI_ALLOW_RUN_AS_ROOT_CONFIRM: 1
+  OMPI_MCA_btl_vader_single_copy_mechanism: none
+
+jobs:
+  performance:
+    name: performance
+    runs-on: [ubuntu-22.04]
+    strategy:
+      fail-fast: false
+    container: 
+      image: "geodynamics/aspect-tester:jammy-dealii-9.7-v4"
+      options: '--user 0 --name container'
+
+    steps:
+    - uses: actions/checkout@v7
+    - uses: actions-rs/toolchain@v1
+      with:
+        profile: minimal
+        toolchain: stable
+
+    - name: Checkout cbdr
+      uses: actions/checkout@v7
+      with:
+        repository: MFraters/cbdr
+        ref: github_actions_fix
+        path: cbdr
+        clean: false
+
+    - name: Checkout feature
+      uses: actions/checkout@v7
+      with:
+        path: feature/source
+
+    - name: Checkout main
+      uses: actions/checkout@v7
+      with:
+        ref: main
+        path: main/source
+
+    - name: Cache Rust dependencies
+      uses: Swatinem/rust-cache@v2
+      with:
+        workspaces: "cbdr"
+
+    - name: Build cbdr
+      run: |
+            echo "GITHUB_WORKSPACE = $GITHUB_WORKSPACE"
+            cd $GITHUB_WORKSPACE/cbdr/
+            cargo build --release
+
+    - name: Configure feature
+      run: |
+        cmake -E make_directory $GITHUB_WORKSPACE/feature/source/build
+        cd $GITHUB_WORKSPACE/feature/source/build
+        cmake \
+        -D CMAKE_BUILD_TYPE=Release \
+        -G 'Ninja' \
+        -D CMAKE_CXX_FLAGS='-Werror' \
+        -D ASPECT_ADDITIONAL_CXX_FLAGS='-O3 -Wdeprecated-declarations' \
+        -D ASPECT_TEST_GENERATOR='Ninja' \
+        -D ASPECT_PRECOMPILE_HEADERS=ON \
+        -D ASPECT_UNITY_BUILD=ON \
+        -D ASPECT_ENABLE_PERFORMANCE_TESTS=ON \
+        -D ASPECT_WITH_FASTSCAPE=OFF \
+        -D ASPECT_RUN_ALL_TESTS=ON \
+        -D ASPECT_COMPARE_TEST_RESULTS=OFF \
+        -D ASPECT_USE_TPETRA=OFF \
+        -D CMAKE_UNITY_BUILD_BATCH_SIZE=8 \
+        ..
+
+    - name: Compile feature
+      run: |
+        cd $GITHUB_WORKSPACE/feature/source/build
+        ninja -j 4 -d explain
+        mpirun -np 4 ./aspect-release --version
+        ctest -VV -R performance
+
+    - name: Configure main
+      run: |
+        cmake -E make_directory $GITHUB_WORKSPACE/main/source/build
+        cd $GITHUB_WORKSPACE/main/source/build
+        cmake \
+        -D CMAKE_BUILD_TYPE=Release \
+        -G 'Ninja' \
+        -D CMAKE_CXX_FLAGS='-Werror' \
+        -D ASPECT_ADDITIONAL_CXX_FLAGS='-O3 -Wdeprecated-declarations' \
+        -D ASPECT_TEST_GENERATOR='Ninja' \
+        -D ASPECT_PRECOMPILE_HEADERS=ON \
+        -D ASPECT_UNITY_BUILD=ON \
+        -D ASPECT_ENABLE_PERFORMANCE_TESTS=ON \
+        -D ASPECT_WITH_FASTSCAPE=OFF \
+        -D ASPECT_RUN_ALL_TESTS=ON \
+        -D ASPECT_COMPARE_TEST_RESULTS=OFF \
+        -D ASPECT_USE_TPETRA=OFF \
+        -D CMAKE_UNITY_BUILD_BATCH_SIZE=8 \
+        ..
+
+    - name: Compile main
+      run: |
+        cd $GITHUB_WORKSPACE/main/source/build
+        ninja -j 4 -d explain
+        mpirun -np 4 ./aspect-release --version
+        #ctest -VV -R performance # this doesn't work until the performance test is merged in main.
+
+    - name: Make results dir
+      shell: bash
+      run: |
+            rm -rf $GITHUB_WORKSPACE/performance_1_results/;
+            mkdir -p $GITHUB_WORKSPACE/performance_1_results/
+    - name: Run performance benchmark 
+      shell: bash
+      run: |
+            cd $GITHUB_WORKSPACE/cbdr/;
+            time cargo run --release sample --timeout=1800s "main:$GITHUB_WORKSPACE/main/source/build/./aspect-release  $GITHUB_WORKSPACE/feature/source/build/tests/performance/performance_continental_extension.x.prm" "feature:$GITHUB_WORKSPACE/feature/source/build/./aspect-release $GITHUB_WORKSPACE/feature/source/build/tests/performance/performance_continental_extension.x.prm" > $GITHUB_WORKSPACE/result_1.csv;
+            cat $GITHUB_WORKSPACE/result_1.csv;
+            cat $GITHUB_WORKSPACE/result_1.csv | cargo run --release analyze --disable-dynamic-printing > $GITHUB_WORKSPACE/performance_1_results/analyze_1.log ||:;
+            cat $GITHUB_WORKSPACE/performance_1_results/analyze_1.log
+    - uses: actions/upload-artifact@v7
+      with:
+        name: performance_1_results
+        path: performance_1_results/

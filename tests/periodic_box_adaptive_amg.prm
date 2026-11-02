@@ -1,0 +1,76 @@
+# 3d periodic box with hanging nodes. Used to crash with a "cycle in constraints"
+# error.
+
+set Dimension                              = 3
+set End time                               = 0
+set Pressure normalization                 = volume
+set Nonlinear solver scheme                = no Advection, single Stokes
+set Max nonlinear iterations               = 1
+set Use years instead of seconds           = false
+
+subsection Solver parameters
+  subsection Stokes solver parameters
+    set Stokes solver type = block AMG
+    set Number of cheap Stokes solver steps             = 1000
+    set Maximum number of expensive Stokes solver steps = 0
+    set Linear solver tolerance                         = 1e-8
+    set GMRES solver restart length                     = 100
+  end
+
+  subsection Matrix Free
+    set Output details = true
+  end
+end
+
+subsection Discretization
+  set Use locally conservative discretization = false
+end
+
+subsection Geometry model
+  set Model name = box
+
+  subsection Box
+    set X extent = 1
+    set Y extent = 1
+    set Z extent = 1
+    set X periodic = true
+  end
+end
+
+subsection Boundary velocity model
+  set Zero velocity boundary indicators = bottom,top,front,back
+end
+
+subsection Material model
+  set Model name = simpler
+
+  subsection Simpler model
+    set Viscosity = 1
+  end
+end
+
+subsection Gravity model
+  set Model name = vertical
+
+  subsection Vertical
+    set Magnitude = 1
+  end
+end
+
+subsection Initial temperature model
+  set List of model names = function
+end
+
+subsection Mesh refinement
+  set Initial global refinement = 2
+  set Initial adaptive refinement = 1
+  set Adapt by fraction of cells = true
+  set Strategy = velocity
+  set Run postprocessors on initial refinement = true
+  set Coarsening fraction       = 0.0
+  set Refinement fraction       = 0.147
+end
+
+subsection Postprocess
+  set List of postprocessors = visualization
+end

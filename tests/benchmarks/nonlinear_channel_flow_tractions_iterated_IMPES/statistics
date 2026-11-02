@@ -1,0 +1,24 @@
+# 1: Time step number
+# 2: Time (seconds)
+# 3: Time step size (seconds)
+# 4: Number of mesh cells
+# 5: Number of Stokes degrees of freedom
+# 6: Number of temperature degrees of freedom
+# 7: Number of nonlinear iterations
+# 8: Iterations for temperature solver
+# 9: Iterations for Stokes solver
+# 10: Velocity iterations in Stokes preconditioner
+# 11: Schur complement iterations in Stokes preconditioner
+# 12: RMS velocity (m/s)
+# 13: Max. velocity (m/s)
+# 14: Minimal pressure (Pa)
+# 15: Average pressure (Pa)
+# 16: Maximal pressure (Pa)
+# 17: Outward mass flux through boundary with indicator 0 ("left") (kg/s)
+# 18: Outward mass flux through boundary with indicator 1 ("right") (kg/s)
+# 19: Outward mass flux through boundary with indicator 2 ("bottom") (kg/s)
+# 20: Outward mass flux through boundary with indicator 3 ("top") (kg/s)
+# 21: Visualization file name
+0 0.000000000000e+00 0.000000000000e+00 256 2467 1089 100 0 4379 4479 4479 6.40464601e-09 7.57269843e-09 -1.09812299e+07 4.99163301e+08 1.01433265e+09 0.00000000e+00 0.00000000e+00 -2.02575213e-01 2.02575213e-01 output-nonlinear_channel_flow_tractions_iterated_IMPES/solution/solution-00000 
+1 1.000000000000e+00 1.000000000000e+00 256 2467 1089 100 0 7365 7465 7465 6.40454824e-09 7.57151903e-09 -2.08713238e+07 4.99195960e+08 1.02580537e+09 0.00000000e+00 0.00000000e+00 -2.02574718e-01 2.02574718e-01                                                                             "" 
+2 2.000000000000e+00 1.000000000000e+00 256 2467 1089 100 0 7377 7477 7477 6.40393774e-09 7.57016283e-09 -1.37124158e+07 4.99559029e+08 1.01129285e+09 0.00000000e+00 0.00000000e+00 -2.02556669e-01 2.02556669e-01 output-nonlinear_channel_flow_tractions_iterated_IMPES/solution/solution-00001 

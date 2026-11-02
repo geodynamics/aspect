@@ -100,9 +100,14 @@ namespace WorldBuilder
           return -topography_surface.local_value(position_in_natural_coordinates.get_surface_point()).interpolated_value;
         }
 
+        double
+        DepthSurface::maximum_topography() const
+        {
+          return -topography_surface.minimum;
+        }
+
         WB_REGISTER_FEATURE_OCEANIC_PLATE_TOPOGRAPHY_MODEL(DepthSurface, depth surface)
       } // namespace Topography
     } // namespace OceanicPlateModels
   } // namespace Features
 } // namespace WorldBuilder
-

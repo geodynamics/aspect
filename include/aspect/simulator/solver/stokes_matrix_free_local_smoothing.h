@@ -1,22 +1,16 @@
-/*
-  Copyright (C) 2011 - 2025 by the authors of the ASPECT code.
-
-  This file is part of ASPECT.
-
-  ASPECT is free software; you can redistribute it and/or modify
-  it under the terms of the GNU General Public License as published by
-  the Free Software Foundation; either version 2, or (at your option)
-  any later version.
-
-  ASPECT is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  GNU General Public License for more details.
-
-  You should have received a copy of the GNU General Public License
-  along with ASPECT; see the file LICENSE.  If not see
-  <http://www.gnu.org/licenses/>.
-*/
+// ------------------------------------------------------
+//
+// SPDX-License-Identifier: GPL-2.0-or-later
+//
+// SPDX-FileCopyrightText: Copyright (C) 2011-2026 by the ASPECT authors.
+//
+// This file is part of ASPECT.
+//
+// Detailed license information governing the source code and
+// contributions can be found in the folder LICENSES and in
+// LICENSE and CONTRIBUTING.md at the top level directory.
+//
+// ------------------------------------------------------
 
 #ifndef _aspect_simulator_solver_stokes_matrix_free_local_smoothing_h
 #define _aspect_simulator_solver_stokes_matrix_free_local_smoothing_h
@@ -113,13 +107,20 @@ namespace aspect
       void setup_dofs() override;
 
       /**
+       * Local smoothing does not use a sequence of triangulations.
+       */
+      const std::vector<std::shared_ptr<const Triangulation<dim, dim>>> &
+      get_multigrid_triangulations() const override;
+
+      /**
        * Perform various tasks to update the linear system to solve
        * for. Note that we are not assembling a matrix (as this is a
        * matrix-free algorithm), but we are evaluating the material
        * model and storing the information necessary for a later call
-       * to solve().
+       * to solve(). The function can modify @p system_rhs to account
+       * for boundary conditions as is necessary for matrix-free methods.
        */
-      void assemble() override;
+      void assemble(LinearAlgebra::BlockVector &system_rhs) override;
 
       /**
        * Computes and sets the diagonal for both the mass matrix operator and the A-block
@@ -159,6 +160,30 @@ namespace aspect
        */
       std::size_t get_cell_data_memory_consumption() const override;
 
+      /**
+       * Return the velocity DoFHandler used by the multigrid hierarchy.
+       */
+      const DoFHandler<dim> &get_velocity_multigrid_dof_handler() const
+      {
+        return dof_handler_v;
+      }
+
+      /**
+       * Return the velocity constraints used by the multigrid hierarchy.
+       */
+      const MGConstrainedDoFs &get_velocity_multigrid_constraints() const
+      {
+        return mg_constrained_dofs_A_block;
+      }
+
+      /**
+       * Return the velocity transfer used by the multigrid hierarchy.
+       */
+      const MGTransferType<dim,GMGNumberType> &get_velocity_multigrid_transfer() const
+      {
+        return mg_transfer_A_block;
+      }
+
     private:
       /**
        * Evaluate the MaterialModel to query information like the viscosity and
@@ -171,7 +196,7 @@ namespace aspect
        * Add correction to system RHS for non-zero boundary condition. See description in
        * StokesMatrixFreeHandler::correct_stokes_rhs() for more information.
        */
-      void correct_stokes_rhs();
+      void correct_stokes_rhs(LinearAlgebra::BlockVector &system_rhs);
 
 
       Simulator<dim> &sim;
@@ -230,8 +255,8 @@ namespace aspect
       MGConstrainedDoFs mg_constrained_dofs_Schur_complement;
       MGConstrainedDoFs mg_constrained_dofs_projection;
 
-      MGTransferMF<dim,GMGNumberType> mg_transfer_A_block;
-      MGTransferMF<dim,GMGNumberType> mg_transfer_Schur_complement;
+      MGTransferType<dim,GMGNumberType> mg_transfer_A_block;
+      MGTransferType<dim,GMGNumberType> mg_transfer_Schur_complement;
 
       std::vector<std::shared_ptr<MatrixFree<dim,double>>> matrix_free_objects;
   };

@@ -18,4 +18,5 @@ currently supported:
     completion of another test. The test will only start after the other test
     has finished (successful or not). If this test is executed without the
     other test being executed as well, this test will fail. This feature is
-    useful if a test reuses output of another test.
+    useful if a test reuses output of another test. Category tests use their
+    source-relative test name, for example `# DEPENDS-ON: particles/foo`.

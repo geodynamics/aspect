@@ -1,22 +1,16 @@
-/*
-  Copyright (C) 2014 - 2024 by the authors of the ASPECT code.
-
-  This file is part of ASPECT.
-
-  ASPECT is free software; you can redistribute it and/or modify
-  it under the terms of the GNU General Public License as published by
-  the Free Software Foundation; either version 2, or (at your option)
-  any later version.
-
-  ASPECT is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  GNU General Public License for more details.
-
-  You should have received a copy of the GNU General Public License
-  along with ASPECT; see the file LICENSE.  If not see
-  <http://www.gnu.org/licenses/>.
-*/
+// ------------------------------------------------------
+//
+// SPDX-License-Identifier: GPL-2.0-or-later
+//
+// SPDX-FileCopyrightText: Copyright (C) 2014-2026 by the ASPECT authors.
+//
+// This file is part of ASPECT.
+//
+// Detailed license information governing the source code and
+// contributions can be found in the folder LICENSES and in
+// LICENSE and CONTRIBUTING.md at the top level directory.
+//
+// ------------------------------------------------------
 
 #ifndef _aspect_material_model_depth_dependent_h
 #define _aspect_material_model_depth_dependent_h
@@ -99,11 +93,14 @@ namespace aspect
         /**
          * The viscosity that will be used as a reference for computing the depth-dependent
          * prefactor.
+         *
+         * This variable is read from the parameter file through a parameter called 'Reference viscosity'.
          */
         double reference_viscosity;
 
         /**
          * Currently chosen source for the viscosity.
+         * This variable is read from the parameter file through a parameter called 'Depth dependence method'.
          */
         ViscositySource viscosity_source;
 
@@ -122,8 +119,13 @@ namespace aspect
 
         /**
          * Values of depth specified by the user if using the depth dependence method 'list'
+         *
+         * This variable is read from the parameter file through a parameter called 'Depth list'.
          */
         std::vector<double> depth_values;
+        /**
+         * This variable is read from the parameter file through a parameter called 'Viscosity list'.
+         */
         std::vector<double> viscosity_values;
 
         /**

@@ -1,24 +1,19 @@
-/*
-  Copyright (C) 2015 - 2024 by the authors of the ASPECT code.
-
- This file is part of ASPECT.
-
- ASPECT is free software; you can redistribute it and/or modify
- it under the terms of the GNU General Public License as published by
- the Free Software Foundation; either version 2, or (at your option)
- any later version.
-
- ASPECT is distributed in the hope that it will be useful,
- but WITHOUT ANY WARRANTY; without even the implied warranty of
- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- GNU General Public License for more details.
-
- You should have received a copy of the GNU General Public License
- along with ASPECT; see the file LICENSE.  If not see
- <http://www.gnu.org/licenses/>.
- */
+// ------------------------------------------------------
+//
+// SPDX-License-Identifier: GPL-2.0-or-later
+//
+// SPDX-FileCopyrightText: Copyright (C) 2015-2026 by the ASPECT authors.
+//
+// This file is part of ASPECT.
+//
+// Detailed license information governing the source code and
+// contributions can be found in the folder LICENSES and in
+// LICENSE and CONTRIBUTING.md at the top level directory.
+//
+// ------------------------------------------------------
 
 #include <aspect/particle/property/velocity.h>
+#include <aspect/particle/manager.h>
 
 namespace aspect
 {
@@ -40,11 +35,21 @@ namespace aspect
       Velocity<dim>::update_particle_properties(const ParticleUpdateInputs<dim> &inputs,
                                                 typename ParticleHandler<dim>::particle_iterator_range &particles) const
       {
+        const typename aspect::Particle::Manager<dim>::ParticleVelocity particle_velocity = this->get_particle_manager(this->get_particle_manager_index()).get_particle_velocity_choice();
         unsigned int p = 0;
         for (auto &particle: particles)
           {
             for (unsigned int i = 0; i < dim; ++i)
-              particle.get_properties()[this->data_position+i] = inputs.solution[p][this->introspection().component_indices.velocities[i]];
+
+              switch (particle_velocity)
+                {
+                  case aspect::Particle::Manager<dim>::ParticleVelocity::solid:
+                    particle.get_properties()[this->data_position+i] = inputs.solution[p][this->introspection().component_indices.velocities[i]];
+                    break;
+                  case aspect::Particle::Manager<dim>::ParticleVelocity::fluid:
+                    particle.get_properties()[this->data_position+i] = inputs.solution[p][this->introspection().variable("fluid velocity").first_component_index +i];
+                    break;
+                }
             ++p;
           }
       }
@@ -60,8 +65,18 @@ namespace aspect
       UpdateFlags
       Velocity<dim>::get_update_flags (const unsigned int component) const
       {
-        if (this->introspection().component_masks.velocities[component] == true)
-          return update_values;
+        const typename aspect::Particle::Manager<dim>::ParticleVelocity particle_velocity = this->get_particle_manager(this->get_particle_manager_index()).get_particle_velocity_choice();
+        switch (particle_velocity)
+          {
+            case aspect::Particle::Manager<dim>::ParticleVelocity::solid:
+              if (this->introspection().component_masks.velocities[component] == true)
+                return update_values;
+              break;
+            case aspect::Particle::Manager<dim>::ParticleVelocity::fluid:
+              if (this->introspection().variable("fluid velocity").component_mask[component] == true)
+                return update_values;
+              break;
+          }
 
         return update_default;
       }
@@ -88,7 +103,8 @@ namespace aspect
                                         "velocity",
                                         "Implementation of a plugin in which the particle "
                                         "property is defined as the recent velocity at "
-                                        "this position.")
+                                        "this position. The velocity depends on whether the particle "
+                                        "manager is being advected with a solid or fluid velocity.")
     }
   }
 }

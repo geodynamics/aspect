@@ -1,22 +1,16 @@
-/*
-  Copyright (C) 2015 - 2024 by the authors of the ASPECT code.
-
- This file is part of ASPECT.
-
- ASPECT is free software; you can redistribute it and/or modify
- it under the terms of the GNU General Public License as published by
- the Free Software Foundation; either version 2, or (at your option)
- any later version.
-
- ASPECT is distributed in the hope that it will be useful,
- but WITHOUT ANY WARRANTY; without even the implied warranty of
- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- GNU General Public License for more details.
-
- You should have received a copy of the GNU General Public License
- along with ASPECT; see the file LICENSE.  If not see
- <http://www.gnu.org/licenses/>.
- */
+// ------------------------------------------------------
+//
+// SPDX-License-Identifier: GPL-2.0-or-later
+//
+// SPDX-FileCopyrightText: Copyright (C) 2015-2026 by the ASPECT authors.
+//
+// This file is part of ASPECT.
+//
+// Detailed license information governing the source code and
+// contributions can be found in the folder LICENSES and in
+// LICENSE and CONTRIBUTING.md at the top level directory.
+//
+// ------------------------------------------------------
 
 #include <aspect/particle/interpolator/interface.h>
 #include <aspect/simulator_access.h>
@@ -58,20 +52,36 @@ namespace aspect
 
       template <int dim>
       std::unique_ptr<Interface<dim>>
-      create_particle_interpolator (ParameterHandler &prm)
+      create_particle_interpolator (const std::string &interpolator_name)
       {
-        std::string name;
-        name = prm.get ("Interpolation scheme");
-
         // 'bilinear least squares' is the deprecated old name of the 'linear least squares'
         // interpolator. The old name will be removed in the future.
-        if (name == "bilinear least squares")
-          name = "linear least squares";
-
-        return std::get<dim>(registered_plugins).create_plugin (name,
-                                                                "Particle::Interpolator name");
+        if (interpolator_name == "bilinear least squares")
+          return std::get<dim>(registered_plugins).create_plugin ("linear least squares",
+                                                                  "Particle::Interpolator name");
+        else
+          return std::get<dim>(registered_plugins).create_plugin (interpolator_name,
+                                                                  "Particle::Interpolator name");
       }
 
+
+
+      template <int dim>
+      std::unique_ptr<Interface<dim>>
+      create_particle_interpolator (ParameterHandler &prm)
+      {
+        const std::string name = prm.get ("Interpolation scheme");
+
+        return create_particle_interpolator<dim> (name);
+      }
+
+
+      template <int dim>
+      std::string
+      get_valid_interpolator_names_pattern ()
+      {
+        return std::get<dim>(registered_plugins).get_pattern_of_names ();
+      }
 
 
       template <int dim>
@@ -80,7 +90,7 @@ namespace aspect
       {
         // declare the entry in the parameter file
         const std::string pattern_of_names
-          = std::get<dim>(registered_plugins).get_pattern_of_names ();
+          = get_valid_interpolator_names_pattern<dim>();
 
         // 'bilinear least squares' is the deprecated old name of the 'linear least squares'
         // interpolator. The old name will be removed in the future.
@@ -128,6 +138,10 @@ namespace aspect
                                        void ( *) (ParameterHandler &), \
                                        std::unique_ptr<Interface<dim>>( *) ()); \
   \
+  template \
+  std::string \
+  get_valid_interpolator_names_pattern<dim> (); \
+  \
   template  \
   void \
   declare_parameters<dim> (ParameterHandler &); \
@@ -135,6 +149,10 @@ namespace aspect
   template \
   void \
   write_plugin_graph<dim> (std::ostream &); \
+  \
+  template \
+  std::unique_ptr<Interface<dim>> \
+  create_particle_interpolator<dim> (const std::string &interpolator_name); \
   \
   template \
   std::unique_ptr<Interface<dim>> \

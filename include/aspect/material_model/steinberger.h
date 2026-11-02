@@ -1,22 +1,16 @@
-/*
-  Copyright (C) 2011 - 2023 by the authors of the ASPECT code.
-
-  This file is part of ASPECT.
-
-  ASPECT is free software; you can redistribute it and/or modify
-  it under the terms of the GNU General Public License as published by
-  the Free Software Foundation; either version 2, or (at your option)
-  any later version.
-
-  ASPECT is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  GNU General Public License for more details.
-
-  You should have received a copy of the GNU General Public License
-  along with ASPECT; see the file LICENSE.  If not see
-  <http://www.gnu.org/licenses/>.
-*/
+// ------------------------------------------------------
+//
+// SPDX-License-Identifier: GPL-2.0-or-later
+//
+// SPDX-FileCopyrightText: Copyright (C) 2011-2026 by the ASPECT authors.
+//
+// This file is part of ASPECT.
+//
+// Detailed license information governing the source code and
+// contributions can be found in the folder LICENSES and in
+// LICENSE and CONTRIBUTING.md at the top level directory.
+//
+// ------------------------------------------------------
 
 #ifndef _aspect_material_model_steinberger_h
 #define _aspect_material_model_steinberger_h
@@ -234,6 +228,8 @@ namespace aspect
          * Boolean describing whether to use the lateral average temperature
          * for computing the viscosity, rather than the temperature
          * on the reference adiabat.
+         *
+         * This variable is read from the parameter file through a parameter called 'Use lateral average temperature for viscosity'.
          */
         bool use_lateral_average_temperature;
 
@@ -248,29 +244,51 @@ namespace aspect
          * Compositional prefactors with which to multiply the reference viscosity.
          * Volume fractions are used to weight the prefactors according to the
          * assigned viscosity averaging scheme.
+         * This variable is read from the parameter file through a parameter called 'Composition viscosity prefactors'.
          */
         std::vector<double> viscosity_prefactors;
+        /**
+         * This variable is read from the parameter file through a parameter called 'Viscosity averaging scheme'.
+         */
         MaterialUtilities::CompositionalAveragingOperation viscosity_averaging_scheme;
 
         /**
          * Information about lateral temperature averages.
          */
         std::vector<double> average_temperature;
+        /**
+         * This variable is read from the parameter file through a parameter called 'Number lateral average bands'.
+         */
         unsigned int n_lateral_slices;
 
         /**
          * Minimum and maximum allowed viscosity, as well as the maximum allowed
          * viscosity variation compared to the average radial viscosity.
+         * This variable is read from the parameter file through a parameter called 'Minimum viscosity'.
          */
         double min_eta;
+        /**
+         * This variable is read from the parameter file through a parameter called 'Maximum viscosity'.
+         */
         double max_eta;
+        /**
+         * This variable is read from the parameter file through a parameter called 'Maximum lateral viscosity variation'.
+         */
         double max_lateral_eta_variation;
 
         /**
          * Information about the location of data files.
+         *
+         * This variable is read from the parameter file through a parameter called 'Data directory'.
          */
         std::string data_directory;
+        /**
+         * This variable is read from the parameter file through a parameter called 'Radial viscosity file name'.
+         */
         std::string radial_viscosity_file_name;
+        /**
+         * This variable is read from the parameter file through a parameter called 'Lateral viscosity file name'.
+         */
         std::string lateral_viscosity_file_name;
 
         /**
@@ -301,6 +319,9 @@ namespace aspect
          * Objects for computing plastic stresses, viscosities, and additional outputs
          */
         Rheology::DruckerPrager<dim> drucker_prager_plasticity;
+        /**
+         * This variable is read from the parameter file through a parameter called 'Use Drucker-Prager rheology'.
+         */
         bool enable_drucker_prager_rheology;
         Rheology::DruckerPragerParameters drucker_prager_parameters;
 

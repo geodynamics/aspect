@@ -1,22 +1,16 @@
-/*
- Copyright (C) 2023 - 2024 by the authors of the ASPECT code.
-
- This file is part of ASPECT.
-
- ASPECT is free software; you can redistribute it and/or modify
- it under the terms of the GNU General Public License as published by
- the Free Software Foundation; either version 2, or (at your option)
- any later version.
-
- ASPECT is distributed in the hope that it will be useful,
- but WITHOUT ANY WARRANTY; without even the implied warranty of
- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- GNU General Public License for more details.
-
- You should have received a copy of the GNU General Public License
- along with ASPECT; see the file LICENSE.  If not see
- <http://www.gnu.org/licenses/>.
- */
+// ------------------------------------------------------
+//
+// SPDX-License-Identifier: GPL-2.0-or-later
+//
+// SPDX-FileCopyrightText: Copyright (C) 2023-2026 by the ASPECT authors.
+//
+// This file is part of ASPECT.
+//
+// Detailed license information governing the source code and
+// contributions can be found in the folder LICENSES and in
+// LICENSE and CONTRIBUTING.md at the top level directory.
+//
+// ------------------------------------------------------
 
 #ifndef _aspect_postprocess_crystal_preferred_orientation_h
 #define _aspect_postprocess_crystal_preferred_orientation_h
@@ -136,12 +130,15 @@ namespace aspect
 
         /**
          * Random number generator seed used to initialize the random number generator.
+         *
+         * This variable is read from the parameter file through a parameter called 'Random number seed'.
          */
         unsigned int random_number_seed;
 
         /**
          * Interval between output (in years if appropriate simulation
          * parameter is set, otherwise seconds)
+         * This variable is read from the parameter file through a parameter called 'Time between data output'.
          */
         double output_interval;
 
@@ -217,6 +214,7 @@ namespace aspect
          * move this file to a network file system. If this variable is
          * set to a non-empty string it will be interpreted as a temporary
          * storage location.
+         * This variable is read from the parameter file through a parameter called 'Temporary output location'.
          */
         std::string temporary_output_location;
 
@@ -225,6 +223,7 @@ namespace aspect
          * progress of the rest of the model run. Setting this variable to
          * 'true' moves this process into a background thread, while the
          * rest of the model continues.
+         * This variable is read from the parameter file through a parameter called 'Write in background thread'.
          */
         bool write_in_background_thread;
 
@@ -270,6 +269,8 @@ namespace aspect
 
         /**
          * Whether to compress the raw and weighed cpo data output files with zlib.
+         *
+         * This variable is read from the parameter file through a parameter called 'Compress cpo data files'.
          */
         bool compress_cpo_data_files;
 

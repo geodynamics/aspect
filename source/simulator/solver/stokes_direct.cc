@@ -1,22 +1,16 @@
-/*
-  Copyright (C) 2025 - by the authors of the ASPECT code.
-
-  This file is part of ASPECT.
-
-  ASPECT is free software; you can redistribute it and/or modify
-  it under the terms of the GNU General Public License as published by
-  the Free Software Foundation; either version 2, or (at your option)
-  any later version.
-
-  ASPECT is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  GNU General Public License for more details.
-
-  You should have received a copy of the GNU General Public License
-  along with ASPECT; see the file LICENSE.  If not see
-  <http://www.gnu.org/licenses/>.
-*/
+// ------------------------------------------------------
+//
+// SPDX-License-Identifier: GPL-2.0-or-later
+//
+// SPDX-FileCopyrightText: Copyright (C) 2025-2026 by the ASPECT authors.
+//
+// This file is part of ASPECT.
+//
+// Detailed license information governing the source code and
+// contributions can be found in the folder LICENSES and in
+// LICENSE and CONTRIBUTING.md at the top level directory.
+//
+// ------------------------------------------------------
 
 #include <aspect/simulator/solver/stokes_direct.h>
 
@@ -66,7 +60,6 @@ namespace aspect
       // overall vector, so that they form a contiguous range starting
       // at zero. The assertion checks this, but this could easily be
       // generalized if the Stokes block were not starting at zero.
-#if DEAL_II_VERSION_GTE(9,6,0)
       {
         Assert (velocity_block_index == 0, ExcNotImplemented());
       }
@@ -75,9 +68,6 @@ namespace aspect
       stokes_dofs.add_range (0, distributed_stokes_solution.size());
       const AffineConstraints<double> current_stokes_constraints
         = this->get_current_constraints().get_view (stokes_dofs);
-#else
-      const AffineConstraints<double> &current_stokes_constraints = this->get_current_constraints();
-#endif
 
       double initial_nonlinear_residual = numbers::signaling_nan<double>();
       double final_linear_residual      = numbers::signaling_nan<double>();

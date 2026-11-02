@@ -52,7 +52,7 @@ subsection Gravity model
 end
 
 subsection Initial temperature model
-  set Model name = function
+  set List of model names = function
 
   subsection Function
     set Function constants  = l=250000
@@ -62,7 +62,7 @@ subsection Initial temperature model
 end
 
 subsection Initial composition model
-  set Model name = function
+  set List of model names = function
 
   subsection Function
     set Function expression = if(x+y<0.4,1.0,0.1);if((1-x)^2+y^2<0.25,0.0,100.0)

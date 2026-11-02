@@ -1,26 +1,22 @@
-/*
-  Copyright (C) 2011 - 2024 by the authors of the ASPECT code.
-
-  This file is part of ASPECT.
-
-  ASPECT is free software; you can redistribute it and/or modify
-  it under the terms of the GNU General Public License as published by
-  the Free Software Foundation; either version 2, or (at your option)
-  any later version.
-
-  ASPECT is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  GNU General Public License for more details.
-
-  You should have received a copy of the GNU General Public License
-  along with ASPECT; see the file LICENSE.  If not see
-  <http://www.gnu.org/licenses/>.
-*/
+// ------------------------------------------------------
+//
+// SPDX-License-Identifier: GPL-2.0-or-later
+//
+// SPDX-FileCopyrightText: Copyright (C) 2011-2026 by the ASPECT authors.
+//
+// This file is part of ASPECT.
+//
+// Detailed license information governing the source code and
+// contributions can be found in the folder LICENSES and in
+// LICENSE and CONTRIBUTING.md at the top level directory.
+//
+// ------------------------------------------------------
 
 
 #ifndef _aspect_simulator_h
 #define _aspect_simulator_h
+
+#include <fstream>
 
 #include <deal.II/base/timer.h>
 #include <deal.II/base/parameter_handler.h>
@@ -49,6 +45,7 @@ DEAL_II_ENABLE_EXTRA_DIAGNOSTICS
 #include <aspect/simulator_signals.h>
 #include <aspect/material_model/interface.h>
 #include <aspect/heating_model/interface.h>
+#include <aspect/prescribed_dilation/interface.h>
 #include <aspect/geometry_model/initial_topography_model/interface.h>
 #include <aspect/geometry_model/interface.h>
 #include <aspect/gravity_model/interface.h>
@@ -96,7 +93,13 @@ namespace aspect
   namespace StokesSolver
   {
     template <int dim>
+    class Interface;
+
+    template <int dim>
     class Direct;
+
+    template <int dim>
+    class MatrixBased;
   }
 
   template <int dim, int velocity_degree>
@@ -913,7 +916,7 @@ namespace aspect
        * This function is implemented in
        * <code>source/simulator/checkpoint_restart.cc</code>.
        */
-      void create_snapshot();
+      void create_snapshot(const bool is_additional_checkpoint = false);
 
       /**
        * Restore the state of this program from a set of files in the output
@@ -1289,10 +1292,14 @@ namespace aspect
        * so that the advection time stepping scheme will have the correct field terms
        * for the right-hand side when assembling the advection system.
        *
+       * The calling function provides a vector of the temperature field and all
+       * those compositional fields that need to be updated with the reaction results.
+       * Fields that are tracked by particles are, for example, not included.
+       *
        * This function is implemented in
        * <code>source/simulator/helper_functions.cc</code>.
        */
-      void compute_reactions ();
+      void compute_reactions (const std::vector<AdvectionField> &advection_fields_with_reactions);
 
       /**
        * Update the indicated block of the solution vector with the
@@ -1518,13 +1525,28 @@ namespace aspect
 
       /**
        * Exchange coarsen/refinement flags set between processors so that
-       * we have the correct settings on all ghost cells.
+       * we have the correct settings on all ghost cells. This does not change
+       * the flags on locally owned cells.
        *
        * This function is implemented in
        * <code>source/simulator/helper_functions.cc</code>.
        *
        */
       void exchange_refinement_flags();
+
+
+      /**
+       * Match refinement and coarsening flags on periodic partners. Ghost
+       * flags must be up to date. Return whether locally owned flags changed.
+       */
+      bool synchronize_periodic_refinement_flags();
+
+
+      /**
+       * Prepare periodic flags and mesh smoothing until both leave the
+       * locally owned flags unchanged. Ghost flags must be up to date.
+       */
+      void prepare_periodic_refinement();
 
 
       /**
@@ -1647,6 +1669,17 @@ namespace aspect
        */
       bool
       stokes_A_block_is_symmetric () const;
+
+      /**
+       * Return whether the Stokes solver is a matrix-free solver. A lot of
+       * assembly operations work differently depending on whether a matrix
+       * needs to be assembled or not.
+       *
+       * This function is implemented in
+       * <code>source/simulator/helper_functions.cc</code>.
+       */
+      bool
+      is_stokes_matrix_free() const;
 
       /**
        * This function checks that the user-selected formulations of the
@@ -1836,10 +1869,24 @@ namespace aspect
 
       /**
        * Checkpointing happens in rotating folders /restart/01/, /restart/02/,
-       * etc.. This variable holds the last index used and as such should
+       * etc.. and potentially additional, non-rotating folders.
+       * This variable holds the last index used and as such should
        * contain the last valid checkpoint written.
        */
       unsigned int last_checkpoint_id;
+
+      /**
+       * The id of the last checkpoint created based on wall time or time step
+       * number period.
+       */
+      unsigned int last_regular_checkpoint_id;
+
+      /**
+       * Additional checkpointing happens in folders numbered starting from
+       * n_checkpoints_to_keep+1, e.g. by default /restart/04/.
+       * This variable holds the last index used for the additional snapshots.
+       */
+      unsigned int last_additional_checkpoint_id;
 
       /**
        * In output_statistics(), where we output the statistics object above,
@@ -1949,6 +1996,7 @@ namespace aspect
 
       MeshRefinement::Manager<dim>                              mesh_refinement_manager;
       HeatingModel::Manager<dim>                                heating_model_manager;
+      PrescribedDilation::Manager<dim>                          prescribed_dilation_manager;
 
       /**
        * Pointer to the Mapping object used by the finite elements when
@@ -1967,7 +2015,7 @@ namespace aspect
       Postprocess::Manager<dim>                                 postprocess_manager;
 
       /**
-       * The managers holding different sets of particles
+       * The managers holding different sets of particles.
        */
       std::vector<Particle::Manager<dim>>                       particle_managers;
 
@@ -2115,23 +2163,17 @@ namespace aspect
       std::unique_ptr<MeshDeformation::MeshDeformationHandler<dim>> mesh_deformation;
 
       /**
-       * Unique pointer for the matrix-free Stokes solver
+       * Unique pointer to the Stokes solver
        */
-      std::unique_ptr<StokesMatrixFreeHandler<dim>> stokes_matrix_free;
-
-      /**
-       * Unique pointer for the direct Stokes solver
-       */
-      std::unique_ptr<StokesSolver::Direct<dim>> stokes_direct;
-
+      std::unique_ptr<StokesSolver::Interface<dim>> stokes_solver;
 
       friend class boost::serialization::access;
       friend class SimulatorAccess<dim>;
       friend class MeshDeformation::MeshDeformationHandler<dim>;
       friend class VolumeOfFluidHandler<dim>;
       friend class StokesMatrixFreeHandler<dim>;
+      friend class StokesSolver::MatrixBased<dim>;
       template <int dimension, int velocity_degree> friend class StokesMatrixFreeHandlerLocalSmoothingImplementation;
-      template <int dimension, int velocity_degree> friend class StokesMatrixFreeHandlerGlobalCoarseningImplementation;
       friend struct Parameters<dim>;
   };
 }

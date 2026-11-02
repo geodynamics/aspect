@@ -1,22 +1,16 @@
-/*
-  Copyright (C) 2011 - 2024 by the authors of the ASPECT code.
-
-  This file is part of ASPECT.
-
-  ASPECT is free software; you can redistribute it and/or modify
-  it under the terms of the GNU General Public License as published by
-  the Free Software Foundation; either version 2, or (at your option)
-  any later version.
-
-  ASPECT is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  GNU General Public License for more details.
-
-  You should have received a copy of the GNU General Public License
-  along with ASPECT; see the file LICENSE.  If not see
-  <http://www.gnu.org/licenses/>.
-*/
+// ------------------------------------------------------
+//
+// SPDX-License-Identifier: GPL-2.0-or-later
+//
+// SPDX-FileCopyrightText: Copyright (C) 2011-2026 by the ASPECT authors.
+//
+// This file is part of ASPECT.
+//
+// Detailed license information governing the source code and
+// contributions can be found in the folder LICENSES and in
+// LICENSE and CONTRIBUTING.md at the top level directory.
+//
+// ------------------------------------------------------
 
 
 #include <aspect/material_model/multicomponent.h>
@@ -88,18 +82,18 @@ namespace aspect
 
           prm.declare_entry ("Reference temperature", "293.",
                              Patterns::Double (0.),
-                             "The reference temperature $T_0$. Units: $\\text{K}$.");
+                             "The reference temperature $T_0$. Units: \\si{\\kelvin}.");
           prm.declare_entry ("Viscosities", "1.e21",
                              Patterns::Anything(),
                              "List of viscosities for background mantle and compositional fields,"
                              "for a total of N+1 values, where N is the number of compositional fields."
-                             "If only one value is given, then all use the same value. Units: $\\text{Pa}\\text{s}$.");
+                             "If only one value is given, then all use the same value. Units: \\si{\\pascal\\second}.");
           prm.declare_entry ("Thermal conductivities", "4.7",
                              Patterns::Anything(),
                              "List of thermal conductivities for background mantle and compositional fields,"
                              "for a total of N+1 values, where N is the number of compositional fields."
                              "If only one value is given, then all use the same value. "
-                             "Units: $\\frac{\\text{W}}{\\text{m}\\text{K}}$.");
+                             "Units: \\si{\\watt\\per\\meter\\per\\kelvin}.");
           prm.declare_entry ("Viscosity averaging scheme", "harmonic",
                              Patterns::Selection("arithmetic|harmonic|geometric|maximum composition"),
                              "When more than one compositional field is present at a point "

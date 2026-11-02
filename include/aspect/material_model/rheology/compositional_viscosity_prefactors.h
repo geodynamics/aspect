@@ -1,22 +1,16 @@
-/*
-  Copyright (C) 2024 by the authors of the ASPECT code.
-
-  This file is part of ASPECT.
-
-  ASPECT is free software; you can redistribute it and/or modify
-  it under the terms of the GNU General Public License as published by
-  the Free Software Foundation; either version 2, or (at your option)
-  any later version.
-
-  ASPECT is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  GNU General Public License for more details.
-
-  You should have received a copy of the GNU General Public License
-  along with ASPECT; see the file LICENSE.  If not see
-  <http://www.gnu.org/licenses/>.
-*/
+// ------------------------------------------------------
+//
+// SPDX-License-Identifier: GPL-2.0-or-later
+//
+// SPDX-FileCopyrightText: Copyright (C) 2024-2026 by the ASPECT authors.
+//
+// This file is part of ASPECT.
+//
+// Detailed license information governing the source code and
+// contributions can be found in the folder LICENSES and in
+// LICENSE and CONTRIBUTING.md at the top level directory.
+//
+// ------------------------------------------------------
 
 #ifndef _aspect_material_model_rheology_compositional_viscosity_prefactors_h
 #define _aspect_material_model_rheology_compositional_viscosity_prefactors_h
@@ -91,17 +85,38 @@ namespace aspect
            * The prefactor for a given compositional field is multiplied with a
            * base_viscosity value provided by the material model, which is then returned
            * to the material model.
+           * interface weakening: calculate the viscosity change due to the presence of
+           * a sub-grid scale weak layer present at the interface of two other compositions.
            */
           enum ViscosityPrefactorScheme
           {
             none,
             hk04_olivine_hydration,
-          } viscosity_prefactor_scheme;
+            interface_weakening,
+          };
+          /**
+           * This variable is read from the parameter file through a parameter called 'Viscosity prefactor scheme'.
+           */
+          ViscosityPrefactorScheme viscosity_prefactor_scheme;
 
           // Initialize variables for the water fugacity calculation, from HK04
+          /**
+           * This variable is read from the parameter file through a parameter called 'Water fugacity exponents for diffusion creep'.
+           */
           std::vector<double> diffusion_water_fugacity_exponents;
+          /**
+           * This variable is read from the parameter file through a parameter called 'Water fugacity exponents for dislocation creep'.
+           */
           std::vector<double> dislocation_water_fugacity_exponents;
+          /**
+           * This variable is read from the parameter file through a parameter called 'Minimum mass fraction bound water content for fugacity'.
+           */
           std::vector<double> minimum_mass_fraction_water_for_dry_creep;
+
+          // Variables for the interface weakening scheme
+          std::vector<std::string> weakening_field_names;
+          std::vector<double> interface_weakening_factors;
+          double interface_weakening_threshold;
 
           // From Hirth & Kohlstedt 2004, equation 6
           const double A_H2O = 2.6e-5; // 1/Pa

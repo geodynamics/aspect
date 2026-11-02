@@ -2,11 +2,11 @@
 Loading shared library <./libfastscape_restart_basement_silt.debug.so>
 * starting from beginning:
 Executing the following command:
-cd output-fastscape_restart_basement_silt ; (cat ASPECT_DIR/tests/fastscape_restart_basement_silt.prm  ;  echo 'set Output directory = output1.tmp'  ;  rm -rf output1.tmp ; mkdir output1.tmp ) | ../../aspect -- > /dev/null
+cd output-fastscape_restart_basement_silt ; (cat $ASPECT_SOURCE_DIR/tests/fastscape_restart_basement_silt.prm  ;  echo 'set Output directory = output1.tmp'  ;  rm -rf output1.tmp ; mkdir output1.tmp ) | ../../aspect -- > /dev/null
 Executing the following command:
 cd output-fastscape_restart_basement_silt ;  rm -rf output2.tmp ; mkdir output2.tmp ;  mv output1.tmp/restart* output2.tmp/
 * now resuming:
 Executing the following command:
-cd output-fastscape_restart_basement_silt ; (cat ASPECT_DIR/tests/fastscape_restart_basement_silt.prm  ;  echo 'set Output directory = output2.tmp'  ;  echo 'set Resume computation = true' ) | ../../aspect -- > /dev/null
+cd output-fastscape_restart_basement_silt ; (cat $ASPECT_SOURCE_DIR/tests/fastscape_restart_basement_silt.prm  ;  echo 'set Output directory = output2.tmp'  ;  echo 'set Resume computation = true' ) | ../../aspect -- > /dev/null
 * now comparing:
 restart reproduces straight run: topography identical

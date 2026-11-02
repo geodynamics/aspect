@@ -1,22 +1,16 @@
-/*
- Copyright (C) 2012 - 2021 by the authors of the ASPECT code.
-
- This file is part of ASPECT.
-
- ASPECT is free software; you can redistribute it and/or modify
- it under the terms of the GNU General Public License as published by
- the Free Software Foundation; either version 2, or (at your option)
- any later version.
-
- ASPECT is distributed in the hope that it will be useful,
- but WITHOUT ANY WARRANTY; without even the implied warranty of
- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- GNU General Public License for more details.
-
- You should have received a copy of the GNU General Public License
- along with ASPECT; see the file LICENSE.  If not see
- <http://www.gnu.org/licenses/>.
- */
+// ------------------------------------------------------
+//
+// SPDX-License-Identifier: GPL-2.0-or-later
+//
+// SPDX-FileCopyrightText: Copyright (C) 2012-2026 by the ASPECT authors.
+//
+// This file is part of ASPECT.
+//
+// Detailed license information governing the source code and
+// contributions can be found in the folder LICENSES and in
+// LICENSE and CONTRIBUTING.md at the top level directory.
+//
+// ------------------------------------------------------
 
 #ifndef _aspect_particle_manager_h
 #define _aspect_particle_manager_h
@@ -87,9 +81,20 @@ namespace aspect
     {
       public:
         /**
-         * Default constructor.
+         * Default constructor. This constructor creates an invalid object, which
+         * is only useful for deserialization if you next want to fill the object
+         * with content read back from a previously generated checkpoint.
+         *
+         * The other constructor should be used in all other cases.
          */
         Manager();
+
+        /**
+         * Constructor. The argument denotes the how many-th particle manager this
+         * is in the simulation. This is used to distinguish between multiple particle
+         * managers in the same simulation.
+         */
+        Manager(const unsigned int particle_manager_index);
 
         /**
          * Default destructor.
@@ -103,13 +108,22 @@ namespace aspect
         Manager(Manager &&) noexcept;
 
         /**
+         * Enum class to keep track of which velocity is used to advect particles
+         */
+        enum class ParticleVelocity
+        {
+          solid,
+          fluid,
+        };
+
+        /**
          * Initialize the particle manager.
          */
         void initialize();
 
         /**
-         * Update the particle manager.
-        */
+         * Update the particle manager at the beginning of each time step.
+         */
         void update();
 
         /**
@@ -241,15 +255,9 @@ namespace aspect
          * before a refinement step. A weight is attached to every cell
          * depending on the number of contained particles.
          */
-#if DEAL_II_VERSION_GTE(9,6,0)
         unsigned int
         cell_weight(const typename parallel::distributed::Triangulation<dim>::cell_iterator &cell,
                     const CellStatus status);
-#else
-        unsigned int
-        cell_weight(const typename parallel::distributed::Triangulation<dim>::cell_iterator &cell,
-                    const typename parallel::distributed::Triangulation<dim>::CellStatus status);
-#endif
 
         /**
          * Update the particle properties if necessary.
@@ -284,16 +292,31 @@ namespace aspect
         declare_parameters (ParameterHandler &prm);
 
         /**
-         * Read the parameters this class declares from the parameter file.
+         * Read the parameters this class declares from the parameter file, using the
+         * particle manager index to distinguish between multiple particle managers
+         * in the same simulation.
          *
          * @param prm The ParameterHandler.
-         * @param particle_manager Parse the parameters for the Particle manager with this index.
          */
         virtual
         void
-        parse_parameters (ParameterHandler &prm, const unsigned int particle_manager);
+        parse_parameters (ParameterHandler &prm);
+
+        /**
+         * Return whether particles managed by this particle manager are advected
+         * using the solid velocity or the fluid velocity.
+         */
+        ParticleVelocity
+        get_particle_velocity_choice() const;
 
       private:
+
+        /**
+         * The index of this particle manager. This is used to distinguish between multiple
+         * particle managers in the same simulation.
+         */
+        unsigned int particle_manager_index;
+
         struct ParticleLoadBalancing
         {
           enum Kind
@@ -363,7 +386,13 @@ namespace aspect
         std::unique_ptr<Integrator::Interface<dim>> integrator;
 
         /**
-         * Random number generator used for creating and deleting particles
+         * Random number generator used for creating and deleting particles.
+         *
+         * This variable is not considered part of the state of the particle
+         * manager and is consequently not serialized. It is re-initialized
+         * in the update() function at the beginning of each time step, and so
+         * has a deterministic state at the beginning of each time step. It
+         * does not need to be restored from a checkpoint.
          */
         std::mt19937 random_number_generator;
 
@@ -407,6 +436,11 @@ namespace aspect
          * Algorithm for adding particles to cell.
          */
         AdditionAlgorithm addition_algorithm;
+
+        /**
+         * Velocity for particle advection
+         */
+        ParticleVelocity particle_velocity;
 
         /**
          * Lower limit for particle number per cell. This limit is
@@ -534,6 +568,8 @@ namespace aspect
     template <class Archive>
     void Manager<dim>::serialize (Archive &ar, const unsigned int)
     {
+      ar &particle_manager_index;
+
       // Note that although Boost claims to handle serialization of pointers
       // correctly, at least for the case of unique_ptr it seems to not work.
       // It works correctly when archiving the content of the pointer instead.

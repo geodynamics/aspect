@@ -1,0 +1,23 @@
+
+Number of active cells: 256 (on 5 levels)
+Number of degrees of freedom: 5,734 (2,178+289+1,089+1,089+1,089)
+
+*** Timestep 0:  t=0 seconds, dt=0 seconds
+   Skipping temperature solve because RHS is zero.
+   Advecting particles (particle manager 1)...  done.
+   Advecting particles (particle manager 2)...  done.
+
+An error occurred in file <initial_conditions.cc> in function
+(line in output replaced by default.sh script)
+Additional information: 
+    The field composition 1 (function) is marked as advected by particles,
+    but no particle property exists that is mapped to this field. The
+    active particle properties in your model are the following:
+    function
+    The property you selected is 'initial anomaly'. Make sure that any
+    particle property you want to map to a field exists in your model (by
+    adding it to the 'List of particle properties' in the parameter file)
+    and that it is mapped to the correct field.
+
+Stacktrace:
+(rest of the output replaced by default.sh script)

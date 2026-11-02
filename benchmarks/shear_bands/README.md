@@ -10,7 +10,7 @@ feature:melt
 feature:modular-equations
 ```
 
-(sec:benchmarks:shear_bands)=`
+(sec:benchmarks:shear_bands)=
 # Magmatic shear bands
 This directory contains magmatic shear bands examples for Newtonian rheology (as defined
 in Spiegelman, 2003, Linear analysis of melt band formation by simple shear) and for

@@ -1,22 +1,16 @@
-/*
-  Copyright (C) 2025 - by the authors of the ASPECT code.
-
-  This file is part of ASPECT.
-
-  ASPECT is free software; you can redistribute it and/or modify
-  it under the terms of the GNU General Public License as published by
-  the Free Software Foundation; either version 2, or (at your option)
-  any later version.
-
-  ASPECT is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  GNU General Public License for more details.
-
-  You should have received a copy of the GNU General Public License
-  along with ASPECT; see the file LICENSE.  If not see
-  <http://www.gnu.org/licenses/>.
-*/
+// ------------------------------------------------------
+//
+// SPDX-License-Identifier: GPL-2.0-or-later
+//
+// SPDX-FileCopyrightText: Copyright (C) 2025-2026 by the ASPECT authors.
+//
+// This file is part of ASPECT.
+//
+// Detailed license information governing the source code and
+// contributions can be found in the folder LICENSES and in
+// LICENSE and CONTRIBUTING.md at the top level directory.
+//
+// ------------------------------------------------------
 
 #ifndef _aspect_postprocess_particle_distribution_statistics_h
 #define _aspect_postprocess_particle_distribution_statistics_h
@@ -78,6 +72,8 @@ namespace aspect
          * If `KDE_per_particle` is true, the point-density function is defined
          * at the position of every particle in the cell. If it is false, the
          * point-density-function is defined on a regular grid throughout the cell.
+         *
+         * This variable is read from the parameter file through a parameter called 'Use KDE per particle'.
          */
         bool KDE_per_particle;
 
@@ -87,6 +83,7 @@ namespace aspect
          * a value of 2 means that the point-density function is defined at
          * $2\times 2=4$ points in 2D. This variable only applies if
          * `KDE_per_particle` is false.
+         * This variable is read from the parameter file through a parameter called 'KDE granularity'.
          */
         unsigned int granularity;
 
@@ -97,6 +94,8 @@ namespace aspect
          * in oversmoothing or undersmoothing of the point-density function.
          * Oversmoothing or undersmoothing results in a function which
          * represents the underlying data less accurately.
+         *
+         * This variable is read from the parameter file through a parameter called 'Kernel bandwidth'.
          */
         double bandwidth;
 

@@ -1,22 +1,16 @@
-/*
-  Copyright (C) 2011 - 2023 by the authors of the ASPECT code.
-
-  This file is part of ASPECT.
-
-  ASPECT is free software; you can redistribute it and/or modify
-  it under the terms of the GNU General Public License as published by
-  the Free Software Foundation; either version 2, or (at your option)
-  any later version.
-
-  ASPECT is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  GNU General Public License for more details.
-
-  You should have received a copy of the GNU General Public License
-  along with ASPECT; see the file LICENSE.  If not see
-  <http://www.gnu.org/licenses/>.
-*/
+// ------------------------------------------------------
+//
+// SPDX-License-Identifier: GPL-2.0-or-later
+//
+// SPDX-FileCopyrightText: Copyright (C) 2011-2026 by the ASPECT authors.
+//
+// This file is part of ASPECT.
+//
+// Detailed license information governing the source code and
+// contributions can be found in the folder LICENSES and in
+// LICENSE and CONTRIBUTING.md at the top level directory.
+//
+// ------------------------------------------------------
 
 #include <aspect/material_model/simple_compressible.h>
 #include <aspect/adiabatic_conditions/interface.h>
@@ -81,23 +75,23 @@ namespace aspect
           prm.declare_entry ("Reference density", "3300.",
                              Patterns::Double (0.),
                              "Reference density $\\rho_0$. "
-                             "Units: $\\frac{\\text{kg}}{\\text{m}^3}$.");
+                             "Units: \\si{\\kilogram\\per\\meter\\cubed}.");
           prm.declare_entry ("Thermal conductivity", "4.7",
                              Patterns::Double (0.),
                              "The value of the thermal conductivity $k$. "
-                             "Units: $\\frac{\\text{W}}{\\text{m}\\text{K}}$.");
+                             "Units: \\si{\\watt\\per\\meter\\per\\kelvin}.");
           prm.declare_entry ("Reference specific heat", "1250.",
                              Patterns::Double (0.),
                              "The value of the specific heat $C_p$. "
-                             "Units: $\\frac{\\text{J}}{\\text{K}\\text{kg}}$.");
+                             "Units: \\si{\\joule\\per\\kelvin\\per\\kilogram}.");
           prm.declare_entry ("Thermal expansion coefficient", "2e-5",
                              Patterns::Double (0.),
                              "The value of the thermal expansion coefficient $\\alpha$. "
-                             "Units: $\\frac{1}{\\text{K}}$.");
+                             "Units: \\si{\\per\\kelvin}.");
           prm.declare_entry ("Reference compressibility", "4e-12",
                              Patterns::Double (0.),
                              "The value of the reference compressibility. "
-                             "Units: $\\frac{1}{\\text{Pa}}$.");
+                             "Units: \\si{\\per\\pascal}.");
 
           Rheology::ConstantViscosity::declare_parameters(prm);
         }

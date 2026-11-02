@@ -4,7 +4,7 @@
 Number of active cells: 768 (on 4 levels)
 Number of degrees of freedom: 10,656 (6,528+864+3,264)
 
-*** Timestep 4:  t=2.7754e+07 years, dt=6.97728e+06 years
+*** Timestep 4:  t=2.7754e+07 years, dt=6.97727e+06 years
    Solving temperature system... 8 iterations.
    Solving Stokes system (GMG)... 13+0 iterations.
 
@@ -13,7 +13,7 @@ Number of degrees of freedom: 10,656 (6,528+864+3,264)
      Temperature min/avg/max:  1599 K, 1600 K, 1601 K
      RMS, max velocity:        0.0103 m/year, 0.0241 m/year
 
-*** Timestep 5:  t=3e+07 years, dt=2.24597e+06 years
+*** Timestep 5:  t=3e+07 years, dt=2.24598e+06 years
    Solving temperature system... 5 iterations.
    Solving Stokes system (GMG)... 12+0 iterations.
 

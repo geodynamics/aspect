@@ -90,7 +90,7 @@ Number of degrees of freedom: 948 (578+81+289)
      Temperature min/avg/max: 0.1706 K, 0.2969 K, 0.4524 K
      RMS, max velocity:       0.231 m/s, 0.378 m/s
 
-Skipping mesh refinement, because the mesh did not change.
+Skipping mesh refinement, because no cells were flagged for refinement/coarsening.
 
 *** Timestep 11:  t=0.177317 seconds, dt=0.0164806 seconds
    Solving temperature system... 20 iterations.
@@ -172,7 +172,7 @@ Skipping mesh refinement, because the mesh did not change.
      Temperature min/avg/max: 0.2558 K, 0.2966 K, 0.3393 K
      RMS, max velocity:       0.0807 m/s, 0.129 m/s
 
-Skipping mesh refinement, because the mesh did not change.
+Skipping mesh refinement, because no cells were flagged for refinement/coarsening.
 
 *** Timestep 21:  t=0.343296 seconds, dt=0.0166573 seconds
    Solving temperature system... 19 iterations.
@@ -254,7 +254,7 @@ Skipping mesh refinement, because the mesh did not change.
      Temperature min/avg/max: 0.2836 K, 0.2966 K, 0.3097 K
      RMS, max velocity:       0.0277 m/s, 0.0441 m/s
 
-Skipping mesh refinement, because the mesh did not change.
+Skipping mesh refinement, because no cells were flagged for refinement/coarsening.
 
 *** Timestep 31:  t=0.51017 seconds, dt=0.0167036 seconds
    Solving temperature system... 17 iterations.
@@ -336,7 +336,7 @@ Skipping mesh refinement, because the mesh did not change.
      Temperature min/avg/max: 0.2924 K, 0.2966 K, 0.3008 K
      RMS, max velocity:       0.00946 m/s, 0.0151 m/s
 
-Skipping mesh refinement, because the mesh did not change.
+Skipping mesh refinement, because no cells were flagged for refinement/coarsening.
 
 *** Timestep 41:  t=0.677295 seconds, dt=0.0167175 seconds
    Solving temperature system... 16 iterations.
@@ -418,7 +418,7 @@ Skipping mesh refinement, because the mesh did not change.
      Temperature min/avg/max: 0.2952 K, 0.2966 K, 0.298 K
      RMS, max velocity:       0.00323 m/s, 0.00514 m/s
 
-Skipping mesh refinement, because the mesh did not change.
+Skipping mesh refinement, because no cells were flagged for refinement/coarsening.
 
 *** Timestep 51:  t=0.844498 seconds, dt=0.0167219 seconds
    Solving temperature system... 15 iterations.
@@ -500,7 +500,7 @@ Skipping mesh refinement, because the mesh did not change.
      Temperature min/avg/max: 0.2961 K, 0.2966 K, 0.2971 K
      RMS, max velocity:       0.0011 m/s, 0.00175 m/s
 
-Skipping mesh refinement, because the mesh did not change.
+Skipping mesh refinement, because no cells were flagged for refinement/coarsening.
 
 *** Timestep 61:  t=1.01173 seconds, dt=0.0167233 seconds
    Solving temperature system... 14 iterations.
@@ -582,7 +582,7 @@ Skipping mesh refinement, because the mesh did not change.
      Temperature min/avg/max: 0.2964 K, 0.2966 K, 0.2968 K
      RMS, max velocity:       0.000376 m/s, 0.000599 m/s
 
-Skipping mesh refinement, because the mesh did not change.
+Skipping mesh refinement, because no cells were flagged for refinement/coarsening.
 
 *** Timestep 71:  t=1.17896 seconds, dt=0.0167238 seconds
    Solving temperature system... 13 iterations.
@@ -664,7 +664,7 @@ Skipping mesh refinement, because the mesh did not change.
      Temperature min/avg/max: 0.2965 K, 0.2966 K, 0.2967 K
      RMS, max velocity:       0.000128 m/s, 0.000204 m/s
 
-Skipping mesh refinement, because the mesh did not change.
+Skipping mesh refinement, because no cells were flagged for refinement/coarsening.
 
 *** Timestep 81:  t=1.3462 seconds, dt=0.016724 seconds
    Solving temperature system... 12 iterations.
@@ -746,7 +746,7 @@ Skipping mesh refinement, because the mesh did not change.
      Temperature min/avg/max: 0.2966 K, 0.2966 K, 0.2966 K
      RMS, max velocity:       4.37e-05 m/s, 6.97e-05 m/s
 
-Skipping mesh refinement, because the mesh did not change.
+Skipping mesh refinement, because no cells were flagged for refinement/coarsening.
 
 *** Timestep 91:  t=1.51344 seconds, dt=0.016724 seconds
    Solving temperature system... 11 iterations.
@@ -828,7 +828,7 @@ Skipping mesh refinement, because the mesh did not change.
      Temperature min/avg/max: 0.2966 K, 0.2966 K, 0.2966 K
      RMS, max velocity:       1.49e-05 m/s, 2.38e-05 m/s
 
-Skipping mesh refinement, because the mesh did not change.
+Skipping mesh refinement, because no cells were flagged for refinement/coarsening.
 
 
 
@@ -913,7 +913,7 @@ Skipping mesh refinement, because the mesh did not change.
      Temperature min/avg/max: 0.2966 K, 0.2966 K, 0.2966 K
      RMS, max velocity:       5.09e-06 m/s, 8.11e-06 m/s
 
-Skipping mesh refinement, because the mesh did not change.
+Skipping mesh refinement, because no cells were flagged for refinement/coarsening.
 
 *** Timestep 111:  t=1.84792 seconds, dt=0.0167241 seconds
    Solving temperature system... 9 iterations.
@@ -995,7 +995,7 @@ Skipping mesh refinement, because the mesh did not change.
      Temperature min/avg/max: 0.2966 K, 0.2966 K, 0.2966 K
      RMS, max velocity:       1.74e-06 m/s, 2.77e-06 m/s
 
-Skipping mesh refinement, because the mesh did not change.
+Skipping mesh refinement, because no cells were flagged for refinement/coarsening.
 
 *** Timestep 121:  t=2.01516 seconds, dt=0.0167241 seconds
    Solving temperature system... 8 iterations.

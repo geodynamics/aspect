@@ -1,25 +1,17 @@
 #!/usr/bin/perl
-######################################################################
+# ------------------------------------------------------
 #
-# Copyright (C) 2017 - 2026 by the authors of the ASPECT code.
+# SPDX-License-Identifier: GPL-2.0-or-later
 #
-#  This file is part of ASPECT.
+# SPDX-FileCopyrightText: Copyright (C) 2017-2026 by the ASPECT authors.
 #
-#  ASPECT is free software; you can redistribute it and/or modify
-#  it under the terms of the GNU General Public License as published by
-#  the Free Software Foundation; either version 2, or (at your option)
-#  any later version.
+# This file is part of ASPECT.
 #
-#  ASPECT is distributed in the hope that it will be useful,
-#  but WITHOUT ANY WARRANTY; without even the implied warranty of
-#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#  GNU General Public License for more details.
+# Detailed license information governing the source code and
+# contributions can be found in the folder LICENSES and in
+# LICENSE and CONTRIBUTING.md at the top level directory.
 #
-#  You should have received a copy of the GNU General Public License
-#  along with ASPECT; see the file LICENSE.  If not see
-#  <http://www.gnu.org/licenses/>.
-#
-######################################################################
+# ------------------------------------------------------
 
 
 # Remove insignificant volatile data from output files of tests
@@ -48,8 +40,8 @@ while (<$in>)
     s/\# Time =.*//;
     s/\# Date =.*//;
 
-    # replace current source directory by ASPECT_DIR
-    s/\Q$aspect_src_dir\E/ASPECT_DIR/g;
+    # replace current source directory by $ASPECT_SOURCE_DIR
+    s/\Q$aspect_src_dir\E/\$ASPECT_SOURCE_DIR/g;
 
     # Exceptions
     s/line <\d+> of file <.*\//file </;

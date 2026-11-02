@@ -1,0 +1,45 @@
+<?xml version="1.0" ?> 
+<!-- 
+# vtk DataFile Version 3.0
+#This file was generated 
+<VTKFile type="UnstructuredGrid" version="0.1" compressor="vtkZLibDataCompressor" byte_order="LittleEndian">
+<UnstructuredGrid>
+<FieldData>
+<DataArray type="Float32" Name="CYCLE" NumberOfTuples="1" format="ascii">0</DataArray>
+<DataArray type="Float32" Name="TIME" NumberOfTuples="1" format="ascii">0</DataArray>
+</FieldData>
+<Piece NumberOfPoints="11" NumberOfCells="11" >
+  <Points>
+    <DataArray type="Float32" NumberOfComponents="3" format="binary">
+AQAAAIQAAACEAAAAZgAAAA==eAGrezXH7n72SlsGIDh75ozd2TM+YPaHN412b+Zp2cHEZ82UBLO3bNpl95ehEMxOS3sGUg9mc8xut3u+ox3M9qlabac9YzWYvffxXTtnt41g9tkzPPYw9XI5LPZbPaaBxQGRGiwO
+    </DataArray>
+  </Points>
+
+  <Cells>
+    <DataArray type="Int32" Name="connectivity" format="binary">
+AQAAACwAAAAsAAAAIQAAAA==eAENw4kNACAMBKDzrbr/wEJCkjS7w+lyWx6vzw8DnAA4
+    </DataArray>
+    <DataArray type="Int32" Name="offsets" format="binary">
+AQAAACwAAAAsAAAAIQAAAA==eAENw4cNACAAA6C61///CgklSbXZHU6X2+P1+QEEpABD
+    </DataArray>
+    <DataArray type="UInt8" Name="types" format="binary">
+AQAAAAsAAAALAAAACwAAAA==eAFjZIQDAABNAAw=
+    </DataArray>
+  </Cells>
+  <PointData Scalars="scalars">
+    <DataArray type="Float32" Name="initial position" NumberOfComponents="3" format="binary">
+AQAAAIQAAACEAAAAZgAAAA==eAGrezXH7n72SlsGIDh75ozd2TM+YPaHN412b+Zp2cHEZ82UBLO3bNpl95ehEMxOS3sGUg9mc8xut3u+ox3M9qlabac9YzWYvffxXTtnt41g9tkzPPYw9XI5LPZbPaaBxQGRGiwO
+    </DataArray>
+    <DataArray type="Float32" Name="id" format="binary">
+AQAAACwAAAAsAAAAKQAAAA==eAFjYBBwZGBQAGIGEHZgYGiwB9JA8MCBgeEAEC8AYgcgbnAAAGxiBjM=
+    </DataArray>
+    <DataArray type="Float32" Name="function" format="binary">
+AQAAACwAAAAsAAAAFAAAAA==eAFjYGiwZ0DBDEAAEsMEAHrLA7w=
+    </DataArray>
+    <DataArray type="Float32" Name="initial C_1" format="binary">
+AQAAACwAAAAsAAAANAAAAA==eAE797/e/i8QhzfX2sdeq7NXKA22dZJntte9vdQ686WP2bJDPKYehpvsNoQVWgAA1VkTEQ==
+    </DataArray>
+  </PointData>
+ </Piece>
+ </UnstructuredGrid>
+</VTKFile>

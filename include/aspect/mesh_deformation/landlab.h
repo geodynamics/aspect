@@ -1,0 +1,145 @@
+// ------------------------------------------------------
+//
+// SPDX-License-Identifier: GPL-2.0-or-later
+//
+// SPDX-FileCopyrightText: Copyright (C) 2025-2026 by the ASPECT authors.
+//
+// This file is part of ASPECT.
+//
+// Detailed license information governing the source code and
+// contributions can be found in the folder LICENSES and in
+// LICENSE and CONTRIBUTING.md at the top level directory.
+//
+// ------------------------------------------------------
+
+
+#ifndef _aspect_mesh_deformation_landlab_h
+#define _aspect_mesh_deformation_landlab_h
+
+#include <aspect/mesh_deformation/interface.h>
+#include <aspect/mesh_deformation/parallel_unstructured_interface.h>
+#include <aspect/simulator_access.h>
+
+#include <aspect/python_helper.h>
+
+namespace aspect
+{
+  namespace MeshDeformation
+  {
+    /**
+     * A plugin based on the ParallelUnstructuredInterface that
+     * loads a Python script that runs Landlab. This class passes
+     * information to it via a specific set of functions that are
+     * explicitly called in the Python script.
+     *
+     * @ingroup MeshDeformation
+     */
+    template <int dim>
+    class Landlab : public ParallelUnstructuredInterface<dim>
+    {
+      public:
+        /**
+         * Initialize function, this creates the Python interpreter and
+         * and loads the Landlab Python module.
+         */
+        void initialize() override;
+
+        /**
+         * Update function. This sets the evaluation points and creates the
+         * communication data structures.
+         */
+        void update() override;
+
+        /**
+         * Provide values for compositional fields at the boundary.
+         */
+        virtual
+        double boundary_composition (const types::boundary_id boundary_indicator,
+                                     const Point<dim> &position,
+                                     const unsigned int compositional_field) const override;
+
+        /**
+         * Call into the Landlab Python module to compute the updated velocities
+         * at the evaluation points.
+         */
+        virtual
+        std::vector<Tensor<1,dim>>
+        compute_updated_velocities_at_points (const std::vector<std::vector<double>> &current_solution_at_points) const override;
+
+        /**
+         * Evaluate additional derived quantities to send to Landlab.
+         */
+        void
+        evaluate_derived_quantities_at_points (std::vector<std::vector<double>> &variable_data,
+                                               std::vector<std::string> &variable_names) const;
+
+        /**
+         * Compute the initial deformation by querying the Landlab Python module for the
+         * initial topography at the evaluation points, interpolating to support points, and
+         * creating corresponding constraints.
+         */
+        void
+        compute_initial_deformation_as_constraints(const Mapping<dim> &mapping,
+                                                   const DoFHandler<dim> &mesh_deformation_dof_handler,
+                                                   const types::boundary_id boundary_indicator,
+                                                   AffineConstraints<double> &constraints) const override;
+
+        /**
+         * Declare parameters.
+         */
+        static
+        void declare_parameters (ParameterHandler &prm);
+
+        /**
+         * Parse parameters.
+         */
+        void parse_parameters (ParameterHandler &prm) override;
+
+#if defined(ASPECT_WITH_LANDLAB)
+      private:
+        /**
+         * The number of MPI ranks are participating in the Landlab simulation.
+         * Currently this has to be 1.
+         */
+        unsigned int n_landlab_ranks;
+
+        /**
+         * The MPI communicator for the Landlab simulation.
+         */
+        MPI_Comm landlab_communicator;
+
+        /**
+         * Whether this rank is one of the ranks that runs the Landlab simulation.
+         */
+        bool this_rank_runs_landlab;
+
+        /**
+         * The path to the Landlab Python module.
+         */
+        std::string script_path;
+
+        /**
+         * The name of the Landlab Python module without the .py extension.
+         */
+        std::string script_module_name;
+
+        /**
+         * Whether the ASPECT geometry is spherical.
+         */
+        bool is_spherical;
+
+        /**
+         * This variable is read from the parameter file through a parameter called 'List of additional ASPECT quantities'.
+         */
+        std::vector<std::string> additional_named_quantities;
+
+        /**
+         * The Python module object.
+         */
+        PyObject *pModule;
+#endif
+    };
+  }
+}
+
+#endif

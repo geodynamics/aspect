@@ -1,22 +1,16 @@
-/*
-  Copyright (C) 2024 by the authors of the ASPECT code.
-
-  This file is part of ASPECT.
-
-  ASPECT is free software; you can redistribute it and/or modify
-  it under the terms of the GNU General Public License as published by
-  the Free Software Foundation; either version 2, or (at your option)
-  any later version.
-
-  ASPECT is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  GNU General Public License for more details.
-
-  You should have received a copy of the GNU General Public License
-  along with ASPECT; see the file LICENSE.  If not see
-  <http://www.gnu.org/licenses/>.
-*/
+// ------------------------------------------------------
+//
+// SPDX-License-Identifier: GPL-2.0-or-later
+//
+// SPDX-FileCopyrightText: Copyright (C) 2024-2026 by the ASPECT authors.
+//
+// This file is part of ASPECT.
+//
+// Detailed license information governing the source code and
+// contributions can be found in the folder LICENSES and in
+// LICENSE and CONTRIBUTING.md at the top level directory.
+//
+// ------------------------------------------------------
 
 #ifndef _aspect_material_model_reaction_model_crust_and_lithosphere_formation_h
 #define _aspect_material_model_reaction_model_crust_and_lithosphere_formation_h
@@ -34,23 +28,23 @@ namespace aspect
     {
 
       /**
-      * A simplified model to calculate the change in composition upon melting
-      * of average mantle as it approaches the surface to produce a basaltic crust
-      * and a harzburgitic lithosphere. The model assumes that the crust is
-      * generated at a constant depth, and that the lithosphere is generated
-      * below the crust at a constant depth. The reaction producing crust and
-      * lithosphere only occurs in material that is upwelling, but does not take
-      * into account the temperature of the upwelling material.
-      *
-      * @ingroup ReactionModel
-      */
+       * A simplified model to calculate the change in composition upon melting
+       * of average mantle as it approaches the surface to produce a basaltic crust
+       * and a harzburgitic lithosphere. The model assumes that the crust is
+       * generated at a constant depth, and that the lithosphere is generated
+       * below the crust at a constant depth. The reaction producing crust and
+       * lithosphere only occurs in material that is upwelling, but does not take
+       * into account the temperature of the upwelling material.
+       *
+       * @ingroup ReactionModel
+       */
       template <int dim>
       class CrustLithosphereFormation : public ::aspect::SimulatorAccess<dim>
       {
         public:
           /**
-          * Declare the parameters this function takes through input files.
-          */
+           * Declare the parameters this function takes through input files.
+           */
           static
           void
           declare_parameters (ParameterHandler &prm);
@@ -79,9 +73,47 @@ namespace aspect
            * occurs. Crust is generated above the crustal_thickness, and lithosphere
            * is generated below the crustal_thickness and down to a depth that is the
            * sum of crustal_thickness and lithosphere_thickness.
+           *
+           * This variable is read from the parameter file through a parameter called 'Crustal thickness'.
            */
-          double crustal_thickness;
+          double crust_thickness;
+
+          /**
+           * This variable is read from the parameter file through a parameter called 'Lithosphere thickness'.
+           */
           double lithosphere_thickness;
+
+          /**
+           * The minimum upwelling angle required for a particle to be converted into crust.
+           *
+           * This variable is read from the parameter file through parameters called 'Minimum upwelling angle for crust formation'
+           */
+          double minimum_upwelling_angle_for_crust;
+
+          /**
+           * The minimum upwelling angle required for a particle to be converted into lithosphere.
+           *
+           * This variable is read from the parameter file through parameters called 'Minimum upwelling angle for lithosphere formation'.
+           */
+
+          double minimum_upwelling_angle_for_lithosphere;
+
+          /**
+           * An enum describing the different options to compute the harzburgite profile
+           * within the lithosphere.
+           *
+           * The selection is made from the parameter file through a parameter called 'Harzburgite profile in lithosphere'.
+           */
+          enum HarzburgiteProfile
+          {
+            linear,
+            constant
+          };
+
+          /**
+           * Selected option to compute the reference profile for composition.
+           */
+          HarzburgiteProfile harzburgite_profile;
 
           /**
            * The indices of the compositional fields that store the basalt and

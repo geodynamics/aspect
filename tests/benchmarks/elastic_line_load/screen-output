@@ -1,0 +1,29 @@
+
+Loading shared library <./libelastic_line_load.debug.so>
+
+Number of active cells: 450 (on 1 levels)
+Number of degrees of freedom: 30,469 (3,782+496+1,891+4,050+4,050+4,050+4,050+4,050+4,050)
+
+*** Timestep 0:  t=0 years, dt=0 years
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+   Solving Stokes system (GMG)... 233+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 2.21012e-16, 0, 0, 0, 0, 0, 0, 1
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 1
+
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+   Solving Stokes system (GMG)... 9+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 2.21012e-16, 0, 0, 0, 0, 0, 0, 9.94497e-13
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 9.94497e-13
+
+
+   Postprocessing:
+     Average density / Average viscosity / Total mass:  2680 kg/m^3, 3.156e+22 Pa s, 4.825e+14 kg
+     Compositions min/max/mass:                         0/0/0 // 0/0/0 // 0/0/0 // 0/0/0 // 0/0/0 // 0/0/0
+     Writing graphical output:                          output-elastic_line_load/solution/solution-00000
+
+Termination requested by criterion: end time
+
+
+

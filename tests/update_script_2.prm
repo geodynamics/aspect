@@ -35,7 +35,7 @@ subsection Boundary composition model
 end
 
 subsection Initial composition model
-  set Model name = function
+  set List of model names = function
 end
 
 subsection Boundary temperature model
@@ -67,7 +67,7 @@ end
 
 
 subsection Initial temperature model
-  set Model name = harmonic perturbation
+  set List of model names = harmonic perturbation
   subsection Harmonic perturbation
     set Magnitude = 200.0
   end

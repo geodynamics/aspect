@@ -1,22 +1,16 @@
-/*
-  Copyright (C) 2015 - 2024 by the authors of the ASPECT code.
-
- This file is part of ASPECT.
-
- ASPECT is free software; you can redistribute it and/or modify
- it under the terms of the GNU General Public License as published by
- the Free Software Foundation; either version 2, or (at your option)
- any later version.
-
- ASPECT is distributed in the hope that it will be useful,
- but WITHOUT ANY WARRANTY; without even the implied warranty of
- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- GNU General Public License for more details.
-
- You should have received a copy of the GNU General Public License
- along with ASPECT; see the file LICENSE.  If not see
- <http://www.gnu.org/licenses/>.
- */
+// ------------------------------------------------------
+//
+// SPDX-License-Identifier: GPL-2.0-or-later
+//
+// SPDX-FileCopyrightText: Copyright (C) 2015-2026 by the ASPECT authors.
+//
+// This file is part of ASPECT.
+//
+// Detailed license information governing the source code and
+// contributions can be found in the folder LICENSES and in
+// LICENSE and CONTRIBUTING.md at the top level directory.
+//
+// ------------------------------------------------------
 
 #include <aspect/particle/generator/interface.h>
 
@@ -37,6 +31,35 @@ namespace aspect
       {
         const unsigned int my_rank = Utilities::MPI::this_mpi_process(this->get_mpi_communicator());
         random_number_generator.seed(5432+my_rank);
+      }
+
+
+
+      template <int dim>
+      void
+      Interface<dim>::update ()
+      {
+        // Give the random number generator a deterministic state at
+        // the beginning of each time step so that we don't have to serialize
+        // it. This is relevant because the random number generator is used
+        // to generate new particles and so might be used different numbers
+        // of times on different processes, which would lead to different
+        // states of the random number generator on different MPI ranks.
+        // We could serialize the random number generators from all processes,
+        // but this would require (i) a global MPI operation, and (ii) we
+        // wouldn't quite know what to do if we restart with a different
+        // number of MPI processes than we had when we created the checkpoint.
+        // The work-around to both issues is to set the state of the random
+        // number generator to a deterministic value at the beginning of
+        // each time step.
+        //
+        // We exclude the first time step because the random number generator
+        // is already initialized in the initialize() function, and we don't
+        // want to overwrite that initialization.
+        if (this->get_timestep_number() > 0)
+          random_number_generator.seed(this->get_timestep_number() * 1000000  +
+                                       this->get_particle_manager_index() * 100000 +
+                                       Utilities::MPI::this_mpi_process(this->get_mpi_communicator()));
       }
 
 

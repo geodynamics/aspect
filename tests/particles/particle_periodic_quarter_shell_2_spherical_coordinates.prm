@@ -1,0 +1,13 @@
+# This test is identical to particle_periodic_quarter_shell_2.prm
+# but with spherical coordinates.
+
+include $ASPECT_SOURCE_DIR/tests/particles/particle_periodic_quarter_shell_2.prm
+
+subsection Prescribed Stokes solution
+  set Coordinate system = spherical
+  set Model name = function
+
+  subsection Velocity function
+    set Function expression = -y * sqrt(x*x+y*y); x * sqrt(x*x+y*y)
+  end
+end

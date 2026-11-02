@@ -1,22 +1,16 @@
-/*
-  Copyright (C) 2017 - 2024 by the authors of the ASPECT code.
-
-  This file is part of ASPECT.
-
-  ASPECT is free software; you can redistribute it and/or modify
-  it under the terms of the GNU General Public License as published by
-  the Free Software Foundation; either version 2, or (at your option)
-  any later version.
-
-  ASPECT is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  GNU General Public License for more details.
-
-  You should have received a copy of the GNU General Public License
-  along with ASPECT; see the file LICENSE.  If not see
-  <http://www.gnu.org/licenses/>.
-*/
+// ------------------------------------------------------
+//
+// SPDX-License-Identifier: GPL-2.0-or-later
+//
+// SPDX-FileCopyrightText: Copyright (C) 2017-2026 by the ASPECT authors.
+//
+// This file is part of ASPECT.
+//
+// Detailed license information governing the source code and
+// contributions can be found in the folder LICENSES and in
+// LICENSE and CONTRIBUTING.md at the top level directory.
+//
+// ------------------------------------------------------
 
 #ifndef _aspect_simulator_assemblers_interface_h
 #define _aspect_simulator_assemblers_interface_h
@@ -109,7 +103,6 @@ namespace aspect
           void reinit (const typename DoFHandler<dim>::active_cell_iterator &cell_ref);
 
           std::vector<types::global_dof_index> local_dof_indices;
-          std::vector<unsigned int>            dof_component_indices;
           std::vector<SymmetricTensor<2,dim>> grads_phi_u;
           std::vector<double>                  div_phi_u;
           std::vector<double>                  phi_p;
@@ -379,8 +372,7 @@ namespace aspect
            * local_dof_indices declared above in the same class as this function
            */
           void extract_stokes_dof_indices(const std::vector<types::global_dof_index> &all_dof_indices,
-                                          const Introspection<dim>                   &introspection,
-                                          const FiniteElement<dim>                   &finite_element);
+                                          const Introspection<dim>                   &introspection);
         };
 
         /**

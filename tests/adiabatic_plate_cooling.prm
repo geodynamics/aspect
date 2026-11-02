@@ -21,7 +21,7 @@ subsection Geometry model
 end
 
 subsection Initial temperature model
-  set Model name = adiabatic
+  set List of model names = adiabatic
 
   subsection Adiabatic
     set Top boundary layer age model = ascii data

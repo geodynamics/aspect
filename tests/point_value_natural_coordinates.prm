@@ -38,7 +38,7 @@ subsection Geometry model
 end
 
 subsection Initial temperature model
-  set Model name = function
+  set List of model names = function
 
   subsection Function
     set Function expression = if((sqrt((x-3e6)^2+(y-2e6)^2)<1e6) , 800.0, 0)

@@ -1,22 +1,16 @@
-/*
-  Copyright (C) 2011 - 2024 by the authors of the ASPECT code.
-
-  This file is part of ASPECT.
-
-  ASPECT is free software; you can redistribute it and/or modify
-  it under the terms of the GNU General Public License as published by
-  the Free Software Foundation; either version 2, or (at your option)
-  any later version.
-
-  ASPECT is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  GNU General Public License for more details.
-
-  You should have received a copy of the GNU General Public License
-  along with ASPECT; see the file LICENSE.  If not see
-  <http://www.gnu.org/licenses/>.
-*/
+// ------------------------------------------------------
+//
+// SPDX-License-Identifier: GPL-2.0-or-later
+//
+// SPDX-FileCopyrightText: Copyright (C) 2011-2026 by the ASPECT authors.
+//
+// This file is part of ASPECT.
+//
+// Detailed license information governing the source code and
+// contributions can be found in the folder LICENSES and in
+// LICENSE and CONTRIBUTING.md at the top level directory.
+//
+// ------------------------------------------------------
 
 
 #include <aspect/global.h>
@@ -28,6 +22,8 @@
 
 #include <boost/property_tree/xml_parser.hpp>
 #include <boost/property_tree/ptree.hpp>
+
+#include <regex>
 
 
 namespace aspect
@@ -582,12 +578,31 @@ namespace aspect
     std::string
     GPlates<dim>::create_filename (const unsigned int timestep) const
     {
-      std::string templ = data_directory+velocity_file_name;
-      const int size = templ.length();
-      std::vector<char> buffer(size+10);
-      std::snprintf (buffer.data(), size + 10, templ.c_str(), timestep);
-      std::string str_filename (buffer.data());
-      return str_filename;
+      // We allow regexes of the form '%[dui]' as well as '%0N[dui]' where
+      // in the latter case, the number N is used to pad the timestep with
+      // leading zeros. Start with the first form:
+      std::string text = std::regex_replace(velocity_file_name, std::regex("%[dui]"),
+                                            std::to_string(timestep));
+
+      // The second form is a bit more complicated, as we need to extract the number of zeros to pad with:
+      const std::regex regex("%0(\\d+)[dui]");
+      std::smatch match;
+      while (std::regex_search(text, match, regex))
+        {
+          std::string padded_timestep = Utilities::to_string(timestep);
+
+          const unsigned int n_zeros = std::stoi(match[1].str());
+          while (padded_timestep.length() < n_zeros)
+            padded_timestep.insert(/*position=*/0, /*count=*/1, '0');
+
+          // Replace the matched substring with the padded timestep.
+          // In fact, this will replace all occurrences of the regex
+          // in the string (not just the one found in 'match'), which
+          // is what we want.
+          text = std::regex_replace(text, regex, padded_timestep);
+        }
+
+      return (data_directory + text);
     }
 
 
@@ -761,8 +776,9 @@ namespace aspect
           prm.declare_entry ("Velocity file name", "phi.%d",
                              Patterns::Anything (),
                              "The file name of the material data. Provide file in format: "
-                             "(Velocity file name).\\%d.gpml where \\%d is any sprintf integer "
-                             "qualifier, specifying the format of the current file number.");
+                             "some_file_name.\\%d.gpml where \\%d will be replaced by the "
+                             "current file number. (Only \\%d is allowed here, not any of the "
+                             "other printf-style format specifiers.)");
           prm.declare_entry ("First data file model time", "0.",
                              Patterns::Double (0.),
                              "Time from which on the velocity file with number 'First velocity "

@@ -63,7 +63,7 @@ for name in names:
   # Read in the time and the minimum xx and yy components of the viscoelastic stress,
   # which are stored on the fields ve_stress_xx and ve_stress_yy.
   # The correct columns are selected with usecols.
-  time,stress_xx_min = np.genfromtxt(path, comments='#', usecols=(1,15), unpack=True)
+  time,stress_xx_min = np.genfromtxt(path, comments='#', usecols=(1,18), unpack=True)
 
   # Plot the stress elements in MPa against time in ky in
   # categorical batlow colors.

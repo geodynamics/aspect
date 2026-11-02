@@ -1,22 +1,16 @@
-/*
-  Copyright (C) 2019 - 2024 by the authors of the ASPECT code.
-
-  This file is part of ASPECT.
-
-  ASPECT is free software; you can redistribute it and/or modify
-  it under the terms of the GNU General Public License as published by
-  the Free Software Foundation; either version 2, or (at your option)
-  any later version.
-
-  ASPECT is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  GNU General Public License for more details.
-
-  You should have received a copy of the GNU General Public License
-  along with ASPECT; see the file LICENSE.  If not see
-  <http://www.gnu.org/licenses/>.
-*/
+// ------------------------------------------------------
+//
+// SPDX-License-Identifier: GPL-2.0-or-later
+//
+// SPDX-FileCopyrightText: Copyright (C) 2019-2026 by the ASPECT authors.
+//
+// This file is part of ASPECT.
+//
+// Detailed license information governing the source code and
+// contributions can be found in the folder LICENSES and in
+// LICENSE and CONTRIBUTING.md at the top level directory.
+//
+// ------------------------------------------------------
 
 #ifndef _aspect_material_model_rheology_diffusion_creep_h
 #define _aspect_material_model_rheology_diffusion_creep_h
@@ -90,8 +84,8 @@ namespace aspect
            */
           const DiffusionCreepParameters
           compute_creep_parameters (const unsigned int composition,
-                                    const std::vector<double> &phase_function_values = std::vector<double>(),
-                                    const std::vector<unsigned int> &n_phase_transitions_per_composition = std::vector<unsigned int>()) const;
+                                    const std::vector<double> &phase_function_values = {},
+                                    const std::vector<unsigned int> &n_phase_transitions_per_composition = {}) const;
 
           /**
            * Compute the viscosity based on the diffusion creep law with
@@ -105,8 +99,8 @@ namespace aspect
           compute_viscosity (const double pressure,
                              const double temperature,
                              const unsigned int composition,
-                             const std::vector<double> &phase_function_values = std::vector<double>(),
-                             const std::vector<unsigned int> &n_phase_transitions_per_composition = std::vector<unsigned int>()) const;
+                             const std::vector<double> &phase_function_values = {},
+                             const std::vector<unsigned int> &n_phase_transitions_per_composition = {}) const;
 
           /**
            * Compute the viscosity based on the diffusion creep law for the given @p grain_size.
@@ -120,8 +114,8 @@ namespace aspect
                              const double temperature,
                              const double grain_size,
                              const unsigned int composition,
-                             const std::vector<double> &phase_function_values = std::vector<double>(),
-                             const std::vector<unsigned int> &n_phase_transitions_per_composition = std::vector<unsigned int>()) const;
+                             const std::vector<double> &phase_function_values = {},
+                             const std::vector<unsigned int> &n_phase_transitions_per_composition = {}) const;
 
           /**
            * Compute the strain rate and first stress derivative as a function
@@ -172,26 +166,32 @@ namespace aspect
 
           /**
            * List of diffusion creep prefactors A.
+           *
+           * This variable is read from the parameter file through a parameter called 'Prefactors for diffusion creep'.
            */
           std::vector<double> prefactors;
 
           /**
            * List of diffusion creep stress exponents n (usually = 1).
+           * This variable is read from the parameter file through a parameter called 'Stress exponents for diffusion creep'.
            */
           std::vector<double> stress_exponents;
 
           /**
            * List of diffusion creep grain size exponents m.
+           * This variable is read from the parameter file through a parameter called 'Grain size exponents for diffusion creep'.
            */
           std::vector<double> grain_size_exponents;
 
           /**
            * List of diffusion creep activation energies E.
+           * This variable is read from the parameter file through a parameter called 'Activation energies for diffusion creep'.
            */
           std::vector<double> activation_energies;
 
           /**
            * List of diffusion creep activation volumes V.
+           * This variable is read from the parameter file through a parameter called 'Activation volumes for diffusion creep'.
            */
           std::vector<double> activation_volumes;
 
@@ -199,6 +199,8 @@ namespace aspect
            * Diffusion creep grain size d.  This is read from the
            * input file, and is only used by the functions that do
            * not take the grain size as additional argument.
+           *
+           * This variable is read from the parameter file through a parameter called 'Grain size'.
            */
           double fixed_grain_size;
       };

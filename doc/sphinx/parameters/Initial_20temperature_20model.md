@@ -142,7 +142,7 @@ Make sure the top and bottom temperatures of the lithosphere agree with temperat
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
-**Documentation:** The age of the lower thermal boundary layer, used for the calculation of the half-space cooling model temperature. Units: years if the &rsquo;Use years instead of seconds&rsquo; parameter is set; seconds otherwise.
+**Documentation:** The age of the lower thermal boundary layer, used for the calculation of the half-space cooling model temperature. Units: \si{\year} if the &rsquo;Use years instead of seconds&rsquo; parameter is set; \si{\second} otherwise.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Age top boundary layer<parameters:Initial_20temperature_20model/Adiabatic/Age_20top_20boundary_20layer>`
@@ -151,7 +151,7 @@ Make sure the top and bottom temperatures of the lithosphere agree with temperat
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
-**Documentation:** The age of the upper thermal boundary layer, used for the calculation of the half-space cooling model temperature. Units: years if the &rsquo;Use years instead of seconds&rsquo; parameter is set; seconds otherwise.
+**Documentation:** The age of the upper thermal boundary layer, used for the calculation of the half-space cooling model temperature. Units: \si{\year} if the &rsquo;Use years instead of seconds&rsquo; parameter is set; \si{\second} otherwise.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Amplitude<parameters:Initial_20temperature_20model/Adiabatic/Amplitude>`
@@ -160,7 +160,7 @@ Make sure the top and bottom temperatures of the lithosphere agree with temperat
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
-**Documentation:** The amplitude (in K) of the initial spherical temperature perturbation at the bottom of the model domain. This perturbation will be added to the adiabatic temperature profile, but not to the bottom thermal boundary layer. Instead, the maximum of the perturbation and the bottom boundary layer temperature will be used.
+**Documentation:** The amplitude (in \si{\kelvin}) of the initial spherical temperature perturbation at the bottom of the model domain. This perturbation will be added to the adiabatic temperature profile, but not to the bottom thermal boundary layer. Instead, the maximum of the perturbation and the bottom boundary layer temperature will be used.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Cooling model<parameters:Initial_20temperature_20model/Adiabatic/Cooling_20model>`
@@ -214,7 +214,7 @@ Make sure the top and bottom temperatures of the lithosphere agree with temperat
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
-**Documentation:** The Radius (in m) of the initial spherical temperature perturbation at the bottom of the model domain.
+**Documentation:** The Radius (in \si{\meter}) of the initial spherical temperature perturbation at the bottom of the model domain.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Scale factor<parameters:Initial_20temperature_20model/Adiabatic/Scale_20factor>`
@@ -377,6 +377,53 @@ If the function you are describing represents a vector-valued function with mult
 **Documentation:** The value of the surface temperature. Units: $\text{K}$.
 ::::
 
+(parameters:Initial_20temperature_20model/Ascii_20data_20layered)=
+## **Subsection:** Initial temperature model / Ascii data layered
+::::{dropdown} __Parameter:__ {ref}`Data directory<parameters:Initial_20temperature_20model/Ascii_20data_20layered/Data_20directory>`
+:name: parameters:Initial_20temperature_20model/Ascii_20data_20layered/Data_20directory
+**Default value:** $ASPECT_SOURCE_DIR/data/initial-temperature/ascii-data/test/
+
+**Pattern:** [DirectoryName]
+
+**Documentation:** The name of a directory that contains the model data. This path may either be absolute (if starting with a &lsquo;/&rsquo;) or relative to the current directory. The path may also include the special text &lsquo;$ASPECT_SOURCE_DIR&rsquo; which will be interpreted as the path in which the ASPECT source files were located when ASPECT was compiled. This interpretation allows, for example, to reference files located in the &lsquo;data/&rsquo; subdirectory of ASPECT. A trailing slash at the end of the directory path is optional; the plugin will automatically append a &rsquo;/&rsquo; when the parameters are parsed if it is missing.
+::::
+
+::::{dropdown} __Parameter:__ {ref}`Data file name<parameters:Initial_20temperature_20model/Ascii_20data_20layered/Data_20file_20name>`
+:name: parameters:Initial_20temperature_20model/Ascii_20data_20layered/Data_20file_20name
+**Default value:** initial_isotherm_500K_box_3d.txt
+
+**Pattern:** [Anything]
+
+**Documentation:** The file name of the model data.
+::::
+
+::::{dropdown} __Parameter:__ {ref}`Data file names<parameters:Initial_20temperature_20model/Ascii_20data_20layered/Data_20file_20names>`
+:name: parameters:Initial_20temperature_20model/Ascii_20data_20layered/Data_20file_20names
+**Default value:** initial_isotherm_500K_box_3d.txt
+
+**Pattern:** [List of <[Anything]> of length 0...4294967295 (inclusive)]
+
+**Documentation:** The file names of the model data (comma separated).
+::::
+
+::::{dropdown} __Parameter:__ {ref}`Interpolation scheme<parameters:Initial_20temperature_20model/Ascii_20data_20layered/Interpolation_20scheme>`
+:name: parameters:Initial_20temperature_20model/Ascii_20data_20layered/Interpolation_20scheme
+**Default value:** linear
+
+**Pattern:** [Selection piecewise constant|linear ]
+
+**Documentation:** Method to interpolate between layer boundaries. Select from piecewise constant or linear. Piecewise constant takes the value from the nearest layer boundary above the data point. The linear option interpolates linearly between layer boundaries. Above and below the domain given by the layer boundaries, the values aregiven by the top and bottom layer boundary.
+::::
+
+::::{dropdown} __Parameter:__ {ref}`Scale factor<parameters:Initial_20temperature_20model/Ascii_20data_20layered/Scale_20factor>`
+:name: parameters:Initial_20temperature_20model/Ascii_20data_20layered/Scale_20factor
+**Default value:** 1.
+
+**Pattern:** [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
+
+**Documentation:** Scalar factor, which is applied to the model data. You might want to use this to scale the input to a reference model. Another way to use this factor is to convert units of the input files. For instance, if you provide velocities in cm/yr set this factor to 0.01.
+::::
+
 (parameters:Initial_20temperature_20model/Ascii_20data_20model)=
 ## **Subsection:** Initial temperature model / Ascii data model
 ::::{dropdown} __Parameter:__ {ref}`Data directory<parameters:Initial_20temperature_20model/Ascii_20data_20model/Data_20directory>`
@@ -390,20 +437,11 @@ If the function you are describing represents a vector-valued function with mult
 
 ::::{dropdown} __Parameter:__ {ref}`Data file name<parameters:Initial_20temperature_20model/Ascii_20data_20model/Data_20file_20name>`
 :name: parameters:Initial_20temperature_20model/Ascii_20data_20model/Data_20file_20name
-**Default value:** initial_isotherm_500K_box_3d.txt
+**Default value:** box_2d.txt
 
 **Pattern:** [Anything]
 
 **Documentation:** The file name of the model data.
-::::
-
-::::{dropdown} __Parameter:__ {ref}`Data file names<parameters:Initial_20temperature_20model/Ascii_20data_20model/Data_20file_20names>`
-:name: parameters:Initial_20temperature_20model/Ascii_20data_20model/Data_20file_20names
-**Default value:** initial_isotherm_500K_box_3d.txt
-
-**Pattern:** [List of <[Anything]> of length 0...4294967295 (inclusive)]
-
-**Documentation:** The file names of the model data (comma separated).
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`First point on slice<parameters:Initial_20temperature_20model/Ascii_20data_20model/First_20point_20on_20slice>`
@@ -413,15 +451,6 @@ If the function you are describing represents a vector-valued function with mult
 **Pattern:** [Anything]
 
 **Documentation:** Point that determines the plane in which the 2d slice lies in. This variable is only used if &rsquo;Slice dataset in 2d plane&rsquo; is true. The slice will go through this point, the point defined by the parameter &rsquo;Second point on slice&rsquo;, and the center of the model domain. After the rotation, this first point will lie along the (0,1,0) axis of the coordinate system. The coordinates of the point have to be given in Cartesian coordinates.
-::::
-
-::::{dropdown} __Parameter:__ {ref}`Interpolation scheme<parameters:Initial_20temperature_20model/Ascii_20data_20model/Interpolation_20scheme>`
-:name: parameters:Initial_20temperature_20model/Ascii_20data_20model/Interpolation_20scheme
-**Default value:** linear
-
-**Pattern:** [Selection piecewise constant|linear ]
-
-**Documentation:** Method to interpolate between layer boundaries. Select from piecewise constant or linear. Piecewise constant takes the value from the nearest layer boundary above the data point. The linear option interpolates linearly between layer boundaries. Above and below the domain given by the layer boundaries, the values aregiven by the top and bottom layer boundary.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Scale factor<parameters:Initial_20temperature_20model/Ascii_20data_20model/Scale_20factor>`
@@ -497,7 +526,7 @@ If the function you are describing represents a vector-valued function with mult
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
-**Documentation:** The value of the isotherm that is assumed at the Lithosphere-Asthenosphere boundary. Units: $\text{K}$.
+**Documentation:** The value of the isotherm that is assumed at the Lithosphere-Asthenosphere boundary. Units: \si{\kelvin}.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Surface temperature<parameters:Initial_20temperature_20model/Continental_20geotherm/Surface_20temperature>`
@@ -506,7 +535,7 @@ If the function you are describing represents a vector-valued function with mult
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
-**Documentation:** The value of the surface temperature. Units: $\text{K}$.
+**Documentation:** The value of the surface temperature. Units: \si{\kelvin}.
 ::::
 
 (parameters:Initial_20temperature_20model/Function)=
@@ -680,7 +709,7 @@ If the function you are describing represents a vector-valued function with mult
 
 **Pattern:** [DirectoryName]
 
-**Documentation:** The path to the LAB depth data file
+**Documentation:** The path to the LAB depth data file. The path may also include the special text &rsquo;$ASPECT_SOURCE_DIR&rsquo; which will be interpreted as the path in which the ASPECT source files were located when ASPECT was compiled. This interpretation allows, for example, to reference files located in the &rsquo;data/&rsquo; subdirectory of ASPECT.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Depth specification method<parameters:Initial_20temperature_20model/Lithosphere_20Mask/Depth_20specification_20method>`
@@ -716,7 +745,7 @@ If the function you are describing represents a vector-valued function with mult
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
-**Documentation:** Units: \si{\meter}.The maximum depth of the lithosphere. The model will be NaNs below this depth.
+**Documentation:** The maximum depth of the lithosphere. The model will be NaNs below this depth. Units: \si{\meter}.
 ::::
 
 (parameters:Initial_20temperature_20model/Patch_20on_20S40RTS)=
@@ -886,7 +915,7 @@ If the function you are describing represents a vector-valued function with mult
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
-**Documentation:** The value of the thermal expansion coefficient $\beta$. Units: $\frac{1}{\text{K}}$.
+**Documentation:** The value of the thermal expansion coefficient $\beta$. Units: \si{\per\kelvin}.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Use thermal expansion coefficient from material model<parameters:Initial_20temperature_20model/S40RTS_20perturbation/Use_20thermal_20expansion_20coefficient_20from_20material_20model>`
@@ -1025,7 +1054,7 @@ If the function you are describing represents a vector-valued function with mult
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
-**Documentation:** The value of the thermal expansion coefficient $\beta$. Units: $\frac{1}{\text{K}}$.
+**Documentation:** The value of the thermal expansion coefficient $\beta$. Units: \si{\per\kelvin}.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Use thermal expansion coefficient from material model<parameters:Initial_20temperature_20model/SAVANI_20perturbation/Use_20thermal_20expansion_20coefficient_20from_20material_20model>`

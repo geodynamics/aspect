@@ -1,0 +1,66 @@
+
+Number of active cells: 256 (on 5 levels)
+Number of degrees of freedom: 10,468 (2,178+289+1,089+2,304+2,304+2,304)
+
+*** Timestep 0:  t=0 seconds, dt=0 seconds
+   Skipping temperature solve because RHS is zero.
+   Solving advection_field system ... 0 iterations.
+   Solving Stokes system (GMG)... 12+0 iterations.
+
+Number of active cells: 349 (on 6 levels)
+Number of degrees of freedom: 14,423 (3,066+401+1,533+3,141+3,141+3,141)
+
+*** Timestep 0:  t=0 seconds, dt=0 seconds
+   Skipping temperature solve because RHS is zero.
+   Solving advection_field system ... 0 iterations.
+   Solving Stokes system (GMG)... 17+0 iterations.
+
+Number of active cells: 571 (on 7 levels)
+Number of degrees of freedom: 23,743 (5,112+658+2,556+5,139+5,139+5,139)
+
+*** Timestep 0:  t=0 seconds, dt=0 seconds
+   Skipping temperature solve because RHS is zero.
+   Advecting particles...  done.
+   Solving advection_field system ... 0 iterations.
+   Solving Stokes system (GMG)... 17+0 iterations.
+
+   Postprocessing:
+     RMS, max velocity:            0.000399 m/s, 0.000656 m/s
+     Compositions min/max/mass:    0/1/0.602 // 0/0/0 // 0/0/0
+     Number of advected particles: 5710
+
+Number of active cells: 571 (on 7 levels)
+Number of degrees of freedom: 23,743 (5,112+658+2,556+5,139+5,139+5,139)
+
+*** Timestep 1:  t=12.5333 seconds, dt=12.5333 seconds
+   Skipping temperature solve because RHS is zero.
+   Advecting particles...  done.
+   Solving advection_field system ... 6 iterations.
+   Solving Stokes system (GMG)... 16+0 iterations.
+
+   Postprocessing:
+     RMS, max velocity:            0.000265 m/s, 0.000435 m/s
+     Compositions min/max/mass:    -0.3062/1.234/0.602 // 0/0/0 // 0/0/0
+     Number of advected particles: 6163
+
+Number of active cells: 550 (on 7 levels)
+Number of degrees of freedom: 22,909 (4,948+637+2,474+4,950+4,950+4,950)
+
+*** Timestep 2:  t=30 seconds, dt=17.4667 seconds
+   Skipping temperature solve because RHS is zero.
+   Advecting particles...  done.
+   Solving advection_field system ... 4 iterations.
+   Solving Stokes system (GMG)... 17+0 iterations.
+
+   Postprocessing:
+     RMS, max velocity:            0.000174 m/s, 0.000286 m/s
+     Compositions min/max/mass:    -0.4488/1.353/0.602 // 0/0/0 // 0/0/0
+     Number of advected particles: 6478
+
+Number of active cells: 541 (on 7 levels)
+Number of degrees of freedom: 22,546 (4,874+628+2,437+4,869+4,869+4,869)
+
+Termination requested by criterion: end time
+
+
+

@@ -1,0 +1,21 @@
+# Test that we can create additional checkpoints at specified times and using the
+# time step frequency and restart from a checkpoint specified by an ID.
+
+##################################################################
+include $ASPECT_SOURCE_DIR/tests/diffusion.prm
+
+set Dimension = 2
+
+set End time                               = 8e7
+
+set Resume computation                     = false
+
+set Start time                             = 0
+
+
+subsection Checkpointing
+  set Time between checkpoint                = 0
+  set Steps between checkpoint               = 6
+  set Additional checkpoint times            = 1.5e7, 2.7e7
+  set Resume checkpoint                      = 5
+end

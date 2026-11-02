@@ -1,22 +1,16 @@
-/*
-  Copyright (C) 2025 - by the authors of the ASPECT code.
-
-  This file is part of ASPECT.
-
-  ASPECT is free software; you can redistribute it and/or modify
-  it under the terms of the GNU General Public License as published by
-  the Free Software Foundation; either version 2, or (at your option)
-  any later version.
-
-  ASPECT is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  GNU General Public License for more details.
-
-  You should have received a copy of the GNU General Public License
-  along with ASPECT; see the file LICENSE.  If not see
-  <http://www.gnu.org/licenses/>.
-*/
+// ------------------------------------------------------
+//
+// SPDX-License-Identifier: GPL-2.0-or-later
+//
+// SPDX-FileCopyrightText: Copyright (C) 2025-2026 by the ASPECT authors.
+//
+// This file is part of ASPECT.
+//
+// Detailed license information governing the source code and
+// contributions can be found in the folder LICENSES and in
+// LICENSE and CONTRIBUTING.md at the top level directory.
+//
+// ------------------------------------------------------
 
 
 #ifndef _aspect_boundary_convective_heating_interface_h
@@ -220,12 +214,16 @@ namespace aspect
         std::set<types::boundary_id> convective_heating_boundary_indicators;
 
         /**
-        * Names of temperature plugins.
-        */
+         * Names of temperature plugins.
+         *
+         * This variable is read from the parameter file through a parameter called 'List of boundary temperature model names'.
+         */
         std::vector<std::string> temperature_plugin_names;
 
         /**
          * Names of heat flux plugins.
+         *
+         * This variable is read from the parameter file through a parameter called 'List of boundary heat flux model names'.
          */
         std::vector<std::string> heat_flux_plugin_names;
 
@@ -242,12 +240,12 @@ namespace aspect
 
 
     /**
-    * Given a class name, a name, and a description for the parameter file
-    * for a boundary convective heating model, register it with the functions that
-    * can declare their parameters and create these objects.
-    *
-    * @ingroup BoundaryConvectiveHeating
-    */
+     * Given a class name, a name, and a description for the parameter file
+     * for a boundary convective heating model, register it with the functions that
+     * can declare their parameters and create these objects.
+     *
+     * @ingroup BoundaryConvectiveHeating
+     */
 #define ASPECT_REGISTER_BOUNDARY_CONVECTIVE_HEATING_MODEL(classname, name, description) \
   template class classname<2>; \
   template class classname<3>; \

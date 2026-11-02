@@ -5,7 +5,7 @@ feature:cartesian
 feature:community-benchmark
 ```
 
-(sec:benchmarks:sinking_block)=`
+(sec:benchmarks:sinking_block)=
 # The sinking block benchmark
 
 This benchmark is based on the benchmark presented in {cite:t}`gerya:2010` and

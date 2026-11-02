@@ -5,6 +5,7 @@
 <VTKFile type="UnstructuredGrid" version="0.1" compressor="vtkZLibDataCompressor" byte_order="LittleEndian">
 <UnstructuredGrid>
 <FieldData>
+<DataArray type="Float32" Name="CYCLE" NumberOfTuples="1" format="ascii">0</DataArray>
 <DataArray type="Float32" Name="TIME" NumberOfTuples="1" format="ascii">0</DataArray>
 </FieldData>
 <Piece NumberOfPoints="40" NumberOfCells="10" >
@@ -27,10 +28,10 @@ AQAAAAoAAAAKAAAACwAAAA==eAHj5IQBAAH5AFs=
   </Cells>
   <PointData Scalars="scalars">
     <DataArray type="Float32" Name="velocity" NumberOfComponents="3" format="binary" units="m/year">
-AQAAAOABAADgAQAApgAAAA==eAHTvtG/N1T1py0DEDAtvK4HxOtA7J8RhrY7uWfuBrHj2WP3xgExiI2sBqRPG6gfXc0BoD6QfpA4sjlTPx3eY3lACaze9baa7Trp/WB2cHf17gue28BsZDXI9iKrudsQuxeEQebjMgckhw3gMgebWpAYshssgG6fBvQDSBzZDSC3hwP9ABJHVoMcDshq1gP97Qb0Pz5zQHLYAC5zsKkFiQEAZe2GaQ==
+AQAAAOABAADgAQAAngAAAA==eAHTuNG/11/1py0DEAiKMmgC8UoQWyTS0PYd18zdILYLe+xeEAaxkdWA9GkA9aOrAekD6QeJI5uz4tPhPc4HlMDqA2+r2a6W3g9mL+uu3n3RcxuYjawG2V5kNXcaYveCMMh8XOaA5LABXOZgUwsSQ3YDyO0g94HEkd0AcjvIXJA4shrkcEBWA/I3yN34zAHJYQO4zMGmFiQGAJWVgG0=
     </DataArray>
     <DataArray type="Float32" Name="p" format="binary" units="Pa">
-AQAAAKAAAACgAAAAYAAAAA==eAE7xcB+5skv1bM+AiqBubIqgSD2KaAYiA0SA+E7YiqBJ74UBPJYFYLZIDkQuzekEC5+Wn1+YGn2fLg4iP2ufT7YTJB+kFqYfpCZIDbITJg4SC1MP0gcxAaZCQAyEz5F
+AQAAAKAAAACgAAAAYAAAAA==eAE7ycB+5tkv1bM+AiqBubIqgSD2SaAYiA0SA+E7YiqBJ74UBPJYFYLZIDkQuzekEC5+Wn1+YGn2fLg4iP2ufT7YTJB+kFqYfpCZIDbITJg4SC1MP0gcxAaZCQAzPz5H
     </DataArray>
     <DataArray type="Float32" Name="T" format="binary" units="K">
 AQAAAKAAAACgAAAAVQAAAA==eAFjcCh2YQDhD8quDAskXcFsEB/EBokBse1SGVeGhnDXd+xBEDZQDsRmOOIPF2foaHUFYbg4lA8yB6wfqBauH2gmWB3QTJAZYDayfpA4lA8AcUEzAQ==

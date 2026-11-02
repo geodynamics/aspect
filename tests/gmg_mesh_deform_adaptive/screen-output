@@ -272,7 +272,7 @@ Number of mesh deformation degrees of freedom: 3,902
    Postprocessing:
      Topography min/max: -300 m, 300 m
 
-Skipping mesh refinement, because the mesh did not change.
+Skipping mesh refinement, because no cells were flagged for refinement/coarsening.
 
 *** Timestep 31:  t=310000 years, dt=10000 years
    Solving mesh displacement system... 4 iterations.
@@ -314,7 +314,7 @@ Skipping mesh refinement, because the mesh did not change.
    Postprocessing:
      Topography min/max: -350 m, 350 m
 
-Skipping mesh refinement, because the mesh did not change.
+Skipping mesh refinement, because no cells were flagged for refinement/coarsening.
 
 *** Timestep 36:  t=360000 years, dt=10000 years
    Solving mesh displacement system... 4 iterations.
@@ -356,7 +356,7 @@ Skipping mesh refinement, because the mesh did not change.
    Postprocessing:
      Topography min/max: -400 m, 400 m
 
-Skipping mesh refinement, because the mesh did not change.
+Skipping mesh refinement, because no cells were flagged for refinement/coarsening.
 
 *** Timestep 41:  t=410000 years, dt=10000 years
    Solving mesh displacement system... 4 iterations.
@@ -398,7 +398,7 @@ Skipping mesh refinement, because the mesh did not change.
    Postprocessing:
      Topography min/max: -450 m, 450 m
 
-Skipping mesh refinement, because the mesh did not change.
+Skipping mesh refinement, because no cells were flagged for refinement/coarsening.
 
 *** Timestep 46:  t=460000 years, dt=10000 years
    Solving mesh displacement system... 4 iterations.
@@ -440,7 +440,7 @@ Skipping mesh refinement, because the mesh did not change.
    Postprocessing:
      Topography min/max: -500 m, 500 m
 
-Skipping mesh refinement, because the mesh did not change.
+Skipping mesh refinement, because no cells were flagged for refinement/coarsening.
 
 Termination requested by criterion: end time
 

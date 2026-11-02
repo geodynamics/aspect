@@ -55,7 +55,7 @@ end
 # matches the boundary conditions defined below plus
 # a small perturbation:
 subsection Initial temperature model
-  set Model name = function
+  set List of model names = function
 
   subsection Function
     set Variable names      = x,z
@@ -64,7 +64,7 @@ subsection Initial temperature model
 end
 
 subsection Initial composition model
-  set Model name = function
+  set List of model names = function
 
   subsection Function
     set Variable names      = x,z
@@ -136,5 +136,9 @@ subsection Postprocess
     set Output format = gnuplot
     set Time between graphical output = 0.01
     set List of output variables = melt fraction
+
+    subsection Melt fraction
+      set List of melting compositions other than peridotite = pyroxenite
+    end
   end
 end

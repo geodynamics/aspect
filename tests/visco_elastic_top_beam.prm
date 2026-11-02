@@ -56,7 +56,7 @@ subsection Discretization
 
   subsection Stabilization parameters
     set Use limiter for discontinuous composition solution = false, false, false, false, false, false, true
-    set Global composition maximum =  1.e11,  1.e11,  1.e11, 1.e11,  1.e11,  1.e11, 1.0
+    set Global composition maximum =  1.e11,  1.e11,  1.e11,  1.e11,  1.e11,  1.e11, 1.0
     set Global composition minimum = -1.e11, -1.e11, -1.e11, -1.e11, -1.e11, -1.e11, 0.0
   end
 end
@@ -81,11 +81,10 @@ end
 
 # Spatial domain of different compositional fields
 subsection Initial composition model
-  set Model name = function
+  set List of model names = function
 
   subsection Function
     set Variable names      = x,y
-    set Function constants  =
     set Function expression = 0; 0; 0; 0; 0; 0; if (x>=3.5e3 && x<=4.0e3 && y>=3.0e3, 1, 0)
   end
 end
@@ -111,7 +110,7 @@ end
 
 # Temperature initial conditions
 subsection Initial temperature model
-  set Model name = function
+  set List of model names = function
 
   subsection Function
     set Function expression = 293

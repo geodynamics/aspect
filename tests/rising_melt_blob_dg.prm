@@ -1,0 +1,13 @@
+# Identical to rising_melt_blob.prm, except that discontinuous
+# elements are used for peridotite. This tests the melt formulation
+# for discontinuous Galerkin (DG) elements for compositions, with
+# the exception of melt-advected fields and porosity.
+
+include $ASPECT_SOURCE_DIR/tests/rising_melt_blob.prm
+
+set Output directory = output-rising_melt_blob_dg
+
+# The peridotite field is discontinuous, the porosity field is continuous.
+subsection Discretization
+  set Use discontinuous composition discretization = false, true
+end

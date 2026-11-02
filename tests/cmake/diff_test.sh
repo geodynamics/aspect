@@ -6,19 +6,26 @@
 # command that failed, which will be really long and ugly. This way, only the
 # line executing this script will show up.
 
-# Call this script with 4 parameters:
+# Call this script with 6 parameters:
 
 # 1. name/path of diff executable
 DIFF_EXE=$1
 
-# 2. short name of the reference file: "testname/filename"
-PRETTY_TEST_AND_FILENAME=$2
+# 2. source-relative name of the reference file: "testname/filename"
+SOURCE_TEST_AND_FILENAME=$2
 
-# 3. absolute cmake source directory
-CMAKE_CURRENT_SOURCE_DIR=$3
+# 3. build-relative name of the generated file: "test-id/filename"
+BUILD_TEST_AND_FILENAME=$3
 
-# 4. absolute cmake binary directory
-CMAKE_CURRENT_BINARY_DIR=$4
+# 4. absolute cmake source directory
+CMAKE_CURRENT_SOURCE_DIR=$4
+
+# 5. absolute cmake binary directory
+CMAKE_CURRENT_BINARY_DIR=$5
+
+# 6. when "ON" also compare the results, otherwise just run the tests
+#    (ASPECT_COMPARE_TEST_RESULTS)
+FULL_COMPARISON=$6
 
 
 # Grab ASPECT_GENERATE_REFERENCE_OUTPUT from the environment. If set to
@@ -36,19 +43,19 @@ fi
 #
 
 # the reference file to compare with: "filename.cmp.notime"
-REF_FILE=${CMAKE_CURRENT_BINARY_DIR}/output-${PRETTY_TEST_AND_FILENAME}.cmp.notime
+REF_FILE=${CMAKE_CURRENT_BINARY_DIR}/output-${BUILD_TEST_AND_FILENAME}.cmp.notime
 
 # filename to compare: "filename.notime"
-GEN_FILE=${CMAKE_CURRENT_BINARY_DIR}/output-${PRETTY_TEST_AND_FILENAME}.notime
+GEN_FILE=${CMAKE_CURRENT_BINARY_DIR}/output-${BUILD_TEST_AND_FILENAME}.notime
 
 # filename to write the diff output into: "filename.diff"
-DIFF_OUTPUT=${CMAKE_CURRENT_BINARY_DIR}/output-${PRETTY_TEST_AND_FILENAME}.diff
+DIFF_OUTPUT=${CMAKE_CURRENT_BINARY_DIR}/output-${BUILD_TEST_AND_FILENAME}.diff
 
 # full path of the original (unprocessed reference file)
-ORIGINAL_REF_FULL_PATH=${CMAKE_CURRENT_SOURCE_DIR}/${PRETTY_TEST_AND_FILENAME}
+ORIGINAL_REF_FULL_PATH=${CMAKE_CURRENT_SOURCE_DIR}/${SOURCE_TEST_AND_FILENAME}
 
 # full path of the generated filename (without .notime)
-ORIGINAL_GEN_FULL_PATH=${CMAKE_CURRENT_BINARY_DIR}/output-${PRETTY_TEST_AND_FILENAME}
+ORIGINAL_GEN_FULL_PATH=${CMAKE_CURRENT_BINARY_DIR}/output-${BUILD_TEST_AND_FILENAME}
 
 
 #
@@ -57,15 +64,20 @@ ORIGINAL_GEN_FULL_PATH=${CMAKE_CURRENT_BINARY_DIR}/output-${PRETTY_TEST_AND_FILE
 
 rm -f ${DIFF_OUTPUT}.failed ${DIFF_OUTPUT}
 
-case ${DIFF_EXE} in
-    *numdiff)
+if [ "${FULL_COMPARISON}" = "ON" ]; then
+  case ${DIFF_EXE} in
+      *numdiff)
 	${DIFF_EXE} -V -a 1e-10 -r 1e-8 -s ' \t\r\n:<>=,;' \
 	    ${REF_FILE} ${GEN_FILE} > ${DIFF_OUTPUT}.tmp
 	;;
-    *)
+      *)
 	"${DIFF_EXE}" \
 	    ${REF_FILE} ${GEN_FILE} > ${DIFF_OUTPUT}.tmp
-esac
+  esac
+else
+  rm -f ${DIFF_OUTPUT}.tmp
+  touch ${DIFF_OUTPUT}.tmp
+fi
 
 if [ $? -ne 0 ]; then
 
@@ -76,7 +88,7 @@ if [ $? -ne 0 ]; then
   fi
 
   mv ${DIFF_OUTPUT}.tmp ${DIFF_OUTPUT}.failed
-  echo "******* Error during diffing output results for ${PRETTY_TEST_AND_FILENAME}"
+  echo "******* Error during diffing output results for ${SOURCE_TEST_AND_FILENAME}"
   echo "******* Results are stored in ${DIFF_OUTPUT}.failed"
   echo "******* Check ${ORIGINAL_GEN_FULL_PATH} ${ORIGINAL_REF_FULL_PATH}"
   nlines="`cat ${DIFF_OUTPUT}.failed | wc -l`"

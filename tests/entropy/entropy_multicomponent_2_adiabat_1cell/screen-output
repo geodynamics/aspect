@@ -1,0 +1,677 @@
+
+Number of active cells: 1 (on 1 levels)
+Number of degrees of freedom: 67 (18+4+9+9+9+9+9)
+
+*** Timestep 0:  t=0 years, dt=0 years
+   Copying properties into prescribed temperature field... done.
+   Solving temperature system... 1 iterations.
+   Solving percent_enstatite system ... 0 iterations.
+   Solving entropy_forsterite system ... 0 iterations.
+   Solving entropy_enstatite system ... 0 iterations.
+   Copying properties into prescribed temperature field... done.
+   Copying properties into prescribed compositional field density_field... done.
+      Relative nonlinear residuals (temperature, compositional fields): 1, 1.889e-16, 7.6974e-17, 2.23739e-16, 0
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 1
+
+   Copying properties into prescribed temperature field... done.
+   Solving temperature system... 0 iterations.
+   Solving percent_enstatite system ... 0 iterations.
+   Solving entropy_forsterite system ... 0 iterations.
+   Solving entropy_enstatite system ... 0 iterations.
+   Copying properties into prescribed temperature field... done.
+   Copying properties into prescribed compositional field density_field... done.
+      Relative nonlinear residuals (temperature, compositional fields): 6.82152e-17, 1.889e-16, 7.6974e-17, 2.23739e-16, 0
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 2.23739e-16
+
+
+   Postprocessing:
+     Writing graphical output:           output-entropy_multicomponent_2_adiabat_1cell/solution/solution-00000
+     RMS, max velocity:                  0 m/year, 0 m/year
+     Temperature min/avg/max:            1117 K, 1117 K, 1117 K
+     Mass fluxes through boundary parts: 0 kg/yr, 0 kg/yr, 0 kg/yr, 0 kg/yr
+     Compositions min/max/mass:          0.3/0.3/5.07e+07 // 2700/2700/4.563e+11 // 700/700/1.183e+11 // 3105/3105/5.247e+11
+
+*** Timestep 1:  t=200000 years, dt=200000 years
+   Solving composition reactions... in 1 substep(s).
+   Copying properties into prescribed temperature field... done.
+   Solving temperature system... 1 iterations.
+   Solving percent_enstatite system ... 0 iterations.
+   Solving entropy_forsterite system ... 0 iterations.
+   Solving entropy_enstatite system ... 0 iterations.
+   Solving composition reactions... in 1 substep(s).
+   Copying properties into prescribed temperature field... done.
+   Copying properties into prescribed compositional field density_field... done.
+      Relative nonlinear residuals (temperature, compositional fields): 0.0172105, 1.889e-16, 2.25203e-16, 2.24792e-16, 0
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 0.0172105
+
+   Copying properties into prescribed temperature field... done.
+   Solving temperature system... 0 iterations.
+   Solving percent_enstatite system ... 0 iterations.
+   Solving entropy_forsterite system ... 0 iterations.
+   Solving entropy_enstatite system ... 0 iterations.
+   Solving composition reactions... in 1 substep(s).
+   Copying properties into prescribed temperature field... done.
+   Copying properties into prescribed compositional field density_field... done.
+      Relative nonlinear residuals (temperature, compositional fields): 9.30612e-16, 1.889e-16, 4.97129e-16, 5.80421e-16, 0
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 9.30612e-16
+
+
+   Postprocessing:
+     Writing graphical output:           output-entropy_multicomponent_2_adiabat_1cell/solution/solution-00001
+     RMS, max velocity:                  0 m/year, 0 m/year
+     Temperature min/avg/max:            1137 K, 1137 K, 1137 K
+     Mass fluxes through boundary parts: 0 kg/yr, 0 kg/yr, 0 kg/yr, 0 kg/yr
+     Compositions min/max/mass:          0.3/0.3/5.07e+07 // 2103/2103/3.554e+11 // 2094/2094/3.538e+11 // 3197/3197/5.403e+11
+
+*** Timestep 2:  t=400000 years, dt=200000 years
+   Solving composition reactions... in 1 substep(s).
+   Copying properties into prescribed temperature field... done.
+   Solving temperature system... 1 iterations.
+   Solving percent_enstatite system ... 0 iterations.
+   Solving entropy_forsterite system ... 0 iterations.
+   Solving entropy_enstatite system ... 0 iterations.
+   Solving composition reactions... in 1 substep(s).
+   Copying properties into prescribed temperature field... done.
+   Copying properties into prescribed compositional field density_field... done.
+      Relative nonlinear residuals (temperature, compositional fields): 0.0150524, 5.33799e-17, 8.46929e-17, 1.6321e-16, 0
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 0.0150524
+
+   Copying properties into prescribed temperature field... done.
+   Solving temperature system... 0 iterations.
+   Solving percent_enstatite system ... 0 iterations.
+   Solving entropy_forsterite system ... 0 iterations.
+   Solving entropy_enstatite system ... 0 iterations.
+   Solving composition reactions... in 1 substep(s).
+   Copying properties into prescribed temperature field... done.
+   Copying properties into prescribed compositional field density_field... done.
+      Relative nonlinear residuals (temperature, compositional fields): 1.79001e-15, 5.33799e-17, 6.80749e-16, 1.07499e-15, 0
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 1.79001e-15
+
+
+   Postprocessing:
+     Writing graphical output:           output-entropy_multicomponent_2_adiabat_1cell/solution/solution-00002
+     RMS, max velocity:                  0 m/year, 0 m/year
+     Temperature min/avg/max:            1154 K, 1154 K, 1154 K
+     Mass fluxes through boundary parts: 0 kg/yr, 0 kg/yr, 0 kg/yr, 0 kg/yr
+     Compositions min/max/mass:          0.3/0.3/5.07e+07 // 2102/2102/3.553e+11 // 2095/2095/3.54e+11 // 3250/3250/5.492e+11
+
+*** Timestep 3:  t=600000 years, dt=200000 years
+   Solving composition reactions... in 1 substep(s).
+   Copying properties into prescribed temperature field... done.
+   Solving temperature system... 1 iterations.
+   Solving percent_enstatite system ... 0 iterations.
+   Solving entropy_forsterite system ... 0 iterations.
+   Solving entropy_enstatite system ... 0 iterations.
+   Solving composition reactions... in 1 substep(s).
+   Copying properties into prescribed temperature field... done.
+   Copying properties into prescribed compositional field density_field... done.
+      Relative nonlinear residuals (temperature, compositional fields): 0.0133835, 5.33799e-17, 5.97558e-17, 8.46963e-17, 0
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 0.0133835
+
+   Copying properties into prescribed temperature field... done.
+   Solving temperature system... 0 iterations.
+   Solving percent_enstatite system ... 0 iterations.
+   Solving entropy_forsterite system ... 0 iterations.
+   Solving entropy_enstatite system ... 0 iterations.
+   Solving composition reactions... in 1 substep(s).
+   Copying properties into prescribed temperature field... done.
+   Copying properties into prescribed compositional field density_field... done.
+      Relative nonlinear residuals (temperature, compositional fields): 1.75614e-14, 5.33799e-17, 7.12297e-15, 7.17077e-15, 0
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 1.75614e-14
+
+
+   Postprocessing:
+     Writing graphical output:           output-entropy_multicomponent_2_adiabat_1cell/solution/solution-00003
+     RMS, max velocity:                  0 m/year, 0 m/year
+     Temperature min/avg/max:            1170 K, 1170 K, 1170 K
+     Mass fluxes through boundary parts: 0 kg/yr, 0 kg/yr, 0 kg/yr, 0 kg/yr
+     Compositions min/max/mass:          0.3/0.3/5.07e+07 // 2101/2101/3.551e+11 // 2097/2097/3.543e+11 // 3300/3300/5.577e+11
+
+*** Timestep 4:  t=800000 years, dt=200000 years
+   Solving composition reactions... in 1 substep(s).
+   Copying properties into prescribed temperature field... done.
+   Solving temperature system... 2 iterations.
+   Solving percent_enstatite system ... 0 iterations.
+   Solving entropy_forsterite system ... 0 iterations.
+   Solving entropy_enstatite system ... 0 iterations.
+   Solving composition reactions... in 1 substep(s).
+   Copying properties into prescribed temperature field... done.
+   Copying properties into prescribed compositional field density_field... done.
+      Relative nonlinear residuals (temperature, compositional fields): 0.0120428, 5.33799e-17, 2.61543e-16, 2.58713e-16, 0
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 0.0120428
+
+   Copying properties into prescribed temperature field... done.
+   Solving temperature system... 0 iterations.
+   Solving percent_enstatite system ... 0 iterations.
+   Solving entropy_forsterite system ... 0 iterations.
+   Solving entropy_enstatite system ... 0 iterations.
+   Solving composition reactions... in 1 substep(s).
+   Copying properties into prescribed temperature field... done.
+   Copying properties into prescribed compositional field density_field... done.
+      Relative nonlinear residuals (temperature, compositional fields): 5.68524e-14, 5.33799e-17, 2.22098e-14, 2.23574e-14, 0
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 5.68524e-14
+
+
+   Postprocessing:
+     Writing graphical output:           output-entropy_multicomponent_2_adiabat_1cell/solution/solution-00004
+     RMS, max velocity:                  0 m/year, 0 m/year
+     Temperature min/avg/max:            1184 K, 1184 K, 1184 K
+     Mass fluxes through boundary parts: 0 kg/yr, 0 kg/yr, 0 kg/yr, 0 kg/yr
+     Compositions min/max/mass:          0.3/0.3/5.07e+07 // 2100/2100/3.55e+11 // 2099/2099/3.548e+11 // 3347/3347/5.656e+11
+
+*** Timestep 5:  t=1e+06 years, dt=200000 years
+   Solving composition reactions... in 1 substep(s).
+   Copying properties into prescribed temperature field... done.
+   Solving temperature system... 2 iterations.
+   Solving percent_enstatite system ... 0 iterations.
+   Solving entropy_forsterite system ... 0 iterations.
+   Solving entropy_enstatite system ... 0 iterations.
+   Solving composition reactions... in 1 substep(s).
+   Copying properties into prescribed temperature field... done.
+   Copying properties into prescribed compositional field density_field... done.
+      Relative nonlinear residuals (temperature, compositional fields): 0.0109371, 5.33799e-17, 2.39243e-16, 9.26623e-17, 0
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 0.0109371
+
+   Copying properties into prescribed temperature field... done.
+   Solving temperature system... 0 iterations.
+   Solving percent_enstatite system ... 0 iterations.
+   Solving entropy_forsterite system ... 0 iterations.
+   Solving entropy_enstatite system ... 0 iterations.
+   Solving composition reactions... in 1 substep(s).
+   Copying properties into prescribed temperature field... done.
+   Copying properties into prescribed compositional field density_field... done.
+      Relative nonlinear residuals (temperature, compositional fields): 1.04186e-15, 5.33799e-17, 5.02407e-16, 4.83754e-16, 0
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 1.04186e-15
+
+
+   Postprocessing:
+     Writing graphical output:           output-entropy_multicomponent_2_adiabat_1cell/solution/solution-00005
+     RMS, max velocity:                  0 m/year, 0 m/year
+     Temperature min/avg/max:            1197 K, 1197 K, 1197 K
+     Mass fluxes through boundary parts: 0 kg/yr, 0 kg/yr, 0 kg/yr, 0 kg/yr
+     Compositions min/max/mass:          0.3/0.3/5.07e+07 // 2099/2099/3.548e+11 // 2102/2102/3.552e+11 // 3391/3391/5.731e+11
+
+*** Timestep 6:  t=1.2e+06 years, dt=200000 years
+   Solving composition reactions... in 1 substep(s).
+   Copying properties into prescribed temperature field... done.
+   Solving temperature system... 1 iterations.
+   Solving percent_enstatite system ... 0 iterations.
+   Solving entropy_forsterite system ... 0 iterations.
+   Solving entropy_enstatite system ... 0 iterations.
+   Solving composition reactions... in 1 substep(s).
+   Copying properties into prescribed temperature field... done.
+   Copying properties into prescribed compositional field density_field... done.
+      Relative nonlinear residuals (temperature, compositional fields): 0.0100072, 5.33799e-17, 2.38607e-16, 1.57871e-16, 0
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 0.0100072
+
+   Copying properties into prescribed temperature field... done.
+   Solving temperature system... 0 iterations.
+   Solving percent_enstatite system ... 0 iterations.
+   Solving entropy_forsterite system ... 0 iterations.
+   Solving entropy_enstatite system ... 0 iterations.
+   Solving composition reactions... in 1 substep(s).
+   Copying properties into prescribed temperature field... done.
+   Copying properties into prescribed compositional field density_field... done.
+      Relative nonlinear residuals (temperature, compositional fields): 3.0976e-16, 5.33799e-17, 2.0629e-16, 1.47631e-16, 0
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 3.0976e-16
+
+
+   Postprocessing:
+     Writing graphical output:           output-entropy_multicomponent_2_adiabat_1cell/solution/solution-00006
+     RMS, max velocity:                  0 m/year, 0 m/year
+     Temperature min/avg/max:            1209 K, 1209 K, 1209 K
+     Mass fluxes through boundary parts: 0 kg/yr, 0 kg/yr, 0 kg/yr, 0 kg/yr
+     Compositions min/max/mass:          0.3/0.3/5.07e+07 // 2098/2098/3.546e+11 // 2105/2105/3.557e+11 // 3434/3434/5.803e+11
+
+*** Timestep 7:  t=1.4e+06 years, dt=200000 years
+   Solving composition reactions... in 1 substep(s).
+   Copying properties into prescribed temperature field... done.
+   Solving temperature system... 2 iterations.
+   Solving percent_enstatite system ... 0 iterations.
+   Solving entropy_forsterite system ... 0 iterations.
+   Solving entropy_enstatite system ... 0 iterations.
+   Solving composition reactions... in 1 substep(s).
+   Copying properties into prescribed temperature field... done.
+   Copying properties into prescribed compositional field density_field... done.
+      Relative nonlinear residuals (temperature, compositional fields): 0.00921299, 5.33799e-17, 2.80414e-16, 1.41391e-16, 0
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 0.00921299
+
+   Copying properties into prescribed temperature field... done.
+   Solving temperature system... 0 iterations.
+   Solving percent_enstatite system ... 0 iterations.
+   Solving entropy_forsterite system ... 0 iterations.
+   Solving entropy_enstatite system ... 0 iterations.
+   Solving composition reactions... in 1 substep(s).
+   Copying properties into prescribed temperature field... done.
+   Copying properties into prescribed compositional field density_field... done.
+      Relative nonlinear residuals (temperature, compositional fields): 6.09312e-15, 5.33799e-17, 2.5657e-15, 2.56048e-15, 0
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 6.09312e-15
+
+
+   Postprocessing:
+     Writing graphical output:           output-entropy_multicomponent_2_adiabat_1cell/solution/solution-00007
+     RMS, max velocity:                  0 m/year, 0 m/year
+     Temperature min/avg/max:            1221 K, 1221 K, 1221 K
+     Mass fluxes through boundary parts: 0 kg/yr, 0 kg/yr, 0 kg/yr, 0 kg/yr
+     Compositions min/max/mass:          0.3/0.3/5.07e+07 // 2097/2097/3.543e+11 // 2108/2108/3.562e+11 // 3474/3474/5.872e+11
+
+*** Timestep 8:  t=1.6e+06 years, dt=200000 years
+   Solving composition reactions... in 1 substep(s).
+   Copying properties into prescribed temperature field... done.
+   Solving temperature system... 2 iterations.
+   Solving percent_enstatite system ... 0 iterations.
+   Solving entropy_forsterite system ... 0 iterations.
+   Solving entropy_enstatite system ... 0 iterations.
+   Solving composition reactions... in 1 substep(s).
+   Copying properties into prescribed temperature field... done.
+   Copying properties into prescribed compositional field density_field... done.
+      Relative nonlinear residuals (temperature, compositional fields): 0.00853316, 5.33799e-17, 1.78608e-16, 3.37817e-16, 0
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 0.00853316
+
+   Copying properties into prescribed temperature field... done.
+   Solving temperature system... 0 iterations.
+   Solving percent_enstatite system ... 0 iterations.
+   Solving entropy_forsterite system ... 0 iterations.
+   Solving entropy_enstatite system ... 0 iterations.
+   Solving composition reactions... in 1 substep(s).
+   Copying properties into prescribed temperature field... done.
+   Copying properties into prescribed compositional field density_field... done.
+      Relative nonlinear residuals (temperature, compositional fields): 1.23188e-13, 5.33799e-17, 4.85649e-14, 4.79449e-14, 0
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 1.23188e-13
+
+
+   Postprocessing:
+     Writing graphical output:           output-entropy_multicomponent_2_adiabat_1cell/solution/solution-00008
+     RMS, max velocity:                  0 m/year, 0 m/year
+     Temperature min/avg/max:            1231 K, 1231 K, 1231 K
+     Mass fluxes through boundary parts: 0 kg/yr, 0 kg/yr, 0 kg/yr, 0 kg/yr
+     Compositions min/max/mass:          0.3/0.3/5.07e+07 // 2095/2095/3.541e+11 // 2111/2111/3.567e+11 // 3513/3513/5.938e+11
+
+*** Timestep 9:  t=1.8e+06 years, dt=200000 years
+   Solving composition reactions... in 1 substep(s).
+   Copying properties into prescribed temperature field... done.
+   Solving temperature system... 1 iterations.
+   Solving percent_enstatite system ... 0 iterations.
+   Solving entropy_forsterite system ... 0 iterations.
+   Solving entropy_enstatite system ... 0 iterations.
+   Solving composition reactions... in 1 substep(s).
+   Copying properties into prescribed temperature field... done.
+   Copying properties into prescribed compositional field density_field... done.
+      Relative nonlinear residuals (temperature, compositional fields): 0.00793949, 5.33799e-17, 2.42746e-16, 1.5106e-16, 0
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 0.00793949
+
+   Copying properties into prescribed temperature field... done.
+   Solving temperature system... 0 iterations.
+   Solving percent_enstatite system ... 0 iterations.
+   Solving entropy_forsterite system ... 0 iterations.
+   Solving entropy_enstatite system ... 0 iterations.
+   Solving composition reactions... in 1 substep(s).
+   Copying properties into prescribed temperature field... done.
+   Copying properties into prescribed compositional field density_field... done.
+      Relative nonlinear residuals (temperature, compositional fields): 7.19508e-16, 5.33799e-17, 4.97857e-17, 9.58269e-18, 0
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 7.19508e-16
+
+
+   Postprocessing:
+     Writing graphical output:           output-entropy_multicomponent_2_adiabat_1cell/solution/solution-00009
+     RMS, max velocity:                  0 m/year, 0 m/year
+     Temperature min/avg/max:            1241 K, 1241 K, 1241 K
+     Mass fluxes through boundary parts: 0 kg/yr, 0 kg/yr, 0 kg/yr, 0 kg/yr
+     Compositions min/max/mass:          0.3/0.3/5.07e+07 // 2094/2094/3.539e+11 // 2114/2114/3.572e+11 // 3551/3551/6.001e+11
+
+*** Timestep 10:  t=2e+06 years, dt=200000 years
+   Solving composition reactions... in 1 substep(s).
+   Copying properties into prescribed temperature field... done.
+   Solving temperature system... 1 iterations.
+   Solving percent_enstatite system ... 0 iterations.
+   Solving entropy_forsterite system ... 0 iterations.
+   Solving entropy_enstatite system ... 0 iterations.
+   Solving composition reactions... in 1 substep(s).
+   Copying properties into prescribed temperature field... done.
+   Copying properties into prescribed compositional field density_field... done.
+      Relative nonlinear residuals (temperature, compositional fields): 0.00741062, 5.33799e-17, 2.51025e-16, 1.49997e-16, 0
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 0.00741062
+
+   Copying properties into prescribed temperature field... done.
+   Solving temperature system... 0 iterations.
+   Solving percent_enstatite system ... 0 iterations.
+   Solving entropy_forsterite system ... 0 iterations.
+   Solving entropy_enstatite system ... 0 iterations.
+   Solving composition reactions... in 1 substep(s).
+   Copying properties into prescribed temperature field... done.
+   Copying properties into prescribed compositional field density_field... done.
+      Relative nonlinear residuals (temperature, compositional fields): 4.15552e-14, 5.33799e-17, 1.62744e-14, 1.60641e-14, 0
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 4.15552e-14
+
+
+   Postprocessing:
+     Writing graphical output:           output-entropy_multicomponent_2_adiabat_1cell/solution/solution-00010
+     RMS, max velocity:                  0 m/year, 0 m/year
+     Temperature min/avg/max:            1250 K, 1250 K, 1250 K
+     Mass fluxes through boundary parts: 0 kg/yr, 0 kg/yr, 0 kg/yr, 0 kg/yr
+     Compositions min/max/mass:          0.3/0.3/5.07e+07 // 2093/2093/3.537e+11 // 2116/2116/3.577e+11 // 3587/3587/6.062e+11
+
+*** Timestep 11:  t=2.2e+06 years, dt=200000 years
+   Solving composition reactions... in 1 substep(s).
+   Copying properties into prescribed temperature field... done.
+   Solving temperature system... 1 iterations.
+   Solving percent_enstatite system ... 0 iterations.
+   Solving entropy_forsterite system ... 0 iterations.
+   Solving entropy_enstatite system ... 0 iterations.
+   Solving composition reactions... in 1 substep(s).
+   Copying properties into prescribed temperature field... done.
+   Copying properties into prescribed compositional field density_field... done.
+      Relative nonlinear residuals (temperature, compositional fields): 0.00694082, 5.33799e-17, 3.5301e-16, 3.36881e-16, 0
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 0.00694082
+
+   Copying properties into prescribed temperature field... done.
+   Solving temperature system... 0 iterations.
+   Solving percent_enstatite system ... 0 iterations.
+   Solving entropy_forsterite system ... 0 iterations.
+   Solving entropy_enstatite system ... 0 iterations.
+   Solving composition reactions... in 1 substep(s).
+   Copying properties into prescribed temperature field... done.
+   Copying properties into prescribed compositional field density_field... done.
+      Relative nonlinear residuals (temperature, compositional fields): 7.60989e-16, 5.33799e-17, 2.56064e-16, 2.66107e-16, 0
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 7.60989e-16
+
+
+   Postprocessing:
+     Writing graphical output:           output-entropy_multicomponent_2_adiabat_1cell/solution/solution-00011
+     RMS, max velocity:                  0 m/year, 0 m/year
+     Temperature min/avg/max:            1259 K, 1259 K, 1259 K
+     Mass fluxes through boundary parts: 0 kg/yr, 0 kg/yr, 0 kg/yr, 0 kg/yr
+     Compositions min/max/mass:          0.3/0.3/5.07e+07 // 2092/2092/3.535e+11 // 2119/2119/3.582e+11 // 3622/3622/6.122e+11
+
+*** Timestep 12:  t=2.4e+06 years, dt=200000 years
+   Solving composition reactions... in 1 substep(s).
+   Copying properties into prescribed temperature field... done.
+   Solving temperature system... 2 iterations.
+   Solving percent_enstatite system ... 0 iterations.
+   Solving entropy_forsterite system ... 0 iterations.
+   Solving entropy_enstatite system ... 0 iterations.
+   Solving composition reactions... in 1 substep(s).
+   Copying properties into prescribed temperature field... done.
+   Copying properties into prescribed compositional field density_field... done.
+      Relative nonlinear residuals (temperature, compositional fields): 0.00652072, 5.33799e-17, 2.25988e-16, 1.1764e-16, 0
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 0.00652072
+
+   Copying properties into prescribed temperature field... done.
+   Solving temperature system... 0 iterations.
+   Solving percent_enstatite system ... 0 iterations.
+   Solving entropy_forsterite system ... 0 iterations.
+   Solving entropy_enstatite system ... 0 iterations.
+   Solving composition reactions... in 1 substep(s).
+   Copying properties into prescribed temperature field... done.
+   Copying properties into prescribed compositional field density_field... done.
+      Relative nonlinear residuals (temperature, compositional fields): 7.6855e-16, 5.33799e-17, 3.84751e-16, 6.51585e-16, 0
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 7.6855e-16
+
+
+   Postprocessing:
+     Writing graphical output:           output-entropy_multicomponent_2_adiabat_1cell/solution/solution-00012
+     RMS, max velocity:                  0 m/year, 0 m/year
+     Temperature min/avg/max:            1267 K, 1267 K, 1267 K
+     Mass fluxes through boundary parts: 0 kg/yr, 0 kg/yr, 0 kg/yr, 0 kg/yr
+     Compositions min/max/mass:          0.3/0.3/5.07e+07 // 2090/2090/3.533e+11 // 2122/2122/3.587e+11 // 3656/3656/6.179e+11
+
+*** Timestep 13:  t=2.6e+06 years, dt=200000 years
+   Solving composition reactions... in 1 substep(s).
+   Copying properties into prescribed temperature field... done.
+   Solving temperature system... 2 iterations.
+   Solving percent_enstatite system ... 0 iterations.
+   Solving entropy_forsterite system ... 0 iterations.
+   Solving entropy_enstatite system ... 0 iterations.
+   Solving composition reactions... in 1 substep(s).
+   Copying properties into prescribed temperature field... done.
+   Copying properties into prescribed compositional field density_field... done.
+      Relative nonlinear residuals (temperature, compositional fields): 0.00614285, 5.33799e-17, 2.1927e-16, 2.17404e-16, 0
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 0.00614285
+
+   Copying properties into prescribed temperature field... done.
+   Solving temperature system... 0 iterations.
+   Solving percent_enstatite system ... 0 iterations.
+   Solving entropy_forsterite system ... 0 iterations.
+   Solving entropy_enstatite system ... 0 iterations.
+   Solving composition reactions... in 1 substep(s).
+   Copying properties into prescribed temperature field... done.
+   Copying properties into prescribed compositional field density_field... done.
+      Relative nonlinear residuals (temperature, compositional fields): 1.15057e-14, 5.33799e-17, 4.4766e-15, 4.50677e-15, 0
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 1.15057e-14
+
+
+   Postprocessing:
+     Writing graphical output:           output-entropy_multicomponent_2_adiabat_1cell/solution/solution-00013
+     RMS, max velocity:                  0 m/year, 0 m/year
+     Temperature min/avg/max:            1275 K, 1275 K, 1275 K
+     Mass fluxes through boundary parts: 0 kg/yr, 0 kg/yr, 0 kg/yr, 0 kg/yr
+     Compositions min/max/mass:          0.3/0.3/5.07e+07 // 2089/2089/3.531e+11 // 2125/2125/3.592e+11 // 3689/3689/6.235e+11
+
+*** Timestep 14:  t=2.8e+06 years, dt=200000 years
+   Solving composition reactions... in 1 substep(s).
+   Copying properties into prescribed temperature field... done.
+   Solving temperature system... 1 iterations.
+   Solving percent_enstatite system ... 0 iterations.
+   Solving entropy_forsterite system ... 0 iterations.
+   Solving entropy_enstatite system ... 0 iterations.
+   Solving composition reactions... in 1 substep(s).
+   Copying properties into prescribed temperature field... done.
+   Copying properties into prescribed compositional field density_field... done.
+      Relative nonlinear residuals (temperature, compositional fields): 0.00580117, 5.33799e-17, 5.87281e-17, 1.52338e-16, 0
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 0.00580117
+
+   Copying properties into prescribed temperature field... done.
+   Solving temperature system... 0 iterations.
+   Solving percent_enstatite system ... 0 iterations.
+   Solving entropy_forsterite system ... 0 iterations.
+   Solving entropy_enstatite system ... 0 iterations.
+   Solving composition reactions... in 1 substep(s).
+   Copying properties into prescribed temperature field... done.
+   Copying properties into prescribed compositional field density_field... done.
+      Relative nonlinear residuals (temperature, compositional fields): 7.6687e-16, 5.33799e-17, 3.1448e-16, 1.23968e-16, 0
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 7.6687e-16
+
+
+   Postprocessing:
+     Writing graphical output:           output-entropy_multicomponent_2_adiabat_1cell/solution/solution-00014
+     RMS, max velocity:                  0 m/year, 0 m/year
+     Temperature min/avg/max:            1283 K, 1283 K, 1283 K
+     Mass fluxes through boundary parts: 0 kg/yr, 0 kg/yr, 0 kg/yr, 0 kg/yr
+     Compositions min/max/mass:          0.3/0.3/5.07e+07 // 2088/2088/3.529e+11 // 2128/2128/3.596e+11 // 3721/3721/6.289e+11
+
+*** Timestep 15:  t=3e+06 years, dt=200000 years
+   Solving composition reactions... in 1 substep(s).
+   Copying properties into prescribed temperature field... done.
+   Solving temperature system... 1 iterations.
+   Solving percent_enstatite system ... 0 iterations.
+   Solving entropy_forsterite system ... 0 iterations.
+   Solving entropy_enstatite system ... 0 iterations.
+   Solving composition reactions... in 1 substep(s).
+   Copying properties into prescribed temperature field... done.
+   Copying properties into prescribed compositional field density_field... done.
+      Relative nonlinear residuals (temperature, compositional fields): 0.00549077, 5.33799e-17, 1.19228e-16, 1.06011e-16, 0
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 0.00549077
+
+   Copying properties into prescribed temperature field... done.
+   Solving temperature system... 0 iterations.
+   Solving percent_enstatite system ... 0 iterations.
+   Solving entropy_forsterite system ... 0 iterations.
+   Solving entropy_enstatite system ... 0 iterations.
+   Solving composition reactions... in 1 substep(s).
+   Copying properties into prescribed temperature field... done.
+   Copying properties into prescribed compositional field density_field... done.
+      Relative nonlinear residuals (temperature, compositional fields): 2.74004e-15, 5.33799e-17, 8.92415e-16, 1.06308e-15, 0
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 2.74004e-15
+
+
+   Postprocessing:
+     Writing graphical output:           output-entropy_multicomponent_2_adiabat_1cell/solution/solution-00015
+     RMS, max velocity:                  0 m/year, 0 m/year
+     Temperature min/avg/max:            1290 K, 1290 K, 1290 K
+     Mass fluxes through boundary parts: 0 kg/yr, 0 kg/yr, 0 kg/yr, 0 kg/yr
+     Compositions min/max/mass:          0.3/0.3/5.07e+07 // 2087/2087/3.527e+11 // 2131/2131/3.601e+11 // 3753/3753/6.342e+11
+
+*** Timestep 16:  t=3.2e+06 years, dt=200000 years
+   Solving composition reactions... in 1 substep(s).
+   Copying properties into prescribed temperature field... done.
+   Solving temperature system... 1 iterations.
+   Solving percent_enstatite system ... 0 iterations.
+   Solving entropy_forsterite system ... 0 iterations.
+   Solving entropy_enstatite system ... 0 iterations.
+   Solving composition reactions... in 1 substep(s).
+   Copying properties into prescribed temperature field... done.
+   Copying properties into prescribed compositional field density_field... done.
+      Relative nonlinear residuals (temperature, compositional fields): 0.00520952, 5.33799e-17, 1.27201e-16, 1.04479e-16, 0
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 0.00520952
+
+   Copying properties into prescribed temperature field... done.
+   Solving temperature system... 0 iterations.
+   Solving percent_enstatite system ... 0 iterations.
+   Solving entropy_forsterite system ... 0 iterations.
+   Solving entropy_enstatite system ... 0 iterations.
+   Solving composition reactions... in 1 substep(s).
+   Copying properties into prescribed temperature field... done.
+   Copying properties into prescribed compositional field density_field... done.
+      Relative nonlinear residuals (temperature, compositional fields): 4.40517e-15, 5.33799e-17, 1.51165e-15, 1.80653e-15, 0
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 4.40517e-15
+
+
+   Postprocessing:
+     Writing graphical output:           output-entropy_multicomponent_2_adiabat_1cell/solution/solution-00016
+     RMS, max velocity:                  0 m/year, 0 m/year
+     Temperature min/avg/max:            1296 K, 1296 K, 1296 K
+     Mass fluxes through boundary parts: 0 kg/yr, 0 kg/yr, 0 kg/yr, 0 kg/yr
+     Compositions min/max/mass:          0.3/0.3/5.07e+07 // 2086/2086/3.525e+11 // 2133/2133/3.605e+11 // 3783/3783/6.393e+11
+
+*** Timestep 17:  t=3.4e+06 years, dt=200000 years
+   Solving composition reactions... in 1 substep(s).
+   Copying properties into prescribed temperature field... done.
+   Solving temperature system... 1 iterations.
+   Solving percent_enstatite system ... 0 iterations.
+   Solving entropy_forsterite system ... 0 iterations.
+   Solving entropy_enstatite system ... 0 iterations.
+   Solving composition reactions... in 1 substep(s).
+   Copying properties into prescribed temperature field... done.
+   Copying properties into prescribed compositional field density_field... done.
+      Relative nonlinear residuals (temperature, compositional fields): 0.0049603, 5.33799e-17, 2.03252e-16, 4.02021e-16, 0
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 0.0049603
+
+   Copying properties into prescribed temperature field... done.
+   Solving temperature system... 0 iterations.
+   Solving percent_enstatite system ... 0 iterations.
+   Solving entropy_forsterite system ... 0 iterations.
+   Solving entropy_enstatite system ... 0 iterations.
+   Solving composition reactions... in 1 substep(s).
+   Copying properties into prescribed temperature field... done.
+   Copying properties into prescribed compositional field density_field... done.
+      Relative nonlinear residuals (temperature, compositional fields): 8.36238e-16, 5.33799e-17, 4.02278e-16, 2.43223e-16, 0
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 8.36238e-16
+
+
+   Postprocessing:
+     Writing graphical output:           output-entropy_multicomponent_2_adiabat_1cell/solution/solution-00017
+     RMS, max velocity:                  0 m/year, 0 m/year
+     Temperature min/avg/max:            1303 K, 1303 K, 1303 K
+     Mass fluxes through boundary parts: 0 kg/yr, 0 kg/yr, 0 kg/yr, 0 kg/yr
+     Compositions min/max/mass:          0.3/0.3/5.07e+07 // 2085/2085/3.523e+11 // 2136/2136/3.61e+11 // 3813/3813/6.443e+11
+
+*** Timestep 18:  t=3.6e+06 years, dt=200000 years
+   Solving composition reactions... in 1 substep(s).
+   Copying properties into prescribed temperature field... done.
+   Solving temperature system... 1 iterations.
+   Solving percent_enstatite system ... 0 iterations.
+   Solving entropy_forsterite system ... 0 iterations.
+   Solving entropy_enstatite system ... 0 iterations.
+   Solving composition reactions... in 1 substep(s).
+   Copying properties into prescribed temperature field... done.
+   Copying properties into prescribed compositional field density_field... done.
+      Relative nonlinear residuals (temperature, compositional fields): 0.00472172, 5.33799e-17, 2.11092e-16, 2.22072e-16, 0
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 0.00472172
+
+   Copying properties into prescribed temperature field... done.
+   Solving temperature system... 0 iterations.
+   Solving percent_enstatite system ... 0 iterations.
+   Solving entropy_forsterite system ... 0 iterations.
+   Solving entropy_enstatite system ... 0 iterations.
+   Solving composition reactions... in 1 substep(s).
+   Copying properties into prescribed temperature field... done.
+   Copying properties into prescribed compositional field density_field... done.
+      Relative nonlinear residuals (temperature, compositional fields): 9.83329e-17, 5.33799e-17, 2.08672e-17, 9.38949e-17, 0
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 9.83329e-17
+
+
+   Postprocessing:
+     Writing graphical output:           output-entropy_multicomponent_2_adiabat_1cell/solution/solution-00018
+     RMS, max velocity:                  0 m/year, 0 m/year
+     Temperature min/avg/max:            1309 K, 1309 K, 1309 K
+     Mass fluxes through boundary parts: 0 kg/yr, 0 kg/yr, 0 kg/yr, 0 kg/yr
+     Compositions min/max/mass:          0.3/0.3/5.07e+07 // 2083/2083/3.521e+11 // 2139/2139/3.614e+11 // 3842/3842/6.492e+11
+
+*** Timestep 19:  t=3.8e+06 years, dt=200000 years
+   Solving composition reactions... in 1 substep(s).
+   Copying properties into prescribed temperature field... done.
+   Solving temperature system... 2 iterations.
+   Solving percent_enstatite system ... 0 iterations.
+   Solving entropy_forsterite system ... 0 iterations.
+   Solving entropy_enstatite system ... 0 iterations.
+   Solving composition reactions... in 1 substep(s).
+   Copying properties into prescribed temperature field... done.
+   Copying properties into prescribed compositional field density_field... done.
+      Relative nonlinear residuals (temperature, compositional fields): 0.00450169, 5.33799e-17, 1.08524e-16, 7.23478e-17, 0
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 0.00450169
+
+   Copying properties into prescribed temperature field... done.
+   Solving temperature system... 0 iterations.
+   Solving percent_enstatite system ... 0 iterations.
+   Solving entropy_forsterite system ... 0 iterations.
+   Solving entropy_enstatite system ... 0 iterations.
+   Solving composition reactions... in 1 substep(s).
+   Copying properties into prescribed temperature field... done.
+   Copying properties into prescribed compositional field density_field... done.
+      Relative nonlinear residuals (temperature, compositional fields): 8.78764e-16, 5.33799e-17, 3.31617e-16, 2.50084e-16, 0
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 8.78764e-16
+
+
+   Postprocessing:
+     Writing graphical output:           output-entropy_multicomponent_2_adiabat_1cell/solution/solution-00019
+     RMS, max velocity:                  0 m/year, 0 m/year
+     Temperature min/avg/max:            1315 K, 1315 K, 1315 K
+     Mass fluxes through boundary parts: 0 kg/yr, 0 kg/yr, 0 kg/yr, 0 kg/yr
+     Compositions min/max/mass:          0.3/0.3/5.07e+07 // 2082/2082/3.519e+11 // 2141/2141/3.619e+11 // 3870/3870/6.54e+11
+
+*** Timestep 20:  t=4e+06 years, dt=200000 years
+   Solving composition reactions... in 1 substep(s).
+   Copying properties into prescribed temperature field... done.
+   Solving temperature system... 1 iterations.
+   Solving percent_enstatite system ... 0 iterations.
+   Solving entropy_forsterite system ... 0 iterations.
+   Solving entropy_enstatite system ... 0 iterations.
+   Solving composition reactions... in 1 substep(s).
+   Copying properties into prescribed temperature field... done.
+   Copying properties into prescribed compositional field density_field... done.
+      Relative nonlinear residuals (temperature, compositional fields): 0.00429818, 5.33799e-17, 7.06962e-17, 1.04223e-16, 0
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 0.00429818
+
+   Copying properties into prescribed temperature field... done.
+   Solving temperature system... 0 iterations.
+   Solving percent_enstatite system ... 0 iterations.
+   Solving entropy_forsterite system ... 0 iterations.
+   Solving entropy_enstatite system ... 0 iterations.
+   Solving composition reactions... in 1 substep(s).
+   Copying properties into prescribed temperature field... done.
+   Copying properties into prescribed compositional field density_field... done.
+      Relative nonlinear residuals (temperature, compositional fields): 8.50565e-16, 5.33799e-17, 3.02014e-16, 2.92783e-16, 0
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 8.50565e-16
+
+
+   Postprocessing:
+     Writing graphical output:           output-entropy_multicomponent_2_adiabat_1cell/solution/solution-00020
+     RMS, max velocity:                  0 m/year, 0 m/year
+     Temperature min/avg/max:            1321 K, 1321 K, 1321 K
+     Mass fluxes through boundary parts: 0 kg/yr, 0 kg/yr, 0 kg/yr, 0 kg/yr
+     Compositions min/max/mass:          0.3/0.3/5.07e+07 // 2081/2081/3.517e+11 // 2144/2144/3.623e+11 // 3897/3897/6.587e+11
+
+Termination requested by criterion: end time
+
+
+

@@ -24,13 +24,8 @@
 # which is also the ordering for which the marine diffusion stays convergent at
 # this basin depth. With basement restored correctly but the silt fraction
 # still taken from the surface elevation, this configuration diverges by tens
-# of metres offshore, so the test guards the silt-fraction save independently
+# of meters offshore, so the test guards the silt-fraction save independently
 # of the basement save.
-#
-# The checkpoint is placed at step 4 (Steps between checkpoint = 4), after
-# FastScape has been set up on its first execution step, to avoid the
-# "STOP CopyH - You need to run SetUp first" abort that a step-0/1 checkpoint
-# would trigger.
 #
 # Enable if: ASPECT_WITH_FASTSCAPE
 
@@ -40,7 +35,8 @@ set End time           = 1.2e5
 set Resume computation = false
 
 subsection Checkpointing
-  set Steps between checkpoint = 4
+  set Steps between checkpoint = 1
+  set Resume checkpoint = 2
 end
 
 subsection Mesh deformation

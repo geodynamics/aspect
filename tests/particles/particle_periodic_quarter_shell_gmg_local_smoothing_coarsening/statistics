@@ -1,0 +1,22 @@
+# 1: Time step number
+# 2: Time (seconds)
+# 3: Time step size (seconds)
+# 4: Number of mesh cells
+# 5: Number of Stokes degrees of freedom
+# 6: Number of temperature degrees of freedom
+# 7: Iterations for temperature solver
+# 8: Iterations for Stokes solver
+# 9: Velocity iterations in Stokes preconditioner
+# 10: Schur complement iterations in Stokes preconditioner
+# 11: Number of advected particles
+# 12: Particle file name
+# 13: RMS velocity (m/s)
+# 14: Max. velocity (m/s)
+# 15: Minimal particles per cell: 
+# 16: Average particles per cell: 
+# 17: Maximal particles per cell: 
+0 0.000000000000e+00 0.000000000000e+00 90 970 426 0 21 22 22 10 output-particle_periodic_quarter_shell_gmg_local_smoothing_coarsening/particles/particles-00000 7.90569271e-01 1.00000000e+00 0 0 3 
+1 2.000000000000e-02 2.000000000000e-02 90 970 426 0  0  0  0 10 output-particle_periodic_quarter_shell_gmg_local_smoothing_coarsening/particles/particles-00001 7.90569271e-01 1.00000000e+00 0 0 3 
+2 4.000000000000e-02 2.000000000000e-02 36 415 181 0  7  8  8 10 output-particle_periodic_quarter_shell_gmg_local_smoothing_coarsening/particles/particles-00002 7.90567902e-01 1.00000000e+00 0 0 3 
+3 6.000000000000e-02 2.000000000000e-02 66 726 318 0  9 10 10 10 output-particle_periodic_quarter_shell_gmg_local_smoothing_coarsening/particles/particles-00003 7.90569175e-01 1.00000000e+00 0 0 3 
+4 8.000000000000e-02 2.000000000000e-02 18 233 101 0 10 11 11 10 output-particle_periodic_quarter_shell_gmg_local_smoothing_coarsening/particles/particles-00004 7.90565649e-01 1.00000000e+00 0 0 5 

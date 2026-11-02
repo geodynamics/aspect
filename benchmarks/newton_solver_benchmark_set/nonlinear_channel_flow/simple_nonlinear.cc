@@ -1,23 +1,19 @@
-/*
-  Copyright (C) 2011 - 2024 by the authors of the ASPECT code.
+// ------------------------------------------------------
+//
+// SPDX-License-Identifier: GPL-2.0-or-later
+//
+// SPDX-FileCopyrightText: Copyright (C) 2011-2026 by the ASPECT authors.
+//
+// This file is part of ASPECT.
+//
+// Detailed license information governing the source code and
+// contributions can be found in the folder LICENSES and in
+// LICENSE and CONTRIBUTING.md at the top level directory.
+//
+// ------------------------------------------------------
 
-  This file is part of ASPECT.
+#include <algorithm>
 
-  ASPECT is free software; you can redistribute it and/or modify
-  it under the terms of the GNU General Public License as published by
-  the Free Software Foundation; either version 2, or (at your option)
-  any later version.
-
-  ASPECT is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  GNU General Public License for more details.
-
-  You should have received a copy of the GNU General Public License
-  along with ASPECT; see the file LICENSE.  If not see
-  <http://www.gnu.org/licenses/>.
-*/
-#include <aspect/simulator.h>
 #include <deal.II/grid/tria.h>
 #include <aspect/material_model/interface.h>
 #include <aspect/simulator_access.h>
@@ -180,7 +176,7 @@ namespace aspect
                   const double edot_ii = std::max(edot_ii_strict, min_strain_rate[c]);
 
                   const double stress_exponent_inv = 1/stress_exponent[c];
-                  composition_viscosities[c] = std::max(std::min(std::pow(viscosity_prefactor[c],-stress_exponent_inv) * std::pow(edot_ii,stress_exponent_inv-1), max_viscosity[c]), min_viscosity[c]);
+                  composition_viscosities[c] = std::clamp(std::pow(viscosity_prefactor[c],-stress_exponent_inv) * std::pow(edot_ii,stress_exponent_inv-1), min_viscosity[c], max_viscosity[c]);
                   Assert(dealii::numbers::is_finite(composition_viscosities[c]), ExcMessage ("Error: Viscosity is not finite."));
                   if (derivatives != nullptr)
                     {

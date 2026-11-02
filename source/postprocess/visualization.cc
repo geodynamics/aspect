@@ -1,33 +1,28 @@
-/*
-  Copyright (C) 2011 - 2024 by the authors of the ASPECT code.
-
-  This file is part of ASPECT.
-
-  ASPECT is free software; you can redistribute it and/or modify
-  it under the terms of the GNU General Public License as published by
-  the Free Software Foundation; either version 2, or (at your option)
-  any later version.
-
-  ASPECT is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  GNU General Public License for more details.
-
-  You should have received a copy of the GNU General Public License
-  along with ASPECT; see the file LICENSE.  If not see
-  <http://www.gnu.org/licenses/>.
-*/
+// ------------------------------------------------------
+//
+// SPDX-License-Identifier: GPL-2.0-or-later
+//
+// SPDX-FileCopyrightText: Copyright (C) 2011-2026 by the ASPECT authors.
+//
+// This file is part of ASPECT.
+//
+// Detailed license information governing the source code and
+// contributions can be found in the folder LICENSES and in
+// LICENSE and CONTRIBUTING.md at the top level directory.
+//
+// ------------------------------------------------------
 
 
 #include <aspect/postprocess/visualization.h>
+
 #include <aspect/global.h>
 #include <aspect/utilities.h>
-#include <aspect/simulator_access.h>
-#include <aspect/simulator.h>
+#include <aspect/simulator_signals.h>
+
 #include <aspect/geometry_model/interface.h>
 #include <aspect/mesh_deformation/interface.h>
-#include <deal.II/fe/mapping_q1_eulerian.h>
 
+#include <deal.II/fe/mapping_q1_eulerian.h>
 #include <deal.II/dofs/dof_tools.h>
 #include <deal.II/numerics/data_out.h>
 #include <deal.II/numerics/data_out_faces.h>
@@ -36,6 +31,7 @@
 #include <boost/archive/text_iarchive.hpp>
 
 #include <cmath>
+#include <fstream>
 #include <unistd.h>
 
 #include <algorithm>
@@ -509,20 +505,7 @@ namespace aspect
 
           // Finally, set or do not set whether we want to describe cells
           // with curved edges and faces:
-#if DEAL_II_VERSION_GTE(9,6,0)
           vtk_flags.write_higher_order_cells = write_higher_order_output;
-#else
-          // In versions of deal.II up to 9.5 (and perhaps later, see
-          // https://github.com/dealii/dealii/issues/17091), higher
-          // order output on lines fails with an
-          // ExcNotImplemented(). So just back down to regular linear
-          // interpolation if that is the case. This is only the case
-          // if we are in 2d and using surface output (DataOutFaces).
-          if (std::is_same<DataOutType,DataOutFaces<dim>>::value && (dim==2))
-            vtk_flags.write_higher_order_cells = false;
-          else
-            vtk_flags.write_higher_order_cells = write_higher_order_output;
-#endif
 
           data_out.set_flags(vtk_flags);
 
@@ -1119,9 +1102,9 @@ namespace aspect
                              "The time interval between each generation of "
                              "graphical output files. A value of zero indicates "
                              "that output should be generated in each time step. "
-                             "Units: years if the "
+                             "Units: \\si{\\year} if the "
                              "'Use years instead of seconds' parameter is set; "
-                             "seconds otherwise.");
+                             "\\si{\\second} otherwise.");
 
           prm.declare_entry ("Time steps between graphical output", boost::lexical_cast<std::string>(std::numeric_limits<int>::max()),
                              Patterns::Integer(0),

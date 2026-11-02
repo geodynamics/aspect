@@ -1,22 +1,16 @@
-/*
- Copyright (C) 2023 - 2024 by the authors of the ASPECT code.
-
- This file is part of ASPECT.
-
- ASPECT is free software; you can redistribute it and/or modify
- it under the terms of the GNU General Public License as published by
- the Free Software Foundation; either version 2, or (at your option)
- any later version.
-
- ASPECT is distributed in the hope that it will be useful,
- but WITHOUT ANY WARRANTY; without even the implied warranty of
- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- GNU General Public License for more details.
-
- You should have received a copy of the GNU General Public License
- along with ASPECT; see the file LICENSE.  If not see
- <http://www.gnu.org/licenses/>.
- */
+// ------------------------------------------------------
+//
+// SPDX-License-Identifier: GPL-2.0-or-later
+//
+// SPDX-FileCopyrightText: Copyright (C) 2023-2026 by the ASPECT authors.
+//
+// This file is part of ASPECT.
+//
+// Detailed license information governing the source code and
+// contributions can be found in the folder LICENSES and in
+// LICENSE and CONTRIBUTING.md at the top level directory.
+//
+// ------------------------------------------------------
 
 #ifndef _aspect_particle_property_cpo_bingham_average_h
 #define _aspect_particle_property_cpo_bingham_average_h
@@ -34,6 +28,21 @@ namespace aspect
   {
     namespace Property
     {
+
+
+      /**
+       * @brief This determines whether the mean crystal orientation is output as
+       * a rotation matrix, euler angles, or a quaternion.
+       *
+       * full matrix: Returns 3 eigenvectors, i.e. one full rotation matrix for each axis.
+       * euler angles: Returns one set of 3 euler angles in the zxz convention (not equivalent to the Bunge convention).
+       * They represent a passive rotation matrix derived from the principal eigenvectors of each axis.
+       * quaternion: Returns a unit quaternion representing an active rotation matrix derived from the principal eigenvectors of each axis.
+       */
+      enum class RotationFormat
+      {
+        full_matrix, euler_angles, quaternion
+      };
 
       /**
        * Computes the Bingham average of the CPO particle properties.
@@ -64,9 +73,31 @@ namespace aspect
        *                                          data_position + 31,
        * 12 eigenvalues of a axis of enstatite -> 3 (dim) doubles, starts at:
        *                                          data_position + 34,
-       * If "Use rotation matrix" is set to False in the parameter file, the output number
+       * If "Rotation format" is set to "euler angles" in the parameter file, the output number
        * 1, 3, 5 will save the phi1, theta, phi2 or olivine and 7, 8, 9 will be the same
        * for enstatite, and they will be 1 (dim) double instead of 3 (dim) doubles.
+       *
+       * If "Rotation format" is set to "quaternion" in the parameter file, the layout of the data vector per particle is the following
+       * 1 quaternion scalar part of olivine  -> 1 double, starts at:
+       *                                         data_position + 1,
+       * 2 quaternion vector part of olivine  -> 3 (dim) doubles, starts at:
+       *                                         data_position + 2,
+       * 3 eigenvalues of a axis of olivine   -> 2 doubles, starts at:
+       *                                         data_position + 5,
+       * 4 eigenvalues of b axis of olivine   -> 2 doubles, starts at:
+       *                                         data_position + 7,
+       * 5 eigenvalues of c axis of olivine   -> 2 doubles, starts at:
+       *                                         data_position + 9,
+       * 6 quaternion scalar part of enstatite-> 1 double, starts at:
+       *                                         data_position + 11,
+       * 7 quaternion vector part of enstatite-> 3 (dim) doubles, starts at:
+       *                                         data_position + 12,
+       * 8 eigenvalues of a axis of enstatite -> 2 doubles, starts at:
+       *                                         data_position + 15,
+       * 9 eigenvalues of b axis of enstatite -> 2 doubles, starts at:
+       *                                         data_position + 17,
+       * 10 eigenvalues of c axis of enstatite-> 2 doubles, starts at:
+       *                                         data_position + 19,
        *
        * @ingroup ParticleProperties
        */
@@ -85,6 +116,9 @@ namespace aspect
            */
           void
           initialize () override;
+
+          void
+          update () override;
 
           /**
            * Initialization function. This function is called once at the
@@ -138,13 +172,16 @@ namespace aspect
            * the moment of inertia for spinning that sphere. Here we just use it to get three averaged
            * axis associated with the densest clustering of points for each axis. the a to c axis vectors
            * are stored in the first to last array respectively. This function is declared with array
-           * length 6 and 4 for rotation matrix or Euler angle representations.
+           * length 6, 4 or 2 for rotation matrix, Euler angle or quaternion representations.
            */
           std::array<std::array<double,6>,3>
           compute_bingham_average(std::vector<Tensor<2,3>> matrices, std::integral_constant<int,6>) const;
 
           std::array<std::array<double,4>,3>
           compute_bingham_average(std::vector<Tensor<2,3>> matrices, std::integral_constant<int,4>) const;
+
+          std::pair<std::array<double, 4>, std::array<std::array<double,2>,3>>
+          compute_bingham_average(std::vector<Tensor<2,3>> matrices, std::integral_constant<int,2>) const;
 
           /**
            * Declare the parameters this class takes through input files.
@@ -169,16 +206,24 @@ namespace aspect
            * A pointer to the crystal preferred orientation particle property.
            * Avoids repeated searches for that property.
            */
-          std::unique_ptr<const Particle::Property::CrystalPreferredOrientation<dim>> cpo_particle_property;
+          const Particle::Property::CrystalPreferredOrientation<dim> *cpo_particle_property;
 
           /**
-           * Random number generator. For reproducibility of tests it is
-           * initialized in the constructor with a constant plus the MPI rank.
+           * Random number generator.
+           *
+           * This variable is not considered part of the state of the particle
+           * manager and is consequently not serialized. It is re-initialized in the
+           * initialize() and update() functions at the beginning of each time step, and so
+           * has a deterministic state at the beginning of each time step. It
+           * does not need to be restored from a checkpoint.
            */
           mutable std::mt19937 random_number_generator;
 
           /**
-           * the random number generator seed used to initialize the random number generator.
+           * The random number generator seed used to initialize the random number generator.
+           *
+           * This variable is read from the parameter file through a parameter
+           * called 'Random number seed'.
            */
           unsigned int random_number_seed;
 
@@ -194,14 +239,17 @@ namespace aspect
 
           /**
            * when doing the random draw volume weighting, this sets how many samples are taken.
+           * This variable is read from the parameter file through a parameter
+           * called 'Number of samples'.
            */
           unsigned int n_samples;
 
-          /*
-           this sets whether the orientations are represented by rotation matrix or Euler angles.
+          /**
+           * What format to output the eigenvectors/rotation of the bingham average
+           * This variable is read from the parameter file through a parameter
+           * called 'Rotation format'.
            */
-          bool use_rotmat;
-
+          RotationFormat rotation_format;
       };
     }
   }

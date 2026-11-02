@@ -1,20 +1,16 @@
-# Copyright (C) 2011 - 2024 by the authors of the ASPECT code.
+# ------------------------------------------------------
+#
+# SPDX-License-Identifier: GPL-2.0-or-later
+#
+# SPDX-FileCopyrightText: Copyright (C) 2011-2026 by the ASPECT authors.
 #
 # This file is part of ASPECT.
 #
-# ASPECT is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation; either version 2, or (at your option)
-# any later version.
+# Detailed license information governing the source code and
+# contributions can be found in the folder LICENSES and in
+# LICENSE and CONTRIBUTING.md at the top level directory.
 #
-# ASPECT is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
-#
-# You should have received a copy of the GNU General Public License
-# along with ASPECT; see the file LICENSE.  If not see
-# <http://www.gnu.org/licenses/>.
+# ------------------------------------------------------
 
 ################### top matter ################
 cmake_minimum_required(VERSION 3.13.4)
@@ -28,6 +24,7 @@ project(testsuite CXX)
 set(ASPECT_BINARY "${ASPECT_BINARY}" CACHE STRING "" FORCE)
 set(Aspect_DIR "${Aspect_DIR}" CACHE STRING "" FORCE)
 set(ASPECT_COMPARE_TEST_RESULTS "${ASPECT_COMPARE_TEST_RESULTS}" CACHE BOOL "" FORCE)
+set(ASPECT_ENABLE_PERFORMANCE_TESTS "${ASPECT_ENABLE_PERFORMANCE_TESTS}" CACHE BOOL "" FORCE)
 set(ASPECT_RUN_ALL_TESTS OFF CACHE BOOL "")
 
 find_package(Aspect 3.1.0 QUIET REQUIRED HINTS ${Aspect_DIR})
@@ -99,9 +96,12 @@ endfunction()
 # Analyze the .prm to decide if this test should be run or not. We are
 # checking for the following strings in the .prm:
 # 1. "Enable if: ASPECT_WITH_WORLD_BUILDER"
-# 2. "Enable if: ASPECT_WITH_FASTSCAPE"
-# 3. "Enable if: ASPECT_WITH_PYTHON"
-# 4. "Enable if: QUICK_TEST" - enable the test even if RUN_ALL_TESTS is false
+# 2. "Enable if: WORLD_BUILDER_VERSION_GTE_1_1_1"
+# 3. "Enable if: ASPECT_WITH_FASTSCAPE"
+# 4. "Enable if: ASPECT_WITH_PYTHON"
+# 5. "Enable if: ASPECT_WITH_LANDLAB"
+# 6. "Enable if: QUICK_TEST" - enable the test even if RUN_ALL_TESTS is false
+# 7. "Enable if: DEAL_II_VERSION_GTE_9_9_0"
 function(SHOULD_ENABLE_TEST _filename)
 
   file(STRINGS ${_filename} _input_lines
@@ -109,6 +109,15 @@ function(SHOULD_ENABLE_TEST _filename)
   if(NOT "${_input_lines}" STREQUAL "")
     if (${_input_lines} MATCHES "Enable if: ASPECT_WITH_WORLD_BUILDER"
         AND NOT ASPECT_WITH_WORLD_BUILDER)
+      set(_use_test OFF PARENT_SCOPE)
+    endif()
+  endif()
+
+  file(STRINGS ${_filename} _input_lines
+       REGEX "Enable if: WORLD_BUILDER_VERSION_GTE_1_1_1")
+  if(NOT "${_input_lines}" STREQUAL "")
+    if (${_input_lines} MATCHES "Enable if: WORLD_BUILDER_VERSION_GTE_1_1_1"
+        AND WORLD_BUILDER_VERSION VERSION_LESS 1.1.1)
       set(_use_test OFF PARENT_SCOPE)
     endif()
   endif()
@@ -129,6 +138,21 @@ function(SHOULD_ENABLE_TEST _filename)
         AND NOT ASPECT_WITH_PYTHON)
       set(_use_test OFF PARENT_SCOPE)
     endif()
+  endif()
+
+  file(STRINGS ${_filename} _input_lines
+       REGEX "Enable if: ASPECT_WITH_LANDLAB")
+  if(NOT "${_input_lines}" STREQUAL "")
+    if (${_input_lines} MATCHES "Enable if: ASPECT_WITH_LANDLAB"
+        AND NOT ASPECT_WITH_LANDLAB)
+      set(_use_test OFF PARENT_SCOPE)
+    endif()
+  endif()
+
+  file(STRINGS ${_filename} _input_lines
+       REGEX "Enable if: DEAL_II_VERSION_GTE_9_9_0")
+  if(NOT "${_input_lines}" STREQUAL "" AND DEAL_II_PACKAGE_VERSION VERSION_LESS 9.9.0)
+    set(_use_test OFF PARENT_SCOPE)
   endif()
 
   file(STRINGS ${_filename} _input_lines
@@ -181,50 +205,72 @@ if("${TEST_DIFF}" STREQUAL "")
   endif()
 endif()
 
-file(GLOB _tests *.prm)
+# Tests may be placed directly in this directory. Categories are ordinary
+# CMake subdirectories and call this function themselves, which puts all
+# generated files into their matching binary directory.
+set(ASPECT_TEST_SUITE_SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR})
 
-set(_n_tests "0")
-list(SORT _tests)
+# ASPECT_SETUP_PLUGIN() enables dynamic lookup on macOS by setting
+# CMAKE_SHARED_LINKER_FLAGS in its caller's scope. Test discovery is a
+# function, so set the flag in this directory scope before creating plugins.
+if(APPLE)
+  set(CMAKE_SHARED_LINKER_FLAGS
+      "${CMAKE_SHARED_LINKER_FLAGS} -undefined dynamic_lookup")
+endif()
 
-foreach(_test ${_tests})
-  set(_test_full ${_test})
-  get_filename_component(_testname ${_test} NAME_WE)
+function(discover_tests)
+  file(GLOB _tests CONFIGURE_DEPENDS
+       RELATIVE ${CMAKE_CURRENT_SOURCE_DIR}
+       *.prm)
+
+  set(_n_tests "0")
+  list(SORT _tests)
+
+  foreach(_test ${_tests})
+    set(_test_full ${CMAKE_CURRENT_SOURCE_DIR}/${_test})
+    get_filename_component(_testname ${_test} NAME_WE)
+    file(RELATIVE_PATH _test_source_name
+         ${ASPECT_TEST_SUITE_SOURCE_DIR} ${_test_full})
+    string(REGEX REPLACE "\\.prm$" "" _test_source_name ${_test_source_name})
+    string(REPLACE "/" "--" _test_id ${_test_source_name})
+    set(_ctest_name ${_test_source_name})
 
   set(_use_test ON)
 
-  if ("${_testname}" STREQUAL "")
+  if ("${_test_source_name}" STREQUAL "")
     message("Ignoring invalid .prm '${_test_full}'...")
     set(_use_test OFF)
   endif()
-  if (${_test_full} MATCHES "\\.x\\.prm$")
+  if ("${_test_full}" MATCHES "\\.x\\.prm$")
     # Skip files generated by in source builds:
     set(_use_test OFF)
   endif()
 
   # Check whether the test satisfies its conditions. The following
   # modifies _use_test as necessary:
-  SHOULD_ENABLE_TEST(${CMAKE_CURRENT_SOURCE_DIR}/${_testname}.prm)
+  SHOULD_ENABLE_TEST(${_test_full})
 
   if(_use_test)
 
-    message(STATUS "Processing test ${_testname}:")
+    message(STATUS "Processing test ${_ctest_name}:")
 
     # Create main target for this test. We let it depend on the screen output
     # even if the folder with reference data for this test doesn't contain any
     # files. This is useful when you are constructing a new test.
-    add_custom_target(tests.${_testname}
+    add_custom_target(tests.${_test_id}
       DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/output-${_testname}/screen-output)
 
     math(EXPR _n_tests "${_n_tests} + 1")
 
-    # create the target ${_testname} which creates the library
-    # lib${_testname}.so if we have a .cc file
+    # create the target ${_test_id} which creates the library
+    # lib${_test_id}.so if we have a .cc file
     if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/${_testname}.cc)
-      add_library(${_testname} SHARED EXCLUDE_FROM_ALL ${_testname}.cc)
-      ASPECT_SETUP_PLUGIN(${_testname})
+      add_library(${_test_id} SHARED EXCLUDE_FROM_ALL ${_testname}.cc)
+      ASPECT_SETUP_PLUGIN(${_test_id})
+      set_target_properties(${_test_id} PROPERTIES OUTPUT_NAME ${_testname})
 
       set(_testlib 'set Additional shared libraries = ./lib${_testname}.so')
-      set(_testdepends ${_testname})
+      set(_testdepends ${_test_id})
     else()
       set(_testlib)
       set(_testdepends)
@@ -262,7 +308,7 @@ foreach(_test ${_tests})
     # mesh, input files, etc, in the tests/ directory without having
     # to know where exactly they are run.
     add_custom_command(OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/${_testname}.x.prm
-      COMMAND cp ${CMAKE_CURRENT_SOURCE_DIR}/${_testname}.prm
+      COMMAND cp ${_test_full}
               ${CMAKE_CURRENT_BINARY_DIR}/${_testname}.x.prm
       COMMAND echo ''
               >> ${CMAKE_CURRENT_BINARY_DIR}/${_testname}.x.prm
@@ -271,9 +317,9 @@ foreach(_test ${_tests})
       COMMAND echo '${_testlib}'
               >> ${CMAKE_CURRENT_BINARY_DIR}/${_testname}.x.prm
       COMMAND ${PERL_EXECUTABLE} -pi
-              -e 's!\\@SOURCE_DIR\\@!${CMAKE_CURRENT_SOURCE_DIR}!g;'
+              -e 's!\\@SOURCE_DIR\\@!${ASPECT_TEST_SUITE_SOURCE_DIR}!g;'
               ${CMAKE_CURRENT_BINARY_DIR}/${_testname}.x.prm
-      DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/${_testname}.prm
+      DEPENDS ${_test_full}
       )
 
     # then generate a rule that runs aspect and normalizes the output
@@ -286,29 +332,29 @@ foreach(_test ${_tests})
     #
     # the actual run command is a bit complicated because we have to figure out
     # whether we want the test to run in parallel using MPI or not
-    GET_MPI_COUNT(${CMAKE_CURRENT_SOURCE_DIR}/${_testname}.prm)
+    GET_MPI_COUNT(${_test_full})
 
-    # detect the optional script <_testname>.sh that a test can use to process
+    # detect the optional script <test>.sh that a test can use to process
     # output (currently screen-output only).
     if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/${_testname}.sh)
       set(_replacement_script "${CMAKE_CURRENT_SOURCE_DIR}/${_testname}.sh")
       set(_testdepends ${_testdepends} ${CMAKE_CURRENT_SOURCE_DIR}/${_testname}.sh)
     else()
-      set(_replacement_script "${CMAKE_CURRENT_SOURCE_DIR}/cmake/default")
+      set(_replacement_script "${ASPECT_TEST_SUITE_SOURCE_DIR}/cmake/default")
     endif()
 
     # If a .prm contains the keyword "EXPECT FAILURE", make sure aspect fails
     # with a non-zero return value. Otherwise make sure aspect terminates
     # without errors. The logic for this is in tests/cmake/run_test.sh,
     # because we can not do this in ADD_CUSTOM_COMMAND directly.
-    file(STRINGS ${CMAKE_CURRENT_SOURCE_DIR}/${_testname}.prm _input_lines REGEX "EXPECT FAILURE")
+    file(STRINGS ${_test_full} _input_lines REGEX "EXPECT FAILURE")
     if("${_input_lines}" STREQUAL "")
       set(EXPECT "0")
     else()
       set(EXPECT "1")
-      message(STATUS "Test ${_testname} is expected to fail.")
+      message(STATUS "Test ${_ctest_name} is expected to fail.")
       if (NOT "${_mpi_count}" STREQUAL "1")
-        message(FATAL_ERROR "Invalid setup in test '${_testname}.prm': Tests with 'EXPECT FAILURE' are only supported if they use a single MPI rank.")
+        message(FATAL_ERROR "Invalid setup in test '${_ctest_name}.prm': Tests with 'EXPECT FAILURE' are only supported if they use a single MPI rank.")
       endif()
     endif()
 
@@ -323,7 +369,7 @@ foreach(_test ${_tests})
 
     # fail is the user forgot to create reference files instead of silently passing the test
     if("${_output_files}" STREQUAL "")
-      message(FATAL_ERROR "test ${_testname}.prm is missing a folder with reference data")
+      message(FATAL_ERROR "test ${_ctest_name}.prm is missing a folder with reference data")
     endif()
 
     # Create the run command.
@@ -339,7 +385,7 @@ foreach(_test ${_tests})
       add_custom_command(
         OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/output-${_testname}/screen-output
         COMMAND rm -f ${CMAKE_CURRENT_BINARY_DIR}/output-${_testname}/runs
-        COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/cmake/timeout.sh ${TEST_TIME_LIMIT}s ${CMAKE_CURRENT_SOURCE_DIR}/cmake/run_test.sh ${EXPECT} ${ASPECT_BINARY} ${CMAKE_CURRENT_BINARY_DIR}/${_testname}.x.prm ${CMAKE_CURRENT_BINARY_DIR}/output-${_testname}/screen-output.tmp
+        COMMAND ${ASPECT_TEST_SUITE_SOURCE_DIR}/cmake/timeout.sh ${TEST_TIME_LIMIT}s ${ASPECT_TEST_SUITE_SOURCE_DIR}/cmake/run_test.sh ${EXPECT} ${ASPECT_BINARY} ${CMAKE_CURRENT_BINARY_DIR}/${_testname}.x.prm ${CMAKE_CURRENT_BINARY_DIR}/output-${_testname}/screen-output.tmp
         COMMAND ${_replacement_script} screen-output <${CMAKE_CURRENT_BINARY_DIR}/output-${_testname}/screen-output.tmp >${CMAKE_CURRENT_BINARY_DIR}/output-${_testname}/screen-output
         COMMAND touch ${CMAKE_CURRENT_BINARY_DIR}/output-${_testname}/runs
         DEPENDS ${ASPECT_BINARY} ${CMAKE_CURRENT_BINARY_DIR}/${_testname}.x.prm ${_testdepends})
@@ -347,7 +393,7 @@ foreach(_test ${_tests})
       add_custom_command(
         OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/output-${_testname}/screen-output
         COMMAND rm -f ${CMAKE_CURRENT_BINARY_DIR}/output-${_testname}/runs
-        COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/cmake/timeout.sh ${TEST_TIME_LIMIT}s mpirun -np ${_mpi_count} ${ASPECT_BINARY} ${CMAKE_CURRENT_BINARY_DIR}/${_testname}.x.prm
+        COMMAND ${ASPECT_TEST_SUITE_SOURCE_DIR}/cmake/timeout.sh ${TEST_TIME_LIMIT}s mpirun -np ${_mpi_count} ${ASPECT_BINARY} ${CMAKE_CURRENT_BINARY_DIR}/${_testname}.x.prm
                 > ${CMAKE_CURRENT_BINARY_DIR}/output-${_testname}/screen-output.tmp
         COMMAND ${_replacement_script} screen-output <${CMAKE_CURRENT_BINARY_DIR}/output-${_testname}/screen-output.tmp >${CMAKE_CURRENT_BINARY_DIR}/output-${_testname}/screen-output
         COMMAND touch ${CMAKE_CURRENT_BINARY_DIR}/output-${_testname}/runs
@@ -355,7 +401,7 @@ foreach(_test ${_tests})
     endif()
 
 
-    get_filename_component(ASPECT_BASE_DIR ${CMAKE_CURRENT_SOURCE_DIR} PATH)
+    get_filename_component(ASPECT_BASE_DIR ${ASPECT_TEST_SUITE_SOURCE_DIR} PATH)
 
     if(ASPECT_COMPARE_TEST_RESULTS)
       # Commands to normalize each output. Note that we depend on screen-output
@@ -364,7 +410,7 @@ foreach(_test ${_tests})
       foreach(_output_name ${_output_files})
         add_custom_command(OUTPUT ${_output_name}.notime
           COMMAND ${PERL_EXECUTABLE}
-                  ${CMAKE_CURRENT_SOURCE_DIR}/normalize.pl
+                  ${ASPECT_TEST_SUITE_SOURCE_DIR}/normalize.pl
                   ${_output_name} ${ASPECT_BASE_DIR}
                   >${_output_name}.notime
           DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/output-${_testname}/screen-output)
@@ -374,7 +420,7 @@ foreach(_test ${_tests})
       foreach(_name ${_relative_output_filenames})
         add_custom_command(OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/output-${_testname}/${_name}.cmp.notime
           COMMAND ${PERL_EXECUTABLE}
-                  ${CMAKE_CURRENT_SOURCE_DIR}/normalize.pl
+                  ${ASPECT_TEST_SUITE_SOURCE_DIR}/normalize.pl
                   ${CMAKE_CURRENT_SOURCE_DIR}/${_testname}/${_name} ${ASPECT_BASE_DIR}
                   >${CMAKE_CURRENT_BINARY_DIR}/output-${_testname}/${_name}.cmp.notime
           DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/${_testname}/${_name})
@@ -391,10 +437,11 @@ foreach(_test ${_tests})
         # otherwise GENERATE_REFERENCE_OUTPUT would overwrite reference data with garbage.
         add_custom_command(OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/output-${_testname}/${_name}.diff
           COMMAND test -f ${CMAKE_CURRENT_BINARY_DIR}/output-${_testname}/runs
-          COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/cmake/diff_test.sh
+          COMMAND ${ASPECT_TEST_SUITE_SOURCE_DIR}/cmake/diff_test.sh
                   ${TEST_DIFF}
+                  ${_test_source_name}/${_name}
                   ${_testname}/${_name}
-                  ${CMAKE_CURRENT_SOURCE_DIR}
+                  ${ASPECT_TEST_SUITE_SOURCE_DIR}
                   ${CMAKE_CURRENT_BINARY_DIR}
                   ${ASPECT_COMPARE_TEST_RESULTS}
           DEPENDS ${_ref_file} ${_run_file})
@@ -402,33 +449,55 @@ foreach(_test ${_tests})
         # Add the target for this output file to the dependencies of this
         # test. Note that a target may not contain "/" but outputs can be
         # in subdirectories (for example solution/solution...), so replace them.
-        string(REPLACE "/" "-" _target_name ${_testname}.${_name}.diff)
+        string(REPLACE "/" "-" _target_name ${_test_id}.${_name}.diff)
         add_custom_target(${_target_name}
           DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/output-${_testname}/${_name}.diff)
-        add_dependencies(tests.${_testname} ${_target_name})
+        add_dependencies(tests.${_test_id} ${_target_name})
 
       endforeach()
     endif()
 
     # add this test to the dependencies of the overall 'tests' target
     # and declare it to ctest
-    add_dependencies(tests tests.${_testname})
-    add_test(NAME ${_testname}
+    add_dependencies(tests tests.${_test_id})
+    add_test(NAME ${_ctest_name}
       COMMAND ${CMAKE_COMMAND}
               -DBINARY_DIR=${CMAKE_BINARY_DIR}
-              -DTESTNAME=tests.${_testname}
-              -DERROR="Test ${_testname} failed"
+              -DTESTNAME=tests.${_test_id}
+              -DERROR="Test ${_ctest_name} failed"
               -P ${CMAKE_SOURCE_DIR}/run_test.cmake
       WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
-    set_tests_properties(${_testname} PROPERTIES TIMEOUT ${TEST_TIME_LIMIT})
+    set_tests_properties(${_ctest_name} PROPERTIES TIMEOUT ${TEST_TIME_LIMIT})
 
     # Check if this test depends on another test
-    GET_DEPENDS_ON(${CMAKE_CURRENT_SOURCE_DIR}/${_testname}.prm)
+    GET_DEPENDS_ON(${_test_full})
     if(NOT "${_depends_on}" STREQUAL "")
-      message(STATUS "Test dependency detected for test:" ${_testname} ", depending on:" ${_depends_on})
-      set_tests_properties(${_testname} PROPERTIES DEPENDS ${_depends_on})
+      message(STATUS "Test dependency detected for test:" ${_ctest_name} ", depending on:" ${_depends_on})
+      set_tests_properties(${_ctest_name} PROPERTIES DEPENDS ${_depends_on})
     endif()
   endif()
-endforeach()
+  endforeach()
 
-message(STATUS "Found ${_n_tests} tests.")
+  message(STATUS "Found ${_n_tests} tests in ${CMAKE_CURRENT_SOURCE_DIR}.")
+endfunction()
+
+discover_tests()
+add_subdirectory(benchmarks)
+add_subdirectory(boundary_conditions)
+add_subdirectory(cookbooks)
+add_subdirectory(entropy)
+add_subdirectory(heating)
+add_subdirectory(initial_conditions)
+add_subdirectory(mesh_deformation)
+add_subdirectory(mesh_refinement)
+add_subdirectory(misc)
+add_subdirectory(particles)
+add_subdirectory(postprocess)
+add_subdirectory(prescribed_solution)
+add_subdirectory(reactions_and_two_phase_flow)
+add_subdirectory(rheology)
+add_subdirectory(volume_of_fluid)
+
+if (ASPECT_ENABLE_PERFORMANCE_TESTS)
+  add_subdirectory(performance)
+endif()

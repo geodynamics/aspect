@@ -1,24 +1,18 @@
-/*
-  Copyright (C) 2011 - 2024 by the authors of the ASPECT code.
+// ------------------------------------------------------
+//
+// SPDX-License-Identifier: GPL-2.0-or-later
+//
+// SPDX-FileCopyrightText: Copyright (C) 2011-2026 by the ASPECT authors.
+//
+// This file is part of ASPECT.
+//
+// Detailed license information governing the source code and
+// contributions can be found in the folder LICENSES and in
+// LICENSE and CONTRIBUTING.md at the top level directory.
+//
+// ------------------------------------------------------
 
-  This file is part of ASPECT.
-
-  ASPECT is free software; you can redistribute it and/or modify
-  it under the terms of the GNU General Public License as published by
-  the Free Software Foundation; either version 2, or (at your option)
-  any later version.
-
-  ASPECT is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  GNU General Public License for more details.
-
-  You should have received a copy of the GNU General Public License
-  along with ASPECT; see the file LICENSE.  If not see
-  <http://www.gnu.org/licenses/>.
-*/
-
-
+#include <algorithm>
 #include <aspect/geometry_model/spherical_shell.h>
 #include <aspect/geometry_model/initial_topography_model/zero_topography.h>
 
@@ -742,9 +736,9 @@ namespace aspect
     {
       if (this->simulator_is_past_initialization() &&
           !Plugins::plugin_type_matches<const InitialTopographyModel::ZeroTopography<dim>>(this->get_initial_topography_model()))
-        return std::min(std::max (R1 + manifold->topography_for_point(position) - position.norm(), 0.), maximal_depth());
+        return std::clamp(R1 + manifold->topography_for_point(position) - position.norm(), 0., maximal_depth());
       else
-        return std::min (std::max (R1-position.norm(), 0.), maximal_depth());
+        return std::clamp(R1 - position.norm(), 0., maximal_depth());
     }
 
 
@@ -771,7 +765,7 @@ namespace aspect
       // requested depth.
       Point<dim> p;
 
-      p[dim-1] = std::min (std::max(R1 + manifold->topography_for_point(p) - depth, R0), R1);
+      p[dim-1] = std::clamp(R1 + manifold->topography_for_point(p) - depth, R0, R1);
 
       return p;
     }
@@ -903,12 +897,123 @@ namespace aspect
                                             /*direction*/ 1, matched_pairs,
                                             Tensor<1, dim>(), rotation_matrix);
 
-          DoFTools::make_periodicity_constraints<dim,dim,double>(matched_pairs,
-                                                                 constraints,
-                                                                 ComponentMask(),
-          {0},
-          1.);
+          if (dof_handler.get_fe().n_components() == 1)
+            {
+              // Scalar fields (for example the pressure DoFHandler of the
+              // matrix-free Stokes solvers) are invariant under the rotation
+              // that maps one periodic face onto the other. The rotation
+              // matrix is only needed to geometrically match the faces above.
+              // It must not be handed to make_periodicity_constraints():
+              // for scalar elements whose number of DoFs per face equals dim
+              // (e.g. Q1 in 2d) the dim x dim rotation matrix would be
+              // misinterpreted as a face interpolation matrix, silently
+              // producing wrong constraints that couple different DoFs of
+              // the same face.
+              for (auto &pair : matched_pairs)
+                pair.matrix = FullMatrix<double>();
+
+              DoFTools::make_periodicity_constraints<dim,dim,double>(matched_pairs,
+                                                                     constraints);
+            }
+          else
+            {
+              // Vector-valued case (velocity DoFHandler or the full coupled
+              // finite element system): rotate the vector components starting
+              // at component 0.
+              DoFTools::make_periodicity_constraints<dim,dim,double>(matched_pairs,
+                                                                     constraints,
+                                                                     ComponentMask(),
+              {0},
+              1.);
+            }
         }
+    }
+
+
+
+    template <int dim>
+    void
+    SphericalShell<dim>::make_periodicity_constraints_on_level(
+      const DoFHandler<dim> &dof_handler,
+      const unsigned int level,
+      AffineConstraints<double> &constraints) const
+    {
+      if (!periodic)
+        return;
+
+#if DEAL_II_VERSION_GTE(9,9,0)
+      const FullMatrix<double> rotation_matrix =
+        phi_periodicity_rotation_matrix<dim>(phi);
+      const types::boundary_id left_boundary =
+        this->translate_symbolic_boundary_name_to_id("left");
+      const types::boundary_id right_boundary =
+        this->translate_symbolic_boundary_name_to_id("right");
+
+      for (const auto &[first_cell, second_cell] :
+           dof_handler.get_triangulation().get_periodic_face_map())
+        {
+          if (first_cell.first->is_artificial_on_level()
+              || second_cell.first.first->is_artificial_on_level()
+              || first_cell.first->level() != static_cast<int>(level)
+              || second_cell.first.first->level() != static_cast<int>(level))
+            continue;
+
+          const types::boundary_id first_boundary =
+            first_cell.first->face(first_cell.second)->boundary_id();
+          const types::boundary_id second_boundary =
+            second_cell.first.first
+            ->face(second_cell.first.second)
+            ->boundary_id();
+
+          if (!((first_boundary == left_boundary
+                 && second_boundary == right_boundary)
+                || (first_boundary == right_boundary
+                    && second_boundary == left_boundary)))
+            continue;
+
+          const auto first_face =
+            first_cell.first
+            ->as_dof_handler_level_iterator(dof_handler)
+            ->face(first_cell.second);
+          const auto second_face =
+            second_cell.first.first
+            ->as_dof_handler_level_iterator(dof_handler)
+            ->face(second_cell.first.second);
+
+          const auto &left_face =
+            first_boundary == left_boundary ? first_face : second_face;
+          const auto &right_face =
+            first_boundary == left_boundary ? second_face : first_face;
+
+          if (dof_handler.get_fe().n_components() == 1)
+            DoFTools::make_periodicity_constraints_on_level(
+              left_face,
+              right_face,
+              level,
+              constraints,
+              ComponentMask(),
+              second_cell.second);
+          else
+            DoFTools::make_periodicity_constraints_on_level(
+              left_face,
+              right_face,
+              level,
+              constraints,
+              ComponentMask(),
+              second_cell.second,
+              rotation_matrix,
+            {0});
+        }
+#else
+      (void)dof_handler;
+      (void)level;
+      (void)constraints;
+      AssertThrow(false,
+                  ExcMessage("Rotated periodicity with local-smoothing GMG requires "
+                             "deal.II 9.9 or greater. Rebuild ASPECT "
+                             "with a supported deal.II version, or use block AMG "
+                             "or GMG with global coarsening."));
+#endif
     }
 
 
@@ -979,7 +1084,7 @@ namespace aspect
                              "The only opening angles that are allowed for "
                              "this geometry are 90, 180, and 360 in 2d; "
                              "and 90 and 360 in 3d. "
-                             "Units: degrees.");
+                             "Units: \\si{\\degree}.");
           prm.declare_entry ("Cells along circumference", "0",
                              Patterns::Integer (0),
                              "The number of cells in circumferential direction that are "

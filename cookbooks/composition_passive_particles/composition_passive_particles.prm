@@ -39,7 +39,6 @@ subsection Boundary velocity model
 
   subsection Function
     set Variable names      = x,z,t
-    set Function constants  = pi=3.1415926
     set Function expression = if(x>1+sin(0.5*pi*t), 1, -1); 0
   end
 end
@@ -49,7 +48,7 @@ subsection Gravity model
 end
 
 subsection Initial temperature model
-  set Model name = function
+  set List of model names = function
 
   subsection Function
     set Variable names      = x,z
@@ -97,7 +96,7 @@ subsection Compositional fields
 end
 
 subsection Initial composition model
-  set Model name = function
+  set List of model names = function
 
   subsection Function
     set Variable names      = x,y

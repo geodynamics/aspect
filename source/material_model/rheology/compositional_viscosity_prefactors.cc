@@ -1,22 +1,16 @@
-/*
-  Copyright (C) 2024 by the authors of the ASPECT code.
-
-  This file is part of ASPECT.
-
-  ASPECT is free software; you can redistribute it and/or modify
-  it under the terms of the GNU General Public License as published by
-  the Free Software Foundation; either version 2, or (at your option)
-  any later version.
-
-  ASPECT is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  GNU General Public License for more details.
-
-  You should have received a copy of the GNU General Public License
-  along with ASPECT; see the file LICENSE.  If not see
-  <http://www.gnu.org/licenses/>.
-*/
+// ------------------------------------------------------
+//
+// SPDX-License-Identifier: GPL-2.0-or-later
+//
+// SPDX-FileCopyrightText: Copyright (C) 2024-2026 by the ASPECT authors.
+//
+// This file is part of ASPECT.
+//
+// Detailed license information governing the source code and
+// contributions can be found in the folder LICENSES and in
+// LICENSE and CONTRIBUTING.md at the top level directory.
+//
+// ------------------------------------------------------
 
 
 #include <aspect/material_model/rheology/compositional_viscosity_prefactors.h>
@@ -92,6 +86,20 @@ namespace aspect
               factored_viscosities = base_viscosity*std::pow(point_water_fugacity, r);
               break;
             }
+            case interface_weakening:
+            {
+              const unsigned int comp_field_A_idx = this->introspection().compositional_index_for_name(weakening_field_names[0]);
+              const unsigned int comp_field_B_idx = this->introspection().compositional_index_for_name(weakening_field_names[1]);
+
+              const double comp_field_A = in.composition[q][comp_field_A_idx];
+              const double comp_field_B = in.composition[q][comp_field_B_idx];
+              const double union_comp_field = std::min(comp_field_A, comp_field_B);
+
+              if (union_comp_field > interface_weakening_threshold)
+                factored_viscosities *= interface_weakening_factors[composition_index];
+
+              break;
+            }
           }
         return factored_viscosities;
       }
@@ -129,13 +137,34 @@ namespace aspect
                            "required by ASPECT for dislocation creep is r/n, where n is the stress exponent "
                            "for dislocation creep, which typically is 3.5. Units: none.");
 
+        prm.declare_entry ("Interface weakening factors", "1.0",
+                           Patterns::Anything(),
+                           "Map from compositional field name to the degree of weakening of the "
+                           "viscous component at the interface "
+                           "between two compositions. This is only applied in the Viscosity prefactor scheme "
+                           "'Interface weakening'. Units: none.");
+
+        prm.declare_entry("Interface weakening compositions", "",
+                          Patterns::List(Patterns::Anything()),
+                          "List of exactly two compositional field names. If both fields "
+                          "exceed the threshold at the same point, the viscosity is scaled. "
+                          "Only used by the 'interface weakening' viscosity prefactor scheme. Units: none.");
+
+        prm.declare_entry ("Interface weakening threshold", "1e-2",
+                           Patterns::Double(0.),
+                           "Threshold to trigger weakening of the viscous component at the interface "
+                           "between two compositions. This is only applied in the Viscosity prefactor scheme "
+                           "'Interface weakening'. Units: none.");
+
         prm.declare_entry ("Viscosity prefactor scheme", "none",
-                           Patterns::Selection("none|HK04 olivine hydration"),
+                           Patterns::Selection("none|HK04 olivine hydration|interface weakening"),
                            "Select what type of viscosity multiplicative prefactor scheme to apply. "
-                           "Allowed entries are 'none', and 'HK04 olivine hydration'. HK04 olivine "
-                           "hydration calculates the viscosity change due to hydrogen incorporation "
+                           "Allowed entries are 'none', 'HK04 olivine hydration', and 'interface weakening'. "
+                           "HK04 olivine hydration calculates the viscosity change due to hydrogen incorporation "
                            "into olivine following Hirth & Kohlstedt 2004 (10.1029/138GM06). none "
-                           "does not modify the viscosity. Units: none.");
+                           "does not modify the viscosity. Interface weakening reduces the viscous "
+                           "contribution by a constant amount to mimic the effect of a very thin, weak layer between two compositional fields. Units: none.");
+
       }
 
 
@@ -171,6 +200,21 @@ namespace aspect
                                                    options);
             minimum_mass_fraction_water_for_dry_creep = Utilities::MapParsing::parse_map_to_double_array (prm.get("Minimum mass fraction bound water content for fugacity"),
                                                         options);
+          }
+        if (prm.get ("Viscosity prefactor scheme") == "interface weakening")
+          {
+            weakening_field_names = Utilities::split_string_list(prm.get("Interface weakening compositions"));
+            AssertThrow(weakening_field_names.size() == 2, ExcMessage("'Interface weakening compositions' must list exactly two field names. Instead, you have listed: " + Utilities::to_string(weakening_field_names.size()) + "."));
+            std::vector<std::string> compositional_field_names = this->introspection().get_composition_names();
+            std::vector<std::string> chemical_field_names = this->introspection().chemical_composition_field_names();
+            compositional_field_names.insert(compositional_field_names.begin(), "background");
+            chemical_field_names.insert(chemical_field_names.begin(), "background");
+
+            Utilities::MapParsing::Options options(chemical_field_names, "Interface weakening factors");
+            options.list_of_allowed_keys = compositional_field_names;
+            interface_weakening_factors = Utilities::MapParsing::parse_map_to_double_array (prm.get("Interface weakening factors"), options);
+            interface_weakening_threshold = prm.get_double("Interface weakening threshold");
+            viscosity_prefactor_scheme = interface_weakening;
           }
       }
     }

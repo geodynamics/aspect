@@ -1,22 +1,16 @@
-/*
- Copyright (C) 2015 - 2024 by the authors of the ASPECT code.
-
- This file is part of ASPECT.
-
- ASPECT is free software; you can redistribute it and/or modify
- it under the terms of the GNU General Public License as published by
- the Free Software Foundation; either version 2, or (at your option)
- any later version.
-
- ASPECT is distributed in the hope that it will be useful,
- but WITHOUT ANY WARRANTY; without even the implied warranty of
- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- GNU General Public License for more details.
-
- You should have received a copy of the GNU General Public License
- along with ASPECT; see the file LICENSE.  If not see
- <http://www.gnu.org/licenses/>.
- */
+// ------------------------------------------------------
+//
+// SPDX-License-Identifier: GPL-2.0-or-later
+//
+// SPDX-FileCopyrightText: Copyright (C) 2015-2026 by the ASPECT authors.
+//
+// This file is part of ASPECT.
+//
+// Detailed license information governing the source code and
+// contributions can be found in the folder LICENSES and in
+// LICENSE and CONTRIBUTING.md at the top level directory.
+//
+// ------------------------------------------------------
 
 #ifndef _aspect_particle_interpolator_interface_h
 #define _aspect_particle_interpolator_interface_h
@@ -84,11 +78,15 @@ namespace aspect
 
 
       /**
-       * Return a list of names (separated by '|') of possible interpolator
-       * classes for particles.
+       * Return a string that consists of the names of interpolator classes
+       * for particles that can be selected.
+       * These names are separated by a vertical line '|' so
+       * that the string can be an input to the deal.II classes
+       * Patterns::Selection or Patterns::MultipleSelection.
        */
+      template <int dim>
       std::string
-      interpolator_object_names ();
+      get_valid_interpolator_names_pattern ();
 
 
       /**
@@ -113,10 +111,27 @@ namespace aspect
                                       void (*declare_parameters_function) (ParameterHandler &),
                                       std::unique_ptr<Interface<dim>> (*factory_function) ());
 
+
       /**
-       * A function that given the name of a model returns a pointer to an
-       * object that describes it. Ownership of the pointer is transferred to
-       * the caller.
+       * A function that given the name of an interpolation scheme
+       * returns a pointer to an object that describes it.
+       * Ownership of the pointer is transferred to the caller.
+       *
+       * The model object returned is not yet initialized and has not
+       * read its runtime parameters yet.
+       *
+       * @ingroup ParticleInterpolators
+       */
+      template <int dim>
+      std::unique_ptr<Interface<dim>>
+      create_particle_interpolator (const std::string &interpolator_name);
+
+
+      /**
+       * A function that reads the name of an interpolation scheme
+       * from the parameter object and then returns a pointer
+       * to an object that describes it.
+       * Ownership of the pointer is transferred to the caller.
        *
        * The model object returned is not yet initialized and has not
        * read its runtime parameters yet.

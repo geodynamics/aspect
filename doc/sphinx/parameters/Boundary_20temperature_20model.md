@@ -47,7 +47,7 @@ The following boundary temperature models are available:
 
 &lsquo;constant&rsquo;: A model in which the temperature is chosen constant on a given boundary indicator.  Parameters are read from the subsection &rsquo;Constant&rsquo;.
 
-&lsquo;dynamic core&rsquo;: This is a boundary temperature model working only with spherical shell geometry and core statistics postprocessor. The temperature at the top is constant, and the core mantle boundary temperature is dynamically evolving through time by calculating the heat flux into the core and solving the core energy balance. The formulation is mainly following {cite}`NPB+04`, and the plugin is used in Zhang et al. [2016]. The energy of core cooling and freeing of the inner core is included in the plugin. However, current plugin can not deal with the energy balance if the core is in the &lsquo;snowing core&rsquo; regime (i.e., the core solidifies from the top instead of bottom). The adiabatic correction for the CMB heat flux uses the active gravity model, so the gravity at the CMB should be set in subsection &lsquo;Gravity model&rsquo;.
+&lsquo;dynamic core&rsquo;: This is a boundary temperature model working only with spherical shell geometry. The temperature at the top is constant, and the core mantle boundary temperature is dynamically evolving through time by calculating the heat flux into the core and solving the core energy balance. The formulation is mainly following {cite}`NPB+04`, and the plugin is used in Zhang et al. [2016]. The energy of core cooling and freeing of the inner core is included in the plugin. However, current plugin can not deal with the energy balance if the core is in the &lsquo;snowing core&rsquo; regime (i.e., the core solidifies from the top instead of bottom). The adiabatic correction for the CMB heat flux uses the active gravity model, so the gravity at the CMB should be set in subsection &lsquo;Gravity model&rsquo;.
 
 &lsquo;function&rsquo;: Implementation of a model in which the boundary temperature is given in terms of an explicit formula that is elaborated in the parameters in section &ldquo;Boundary temperature model|Function&rdquo;.
 
@@ -71,41 +71,6 @@ Because this class simply takes what the initial temperature had described, this
 **Pattern:** [MultipleSelection add|subtract|minimum|maximum|replace if valid ]
 
 **Documentation:** A comma-separated list of operators that will be used to append the listed temperature models onto the previous models. If only one operator is given, the same operator is applied to all models.
-::::
-
-::::{dropdown} __Parameter:__ {ref}`Model name<parameters:Boundary_20temperature_20model/Model_20name>`
-:name: parameters:Boundary_20temperature_20model/Model_20name
-**Default value:** unspecified
-
-**Pattern:** [Selection ascii data|box|box with lithosphere boundary indicators|constant|dynamic core|function|initial temperature|spherical constant|unspecified ]
-
-**Documentation:** Select one of the following models:
-
-&lsquo;ascii data&rsquo;: Implementation of a model in which the boundary data is derived from files containing data in ascii format. Note the required format of the input data: The first lines may contain any number of comments if they begin with &lsquo;#&rsquo;, but one of these lines needs to contain the number of grid points in each dimension as for example &lsquo;# POINTS: 3 3&rsquo;. The order of the data columns has to be &lsquo;x&rsquo;, &lsquo;Temperature [K]&rsquo; in a 2d model and  &lsquo;x&rsquo;, &lsquo;y&rsquo;, &lsquo;Temperature [K]&rsquo; in a 3d model, which means that there has to be a single column containing the temperature. Note that the data in the input files need to be sorted in a specific order: the first coordinate needs to ascend first, followed by the second in order to assign the correct data to the prescribed coordinates. If you use a spherical model, then the assumed grid changes. &lsquo;x&rsquo; will be replaced by the radial distance of the point to the bottom of the model, &lsquo;y&rsquo; by the azimuth angle and &lsquo;z&rsquo; by the polar angle measured positive from the north pole. The grid will be assumed to be a latitude-longitude grid. Note that the order of spherical coordinates is &lsquo;r&rsquo;, &lsquo;phi&rsquo;, &lsquo;theta&rsquo; and not &lsquo;r&rsquo;, &lsquo;theta&rsquo;, &lsquo;phi&rsquo;, since this allows for dimension independent expressions.
-
-&lsquo;box&rsquo;: A model in which the temperature is chosen constant on the sides of a box which are selected by the parameters Left/Right/Top/Bottom/Front/Back temperature
-
-&lsquo;box with lithosphere boundary indicators&rsquo;: A model in which the temperature is chosen constant on all the sides of a box. Additional boundary indicators are added to the lithospheric parts of the vertical boundaries. This model is to be used with the &rsquo;Two Merged Boxes&rsquo; Geometry Model.
-
-&lsquo;constant&rsquo;: A model in which the temperature is chosen constant on a given boundary indicator.  Parameters are read from the subsection &rsquo;Constant&rsquo;.
-
-&lsquo;dynamic core&rsquo;: This is a boundary temperature model working only with spherical shell geometry and core statistics postprocessor. The temperature at the top is constant, and the core mantle boundary temperature is dynamically evolving through time by calculating the heat flux into the core and solving the core energy balance. The formulation is mainly following {cite}`NPB+04`, and the plugin is used in Zhang et al. [2016]. The energy of core cooling and freeing of the inner core is included in the plugin. However, current plugin can not deal with the energy balance if the core is in the &lsquo;snowing core&rsquo; regime (i.e., the core solidifies from the top instead of bottom). The adiabatic correction for the CMB heat flux uses the active gravity model, so the gravity at the CMB should be set in subsection &lsquo;Gravity model&rsquo;.
-
-&lsquo;function&rsquo;: Implementation of a model in which the boundary temperature is given in terms of an explicit formula that is elaborated in the parameters in section &ldquo;Boundary temperature model|Function&rdquo;.
-
-Since the symbol $t$ indicating time may appear in the formulas for the prescribed temperatures, it is interpreted as having units seconds unless the global input parameter &ldquo;Use years instead of seconds&rdquo; is set, in which case we interpret the formula expressions as having units year.
-
-Because this class simply takes what the function calculates, this class can not know certain pieces of information such as the minimal and maximal temperature on the boundary. For operations that require this, for example in post-processing, this boundary temperature model must therefore be told what the minimal and maximal values on the boundary are. This is done using parameters set in section &ldquo;Boundary temperature model/Initial temperature&rdquo;.
-
-The format of these functions follows the syntax understood by the muparser library, see {ref}`sec:run-aspect:parameters-overview:muparser-format`.
-
-&lsquo;initial temperature&rsquo;: A model in which the temperature at the boundary is chosen to be the same as given in the initial conditions.
-
-Because this class simply takes what the initial temperature had described, this class can not know certain pieces of information such as the minimal and maximal temperature on the boundary. For operations that require this, for example in post-processing, this boundary temperature model must therefore be told what the minimal and maximal values on the boundary are. This is done using parameters set in section &ldquo;Boundary temperature model/Initial temperature&rdquo;.
-
-&lsquo;spherical constant&rsquo;: A model in which the temperature is chosen constant on the inner and outer boundaries of a spherical shell, ellipsoidal chunk or chunk. Parameters are read from subsection &rsquo;Spherical constant&rsquo;.
-
-**Warning**: This parameter provides an old and deprecated way of specifying boundary temperature models and shouldn&rsquo;t be used. Please use &rsquo;List of model names&rsquo; instead.
 ::::
 
 (parameters:Boundary_20temperature_20model/Ascii_20data_20model)=
@@ -286,7 +251,7 @@ Because this class simply takes what the initial temperature had described, this
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
-**Documentation:** Core thermal expansivity. Units: $\frac{1}{\text{K}}$.
+**Documentation:** Core thermal expansivity. Units: \si{\per\kelvin}.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Beta composition<parameters:Boundary_20temperature_20model/Dynamic_20core/Beta_20composition>`
@@ -313,7 +278,7 @@ Because this class simply takes what the initial temperature had described, this
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
-**Documentation:** Core heat conductivity $k_c$. Units: $\frac{\text{W}}{\text{m}\text{K}}$.
+**Documentation:** Core heat conductivity $k_c$. Units: \si{\watt\per\meter\per\kelvin}.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Core density<parameters:Boundary_20temperature_20model/Dynamic_20core/Core_20density>`
@@ -322,7 +287,7 @@ Because this class simply takes what the initial temperature had described, this
 
 **Pattern:** [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
 
-**Documentation:** Density of the core. Units: $\frac{\text{kg}}{\text{m}^3}$.
+**Documentation:** Density of the core. Units: \si{\kilogram\per\meter\cubed}.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Core heat capacity<parameters:Boundary_20temperature_20model/Dynamic_20core/Core_20heat_20capacity>`
@@ -331,7 +296,7 @@ Because this class simply takes what the initial temperature had described, this
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
-**Documentation:** Heat capacity of the core. Units: $\frac{\text{J}}{\text{K}\text{kg}}$.
+**Documentation:** Heat capacity of the core. Units: \si{\joule\per\kelvin\per\kilogram}.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Delta<parameters:Boundary_20temperature_20model/Dynamic_20core/Delta>`
@@ -358,7 +323,7 @@ Because this class simply takes what the initial temperature had described, this
 
 **Pattern:** [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
 
-**Documentation:** Temperature at the inner boundary (core mantle boundary) at the beginning. Units: $\text{K}$.
+**Documentation:** Temperature at the inner boundary (core mantle boundary) at the beginning. Units: \si{\kelvin}.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`K0<parameters:Boundary_20temperature_20model/Dynamic_20core/K0>`
@@ -394,7 +359,7 @@ Because this class simply takes what the initial temperature had described, this
 
 **Pattern:** [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
 
-**Documentation:** Temperature at the outer boundary (lithosphere water/air). Units: $\text{K}$.
+**Documentation:** Temperature at the outer boundary (lithosphere water/air). Units: \si{\kelvin}.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Rh<parameters:Boundary_20temperature_20model/Dynamic_20core/Rh>`
@@ -412,7 +377,7 @@ Because this class simply takes what the initial temperature had described, this
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
-**Documentation:** Core density at zero pressure. Units: $\frac{\text{kg}}{\text{m}^3}$. See {cite}`NPB+04` for more details.
+**Documentation:** Core density at zero pressure. Units: \si{\kilogram\per\meter\cubed}. See {cite}`NPB+04` for more details.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`dR over dt<parameters:Boundary_20temperature_20model/Dynamic_20core/dR_20over_20dt>`
@@ -421,7 +386,7 @@ Because this class simply takes what the initial temperature had described, this
 
 **Pattern:** [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
 
-**Documentation:** Initial inner core radius changing rate. Units: \si{\kilo\meter}/year.
+**Documentation:** Initial inner core radius changing rate. Units: \si{\kilo\meter\per\year}.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`dT over dt<parameters:Boundary_20temperature_20model/Dynamic_20core/dT_20over_20dt>`
@@ -430,7 +395,7 @@ Because this class simply takes what the initial temperature had described, this
 
 **Pattern:** [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
 
-**Documentation:** Initial CMB temperature changing rate. Units: $\text{K}$/year.
+**Documentation:** Initial CMB temperature changing rate. Units: \si{\kelvin\per\year}.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`dX over dt<parameters:Boundary_20temperature_20model/Dynamic_20core/dX_20over_20dt>`
@@ -439,7 +404,7 @@ Because this class simply takes what the initial temperature had described, this
 
 **Pattern:** [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
 
-**Documentation:** Initial light composition changing rate. Units: 1/year.
+**Documentation:** Initial light composition changing rate. Units: \si{\per\year}.
 ::::
 
 (parameters:Boundary_20temperature_20model/Dynamic_20core/Geotherm_20parameters)=
@@ -468,7 +433,7 @@ Because this class simply takes what the initial temperature had described, this
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
-**Documentation:** Melting curve ({cite}`NPB+04` eq. (40)) parameter Tm0. Units: $\text{K}$.
+**Documentation:** Melting curve ({cite}`NPB+04` eq. (40)) parameter Tm0. Units: \si{\kelvin}.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Tm1<parameters:Boundary_20temperature_20model/Dynamic_20core/Geotherm_20parameters/Tm1>`

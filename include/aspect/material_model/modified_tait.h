@@ -1,22 +1,16 @@
-/*
-  Copyright (C) 2011 - 2022 by the authors of the ASPECT code.
-
-  This file is part of ASPECT.
-
-  ASPECT is free software; you can redistribute it and/or modify
-  it under the terms of the GNU General Public License as published by
-  the Free Software Foundation; either version 2, or (at your option)
-  any later version.
-
-  ASPECT is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  GNU General Public License for more details.
-
-  You should have received a copy of the GNU General Public License
-  along with ASPECT; see the file LICENSE.  If not see
-  <http://www.gnu.org/licenses/>.
-*/
+// ------------------------------------------------------
+//
+// SPDX-License-Identifier: GPL-2.0-or-later
+//
+// SPDX-FileCopyrightText: Copyright (C) 2011-2026 by the ASPECT authors.
+//
+// This file is part of ASPECT.
+//
+// Detailed license information governing the source code and
+// contributions can be found in the folder LICENSES and in
+// LICENSE and CONTRIBUTING.md at the top level directory.
+//
+// ------------------------------------------------------
 
 #ifndef _aspect_material_model_modified_tait_h
 #define _aspect_material_model_modified_tait_h
@@ -100,27 +94,33 @@ namespace aspect
 
         /**
          * The reference pressure
+         *
+         * This variable is read from the parameter file through a parameter called 'Reference pressure'.
          */
         double reference_pressure;
 
         /**
          * The reference temperature
+         * This variable is read from the parameter file through a parameter called 'Reference temperature'.
          */
         double reference_temperature;
 
         /**
          * The reference density
+         * This variable is read from the parameter file through a parameter called 'Reference density'.
          */
         double reference_rho;
 
         /**
          * The reference isothermal bulk modulus
+         * This variable is read from the parameter file through a parameter called 'Reference isothermal bulk modulus'.
          */
         double reference_isothermal_bulk_modulus;
 
         /**
          * The reference K'
          * (first pressure derivative of the isothermal bulk modulus)
+         * This variable is read from the parameter file through a parameter called 'Reference bulk modulus derivative'.
          */
         double reference_Kprime;
 
@@ -132,11 +132,13 @@ namespace aspect
 
         /**
          * The reference thermal expansivity
+         * This variable is read from the parameter file through a parameter called 'Reference thermal expansivity'.
          */
         double reference_thermal_expansivity;
 
         /**
          * The Einstein temperature
+         * This variable is read from the parameter file through a parameter called 'Einstein temperature'.
          */
         double einstein_temperature;
 
@@ -148,11 +150,14 @@ namespace aspect
 
         /**
          * The constant viscosity
+         * This variable is read from the parameter file through a parameter called 'Viscosity'.
          */
         double eta;
 
         /**
          * The constant thermal conductivity.
+         *
+         * This variable is read from the parameter file through a parameter called 'Thermal conductivity'.
          */
         double k_value;
 

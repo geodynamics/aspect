@@ -2,7 +2,7 @@
 # postprocessor, specifically, if it also works when a
 # field is zero.
 
-include $ASPECT_SOURCE_DIR/tests/composition_active.prm
+include $ASPECT_SOURCE_DIR/tests/cookbooks/composition_active.prm
 
 set End time = 0.2
 

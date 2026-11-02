@@ -59,7 +59,7 @@ end
 # temperature boundary conditions.
 
 subsection Initial temperature model
-  set Model name = function
+  set List of model names = function
 
   subsection Function
     set Function expression = 0
@@ -83,7 +83,7 @@ subsection Compositional fields
 end
 
 subsection Initial composition model
-  set Model name = function
+  set List of model names = function
 
   subsection Function
     set Variable names      = x,y,z
@@ -114,7 +114,7 @@ end
 # velocity field.
 
 subsection Postprocess
-  set List of postprocessors = visualization, velocity statistics
+  set List of postprocessors = visualization, velocity statistics, viscous dissipation statistics
 
   subsection Visualization
     set Interpolate output = false

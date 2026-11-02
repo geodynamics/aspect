@@ -1,22 +1,16 @@
-/*
-  Copyright (C) 2011 - 2023-2021 by the authors of the ASPECT code.
-
-  This file is part of ASPECT.
-
-  ASPECT is free software; you can redistribute it and/or modify
-  it under the terms of the GNU General Public License as published by
-  the Free Software Foundation; either version 2, or (at your option)
-  any later version.
-
-  ASPECT is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  GNU General Public License for more details.
-
-  You should have received a copy of the GNU General Public License
-  along with ASPECT; see the file doc/COPYING.  If not see
-  <http://www.gnu.org/licenses/>.
-*/
+// ------------------------------------------------------
+//
+// SPDX-License-Identifier: GPL-2.0-or-later
+//
+// SPDX-FileCopyrightText: Copyright (C) 2011-2026 by the ASPECT authors.
+//
+// This file is part of ASPECT.
+//
+// Detailed license information governing the source code and
+// contributions can be found in the folder LICENSES and in
+// LICENSE and CONTRIBUTING.md at the top level directory.
+//
+// ------------------------------------------------------
 
 
 #include <aspect/postprocess/viscous_dissipation_statistics.h>
@@ -79,16 +73,15 @@ namespace aspect
 
             for (unsigned int q = 0; q < n_q_points; ++q)
               {
-                // Viscous dissipation D in 3d:
-                // D = 1/2 * volume_integral(deviatoric_stress*deviatoric_strain_rate)
-                //   = 1/2 * volume_integral(2*eta*deviatoric_strain_rate*deviatoric_strain_rate)
-                //   = volume_integral(eta*deviatoric_strain_rate*deviatoric_strain_rate)
+                // Viscous dissipation D:
+                // D = volume_integral(deviatoric_stress*grad_velocity)
+                //   = volume_integral(2*eta*deviatoric_strain_rate*deviatoric_strain_rate)
                 const SymmetricTensor<2, dim> deviatoric_strain_rate =
                   (this->get_material_model().is_compressible()
                    ? in.strain_rate[q] - 1. / 3. * trace(in.strain_rate[q]) * unit_symmetric_tensor<dim>()
                    : in.strain_rate[q]);
-                const double local_dissipation = out.viscosities[q] * (deviatoric_strain_rate *
-                                                                       deviatoric_strain_rate) * fe_values.JxW(q);
+                const double local_dissipation = 2. * out.viscosities[q] * (deviatoric_strain_rate *
+                                                                            deviatoric_strain_rate) * fe_values.JxW(q);
 
                 // Dissipation over the whole domain
                 local_dissipation_integral[n_compositional_fields] += local_dissipation;

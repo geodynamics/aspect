@@ -1,22 +1,16 @@
-/*
-  Copyright (C) 2011 - 2024 by the authors of the ASPECT code.
-
-  This file is part of ASPECT.
-
-  ASPECT is free software; you can redistribute it and/or modify
-  it under the terms of the GNU General Public License as published by
-  the Free Software Foundation; either version 2, or (at your option)
-  any later version.
-
-  ASPECT is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  GNU General Public License for more details.
-
-  You should have received a copy of the GNU General Public License
-  along with ASPECT; see the file LICENSE.  If not see
-  <http://www.gnu.org/licenses/>.
-*/
+// ------------------------------------------------------
+//
+// SPDX-License-Identifier: GPL-2.0-or-later
+//
+// SPDX-FileCopyrightText: Copyright (C) 2011-2026 by the ASPECT authors.
+//
+// This file is part of ASPECT.
+//
+// Detailed license information governing the source code and
+// contributions can be found in the folder LICENSES and in
+// LICENSE and CONTRIBUTING.md at the top level directory.
+//
+// ------------------------------------------------------
 
 
 #include <aspect/simulator.h>
@@ -73,7 +67,7 @@ namespace aspect
     assemblers->stokes_preconditioner.push_back(std::make_unique<aspect::Assemblers::StokesPreconditioner<dim>>());
     assemblers->stokes_system.push_back(std::make_unique<aspect::Assemblers::StokesIncompressibleTerms<dim>>());
 
-    if (material_model->is_compressible() || parameters.enable_prescribed_dilation)
+    if (material_model->is_compressible() || parameters.enable_prescribed_dilation || prescribed_dilation_manager.get_active_plugin_names().size() > 0)
       {
         // The compressible part of the preconditioner is only necessary if we use the simplified A block
         if (parameters.use_full_A_block_preconditioner == false)
@@ -137,6 +131,9 @@ namespace aspect
       assemblers->stokes_system.push_back(
         std::make_unique<aspect::Assemblers::StokesPressureRHSCompatibilityModification<dim>>());
 
+    if (prescribed_dilation_manager.get_active_plugin_names().size() > 0)
+      assemblers->stokes_system.push_back(
+        std::make_unique<aspect::Assemblers::StokesPrescribedDilation<dim>>());
   }
 
   template <int dim>
@@ -319,7 +316,7 @@ namespace aspect
     // models with melt transport).
 
     cell->get_dof_indices (scratch.local_dof_indices);
-    data.extract_stokes_dof_indices(scratch.local_dof_indices, introspection, finite_element);
+    data.extract_stokes_dof_indices(scratch.local_dof_indices, introspection);
 
     // Prepare the data structures for assembly
     scratch.reinit(cell);
@@ -378,7 +375,7 @@ namespace aspect
   void
   Simulator<dim>::assemble_stokes_preconditioner ()
   {
-    if (stokes_matrix_free)
+    if (is_stokes_matrix_free())
       return;
 
     system_preconditioner_matrix = 0;
@@ -612,7 +609,7 @@ namespace aspect
     // models with melt transport).
     cell->get_dof_indices (scratch.local_dof_indices);
 
-    data.extract_stokes_dof_indices (scratch.local_dof_indices, introspection, finite_element);
+    data.extract_stokes_dof_indices (scratch.local_dof_indices, introspection);
 
     // Prepare the data structures for assembly
     scratch.reinit(cell);
@@ -761,7 +758,7 @@ namespace aspect
 
     if (assemble_newton_stokes_system)
       {
-        if (!assemble_newton_stokes_matrix && !stokes_matrix_free)
+        if (!assemble_newton_stokes_matrix && !is_stokes_matrix_free())
           timer_section_name += " rhs";
         else if (assemble_newton_stokes_matrix && newton_handler->parameters.newton_derivative_scaling_factor == 0)
           timer_section_name += " Picard";
@@ -769,7 +766,7 @@ namespace aspect
           timer_section_name += " Newton";
       }
 
-    if (stokes_matrix_free)
+    if (is_stokes_matrix_free())
       {
         rebuild_stokes_matrix = false;
         assemble_newton_stokes_matrix = false;
@@ -790,7 +787,7 @@ namespace aspect
     // Note that for Dirichlet boundary conditions in matrix-free computations,
     // we will update the right-hand side with boundary information in
     // StokesMatrixFreeHandler::correct_stokes_rhs().
-    if (!stokes_matrix_free)
+    if (!is_stokes_matrix_free())
       Assert(rebuild_stokes_matrix || boundary_velocity_manager.get_prescribed_boundary_velocity_indicators().empty(),
              ExcInternalError("If we have inhomogeneous constraints, we must re-assemble the system matrix."));
 
@@ -882,8 +879,8 @@ namespace aspect
     system_rhs.compress(VectorOperation::add);
 
     // If we change the system_rhs, matrix-free Stokes must update
-    if (stokes_matrix_free)
-      stokes_matrix_free->assemble();
+    if (is_stokes_matrix_free())
+      dynamic_cast<StokesMatrixFreeHandler<dim>*>(stokes_solver.get())->assemble(system_rhs);
 
     // if the model is compressible then we need to adjust the right hand
     // side of the equation to make it compatible with the matrix on the

@@ -27,6 +27,17 @@ the solver tolerance.
  Case 4 model setup. Copied from {cite:t}`quinquis:2014`.
 ```
 
+:::{note}
+The viscous dissipation postprocessor has been amended since this cookbook was written
+and now correctly returns values twice as large as before
+(a missing factor was the source of the bug).
+The user must now divide the recovered viscous dissipation values by a factor of two in order
+to match the values shown below. When comparing with results obtained with other codes,
+check their documentation; it may also have been wrong by a factor of two as several other codes had a similar bug.
+
+:::
+
+
 ## Case 1: Simple rheology
 
 The Case 1 model setup considers seven materials (compositional fields) apart

@@ -1,0 +1,64 @@
+
+Loading shared library <./libcheckpoint_12_steady_rms_velocity.debug.so>
+* running continuous reference:
+* now resuming from the pre-termination checkpoint:
+* restarted run log:
+
+
+   Loading Ascii data initial file $ASPECT_SOURCE_DIR/benchmarks/blankenbach/initial_temperature_case1c.txt.
+
+*** Resuming from snapshot output_steady_rms_restart.tmp/restart/01/
+
+Number of active cells: 64 (on 4 levels)
+Number of degrees of freedom: 1,235 (578+81+576)
+
+*** Timestep 4:  t=0.000778549 seconds, dt=0.000170808 seconds
+   Solving temperature system... 12 iterations.
+   Solving Stokes system (GMG)... 7+0 iterations.
+
+   Postprocessing:
+     RMS, max velocity:                  921 m/s, 1.85e+03 m/s
+     Temperature min/avg/max:            -0.007745 K, 0.5 K, 1.008 K
+     Heat fluxes through boundary parts: 0 W, 0 W, -21.46 W, 21.46 W
+     Heating rate (average/total):       0 W/kg, 0 W
+
+*** Timestep 5:  t=0.000947513 seconds, dt=0.000168963 seconds
+   Solving temperature system... 11 iterations.
+   Solving Stokes system (GMG)... 7+0 iterations.
+
+   Postprocessing:
+     RMS, max velocity:                  913 m/s, 1.82e+03 m/s
+     Temperature min/avg/max:            -0.006766 K, 0.5 K, 1.007 K
+     Heat fluxes through boundary parts: 0 W, 0 W, -22.5 W, 22.5 W
+     Heating rate (average/total):       0 W/kg, 0 W
+
+*** Timestep 6:  t=0.00111936 seconds, dt=0.000171846 seconds
+   Solving temperature system... 11 iterations.
+   Solving Stokes system (GMG)... 7+0 iterations.
+
+   Postprocessing:
+     RMS, max velocity:                  916 m/s, 1.83e+03 m/s
+     Temperature min/avg/max:            -0.006548 K, 0.5 K, 1.007 K
+     Heat fluxes through boundary parts: 0 W, 0 W, -23.16 W, 23.16 W
+     Heating rate (average/total):       0 W/kg, 0 W
+
+*** Timestep 7:  t=0.0012905 seconds, dt=0.000171145 seconds
+   Solving temperature system... 11 iterations.
+   Solving Stokes system (GMG)... 7+0 iterations.
+
+   Postprocessing:
+     RMS, max velocity:                  931 m/s, 1.86e+03 m/s
+     Temperature min/avg/max:            -0.006561 K, 0.5 K, 1.007 K
+     Heat fluxes through boundary parts: 0 W, 0 W, -23.62 W, 23.62 W
+     Heating rate (average/total):       0 W/kg, 0 W
+
+Termination requested by criterion: steady state velocity
+*** Snapshot output_steady_rms_restart.tmp/restart/02/ created!
+
+
+
+
+* final continuous and restart statistics:
+7 1.290503821212e-03 1.711451834115e-04 64 659 576 11 7 8 8 9.30507366e+02 1.86314910e+03 -6.56146095e-03 5.00000000e-01 1.00656146e+00 5.06561461e-01 0.00000000e+00 0.00000000e+00 -2.36243712e+01 2.36243711e+01 
+7 1.290503821212e-03 1.711451834115e-04 64 659 576 11 7 8 8 9.30507366e+02 1.86314910e+03 -6.56146095e-03 5.00000000e-01 1.00656146e+00 5.06561461e-01 0.00000000e+00 0.00000000e+00 -2.36243712e+01 2.36243711e+01 
+* checkpoint resume preserved steady-RMS-velocity termination history if the last two lines are equal.

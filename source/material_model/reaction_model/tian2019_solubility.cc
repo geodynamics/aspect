@@ -1,24 +1,18 @@
-/*
-  Copyright (C) 2024 by the authors of the ASPECT code.
+// ------------------------------------------------------
+//
+// SPDX-License-Identifier: GPL-2.0-or-later
+//
+// SPDX-FileCopyrightText: Copyright (C) 2024-2026 by the ASPECT authors.
+//
+// This file is part of ASPECT.
+//
+// Detailed license information governing the source code and
+// contributions can be found in the folder LICENSES and in
+// LICENSE and CONTRIBUTING.md at the top level directory.
+//
+// ------------------------------------------------------
 
-  This file is part of ASPECT.
-
-  ASPECT is free software; you can redistribute it and/or modify
-  it under the terms of the GNU General Public License as published by
-  the Free Software Foundation; either version 2, or (at your option)
-  any later version.
-
-  ASPECT is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  GNU General Public License for more details.
-
-  You should have received a copy of the GNU General Public License
-  along with ASPECT; see the file LICENSE.  If not see
-  <http://www.gnu.org/licenses/>.
-*/
-
-
+#include <algorithm>
 #include <aspect/material_model/reaction_model/tian2019_solubility.h>
 #include <deal.II/base/parameter_handler.h>
 
@@ -99,36 +93,23 @@ namespace aspect
             // cap the pressure just before this break down. Additionally, the inverse pressure is used for
             // parameterized enthalpy change, so introduce a minimum pressure to avoid a division by 0.
             const double minimum_pressure = 1e-12;
-            pressure_for_reaction_in_GPa = std::min(std::max(minimum_pressure, pressure_for_reaction_in_GPa), pressure_cutoffs[i]);
+            pressure_for_reaction_in_GPa = std::clamp(pressure_for_reaction_in_GPa, minimum_pressure, pressure_cutoffs[i]);
             const double inverse_pressure_for_reaction = 1.0/pressure_for_reaction_in_GPa;
 
             for (unsigned int j = 0; j<devolatilization_enthalpy_changes[i].size(); ++j)
               {
-#if DEAL_II_VERSION_GTE(9, 6, 0)
                 LR_values[i] += devolatilization_enthalpy_changes[i][j] * Utilities::pow(inverse_pressure_for_reaction, devolatilization_enthalpy_changes[i].size() - 1 - j);
-#else
-                LR_values[i] += devolatilization_enthalpy_changes[i][j] * std::pow(inverse_pressure_for_reaction, devolatilization_enthalpy_changes[i].size() - 1 - j);
-#endif
               }
 
             for (unsigned int j = 0; j<water_mass_fractions[i].size(); ++j)
               {
-#if DEAL_II_VERSION_GTE(9, 6, 0)
                 csat_values[i] += i==3 ? water_mass_fractions[i][j] * Utilities::pow(std::log10(pressure_for_reaction_in_GPa), water_mass_fractions[i].size() - 1 - j) :\
                                   water_mass_fractions[i][j] * Utilities::pow(pressure_for_reaction_in_GPa, water_mass_fractions[i].size() - 1 - j);
-#else
-                csat_values[i] += i==3 ? water_mass_fractions[i][j] * std::pow(std::log10(pressure_for_reaction_in_GPa), water_mass_fractions[i].size() - 1 - j) :\
-                                  water_mass_fractions[i][j] * std::pow(pressure_for_reaction_in_GPa, water_mass_fractions[i].size() - 1 - j);
-#endif
               }
 
             for (unsigned int j = 0; j<devolatilization_onset_temperatures[i].size(); ++j)
               {
-#if DEAL_II_VERSION_GTE(9, 6, 0)
                 Td_values[i] += devolatilization_onset_temperatures[i][j] * Utilities::pow(pressure_for_reaction_in_GPa, devolatilization_onset_temperatures[i].size() - 1 - j);
-#else
-                Td_values[i] += devolatilization_onset_temperatures[i][j] * std::pow(pressure_for_reaction_in_GPa, devolatilization_onset_temperatures[i].size() - 1 - j);
-#endif
               }
           }
 

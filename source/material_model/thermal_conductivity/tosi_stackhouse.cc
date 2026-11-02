@@ -1,22 +1,16 @@
-/*
-  Copyright (C) 2025 - by the authors of the ASPECT code.
-
-  This file is part of ASPECT.
-
-  ASPECT is free software; you can redistribute it and/or modify
-  it under the terms of the GNU General Public License as published by
-  the Free Software Foundation; either version 2, or (at your option)
-  any later version.
-
-  ASPECT is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  GNU General Public License for more details.
-
-  You should have received a copy of the GNU General Public License
-  along with ASPECT; see the file LICENSE.  If not see
-  <http://www.gnu.org/licenses/>.
-*/
+// ------------------------------------------------------
+//
+// SPDX-License-Identifier: GPL-2.0-or-later
+//
+// SPDX-FileCopyrightText: Copyright (C) 2025-2026 by the ASPECT authors.
+//
+// This file is part of ASPECT.
+//
+// Detailed license information governing the source code and
+// contributions can be found in the folder LICENSES and in
+// LICENSE and CONTRIBUTING.md at the top level directory.
+//
+// ------------------------------------------------------
 
 #include <aspect/material_model/thermal_conductivity/tosi_stackhouse.h>
 #include <aspect/geometry_model/interface.h>
@@ -79,7 +73,7 @@ namespace aspect
                            "on top of this base value, according to the parameters 'Pressure "
                            "dependencies of thermal conductivity' and 'Reference temperatures "
                            "for thermal conductivity'. "
-                           "Units: $\\frac{\\text{W}}{\\text{m}\\text{K}}$");
+                           "Units: \\si{\\watt\\per\\meter\\per\\kelvin}");
         prm.declare_entry ("Pressure dependencies of thermal conductivity", "3.3e-10, 3.4e-10, 3.6e-10, 1.05e-10",
                            Patterns::List(Patterns::Double ()),
                            "A list of values that determine the linear scaling of the "
@@ -89,7 +83,7 @@ namespace aspect
                            Patterns::List(Patterns::Double (0.)),
                            "A list of values of reference temperatures used to determine "
                            "the temperature-dependence of the thermal conductivity. "
-                           "Units: $\\text{K}$.");
+                           "Units: \\si{\\kelvin}.");
         prm.declare_entry ("Thermal conductivity exponents", "0.48, 0.56, 0.61, 1.0",
                            Patterns::List(Patterns::Double (0.)),
                            "A list of exponents in the temperature-dependent term of the "

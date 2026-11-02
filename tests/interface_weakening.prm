@@ -1,0 +1,111 @@
+# This is a simplified version of the continental extension cookbook that
+# also includes a weak sub-grid layer between upper and lower crust that is
+# six orders of magnitude weaker than both. It is assumed to have a
+# thickness of one cell row: the cells in which both crustal compositions
+# are present are weakened by a constant factor.
+
+include $ASPECT_SOURCE_DIR/cookbooks/continental_extension/continental_extension.prm
+
+set End time                               = 10e3
+set Max nonlinear iterations               = 5
+set CFL number                             = 0.25
+set Output directory                       = output-interface_weakening
+
+subsection Discretization
+  set Composition polynomial degree = 1,1
+end
+
+# Reduce the resolution to 10 km cells and no adaptive refinement,
+# so that the weakened band is exactly one cell row.
+subsection Mesh refinement
+  set Initial adaptive refinement = 0
+  set Initial global refinement   = 1
+end
+
+# Two chemical compositions instead of the five cookbook fields; both are
+# tracked by particles.
+subsection Compositional fields
+  set Number of fields = 2
+  set Names of fields  = composition_A, \
+                         composition_B
+  set Types of fields = chemical composition, \
+                        chemical composition
+  set Compositional field methods = particles, particles
+  set Mapped particle properties  = composition_A: initial composition_A, \
+                                    composition_B: initial composition_B
+end
+
+# The upper crust (composition_A, 20 km thick) and lower crust
+# (composition_B, 20 km thick) are a constant thickness.
+subsection Initial composition model
+  subsection Function
+    set Function expression = if(y>=80.e3, 1, 0); \
+                              if(y<80.e3 && y>=60.e3, 1, 0);
+  end
+end
+
+# No internal heating
+subsection Heating model
+  set List of model names =
+end
+
+subsection Material model
+  set Material averaging = harmonic average only viscosity
+
+  subsection Visco Plastic
+    # The weak layer viscosity of 1e-6*1e20 = 1e14 Pa s must not be cut off
+    # by the minimum viscosity.
+    set Minimum viscosity = 1e12
+
+    # Density values for the renamed compositional fields.
+    set Densities = background: 3300, \
+                    composition_A: 3300, \
+                    composition_B: 2900
+
+    # Replace the cookbook dislocation creep flow law by a
+    # temperature-independent diffusion creep rheology with a constant
+    # viscosity of 1/(2*5e-21) = 1e20 Pa s.
+    set Viscous flow law                          = diffusion
+    set Prefactors for diffusion creep            = 5e-21
+    set Stress exponents for diffusion creep      = 1.0
+    set Activation energies for diffusion creep   = 0.0
+    set Activation volumes for diffusion creep    = 0.0
+    set Grain size exponents for diffusion creep  = 0
+
+    # Dislocation creep is not used but the included cookbook's dislocation
+    # creep entries must still be overridden because the number of fields
+    # has been reduced.
+    set Prefactors for dislocation creep          = 6.16e-16
+    set Stress exponents for dislocation creep    = 3.5
+    set Activation energies for dislocation creep = 530.e3
+    set Activation volumes for dislocation creep  = 18.e-6
+
+    # No strain weakening or plastic damping (the cookbook uses a
+    # plastic_strain field that does not exist in this test).
+    set Strain weakening mechanism = none
+    set Use plastic damper         = false
+
+    # Weaken the viscous component by six orders of magnitude in the cells
+    # where both crustal compositions are present.
+    set Viscosity prefactor scheme       = interface weakening
+    set Interface weakening factors      = background: 1.0, composition_A: 1e-6, composition_B: 1e-6
+    set Interface weakening threshold    = 1e-6
+    set Interface weakening compositions = composition_A, composition_B
+  end
+end
+
+subsection Particles
+  set Minimum particles per cell  = 10
+  set List of particle properties = initial composition, pT path, position
+  set Interpolation scheme        = cell average
+
+  subsection Generator
+    subsection Reference cell
+      set Number of particles per cell per direction = 4
+    end
+  end
+end
+
+subsection Postprocess
+  set List of postprocessors = material statistics
+end

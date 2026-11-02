@@ -1,0 +1,17 @@
+# This test is identical to function_mesh_deformation_tangential_mesh_velocity_spherical.prm
+# but with spherical coordinates.
+
+include $ASPECT_SOURCE_DIR/tests/function_mesh_deformation_tangential_mesh_velocity_spherical.prm
+
+
+subsection Mesh deformation
+  set Mesh deformation boundary indicators = top: boundary function, bottom: boundary function
+
+  subsection Boundary function
+    set Coordinate system   = spherical
+    set Variable names      = r, phi, t
+    # year_in_seconds = 60*60*24*365.2425
+    set Function constants  = m_per_yr=1, rm=5371000, ra=6371000, year_in_seconds=31556952
+    set Function expression = 0.0 ; (r < rm) ? 0.0 : 3 * (r * sin(phi)) / 6371000 * sin(t/1e6) / 1e8 * year_in_seconds
+  end
+end

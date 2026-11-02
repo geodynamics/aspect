@@ -1,22 +1,16 @@
-/*
-  Copyright (C) 2016 - 2023 by the authors of the ASPECT code.
-
-  This file is part of ASPECT.
-
-  ASPECT is free software; you can redistribute it and/or modify
-  it under the terms of the GNU General Public License as published by
-  the Free Software Foundation; either version 2, or (at your option)
-  any later version.
-
-  ASPECT is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  GNU General Public License for more details.
-
-  You should have received a copy of the GNU General Public License
-  along with ASPECT; see the file LICENSE.  If not see
-  <http://www.gnu.org/licenses/>.
-*/
+// ------------------------------------------------------
+//
+// SPDX-License-Identifier: GPL-2.0-or-later
+//
+// SPDX-FileCopyrightText: Copyright (C) 2016-2026 by the ASPECT authors.
+//
+// This file is part of ASPECT.
+//
+// Detailed license information governing the source code and
+// contributions can be found in the folder LICENSES and in
+// LICENSE and CONTRIBUTING.md at the top level directory.
+//
+// ------------------------------------------------------
 
 
 #include <aspect/postprocess/point_values.h>
@@ -27,6 +21,7 @@
 #include <deal.II/numerics/vector_tools.h>
 
 #include <cmath>
+#include <fstream>
 
 namespace aspect
 {
@@ -39,11 +34,13 @@ namespace aspect
       output_interval (0),
       // initialize this to a nonsensical value; set it to the actual time
       // the first time around we get to check it
-      last_output_time (std::numeric_limits<double>::quiet_NaN()),
+      last_output_time (std::numeric_limits<double>::lowest()),
       evaluation_points_cartesian (std::vector<Point<dim>>() ),
       point_values (std::vector<std::pair<double, std::vector<Vector<double>>>>() ),
       use_natural_coordinates (false)
     {}
+
+
 
     template <int dim>
     std::pair<std::string,std::string>
@@ -52,7 +49,7 @@ namespace aspect
       // if this is the first time we get here, set the next output time
       // to the current time. this makes sure we always produce data during
       // the first time step
-      if (std::isnan(last_output_time))
+      if (last_output_time < this->get_parameters().start_time - output_interval)
         last_output_time = this->get_time() - output_interval;
 
       // see if output is requested at this time
@@ -195,9 +192,9 @@ namespace aspect
                              "The time interval between each generation of "
                              "point values output. A value of zero indicates "
                              "that output should be generated in each time step. "
-                             "Units: years if the "
+                             "Units: \\si{\\year} if the "
                              "'Use years instead of seconds' parameter is set; "
-                             "seconds otherwise.");
+                             "\\si{\\second} otherwise.");
           prm.declare_entry("Evaluation points", "",
                             // a list of points, separated by semicolons; each point has
                             // exactly 'dim' components/coordinates, separated by commas

@@ -1,0 +1,17 @@
+
+Number of active cells: 280 (on 2 levels)
+Number of degrees of freedom: 4,638 (2,810+423+1,405)
+
+*** Timestep 0:  t=0 years, dt=0 years
+   Solving temperature system... 0 iterations.
+   Solving Stokes system (GMG)... 55+0 iterations.
+
+   Postprocessing:
+     Writing graphical output:      output-adiabatic_profile_with_lookup/solution/solution-00000
+     Temperature min/avg/max:       1723 K, 1883 K, 2020 K
+     Heating rate (average/total):  9.029e-20 W/kg, 2.371e-06 W
+
+Termination requested by criterion: end time
+
+
+

@@ -1,0 +1,29 @@
+
+
+   Loading Ascii data boundary file $ASPECT_SOURCE_DIR/data/geometry-model/initial-topography-model/ascii-data/test/box_2d_top_step.0.txt.
+
+Number of active cells: 1,024 (on 5 levels)
+Number of degrees of freedom: 13,876 (8,514+1,105+4,257)
+
+Number of mesh deformation degrees of freedom: 8,514
+   Solving mesh displacement system... 6 iterations.
+   Solving mesh displacement system... 6 iterations.
+   Solving mesh displacement system... 6 iterations.
+   Solving mesh displacement system... 6 iterations.
+   Solving mesh displacement system... 7 iterations.
+   Solving mesh displacement system... 7 iterations.
+   Solving mesh displacement system... 7 iterations.
+   Solving mesh displacement system... 8 iterations.
+   Solving mesh displacement system... 8 iterations.
+   Solving mesh displacement system... 8 iterations.
+*** Timestep 0:  t=0 years, dt=0 years
+   Solving mesh displacement system... 0 iterations.
+
+   Postprocessing:
+     Topography min/max: 0 m, 1e+04 m
+     RMS, max velocity:  0 m/year, 0 m/year
+
+Termination requested by criterion: end time
+
+
+

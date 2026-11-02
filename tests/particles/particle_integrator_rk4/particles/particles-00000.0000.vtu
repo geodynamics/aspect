@@ -1,0 +1,45 @@
+<?xml version="1.0" ?> 
+<!-- 
+# vtk DataFile Version 3.0
+#This file was generated 
+<VTKFile type="UnstructuredGrid" version="0.1" compressor="vtkZLibDataCompressor" byte_order="LittleEndian">
+<UnstructuredGrid>
+<FieldData>
+<DataArray type="Float32" Name="CYCLE" NumberOfTuples="1" format="ascii">0</DataArray>
+<DataArray type="Float32" Name="TIME" NumberOfTuples="1" format="ascii">0</DataArray>
+</FieldData>
+<Piece NumberOfPoints="10" NumberOfCells="10" >
+  <Points>
+    <DataArray type="Float32" NumberOfComponents="3" format="binary">
+AQAAAHgAAAB4AAAAZgAAAA==eAHbffeI3aMnR20YgMCt19d2UuEDOxCbYU2hHWvIAjC7N8DR1liF2x4krJ8zw9YqXxDM3ut70u63ZzGYvTuI0T50nRmYrbpR097TQA/MvrVJw76czQTMjvsRZP/5mBWYDQAgcx/D
+    </DataArray>
+  </Points>
+
+  <Cells>
+    <DataArray type="Int32" Name="connectivity" format="binary">
+AQAAACgAAAAoAAAAIAAAAA==eAENw4kNACAMBKDT+nX/hYWEJBlOy+X2eH22HwK8AC4=
+    </DataArray>
+    <DataArray type="Int32" Name="offsets" format="binary">
+AQAAACgAAAAoAAAAIAAAAA==eAENw4kNACAMBKDzrbr/wEJCS9IdTpfb8nh9fgOYADg=
+    </DataArray>
+    <DataArray type="UInt8" Name="types" format="binary">
+AQAAAAoAAAAKAAAACwAAAA==eAFjZIQBAABBAAs=
+    </DataArray>
+  </Cells>
+  <PointData Scalars="scalars">
+    <DataArray type="Float32" Name="initial position" NumberOfComponents="3" format="binary">
+AQAAAHgAAAB4AAAAZgAAAA==eAHbffeI3aMnR20YgMCt19d2UuEDOxCbYU2hHWvIAjC7N8DR1liF2x4krJ8zw9YqXxDM3ut70u63ZzGYvTuI0T50nRmYrbpR097TQA/MvrVJw76czQTMjvsRZP/5mBWYDQAgcx/D
+    </DataArray>
+    <DataArray type="Float32" Name="id" format="binary">
+AQAAACgAAAAoAAAAIwAAAA==eAFjYACBBnsg4QBEQNwAxAuA+AAQPwBiBkcGBgFHAGdtBdI=
+    </DataArray>
+    <DataArray type="Float32" Name="function" format="binary">
+AQAAACgAAAAoAAAADwAAAA==eAFjYGiwZyACAAAcQwDA
+    </DataArray>
+    <DataArray type="Float32" Name="initial C_1" format="binary">
+AQAAACgAAAAoAAAAHwAAAA==eAFjYGiwn+C5Xj/ygZcFA4OMBgNDgBoDFgAAnc0E7A==
+    </DataArray>
+  </PointData>
+ </Piece>
+ </UnstructuredGrid>
+</VTKFile>

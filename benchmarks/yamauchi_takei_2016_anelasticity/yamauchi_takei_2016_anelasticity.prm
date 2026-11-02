@@ -22,7 +22,7 @@ subsection Geometry model
 end
 
 subsection Initial temperature model
-  set Model name = anelastic Vs to temperature
+  set List of model names = anelastic Vs to temperature
   set Remove temperature heterogeneity down to specified depth = 25000
   set Set reference temperature down to specified depth = 600
   set Use Yamauchi and Takei parameterization = true

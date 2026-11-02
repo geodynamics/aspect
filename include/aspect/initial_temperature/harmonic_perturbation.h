@@ -1,22 +1,16 @@
-/*
-  Copyright (C) 2011 - 2023 by the authors of the ASPECT code.
-
-  This file is part of ASPECT.
-
-  ASPECT is free software; you can redistribute it and/or modify
-  it under the terms of the GNU General Public License as published by
-  the Free Software Foundation; either version 2, or (at your option)
-  any later version.
-
-  ASPECT is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  GNU General Public License for more details.
-
-  You should have received a copy of the GNU General Public License
-  along with ASPECT; see the file LICENSE.  If not see
-  <http://www.gnu.org/licenses/>.
-*/
+// ------------------------------------------------------
+//
+// SPDX-License-Identifier: GPL-2.0-or-later
+//
+// SPDX-FileCopyrightText: Copyright (C) 2011-2026 by the ASPECT authors.
+//
+// This file is part of ASPECT.
+//
+// Detailed license information governing the source code and
+// contributions can be found in the folder LICENSES and in
+// LICENSE and CONTRIBUTING.md at the top level directory.
+//
+// ------------------------------------------------------
 
 
 #ifndef _aspect_initial_temperature_harmonic_perturbation_h
@@ -69,6 +63,8 @@ namespace aspect
          * number variables are in fact twice the wave number in a
          * mathematical sense. This allows the user to prescribe a single
          * up-/downswing or half periods.
+         *
+         * This variable is read from the parameter file through a parameter called 'Vertical wave number'.
          */
         int vertical_wave_number;
 
@@ -76,6 +72,7 @@ namespace aspect
          * The lateral wave number  of the harmonic perturbation in the first
          * dimension. This is the only lateral wave number in 2D and equals
          * the degree of the spherical harmonics in a 3D spherical shell.
+         * This variable is read from the parameter file through a parameter called 'Lateral wave number one'.
          */
         int lateral_wave_number_1;
 
@@ -83,11 +80,13 @@ namespace aspect
          * The lateral wave number of the harmonic perturbation in the second
          * dimension. This is not used in 2D and equals the order of the
          * spherical harmonics in a 3D spherical shell.
+         * This variable is read from the parameter file through a parameter called 'Lateral wave number two'.
          */
         int lateral_wave_number_2;
 
         /**
          * The maximal magnitude of the harmonic perturbation.
+         * This variable is read from the parameter file through a parameter called 'Magnitude'.
          */
         double magnitude;
 
@@ -96,6 +95,8 @@ namespace aspect
          * in an incompressible material model. In case of a compressible
          * material model the perturbation is applied on top of an adiabatic
          * profile and this variable is not used at all.
+         *
+         * This variable is read from the parameter file through a parameter called 'Reference temperature'.
          */
         double reference_temperature;
     };

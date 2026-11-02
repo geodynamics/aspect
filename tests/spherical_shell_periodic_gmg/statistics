@@ -1,0 +1,19 @@
+# 1: Time step number
+# 2: Time (years)
+# 3: Time step size (years)
+# 4: Number of mesh cells
+# 5: Number of Stokes degrees of freedom
+# 6: Number of temperature degrees of freedom
+# 7: Iterations for temperature solver
+# 8: Iterations for Stokes solver
+# 9: Velocity iterations in Stokes preconditioner
+# 10: Schur complement iterations in Stokes preconditioner
+# 11: Visualization file name
+# 12: RMS velocity (m/year)
+# 13: Max. velocity (m/year)
+# 14: Minimal temperature (K)
+# 15: Average temperature (K)
+# 16: Maximal temperature (K)
+# 17: Average nondimensional temperature (K)
+0 0.000000000000e+00 0.000000000000e+00 120 1257 553  0 13 14 14 output-spherical_shell_periodic_gmg/solution/solution-00000 8.68630030e-02 2.71337560e-01 -1.05399225e+01 1.60806316e+02 4.27300000e+03 5.19231026e-02 
+1 1.000000000000e+03 1.000000000000e+03 192 2126 939 11 10 11 11 output-spherical_shell_periodic_gmg/solution/solution-00001 8.68569698e-02 2.71111973e-01 -1.05468129e+01 1.60807995e+02 4.27300000e+03 5.19256993e-02 

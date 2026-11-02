@@ -1,22 +1,16 @@
-/*
- Copyright (C) 2015 - 2022 by the authors of the ASPECT code.
-
- This file is part of ASPECT.
-
- ASPECT is free software; you can redistribute it and/or modify
- it under the terms of the GNU General Public License as published by
- the Free Software Foundation; either version 2, or (at your option)
- any later version.
-
- ASPECT is distributed in the hope that it will be useful,
- but WITHOUT ANY WARRANTY; without even the implied warranty of
- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- GNU General Public License for more details.
-
- You should have received a copy of the GNU General Public License
- along with ASPECT; see the file LICENSE.  If not see
- <http://www.gnu.org/licenses/>.
- */
+// ------------------------------------------------------
+//
+// SPDX-License-Identifier: GPL-2.0-or-later
+//
+// SPDX-FileCopyrightText: Copyright (C) 2015-2026 by the ASPECT authors.
+//
+// This file is part of ASPECT.
+//
+// Detailed license information governing the source code and
+// contributions can be found in the folder LICENSES and in
+// LICENSE and CONTRIBUTING.md at the top level directory.
+//
+// ------------------------------------------------------
 
 
 #ifndef _aspect_postprocess_geoid_h
@@ -80,55 +74,77 @@ namespace aspect
 
       private:
         /**
-         * Parameters to set the maximum and minimum degree when computing geoid from spherical harmonics
+         * Maximum degree when computing geoid from spherical harmonics.
+         *
+         * This variable is read from the parameter file through a parameter called 'Maximum degree'.
          */
         unsigned int max_degree;
+
+        /**
+         * Minimum degree when computing geoid from spherical harmonics.
+         * This variable is read from the parameter file through a parameter called 'Minimum degree'.
+         */
         unsigned int min_degree;
 
         /**
          * A parameter to control whether to output the data in geographical coordinates.
          * If true, output the data in longitudes and latitudes; if false, output data in x y z.
+         * This variable is read from the parameter file through a parameter called 'Output data in geographical coordinates'.
          */
         bool output_in_lat_lon;
 
         /**
          * A parameter to control whether to output the spherical harmonic coefficients of the geoid anomaly
+         * This variable is read from the parameter file through a parameter called 'Output geoid anomaly coefficients'.
          */
         bool output_geoid_anomaly_SH_coes;
 
         /**
          * A parameter to control whether to output the spherical harmonic coefficients of the surface topography contribution
+         * This variable is read from the parameter file through a parameter called 'Output surface topography contribution coefficients'.
          */
         bool output_surface_topo_contribution_SH_coes;
 
         /**
          * A parameter to control whether to output the spherical harmonic coefficients of the CMB topography contribution
+         * This variable is read from the parameter file through a parameter called 'Output CMB topography contribution coefficients'.
          */
         bool output_CMB_topo_contribution_SH_coes;
 
         /**
          * A parameter to control whether to output the spherical harmonic coefficients of the density anomaly
+         * This variable is read from the parameter file through a parameter called 'Output density anomaly contribution coefficients'.
          */
         bool output_density_anomaly_contribution_SH_coes;
 
         /**
          * A parameter to control whether to output the free-air gravity anomaly
+         * This variable is read from the parameter file through a parameter called 'Output gravity anomaly'.
          */
         bool output_gravity_anomaly;
 
         /**
-         * Parameters to set the density value out of the surface and CMB boundary
+         * Density value outside the surface boundary.
+         * This variable is read from the parameter file through a parameter called 'Density above'.
          */
         double density_above;
+
+        /**
+         * Density value outside the CMB boundary.
+         * This variable is read from the parameter file through a parameter called 'Density below'.
+         */
         double density_below;
 
         /**
          * A parameter to control whether to include the surface topography contribution on geoid
+         * This variable is read from the parameter file through a parameter called 'Include surface topography contribution'.
          */
         bool include_surface_topo_contribution;
 
         /**
          * A parameter to control whether to include the CMB topography contribution on geoid
+         *
+         * This variable is read from the parameter file through a parameter called 'Include CMB topography contribution'.
          */
         bool include_CMB_topo_contribution;
 
@@ -174,10 +190,18 @@ namespace aspect
 
         /**
          * A vector to store the cosine terms of the geoid anomaly spherical harmonic coefficients.
+         *
+         * These coefficients are computed afresh by execute() and are subsequently
+         * accessed through evaluate(), for example by the sea level postprocessor.
+         * Consequently, they do not need to be serialized for checkpoint/restart:
+         * execute() recomputes them before dependent postprocessors use them.
          */
         std::vector<double> geoid_coecos;
+
         /**
          * A vector to store the sine terms of the geoid anomaly spherical harmonic coefficients.
+         *
+         * See geoid_coecos for why these runtime values are not serialized.
          */
         std::vector<double> geoid_coesin;
     };

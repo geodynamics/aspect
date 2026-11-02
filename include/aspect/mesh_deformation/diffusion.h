@@ -1,22 +1,16 @@
-/*
-  Copyright (C) 2020 - 2024 by the authors of the ASPECT code.
-
-  This file is part of ASPECT.
-
-  ASPECT is free software; you can redistribute it and/or modify
-  it under the terms of the GNU General Public License as published by
-  the Free Software Foundation; either version 2, or (at your option)
-  any later version.
-
-  ASPECT is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  GNU General Public License for more details.
-
-  You should have received a copy of the GNU General Public License
-  along with ASPECT; see the file LICENSE.  If not see
-  <http://www.gnu.org/licenses/>.
-*/
+// ------------------------------------------------------
+//
+// SPDX-License-Identifier: GPL-2.0-or-later
+//
+// SPDX-FileCopyrightText: Copyright (C) 2020-2026 by the ASPECT authors.
+//
+// This file is part of ASPECT.
+//
+// Detailed license information governing the source code and
+// contributions can be found in the folder LICENSES and in
+// LICENSE and CONTRIBUTING.md at the top level directory.
+//
+// ------------------------------------------------------
 
 
 #ifndef _aspect_mesh_deformation_diffusion_h
@@ -110,11 +104,15 @@ namespace aspect
          * The hillslope transport coefficient or diffusivity [m2/s]
          * used in the hillslope diffusion of the deformed
          * surface.
+         *
+         * This variable is read from the parameter file through a parameter called 'Hillslope transport coefficient'.
          */
         double diffusivity;
 
         /**
          * Maximum number of steps between the application of diffusion.
+         *
+         * This variable is read from the parameter file through a parameter called 'Time steps between diffusion'.
          */
         unsigned int timesteps_between_diffusion;
 

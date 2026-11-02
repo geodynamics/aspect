@@ -1,0 +1,53 @@
+# Enable if: ASPECT_WITH_WORLD_BUILDER
+# Enable if: WORLD_BUILDER_VERSION_GTE_1_1_1
+# Verify that a box mesh receives its initial topography directly from GWB.
+
+set Dimension = 2
+set End time = 0
+set Nonlinear solver scheme = no Advection, no Stokes
+set World builder file = $ASPECT_SOURCE_DIR/tests/world_builder_initial_topography_box.wb
+
+subsection Geometry model
+  set Model name = box
+
+  subsection Box
+    set X extent = 100000
+    set Y extent = 50000
+    set X repetitions = 4
+    set Y repetitions = 2
+  end
+
+  subsection Initial topography model
+    set Model name = world builder
+  end
+end
+
+subsection Mesh refinement
+  set Initial global refinement = 1
+end
+
+subsection Material model
+  set Model name = simple
+end
+
+subsection Gravity model
+  set Model name = vertical
+end
+
+subsection Initial temperature model
+  set List of model names = function
+
+  subsection Function
+    set Function expression = 1600
+  end
+end
+
+subsection Postprocess
+  set List of postprocessors = visualization, topography
+
+  subsection Visualization
+    set Interpolate output = false
+    set List of output variables = depth
+    set Output format = gnuplot
+  end
+end

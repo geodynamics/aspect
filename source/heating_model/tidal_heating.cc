@@ -1,33 +1,27 @@
-/*
-  Copyright (C) 2011 - 2025 by the authors of the ASPECT code.
-
-  This file is part of ASPECT.
-
-  ASPECT is free software; you can redistribute it and/or modify
-  it under the terms of the GNU General Public License as published by
-  the Free Software Foundation; either version 2, or (at your option)
-  any later version.
-
-  ASPECT is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  GNU General Public License for more details.
-
-  You should have received a copy of the GNU General Public License
-  along with ASPECT; see the file LICENSE.  If not see
-  <http://www.gnu.org/licenses/>.
-*/
+// ------------------------------------------------------
+//
+// SPDX-License-Identifier: GPL-2.0-or-later
+//
+// SPDX-FileCopyrightText: Copyright (C) 2011-2026 by the ASPECT authors.
+//
+// This file is part of ASPECT.
+//
+// Detailed license information governing the source code and
+// contributions can be found in the folder LICENSES and in
+// LICENSE and CONTRIBUTING.md at the top level directory.
+//
+// ------------------------------------------------------
 
 
 #include <aspect/heating_model/tidal_heating.h>
 
-#include <aspect/simulator.h>
 #include <aspect/geometry_model/interface.h>
 #include <aspect/geometry_model/chunk.h>
 #include <aspect/geometry_model/two_merged_chunks.h>
 #include <aspect/geometry_model/ellipsoidal_chunk.h>
 #include <aspect/geometry_model/sphere.h>
 #include <aspect/geometry_model/spherical_shell.h>
+#include <aspect/gravity_model/radial_with_tidal_potential.h>
 
 namespace aspect
 {
@@ -44,9 +38,8 @@ namespace aspect
                        Plugins::plugin_type_matches<GeometryModel::TwoMergedChunks<dim>>(this->get_geometry_model()) ||
                        Plugins::plugin_type_matches<GeometryModel::EllipsoidalChunk<dim>>(this->get_geometry_model()) ||
                        Plugins::plugin_type_matches<GeometryModel::Sphere<dim>>(this->get_geometry_model()) ||
-                       Plugins::plugin_type_matches<GeometryModel::SphericalShell<dim>>(this->get_geometry_model())) &&
-                      dim==3,
-                      ExcMessage("Latitudinal variation of strain rate can only be used with 3-dimensional geometry models that "
+                       Plugins::plugin_type_matches<GeometryModel::SphericalShell<dim>>(this->get_geometry_model())),
+                      ExcMessage("Latitudinal variation of strain rate can only be used with models that "
                                  "have either a spherical or ellipsoidal natural coordinate system."));
         }
     }
@@ -79,8 +72,13 @@ namespace aspect
           if (strain_rate_distribution == latitudinal_variation)
             {
               const Point<dim> position = material_model_inputs.position[q];
-              const double theta = Utilities::Coordinates::cartesian_to_spherical_coordinates(position)[dim-1];
-              local_tidal_strain_rate = ( maximum_tidal_strain_rate - minimum_tidal_strain_rate ) / 2. * std::cos( theta * 2. ) + ( maximum_tidal_strain_rate + minimum_tidal_strain_rate ) / 2.;
+              double colatitude = Utilities::Coordinates::cartesian_to_spherical_coordinates(position)[dim-1];
+              if constexpr (dim == 2)
+                {
+                  colatitude = colatitude - numbers::PI / 2.;
+                }
+
+              local_tidal_strain_rate = ( maximum_tidal_strain_rate - minimum_tidal_strain_rate ) / 2. * std::cos( colatitude * 2. ) + ( maximum_tidal_strain_rate + minimum_tidal_strain_rate ) / 2.;
             }
           else if (strain_rate_distribution == constant)
             {
@@ -116,35 +114,36 @@ namespace aspect
                              Patterns::Double (0),
                              "The orbital/tidal frequency that produces the heating. "
                              "Default value is the diurnal tidal frequency of Europa, ~3.551 days. "
-                             "Units: 1/s.");
+                             "Units: \\si{\\per\\second}.");
           prm.declare_entry ("Elastic shear modulus", "3.3e9",
                              Patterns::Double (0),
                              "Elastic shear modulus of the material. "
                              "For simplicity, this parameter will be used even if elasticity is set in the material model. "
                              "Default value is for Europa's icy shell. "
-                             "Units: Pa.");
+                             "Units: \\si{\\pascal}.");
           prm.declare_entry ("Constant tidal strain rate", "2e-10",
                              Patterns::Double (0),
                              "Time-averaged strain rate by a lunar diurnal tide that is simplified to be constant regardless of location. "
                              "Default value is for the diurnal tide of Europa from Tobie et al. (2003). "
-                             "Units: 1/s.");
+                             "Units: \\si{\\per\\second}.");
           prm.declare_entry ("Custom distribution of tidal strain rate", "constant",
                              Patterns::Selection("constant|latitudinal variation"),
                              "Choose how the time-averaged tidal strain rate is distributed. "
                              "If 'constant', the tidal strain rate is fixed to 'Constant tidal strain rate'. "
-                             "If 'latitudinal variation', 'Maximum tidal strain rate' and 'Minimum tidal strain rate' are used.");
+                             "If 'latitudinal variation', 'Maximum tidal strain rate' and 'Minimum tidal strain rate' are used. "
+                             "On 2D geometry, y axis works as polar axis for latitudinal variation. ");
           prm.declare_entry ("Maximum tidal strain rate", "2.81e-10",
                              Patterns::Double (0),
                              "Maximum time-averaged tidal strain rate by lunar diurnal tide at the poles. "
                              "This parameter will be used when 'Custom distribution of tidal strain rate' is 'latitudinal variation'. "
                              "Default value is for Europa at pole from Nimmo et al. (2007). "
-                             "Units: 1/s.");
+                             "Units: \\si{\\per\\second}.");
           prm.declare_entry ("Minimum tidal strain rate", "1.67e-10",
                              Patterns::Double (0),
                              "Minimum time-averaged tidal strain rate by lunar diurnal tide at the equator. "
                              "This parameter will be used when 'Custom distribution of tidal strain rate' is 'latitudinal variation'. "
                              "Default value is for Europa at Equator from Nimmo et al. (2007). "
-                             "Units: 1/s.");
+                             "Units: \\si{\\per\\second}.");
         }
         prm.leave_subsection();
       }
@@ -167,7 +166,12 @@ namespace aspect
           if (prm.get ("Custom distribution of tidal strain rate") == "constant")
             strain_rate_distribution = constant;
           else if (prm.get ("Custom distribution of tidal strain rate") == "latitudinal variation")
-            strain_rate_distribution = latitudinal_variation;
+            {
+              if (dim==2 && Plugins::plugin_type_matches<GravityModel::RadialWithTidalPotential<dim>>(this->get_gravity_model()))
+                throw ExcMessage ("On 2D, tidal heating and gravity with tidal potential have different lateral variations: latitudinal and longitudinal variation, respectively");
+
+              strain_rate_distribution = latitudinal_variation;
+            }
           else
             AssertThrow (false, ExcMessage ("Not a valid custom distribution of tidal strain rate."));
           maximum_tidal_strain_rate = prm.get_double ("Maximum tidal strain rate");
@@ -194,6 +198,7 @@ namespace aspect
                                   "Selecting 'latitudinal variation' from 'Custom distribution of tidal strain rate' allows simplified latitudinal variation "
                                   "with cosine function, 'Maximum tidal strain rate' and 'Minimum tidal strain rate. "
                                   "Latitudinal variation of tidal strain rate is shown in Fig.3 from Nimmo et al. (2007) (https://doi.org/10.1016/j.icarus.2007.04.021). "
-                                  "Unit: W/m^3.")
+                                  "On 2D geometry, y axis works as polar axis for latitudinal variation. "
+                                  "Unit: \\si{\\watt\\per\\meter\\cubed}.")
   }
 }

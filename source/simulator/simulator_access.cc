@@ -1,28 +1,23 @@
-/*
-  Copyright (C) 2011 - 2024 by the authors of the ASPECT code.
-
-  This file is part of ASPECT.
-
-  ASPECT is free software; you can redistribute it and/or modify
-  it under the terms of the GNU General Public License as published by
-  the Free Software Foundation; either version 2, or (at your option)
-  any later version.
-
-  ASPECT is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  GNU General Public License for more details.
-
-  You should have received a copy of the GNU General Public License
-  along with ASPECT; see the file LICENSE.  If not see
-  <http://www.gnu.org/licenses/>.
-*/
+// ------------------------------------------------------
+//
+// SPDX-License-Identifier: GPL-2.0-or-later
+//
+// SPDX-FileCopyrightText: Copyright (C) 2011-2026 by the ASPECT authors.
+//
+// This file is part of ASPECT.
+//
+// Detailed license information governing the source code and
+// contributions can be found in the folder LICENSES and in
+// LICENSE and CONTRIBUTING.md at the top level directory.
+//
+// ------------------------------------------------------
 
 
 #include <aspect/simulator.h>
 #include <aspect/advection_field.h>
 #include <aspect/mesh_deformation/free_surface.h>
 #include <aspect/mesh_deformation/interface.h>
+#include <aspect/simulator/solver/stokes_matrix_free.h>
 #include <aspect/particle/manager.h>
 
 namespace WorldBuilder
@@ -709,6 +704,13 @@ namespace aspect
   }
 
   template <int dim>
+  const PrescribedDilation::Manager<dim> &
+  SimulatorAccess<dim>::get_prescribed_dilation_manager () const
+  {
+    return simulator->prescribed_dilation_manager;
+  }
+
+  template <int dim>
   const MeshRefinement::Manager<dim> &
   SimulatorAccess<dim>::get_mesh_refinement_manager () const
   {
@@ -843,12 +845,15 @@ namespace aspect
   }
 
 
+
   template <int dim>
   double
   SimulatorAccess<dim>::get_pressure_scaling () const
   {
     return (simulator->pressure_scaling);
   }
+
+
 
   template <int dim>
   bool
@@ -857,12 +862,25 @@ namespace aspect
     return simulator->do_pressure_rhs_compatibility_modification;
   }
 
+
+
+  template <int dim>
+  bool
+  SimulatorAccess<dim>::stokes_A_block_is_symmetric () const
+  {
+    return simulator->stokes_A_block_is_symmetric();
+  }
+
+
+
   template <int dim>
   bool
   SimulatorAccess<dim>::model_has_prescribed_stokes_solution () const
   {
     return (simulator->prescribed_stokes_solution.get() != nullptr);
   }
+
+
 
   template <int dim>
   const Postprocess::Manager<dim> &
@@ -903,9 +921,9 @@ namespace aspect
 
 
   template <int dim>
-  bool SimulatorAccess<dim>::is_stokes_matrix_free()
+  bool SimulatorAccess<dim>::is_stokes_matrix_free() const
   {
-    return (simulator->stokes_matrix_free ? true : false);
+    return simulator->is_stokes_matrix_free();
   }
 
 
@@ -914,9 +932,18 @@ namespace aspect
   const StokesMatrixFreeHandler<dim> &
   SimulatorAccess<dim>::get_stokes_matrix_free () const
   {
-    Assert (simulator->stokes_matrix_free.get() != nullptr,
+    Assert (simulator->is_stokes_matrix_free(),
             ExcMessage("You can not call this function if the matrix-free Stokes solver is not used."));
-    return *(simulator->stokes_matrix_free);
+    return *dynamic_cast<StokesMatrixFreeHandler<dim>*>(simulator->stokes_solver.get());
+  }
+
+
+
+  template <int dim>
+  const StokesSolver::Interface<dim> &
+  SimulatorAccess<dim>::get_stokes_solver () const
+  {
+    return *(simulator->stokes_solver.get());
   }
 
 

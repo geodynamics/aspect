@@ -1,9 +1,4 @@
 
-
-The output directory <output-fastscape_test_silt_sand_parameters/fastscape/> provided in the input file appears not to exist.
-ASPECT will create it for you.
-
-
 Number of active cells: 200 (on 2 levels)
 Number of degrees of freedom: 7,119 (1,722+231+861+861+861+861+861+861)
 
@@ -52,7 +47,7 @@ Number of mesh deformation degrees of freedom: 1,722
    Acting according to the parameter 'Nonlinear solver failure strategy':
    Continuing to the next timestep even though solution is not fully converged.
 
-Skipping mesh refinement, because the mesh did not change.
+Skipping mesh refinement, because no cells were flagged for refinement/coarsening.
 
 *** Timestep 0:  t=0 years, dt=0 years
    Solving mesh displacement system... 0 iterations.

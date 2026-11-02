@@ -1,0 +1,118 @@
+name: post_performance_results
+
+on:
+  workflow_run:
+    workflows: ["performance"]
+    types:
+      - completed
+
+permissions:
+  actions: read
+  contents: read
+  pull-requests: write
+
+
+jobs:
+  upload:
+    strategy:
+      fail-fast: false
+    runs-on: ubuntu-latest
+    if: >
+      ${{
+        github.event.workflow_run.conclusion == 'success'
+      }}
+    steps:
+      - name: Download artifacts
+        uses: actions/github-script@v9
+        with:
+          script: |
+            const fs = require('fs');
+            const path = require('path');
+
+            const runId = context.payload.workflow_run?.id;
+            if (!runId) {
+              core.setFailed('workflow_run.id is missing in event payload.');
+              return;
+            }
+
+            // List artifacts created by the triggering run
+            const { data } = await octokit.rest.actions.listWorkflowRunArtifacts({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              run_id: runId,
+              per_page: 100,
+            });
+
+            const names = Array.from({ length: 1 }, (_, i) => `performance_${i + 1}_results`);
+
+            for (const name of names) {
+              const artifact = data.artifacts.find(a => a.name === name);
+              if (!artifact) {
+                core.warning(`Artifact not found: ${name}`);
+                continue;
+              }
+
+              const download = await octokit.rest.actions.downloadArtifact({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                artifact_id: artifact.id,
+                archive_format: 'zip',
+              });
+
+              const filePath = path.join(process.env.GITHUB_WORKSPACE, `${name}.zip`);
+              fs.writeFileSync(filePath, Buffer.from(download.data));
+              core.info(`Saved ${filePath}`);
+            }
+
+      - name: Unzip artifacts
+        run: |
+          set -e
+          for i in $(seq 1 8); do
+            f="performance_${i}_results.zip"
+            if [ -f "$f" ]; then
+              unzip -o "$f"
+            else
+              echo "Missing $f (skipping)"
+            fi
+          done
+
+      - name: Retrieve performance benchmark 1
+        id: retrieve_performance_1
+        env:
+          benchmark_number: 1
+        run: |
+          set -e
+          file="$GITHUB_WORKSPACE/performance_1_results/analyze_1.log"
+          cat "$file"
+          line=$(grep wall_time "$file" | sed 's/\x1B\[[0-9;]\{1,\}[A-Za-z]//g')
+          samples=$(grep samples "$file" | sed 's/\x1B\[[0-9;]\{1,\}[A-Za-z]//g')
+          {
+            echo "wall_time_1_main_mean=$(echo "$line" | awk '{print $2}')"
+            echo "wall_time_1_main_std_dev=$(echo "$line" | awk '{print $4}')"
+            echo "wall_time_1_main_samples=$(echo "$samples" | awk '{print $2}')"
+            echo "wall_time_1_feature_mean=$(echo "$line" | awk '{print $5}')"
+            echo "wall_time_1_feature_std_dev=$(echo "$line" | awk '{print $7}')"
+            echo "wall_time_1_feature_samples=$(echo "$samples" | awk '{print $3}')"
+            echo "wall_time_1_CI_low=$(echo "$line" | sed 's/\[/ /g; s/\]/ /g' | awk '{print $8}')"
+            echo "wall_time_1_CI_high=$(echo "$line" | sed 's/\[/ /g; s/\]/ /g' | awk '{print $10}')"
+          } >> "$GITHUB_OUTPUT"
+      - name: Find Comment
+        id: find_comment
+        continue-on-error: true
+        uses: peter-evans/find-comment@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          issue-number: ${{ github.event.workflow_run.pull_requests[0].number }}
+          comment-author: 'github-actions[bot]'
+
+      - name: Create or update comment
+        uses: peter-evans/create-or-update-comment@v5
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          comment-id: ${{ steps.find_comment.outputs.comment-id }}
+          issue-number: ${{ github.event.workflow_run.pull_requests[0].number }}
+          body: |
+            | Benchmark | Main | Feature | Difference (99.9% CI) |
+            | --- | --- | --- | --- |
+            | Continental extension | ${{ steps.retrieve_performance_1.outputs.wall_time_1_main_mean }} ± ${{ steps.retrieve_performance_1.outputs.wall_time_1_main_std_dev }} (s=${{ steps.retrieve_performance_1.outputs.wall_time_1_main_samples }})| ${{ steps.retrieve_performance_1.outputs.wall_time_1_feature_mean }} ± ${{ steps.retrieve_performance_1.outputs.wall_time_1_feature_std_dev }} (s=${{ steps.retrieve_performance_1.outputs.wall_time_1_feature_samples }})| ${{ steps.retrieve_performance_1.outputs.wall_time_1_CI_low }} .. ${{ steps.retrieve_performance_1.outputs.wall_time_1_CI_high }} |
+          edit-mode: replace

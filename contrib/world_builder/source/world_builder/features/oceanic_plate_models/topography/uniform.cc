@@ -99,9 +99,14 @@ namespace WorldBuilder
           return topography;
         }
 
+        double
+        Uniform::maximum_topography() const
+        {
+          return topography;
+        }
+
         WB_REGISTER_FEATURE_OCEANIC_PLATE_TOPOGRAPHY_MODEL(Uniform, uniform)
       } // namespace Topography
     } // namespace OceanicPlateModels
   } // namespace Features
 } // namespace WorldBuilder
-

@@ -32,7 +32,7 @@ end
 
 # temperature field doesn't matter. set it to zero
 subsection Initial temperature model
-  set Model name = function
+  set List of model names = function
 
   subsection Function
     set Function expression = 0
@@ -58,11 +58,10 @@ subsection Material model
 end
 
 subsection Initial composition model
-  set Model name = function
+  set List of model names = function
 
   subsection Function
     set Variable names      = x,z
-    set Function constants  = pi=3.1415926
     set Function expression = 0.5*(1+tanh((z-0.85-0.02*cos(2*pi*x/2))/0.02)); \
                             (0.5*(1+tanh((z-0.85-0.02*cos(2*pi*x/2))/0.02))) > 0.8 ? sin(45*pi/180) : 0.0; \
                             (0.5*(1+tanh((z-0.85-0.02*cos(2*pi*x/2))/0.02))) > 0.8 ? cos(45*pi/180) : 0.0;

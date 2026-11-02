@@ -1,22 +1,16 @@
-/*
-  Copyright (C) 2015 - 2024 by the authors of the ASPECT code.
-
- This file is part of ASPECT.
-
- ASPECT is free software; you can redistribute it and/or modify
- it under the terms of the GNU General Public License as published by
- the Free Software Foundation; either version 2, or (at your option)
- any later version.
-
- ASPECT is distributed in the hope that it will be useful,
- but WITHOUT ANY WARRANTY; without even the implied warranty of
- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- GNU General Public License for more details.
-
- You should have received a copy of the GNU General Public License
- along with ASPECT; see the file LICENSE.  If not see
- <http://www.gnu.org/licenses/>.
- */
+// ------------------------------------------------------
+//
+// SPDX-License-Identifier: GPL-2.0-or-later
+//
+// SPDX-FileCopyrightText: Copyright (C) 2015-2026 by the ASPECT authors.
+//
+// This file is part of ASPECT.
+//
+// Detailed license information governing the source code and
+// contributions can be found in the folder LICENSES and in
+// LICENSE and CONTRIBUTING.md at the top level directory.
+//
+// ------------------------------------------------------
 
 #include <aspect/particle/integrator/euler.h>
 #include <aspect/geometry_model/interface.h>
@@ -55,20 +49,13 @@ namespace aspect
 
         for (auto it = begin_particle; it != end_particle; ++it)
           {
-#if DEAL_II_VERSION_GTE(9, 6, 0)
             // Get a reference to the particle location, so that we can update it in-place
             Point<dim> &location = it->get_location();
-#else
-            Point<dim> location = it->get_location();
-#endif
             location += dt * (*old_velocity);
 
             if (at_periodic_boundary)
               this->get_geometry_model().adjust_positions_for_periodicity(location);
 
-#if !DEAL_II_VERSION_GTE(9, 6, 0)
-            it->set_location(location);
-#endif
             ++old_velocity;
           }
       }

@@ -1,0 +1,14 @@
+
+Number of active cells: 40 (on 2 levels)
+Number of degrees of freedom: 678 (410+63+205)
+
+*** Timestep 0:  t=0 years, dt=0 years
+
+   Postprocessing:
+     Writing graphical output: output-world_builder_initial_topography_spherical_shell/solution/solution-00000
+     Topography min/max:       5e+04 m, 1e+05 m
+
+Termination requested by criterion: end time
+
+
+

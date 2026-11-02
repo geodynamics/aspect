@@ -1,22 +1,16 @@
-/*
-  Copyright (C) 2019 - 2022 by the authors of the ASPECT code.
-
-  This file is part of ASPECT.
-
-  ASPECT is free software; you can redistribute it and/or modify
-  it under the terms of the GNU General Public License as published by
-  the Free Software Foundation; either version 2, or (at your option)
-  any later version.
-
-  ASPECT is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  GNU General Public License for more details.
-
-  You should have received a copy of the GNU General Public License
-  along with ASPECT; see the file LICENSE.  If not see
-  <http://www.gnu.org/licenses/>.
-*/
+// ------------------------------------------------------
+//
+// SPDX-License-Identifier: GPL-2.0-or-later
+//
+// SPDX-FileCopyrightText: Copyright (C) 2019-2026 by the ASPECT authors.
+//
+// This file is part of ASPECT.
+//
+// Detailed license information governing the source code and
+// contributions can be found in the folder LICENSES and in
+// LICENSE and CONTRIBUTING.md at the top level directory.
+//
+// ------------------------------------------------------
 
 #ifndef _aspect_material_model_rheology_friction_models_h
 #define _aspect_material_model_rheology_friction_models_h
@@ -89,6 +83,8 @@ namespace aspect
           /**
            * Select the mechanism to be used for the friction dependence.
            * Possible options: static friction | dynamic friction | function
+           *
+           * This variable is read from the parameter file through a parameter called 'Friction mechanism'.
            */
           FrictionMechanism friction_mechanism;
 
@@ -98,6 +94,7 @@ namespace aspect
 
           /**
            * Dynamic angles of internal friction that are used at high strain rates.
+           * This variable is read from the parameter file through a parameter called 'Dynamic angles of internal friction'.
            */
           std::vector<double> dynamic_angles_of_internal_friction;
 
@@ -106,6 +103,7 @@ namespace aspect
            * the mean of the dynamic and the static angle of friction. When the effective
            * strain rate in a cell is very high the dynamic angle of friction is taken, when
            * it is very low the static angle of internal friction is chosen.
+           * This variable is read from the parameter file through a parameter called 'Dynamic characteristic strain rate'.
            */
           double dynamic_characteristic_strain_rate;
 
@@ -113,6 +111,7 @@ namespace aspect
            * An exponential factor in the equation for the calculation of the friction angle
            * to make the transition between static and dynamic friction angle more smooth or
            * more step-like.
+           * This variable is read from the parameter file through a parameter called 'Dynamic friction smoothness exponent'.
            */
           double dynamic_friction_smoothness_exponent;
 
@@ -125,6 +124,8 @@ namespace aspect
           /**
            * The coordinate representation to evaluate the function for the friction angle.
            * Possible choices are depth, cartesian and spherical.
+           *
+           * This variable is read from the parameter file through a parameter called 'Coordinate system'.
            */
           Utilities::Coordinates::CoordinateSystem coordinate_system_friction_function;
       };

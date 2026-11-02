@@ -147,6 +147,9 @@ find tests include source benchmarks cookbooks unit_tests \
   | xargs -0 -P 10 -I {} bash -c "indent_file {}"
 
 
+echo "--- Fixing permissions, line endings, tabs, and whitespace"
+
+
 # Find all source files that should be checked for invalid characters
 # and other unwanted formatting options. This includes more
 # files than the ones indented by astyle above (e.g. documentation source
@@ -230,4 +233,23 @@ find_source_files | xargs -0 -P 10 -I {} bash -c 'ensure_single_trailing_newline
 # Do not recursively search the tests directory for prm files, otherwise the output prms will be changed
 find tests \( -name '*.cc' -o -name '*.h' -o -name '*.h.in' -o -name 'CMakeLists.txt' -o -name '*.cmake' \) -print0 | xargs -0 -P 10 -I {} bash -c 'ensure_single_trailing_newline "$@"' _ {}
 find tests -maxdepth 1 \( -name '*.prm' \) -print0 | xargs -0 -P 10 -I {} bash -c 'ensure_single_trailing_newline "$@"' _ {}
+
+
+echo "--- Filter test screen-output"
+
+# Apply the default screen-output filter to all test outputs. This removes
+# compiler-dependent parts of exception messages from the checked-in files.
+filter_screen_output()
+{
+  f=$1
+  tests/cmake/default screen-output <"${f}" >"${f}.tmp"
+  diff -q "${f}" "${f}.tmp" >/dev/null || mv "${f}.tmp" "${f}"
+  rm -f "${f}.tmp"
+}
+export -f filter_screen_output
+find tests -type f -name 'screen-output' -print0 | xargs -0 -P 10 -I {} bash -c 'filter_screen_output "$@"' _ {}
+
+
+echo "--- done."
+
 exit 0

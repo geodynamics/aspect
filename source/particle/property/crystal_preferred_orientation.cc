@@ -1,22 +1,16 @@
-/*
-  Copyright (C) 2022 - 2024 by the authors of the ASPECT code.
-
- This file is part of ASPECT.
-
- ASPECT is free software; you can redistribute it and/or modify
- it under the terms of the GNU General Public License as published by
- the Free Software Foundation; either version 2, or (at your option)
- any later version.
-
- ASPECT is distributed in the hope that it will be useful,
- but WITHOUT ANY WARRANTY; without even the implied warranty of
- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- GNU General Public License for more details.
-
- You should have received a copy of the GNU General Public License
- along with ASPECT; see the file LICENSE.  If not see
- <http://www.gnu.org/licenses/>.
- */
+// ------------------------------------------------------
+//
+// SPDX-License-Identifier: GPL-2.0-or-later
+//
+// SPDX-FileCopyrightText: Copyright (C) 2022-2026 by the ASPECT authors.
+//
+// This file is part of ASPECT.
+//
+// Detailed license information governing the source code and
+// contributions can be found in the folder LICENSES and in
+// LICENSE and CONTRIBUTING.md at the top level directory.
+//
+// ------------------------------------------------------
 
 #include <aspect/particle/property/crystal_preferred_orientation.h>
 #include <aspect/geometry_model/interface.h>
@@ -26,6 +20,9 @@
 #include <world_builder/grains.h>
 #include <world_builder/world.h>
 #endif
+
+#include <boost/serialization/map.hpp>
+
 
 namespace aspect
 {
@@ -50,6 +47,20 @@ namespace aspect
                                    "there is a compositional field called water."));
             water_index = this->introspection().compositional_index_for_name("water");
           }
+      }
+
+
+
+      template <int dim>
+      void
+      CrystalPreferredOrientation<dim>::update ()
+      {
+        // Set the random number generator seed to a different value for each MPI process and
+        // timestep to ensure that the random numbers are different for each process and timestep,
+        // but at the same time reproducible for each process and timestep. With this trick,
+        // we don't have to serialize the random number generator.
+        const unsigned int my_rank = Utilities::MPI::this_mpi_process(MPI_COMM_WORLD);
+        this->random_number_generator.seed(random_number_seed + my_rank + this->get_timestep_number() + 1234);
       }
 
 
@@ -1148,7 +1159,7 @@ namespace aspect
 
           prm.declare_entry ("CPO derivatives algorithm", "Spin tensor",
                              Patterns::List(Patterns::Anything()),
-                             "Options: Spin tensor");
+                             "Options: Spin tensor, D-Rex 2004");
 
           prm.enter_subsection("Initial grains");
           {
@@ -1233,10 +1244,6 @@ namespace aspect
       void
       CrystalPreferredOrientation<dim>::parse_parameters (ParameterHandler &prm)
       {
-        AssertThrow(dim == 3, ExcMessage("CPO computations are currently only supported for 3d models. "
-                                         "2d computations will work when this assert is removed, but you will need to make sure that the "
-                                         "correct 3d strain-rate and velocity gradient tensors are provided to the algorithm."));
-
         prm.enter_subsection("Crystal Preferred Orientation");
         {
           random_number_seed = prm.get_integer ("Random number seed");

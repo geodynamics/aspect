@@ -1,22 +1,16 @@
-/*
-  Copyright (C) 2011 - 2019 by the authors of the ASPECT code.
-
-  This file is part of ASPECT.
-
-  ASPECT is free software; you can redistribute it and/or modify
-  it under the terms of the GNU General Public License as published by
-  the Free Software Foundation; either version 2, or (at your option)
-  any later version.
-
-  ASPECT is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  GNU General Public License for more details.
-
-  You should have received a copy of the GNU General Public License
-  along with ASPECT; see the file LICENSE.  If not see
-  <http://www.gnu.org/licenses/>.
-*/
+// ------------------------------------------------------
+//
+// SPDX-License-Identifier: GPL-2.0-or-later
+//
+// SPDX-FileCopyrightText: Copyright (C) 2011-2026 by the ASPECT authors.
+//
+// This file is part of ASPECT.
+//
+// Detailed license information governing the source code and
+// contributions can be found in the folder LICENSES and in
+// LICENSE and CONTRIBUTING.md at the top level directory.
+//
+// ------------------------------------------------------
 
 
 #ifndef _aspect_postprocess_rotation_statistics_h
@@ -66,6 +60,8 @@ namespace aspect
          * that assumes that the 'volumetric' rotation is equal to the 'mass'
          * rotation. If this parameter is true this postprocessor computes
          * 'net rotation' instead of 'angular momentum'.
+         *
+         * This variable is read from the parameter file through a parameter called 'Use constant density of one'.
          */
         bool use_constant_density;
 
@@ -75,6 +71,8 @@ namespace aspect
          * axis. This is a second-order symmetric tensor with
          * 6 components in 3D. In 2D this option has no effect, because
          * the rotation axis is fixed and thus it is always a scalar.
+         *
+         * This variable is read from the parameter file through a parameter called 'Output full moment of inertia tensor'.
          */
         bool output_full_tensor;
     };

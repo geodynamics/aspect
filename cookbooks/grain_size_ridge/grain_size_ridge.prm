@@ -143,7 +143,7 @@ end
 # We set the initial grain size to 5 mm, with a reduction at the ridge
 # axis, again to allow for easy deformation there.
 subsection Initial composition model
-  set Model name = function
+  set List of model names = function
 
   subsection Function
     set Function constants  = DeltaC = -29e-4, b = 0, width = 30000, c=397000

@@ -1,0 +1,19 @@
+
+*** Resuming from snapshot output2.tmp/restart/01/
+
+Number of active cells: 736 (on 6 levels)
+Number of degrees of freedom: 10,026 (6,154+795+3,077)
+
+*** Timestep 6:  t=8e+07 seconds, dt=1.59052e+07 seconds
+   Solving temperature system... 70 iterations.
+   Solving Stokes system (GMG)... 10+0 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            0 K, 0.2873 K, 1 K
+     Heat fluxes through boundary parts: 0 W, 0 W, 8.425e-08 W, -2.021e-06 W
+     Writing depth average:              output2.tmp/depth_average
+
+Termination requested by criterion: end time
+
+
+

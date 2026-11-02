@@ -1,18 +1,16 @@
-/*
-  Copyright (C) 2022 - 2024 by the authors of the ASPECT code.
- This file is part of ASPECT.
- ASPECT is free software; you can redistribute it and/or modify
- it under the terms of the GNU General Public License as published by
- the Free Software Foundation; either version 2, or (at your option)
- any later version.
- ASPECT is distributed in the hope that it will be useful,
- but WITHOUT ANY WARRANTY; without even the implied warranty of
- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- GNU General Public License for more details.
- You should have received a copy of the GNU General Public License
- along with ASPECT; see the file LICENSE.  If not see
- <http://www.gnu.org/licenses/>.
- */
+// ------------------------------------------------------
+//
+// SPDX-License-Identifier: GPL-2.0-or-later
+//
+// SPDX-FileCopyrightText: Copyright (C) 2022-2026 by the ASPECT authors.
+//
+// This file is part of ASPECT.
+//
+// Detailed license information governing the source code and
+// contributions can be found in the folder LICENSES and in
+// LICENSE and CONTRIBUTING.md at the top level directory.
+//
+// ------------------------------------------------------
 
 #include <aspect/global.h>
 #include <aspect/postprocess/crystal_preferred_orientation.h>
@@ -26,6 +24,8 @@
 #include <boost/iostreams/copy.hpp>
 #include <boost/iostreams/filter/gzip.hpp>
 
+#include <fstream>
+#include <sstream>
 #include <unistd.h>
 
 namespace aspect
@@ -39,7 +39,7 @@ namespace aspect
       output_interval (0),
       // initialize this to a nonsensical value; set it to the actual time
       // the first time around we get to check it
-      last_output_time (std::numeric_limits<double>::quiet_NaN()),
+      last_output_time (std::numeric_limits<double>::lowest()),
       output_file_number (numbers::invalid_unsigned_int),
       group_files(0),
       write_in_background_thread(false)
@@ -177,7 +177,7 @@ namespace aspect
           if (this->get_particle_manager(i).get_property_manager().template has_matching_active_plugin<Particle::Property::CrystalPreferredOrientation<dim>>())
             {
               Assert(particle_manager_index == numbers::invalid_unsigned_int,
-                     ExcMessage("Multiple particle worlds with CPO data found. This is not supported."));
+                     ExcMessage("Multiple particle managers with CPO data found. This is not supported."));
 
               particle_manager_index = i;
             }
@@ -201,7 +201,7 @@ namespace aspect
       // if this is the first time we get here, set the last output time
       // to the current time - output_interval. this makes sure we
       // always produce data during the first time step
-      if (std::isnan(last_output_time))
+      if (last_output_time < this->get_parameters().start_time - output_interval)
         last_output_time = this->get_time() - output_interval;
 
       // If it's not time to generate an output file or we do not write output
@@ -666,9 +666,9 @@ namespace aspect
                              "The time interval between each generation of "
                              "output files. A value of zero indicates that "
                              "output should be generated every time step.\n\n"
-                             "Units: years if the "
+                             "Units: \\si{\\year} if the "
                              "'Use years instead of seconds' parameter is set; "
-                             "seconds otherwise.");
+                             "\\si{\\second} otherwise.");
 
           prm.declare_entry ("Random number seed", "1",
                              Patterns::Integer (0),

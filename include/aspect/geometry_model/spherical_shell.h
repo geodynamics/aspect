@@ -1,22 +1,16 @@
-/*
-  Copyright (C) 2011 - 2024 by the authors of the ASPECT code.
-
-  This file is part of ASPECT.
-
-  ASPECT is free software; you can redistribute it and/or modify
-  it under the terms of the GNU General Public License as published by
-  the Free Software Foundation; either version 2, or (at your option)
-  any later version.
-
-  ASPECT is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  GNU General Public License for more details.
-
-  You should have received a copy of the GNU General Public License
-  along with ASPECT; see the file LICENSE.  If not see
-  <http://www.gnu.org/licenses/>.
-*/
+// ------------------------------------------------------
+//
+// SPDX-License-Identifier: GPL-2.0-or-later
+//
+// SPDX-FileCopyrightText: Copyright (C) 2011-2026 by the ASPECT authors.
+//
+// This file is part of ASPECT.
+//
+// Detailed license information governing the source code and
+// contributions can be found in the folder LICENSES and in
+// LICENSE and CONTRIBUTING.md at the top level directory.
+//
+// ------------------------------------------------------
 
 
 #ifndef _aspect_geometry_model_spherical_shell_h
@@ -367,10 +361,21 @@ namespace aspect
         make_periodicity_constraints(const DoFHandler<dim> &dof_handler,
                                      AffineConstraints<double> &constraints) const override;
 
+        /**
+         * Collect rotated periodicity constraints for a multigrid level.
+         */
+        void
+        make_periodicity_constraints_on_level(
+          const DoFHandler<dim> &dof_handler,
+          const unsigned int level,
+          AffineConstraints<double> &constraints) const override;
+
       private:
         /**
          * Specify the radial subdivision of the spherical shell
          * mesh.
+         *
+         * This variable is read from the parameter file through a parameter called 'Custom mesh subdivision'.
          */
         enum CustomMeshRadialSubdivision
         {
@@ -381,42 +386,49 @@ namespace aspect
 
         /**
          * Initial surface refinement for the custom mesh cases.
+         * This variable is read from the parameter file through a parameter called 'Initial lateral refinement'.
          */
         unsigned int initial_lateral_refinement;
 
         /**
          * Initial surface refinement for the custom mesh cases.
+         * This variable is read from the parameter file through a parameter called 'Number of slices'.
          */
         unsigned int n_slices;
 
         /**
          * List of radial values for the list custom mesh.
+         * This variable is read from the parameter file through a parameter called 'List of radial values'.
          */
         std::vector<double> R_values_list;
 
         /**
-         * Inner and outer radii of the spherical shell.
+         * Inner radius of the spherical shell.
+         * This variable is read from the parameter file through a parameter called 'Inner radius'.
          */
-        double R0, R1;
+        double R0;
+        /**
+         * Outer radius of the spherical shell.
+         * This variable is read from the parameter file through a parameter called 'Outer radius'.
+         */
+        double R1;
 
         /**
          * Opening angle of the section of the shell that we simulate.
+         * This variable is read from the parameter file through a parameter called 'Opening angle'.
          */
         double phi;
 
         /**
          * Number of tangential mesh cells in the initial, coarse mesh.
+         * This variable is read from the parameter file through a parameter called 'Cells along circumference'.
          */
         int n_cells_along_circumference;
 
         /**
-         * Set the manifold ids on all cells (also boundaries) before
-         * refinement to generate well shaped cells.
-         */
-        void set_manifold_ids (parallel::distributed::Triangulation<dim> &triangulation) const;
-
-        /**
          * Flag whether the shell is periodic in phi.
+         *
+         * This variable is read from the parameter file through a parameter called 'Phi periodic'.
          */
         bool periodic;
 
@@ -437,6 +449,12 @@ namespace aspect
          * Give a symbolic name to the manifold id to be used by this class.
          */
         static constexpr types::manifold_id my_manifold_id = 99;
+
+        /**
+         * Set the manifold ids on all cells (also boundaries) before
+         * refinement to generate well shaped cells.
+         */
+        void set_manifold_ids (parallel::distributed::Triangulation<dim> &triangulation) const;
     };
   }
 }

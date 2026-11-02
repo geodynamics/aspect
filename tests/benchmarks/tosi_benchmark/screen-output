@@ -1,0 +1,116 @@
+
+Loading shared library <./libtosi_benchmark.debug.so>
+
+Number of active cells: 16 (on 3 levels)
+Number of degrees of freedom: 268 (162+25+81)
+
+*** Timestep 0:  t=0 seconds, dt=0 seconds
+   Solving temperature system... 0 iterations.
+   Solving Stokes system (GMG)... 7+0 iterations.
+      Relative nonlinear residuals (temperature, Stokes system): 1.28118e-16, 5.67797e-07
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 5.67797e-07
+
+
+   Postprocessing:
+     RMS, max velocity:                               0.179 m/s, 0.254 m/s
+     Temperature min/avg/max:                         0 K, 0.5 K, 1 K
+     Heat fluxes through boundary parts:              0 W, 0 W, -1 W, 1 W
+     Writing graphical output:                        output-tosi_benchmark/solution/solution-00000
+     Viscous dissipation, rate of work, error:        0.0977 W 0.000632 W 35.3 error
+     Writing depth average:                           output-tosi_benchmark/depth_average
+     Max, min, and rms velocity along boundary parts: 0.252 m/s, 0.02302 m/s, 0.1788 m/s, 0.252 m/s, 0.02302 m/s, 0.1788 m/s, 0.2521 m/s, 0.02322 m/s, 0.1792 m/s, 0.2521 m/s, 0.02322 m/s, 0.1792 m/s
+
+*** Timestep 1:  t=0.005 seconds, dt=0.005 seconds
+   Solving temperature system... 6 iterations.
+   Solving Stokes system (GMG)... 41+0 iterations.
+      Relative nonlinear residuals (temperature, Stokes system): 0.000215717, 1.72999e-08
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 0.000215717
+
+   Solving temperature system... 8 iterations.
+   Solving Stokes system (GMG)... 41+0 iterations.
+      Relative nonlinear residuals (temperature, Stokes system): 0.0203668, 1.03951e-08
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 0.0203668
+
+   Solving temperature system... 12 iterations.
+   Solving Stokes system (GMG)... 42+0 iterations.
+      Relative nonlinear residuals (temperature, Stokes system): 0.088188, 3.50268e-08
+      Relative nonlinear residual (total system) after nonlinear iteration 3: 0.088188
+
+   Solving temperature system... 24 iterations.
+   Solving Stokes system (GMG)... 44+0 iterations.
+      Relative nonlinear residuals (temperature, Stokes system): 0.264121, 4.28707e-08
+      Relative nonlinear residual (total system) after nonlinear iteration 4: 0.264121
+
+   Solving temperature system... 25 iterations.
+   Solving Stokes system (GMG)... 46+0 iterations.
+      Relative nonlinear residuals (temperature, Stokes system): 0.261383, 9.19047e-07
+      Relative nonlinear residual (total system) after nonlinear iteration 5: 0.261383
+
+   Solving temperature system... 13 iterations.
+   Solving Stokes system (GMG)... 43+0 iterations.
+      Relative nonlinear residuals (temperature, Stokes system): 0.291524, 8.98348e-08
+      Relative nonlinear residual (total system) after nonlinear iteration 6: 0.291524
+
+   Solving temperature system... 24 iterations.
+   Solving Stokes system (GMG)... 45+0 iterations.
+      Relative nonlinear residuals (temperature, Stokes system): 0.543387, 8.5032e-08
+      Relative nonlinear residual (total system) after nonlinear iteration 7: 0.543387
+
+   Solving temperature system... 27 iterations.
+   Solving Stokes system (GMG)... 45+0 iterations.
+      Relative nonlinear residuals (temperature, Stokes system): 0.217424, 8.85478e-08
+      Relative nonlinear residual (total system) after nonlinear iteration 8: 0.217424
+
+   Solving temperature system... 20 iterations.
+   Solving Stokes system (GMG)... 44+0 iterations.
+      Relative nonlinear residuals (temperature, Stokes system): 0.215223, 3.38069e-08
+      Relative nonlinear residual (total system) after nonlinear iteration 9: 0.215223
+
+   Solving temperature system... 27 iterations.
+   Solving Stokes system (GMG)... 49+0 iterations.
+      Relative nonlinear residuals (temperature, Stokes system): 0.285142, 2.67443e-07
+      Relative nonlinear residual (total system) after nonlinear iteration 10: 0.285142
+
+   Solving temperature system... 20 iterations.
+   Solving Stokes system (GMG)... 46+0 iterations.
+      Relative nonlinear residuals (temperature, Stokes system): 0.275686, 5.19455e-08
+      Relative nonlinear residual (total system) after nonlinear iteration 11: 0.275686
+
+   Solving temperature system... 26 iterations.
+   Solving Stokes system (GMG)... 48+0 iterations.
+      Relative nonlinear residuals (temperature, Stokes system): 0.335997, 6.49974e-08
+      Relative nonlinear residual (total system) after nonlinear iteration 12: 0.335997
+
+   Solving temperature system... 22 iterations.
+   Solving Stokes system (GMG)... 46+0 iterations.
+      Relative nonlinear residuals (temperature, Stokes system): 0.287893, 5.0451e-08
+      Relative nonlinear residual (total system) after nonlinear iteration 13: 0.287893
+
+   Solving temperature system... 24 iterations.
+   Solving Stokes system (GMG)... 47+0 iterations.
+      Relative nonlinear residuals (temperature, Stokes system): 0.231093, 4.40931e-08
+      Relative nonlinear residual (total system) after nonlinear iteration 14: 0.231093
+
+   Solving temperature system... 27 iterations.
+   Solving Stokes system (GMG)... 46+0 iterations.
+      Relative nonlinear residuals (temperature, Stokes system): 0.457126, 1.34916e-07
+      Relative nonlinear residual (total system) after nonlinear iteration 15: 0.457126
+
+
+   WARNING: The nonlinear solver in the current timestep failed to converge.
+   Acting according to the parameter 'Nonlinear solver failure strategy':
+   Continuing to the next timestep even though solution is not fully converged.
+
+   Postprocessing:
+     RMS, max velocity:                               122 m/s, 783 m/s
+     Temperature min/avg/max:                         0 K, 0.5042 K, 1 K
+     Heat fluxes through boundary parts:              0 W, 0 W, -7.803 W, 1.01 W
+     Viscous dissipation, rate of work, error:        561 W 6.23 W 9.87 error
+     Max, min, and rms velocity along boundary parts: 267.5 m/s, 0.07976 m/s, 113.7 m/s, 150.8 m/s, 0.05175 m/s, 77.37 m/s, 288.8 m/s, 30.4 m/s, 171.7 m/s, 0.8402 m/s, 0.03718 m/s, 0.5688 m/s
+
+Termination requested by criterion: end time
+
+
+
+
+WARNING: During this computation 1 nonlinear solver failures occurred!

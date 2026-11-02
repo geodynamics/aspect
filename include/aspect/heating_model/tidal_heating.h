@@ -1,22 +1,16 @@
-/*
-  Copyright (C) 2025 by the authors of the ASPECT code.
-
-  This file is part of ASPECT.
-
-  ASPECT is free software; you can redistribute it and/or modify
-  it under the terms of the GNU General Public License as published by
-  the Free Software Foundation; either version 2, or (at your option)
-  any later version.
-
-  ASPECT is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  GNU General Public License for more details.
-
-  You should have received a copy of the GNU General Public License
-  along with ASPECT; see the file LICENSE.  If not see
-  <http://www.gnu.org/licenses/>.
-*/
+// ------------------------------------------------------
+//
+// SPDX-License-Identifier: GPL-2.0-or-later
+//
+// SPDX-FileCopyrightText: Copyright (C) 2025-2026 by the ASPECT authors.
+//
+// This file is part of ASPECT.
+//
+// Detailed license information governing the source code and
+// contributions can be found in the folder LICENSES and in
+// LICENSE and CONTRIBUTING.md at the top level directory.
+//
+// ------------------------------------------------------
 
 
 #ifndef _aspect_heating_model_tidal_heating_h
@@ -89,9 +83,18 @@ namespace aspect
          * If 'latitudinal variation', 'Maximum tidal strain rate' and 'Minimum tidal strain rate' are used.
          * Then, the equation follows as (maximum_tidal_strain_rate - minimum_tidal_strain_rate)*cos(theta/2)+(maximum_tidal_strain_rate+minimum_tidal_strain_rate)/2.
          * This is shown in Fig.3 of Nimmo et al. (2007) (https://doi.org/10.1016/j.icarus.2007.04.021).
+         *
+         * This variable is read from the parameter file through the 'Tidal
+         * frequency' parameter.
          */
         double tidal_frequency;
+        /**
+         * This variable is read from the parameter file through a parameter called 'Elastic shear modulus'.
+         */
         double elastic_shear_modulus;
+        /**
+         * This variable is read from the parameter file through a parameter called 'Constant tidal strain rate'.
+         */
         double constant_tidal_strain_rate;
 
         /**
@@ -103,7 +106,13 @@ namespace aspect
           latitudinal_variation
         } strain_rate_distribution;
 
+        /**
+         * This variable is read from the parameter file through a parameter called 'Maximum tidal strain rate'.
+         */
         double maximum_tidal_strain_rate;
+        /**
+         * This variable is read from the parameter file through a parameter called 'Minimum tidal strain rate'.
+         */
         double minimum_tidal_strain_rate;
     };
   }

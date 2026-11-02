@@ -1,0 +1,24 @@
+
+Number of active cells: 192 (on 3 levels)
+Number of degrees of freedom: 2,832 (1,728+240+864)
+
+*** Timestep 0:  t=0 years, dt=0 years
+   Solving temperature system... 0 iterations.
+   Solving Stokes system (GMG-GC)... 
+     GMG coarse size A: 144, coarse size S: 24
+     GMG levels: 3
+     Viscosity range: 5e+19 - 1.5e+23
+     Stokes solver (GMRES): 90+0 iterations.
+     Schur complement preconditioner: 91+0 iterations.
+     A block preconditioner: 91+0 iterations.
+
+   Postprocessing:
+     Writing graphical output:           output-gmg_test_project_q1_gc/solution/solution-00000
+     RMS, max velocity:                  0.0222 m/year, 0.1 m/year
+     Temperature min/avg/max:            273 K, 1602 K, 3700 K
+     Heat fluxes through boundary parts: 9.847e+05 W, 4.067e+07 W
+
+Termination requested by criterion: end time
+
+
+

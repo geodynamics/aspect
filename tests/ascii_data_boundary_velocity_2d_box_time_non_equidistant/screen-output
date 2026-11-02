@@ -1,9 +1,9 @@
 
 
-   Loading Ascii data boundary file ASPECT_DIR/data/boundary-velocity/ascii-data/test/box_2d_top_non_equidistant.0.txt.
+   Loading Ascii data boundary file $ASPECT_SOURCE_DIR/data/boundary-velocity/ascii-data/test/box_2d_top_non_equidistant.0.txt.
 
 
-   Also loading next Ascii data boundary file ASPECT_DIR/data/boundary-velocity/ascii-data/test/box_2d_top_non_equidistant.1.txt.
+   Also loading next Ascii data boundary file $ASPECT_SOURCE_DIR/data/boundary-velocity/ascii-data/test/box_2d_top_non_equidistant.1.txt.
 
 Number of active cells: 80 (on 3 levels)
 Number of degrees of freedom: 1,212 (738+105+369)
@@ -37,7 +37,7 @@ Number of degrees of freedom: 1,212 (738+105+369)
 
 *** Timestep 3:  t=220247 years, dt=65767.5 years
 
-   Loading Ascii data boundary file ASPECT_DIR/data/boundary-velocity/ascii-data/test/box_2d_top_non_equidistant.2.txt.
+   Loading Ascii data boundary file $ASPECT_SOURCE_DIR/data/boundary-velocity/ascii-data/test/box_2d_top_non_equidistant.2.txt.
 
    Solving temperature system... 20 iterations.
    Solving Stokes system (GMG)... 19+0 iterations.
@@ -67,7 +67,7 @@ Number of degrees of freedom: 1,212 (738+105+369)
 
 *** Timestep 6:  t=429697 years, dt=76542.4 years
 
-   Loading Ascii data boundary file ASPECT_DIR/data/boundary-velocity/ascii-data/test/box_2d_top_non_equidistant.3.txt.
+   Loading Ascii data boundary file $ASPECT_SOURCE_DIR/data/boundary-velocity/ascii-data/test/box_2d_top_non_equidistant.3.txt.
 
 
    From this timestep onwards, ASPECT will not attempt to load new Ascii data files.

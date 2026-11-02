@@ -1,0 +1,39 @@
+
+Loading shared library <./libnsinker_gmg_gc_no_avg.debug.so>
+
+Number of active cells: 64 (on 3 levels)
+Number of degrees of freedom: 3,041 (2,187+125+729)
+
+*** Timestep 0:  t=0 seconds, dt=0 seconds
+   Solving Stokes system (GMG-GC)... 
+     GMG coarse size A: 81, coarse size S: 8
+     GMG levels: 3
+     Viscosity range: 0.01 - 100
+     Stokes solver (GMRES): 172+0 iterations.
+     Schur complement preconditioner: 174+0 iterations.
+     A block preconditioner: 174+0 iterations.
+
+   Postprocessing:
+     System matrix memory consumption:  0.05 MB
+     Writing graphical output:          output-nsinker_gmg_gc_no_avg/solution/solution-00000
+
+Number of active cells: 127 (on 4 levels)
+Number of degrees of freedom: 6,340 (4,569+248+1,523)
+
+*** Timestep 0:  t=0 seconds, dt=0 seconds
+   Solving Stokes system (GMG-GC)... 
+     GMG coarse size A: 81, coarse size S: 8
+     GMG levels: 4
+     Viscosity range: 0.01 - 100
+     Stokes solver (GMRES): 167+0 iterations.
+     Schur complement preconditioner: 169+0 iterations.
+     A block preconditioner: 169+0 iterations.
+
+   Postprocessing:
+     System matrix memory consumption:  0.08 MB
+     Writing graphical output:          output-nsinker_gmg_gc_no_avg/solution/solution-00001
+
+Termination requested by criterion: end time
+
+
+

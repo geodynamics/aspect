@@ -1,22 +1,16 @@
-/*
-  Copyright (C) 2019 - 2024 by the authors of the ASPECT code.
-
-  This file is part of ASPECT.
-
-  ASPECT is free software; you can redistribute it and/or modify
-  it under the terms of the GNU General Public License as published by
-  the Free Software Foundation; either version 2, or (at your option)
-  any later version.
-
-  ASPECT is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  GNU General Public License for more details.
-
-  You should have received a copy of the GNU General Public License
-  along with ASPECT; see the file LICENSE.  If not see
-  <http://www.gnu.org/licenses/>.
-*/
+// ------------------------------------------------------
+//
+// SPDX-License-Identifier: GPL-2.0-or-later
+//
+// SPDX-FileCopyrightText: Copyright (C) 2019-2026 by the ASPECT authors.
+//
+// This file is part of ASPECT.
+//
+// Detailed license information governing the source code and
+// contributions can be found in the folder LICENSES and in
+// LICENSE and CONTRIBUTING.md at the top level directory.
+//
+// ------------------------------------------------------
 
 #include <aspect/gravity_model/interface.h>
 #include <aspect/material_model/interface.h>
@@ -126,7 +120,7 @@ namespace aspect
         void evaluate(const MaterialModel::MaterialModelInputs<dim> &in,
                       MaterialModel::MaterialModelOutputs<dim> &out) const override
         {
-          const double t = (this->simulator_is_past_initialization()) ? this->get_time() : 0.0;
+          const double t = (this->simulator_is_past_initialization()) ? this->get_time() : this->get_parameters().start_time;
 
           for (unsigned int i=0; i < in.n_evaluation_points(); ++i)
             {
@@ -220,7 +214,7 @@ namespace aspect
         Tensor<1,dim> gravity_vector (const Point<dim> &pos) const override
         {
           const double pi = numbers::PI;
-          const double t = (this->simulator_is_past_initialization()) ? this->get_time() : 0.0;
+          const double t = (this->simulator_is_past_initialization()) ? this->get_time() : this->get_parameters().start_time;
 
           const RigidShearMaterial<dim> &
           material_model

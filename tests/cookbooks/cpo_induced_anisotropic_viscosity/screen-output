@@ -1,0 +1,94 @@
+
+Loading shared library <./libcpo_induced_anisotropic_viscosity.debug.so>
+
+Number of active cells: 1 (on 1 levels)
+Number of degrees of freedom: 494 (81+8+27+27+27+27+27+27+27+27+27+27+27+27+27+27+27)
+
+*** Timestep 0:  t=0 seconds, dt=0 seconds
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+   Copying properties into prescribed compositional field scalar_viscosity... done.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 1+0 iterations.
+
+   Postprocessing:
+     RMS, max velocity:           0.289 m/s, 0.5 m/s
+     Compositions min/max/mass:   1.788e+24/1.788e+24/1.788e+24 // 4.491/4.491/4.491 // 0.5971/0.5971/0.5971 // 0.2605/0.2605/0.2605 // 0.1425/0.1425/0.1425 // 1.425/1.425/1.425 // 0.4539/0.4539/0.4539 // 0.4275/0.4275/0.4275 // 0.1185/0.1185/0.1185 // 0.2624/0.2624/0.2624 // 0.5367/0.5367/0.5367 // 0.3422/0.3422/0.3422 // 0.121/0.121/0.121 // 0/0/0
+     Writing graphical output:    output-cpo_induced_anisotropic_viscosity/solution/solution-00000
+     Writing particle output:     output-cpo_induced_anisotropic_viscosity/particles/particles-00000
+     Writing particle cpo output: output-cpo_induced_anisotropic_viscosity/particles_cpo/CPO-00000
+
+*** Timestep 1:  t=0.1 seconds, dt=0.1 seconds
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+   Copying properties into prescribed compositional field scalar_viscosity... done.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 6+0 iterations.
+
+   Postprocessing:
+     RMS, max velocity:           0.289 m/s, 0.5 m/s
+     Compositions min/max/mass:   1.85e+07/1.85e+07/1.85e+07 // 4.71/4.71/4.71 // 0.6881/0.6881/0.6881 // 0.2711/0.2711/0.2711 // 0.0408/0.0408/0.0408 // 2.26/2.26/2.26 // 0.6349/0.6349/0.6349 // 0.3225/0.3225/0.3225 // 0.0426/0.0426/0.0426 // 0.3944/0.3944/0.3944 // 0.5547/0.5547/0.5547 // 0.3085/0.3085/0.3085 // 0.1368/0.1368/0.1368 // 0/0/0
+     Writing graphical output:    output-cpo_induced_anisotropic_viscosity/solution/solution-00001
+     Writing particle output:     output-cpo_induced_anisotropic_viscosity/particles/particles-00001
+     Writing particle cpo output: output-cpo_induced_anisotropic_viscosity/particles_cpo/CPO-00001
+
+*** Timestep 2:  t=0.2 seconds, dt=0.1 seconds
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+   Copying properties into prescribed compositional field scalar_viscosity... done.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 6+0 iterations.
+
+   Postprocessing:
+     RMS, max velocity:           0.289 m/s, 0.5 m/s
+     Compositions min/max/mass:   1.759e+07/1.759e+07/1.759e+07 // 5.713/5.713/5.713 // 0.5306/0.5306/0.5306 // 0.3232/0.3232/0.3232 // 0.1462/0.1462/0.1462 // 2.477/2.477/2.477 // 0.4802/0.4802/0.4802 // 0.451/0.451/0.451 // 0.06885/0.06885/0.06885 // 1.877/1.877/1.877 // 0.5391/0.5391/0.5391 // 0.2814/0.2814/0.2814 // 0.1795/0.1795/0.1795 // 0/0/0
+     Writing graphical output:    output-cpo_induced_anisotropic_viscosity/solution/solution-00002
+     Writing particle output:     output-cpo_induced_anisotropic_viscosity/particles/particles-00002
+     Writing particle cpo output: output-cpo_induced_anisotropic_viscosity/particles_cpo/CPO-00002
+
+*** Timestep 3:  t=0.3 seconds, dt=0.1 seconds
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+   Copying properties into prescribed compositional field scalar_viscosity... done.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 7+0 iterations.
+
+   Postprocessing:
+     RMS, max velocity:           0.289 m/s, 0.5 m/s
+     Compositions min/max/mass:   1.893e+07/1.893e+07/1.893e+07 // 4.297/4.297/4.297 // 0.7369/0.7369/0.7369 // 0.2051/0.2051/0.2051 // 0.058/0.058/0.058 // 1.66/1.66/1.66 // 0.5205/0.5205/0.5205 // 0.409/0.409/0.409 // 0.07048/0.07048/0.07048 // 0.1543/0.1543/0.1543 // 0.4839/0.4839/0.4839 // 0.3966/0.3966/0.3966 // 0.1195/0.1195/0.1195 // 0/0/0
+     Writing graphical output:    output-cpo_induced_anisotropic_viscosity/solution/solution-00003
+     Writing particle output:     output-cpo_induced_anisotropic_viscosity/particles/particles-00003
+     Writing particle cpo output: output-cpo_induced_anisotropic_viscosity/particles_cpo/CPO-00003
+
+*** Timestep 4:  t=0.4 seconds, dt=0.1 seconds
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+   Copying properties into prescribed compositional field scalar_viscosity... done.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 6+0 iterations.
+
+   Postprocessing:
+     RMS, max velocity:           0.289 m/s, 0.5 m/s
+     Compositions min/max/mass:   1.774e+07/1.774e+07/1.774e+07 // 4.791/4.791/4.791 // 0.6659/0.6659/0.6659 // 0.1822/0.1822/0.1822 // 0.152/0.152/0.152 // 2.34/2.34/2.34 // 0.607/0.607/0.607 // 0.3396/0.3396/0.3396 // 0.05341/0.05341/0.05341 // 0.6204/0.6204/0.6204 // 0.5973/0.5973/0.5973 // 0.2441/0.2441/0.2441 // 0.1585/0.1585/0.1585 // 0/0/0
+     Writing graphical output:    output-cpo_induced_anisotropic_viscosity/solution/solution-00004
+     Writing particle output:     output-cpo_induced_anisotropic_viscosity/particles/particles-00004
+     Writing particle cpo output: output-cpo_induced_anisotropic_viscosity/particles_cpo/CPO-00004
+
+*** Timestep 5:  t=0.5 seconds, dt=0.1 seconds
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+   Copying properties into prescribed compositional field scalar_viscosity... done.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 6+0 iterations.
+
+   Postprocessing:
+     RMS, max velocity:           0.289 m/s, 0.5 m/s
+     Compositions min/max/mass:   1.814e+07/1.814e+07/1.814e+07 // 4.414/4.414/4.414 // 0.7513/0.7513/0.7513 // 0.2082/0.2082/0.2082 // 0.04052/0.04052/0.04052 // 2.036/2.036/2.036 // 0.5575/0.5575/0.5575 // 0.3277/0.3277/0.3277 // 0.1149/0.1149/0.1149 // 0.4004/0.4004/0.4004 // 0.5503/0.5503/0.5503 // 0.3631/0.3631/0.3631 // 0.08657/0.08657/0.08657 // 0/0/0
+     Writing graphical output:    output-cpo_induced_anisotropic_viscosity/solution/solution-00005
+     Writing particle output:     output-cpo_induced_anisotropic_viscosity/particles/particles-00005
+     Writing particle cpo output: output-cpo_induced_anisotropic_viscosity/particles_cpo/CPO-00005
+
+Termination requested by criterion: end time
+
+
+

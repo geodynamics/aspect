@@ -1,22 +1,16 @@
-/*
-  Copyright (C) 2011 - 2024 by the authors of the ASPECT code.
-
-  This file is part of ASPECT.
-
-  ASPECT is free software; you can redistribute it and/or modify
-  it under the terms of the GNU General Public License as published by
-  the Free Software Foundation; either version 2, or (at your option)
-  any later version.
-
-  ASPECT is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  GNU General Public License for more details.
-
-  You should have received a copy of the GNU General Public License
-  along with ASPECT; see the file LICENSE.  If not see
-  <http://www.gnu.org/licenses/>.
-*/
+// ------------------------------------------------------
+//
+// SPDX-License-Identifier: GPL-2.0-or-later
+//
+// SPDX-FileCopyrightText: Copyright (C) 2011-2026 by the ASPECT authors.
+//
+// This file is part of ASPECT.
+//
+// Detailed license information governing the source code and
+// contributions can be found in the folder LICENSES and in
+// LICENSE and CONTRIBUTING.md at the top level directory.
+//
+// ------------------------------------------------------
 
 
 #include <aspect/initial_temperature/adiabatic.h>
@@ -375,22 +369,22 @@ namespace aspect
           prm.declare_entry ("Age top boundary layer", "0.",
                              Patterns::Double (0.),
                              "The age of the upper thermal boundary layer, used for the calculation "
-                             "of the half-space cooling model temperature. Units: years if the "
+                             "of the half-space cooling model temperature. Units: \\si{\\year} if the "
                              "'Use years instead of seconds' parameter is set; "
-                             "seconds otherwise.");
+                             "\\si{\\second} otherwise.");
           prm.declare_entry ("Age bottom boundary layer", "0.",
                              Patterns::Double (0.),
                              "The age of the lower thermal boundary layer, used for the calculation "
-                             "of the half-space cooling model temperature. Units: years if the "
+                             "of the half-space cooling model temperature. Units: \\si{\\year} if the "
                              "'Use years instead of seconds' parameter is set; "
-                             "seconds otherwise.");
+                             "\\si{\\second} otherwise.");
           prm.declare_entry ("Radius", "0.",
                              Patterns::Double (0.),
-                             "The Radius (in m) of the initial spherical temperature perturbation "
+                             "The Radius (in \\si{\\meter}) of the initial spherical temperature perturbation "
                              "at the bottom of the model domain.");
           prm.declare_entry ("Amplitude", "0.",
                              Patterns::Double (0.),
-                             "The amplitude (in K) of the initial spherical temperature perturbation "
+                             "The amplitude (in \\si{\\kelvin}) of the initial spherical temperature perturbation "
                              "at the bottom of the model domain. This perturbation will be added to "
                              "the adiabatic temperature profile, but not to the bottom thermal "
                              "boundary layer. Instead, the maximum of the perturbation and the bottom "

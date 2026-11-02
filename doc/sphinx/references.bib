@@ -6742,6 +6742,11 @@ year = {1996}
   abstract = {Parameter identification problems for partial differential equations (PDEs) often lead to large-scale inverse problems. For their numerical solution it is necessary to repeatedly solve the forward and even the inverse problem, as it is required for determining the regularization parameter, e.g., according to the discrepancy principle in Tikhonov regularization. To reduce the computational effort, we use adaptive finite-element discretizations based on goal-oriented error estimators. This concept provides an estimate of the error in a so-called quantity of interest, which is a functional of the searched for parameter q and the PDE solution u. Based on this error estimate, the discretizations of q and u are locally refined. The crucial question for parameter identification problems is the choice of an appropriate quantity of interest. A convergence analysis of the Tikhonov regularization with the discrepancy principle on discretized spaces for q and u provides a possible answer: it shows, that in order to determine the correct regularization parameter, one has to guarantee sufficiently high accuracy in the squared residual norm-which is therefore our quantity of interest-whereas q and u themselves need not be computed precisely everywhere. This fact allows for relatively low dimensional adaptive meshes and hence for a considerable reduction of the computational effort. In this paper, we study an efficient inexact Newton algorithm for determining an optimal regularization parameter in Tikhonov regularization according to the discrepancy principle. With the help of error estimators we guide this algorithm and control the accuracy requirements for its convergence. This leads to a highly efficient method for determining the regularization parameter.}
 }
 
+@book{dase96,
+Author = {R.O. Davis and A.P.S. Selvadurai},
+Publisher = {Cambridge University Press},
+Title = {Elasticity and Geomechanics},
+Year = {1996}}
 
 @Article{GM78,
   author =       {P. E. Gill and W. Murray},
@@ -10572,6 +10577,16 @@ journal = {2007 SPEC Benchmark Workshop}
   publisher =    {Springer}
 }
 
+@Article{gerya2007robust,
+  title={Robust characteristics method for modelling multiphase visco-elasto-plastic thermo-mechanical problems},
+  author={Gerya, Taras V and Yuen, David A},
+  journal={Physics of the Earth and Planetary Interiors},
+  volume={163},
+  number={1-4},
+  pages={83--105},
+  year={2007}
+}
+
 @article{keller:etal:2013,
   author =       {Keller, Tobias and May, Dave A. and Kaus, Boris J. P.},
   title =        {Numerical modelling of magma dynamics coupled to tectonic deformation of lithosphere and crust},
@@ -10583,6 +10598,16 @@ journal = {2007 SPEC Benchmark Workshop}
   URL =          {http://gji.oxfordjournals.org/content/195/3/1406.abstract},
   eprint =       {http://gji.oxfordjournals.org/content/195/3/1406.full.pdf+html},
   journal =      {Geophysical Journal International}
+}
+
+@article{farrington2014role,
+  title={The role of viscoelasticity in subducting plates},
+  author={Farrington, RJ and Moresi, L-N and Capitanio, Fabio Antonio},
+  journal={Geochemistry, Geophysics, Geosystems},
+  volume={15},
+  number={11},
+  pages={4291--4304},
+  year={2014}
 }
 
 @Article{KG89,
@@ -11184,6 +11209,15 @@ author = {H. L. Stone and A. O. Garder}
   volume =       163,
   pages =        {69--82}}
 
+@Article{moresi2003lagrangian,
+  title={A Lagrangian integration point finite element method for large deformation modeling of viscoelastic geomaterials},
+  author={Moresi, Louis and Dufour, Fr{\'e}d{\'e}ric and M{\"u}hlhaus, H-B},
+  journal={Journal of computational physics},
+  volume={184},
+  pages={476--497},
+  year={2003}
+}
+
 @Article{schmid:podladchikov:2003,
   title={Analytical solutions for deformable elliptical inclusions in general shear},
   author={Schmid, D. W. and Podladchikov, Y. Y.},
@@ -11193,6 +11227,16 @@ author = {H. L. Stone and A. O. Garder}
   pages={269--288},
   year={2003},
   publisher={Wiley Online Library}
+}
+
+@Article{choi2013dynearthsol2d,
+  title={DynEarthSol2D: An efficient unstructured finite element method to study long-term tectonic deformation},
+  author={Choi, E and Tan, E and Lavier, LL and Calo, Victor M},
+  journal={Journal of Geophysical Research: solid earth},
+  volume={118},
+  number={5},
+  pages={2429--2444},
+  year={2013}
 }
 
 @Article{vankeken:etal:1997,
@@ -11629,11 +11673,32 @@ year = {1992}
   url          = {https://doi.org/10.5281/zenodo.14371679}
 }
 
+@software{aspect-doi-v3.1.0,
+  author       = {Wolfgang Bangerth and
+                  Juliane Dannberg and
+		  Daniel Douglas and
+                  Menno Fraters and
+                  Rene Gassmoeller and
+                  Anne Glerum and
+                  Timo Heister and
+                  Robert Myhill and
+                  John Naliboff and
+		  Arushi Saxena},
+  title        = {ASPECT v3.1.0},
+  month        = sep,
+  year         = 2026,
+  publisher    = {Zenodo},
+  version      = {v3.1.0},
+  doi          = {10.5281/zenodo.22814863},
+  url          = {https://doi.org/10.5281/zenodo.22814863}
+}
+
+
 @misc{aspectmanual,
   title         = {{{ASPECT}: Advanced Solver for Planetary Evolution, Convection, and Tectonics, User Manual}},
-  author        = {Bangerth, Wolfgang and Dannberg, Juliane and Fraters, Menno and Gassmoeller, Rene and Glerum, Anne and Heister, Timo and Myhill, Robert and Naliboff, John},
-  year          = {2024},
-  month         = dec,
+  author        = {Bangerth, Wolfgang and Dannberg, Juliane and Douglas, Daniel and Fraters, Menno and Gassmoeller, Rene and Glerum, Anne and Heister, Timo and Myhill, Robert and Naliboff, John and Saxena, Arushi},
+  year          = {2026},
+  month         = sep,
   DOI           = {10.6084/m9.figshare.4865333},
   URL           = {https://doi.org/10.6084/m9.figshare.4865333}
 }
@@ -12671,4 +12736,42 @@ DOI = {10.5194/gmd-16-3221-2023}
   number={6},
   pages={1201--1225},
   year={1974}
+}
+
+@article{rathmann:lilien:2022,
+	title = {On the nonlinear viscosity of the orthotropic bulk rheology},
+	author = {Rathmann, Nicholas M. and Lilien, David A.},
+	journal = {Journal of Glaciology},
+  volume = {68},
+	number = {272},
+	pages = {1243--1248},
+  year = {2022},
+	doi = {10.1017/jog.2022.33},
+}
+
+@article{markley:etal:2007,
+	title = {Averaging Quaternions},
+	author = {Markley, Landis and Cheng, Yang and Crassidis, John and Oshman, Yaakov},
+	journal = {Journal of Guidance, Control, and Dynamics},
+  volume = {30},
+	pages = {1193--1196},
+  year = {2007},
+	keywords = {average, quaternions, theory},
+  doi = {10.2514/1.28949},
+}
+
+@article{kiraly:etal:2026,
+	title = {{CPO2Hill}: {An} {Efficient} {Parametrisation} to {Infer} {Anisotropic} {Viscous} {Behaviour} {Directly} from {Olivine} {Texture} {Parameters}},
+  author = {Király, Ágnes and Wang, Yijun and Conrad, Clinton P. and Hansen, Lars N. and Mather, Ben},
+	journal = {Geodynamica},
+	volume = {1},
+	number = {1},
+	year = {2026},
+	month = jun,
+	issn = {3065-2804},
+	shorttitle = {{CPO2Hill}},
+	url = {https://escholarship.org/uc/item/8727s17b},
+	language = {en},
+	urldate = {2026-06-29},
+  doi = {10.5070/F3.49008},
 }

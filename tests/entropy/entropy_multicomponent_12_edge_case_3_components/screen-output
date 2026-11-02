@@ -1,0 +1,761 @@
+
+Number of active cells: 1 (on 1 levels)
+Number of degrees of freedom: 85 (18+4+9+9+9+9+9+9+9)
+
+*** Timestep 0:  t=0 years, dt=0 years
+   Copying properties into prescribed temperature field... done.
+   Solving temperature system... 1 iterations.
+   Solving percent_comp2 system ... 0 iterations.
+   Solving percent_comp3 system ... 0 iterations.
+   Solving entropy_comp1 system ... 0 iterations.
+   Solving entropy_comp2 system ... 0 iterations.
+   Solving entropy_comp3 system ... 0 iterations.
+   Copying properties into prescribed temperature field... done.
+   Copying properties into prescribed compositional field density_field... done.
+      Relative nonlinear residuals (temperature, compositional fields): 1, 1.889e-16, 1.82602e-16, 1.87916e-16, 1.40004e-16, 1.1176e-16, 0
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 1
+
+   Copying properties into prescribed temperature field... done.
+   Solving temperature system... 0 iterations.
+   Solving percent_comp2 system ... 0 iterations.
+   Solving percent_comp3 system ... 0 iterations.
+   Solving entropy_comp1 system ... 0 iterations.
+   Solving entropy_comp2 system ... 0 iterations.
+   Solving entropy_comp3 system ... 0 iterations.
+   Copying properties into prescribed temperature field... done.
+   Copying properties into prescribed compositional field density_field... done.
+      Relative nonlinear residuals (temperature, compositional fields): 1.52803e-16, 1.889e-16, 1.82602e-16, 1.87916e-16, 1.40004e-16, 1.1176e-16, 0
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 1.889e-16
+
+
+   Postprocessing:
+     Writing graphical output:           output-entropy_multicomponent_12_edge_case_3_components/solution/solution-00000
+     RMS, max velocity:                  0 m/year, 0 m/year
+     Temperature min/avg/max:            995.9 K, 995.9 K, 995.9 K
+     Mass fluxes through boundary parts: 0 kg/yr, 0 kg/yr, 0 kg/yr, 0 kg/yr
+     Compositions min/max/mass:          0.3/0.3/5.07e+07 // 0.35/0.35/5.915e+07 // 1600/1600/2.704e+11 // 2006/2006/3.39e+11 // 1620/1620/2.738e+11 // 2970/2970/5.02e+11
+
+*** Timestep 1:  t=200000 years, dt=200000 years
+   Solving composition reactions... in 1 substep(s).
+   Copying properties into prescribed temperature field... done.
+   Solving temperature system... 1 iterations.
+   Solving percent_comp2 system ... 0 iterations.
+   Solving percent_comp3 system ... 0 iterations.
+   Solving entropy_comp1 system ... 0 iterations.
+   Solving entropy_comp2 system ... 0 iterations.
+   Solving entropy_comp3 system ... 0 iterations.
+   Solving composition reactions... in 1 substep(s).
+   Copying properties into prescribed temperature field... done.
+   Copying properties into prescribed compositional field density_field... done.
+      Relative nonlinear residuals (temperature, compositional fields): 0.00091929, 1.889e-16, 1.82602e-16, 1.25943e-16, 9.82225e-17, 8.21942e-17, 0
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 0.00091929
+
+   Copying properties into prescribed temperature field... done.
+   Solving temperature system... 0 iterations.
+   Solving percent_comp2 system ... 0 iterations.
+   Solving percent_comp3 system ... 0 iterations.
+   Solving entropy_comp1 system ... 0 iterations.
+   Solving entropy_comp2 system ... 0 iterations.
+   Solving entropy_comp3 system ... 0 iterations.
+   Solving composition reactions... in 1 substep(s).
+   Copying properties into prescribed temperature field... done.
+   Copying properties into prescribed compositional field density_field... done.
+      Relative nonlinear residuals (temperature, compositional fields): 1.5422e-16, 1.889e-16, 1.82602e-16, 5.32863e-17, 6.44435e-17, 1.79752e-16, 0
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 1.889e-16
+
+
+   Postprocessing:
+     Writing graphical output:           output-entropy_multicomponent_12_edge_case_3_components/solution/solution-00001
+     RMS, max velocity:                  0 m/year, 0 m/year
+     Temperature min/avg/max:            996.8 K, 996.8 K, 996.8 K
+     Mass fluxes through boundary parts: 0 kg/yr, 0 kg/yr, 0 kg/yr, 0 kg/yr
+     Compositions min/max/mass:          0.3/0.3/5.07e+07 // 0.35/0.35/5.915e+07 // 1614/1614/2.727e+11 // 1998/1998/3.376e+11 // 1614/1614/2.727e+11 // 2974/2974/5.026e+11
+
+*** Timestep 2:  t=400000 years, dt=200000 years
+   Solving composition reactions... in 1 substep(s).
+   Copying properties into prescribed temperature field... done.
+   Solving temperature system... 2 iterations.
+   Solving percent_comp2 system ... 0 iterations.
+   Solving percent_comp3 system ... 0 iterations.
+   Solving entropy_comp1 system ... 0 iterations.
+   Solving entropy_comp2 system ... 0 iterations.
+   Solving entropy_comp3 system ... 0 iterations.
+   Solving composition reactions... in 1 substep(s).
+   Copying properties into prescribed temperature field... done.
+   Copying properties into prescribed compositional field density_field... done.
+      Relative nonlinear residuals (temperature, compositional fields): 0.000886765, 5.33799e-17, 6.55521e-17, 1.0634e-16, 1.05802e-16, 1.0634e-16, 0
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 0.000886765
+
+   Copying properties into prescribed temperature field... done.
+   Solving temperature system... 0 iterations.
+   Solving percent_comp2 system ... 0 iterations.
+   Solving percent_comp3 system ... 0 iterations.
+   Solving entropy_comp1 system ... 0 iterations.
+   Solving entropy_comp2 system ... 0 iterations.
+   Solving entropy_comp3 system ... 0 iterations.
+   Solving composition reactions... in 1 substep(s).
+   Copying properties into prescribed temperature field... done.
+   Copying properties into prescribed compositional field density_field... done.
+      Relative nonlinear residuals (temperature, compositional fields): 1.3943e-16, 5.33799e-17, 6.55521e-17, 2.26683e-16, 5.7263e-17, 2.26683e-16, 0
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 2.26683e-16
+
+
+   Postprocessing:
+     Writing graphical output:           output-entropy_multicomponent_12_edge_case_3_components/solution/solution-00002
+     RMS, max velocity:                  0 m/year, 0 m/year
+     Temperature min/avg/max:            997.7 K, 997.7 K, 997.7 K
+     Mass fluxes through boundary parts: 0 kg/yr, 0 kg/yr, 0 kg/yr, 0 kg/yr
+     Compositions min/max/mass:          0.3/0.3/5.07e+07 // 0.35/0.35/5.915e+07 // 1614/1614/2.727e+11 // 1998/1998/3.376e+11 // 1614/1614/2.727e+11 // 2978/2978/5.033e+11
+
+*** Timestep 3:  t=600000 years, dt=200000 years
+   Solving composition reactions... in 1 substep(s).
+   Copying properties into prescribed temperature field... done.
+   Solving temperature system... 1 iterations.
+   Solving percent_comp2 system ... 0 iterations.
+   Solving percent_comp3 system ... 0 iterations.
+   Solving entropy_comp1 system ... 0 iterations.
+   Solving entropy_comp2 system ... 0 iterations.
+   Solving entropy_comp3 system ... 0 iterations.
+   Solving composition reactions... in 1 substep(s).
+   Copying properties into prescribed temperature field... done.
+   Copying properties into prescribed compositional field density_field... done.
+      Relative nonlinear residuals (temperature, compositional fields): 0.00085833, 5.33799e-17, 6.55521e-17, 2.15455e-16, 7.72421e-17, 2.15455e-16, 0
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 0.00085833
+
+   Copying properties into prescribed temperature field... done.
+   Solving temperature system... 0 iterations.
+   Solving percent_comp2 system ... 0 iterations.
+   Solving percent_comp3 system ... 0 iterations.
+   Solving entropy_comp1 system ... 0 iterations.
+   Solving entropy_comp2 system ... 0 iterations.
+   Solving entropy_comp3 system ... 0 iterations.
+   Solving composition reactions... in 1 substep(s).
+   Copying properties into prescribed temperature field... done.
+   Copying properties into prescribed compositional field density_field... done.
+      Relative nonlinear residuals (temperature, compositional fields): 3.52533e-16, 5.33799e-17, 6.55521e-17, 2.32502e-16, 1.48919e-16, 2.32502e-16, 0
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 3.52533e-16
+
+
+   Postprocessing:
+     Writing graphical output:           output-entropy_multicomponent_12_edge_case_3_components/solution/solution-00003
+     RMS, max velocity:                  0 m/year, 0 m/year
+     Temperature min/avg/max:            998.6 K, 998.6 K, 998.6 K
+     Mass fluxes through boundary parts: 0 kg/yr, 0 kg/yr, 0 kg/yr, 0 kg/yr
+     Compositions min/max/mass:          0.3/0.3/5.07e+07 // 0.35/0.35/5.915e+07 // 1614/1614/2.727e+11 // 1998/1998/3.376e+11 // 1614/1614/2.727e+11 // 2982/2982/5.04e+11
+
+*** Timestep 4:  t=800000 years, dt=200000 years
+   Solving composition reactions... in 1 substep(s).
+   Copying properties into prescribed temperature field... done.
+   Solving temperature system... 2 iterations.
+   Solving percent_comp2 system ... 0 iterations.
+   Solving percent_comp3 system ... 0 iterations.
+   Solving entropy_comp1 system ... 0 iterations.
+   Solving entropy_comp2 system ... 0 iterations.
+   Solving entropy_comp3 system ... 0 iterations.
+   Solving composition reactions... in 1 substep(s).
+   Copying properties into prescribed temperature field... done.
+   Copying properties into prescribed compositional field density_field... done.
+      Relative nonlinear residuals (temperature, compositional fields): 0.000833077, 5.33799e-17, 6.55521e-17, 2.59714e-16, 1.82456e-16, 2.59714e-16, 0
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 0.000833077
+
+   Copying properties into prescribed temperature field... done.
+   Solving temperature system... 0 iterations.
+   Solving percent_comp2 system ... 0 iterations.
+   Solving percent_comp3 system ... 0 iterations.
+   Solving entropy_comp1 system ... 0 iterations.
+   Solving entropy_comp2 system ... 0 iterations.
+   Solving entropy_comp3 system ... 0 iterations.
+   Solving composition reactions... in 1 substep(s).
+   Copying properties into prescribed temperature field... done.
+   Copying properties into prescribed compositional field density_field... done.
+      Relative nonlinear residuals (temperature, compositional fields): 1.48074e-16, 5.33799e-17, 6.55521e-17, 1.52032e-16, 1.96077e-16, 1.52032e-16, 0
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 1.96077e-16
+
+
+   Postprocessing:
+     Writing graphical output:           output-entropy_multicomponent_12_edge_case_3_components/solution/solution-00004
+     RMS, max velocity:                  0 m/year, 0 m/year
+     Temperature min/avg/max:            999.4 K, 999.4 K, 999.4 K
+     Mass fluxes through boundary parts: 0 kg/yr, 0 kg/yr, 0 kg/yr, 0 kg/yr
+     Compositions min/max/mass:          0.3/0.3/5.07e+07 // 0.35/0.35/5.915e+07 // 1613/1613/2.727e+11 // 1998/1998/3.376e+11 // 1613/1613/2.727e+11 // 2986/2986/5.046e+11
+
+*** Timestep 5:  t=1e+06 years, dt=200000 years
+   Solving composition reactions... in 1 substep(s).
+   Copying properties into prescribed temperature field... done.
+   Solving temperature system... 1 iterations.
+   Solving percent_comp2 system ... 0 iterations.
+   Solving percent_comp3 system ... 0 iterations.
+   Solving entropy_comp1 system ... 0 iterations.
+   Solving entropy_comp2 system ... 0 iterations.
+   Solving entropy_comp3 system ... 0 iterations.
+   Solving composition reactions... in 1 substep(s).
+   Copying properties into prescribed temperature field... done.
+   Copying properties into prescribed compositional field density_field... done.
+      Relative nonlinear residuals (temperature, compositional fields): 0.000810364, 5.33799e-17, 6.55521e-17, 2.54184e-16, 2.12352e-16, 2.54184e-16, 0
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 0.000810364
+
+   Copying properties into prescribed temperature field... done.
+   Solving temperature system... 0 iterations.
+   Solving percent_comp2 system ... 0 iterations.
+   Solving percent_comp3 system ... 0 iterations.
+   Solving entropy_comp1 system ... 0 iterations.
+   Solving entropy_comp2 system ... 0 iterations.
+   Solving entropy_comp3 system ... 0 iterations.
+   Solving composition reactions... in 1 substep(s).
+   Copying properties into prescribed temperature field... done.
+   Copying properties into prescribed compositional field density_field... done.
+      Relative nonlinear residuals (temperature, compositional fields): 4.72813e-16, 5.33799e-17, 6.55521e-17, 3.19785e-16, 1.27219e-16, 3.19785e-16, 0
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 4.72813e-16
+
+
+   Postprocessing:
+     Writing graphical output:           output-entropy_multicomponent_12_edge_case_3_components/solution/solution-00005
+     RMS, max velocity:                  0 m/year, 0 m/year
+     Temperature min/avg/max:            1000 K, 1000 K, 1000 K
+     Mass fluxes through boundary parts: 0 kg/yr, 0 kg/yr, 0 kg/yr, 0 kg/yr
+     Compositions min/max/mass:          0.3/0.3/5.07e+07 // 0.35/0.35/5.915e+07 // 1613/1613/2.727e+11 // 1998/1998/3.377e+11 // 1613/1613/2.727e+11 // 2990/2990/5.052e+11
+
+*** Timestep 6:  t=1.2e+06 years, dt=200000 years
+   Solving composition reactions... in 1 substep(s).
+   Copying properties into prescribed temperature field... done.
+   Solving temperature system... 1 iterations.
+   Solving percent_comp2 system ... 0 iterations.
+   Solving percent_comp3 system ... 0 iterations.
+   Solving entropy_comp1 system ... 0 iterations.
+   Solving entropy_comp2 system ... 0 iterations.
+   Solving entropy_comp3 system ... 0 iterations.
+   Solving composition reactions... in 1 substep(s).
+   Copying properties into prescribed temperature field... done.
+   Copying properties into prescribed compositional field density_field... done.
+      Relative nonlinear residuals (temperature, compositional fields): 0.000789724, 5.33799e-17, 6.55521e-17, 1.33787e-16, 2.08478e-16, 1.33787e-16, 0
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 0.000789724
+
+   Copying properties into prescribed temperature field... done.
+   Solving temperature system... 0 iterations.
+   Solving percent_comp2 system ... 0 iterations.
+   Solving percent_comp3 system ... 0 iterations.
+   Solving entropy_comp1 system ... 0 iterations.
+   Solving entropy_comp2 system ... 0 iterations.
+   Solving entropy_comp3 system ... 0 iterations.
+   Solving composition reactions... in 1 substep(s).
+   Copying properties into prescribed temperature field... done.
+   Copying properties into prescribed compositional field density_field... done.
+      Relative nonlinear residuals (temperature, compositional fields): 1.44452e-16, 5.33799e-17, 6.55521e-17, 1.1859e-16, 2.14522e-16, 1.1859e-16, 0
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 2.14522e-16
+
+
+   Postprocessing:
+     Writing graphical output:           output-entropy_multicomponent_12_edge_case_3_components/solution/solution-00006
+     RMS, max velocity:                  0 m/year, 0 m/year
+     Temperature min/avg/max:            1001 K, 1001 K, 1001 K
+     Mass fluxes through boundary parts: 0 kg/yr, 0 kg/yr, 0 kg/yr, 0 kg/yr
+     Compositions min/max/mass:          0.3/0.3/5.07e+07 // 0.35/0.35/5.915e+07 // 1613/1613/2.727e+11 // 1998/1998/3.377e+11 // 1613/1613/2.727e+11 // 2993/2993/5.059e+11
+
+*** Timestep 7:  t=1.4e+06 years, dt=200000 years
+   Solving composition reactions... in 1 substep(s).
+   Copying properties into prescribed temperature field... done.
+   Solving temperature system... 2 iterations.
+   Solving percent_comp2 system ... 0 iterations.
+   Solving percent_comp3 system ... 0 iterations.
+   Solving entropy_comp1 system ... 0 iterations.
+   Solving entropy_comp2 system ... 0 iterations.
+   Solving entropy_comp3 system ... 0 iterations.
+   Solving composition reactions... in 1 substep(s).
+   Copying properties into prescribed temperature field... done.
+   Copying properties into prescribed compositional field density_field... done.
+      Relative nonlinear residuals (temperature, compositional fields): 0.000770805, 5.33799e-17, 6.55521e-17, 9.19101e-17, 1.93443e-16, 9.19101e-17, 0
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 0.000770805
+
+   Copying properties into prescribed temperature field... done.
+   Solving temperature system... 0 iterations.
+   Solving percent_comp2 system ... 0 iterations.
+   Solving percent_comp3 system ... 0 iterations.
+   Solving entropy_comp1 system ... 0 iterations.
+   Solving entropy_comp2 system ... 0 iterations.
+   Solving entropy_comp3 system ... 0 iterations.
+   Solving composition reactions... in 1 substep(s).
+   Copying properties into prescribed temperature field... done.
+   Copying properties into prescribed compositional field density_field... done.
+      Relative nonlinear residuals (temperature, compositional fields): 1.00894e-15, 5.33799e-17, 6.55521e-17, 3.98182e-16, 5.61718e-16, 3.98182e-16, 0
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 1.00894e-15
+
+
+   Postprocessing:
+     Writing graphical output:           output-entropy_multicomponent_12_edge_case_3_components/solution/solution-00007
+     RMS, max velocity:                  0 m/year, 0 m/year
+     Temperature min/avg/max:            1002 K, 1002 K, 1002 K
+     Mass fluxes through boundary parts: 0 kg/yr, 0 kg/yr, 0 kg/yr, 0 kg/yr
+     Compositions min/max/mass:          0.3/0.3/5.07e+07 // 0.35/0.35/5.915e+07 // 1613/1613/2.727e+11 // 1998/1998/3.377e+11 // 1613/1613/2.727e+11 // 2997/2997/5.065e+11
+
+*** Timestep 8:  t=1.6e+06 years, dt=200000 years
+   Solving composition reactions... in 1 substep(s).
+   Copying properties into prescribed temperature field... done.
+   Solving temperature system... 2 iterations.
+   Solving percent_comp2 system ... 0 iterations.
+   Solving percent_comp3 system ... 0 iterations.
+   Solving entropy_comp1 system ... 0 iterations.
+   Solving entropy_comp2 system ... 0 iterations.
+   Solving entropy_comp3 system ... 0 iterations.
+   Solving composition reactions... in 1 substep(s).
+   Copying properties into prescribed temperature field... done.
+   Copying properties into prescribed compositional field density_field... done.
+      Relative nonlinear residuals (temperature, compositional fields): 0.000753338, 5.33799e-17, 6.55521e-17, 1.54295e-16, 1.98413e-16, 1.54295e-16, 0
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 0.000753338
+
+   Copying properties into prescribed temperature field... done.
+   Solving temperature system... 0 iterations.
+   Solving percent_comp2 system ... 0 iterations.
+   Solving percent_comp3 system ... 0 iterations.
+   Solving entropy_comp1 system ... 0 iterations.
+   Solving entropy_comp2 system ... 0 iterations.
+   Solving entropy_comp3 system ... 0 iterations.
+   Solving composition reactions... in 1 substep(s).
+   Copying properties into prescribed temperature field... done.
+   Copying properties into prescribed compositional field density_field... done.
+      Relative nonlinear residuals (temperature, compositional fields): 1.01426e-15, 5.33799e-17, 6.55521e-17, 4.54543e-16, 3.62707e-16, 4.54543e-16, 0
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 1.01426e-15
+
+
+   Postprocessing:
+     Writing graphical output:           output-entropy_multicomponent_12_edge_case_3_components/solution/solution-00008
+     RMS, max velocity:                  0 m/year, 0 m/year
+     Temperature min/avg/max:            1003 K, 1003 K, 1003 K
+     Mass fluxes through boundary parts: 0 kg/yr, 0 kg/yr, 0 kg/yr, 0 kg/yr
+     Compositions min/max/mass:          0.3/0.3/5.07e+07 // 0.35/0.35/5.915e+07 // 1613/1613/2.727e+11 // 1998/1998/3.377e+11 // 1613/1613/2.727e+11 // 3000/3000/5.071e+11
+
+*** Timestep 9:  t=1.8e+06 years, dt=200000 years
+   Solving composition reactions... in 1 substep(s).
+   Copying properties into prescribed temperature field... done.
+   Solving temperature system... 1 iterations.
+   Solving percent_comp2 system ... 0 iterations.
+   Solving percent_comp3 system ... 0 iterations.
+   Solving entropy_comp1 system ... 0 iterations.
+   Solving entropy_comp2 system ... 0 iterations.
+   Solving entropy_comp3 system ... 0 iterations.
+   Solving composition reactions... in 1 substep(s).
+   Copying properties into prescribed temperature field... done.
+   Copying properties into prescribed compositional field density_field... done.
+      Relative nonlinear residuals (temperature, compositional fields): 0.000737111, 5.33799e-17, 6.55521e-17, 1.21077e-16, 1.74119e-16, 1.21077e-16, 0
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 0.000737111
+
+   Copying properties into prescribed temperature field... done.
+   Solving temperature system... 0 iterations.
+   Solving percent_comp2 system ... 0 iterations.
+   Solving percent_comp3 system ... 0 iterations.
+   Solving entropy_comp1 system ... 0 iterations.
+   Solving entropy_comp2 system ... 0 iterations.
+   Solving entropy_comp3 system ... 0 iterations.
+   Solving composition reactions... in 1 substep(s).
+   Copying properties into prescribed temperature field... done.
+   Copying properties into prescribed compositional field density_field... done.
+      Relative nonlinear residuals (temperature, compositional fields): 8.84177e-16, 5.33799e-17, 6.55521e-17, 4.26644e-16, 1.86604e-16, 4.26644e-16, 0
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 8.84177e-16
+
+
+   Postprocessing:
+     Writing graphical output:           output-entropy_multicomponent_12_edge_case_3_components/solution/solution-00009
+     RMS, max velocity:                  0 m/year, 0 m/year
+     Temperature min/avg/max:            1003 K, 1003 K, 1003 K
+     Mass fluxes through boundary parts: 0 kg/yr, 0 kg/yr, 0 kg/yr, 0 kg/yr
+     Compositions min/max/mass:          0.3/0.3/5.07e+07 // 0.35/0.35/5.915e+07 // 1613/1613/2.727e+11 // 1998/1998/3.377e+11 // 1613/1613/2.727e+11 // 3004/3004/5.077e+11
+
+*** Timestep 10:  t=2e+06 years, dt=200000 years
+   Solving composition reactions... in 1 substep(s).
+   Copying properties into prescribed temperature field... done.
+   Solving temperature system... 1 iterations.
+   Solving percent_comp2 system ... 0 iterations.
+   Solving percent_comp3 system ... 0 iterations.
+   Solving entropy_comp1 system ... 0 iterations.
+   Solving entropy_comp2 system ... 0 iterations.
+   Solving entropy_comp3 system ... 0 iterations.
+   Solving composition reactions... in 1 substep(s).
+   Copying properties into prescribed temperature field... done.
+   Copying properties into prescribed compositional field density_field... done.
+      Relative nonlinear residuals (temperature, compositional fields): 0.000721958, 5.33799e-17, 6.55521e-17, 9.29812e-17, 1.39171e-16, 9.29812e-17, 0
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 0.000721958
+
+   Copying properties into prescribed temperature field... done.
+   Solving temperature system... 0 iterations.
+   Solving percent_comp2 system ... 0 iterations.
+   Solving percent_comp3 system ... 0 iterations.
+   Solving entropy_comp1 system ... 0 iterations.
+   Solving entropy_comp2 system ... 0 iterations.
+   Solving entropy_comp3 system ... 0 iterations.
+   Solving composition reactions... in 1 substep(s).
+   Copying properties into prescribed temperature field... done.
+   Copying properties into prescribed compositional field density_field... done.
+      Relative nonlinear residuals (temperature, compositional fields): 7.53206e-16, 5.33799e-17, 6.55521e-17, 3.80294e-16, 3.93913e-16, 3.80294e-16, 0
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 7.53206e-16
+
+
+   Postprocessing:
+     Writing graphical output:           output-entropy_multicomponent_12_edge_case_3_components/solution/solution-00010
+     RMS, max velocity:                  0 m/year, 0 m/year
+     Temperature min/avg/max:            1004 K, 1004 K, 1004 K
+     Mass fluxes through boundary parts: 0 kg/yr, 0 kg/yr, 0 kg/yr, 0 kg/yr
+     Compositions min/max/mass:          0.3/0.3/5.07e+07 // 0.35/0.35/5.915e+07 // 1613/1613/2.727e+11 // 1998/1998/3.377e+11 // 1613/1613/2.727e+11 // 3007/3007/5.083e+11
+
+*** Timestep 11:  t=2.2e+06 years, dt=200000 years
+   Solving composition reactions... in 1 substep(s).
+   Copying properties into prescribed temperature field... done.
+   Solving temperature system... 1 iterations.
+   Solving percent_comp2 system ... 0 iterations.
+   Solving percent_comp3 system ... 0 iterations.
+   Solving entropy_comp1 system ... 0 iterations.
+   Solving entropy_comp2 system ... 0 iterations.
+   Solving entropy_comp3 system ... 0 iterations.
+   Solving composition reactions... in 1 substep(s).
+   Copying properties into prescribed temperature field... done.
+   Copying properties into prescribed compositional field density_field... done.
+      Relative nonlinear residuals (temperature, compositional fields): 0.000707743, 5.33799e-17, 6.55521e-17, 3.49006e-16, 3.57293e-16, 3.49006e-16, 0
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 0.000707743
+
+   Copying properties into prescribed temperature field... done.
+   Solving temperature system... 0 iterations.
+   Solving percent_comp2 system ... 0 iterations.
+   Solving percent_comp3 system ... 0 iterations.
+   Solving entropy_comp1 system ... 0 iterations.
+   Solving entropy_comp2 system ... 0 iterations.
+   Solving entropy_comp3 system ... 0 iterations.
+   Solving composition reactions... in 1 substep(s).
+   Copying properties into prescribed temperature field... done.
+   Copying properties into prescribed compositional field density_field... done.
+      Relative nonlinear residuals (temperature, compositional fields): 5.38292e-16, 5.33799e-17, 6.55521e-17, 3.2319e-16, 2.16511e-16, 3.2319e-16, 0
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 5.38292e-16
+
+
+   Postprocessing:
+     Writing graphical output:           output-entropy_multicomponent_12_edge_case_3_components/solution/solution-00011
+     RMS, max velocity:                  0 m/year, 0 m/year
+     Temperature min/avg/max:            1005 K, 1005 K, 1005 K
+     Mass fluxes through boundary parts: 0 kg/yr, 0 kg/yr, 0 kg/yr, 0 kg/yr
+     Compositions min/max/mass:          0.3/0.3/5.07e+07 // 0.35/0.35/5.915e+07 // 1613/1613/2.726e+11 // 1998/1998/3.377e+11 // 1613/1613/2.726e+11 // 3011/3011/5.088e+11
+
+*** Timestep 12:  t=2.4e+06 years, dt=200000 years
+   Solving composition reactions... in 1 substep(s).
+   Copying properties into prescribed temperature field... done.
+   Solving temperature system... 2 iterations.
+   Solving percent_comp2 system ... 0 iterations.
+   Solving percent_comp3 system ... 0 iterations.
+   Solving entropy_comp1 system ... 0 iterations.
+   Solving entropy_comp2 system ... 0 iterations.
+   Solving entropy_comp3 system ... 0 iterations.
+   Solving composition reactions... in 1 substep(s).
+   Copying properties into prescribed temperature field... done.
+   Copying properties into prescribed compositional field density_field... done.
+      Relative nonlinear residuals (temperature, compositional fields): 0.000694353, 5.33799e-17, 6.55521e-17, 1.8268e-16, 1.16984e-16, 1.8268e-16, 0
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 0.000694353
+
+   Copying properties into prescribed temperature field... done.
+   Solving temperature system... 0 iterations.
+   Solving percent_comp2 system ... 0 iterations.
+   Solving percent_comp3 system ... 0 iterations.
+   Solving entropy_comp1 system ... 0 iterations.
+   Solving entropy_comp2 system ... 0 iterations.
+   Solving entropy_comp3 system ... 0 iterations.
+   Solving composition reactions... in 1 substep(s).
+   Copying properties into prescribed temperature field... done.
+   Copying properties into prescribed compositional field density_field... done.
+      Relative nonlinear residuals (temperature, compositional fields): 1.08735e-15, 5.33799e-17, 6.55521e-17, 3.74871e-16, 3.75329e-16, 3.74871e-16, 0
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 1.08735e-15
+
+
+   Postprocessing:
+     Writing graphical output:           output-entropy_multicomponent_12_edge_case_3_components/solution/solution-00012
+     RMS, max velocity:                  0 m/year, 0 m/year
+     Temperature min/avg/max:            1005 K, 1005 K, 1005 K
+     Mass fluxes through boundary parts: 0 kg/yr, 0 kg/yr, 0 kg/yr, 0 kg/yr
+     Compositions min/max/mass:          0.3/0.3/5.07e+07 // 0.35/0.35/5.915e+07 // 1613/1613/2.726e+11 // 1998/1998/3.377e+11 // 1613/1613/2.726e+11 // 3014/3014/5.094e+11
+
+*** Timestep 13:  t=2.6e+06 years, dt=200000 years
+   Solving composition reactions... in 1 substep(s).
+   Copying properties into prescribed temperature field... done.
+   Solving temperature system... 1 iterations.
+   Solving percent_comp2 system ... 0 iterations.
+   Solving percent_comp3 system ... 0 iterations.
+   Solving entropy_comp1 system ... 0 iterations.
+   Solving entropy_comp2 system ... 0 iterations.
+   Solving entropy_comp3 system ... 0 iterations.
+   Solving composition reactions... in 1 substep(s).
+   Copying properties into prescribed temperature field... done.
+   Copying properties into prescribed compositional field density_field... done.
+      Relative nonlinear residuals (temperature, compositional fields): 0.000681697, 5.33799e-17, 6.55521e-17, 2.24587e-16, 1.06597e-16, 2.24587e-16, 0
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 0.000681697
+
+   Copying properties into prescribed temperature field... done.
+   Solving temperature system... 0 iterations.
+   Solving percent_comp2 system ... 0 iterations.
+   Solving percent_comp3 system ... 0 iterations.
+   Solving entropy_comp1 system ... 0 iterations.
+   Solving entropy_comp2 system ... 0 iterations.
+   Solving entropy_comp3 system ... 0 iterations.
+   Solving composition reactions... in 1 substep(s).
+   Copying properties into prescribed temperature field... done.
+   Copying properties into prescribed compositional field density_field... done.
+      Relative nonlinear residuals (temperature, compositional fields): 1.24101e-15, 5.33799e-17, 6.55521e-17, 3.24596e-16, 1.84339e-16, 3.24596e-16, 0
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 1.24101e-15
+
+
+   Postprocessing:
+     Writing graphical output:           output-entropy_multicomponent_12_edge_case_3_components/solution/solution-00013
+     RMS, max velocity:                  0 m/year, 0 m/year
+     Temperature min/avg/max:            1006 K, 1006 K, 1006 K
+     Mass fluxes through boundary parts: 0 kg/yr, 0 kg/yr, 0 kg/yr, 0 kg/yr
+     Compositions min/max/mass:          0.3/0.3/5.07e+07 // 0.35/0.35/5.915e+07 // 1613/1613/2.726e+11 // 1998/1998/3.377e+11 // 1613/1613/2.726e+11 // 3018/3018/5.1e+11
+
+*** Timestep 14:  t=2.8e+06 years, dt=200000 years
+   Solving composition reactions... in 1 substep(s).
+   Copying properties into prescribed temperature field... done.
+   Solving temperature system... 1 iterations.
+   Solving percent_comp2 system ... 0 iterations.
+   Solving percent_comp3 system ... 0 iterations.
+   Solving entropy_comp1 system ... 0 iterations.
+   Solving entropy_comp2 system ... 0 iterations.
+   Solving entropy_comp3 system ... 0 iterations.
+   Solving composition reactions... in 1 substep(s).
+   Copying properties into prescribed temperature field... done.
+   Copying properties into prescribed compositional field density_field... done.
+      Relative nonlinear residuals (temperature, compositional fields): 0.000669772, 5.33799e-17, 6.55521e-17, 3.85906e-17, 1.28864e-16, 3.85906e-17, 0
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 0.000669772
+
+   Copying properties into prescribed temperature field... done.
+   Solving temperature system... 0 iterations.
+   Solving percent_comp2 system ... 0 iterations.
+   Solving percent_comp3 system ... 0 iterations.
+   Solving entropy_comp1 system ... 0 iterations.
+   Solving entropy_comp2 system ... 0 iterations.
+   Solving entropy_comp3 system ... 0 iterations.
+   Solving composition reactions... in 1 substep(s).
+   Copying properties into prescribed temperature field... done.
+   Copying properties into prescribed compositional field density_field... done.
+      Relative nonlinear residuals (temperature, compositional fields): 3.80281e-16, 5.33799e-17, 6.55521e-17, 9.88066e-17, 3.38084e-16, 9.88066e-17, 0
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 3.80281e-16
+
+
+   Postprocessing:
+     Writing graphical output:           output-entropy_multicomponent_12_edge_case_3_components/solution/solution-00014
+     RMS, max velocity:                  0 m/year, 0 m/year
+     Temperature min/avg/max:            1007 K, 1007 K, 1007 K
+     Mass fluxes through boundary parts: 0 kg/yr, 0 kg/yr, 0 kg/yr, 0 kg/yr
+     Compositions min/max/mass:          0.3/0.3/5.07e+07 // 0.35/0.35/5.915e+07 // 1613/1613/2.726e+11 // 1998/1998/3.377e+11 // 1613/1613/2.726e+11 // 3021/3021/5.106e+11
+
+*** Timestep 15:  t=3e+06 years, dt=200000 years
+   Solving composition reactions... in 1 substep(s).
+   Copying properties into prescribed temperature field... done.
+   Solving temperature system... 2 iterations.
+   Solving percent_comp2 system ... 0 iterations.
+   Solving percent_comp3 system ... 0 iterations.
+   Solving entropy_comp1 system ... 0 iterations.
+   Solving entropy_comp2 system ... 0 iterations.
+   Solving entropy_comp3 system ... 0 iterations.
+   Solving composition reactions... in 1 substep(s).
+   Copying properties into prescribed temperature field... done.
+   Copying properties into prescribed compositional field density_field... done.
+      Relative nonlinear residuals (temperature, compositional fields): 0.0109768, 5.33799e-17, 6.55521e-17, 3.90708e-16, 1.91336e-16, 3.90708e-16, 0
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 0.0109768
+
+   Copying properties into prescribed temperature field... done.
+   Solving temperature system... 0 iterations.
+   Solving percent_comp2 system ... 0 iterations.
+   Solving percent_comp3 system ... 0 iterations.
+   Solving entropy_comp1 system ... 0 iterations.
+   Solving entropy_comp2 system ... 0 iterations.
+   Solving entropy_comp3 system ... 0 iterations.
+   Solving composition reactions... in 1 substep(s).
+   Copying properties into prescribed temperature field... done.
+   Copying properties into prescribed compositional field density_field... done.
+      Relative nonlinear residuals (temperature, compositional fields): 5.61943e-15, 5.33799e-17, 6.55521e-17, 1.32392e-14, 1.08685e-14, 1.32392e-14, 0
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 1.32392e-14
+
+
+   Postprocessing:
+     Writing graphical output:           output-entropy_multicomponent_12_edge_case_3_components/solution/solution-00015
+     RMS, max velocity:                  0 m/year, 0 m/year
+     Temperature min/avg/max:            1018 K, 1018 K, 1018 K
+     Mass fluxes through boundary parts: 0 kg/yr, 0 kg/yr, 0 kg/yr, 0 kg/yr
+     Compositions min/max/mass:          0.3/0.3/5.07e+07 // 0.35/0.35/5.915e+07 // 1611/1611/2.723e+11 // 2004/2004/3.386e+11 // 1611/1611/2.723e+11 // 3086/3086/5.215e+11
+
+*** Timestep 16:  t=3.2e+06 years, dt=200000 years
+   Solving composition reactions... in 1 substep(s).
+   Copying properties into prescribed temperature field... done.
+   Solving temperature system... 1 iterations.
+   Solving percent_comp2 system ... 0 iterations.
+   Solving percent_comp3 system ... 0 iterations.
+   Solving entropy_comp1 system ... 0 iterations.
+   Solving entropy_comp2 system ... 0 iterations.
+   Solving entropy_comp3 system ... 0 iterations.
+   Solving composition reactions... in 1 substep(s).
+   Copying properties into prescribed temperature field... done.
+   Copying properties into prescribed compositional field density_field... done.
+      Relative nonlinear residuals (temperature, compositional fields): 0.00893612, 5.33799e-17, 6.55521e-17, 2.13716e-16, 1.88561e-16, 2.13716e-16, 0
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 0.00893612
+
+   Copying properties into prescribed temperature field... done.
+   Solving temperature system... 0 iterations.
+   Solving percent_comp2 system ... 0 iterations.
+   Solving percent_comp3 system ... 0 iterations.
+   Solving entropy_comp1 system ... 0 iterations.
+   Solving entropy_comp2 system ... 0 iterations.
+   Solving entropy_comp3 system ... 0 iterations.
+   Solving composition reactions... in 1 substep(s).
+   Copying properties into prescribed temperature field... done.
+   Copying properties into prescribed compositional field density_field... done.
+      Relative nonlinear residuals (temperature, compositional fields): 1.80222e-15, 5.33799e-17, 6.55521e-17, 7.15147e-16, 5.81101e-16, 7.15147e-16, 0
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 1.80222e-15
+
+
+   Postprocessing:
+     Writing graphical output:           output-entropy_multicomponent_12_edge_case_3_components/solution/solution-00016
+     RMS, max velocity:                  0 m/year, 0 m/year
+     Temperature min/avg/max:            1027 K, 1027 K, 1027 K
+     Mass fluxes through boundary parts: 0 kg/yr, 0 kg/yr, 0 kg/yr, 0 kg/yr
+     Compositions min/max/mass:          0.3/0.3/5.07e+07 // 0.35/0.35/5.915e+07 // 1610/1610/2.72e+11 // 2007/2007/3.392e+11 // 1610/1610/2.72e+11 // 3140/3140/5.307e+11
+
+*** Timestep 17:  t=3.4e+06 years, dt=200000 years
+   Solving composition reactions... in 1 substep(s).
+   Copying properties into prescribed temperature field... done.
+   Solving temperature system... 1 iterations.
+   Solving percent_comp2 system ... 0 iterations.
+   Solving percent_comp3 system ... 0 iterations.
+   Solving entropy_comp1 system ... 0 iterations.
+   Solving entropy_comp2 system ... 0 iterations.
+   Solving entropy_comp3 system ... 0 iterations.
+   Solving composition reactions... in 1 substep(s).
+   Copying properties into prescribed temperature field... done.
+   Copying properties into prescribed compositional field density_field... done.
+      Relative nonlinear residuals (temperature, compositional fields): 0.000492929, 5.33799e-17, 6.55521e-17, 8.84022e-17, 2.40919e-16, 8.84022e-17, 0
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 0.000492929
+
+   Copying properties into prescribed temperature field... done.
+   Solving temperature system... 0 iterations.
+   Solving percent_comp2 system ... 0 iterations.
+   Solving percent_comp3 system ... 0 iterations.
+   Solving entropy_comp1 system ... 0 iterations.
+   Solving entropy_comp2 system ... 0 iterations.
+   Solving entropy_comp3 system ... 0 iterations.
+   Solving composition reactions... in 1 substep(s).
+   Copying properties into prescribed temperature field... done.
+   Copying properties into prescribed compositional field density_field... done.
+      Relative nonlinear residuals (temperature, compositional fields): 1.06236e-15, 5.33799e-17, 6.55521e-17, 6.34114e-16, 3.46781e-16, 6.34114e-16, 0
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 1.06236e-15
+
+
+   Postprocessing:
+     Writing graphical output:           output-entropy_multicomponent_12_edge_case_3_components/solution/solution-00017
+     RMS, max velocity:                  0 m/year, 0 m/year
+     Temperature min/avg/max:            1028 K, 1028 K, 1028 K
+     Mass fluxes through boundary parts: 0 kg/yr, 0 kg/yr, 0 kg/yr, 0 kg/yr
+     Compositions min/max/mass:          0.3/0.3/5.07e+07 // 0.35/0.35/5.915e+07 // 1610/1610/2.72e+11 // 2007/2007/3.392e+11 // 1610/1610/2.72e+11 // 3143/3143/5.311e+11
+
+*** Timestep 18:  t=3.6e+06 years, dt=200000 years
+   Solving composition reactions... in 1 substep(s).
+   Copying properties into prescribed temperature field... done.
+   Solving temperature system... 2 iterations.
+   Solving percent_comp2 system ... 0 iterations.
+   Solving percent_comp3 system ... 0 iterations.
+   Solving entropy_comp1 system ... 0 iterations.
+   Solving entropy_comp2 system ... 0 iterations.
+   Solving entropy_comp3 system ... 0 iterations.
+   Solving composition reactions... in 1 substep(s).
+   Copying properties into prescribed temperature field... done.
+   Copying properties into prescribed compositional field density_field... done.
+      Relative nonlinear residuals (temperature, compositional fields): 0.000489356, 5.33799e-17, 6.55521e-17, 2.06179e-16, 2.27287e-16, 2.06179e-16, 0
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 0.000489356
+
+   Copying properties into prescribed temperature field... done.
+   Solving temperature system... 0 iterations.
+   Solving percent_comp2 system ... 0 iterations.
+   Solving percent_comp3 system ... 0 iterations.
+   Solving entropy_comp1 system ... 0 iterations.
+   Solving entropy_comp2 system ... 0 iterations.
+   Solving entropy_comp3 system ... 0 iterations.
+   Solving composition reactions... in 1 substep(s).
+   Copying properties into prescribed temperature field... done.
+   Copying properties into prescribed compositional field density_field... done.
+      Relative nonlinear residuals (temperature, compositional fields): 8.74679e-16, 5.33799e-17, 6.55521e-17, 6.06531e-16, 4.71132e-16, 6.06531e-16, 0
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 8.74679e-16
+
+
+   Postprocessing:
+     Writing graphical output:           output-entropy_multicomponent_12_edge_case_3_components/solution/solution-00018
+     RMS, max velocity:                  0 m/year, 0 m/year
+     Temperature min/avg/max:            1028 K, 1028 K, 1028 K
+     Mass fluxes through boundary parts: 0 kg/yr, 0 kg/yr, 0 kg/yr, 0 kg/yr
+     Compositions min/max/mass:          0.3/0.3/5.07e+07 // 0.35/0.35/5.915e+07 // 1610/1610/2.72e+11 // 2007/2007/3.392e+11 // 1610/1610/2.72e+11 // 3145/3145/5.315e+11
+
+*** Timestep 19:  t=3.8e+06 years, dt=200000 years
+   Solving composition reactions... in 1 substep(s).
+   Copying properties into prescribed temperature field... done.
+   Solving temperature system... 2 iterations.
+   Solving percent_comp2 system ... 0 iterations.
+   Solving percent_comp3 system ... 0 iterations.
+   Solving entropy_comp1 system ... 0 iterations.
+   Solving entropy_comp2 system ... 0 iterations.
+   Solving entropy_comp3 system ... 0 iterations.
+   Solving composition reactions... in 1 substep(s).
+   Copying properties into prescribed temperature field... done.
+   Copying properties into prescribed compositional field density_field... done.
+      Relative nonlinear residuals (temperature, compositional fields): 0.000485853, 5.33799e-17, 6.55521e-17, 7.66126e-17, 3.19579e-16, 7.66126e-17, 0
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 0.000485853
+
+   Copying properties into prescribed temperature field... done.
+   Solving temperature system... 0 iterations.
+   Solving percent_comp2 system ... 0 iterations.
+   Solving percent_comp3 system ... 0 iterations.
+   Solving entropy_comp1 system ... 0 iterations.
+   Solving entropy_comp2 system ... 0 iterations.
+   Solving entropy_comp3 system ... 0 iterations.
+   Solving composition reactions... in 1 substep(s).
+   Copying properties into prescribed temperature field... done.
+   Copying properties into prescribed compositional field density_field... done.
+      Relative nonlinear residuals (temperature, compositional fields): 1.11185e-16, 5.33799e-17, 6.55521e-17, 2.30157e-16, 1.0687e-16, 2.30157e-16, 0
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 2.30157e-16
+
+
+   Postprocessing:
+     Writing graphical output:           output-entropy_multicomponent_12_edge_case_3_components/solution/solution-00019
+     RMS, max velocity:                  0 m/year, 0 m/year
+     Temperature min/avg/max:            1029 K, 1029 K, 1029 K
+     Mass fluxes through boundary parts: 0 kg/yr, 0 kg/yr, 0 kg/yr, 0 kg/yr
+     Compositions min/max/mass:          0.3/0.3/5.07e+07 // 0.35/0.35/5.915e+07 // 1610/1610/2.72e+11 // 2007/2007/3.392e+11 // 1610/1610/2.72e+11 // 3147/3147/5.318e+11
+
+*** Timestep 20:  t=4e+06 years, dt=200000 years
+   Solving composition reactions... in 1 substep(s).
+   Copying properties into prescribed temperature field... done.
+   Solving temperature system... 2 iterations.
+   Solving percent_comp2 system ... 0 iterations.
+   Solving percent_comp3 system ... 0 iterations.
+   Solving entropy_comp1 system ... 0 iterations.
+   Solving entropy_comp2 system ... 0 iterations.
+   Solving entropy_comp3 system ... 0 iterations.
+   Solving composition reactions... in 1 substep(s).
+   Copying properties into prescribed temperature field... done.
+   Copying properties into prescribed compositional field density_field... done.
+      Relative nonlinear residuals (temperature, compositional fields): 0.000482397, 5.33799e-17, 6.55521e-17, 2.02454e-16, 1.83609e-16, 2.02454e-16, 0
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 0.000482397
+
+   Copying properties into prescribed temperature field... done.
+   Solving temperature system... 0 iterations.
+   Solving percent_comp2 system ... 0 iterations.
+   Solving percent_comp3 system ... 0 iterations.
+   Solving entropy_comp1 system ... 0 iterations.
+   Solving entropy_comp2 system ... 0 iterations.
+   Solving entropy_comp3 system ... 0 iterations.
+   Solving composition reactions... in 1 substep(s).
+   Copying properties into prescribed temperature field... done.
+   Copying properties into prescribed compositional field density_field... done.
+      Relative nonlinear residuals (temperature, compositional fields): 7.50089e-16, 5.33799e-17, 6.55521e-17, 2.6864e-16, 2.37304e-16, 2.6864e-16, 0
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 7.50089e-16
+
+
+   Postprocessing:
+     Writing graphical output:           output-entropy_multicomponent_12_edge_case_3_components/solution/solution-00020
+     RMS, max velocity:                  0 m/year, 0 m/year
+     Temperature min/avg/max:            1029 K, 1029 K, 1029 K
+     Mass fluxes through boundary parts: 0 kg/yr, 0 kg/yr, 0 kg/yr, 0 kg/yr
+     Compositions min/max/mass:          0.3/0.3/5.07e+07 // 0.35/0.35/5.915e+07 // 1610/1610/2.72e+11 // 2007/2007/3.392e+11 // 1610/1610/2.72e+11 // 3149/3149/5.322e+11
+
+Termination requested by criterion: end time
+
+
+

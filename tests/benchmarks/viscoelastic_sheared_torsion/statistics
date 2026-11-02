@@ -1,0 +1,39 @@
+# 1: Time step number
+# 2: Time (seconds)
+# 3: Time step size (seconds)
+# 4: Number of mesh cells
+# 5: Number of Stokes degrees of freedom
+# 6: Number of temperature degrees of freedom
+# 7: Number of degrees of freedom for all compositions
+# 8: Number of nonlinear iterations
+# 9: Iterations for temperature solver
+# 10: Iterations for composition solver 1
+# 11: Iterations for composition solver 2
+# 12: Iterations for composition solver 3
+# 13: Iterations for composition solver 4
+# 14: Iterations for composition solver 5
+# 15: Iterations for composition solver 6
+# 16: Iterations for Stokes solver
+# 17: Velocity iterations in Stokes preconditioner
+# 18: Schur complement iterations in Stokes preconditioner
+# 19: Minimal value for composition ve_stress_xx
+# 20: Maximal value for composition ve_stress_xx
+# 21: Global mass for composition ve_stress_xx
+# 22: Minimal value for composition ve_stress_yy
+# 23: Maximal value for composition ve_stress_yy
+# 24: Global mass for composition ve_stress_yy
+# 25: Minimal value for composition ve_stress_zz
+# 26: Maximal value for composition ve_stress_zz
+# 27: Global mass for composition ve_stress_zz
+# 28: Minimal value for composition ve_stress_xy
+# 29: Maximal value for composition ve_stress_xy
+# 30: Global mass for composition ve_stress_xy
+# 31: Minimal value for composition ve_stress_xz
+# 32: Maximal value for composition ve_stress_xz
+# 33: Global mass for composition ve_stress_xz
+# 34: Minimal value for composition ve_stress_yz
+# 35: Maximal value for composition ve_stress_yz
+# 36: Global mass for composition ve_stress_yz
+0 0.000000000000e+00 0.000000000000e+00 125 4209 1331 20250 2 0 0 0 0 0 0 0 20 21 21 0.00000000e+00 0.00000000e+00 0.00000000e+00  0.00000000e+00 0.00000000e+00 0.00000000e+00  0.00000000e+00  0.00000000e+00  0.00000000e+00  0.00000000e+00 0.00000000e+00  0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 
+1 1.000000000000e-02 1.000000000000e-02 125 4209 1331 20250 2 0 3 3 3 3 2 3  0  0  0 8.83512406e-04 8.99396177e-04 8.91087839e-04 -6.89519656e-06 6.31482879e-06 6.46947421e-10 -8.97162544e-04 -8.85433346e-04 -8.91088485e-04 -4.76697172e-06 6.05308374e-06 -1.63715753e-11 2.97021928e-01 2.97035265e-01 2.97029703e-01 3.39633243e-04 3.53316393e-04 3.46534963e-04 
+2 2.000000000000e-02 1.000000000000e-02 125 4209 1331 20250 2 0 5 5 5 5 3 5  1  2  2 2.34699471e-03 2.37799146e-03 2.36152980e-03 -1.37407367e-05 1.22648789e-05 1.72388336e-09 -2.37363579e-03 -2.35056326e-03 -2.36153152e-03 -8.43233466e-06 1.30574398e-05  1.02926097e-06 5.91100976e-01 5.91127550e-01 5.91116486e-01 9.04631509e-04 9.31839790e-04 9.18374836e-04 

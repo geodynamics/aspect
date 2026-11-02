@@ -35,7 +35,7 @@ This parameter only describes which boundaries have a fixed composition, but not
 :name: parameters:Boundary_20composition_20model/List_20of_20model_20names
 **Default value:**
 
-**Pattern:** [MultipleSelection ascii data|box|box with lithosphere boundary indicators|function|initial composition|spherical constant ]
+**Pattern:** [MultipleSelection ascii data|box|box with lithosphere boundary indicators|function|initial composition|mesh deformation|spherical constant ]
 
 **Documentation:** A comma-separated list of boundary composition models that will be used to initialize the composition. These plugins are loaded in the order given, and modify the existing composition field via the operators listed in &rsquo;List of model operators&rsquo;.
 
@@ -57,6 +57,10 @@ The format of these functions follows the syntax understood by the muparser libr
 
 Because this class simply takes what the initial composition had described, this class can not know certain pieces of information such as the minimal and maximal composition on the boundary. For operations that require this, for example in post-processing, this boundary composition model must therefore be told what the minimal and maximal values on the boundary are. This is done using parameters set in section &ldquo;Boundary composition model/Initial composition&rdquo;.
 
+&lsquo;mesh deformation&rsquo;: A model in which the composition at the boundary is retrieved from the active mesh deformation plugins.
+
+The active mesh deformation plugins can each return a value for the compositional fields that are prescribed on a boundary; their values are summed per field. If a mesh deformation plugin does not implement the boundary composition function, a default value of zero is returned.
+
 &lsquo;spherical constant&rsquo;: A model in which the composition is chosen constant on the inner and outer boundaries of a sphere, spherical shell, chunk or ellipsoidal chunk. Parameters are read from subsection &rsquo;Spherical constant&rsquo;.
 ::::
 
@@ -67,35 +71,6 @@ Because this class simply takes what the initial composition had described, this
 **Pattern:** [MultipleSelection add|subtract|minimum|maximum|replace if valid ]
 
 **Documentation:** A comma-separated list of operators that will be used to append the listed composition models onto the previous models. If only one operator is given, the same operator is applied to all models.
-::::
-
-::::{dropdown} __Parameter:__ {ref}`Model name<parameters:Boundary_20composition_20model/Model_20name>`
-:name: parameters:Boundary_20composition_20model/Model_20name
-**Default value:** unspecified
-
-**Pattern:** [Selection ascii data|box|box with lithosphere boundary indicators|function|initial composition|spherical constant|unspecified ]
-
-**Documentation:** Select one of the following models:
-
-&lsquo;ascii data&rsquo;: Implementation of a model in which the boundary composition is derived from files containing data in ascii format. Note the required format of the input data: The first lines may contain any number of comments if they begin with &lsquo;#&rsquo;, but one of these lines needs to contain the number of grid points in each dimension as for example &lsquo;# POINTS: 3 3&rsquo;. The order of the data columns has to be &lsquo;x&rsquo;, &lsquo;composition1&rsquo;, &lsquo;composition2&rsquo;, etc. in a 2d model and &lsquo;x&rsquo;, &lsquo;y&rsquo;, &lsquo;composition1&rsquo;, &lsquo;composition2&rsquo;, etc., in a 3d model, according to the number of compositional fields, which means that there has to be a single column for every composition in the model. Note that the data in the input files need to be sorted in a specific order: the first coordinate needs to ascend first, followed by the second in order to assign the correct data to the prescribed coordinates.If you use a spherical model, then the assumed grid changes. &lsquo;x&rsquo; will be replaced by the radial distance of the point to the bottom of the model, &lsquo;y&rsquo; by the azimuth angle and &lsquo;z&rsquo; by the polar angle measured positive from the north pole. The grid will be assumed to be a latitude-longitude grid. Note that the order of spherical coordinates is &lsquo;r&rsquo;, &lsquo;phi&rsquo;, &lsquo;theta&rsquo; and not &lsquo;r&rsquo;, &lsquo;theta&rsquo;, &lsquo;phi&rsquo;, since this allows for dimension independent expressions.
-
-&lsquo;box&rsquo;: A model in which the composition is chosen constant on the sides of a box which are selected by the parameters Left/Right/Top/Bottom/Front/Back composition
-
-&lsquo;box with lithosphere boundary indicators&rsquo;: A model in which the composition is chosen constant on all the sides of a box. Additional boundary indicators are added to the lithospheric parts of the vertical boundaries. This model is to be used with the &rsquo;Two Merged Boxes&rsquo; Geometry Model.
-
-&lsquo;function&rsquo;: Implementation of a model in which the boundary composition is given in terms of an explicit formula that is elaborated in the parameters in section &ldquo;Boundary composition model|Function&rdquo;.
-
-Since the symbol $t$ indicating time may appear in the formulas for the prescribed composition, it is interpreted as having units seconds unless the global input parameter &ldquo;Use years instead of seconds&rdquo; is set, in which case we interpret the formula expressions as having units year.
-
-The format of these functions follows the syntax understood by the muparser library, see {ref}`sec:run-aspect:parameters-overview:muparser-format`.
-
-&lsquo;initial composition&rsquo;: A model in which the composition at the boundary is chosen to be the same as given in the initial conditions.
-
-Because this class simply takes what the initial composition had described, this class can not know certain pieces of information such as the minimal and maximal composition on the boundary. For operations that require this, for example in post-processing, this boundary composition model must therefore be told what the minimal and maximal values on the boundary are. This is done using parameters set in section &ldquo;Boundary composition model/Initial composition&rdquo;.
-
-&lsquo;spherical constant&rsquo;: A model in which the composition is chosen constant on the inner and outer boundaries of a sphere, spherical shell, chunk or ellipsoidal chunk. Parameters are read from subsection &rsquo;Spherical constant&rsquo;.
-
-**Warning**: This parameter provides an old and deprecated way of specifying boundary composition models and shouldn&rsquo;t be used. Please use &rsquo;List of model names&rsquo; instead.
 ::::
 
 (parameters:Boundary_20composition_20model/Ascii_20data_20model)=

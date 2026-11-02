@@ -1,26 +1,21 @@
-/*
-  Copyright (C) 2016 - 2024 by the authors of the ASPECT code.
-
-  This file is part of ASPECT.
-
-  ASPECT is free software; you can redistribute it and/or modify
-  it under the terms of the GNU General Public License as published by
-  the Free Software Foundation; either version 2, or (at your option)
-  any later version.
-
-  ASPECT is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  GNU General Public License for more details.
-
-  You should have received a copy of the GNU General Public License
-  along with ASPECT; see the file LICENSE.  If not see
-  <http://www.gnu.org/licenses/>.
-*/
+// ------------------------------------------------------
+//
+// SPDX-License-Identifier: GPL-2.0-or-later
+//
+// SPDX-FileCopyrightText: Copyright (C) 2016-2026 by the ASPECT authors.
+//
+// This file is part of ASPECT.
+//
+// Detailed license information governing the source code and
+// contributions can be found in the folder LICENSES and in
+// LICENSE and CONTRIBUTING.md at the top level directory.
+//
+// ------------------------------------------------------
 
 #include <aspect/simulator.h>
 #include <aspect/simulator/assemblers/interface.h>
 #include <aspect/melt.h>
+#include <aspect/utilities.h>
 
 #include <deal.II/base/signaling_nan.h>
 #include <deal.II/fe/fe_values.h>
@@ -189,12 +184,14 @@ namespace aspect
         if (use_darcy_velocity)
           {
             const unsigned int porosity_index = introspection.compositional_index_for_name("porosity");
-            const double porosity = std::max(scratch.material_model_inputs.composition[q][porosity_index], 1e-10);
-            const double K_D = melt_outputs->permeabilities[q] / melt_outputs->fluid_viscosities[q];
-            const double rho_s = scratch.material_model_outputs.densities[q];
-            const double rho_f = melt_outputs->fluid_densities[q];
             const Tensor<1,dim> gravity = gravity_model.get()->gravity_vector(scratch.finite_element_values.quadrature_point(q));
-            const Tensor<1,dim> darcy_velocity = velocity - K_D * (rho_s - rho_f) * gravity / porosity;
+            Tensor<1,dim> darcy_velocity =
+              aspect::Utilities::calculate_approximate_darcy_velocity(scratch.material_model_inputs,
+                                                                      scratch.material_model_outputs,
+                                                                      melt_outputs, velocity,
+                                                                      gravity, porosity_index, q,
+                                                                      parameters.use_pressure_gradient_for_darcy_field);
+
             velocity_norm = darcy_velocity.norm();
           }
 

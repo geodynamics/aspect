@@ -1,22 +1,16 @@
-/*
-  Copyright (C) 2011 - 2019 by the authors of the ASPECT code.
-
-  This file is part of ASPECT.
-
-  ASPECT is free software; you can redistribute it and/or modify
-  it under the terms of the GNU General Public License as published by
-  the Free Software Foundation; either version 2, or (at your option)
-  any later version.
-
-  ASPECT is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  GNU General Public License for more details.
-
-  You should have received a copy of the GNU General Public License
-  along with ASPECT; see the file LICENSE.  If not see
-  <http://www.gnu.org/licenses/>.
-*/
+// ------------------------------------------------------
+//
+// SPDX-License-Identifier: GPL-2.0-or-later
+//
+// SPDX-FileCopyrightText: Copyright (C) 2011-2026 by the ASPECT authors.
+//
+// This file is part of ASPECT.
+//
+// Detailed license information governing the source code and
+// contributions can be found in the folder LICENSES and in
+// LICENSE and CONTRIBUTING.md at the top level directory.
+//
+// ------------------------------------------------------
 
 
 #ifndef _aspect_initial_temperature_patch_on_S40RTS_h
@@ -68,6 +62,8 @@ namespace aspect
         /**
          * This parameter gives the maximum depth of the Vs ascii grid. The
          * model will read in Vs from S40RTS below this depth.
+         *
+         * This variable is read from the parameter file through a parameter called 'Maximum grid depth'.
          */
         double max_grid_depth;
 
@@ -75,6 +71,7 @@ namespace aspect
          * This parameter gives the range (above maximum grid depth) over which to smooth.
          * Smoothing is done with a depth weighted combination of the values in the ascii grid and S40RTS
          * at each point.
+         * This variable is read from the parameter file through a parameter called 'Smoothing length scale'.
          */
         double smoothing_length_scale;
 
@@ -109,6 +106,8 @@ namespace aspect
         /**
          * This parameter is the depth down to which shear wave perturbations are
          * zeroed out.
+         *
+         * This variable is read from the parameter file through a parameter called 'Remove temperature heterogeneity down to specified depth'.
          */
         double no_perturbation_depth_patch;
 

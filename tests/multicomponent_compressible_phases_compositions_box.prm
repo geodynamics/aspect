@@ -65,7 +65,7 @@ subsection Boundary temperature model
 end
 
 subsection Initial temperature model
-  set Model name = function
+  set List of model names = function
 
   subsection Function
     set Function expression = 273
@@ -84,7 +84,7 @@ end
 # The material properties are thus derived from the "background"
 # field from 50 km depth to the model base.
 subsection Initial composition model
-  set Model name = function
+  set List of model names = function
 
   subsection Function
     set Function expression = (y > 80000) ? 1.0 : 0.0; \

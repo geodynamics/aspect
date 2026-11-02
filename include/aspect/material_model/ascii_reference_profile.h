@@ -1,22 +1,16 @@
-/*
-  Copyright (C) 2016 - 2022 by the authors of the ASPECT code.
-
-  This file is part of ASPECT.
-
-  ASPECT is free software; you can redistribute it and/or modify
-  it under the terms of the GNU General Public License as published by
-  the Free Software Foundation; either version 2, or (at your option)
-  any later version.
-
-  ASPECT is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  GNU General Public License for more details.
-
-  You should have received a copy of the GNU General Public License
-  along with ASPECT; see the file LICENSE.  If not see
-  <http://www.gnu.org/licenses/>.
-*/
+// ------------------------------------------------------
+//
+// SPDX-License-Identifier: GPL-2.0-or-later
+//
+// SPDX-FileCopyrightText: Copyright (C) 2016-2026 by the ASPECT authors.
+//
+// This file is part of ASPECT.
+//
+// Detailed license information governing the source code and
+// contributions can be found in the folder LICENSES and in
+// LICENSE and CONTRIBUTING.md at the top level directory.
+//
+// ------------------------------------------------------
 
 
 #ifndef _aspect_model_ascii_reference_profile_h
@@ -104,17 +98,21 @@ namespace aspect
       private:
         /**
          * Use truncated anelastic approximation?
+         *
+         * This variable is read from the parameter file through a parameter called 'Use TALA'.
          */
         bool tala;
 
         /**
          * The reference viscosity
+         * This variable is read from the parameter file through a parameter called 'Viscosity'.
          */
         double viscosity;
 
         /**
          * The constant $A$ in the temperature dependence of viscosity
          * $\exp\left(-A \frac{T - T_\text{adi}}{T_\text{adi}}\right).$
+         * This variable is read from the parameter file through a parameter called 'Thermal viscosity exponent'.
          */
         double thermal_viscosity_exponent;
 
@@ -123,6 +121,7 @@ namespace aspect
          * $\eta_r(z)$, which determines the depth dependence of viscosity,
          * and is multiplied with the reference viscosity and the
          * temperature dependence to compute the viscosity $\eta(z,T)$.
+         * This variable is read from the parameter file through a parameter called 'Viscosity prefactors'.
          */
         std::vector<double> viscosity_prefactors;
 
@@ -130,6 +129,8 @@ namespace aspect
          * A list of depths that determine the locations of the jumps in
          * the piece-wise constant function $\eta_r(z)$, which describes the
          * depth dependence of viscosity.
+         *
+         * This variable is read from the parameter file through a parameter called 'Transition depths'.
          */
         std::vector<double> transition_depths;
 

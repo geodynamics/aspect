@@ -1,22 +1,16 @@
-/*
-  Copyright (C) 2011 - 2019 by the authors of the ASPECT code.
-
-  This file is part of ASPECT.
-
-  ASPECT is free software; you can redistribute it and/or modify
-  it under the terms of the GNU General Public License as published by
-  the Free Software Foundation; either version 2, or (at your option)
-  any later version.
-
-  ASPECT is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  GNU General Public License for more details.
-
-  You should have received a copy of the GNU General Public License
-  along with ASPECT; see the file LICENSE.  If not see
-  <http://www.gnu.org/licenses/>.
-*/
+// ------------------------------------------------------
+//
+// SPDX-License-Identifier: GPL-2.0-or-later
+//
+// SPDX-FileCopyrightText: Copyright (C) 2011-2026 by the ASPECT authors.
+//
+// This file is part of ASPECT.
+//
+// Detailed license information governing the source code and
+// contributions can be found in the folder LICENSES and in
+// LICENSE and CONTRIBUTING.md at the top level directory.
+//
+// ------------------------------------------------------
 
 #ifndef _aspect_material_model_equation_of_state_linearized_incompressible_h
 #define _aspect_material_model_equation_of_state_linearized_incompressible_h
@@ -100,21 +94,26 @@ namespace aspect
         private:
           /**
            * The reference density $\rho_0$ used in the computation of the density.
+           *
+           * This variable is read from the parameter file through a parameter called 'Reference density'.
            */
           double reference_rho;
 
           /**
            * The reference temperature $T_0$ used in the computation of the density.
+           * This variable is read from the parameter file through a parameter called 'Reference temperature'.
            */
           double reference_T;
 
           /**
            * The constant thermal expansivity $\alpha$ used in the computation of the density.
+           * This variable is read from the parameter file through a parameter called 'Thermal expansion coefficient'.
            */
           double thermal_alpha;
 
           /**
            * The constant specific heat.
+           * This variable is read from the parameter file through a parameter called 'Reference specific heat'.
            */
           double reference_specific_heat;
 
@@ -128,6 +127,9 @@ namespace aspect
           /**
            * The density difference $\Delta\rho_i$ between each composition $\mathfrak c_i$
            * and the background.
+           *
+           * This variable is read from the parameter file through parameters called
+           * 'Density differential for compositional field 1' and 'Density differential for compositional field 2'.
            */
           std::vector<double> compositional_delta_rhos;
       };

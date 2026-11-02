@@ -30,7 +30,7 @@ set Output directory                       = visco_plastic_yield_strain_weakenin
 # accumulated strain should be uniform throughout
 # the domain over the course of this model run.
 subsection Initial composition model
-  set Model name = function
+  set List of model names = function
 
   subsection Function
     set Variable names      = x,y

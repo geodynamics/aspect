@@ -1,0 +1,48 @@
+
+Number of active cells: 64 (on 3 levels)
+Number of degrees of freedom: 3,770 (2,187+125+729+729)
+
+*** Timestep 0:  t=0 seconds, dt=0 seconds
+   Skipping temperature solve because RHS is zero.
+   Solving C_1 system ... 0 iterations.
+   Solving Stokes system (GMG)... 8+0 iterations.
+
+Number of active cells: 120 (on 4 levels)
+Number of degrees of freedom: 7,248 (4,215+223+1,405+1,405)
+
+*** Timestep 0:  t=0 seconds, dt=0 seconds
+   Skipping temperature solve because RHS is zero.
+   Solving C_1 system ... 0 iterations.
+   Solving Stokes system (GMG)... 12+0 iterations.
+
+Number of active cells: 176 (on 5 levels)
+Number of degrees of freedom: 10,726 (6,243+321+2,081+2,081)
+
+*** Timestep 0:  t=0 seconds, dt=0 seconds
+   Skipping temperature solve because RHS is zero.
+   Solving C_1 system ... 0 iterations.
+   Solving Stokes system (GMG)... 12+0 iterations.
+
+   Postprocessing:
+
+     Model domain depth (m):                        2.89e+06
+     Temperature contrast across model domain (K):  0
+     Reference depth (m):                           0
+     Reference temperature (K):                     0
+     Reference pressure (Pa):                       0
+     Reference gravity (m/s^2):                     9.81
+     Reference density (kg/m^3):                    3319.34
+     Reference thermal expansion coefficient (1/K): 2e-05
+     Reference specific heat capacity (J/(K*kg)):   1250
+     Reference thermal conductivity (W/(m*K)):      4.7
+     Reference viscosity (Pa*s):                    1e+22
+     Reference thermal diffusivity (m^2/s):         1.13276e-06
+     Rayleigh number:                               0
+
+     Writing graphical output: output-stokes/solution/solution-00000
+     RMS, max velocity:        6.86e-11 m/s, 1.07e-09 m/s
+
+Termination requested by criterion: end time
+
+
+

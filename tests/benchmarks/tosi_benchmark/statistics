@@ -1,0 +1,39 @@
+# 1: Time step number
+# 2: Time (seconds)
+# 3: Time step size (seconds)
+# 4: Number of mesh cells
+# 5: Number of Stokes degrees of freedom
+# 6: Number of temperature degrees of freedom
+# 7: Number of nonlinear iterations
+# 8: Iterations for temperature solver
+# 9: Iterations for Stokes solver
+# 10: Velocity iterations in Stokes preconditioner
+# 11: Schur complement iterations in Stokes preconditioner
+# 12: RMS velocity (m/s)
+# 13: Max. velocity (m/s)
+# 14: Minimal temperature (K)
+# 15: Average temperature (K)
+# 16: Maximal temperature (K)
+# 17: Average nondimensional temperature (K)
+# 18: Outward heat flux through boundary with indicator 0 ("left") (W)
+# 19: Outward heat flux through boundary with indicator 1 ("right") (W)
+# 20: Outward heat flux through boundary with indicator 2 ("bottom") (W)
+# 21: Outward heat flux through boundary with indicator 3 ("top") (W)
+# 22: Visualization file name
+# 23: Viscous dissipation (W)
+# 24: Rate of work (W)
+# 25: Error
+# 26: Maximum velocity magnitude on boundary with indicator 0 ("left") (m/s)
+# 27: Minimum velocity magnitude on boundary with indicator 0 ("left") (m/s)
+# 28: RMS velocity on boundary with indicator 0 ("left") (m/s)
+# 29: Maximum velocity magnitude on boundary with indicator 1 ("right") (m/s)
+# 30: Minimum velocity magnitude on boundary with indicator 1 ("right") (m/s)
+# 31: RMS velocity on boundary with indicator 1 ("right") (m/s)
+# 32: Maximum velocity magnitude on boundary with indicator 2 ("bottom") (m/s)
+# 33: Minimum velocity magnitude on boundary with indicator 2 ("bottom") (m/s)
+# 34: RMS velocity on boundary with indicator 2 ("bottom") (m/s)
+# 35: Maximum velocity magnitude on boundary with indicator 3 ("top") (m/s)
+# 36: Minimum velocity magnitude on boundary with indicator 3 ("top") (m/s)
+# 37: RMS velocity on boundary with indicator 3 ("top") (m/s)
+0 0.000000000000e+00 0.000000000000e+00 16 187 81  1   0   7   8   8 1.78836683e-01 2.53641608e-01 0.00000000e+00 5.00000000e-01 1.00000000e+00 5.00000000e-01 0.00000000e+00 0.00000000e+00 -1.00001083e+00 1.00001083e+00 output-tosi_benchmark/solution/solution-00000 9.76702609e-02 6.31898343e-04 3.53028918e+01 2.52039047e-01 2.30183803e-02 1.78825085e-01 2.52040408e-01 2.30175576e-02 1.78825001e-01 2.52099356e-01 2.32238593e-02 1.79207410e-01 2.52099278e-01 2.32239366e-02 1.79207410e-01 
+1 5.000000000000e-03 5.000000000000e-03 16 187 81 15 305 673 688 688 1.21720517e+02 7.82682187e+02 0.00000000e+00 5.04164866e-01 1.00000000e+00 5.04164866e-01 0.00000000e+00 0.00000000e+00 -7.80295527e+00 1.00999365e+00                                            "" 5.61442492e+02 6.22924908e+00 9.86995621e+00 2.67462526e+02 7.97573921e-02 1.13738032e+02 1.50814436e+02 5.17462713e-02 7.73677273e+01 2.88762006e+02 3.03984882e+01 1.71684602e+02 8.40173782e-01 3.71811150e-02 5.68798628e-01 

@@ -1,22 +1,16 @@
-/*
-  Copyright (C) 2015 - 2024 by the authors of the ASPECT code.
-
- This file is part of ASPECT.
-
- ASPECT is free software; you can redistribute it and/or modify
- it under the terms of the GNU General Public License as published by
- the Free Software Foundation; either version 2, or (at your option)
- any later version.
-
- ASPECT is distributed in the hope that it will be useful,
- but WITHOUT ANY WARRANTY; without even the implied warranty of
- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- GNU General Public License for more details.
-
- You should have received a copy of the GNU General Public License
- along with ASPECT; see the file LICENSE.  If not see
- <http://www.gnu.org/licenses/>.
- */
+// ------------------------------------------------------
+//
+// SPDX-License-Identifier: GPL-2.0-or-later
+//
+// SPDX-FileCopyrightText: Copyright (C) 2015-2026 by the ASPECT authors.
+//
+// This file is part of ASPECT.
+//
+// Detailed license information governing the source code and
+// contributions can be found in the folder LICENSES and in
+// LICENSE and CONTRIBUTING.md at the top level directory.
+//
+// ------------------------------------------------------
 
 #include <aspect/particle/integrator/rk_2.h>
 #include <aspect/particle/property/interface.h>
@@ -87,12 +81,8 @@ namespace aspect
             if (integrator_substep == 0)
               {
                 const Tensor<1,dim> k1 = dt * (*old_velocity);
-#if DEAL_II_VERSION_GTE(9, 6, 0)
                 // Get a reference to the particle location, so that we can update it in-place
                 Point<dim> &location = it->get_location();
-#else
-                Point<dim> location = it->get_location();
-#endif
                 Point<dim> new_location = location + 0.5 * k1;
 
                 // Check if we crossed a periodic boundary and if necessary adjust positions
@@ -103,13 +93,8 @@ namespace aspect
                 for (unsigned int i=0; i<dim; ++i)
                   {
                     properties[property_index_old_location + i] = location[i];
-#if DEAL_II_VERSION_GTE(9, 6, 0)
                     location[i] = new_location[i];
-#endif
                   }
-#if !DEAL_II_VERSION_GTE(9, 6, 0)
-                it->set_location(new_location);
-#endif
               }
             else if (integrator_substep == 1)
               {
@@ -119,11 +104,7 @@ namespace aspect
                                          :
                                          dt * (*old_velocity);
 
-#if DEAL_II_VERSION_GTE(9, 6, 0)
                 Point<dim> &location = it->get_location();
-#else
-                Point<dim> location = it->get_location();
-#endif
 
                 for (unsigned int i=0; i<dim; ++i)
                   location[i] = properties[property_index_old_location + i] + k2[i];
@@ -132,9 +113,6 @@ namespace aspect
                 if (at_periodic_boundary)
                   this->get_geometry_model().adjust_positions_for_periodicity(location);
 
-#if !DEAL_II_VERSION_GTE(9, 6, 0)
-                it->set_location(location);
-#endif
               }
             else
               {

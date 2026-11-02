@@ -1,25 +1,50 @@
-/*
-  Copyright (C) 2018 - 2024 by the authors of the ASPECT code.
+// ------------------------------------------------------
+//
+// SPDX-License-Identifier: GPL-2.0-or-later
+//
+// SPDX-FileCopyrightText: Copyright (C) 2018-2026 by the ASPECT authors.
+//
+// This file is part of ASPECT.
+//
+// Detailed license information governing the source code and
+// contributions can be found in the folder LICENSES and in
+// LICENSE and CONTRIBUTING.md at the top level directory.
+//
+// ------------------------------------------------------
 
-  This file is part of ASPECT.
-
-  ASPECT is free software; you can redistribute it and/or modify
-  it under the terms of the GNU General Public License as published by
-  the Free Software Foundation; either version 2, or (at your option)
-  any later version.
-
-  ASPECT is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  GNU General Public License for more details.
-
-  You should have received a copy of the GNU General Public License
-  along with ASPECT; see the file LICENSE.  If not see
-  <http://www.gnu.org/licenses/>.
-*/
-
+#include "catch.hpp"
 #include "common.h"
 #include <aspect/utilities.h>
+
+TEST_CASE("Utilities::ScratchSpace")
+{
+  aspect::Utilities::ScratchSpace<std::vector<double>> space1;
+  typename aspect::Utilities::ScratchSpace<std::vector<double>>::ScopedScratchObject scoped_object1(space1);
+  std::vector<double> &object1 = scoped_object1;
+  object1.resize(3);
+  object1[0] = 10;
+  object1[1] = 20;
+  object1[2] = 30;
+  {
+    typename aspect::Utilities::ScratchSpace<std::vector<double>>::ScopedScratchObject scoped_object2(space1);
+    std::vector<double> &object2 = scoped_object2;
+    object2.resize(4);
+    object2[0] = 11;
+    object2[1] = 21;
+    object2[2] = 31;
+    object2[3] = 41;
+  }
+  {
+    typename aspect::Utilities::ScratchSpace<std::vector<double>>::ScopedScratchObject scoped_object2(space1);
+    std::vector<double> &object2 = scoped_object2;
+    REQUIRE(object2.size() == 4);
+    CHECK(object2[0] == 11);
+    CHECK(object2[1] == 21);
+    CHECK(object2[2] == 31);
+    CHECK(object2[3] == 41);
+  }
+
+}
 
 TEST_CASE("Utilities::weighted_p_norm_average")
 {
@@ -611,6 +636,41 @@ TEST_CASE("CPO elastic tensor transform functions")
     REQUIRE(aspect::Utilities::Tensors::levi_civita<3>()[2][2][1] == Approx(0.0));
     REQUIRE(aspect::Utilities::Tensors::levi_civita<3>()[2][2][2] == Approx(0.0));
   }
+
+}
+
+TEST_CASE("Quaternion forward and backward transform")
+{
+  dealii::Tensor<2,3> rotation_matrix = aspect::Utilities::zxz_euler_angles_to_rotation_matrix(34.0, 55.0, 89.0);
+  std::array<double,4> quaternion = aspect::Utilities::Quaternions::rotation_matrix_to_quaternion(rotation_matrix);
+
+  dealii::Tensor<2,3> roundtrip_rotation_matrix = aspect::Utilities::Quaternions::quaternion_to_rotation_matrix(quaternion);
+
+  for (unsigned int row = 0; row < 3; ++row)
+    {
+      for (unsigned int col = 0; col < 3; ++col)
+        {
+          INFO("array index i,j=" << col << ',' << row << ": ");
+          REQUIRE(roundtrip_rotation_matrix[row][col] == Approx(rotation_matrix[row][col]));
+        }
+    }
+
+  // second test for rotations by ~180°
+  rotation_matrix = aspect::Utilities::zxz_euler_angles_to_rotation_matrix(0.0, 0.0, 180+5e-13);
+  quaternion = aspect::Utilities::Quaternions::rotation_matrix_to_quaternion(rotation_matrix);
+
+  roundtrip_rotation_matrix = aspect::Utilities::Quaternions::quaternion_to_rotation_matrix(quaternion);
+
+  for (unsigned int row = 0; row < 3; ++row)
+    {
+      for (unsigned int col = 0; col < 3; ++col)
+        {
+          INFO("check that it does not map back exactly to 0");
+          REQUIRE(std::abs(roundtrip_rotation_matrix[row][col] - rotation_matrix[row][col])<1e-12);
+        }
+    }
+
+
 }
 
 TEST_CASE("Utilities::string_to_unsigned_int")
@@ -625,4 +685,59 @@ TEST_CASE("Utilities::string_to_unsigned_int")
 
   CHECK(aspect::Utilities::string_to_unsigned_int(std::vector<std::string>({}))
         == std::vector<unsigned int>());
+}
+
+TEST_CASE("Rotate Kelvin Tensor")
+{
+  // define a random rotation
+  std::vector<double> EA = {13, 21, 34};
+  dealii::Tensor<2,3> rotation = aspect::Utilities::zxz_euler_angles_to_rotation_matrix(EA[0], EA[1], EA[1]);
+
+  // generate an symmetric tensor in kelvin notation
+  // full matrix necessary for dealii::Physics::Notation::Kelvin::to_tensor
+  dealii::FullMatrix<double> kelvin_tensor_fm(6,6);
+  dealii::SymmetricTensor<2,6> kelvin_tensor;
+  for (unsigned short int i1 = 0; i1 < 6; ++i1)
+    {
+      for (unsigned short int i2 = i1; i2 < 6; ++i2)
+        {
+          kelvin_tensor_fm[i1][i2] = kelvin_tensor_fm[i2][i1] = 2.5*i1 + 3.4*i2 + 3.0;
+          kelvin_tensor[i1][i2]    = kelvin_tensor_fm[i1][i2];
+        }
+    }
+
+  dealii::SymmetricTensor<4,3> full_tensor;
+  dealii::Physics::Notation::Kelvin::to_tensor(kelvin_tensor_fm, full_tensor);
+
+  // rotating using rotate full stiffness tensor (checked and tested)
+  dealii::SymmetricTensor<4,3> rotated_full_tensor = aspect::Utilities::Tensors::rotate_full_stiffness_tensor(rotation, full_tensor);
+
+  // rotation using rotate kelvin tensor
+  dealii::SymmetricTensor<2,6> rotated_kelvin_tensor = aspect::Utilities::Tensors::rotate_kelvin_tensor(rotation, kelvin_tensor);
+
+  // painstakingly use dealii::Physics::Notation::Kelvin::to_tensor
+  dealii::FullMatrix<double> rotated_kelvin_tensor_fm(6,6);
+  for (unsigned int ai=0; ai<6; ++ai)
+    for (unsigned int aj=0; aj<6; ++aj)
+      rotated_kelvin_tensor_fm[ai][aj] = rotated_kelvin_tensor[ai][aj];
+
+  dealii::SymmetricTensor<4,3> rotated_full_tensor_new;
+  dealii::Physics::Notation::Kelvin::to_tensor(rotated_kelvin_tensor_fm, rotated_full_tensor_new);
+
+  // check that every component is the same
+  for (unsigned int i1=0; i1<3; ++i1)
+    {
+      for (unsigned int i2=0; i2<3; ++i2)
+        {
+          for (unsigned int i3=0; i3<3; ++i3)
+            {
+              for (unsigned int i4=0; i4<3; ++i4)
+                {
+                  INFO("array index i,j,k,l=" << i1 << ',' << i2 << ',' << i3 << ',' << i4 << ',' << ": ");
+                  CHECK(rotated_full_tensor_new[i1][i2][i3][i4] == Approx(rotated_full_tensor[i1][i2][i3][i4]));
+                }
+            }
+        }
+    }
+
 }

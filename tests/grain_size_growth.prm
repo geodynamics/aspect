@@ -78,7 +78,7 @@ subsection Gravity model
 end
 
 subsection Initial temperature model
-  set Model name = adiabatic
+  set List of model names = adiabatic
 
   subsection Adiabatic
     set Age top boundary layer      = 0
@@ -90,11 +90,10 @@ subsection Initial temperature model
 end
 
 subsection Initial composition model
-  set Model name = function
+  set List of model names = function
 
   subsection Function
     set Variable names      = x,z
-    set Function constants  =
     set Function expression = if(z<50000,8e-5,8.00001e-5)
   end
 end

@@ -1,22 +1,16 @@
-/*
-  Copyright (C) 2011 - 2024 by the authors of the ASPECT code.
-
-  This file is part of ASPECT.
-
-  ASPECT is free software; you can redistribute it and/or modify
-  it under the terms of the GNU General Public License as published by
-  the Free Software Foundation; either version 2, or (at your option)
-  any later version.
-
-  ASPECT is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  GNU General Public License for more details.
-
-  You should have received a copy of the GNU General Public License
-  along with ASPECT; see the file LICENSE.  If not see
-  <http://www.gnu.org/licenses/>.
-*/
+// ------------------------------------------------------
+//
+// SPDX-License-Identifier: GPL-2.0-or-later
+//
+// SPDX-FileCopyrightText: Copyright (C) 2011-2026 by the ASPECT authors.
+//
+// This file is part of ASPECT.
+//
+// Detailed license information governing the source code and
+// contributions can be found in the folder LICENSES and in
+// LICENSE and CONTRIBUTING.md at the top level directory.
+//
+// ------------------------------------------------------
 
 
 #ifndef _aspect_mesh_deformation_interface_h
@@ -137,6 +131,26 @@ namespace aspect
         compute_velocity_constraints_on_boundary(const DoFHandler<dim> &mesh_deformation_dof_handler,
                                                  AffineConstraints<double> &mesh_velocity_constraints,
                                                  const std::set<types::boundary_id> &boundary_ids) const;
+
+        /**
+         * Return the composition that is to hold at a particular position on
+         * the boundary of the domain.
+         *
+         * @param boundary_indicator The boundary indicator of the part of the
+         * boundary of the domain on which the point is located at which we
+         * are requesting the composition.
+         * @param position The position of the point at which we ask for the
+         * composition.
+         * @param compositional_field The index of the compositional field
+         * between 0 and @p parameters.n_compositional_fields.
+         * @return Boundary value of the compositional field @p
+         * compositional_field at the position @p position.
+         */
+        virtual
+        double
+        boundary_composition (const types::boundary_id boundary_indicator,
+                              const Point<dim> &position,
+                              const unsigned int compositional_field) const;
     };
 
 
@@ -379,6 +393,18 @@ namespace aspect
         get_level_mapping(const unsigned int level) const;
 
         /**
+         * Loop over all mesh deformation objects that are active on the boundary
+         * with the ID boundary_indicator and sum their contributions to the compositional field
+         * with index compositional_field at the given position.
+         * For example, the plugin might want to set the field representing sediment to 1
+         * if deposition occurs, or a field representing deposition depth to the depth below sea level.
+         */
+        double
+        boundary_composition (const types::boundary_id boundary_indicator,
+                              const Point<dim> &position,
+                              const unsigned int compositional_field) const;
+
+        /**
          * For the current plugin subsystem, write a connection graph of all of the
          * plugins we know about, in the format that the
          * programs dot and neato understand. This allows for a visualization of
@@ -407,8 +433,12 @@ namespace aspect
          * deformation boundaries to describe a displacement (initial
          * topography) to be used during the simulation. The
          * displacement is given by the active deformation plugins.
+         *
+         * The inhomogeneities contributed by the deformation plugins are
+         * multiplied by @p initial_deformation_scale. This is used to apply
+         * the initial deformation incrementally over a number of substeps.
          */
-        void make_initial_constraints ();
+        void make_initial_constraints (const double initial_deformation_scale);
 
         /**
          * Compute the constraints for the mesh velocity on the
@@ -455,6 +485,65 @@ namespace aspect
         void compute_mesh_displacements_gmg_for_degree();
 
         /**
+         * Check that the current mesh deformation has not produced any cells
+         * with a negative Jacobian determinant (inverted cells) in the deformed
+         * mesh. If such a cell is found, this function aborts with an
+         * explanatory error message.
+         */
+        void check_mesh_deformation ();
+
+        /**
+         * Solve the matrix-free mesh deformation system using a geometric
+         * multigrid preconditioner with local smoothing.
+         */
+        template <unsigned int mesh_deformation_fe_degree,
+                  typename SystemOperatorType>
+        void solve_mesh_deformation_local_smoothing(
+          const SystemOperatorType &laplace_operator,
+          const dealii::LinearAlgebra::distributed::Vector<double> &rhs,
+          dealii::LinearAlgebra::distributed::Vector<double> &solution);
+
+        /**
+         * Solve the matrix-free mesh deformation system using a geometric
+         * multigrid preconditioner with global coarsening.
+         */
+        template <unsigned int mesh_deformation_fe_degree,
+                  typename SystemOperatorType>
+        void solve_mesh_deformation_global_coarsening(
+          const SystemOperatorType &laplace_operator,
+          const dealii::LinearAlgebra::distributed::Vector<double> &rhs,
+          dealii::LinearAlgebra::distributed::Vector<double> &solution);
+
+        /**
+         * Return the boundary indicators that are treated as homogeneous
+         * Dirichlet conditions for the mesh deformation Laplace problem:
+         * zero-displacement boundaries plus boundaries that have an active
+         * mesh deformation object.
+         */
+        std::set<types::boundary_id>
+        get_dirichlet_mesh_deformation_boundary_ids() const;
+
+        /**
+         * Copy @p mesh_displacements into a deal.II distributed vector on
+         * the locally owned mesh-deformation DoFs, for use with the
+         * matrix-free GMG transfers.
+         */
+        dealii::LinearAlgebra::distributed::Vector<double>
+        create_distributed_mesh_displacements() const;
+
+        /**
+         * Set up the multigrid hierarchy used by the local-smoothing mesh
+         * deformation solver.
+         */
+        void setup_local_smoothing_multigrid();
+
+        /**
+         * Set up the multigrid hierarchy used by the global-coarsening mesh
+         * deformation solver.
+         */
+        void setup_global_coarsening_multigrid();
+
+        /**
          * Set up the vector with initial displacements of the mesh
          * due to the initial topography, as supplied by the initial
          * topography plugin based on the surface coordinates of the
@@ -477,9 +566,16 @@ namespace aspect
         void interpolate_mesh_velocity ();
 
         /**
-         * Update the mesh deformation for the multigrid levels.
+         * Update the mesh deformation on the levels of the local-smoothing
+         * multigrid hierarchy.
          */
-        void update_multilevel_deformation ();
+        void update_local_smoothing_multigrid();
+
+        /**
+         * Update the mesh deformation on the triangulations of the
+         * global-coarsening multigrid hierarchy.
+         */
+        void update_global_coarsening_multigrid();
 
         /**
          * Reference to the Simulator object to which a MeshDeformationHandler
@@ -626,6 +722,8 @@ namespace aspect
          * Stabilization parameter for the free surface. Should be between
          * zero and one. A value of zero means no stabilization.  See Kaus
          * et. al. 2010 for more details.
+         *
+         * This variable is read from the parameter file through a parameter called 'Free surface stabilization theta'.
          */
         double surface_theta;
 
@@ -640,6 +738,40 @@ namespace aspect
         unsigned int explicit_mapping_order;
 
         /**
+         * Number of substeps over which the initial mesh deformation
+         * (initial topography) is applied. The full initial deformation is
+         * split into this many equal steps; on substep k of K only a fraction
+         * k/K of the initial topography is prescribed, and each subsequent
+         * substep is solved on the already deformed configuration. This
+         * avoids producing inverted cells (negative Jacobian determinant) for
+         * steep initial topography, which a single-shot deformation (K = 1)
+         * can create.
+         */
+        unsigned int initial_deformation_substeps;
+
+        /**
+         * Mesh deformation DoFHandlers on the triangulations of the global
+         * coarsening hierarchy.
+         */
+        MGLevelObject<DoFHandler<dim>> global_coarsening_dof_handlers;
+
+        /**
+         * Hanging-node, periodicity, and Dirichlet constraints for the mesh
+         * deformation DoFHandlers on the global coarsening hierarchy. These
+         * are used by the two-level transfers. No-flux constraints are
+         * rebuilt from the current mapping when assembling the level
+         * operators.
+         */
+        MGLevelObject<AffineConstraints<double>> global_coarsening_constraints;
+
+        /**
+         * Two-level transfer operators for the global coarsening hierarchy.
+         */
+        MGLevelObject<MGTwoLevelTransfer<dim,
+                      dealii::LinearAlgebra::distributed::Vector<double>>>
+                      global_coarsening_two_level_transfers;
+
+        /**
          * If required, store a mapping for each multigrid level.
          */
         MGLevelObject<std::unique_ptr<Mapping<dim>>> level_mappings;
@@ -650,14 +782,27 @@ namespace aspect
         MGLevelObject<dealii::LinearAlgebra::distributed::Vector<double>> level_displacements;
 
         /**
-         * Multigrid transfer operator for the displacements
+         * Dirichlet and refinement-edge constraints used to build
+         * @p local_smoothing_mg_transfer. deal.II stores a pointer to this
+         * object, so it must outlive the transfer.
          */
-        MGTransferMF<dim, double> mg_transfer;
+        MGConstrainedDoFs local_smoothing_mg_constrained_dofs;
 
         /**
-         * Multigrid level constraints for the displacements
+         * Multigrid transfer operator for the displacements used by the
+         * local-smoothing GMG implementation. Only one of this and
+         * @p global_coarsening_mg_transfer is allocated, depending on the
+         * selected Stokes GMG type.
          */
-        MGConstrainedDoFs mg_constrained_dofs;
+        std::unique_ptr<MGTransferType<dim, double>> local_smoothing_mg_transfer;
+
+        /**
+         * Multigrid transfer operator for the displacements used by the
+         * global-coarsening GMG implementation. Only one of this and
+         * @p local_smoothing_mg_transfer is allocated, depending on the
+         * selected Stokes GMG type.
+         */
+        std::unique_ptr<GCMGTransferType<dim, double>> global_coarsening_mg_transfer;
 
         friend class Simulator<dim>;
         friend class SimulatorAccess<dim>;

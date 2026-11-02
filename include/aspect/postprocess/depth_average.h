@@ -1,22 +1,16 @@
-/*
-  Copyright (C) 2011 - 2021 by the authors of the ASPECT code.
-
-  This file is part of ASPECT.
-
-  ASPECT is free software; you can redistribute it and/or modify
-  it under the terms of the GNU General Public License as published by
-  the Free Software Foundation; either version 2, or (at your option)
-  any later version.
-
-  ASPECT is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  GNU General Public License for more details.
-
-  You should have received a copy of the GNU General Public License
-  along with ASPECT; see the file LICENSE.  If not see
-  <http://www.gnu.org/licenses/>.
-*/
+// ------------------------------------------------------
+//
+// SPDX-License-Identifier: GPL-2.0-or-later
+//
+// SPDX-FileCopyrightText: Copyright (C) 2011-2026 by the ASPECT authors.
+//
+// This file is part of ASPECT.
+//
+// Detailed license information governing the source code and
+// contributions can be found in the folder LICENSES and in
+// LICENSE and CONTRIBUTING.md at the top level directory.
+//
+// ------------------------------------------------------
 
 
 #ifndef _aspect_postprocess_depth_average_h
@@ -89,6 +83,8 @@ namespace aspect
          * Interval between the generation of output in seconds. This parameter is read
          * from the input file and consequently is not part of the state that
          * needs to be saved and restored.
+         *
+         * This variable is read from the parameter file through a parameter called 'Time between graphical output'.
          */
         double output_interval;
 
@@ -100,12 +96,14 @@ namespace aspect
         /**
          * The formats in which to produce graphical output. This also
          * determines the extension of the file names to which to write.
+         * This variable is read from the parameter file through a parameter called 'Output format'.
          */
         std::vector<std::string> output_formats;
 
         /**
          * Number of zones in depth direction over which we are supposed to
          * average.
+         * This variable is read from the parameter file through a parameter called 'Number of zones'.
          */
         unsigned int n_depth_zones;
 
@@ -114,6 +112,8 @@ namespace aspect
          * This vector contains exactly n_depth_zones + 1 entries,
          * and entries i and i+1 represent the lower and upper depth bound
          * of zone i.
+         *
+         * This variable is read from the parameter file through a parameter called 'Depth boundaries of zones'.
          */
         std::vector<double> depth_bounds;
 

@@ -135,7 +135,7 @@ Number of mesh deformation degrees of freedom: 1,418
    Solving mesh displacement system... 5 iterations.
    Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 9 iterations.
-   Solving Stokes system (GMG)... 119+0 iterations.
+   Solving Stokes system (GMG)... 118+0 iterations.
 
    Postprocessing:
      Topography min/max: -2853 m, 922.5 m
@@ -159,7 +159,7 @@ Number of mesh deformation degrees of freedom: 1,890
    Solving mesh displacement system... 5 iterations.
    Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 8 iterations.
-   Solving Stokes system (GMG)... 65+0 iterations.
+   Solving Stokes system (GMG)... 64+0 iterations.
 
    Postprocessing:
      Topography min/max: -3359 m, 983.5 m

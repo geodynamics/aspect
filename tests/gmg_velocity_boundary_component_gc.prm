@@ -1,0 +1,9 @@
+# Test prescribed velocity boundary components with global coarsening GMG.
+# Compare with gmg_velocity_boundary_component.prm, which uses local smoothing.
+include $ASPECT_SOURCE_DIR/tests/gmg_velocity_boundary_component.prm
+
+subsection Solver parameters
+  subsection Stokes solver parameters
+    set Stokes GMG type = global coarsening
+  end
+end

@@ -29,7 +29,7 @@ subsection Compositional fields
 end
 
 subsection Initial composition model
-  set Model name = function
+  set List of model names = function
 
   subsection Function
     set Function constants  = R=6.336e6 ,Rc=300e3
@@ -68,7 +68,7 @@ subsection Boundary temperature model
 end
 
 subsection Initial temperature model
-  set Model name = spherical hexagonal perturbation
+  set List of model names = spherical hexagonal perturbation
 end
 
 subsection Gravity model

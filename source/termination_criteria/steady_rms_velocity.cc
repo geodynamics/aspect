@@ -1,28 +1,27 @@
-/*
-  Copyright (C) 2011 - 2023 by the authors of the ASPECT code.
-
-  This file is part of ASPECT.
-
-  ASPECT is free software; you can redistribute it and/or modify
-  it under the terms of the GNU General Public License as published by
-  the Free Software Foundation; either version 2, or (at your option)
-  any later version.
-
-  ASPECT is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  GNU General Public License for more details.
-
-  You should have received a copy of the GNU General Public License
-  along with ASPECT; see the file LICENSE.  If not see
-  <http://www.gnu.org/licenses/>.
-*/
+// ------------------------------------------------------
+//
+// SPDX-License-Identifier: GPL-2.0-or-later
+//
+// SPDX-FileCopyrightText: Copyright (C) 2011-2026 by the ASPECT authors.
+//
+// This file is part of ASPECT.
+//
+// Detailed license information governing the source code and
+// contributions can be found in the folder LICENSES and in
+// LICENSE and CONTRIBUTING.md at the top level directory.
+//
+// ------------------------------------------------------
 
 
 #include <aspect/termination_criteria/steady_rms_velocity.h>
 
 #include <deal.II/base/quadrature_lib.h>
 #include <deal.II/fe/fe_values.h>
+
+#include <boost/serialization/list.hpp>
+#include <boost/serialization/map.hpp>
+#include <boost/serialization/utility.hpp>
+
 
 namespace aspect
 {
@@ -126,9 +125,9 @@ namespace aspect
                              Patterns::Double (0.),
                              "The minimum length of simulation time that the system "
                              "should be in steady state before termination."
-                             "Units: years if the "
+                             "Units: \\si{\\year} if the "
                              "'Use years instead of seconds' parameter is set; "
-                             "seconds otherwise.");
+                             "\\si{\\second} otherwise.");
         }
         prm.leave_subsection ();
       }
@@ -154,6 +153,35 @@ namespace aspect
                    ExcMessage("Relative deviation must be greater than or equal to 0."));
       AssertThrow (time_length > 0,
                    ExcMessage("Steady state minimum time period must be greater than 0."));
+    }
+
+
+
+    template <int dim>
+    void
+    SteadyRMSVelocity<dim>::save (std::map<std::string, std::string> &status_strings) const
+    {
+      std::ostringstream os;
+      {
+        aspect::oarchive oa (os);
+        oa << time_rmsvel;
+      }
+      status_strings["SteadyRMSVelocity"] = os.str();
+    }
+
+
+
+    template <int dim>
+    void
+    SteadyRMSVelocity<dim>::load (const std::map<std::string, std::string> &status_strings)
+    {
+      const auto saved_state = status_strings.find("SteadyRMSVelocity");
+      if (saved_state != status_strings.end())
+        {
+          std::istringstream is (saved_state->second);
+          aspect::iarchive ia (is);
+          ia >> time_rmsvel;
+        }
     }
   }
 }

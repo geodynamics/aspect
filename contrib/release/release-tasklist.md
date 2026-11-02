@@ -1,21 +1,21 @@
 # Release Tasklist
 
 ## Leading up to a release
-- Send out an email about problems or outstanding patches
-- Go through the list of TODOs in the source code and see what can be done
-- Go through the list of issues marked as bugs (https://github.com/geodynamics/aspect/issues?q=is%3Aissue+is%3Aopen+label%3Abug) and see which have to be fixed
-- Go through the list of open pull requests and decide which ones have to go into the release, postpone all others
-- Check that the used deal.II version for the Docker container in [contrib/docker/docker/Dockerfile](https://github.com/geodynamics/aspect/blob/main/contrib/docker/docker/Dockerfile) and in the manual is appropriate for the release
-- Check that [README.md](https://github.com/geodynamics/aspect/blob/main/README.md) and https://aspect.geodynamics.org/ is up-to-date
+- [ ] Send out an email about problems or outstanding patches
+- [ ] Go through the list of TODOs in the source code and see what can be done
+- [ ] Go through the list of issues marked as bugs (https://github.com/geodynamics/aspect/issues?q=is%3Aissue+is%3Aopen+label%3Abug) and see which have to be fixed
+- [ ] Go through the list of open pull requests and decide which ones have to go into the release, postpone all others
+- [ ] Check that the used deal.II version for the Docker container in [contrib/docker/docker/Dockerfile](https://github.com/geodynamics/aspect/blob/main/contrib/docker/docker/Dockerfile) and in the manual is appropriate for the release
+- [ ] Check that [README.md](https://github.com/geodynamics/aspect/blob/main/README.md) and https://aspect.geodynamics.org/ is up-to-date
 and the links are working
-- Run (and be patient), if any cookbooks/benchmarks fail, find a fix or open an issue as broken:
+- [ ] Run (and be patient), if any cookbooks/benchmarks fail, find a fix or open an issue as broken:
 
   ```
   cd benchmarks && make -f check.mk BUILD=$BUILDDIR -j4
   cd cookbooks && make -f check.mk BUILD=$BUILDDIR -j4
   ```
 
-- Find and fix doxygen errors:
+- [ ] Find and fix doxygen errors:
 
   ```
   git checkout -b pre-release-tasks
@@ -23,7 +23,7 @@ and the links are working
   git commit -a -m "doxygen fixes"
   ```
 
-- Build doxygen and manual, check for missing labels and for warnings, fix if possible:
+- [ ] Build doxygen and manual, check for missing labels and for warnings, fix if possible:
 
   ```
   cd doc
@@ -33,14 +33,14 @@ and the links are working
   cd ../..
   ```
 
-- Check and fix doxygen documentation. some of the changes of the script will destroy intentional indentation. Go through the list of changes manually and decide which ones to include.
+- [ ] Check and fix doxygen documentation. some of the changes of the script will destroy intentional indentation. Go through the list of changes manually and decide which ones to include.
   ```
   find . -name "*.h" -not -wholename "*/doc/modules/*" -not -wholename "*/contrib/world_builder/*" -print | while read file;do $DEALSRCDIR/contrib/utilities/wrapcomments.py $file >temp;mv temp $file;done
   git add -p
   git checkout .
   ```
 
-- Fix formatting, copyright years:
+- [ ] Fix formatting, copyright years:
 
   ```
   ./contrib/utilities/indent
@@ -48,12 +48,12 @@ and the links are working
   git commit -a -m "doxygen formatting, update copyright years"
   ```
 
-- Make sure all CI workflows on the main branch pass: https://github.com/geodynamics/aspect/actions?query=branch%3Amain
+- [ ] Make sure all CI workflows on the main branch pass: https://github.com/geodynamics/aspect/actions?query=branch%3Amain
 
-- Create a pull request with the pre release tasks
+- [ ] Create a pull request with the pre release tasks
 
 ## Create a release pull-request
-- determine new version roughly following semantic versioning: http://semver.org/
+- [ ] Determine new version roughly following semantic versioning: http://semver.org/
   - format is X.Y.Z for a release, X.Y.Z-pre for the dev version or X.Y.Z-rcW for release candidates
   - backwards incompatible changes require incrementing X, adding features incrementing Y
 
@@ -68,7 +68,7 @@ and the links are working
   export DEALSRCDIR=$DEAL_II_DIR
   ```
 
-- create branch for main PR to update changes.h in doc/modules:
+- [ ] Create branch for main PR to update changes.h in doc/modules:
 
   ```
   git checkout -b post-release-$VER
@@ -77,7 +77,7 @@ and the links are working
   git commit -m "release task: update version and changes.h"
   ```
 
-- create a branch, bump version (note, make sure the PR above is included):
+- [ ] Create a branch, bump version (note, make sure the PR above is included):
 
   ```
   git checkout post-release-$VER && \
@@ -86,10 +86,10 @@ and the links are working
   git commit -m "release task: update version info"
   ```
 
-- compile aspect, make sure you have a symlink in the main directory for the next step
+- [ ] Compile aspect, make sure you have a symlink in the main directory for the next step
   - make sure the WorldBuilder is using the included version
 
-- update parameters, plugin graph, and documentation:
+- [ ] Update parameters, plugin graph, and documentation:
 
   ```
   cd doc && ./update_parameters.sh && ./update_plugin_graph.sh && cd sphinx && make html && cd ../.. && \
@@ -98,7 +98,11 @@ and the links are working
   git commit -m "release task: update manual"
   ```
 
-- Tag a release candidate (RC):
+- [ ] Reserve Zenodo DOI:
+  - new release, reserve DOI, save draft
+  - add to README.md
+
+- [ ] Tag a release candidate (RC):
 
   ```
   export TAG=$VER-rc1
@@ -107,7 +111,7 @@ and the links are working
   git tag -s v$TAG -m "version $TAG"
   ```
 
-- Tag the release:
+- [ ] Tag the release:
 
   ```
   export TAG=$VER
@@ -116,21 +120,18 @@ and the links are working
   git tag -s v$TAG -m "version $TAG"
   ```
 
-- create a tar file:
+- [ ] Create a tar file:
   ```
   export PREFIX=aspect-$TAG && rm -rf $PREFIX.tar.gz && \
   git archive --format=tar.gz --prefix=$PREFIX/ HEAD >$PREFIX.tar.gz
   ```
 
-- build pdf doc (temporary by building html one page and print to pdf until
-  we fix the sphinx pdf):
+- [ ] Build pdf doc:
   ```
-  cd doc/sphinx && make singlehtml && cd ../..
-  firefox ./doc/sphinx/_build/singlehtml/index.html
-  # print to pdf
+  cd doc/sphinx && make latexpdf
   ```
 
-- final testing by extracting tarball, compiling, and running:
+- [ ] Final testing by extracting tarball, compiling, and running:
 
   ```
   tar xf $PREFIX.tar.gz
@@ -144,14 +145,14 @@ and the links are working
   ctest -j 8 -V
   ```
 
-- make public (branch and tag):
+- [ ] Make public (branch and tag):
 
   ```
   git push upstream aspect-$VERSHORT
   git push upstream v$TAG
   ```
 
-- sign:
+- [ ] Sign:
 
   ```
   gpg --detach-sign --armor aspect-$TAG.tar.gz
@@ -159,12 +160,14 @@ and the links are working
   sha1sum aspect-$TAG.tar.gz aspect-manual-$TAG.pdf >sha1sum-$TAG.txt
   ```
 
-- create a release on github, upload .tar.gz
-- update website (www branch):
+## Steps after the release
+
+- [ ] Create a release on GitHub, upload .tar.gz
+- [ ] Update website (www branch):
   - header.include: add link to changes
   - index.html: add news entry
   - cite.html: change to current version (2x)
-- create zenodo release for source code:
+- [ ] Finish Zenodo release for source code:
   - https://zenodo.org/deposit?page=1&size=20
   - title: ASPECT v2.0.0
   - license: GPL 2
@@ -172,33 +175,157 @@ and the links are working
   - add to "Computational Infrastructure for Geodynamics" community
   - update Zenodo button on main readme (see badge button on the right of zenodo page)
   - doc/sphinx/references.bib: add new zenodo entry
-- add to github release:
+- [ ] Add to GitHub release:
     - Zenodo button
     - [![pdf manual](https://img.shields.io/badge/get-PDF-green.svg)](https://doi.org/10.6084/m9.figshare.4865333)
     - [![online manual](https://img.shields.io/badge/online-manual-red)](https://aspect-documentation.readthedocs.io/en/v2.5.0/)
-- create figshare DOI for manual (just upload a new version as the same entry)
+- [ ] Create Figshare DOI for manual (just upload a new version as the same entry)
   - update doc/sphinx/references.bib entry
-- update doc/sphinx/references.bib with src and manual doi
-- update aspect.geodynamics.org/cite.html and citing.html in www repo:
+- [ ] Update doc/sphinx/references.bib with source and manual DOIs
+- [ ] Update aspect.geodynamics.org/cite.html and citing.html in www repo:
   - add new version in citing.html, search for "<option"
   - doc/make_cite_html.py:
     - add new version, update doc/zenodo dois
   - run aspect/doc/ python3 make_cite_html.py add to www
-- update http://geodynamics.org/cig/software/aspect/:
+- [ ] Update http://geodynamics.org/cig/software/aspect/:
   - update current release number
   - create entry for the new release
   - update the list of contributors
 
-- update the spack installation package with the latest tarball,
+- [ ] Update the Spack installation package with the latest tarball,
   see https://github.com/spack/spack/pull/13830 for an example:
       spack checksum aspect
 
-- announce on
+- [ ] Announce on
   - cig-all@geodynamics.org
   - https://community.geodynamics.org/c/aspect
   - dealii@googlegroups.com
 
 ## List of prior release notes
+
+Announcement for 3.1.0 (Sep 19, 2026)
+-----------------------------------------
+We are pleased to announce the release of ASPECT 3.1.0. ASPECT is the Advanced
+Solver for Planetary Evolution, Convection, and Tectonics. It uses modern
+numerical methods such as adaptive mesh refinement, multigrid solvers, and
+a modular software design to provide a fast, flexible, and extensible mantle
+convection solver. ASPECT is available from
+
+                   https://aspect.geodynamics.org/
+
+and the release is available from
+
+        https://geodynamics.org/resources/aspect
+
+and
+
+        https://github.com/geodynamics/aspect/releases/tag/v3.1.0
+
+Among others this release includes the following significant changes:
+
+- Support for modeling surface deformation has been significantly
+  extended. Fastscape erodibility can now vary in space and time according to
+  climate and sea level data, checkpointing functionality has been improved,
+  tangential boundary velocities along deformed boundaries are more accurate,
+  and support for initially deformed boundaries has been improved. Preliminary
+  coupling to the landscape evolution library Landlab is available as well.
+  (Liang Xue, Derek Neuharth, Michael Pons, Daniel Douglas, Zhibin Lei, Anne
+   Glerum, Ninghui Tian, Bob Myhill, Rene Gassmoeller, Timo Heister, Wolfgang
+   Bangerth)
+
+- Modeling crystal-preferred orientation and anisotropic viscosity has been
+  significantly improved. New slip systems for olivine and clinopyroxene have
+  been added and benchmarked against lab results, a cookbook for CPO-induced
+  anisotropy has been added, checkpointing of CPO has been improved.
+  (Xiaochuan Tian, Yijun Wang, Theo Haeussler, Agnes Kiraly, Daniel Douglas,
+   Menno Fraters)
+
+- There is a new plugin system for prescribed dilation and a plugin system that
+  allows prescribing solution values in parts of the model domain.
+  (Alexandr Dizov, Haoyuan Li)
+
+- A new composition type is available which is used to keep track of the state
+  of reactions, for example in models considering reaction kinetics. A cookbook
+  illustrating reaction kinetics was added.
+  (Haoyuan Li, Buchanan Kerswell)
+
+- The entropy method now supports multiple chemical compositions.
+  (Ranpeng Li, Juliane Dannberg, Rene Gassmoeller, Bob Myhill)
+
+- Different particle managers can now have different postprocessing output
+  intervals and formats. Particle managers are now created if particles are
+  used to advect compositional fields, even if the particles postprocessor is not
+  active. There is now an option to advect different particle sets with solid or
+  fluid velocities.
+  (Anne Glerum, Francesco Radica, Arijit Chakraborty)
+
+- Robin boundary conditions are now available for the temperature field, which
+  allow prescribing a linear combination of a prescribed temperature and a
+  prescribed heat flux.
+  (Juliane Dannberg)
+
+- ASPECT now has a gravity plugin and a heating plugin considering tidal
+  forces. This is useful for modeling moons orbiting a large planet.
+  (Hyunseong Kim, Antoniette Greta Grima, Wolfgang Bangerth)
+
+- Visco-elasticity and visco-elasto-plasticity have been updated to more
+  accurately track elastic stresses over time. Elasticity can now be combined
+  with two-phase melt transport.
+  (Anne Glerum, Robert Myhill, Rene Gassmoeller, Juliane Dannberg, John
+   Naliboff, Gerry Puckett, Esther Heckenbach, Ryan Stoner)
+
+- Checkpointing can now also be requested at specific model times. Parameters
+  have been added to configure how many checkpoints to keep, restart from a
+  specific checkpoint, or restart from the checkpoint whose time is closest to
+  a specified model time. The checkpoint file structure has been improved.
+  (Anne Glerum, Ninghui Tian, Timo Heister)
+
+- The geometric multigrid (GMG) Stokes solvers no longer require material
+  property averaging and support more averaging types. The global coarsening
+  variant of GMG now supports periodic boundary conditions in Cartesian and
+  spherical geometries and supports mesh refinement on periodic boundaries.
+  (Timo Heister)
+
+- Two-phase flow simulations can now use discontinuous finite elements, Darcy
+  advection can now proceed along pressure gradients instead of purely buoyancy
+  driven. Particle properties can be interpolated into compositional fields of
+  different finite element discretizations.
+  (Timo Heister, Francesco Radica, Daniel Douglas)
+
+- A linear solver failure strategy inside nonlinear solvers was introduced.
+  Bugfixes to adiabatic profile and strain rate calculations lead to more
+  robust linear and nonlinear Stokes solver convergence.
+  (Haoyuan Li, Ranpeng Li, Lucy Lu, Yimin Jin)
+
+- The Geodynamic World Builder has been updated to version 1.1. Initial ASPECT
+  topography can now be prescribed through the World Builder.
+  (Menno Fraters, Michael Pons, World Builder Contributors)
+
+- ASPECT now requires deal.II 9.6.0 or newer and a C++ compiler with C++17
+  support. ASPECT can now use the Tpetra solver packages provided by
+  Trilinos 17 if configured with deal.II 9.8.0 or newer.
+  (Timo Heister, Rene Gassmoeller, Wolfgang Bangerth)
+
+- The online documentation now includes the Doxygen API reference, see
+  https://aspect-documentation.readthedocs.io/en/latest/doxygen/index.html.
+  (Timo Heister)
+
+- Many new cookbooks and benchmark cases have been added.
+  Many deprecated input options and source code functions have been removed.
+  Many bugs and inconsistencies have been fixed.
+  (Many authors, see link below)
+
+A complete list of all changes and their authors can be found at
+  https://aspect.geodynamics.org/doc/doxygen/changes_between_3_80_80_and_3_81_80.html
+
+We are thankful for all feature and model contributions, code reviews,
+forum posts, bug reports, and general help provided by members of our
+community. Your contributions have helped make ASPECT what is it today.
+
+Wolfgang Bangerth, Juliane Dannberg, Daniel Douglas, Menno Fraters,
+Rene Gassmoeller, Anne Glerum, Timo Heister, Bob Myhill, John Naliboff,
+Arushi Saxena, Cedric Thieulot, and many other contributors.
+
 
 Announcement for 3.0.0 (Nov 6, 2024)
 -----------------------------------------
@@ -1031,6 +1158,7 @@ Wolfgang Bangerth, Timo Heister, and many other contributors.
 
 
 
+
 Announcement for 1.3 (May 18, 2015)
 -----------------------------------------
 We are pleased to announce the release of ASPECT 1.3. ASPECT is the Advanced
@@ -1204,5 +1332,3 @@ available here:
   http://aspect.dealii.org/doc/doxygen/changes_between_0_81_and_0_82.html
 
 Wolfgang Bangerth, Timo Heister, and many other contributors.
-
-

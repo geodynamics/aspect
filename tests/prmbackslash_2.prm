@@ -39,7 +39,7 @@ no Advection, iterated Stokes
 
 subsection Boundary \
 temperature model
-  set Model name = b\
+  set List of model names = b\
 ox
 end
 
@@ -91,7 +91,7 @@ end
 
 subsection Initial t\
 emperature model
-  set Model name = p\
+  set List of model names = p\
 erturbed box
 end
 

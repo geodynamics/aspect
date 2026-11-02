@@ -1,22 +1,16 @@
-/*
-  Copyright (C) 2016 - 2023 by the authors of the ASPECT code.
-
-  This file is part of ASPECT.
-
-  ASPECT is free software; you can redistribute it and/or modify
-  it under the terms of the GNU General Public License as published by
-  the Free Software Foundation; either version 2, or (at your option)
-  any later version.
-
-  ASPECT is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  GNU General Public License for more details.
-
-  You should have received a copy of the GNU General Public License
-  along with ASPECT; see the file LICENSE.  If not see
-  <http://www.gnu.org/licenses/>.
-*/
+// ------------------------------------------------------
+//
+// SPDX-License-Identifier: GPL-2.0-or-later
+//
+// SPDX-FileCopyrightText: Copyright (C) 2016-2026 by the ASPECT authors.
+//
+// This file is part of ASPECT.
+//
+// Detailed license information governing the source code and
+// contributions can be found in the folder LICENSES and in
+// LICENSE and CONTRIBUTING.md at the top level directory.
+//
+// ------------------------------------------------------
 
 
 #ifndef _aspect_adiabatic_conditions_compute_entropy_profile_h
@@ -25,6 +19,7 @@
 
 #include <aspect/adiabatic_conditions/interface.h>
 #include <aspect/initial_composition/interface.h>
+#include <deal.II/base/parsed_function.h>
 
 namespace aspect
 {
@@ -109,13 +104,17 @@ namespace aspect
 
         /**
          * Number of points at which we compute the adiabatic values.
+         *
+         * This variable is read from the parameter file through a parameter called 'Number of points'.
          */
         unsigned int n_points;
 
         /**
          * Starting entropy for the profile.
+         *
+         * This variable is read from the parameter file through a parameter called 'Surface entropy'.
          */
-        double surface_entropy;
+        double profile_entropy;
 
         /**
          * Vectors of values of temperatures and pressures on a transect into
@@ -131,6 +130,27 @@ namespace aspect
          * with regard to the depth coordinate.
          */
         double delta_z;
+
+        /**
+         * An enum describing the different options to compute the reference
+         * profile for composition.
+         */
+        enum CompositionProfile
+        {
+          initial_composition,
+          reference_function
+        };
+
+        /**
+         * Selected option to compute the reference profile for composition.
+         */
+        CompositionProfile reference_composition;
+
+        /**
+         * Function object that computes the reference composition profile
+         * if the reference_composition variable is set to reference_function.
+         */
+        std::unique_ptr<Functions::ParsedFunction<1>> composition_function;
 
         /**
          * A shared pointer to the initial composition object

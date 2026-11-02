@@ -8,6 +8,23 @@ include $ASPECT_SOURCE_DIR/benchmarks/free_surface_tractions/viscoelastic/free_s
 set Dimension                              = 2
 set End time = 10
 
+# Number and name of compositional fields
+subsection Compositional fields
+  set Number of fields = 6
+  set Names of fields  = ve_stress_xx, ve_stress_yy, ve_stress_xy, ve_stress_xx_old, ve_stress_yy_old, ve_stress_xy_old
+  set Types of fields  = stress, stress, stress, stress, stress, stress
+end
+
+# Spatial domain of different compositional fields
+subsection Initial composition model
+  set List of model names = function
+
+  subsection Function
+    set Variable names      = x,y
+    set Function expression = 0; 0; 0; 0; 0; 0
+  end
+end
+
 subsection Material model
   set Model name = viscoelastic
   set Material averaging = harmonic average only viscosity
@@ -33,6 +50,8 @@ subsection Mesh deformation
 
   subsection Boundary function
     set Variable names      = x,y,t
-    set Function expression = 0;  -3.168808781e-16*(x-1e5)
+    # yr_in_seconds = 60*60*24*365.2425
+    set Function constants = yr_in_seconds=31556952
+    set Function expression = 0;  -3.168808781e-16*(x-1e5)*yr_in_seconds
   end
 end

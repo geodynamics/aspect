@@ -1,0 +1,183 @@
+# This .prm file reproduces the elastic line benchmark from the textbook
+# Elasticity and Geomechanics by Davis and Selvadurai, and compares it
+# against the analytical solution for a line load on an elastic half space
+# from Albert Flamant. The setup is a 2D box with a prescribed traction on
+# the center of the top boundary. The width of this line is 40 km, and the
+# magnitude of the traction is 2.7 MPa. The rheology is `Viscoelastic`, but
+# we approximate a purely elastic rheology by setting the viscosity to be
+# extremely high (1e50 Pa s), effectively eliminating the viscous response.
+# We additionally take a very small numerical time step of 1000 years, which
+# further limits the viscous response. The analytical solution is implemented as
+# a postprocessor in the shared library `libflamant_solution.so`, which is built
+# built from the `flamant_solution.cc` file located in the `elastic_line_load`
+# benchmark directory.
+
+# Load in the shared library to visualize the analytic solution
+set Additional shared libraries            = ./libflamant_solution.so
+
+set Dimension                              = 2
+set End time                               = 1e3
+set Use years instead of seconds           = true
+set Adiabatic surface temperature          = 1600
+set Surface pressure                       = 0
+set Pressure normalization                 = no
+set Nonlinear solver scheme                = iterated Advection and Stokes
+set Nonlinear solver tolerance             = 1e-5
+set Max nonlinear iterations               = 25
+set Output directory                       = output-elastic_line_load
+
+subsection Solver parameters
+  subsection Stokes solver parameters
+    set Linear solver tolerance = 1e-12
+  end
+end
+
+# Elasticity requires a discontinuous composition discretization, so enable that here.
+subsection Discretization
+  set Use discontinuous composition discretization = true
+end
+
+# Track the elastic stress components as compositional fields, which we track on particles.
+subsection Compositional fields
+  set Number of fields            = 6
+  set Names of fields             = ve_stress_xx, ve_stress_yy, ve_stress_xy, \
+                                    ve_stress_xx_old, ve_stress_yy_old, ve_stress_xy_old
+
+  set Compositional field methods = particles, particles, particles, \
+                                    particles, particles, particles
+
+  set Types of fields             = stress, stress, stress, \
+                                    stress, stress, stress
+
+  set Mapped particle properties  = ve_stress_xx: ve_stress_xx, \
+                                    ve_stress_yy: ve_stress_yy, \
+                                    ve_stress_xy: ve_stress_xy, \
+                                    ve_stress_xx_old: ve_stress_xx_old, \
+                                    ve_stress_yy_old: ve_stress_yy_old, \
+                                    ve_stress_xy_old: ve_stress_xy_old
+end
+
+# We track the stress on particles. Here we set a minimum number of partiles per cell to ensure
+# that we have enough particles to accurately track the stress, and set a maximum number of
+# particles to avoid too much computational expense. We also use a bilinear least squares
+# interpolation scheme to interpolate the stress from the particles to the quadrature points.
+# In order to track elastic stress on particles, we need to add the `elastic stress` particle property.
+subsection Particles
+  set Minimum particles per cell  = 50
+  set Maximum particles per cell  = 100
+  set Load balancing strategy     = remove and add particles
+  set List of particle properties = elastic stress
+  set Interpolation scheme        = bilinear least squares
+  set Particle generator name     = reference cell
+  subsection Generator
+    subsection Reference cell
+      set Number of particles per cell per direction = 7
+    end
+  end
+end
+
+# Set the initial composition to 0 for all compositional fields.
+subsection Initial composition model
+  set List of model names = function
+  subsection Function
+    set Variable names      = x,y
+    set Function expression = 0; 0; 0; 0; 0; 0
+  end
+end
+
+# Enable elasticity, which is required for the `Viscoelastic` material model.
+subsection Formulation
+  set Enable elasticity    = true
+end
+
+# 600 km x 300 km box with an initial 10 km x 10 km grid spacing.
+subsection Geometry model
+  set Model name = box
+
+  subsection Box
+    set Y extent = 300e3
+    set X extent = 600e3
+    set X repetitions = 30
+    set Y repetitions = 15
+  end
+end
+
+# Disable gravity, so that our stresses are only a result of
+# the applied traction on the top boundary.
+subsection Gravity model
+  set Model name = vertical
+
+  subsection Vertical
+    set Magnitude = 0.0
+  end
+
+end
+
+# The temperature does not influence the model, so just set it to some
+# constant value.
+subsection Initial temperature model
+  set List of model names = function
+  subsection Function
+    set Function expression = 500
+  end
+end
+
+# Fix the temperature on all boundaries.
+subsection Boundary temperature model
+  set Fixed temperature boundary indicators = left, right, top, bottom
+  set List of model names = initial temperature
+end
+
+
+# On the top boundary, we apply a traction of 2.7 MPa over a width of 40 km in the center of the domain.
+# This is how we achieve the 'line load' in the benchmark. The other boundaries are free slip.
+subsection Boundary traction model
+  set Prescribed traction boundary indicators = top: function
+  subsection Function
+    set Variable names      = x,y
+    set Function expression = 0; if(x<=320e3 & x>=280e3, -2.7e6, 0)
+  end
+end
+
+
+# Free slip on the bottom, left and right boundaries.
+subsection Boundary velocity model
+  set Tangential velocity boundary indicators = bottom, left, right
+end
+
+
+# The material model is `viscoelastic`. We approximate the rheology as purely elastic
+# by setting the viscosity to a very high value (1e50 Pa s), and taking a very small
+# time step (1000 years).
+subsection Material model
+  set Model name = viscoelastic
+
+  subsection Viscoelastic
+    set Densities                   = 2700
+    set Elastic shear moduli        = 1e12
+    set Use fixed elastic time step = true
+    set Fixed elastic time step     = 1e3
+    set Viscosities                 = 1e50
+  end
+end
+
+# Additionally refine the mesh 3 times globally to achieve a uniform
+# mesh resolution of 1.25 km x 1.25 km. This provides a high resolution
+# to resolve the stress field and compare against the analytical solution.
+subsection Mesh refinement
+  set Initial adaptive refinement        = 0
+  set Initial global refinement          = 4
+  set Time steps between mesh refinement = 0
+end
+
+# Output the stress field, shear stress, and the Flamant analytical solution for comparison.
+subsection Postprocess
+  set List of postprocessors = material statistics, composition statistics, visualization
+
+  subsection Visualization
+    set Output format                 = vtu
+    set Point-wise stress and strain  = true
+    set Time between graphical output = 0
+    set List of output variables      = material properties, shear stress, stress, flamant analytic stress
+  end
+end

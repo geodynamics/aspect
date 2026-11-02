@@ -19,7 +19,7 @@ subsection Geometry model
 end
 
 subsection Initial temperature model
-  set Model name = function
+  set List of model names = function
 
   subsection Function
     set Function expression = 1000
@@ -31,9 +31,9 @@ subsection Compositional fields
 end
 
 subsection Initial composition model
-  set Model name = ascii data layered
+  set List of model names = ascii data layered
 
-  subsection Ascii data model
+  subsection Ascii data layered
     set Data directory        = $ASPECT_SOURCE_DIR/data/initial-composition/ascii-data/test/
     set Data file names       = initial_composition_top_mantle_box_2d.txt, initial_composition_top_crust_box_2d.txt
     set Interpolation scheme  = piecewise constant

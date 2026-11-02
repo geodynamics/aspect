@@ -1,22 +1,16 @@
-/*
-  Copyright (C) 2011 - 2024 by the authors of the ASPECT code.
-
-  This file is part of ASPECT.
-
-  ASPECT is free software; you can redistribute it and/or modify
-  it under the terms of the GNU General Public License as published by
-  the Free Software Foundation; either version 2, or (at your option)
-  any later version.
-
-  ASPECT is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  GNU General Public License for more details.
-
-  You should have received a copy of the GNU General Public License
-  along with ASPECT; see the file LICENSE.  If not see
-  <http://www.gnu.org/licenses/>.
-*/
+// ------------------------------------------------------
+//
+// SPDX-License-Identifier: GPL-2.0-or-later
+//
+// SPDX-FileCopyrightText: Copyright (C) 2011-2026 by the ASPECT authors.
+//
+// This file is part of ASPECT.
+//
+// Detailed license information governing the source code and
+// contributions can be found in the folder LICENSES and in
+// LICENSE and CONTRIBUTING.md at the top level directory.
+//
+// ------------------------------------------------------
 
 
 #ifndef _aspect_introspection_h
@@ -63,8 +57,9 @@ namespace aspect
       porosity = 4,
       density = 5,
       entropy = 6,
-      generic = 7,
-      unspecified = 8
+      reaction_progress = 7,
+      generic = 8,
+      unspecified = 9
     } type;
 
     /**
@@ -94,14 +89,51 @@ namespace aspect
         return CompositionalFieldDescription::density;
       else if (input == "entropy")
         return CompositionalFieldDescription::entropy;
+      else if (input == "reaction progress")
+        return CompositionalFieldDescription::reaction_progress;
       else if (input == "generic")
         return CompositionalFieldDescription::generic;
       else if (input == "unspecified")
         return CompositionalFieldDescription::unspecified;
       else
-        AssertThrow(false, ExcNotImplemented());
+        AssertThrow(false, ExcMessage("Unknown compositional field type."));
 
       return CompositionalFieldDescription::Type();
+    }
+
+    /**
+     * This function translates a compositional field type into the string
+     * used in the input file and diagnostic output.
+     */
+    static
+    std::string
+    type_to_string(const Type type)
+    {
+      switch (type)
+        {
+          case chemical_composition:
+            return "chemical composition";
+          case stress:
+            return "stress";
+          case strain:
+            return "strain";
+          case grain_size:
+            return "grain size";
+          case porosity:
+            return "porosity";
+          case density:
+            return "density";
+          case entropy:
+            return "entropy";
+          case generic:
+            return "generic";
+          case unspecified:
+            return "unspecified";
+          default:
+            AssertThrow(false, ExcInternalError());
+        }
+
+      return "";
     }
   };
 
@@ -400,6 +432,26 @@ namespace aspect
       std::vector<types::global_dof_index> system_dofs_per_block;
 
       /**
+       * Information about one local DoF in the Stokes system.
+       */
+      struct StokesDoFInfo
+      {
+        unsigned int local_dof_index;
+        unsigned int component_index;
+      };
+
+      /**
+       * The local DoF and component indices in the system finite element that
+       * belong to the Stokes system being assembled. This vector is
+       * initialized by initialize_stokes_dof_info() from
+       * Simulator::setup_introspection(), after the system finite element has
+       * been constructed. Without melt transport that is velocity and solid
+       * pressure; with melt transport, MeltHandler replaces the contents with
+       * velocity, fluid pressure, and compaction pressure.
+       */
+      std::vector<StokesDoFInfo> stokes_dof_info;
+
+      /**
        * A structure that contains index sets describing which of the globally
        * enumerated degrees of freedom are owned by or are relevant to the
        * current processor in a parallel computation.
@@ -637,6 +689,18 @@ namespace aspect
        */
       bool
       is_stokes_component (const unsigned int component_index) const;
+
+      /**
+       * Initialize the local finite-element DoF indices and component indices
+       * for the Stokes system (velocity and solid pressure). This function
+       * must be called after the simulator finite element has been
+       * constructed, and before stokes_dof_info is used. The Simulator calls
+       * it from Simulator::setup_introspection(). When melt transport is
+       * enabled, MeltHandler::initialize_stokes_dof_info() then replaces the
+       * contents for the melt Stokes system.
+       */
+      void
+      initialize_stokes_dof_info (const FiniteElement<dim> &finite_element);
 
       /**
        * A function that gets a component index as an input

@@ -58,7 +58,7 @@ end
 # This section prescribes the initial condition in the temperature
 # field, which is chosen as a degree n=4, l=2 perturbation
 subsection Initial temperature model
-  set Model name = harmonic perturbation
+  set List of model names = harmonic perturbation
 
   subsection Harmonic perturbation
     set Lateral wave number one     = 4

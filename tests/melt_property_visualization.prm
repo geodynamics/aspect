@@ -15,7 +15,7 @@ set Resume computation                     = false
 set Start time                             = 0
 set Use years instead of seconds           = false
 
-# test if the melt material properties visulaization output works
+# test if the melt material properties visualization output works
 # (for both scalar and tensor output variables)
 #
 subsection Discretization
@@ -84,7 +84,7 @@ subsection Boundary velocity model
 end
 
 subsection Initial temperature model
-  set Model name = function
+  set List of model names = function
 
   subsection Function
     set Function expression = 0
@@ -93,7 +93,7 @@ subsection Initial temperature model
 end
 
 subsection Initial composition model
-  set Model name = function
+  set List of model names = function
 
   subsection Function
     set Function expression = 1.0 - 0.3 * exp(y)

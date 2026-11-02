@@ -1,22 +1,16 @@
-/*
-  Copyright (C) 2019 - 2024 by the authors of the ASPECT code.
-
-  This file is part of ASPECT.
-
-  ASPECT is free software; you can redistribute it and/or modify
-  it under the terms of the GNU General Public License as published by
-  the Free Software Foundation; either version 2, or (at your option)
-  any later version.
-
-  ASPECT is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  GNU General Public License for more details.
-
-  You should have received a copy of the GNU General Public License
-  along with ASPECT; see the file LICENSE.  If not see
-  <http://www.gnu.org/licenses/>.
-*/
+// ------------------------------------------------------
+//
+// SPDX-License-Identifier: GPL-2.0-or-later
+//
+// SPDX-FileCopyrightText: Copyright (C) 2019-2026 by the ASPECT authors.
+//
+// This file is part of ASPECT.
+//
+// Detailed license information governing the source code and
+// contributions can be found in the folder LICENSES and in
+// LICENSE and CONTRIBUTING.md at the top level directory.
+//
+// ------------------------------------------------------
 
 
 #include <aspect/material_model/rheology/drucker_prager.h>
@@ -270,14 +264,14 @@ namespace aspect
                            "for a total of N+1 values, where N is the number of all compositional fields or only "
                            "those corresponding to chemical compositions. "
                            "For a value of zero, in 2d the von Mises criterion is retrieved. "
-                           "Angles higher than 30 degrees are harder to solve numerically. Units: degrees.");
+                           "Angles higher than 30 degrees are harder to solve numerically. Units: \\si{\\degree}.");
         prm.declare_entry ("Angles of dilation", "0.",
                            Patterns::Anything(),
                            "List of angles of plastic dilation, $\\psi$, for background material and compositional fields, "
                            "for a total of N+1 values, where N is the number of all compositional fields or only "
                            "those corresponding to chemical compositions. "
                            "For a value of zero, the von Mises flow rule is retrieved. "
-                           "The dilation angle should never exceed the internal friction angle.");
+                           "The dilation angle should never exceed the internal friction angle. Units: \\si{\\degree}.");
         prm.declare_entry ("Cohesions", "1e20",
                            Patterns::Anything(),
                            "List of cohesions, $C$, for background material and compositional fields, "

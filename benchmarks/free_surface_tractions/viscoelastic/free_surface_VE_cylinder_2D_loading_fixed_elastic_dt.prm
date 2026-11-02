@@ -9,6 +9,22 @@ include free_surface_VE_cylinder_2D_loading.prm
 set Dimension                              = 2
 set Output directory                       = output_free_surface_VE_cylinder_2D_loading_fixed_elastic_dt
 
+# A fixed elastic time step requires the additional (old) stress fields:
+subsection Compositional fields
+  set Number of fields = 6
+  set Names of fields  = ve_stress_xx, ve_stress_yy, ve_stress_xy, ve_stress_xx_old, ve_stress_yy_old, ve_stress_xy_old
+  set Types of fields  = stress, stress, stress, stress, stress, stress
+end
+
+subsection Initial composition model
+  set List of model names = function
+
+  subsection Function
+    set Variable names      = x,y
+    set Function expression = 0; 0; 0; 0; 0; 0
+  end
+end
+
 # Material model
 subsection Material model
   set Model name = viscoelastic

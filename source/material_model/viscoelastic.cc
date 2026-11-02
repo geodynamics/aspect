@@ -1,22 +1,16 @@
-/*
-  Copyright (C) 2011 - 2024 by the authors of the ASPECT code.
-
-  This file is part of ASPECT.
-
-  ASPECT is free software; you can redistribute it and/or modify
-  it under the terms of the GNU General Public License as published by
-  the Free Software Foundation; either version 2, or (at your option)
-  any later version.
-
-  ASPECT is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  GNU General Public License for more details.
-
-  You should have received a copy of the GNU General Public License
-  along with ASPECT; see the file doc/COPYING.  If not see
-  <http://www.gnu.org/licenses/>.
-*/
+// ------------------------------------------------------
+//
+// SPDX-License-Identifier: GPL-2.0-or-later
+//
+// SPDX-FileCopyrightText: Copyright (C) 2011-2026 by the ASPECT authors.
+//
+// This file is part of ASPECT.
+//
+// Detailed license information governing the source code and
+// contributions can be found in the folder LICENSES and in
+// LICENSE and CONTRIBUTING.md at the top level directory.
+//
+// ------------------------------------------------------
 
 
 #include <aspect/material_model/viscoelastic.h>
@@ -130,14 +124,14 @@ namespace aspect
                              "for a total of N+1 values, where N is the number of all compositional fields or only "
                              "those corresponding to chemical compositions. "
                              "If only one value is given, then all use the same value. "
-                             "Units: $\\text{Pa}\\text{s}$.");
+                             "Units: \\si{\\pascal\\second}.");
           prm.declare_entry ("Thermal conductivities", "4.7",
                              Patterns::List(Patterns::Double (0.)),
                              "List of thermal conductivities for background mantle and compositional fields, "
                              "for a total of N+1 values, where N is the number of all compositional fields or only "
                              "those corresponding to chemical compositions. "
                              "If only one value is given, then all use the same value. "
-                             "Units: $\\frac{\\text{W}}{\\text{m}\\text{K}}$.");
+                             "Units: \\si{\\watt\\per\\meter\\per\\kelvin}.");
           prm.declare_entry ("Viscosity averaging scheme", "harmonic",
                              Patterns::Selection("arithmetic|harmonic|geometric|maximum composition "),
                              "When more than one compositional field is present at a point "
@@ -226,14 +220,18 @@ namespace aspect
                                    "compositional fields representing these components must be named "
                                    "and listed in a very specific format, which is designed to minimize "
                                    "mislabeling stress tensor components as distinct 'compositional "
-                                   "rock types' (or vice versa). For 2d models, the first six compositional "
+                                   "rock types' (or vice versa). For 2d models, the first three compositional "
                                    "fields of type stress must be labeled 've\\_stress\\_xx', 've\\_stress\\_yy' "
-                                   "and 've\\_stress\\_xy', 've\\_stress\\_xx\\_old', 've\\_stress\\_yy\\_old' "
-                                   "and 've\\_stress\\_xy\\_old', In 3d, the first twelve compositional fields "
+                                   "and 've\\_stress\\_xy'. In 3d, the first six compositional fields "
                                    "of type stress must be labeled 've\\_stress\\_xx', 've\\_stress\\_yy', "
-                                   "'ve\\_stress\\_zz', 've\\_stress\\_xy', 've\\_stress\\_xz', 've\\_stress\\_yz', "
-                                   "'ve\\_stress\\_xx\\_old', 've\\_stress\\_yy\\_old', 've\\_stress\\_zz\\_old',  "
-                                   "'ve\\_stress\\_xy\\_old', 've\\_stress\\_xz\\_old', 've\\_stress\\_yz\\_old'. "
+                                   "'ve\\_stress\\_zz', 've\\_stress\\_xy', 've\\_stress\\_xz', 've\\_stress\\_yz'. "
+                                   "If either 'Use fixed elastic time step' is true or 'Stabilization time scale factor' "
+                                   "is set to a value other than 1, the old stresses are also required. "
+                                   "In that case, the next three (2d) or six (3d) compositional fields of type "
+                                   "stress must be labeled 've\\_stress\\_xx\\_old', 've\\_stress\\_yy\\_old' and "
+                                   "'ve\\_stress\\_xy\\_old' in 2d, and 've\\_stress\\_xx\\_old', 've\\_stress\\_yy\\_old', "
+                                   "'ve\\_stress\\_zz\\_old', 've\\_stress\\_xy\\_old', 've\\_stress\\_xz\\_old' "
+                                   "and 've\\_stress\\_yz\\_old' in 3d. "
                                    "\n\n "
                                    "Expanding the model to include non-linear viscous flow (e.g., "
                                    "diffusion/dislocation creep) and plasticity would produce a "
@@ -241,21 +239,16 @@ namespace aspect
                                    "elastoviscoplastic (e.g., pEVP) in the geodynamics community. "
                                    "While extensively discussed and applied within the geodynamics "
                                    "literature, notable references include: "
-                                   "Moresi et al. (2003), J. Comp. Phys., v. 184, p. 476-497. "
-                                   "Gerya and Yuen (2007), Phys. Earth. Planet. Inter., v. 163, p. 83-105. "
-                                   "Gerya (2010), Introduction to Numerical Geodynamic Modeling. "
-                                   "Kaus (2010), Tectonophysics, v. 484, p. 36-47. "
-                                   "Choi et al. (2013), J. Geophys. Res., v. 118, p. 2429-2444. "
-                                   "Keller et al. (2013), Geophys. J. Int., v. 195, p. 1406-1442. "
+                                   "\\cite{moresi2003lagrangian,gerya2007robust,gerya:2010,kaus:2010,choi2013dynearthsol2d,keller:etal:2013}. "
                                    "\n\n "
-                                   "The overview below directly follows Moresi et al. (2003) eqns. 23-32. "
+                                   "The overview below directly follows \\cite{moresi2003lagrangian} eqns. 23-32. "
                                    "However, an important distinction between this material model and "
                                    "the studies above is the use of compositional fields, rather than "
                                    "particles, to track individual components of the viscoelastic stress "
                                    "tensor. The material model will be updated when an option to track "
                                    "and calculate viscoelastic stresses with particles is implemented. "
                                    "\n\n "
-                                   "Moresi et al. (2003) begins (eqn. 23) by writing the deviatoric "
+                                   "\\cite{moresi2003lagrangian} begins (eqn. 23) by writing the deviatoric "
                                    "rate of deformation ($\\hat{D}$) as the sum of elastic "
                                    "($\\hat{D_{e}}$) and viscous ($\\hat{D_{v}}$) components: "
                                    "$\\hat{D} = \\hat{D_{e}} + \\hat{D_{v}}$.  "
@@ -279,7 +272,7 @@ namespace aspect
                                    "W^{t}\\tau^{t} + \\tau^{t}W^{t}$. "
                                    "In this material model, the size of the time step above ($\\Delta t^{e}$) "
                                    "can be specified as the numerical time step size or an independent fixed time "
-                                   "step. If the latter case is selected, a linear interpolation will be applied"
+                                   "step. If the latter case is selected, a linear interpolation will be applied "
                                    "to account for the differences between the numerical "
                                    "and fixed elastic time step (eqn. 32). If one selects to use a fixed elastic time "
                                    "step throughout the model run, this can still be achieved by using CFL and "
@@ -298,7 +291,7 @@ namespace aspect
                                    "viscosity is reduced relative to the initial viscosity. "
                                    "\n\n "
                                    "Elastic effects are introduced into the governing Stokes equations through "
-                                   "an elastic force term (eqn. 30 updated to the term in eqn. 5 in Farrington et al. 2014) "
+                                   "an elastic force term (eqn. 30 updated to the term in eqn. 5 in \\cite{farrington2014role}) "
                                    "using stresses from the previous time step rotated and advected into the current time step: "
                                    "$F^{e,t} = -\\frac{\\eta_\\text{eff}}{\\mu \\Delta t^{e}} \\tau^{0adv}$. "
                                    "This force term is added onto the right-hand side force vector in the "

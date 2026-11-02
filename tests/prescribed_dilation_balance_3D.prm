@@ -1,0 +1,80 @@
+
+
+set Dimension                              = 3
+
+set Use years instead of seconds           = false
+set End time                               = 5.0
+
+set Pressure normalization                 = no
+
+subsection Solver parameters
+  subsection Stokes solver parameters
+    set Stokes solver type =  block AMG
+  end
+end
+
+subsection Geometry model
+  set Model name = box
+
+  subsection Box
+    set X extent = 1
+    set Y extent = 2
+    set Z extent = 2
+
+    set X repetitions = 2
+    set Y repetitions = 4
+    set Z repetitions = 4
+  end
+end
+
+subsection Gravity model
+  set Model name = vertical
+
+  subsection Vertical
+    set Magnitude = 0
+  end
+end
+
+subsection Initial temperature model
+  set List of model names = function
+end
+
+subsection Boundary velocity model
+  set Tangential velocity boundary indicators = left, right, bottom, front, back
+end
+
+subsection Material model
+  set Model name = simple
+
+  subsection Simple model
+    set Reference density             = 1
+    set Reference specific heat       = 1
+    set Reference temperature         = 0
+    set Thermal conductivity          = 1
+    set Thermal expansion coefficient = 0
+    set Viscosity                     = 1
+  end
+end
+
+subsection Formulation
+  set Formulation = Boussinesq approximation
+end
+
+subsection Mesh refinement
+  set Initial global refinement                = 0
+  set Initial adaptive refinement              = 0
+  set Time steps between mesh refinement       = 0
+end
+
+subsection Postprocess
+  set List of postprocessors = mass flux statistics
+end
+
+subsection Prescribed dilation
+  set List of model names = function
+  subsection Function
+    set Coordinate system = cartesian
+    set Variable names = x,y,z
+    set Function expression = -5.0*if ( x > 0.4 && x < 0.6 && y > 0.4 && y < 0.6 && z > 0.4 && z < 0.6, 1.0, 0.0 ) + 5.0*if ( x > 0.4 && x < 0.6 && y > 1.4 && y < 1.6 && z > 1.4 && z < 1.6, 1.0, 0.0 )
+  end
+end

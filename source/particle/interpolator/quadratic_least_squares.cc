@@ -1,23 +1,18 @@
-/*
-  Copyright (C) 2019 - 2024 by the authors of the ASPECT code.
+// ------------------------------------------------------
+//
+// SPDX-License-Identifier: GPL-2.0-or-later
+//
+// SPDX-FileCopyrightText: Copyright (C) 2019-2026 by the ASPECT authors.
+//
+// This file is part of ASPECT.
+//
+// Detailed license information governing the source code and
+// contributions can be found in the folder LICENSES and in
+// LICENSE and CONTRIBUTING.md at the top level directory.
+//
+// ------------------------------------------------------
 
- This file is part of ASPECT.
-
- ASPECT is free software; you can redistribute it and/or modify
- it under the terms of the GNU General Public License as published by
- the Free Software Foundation; either version 2, or (at your option)
- any later version.
-
- ASPECT is distributed in the hope that it will be useful,
- but WITHOUT ANY WARRANTY; without even the implied warranty of
- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- GNU General Public License for more details.
-
- You should have received a copy of the GNU General Public License
- along with ASPECT; see the file LICENSE.  If not see
- <http://www.gnu.org/licenses/>.
- */
-
+#include <algorithm>
 #include <aspect/particle/interpolator/quadratic_least_squares.h>
 #include <aspect/particle/manager.h>
 #include <aspect/utilities.h>
@@ -466,8 +461,8 @@ namespace aspect
                     if ((interpolation_max - cell_average_values[property_index]) > std::numeric_limits<double>::epsilon() &&
                         (cell_average_values[property_index] - interpolation_min) > std::numeric_limits<double>::epsilon())
                       {
-                        const double alpha = std::max(std::min((cell_average_values[property_index] - property_minimums[property_index])/(cell_average_values[property_index] - interpolation_min),
-                                                               (property_maximums[property_index]-cell_average_values[property_index])/(interpolation_max - cell_average_values[property_index])), 0.0);
+                        const double alpha = std::clamp((cell_average_values[property_index] - property_minimums[property_index])/(cell_average_values[property_index] - interpolation_min),
+                                                        0.0, (property_maximums[property_index]-cell_average_values[property_index])/(interpolation_max - cell_average_values[property_index]));
                         // If alpha > 1, then using it would make the function grow to meet the bounds.
                         if (alpha < 1.0)
                           {

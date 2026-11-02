@@ -83,7 +83,7 @@ end
 ##################### Temperature ########################
 
 subsection Initial temperature model
-  set Model name = function
+  set List of model names = function
 
   subsection Function
     set Function expression       = 293
@@ -112,7 +112,7 @@ subsection Compositional fields
 end
 
 subsection Initial composition model
-  set Model name = function
+  set List of model names = function
 
   subsection Function
     set Function expression = 0.01; 0.01
@@ -151,7 +151,7 @@ subsection Postprocess
       set List of material properties = density, viscosity
     end
 
-    # To see in which cells melt transport is modelled, it can be useful to look
+    # To see in which cells melt transport is modeled, it can be useful to look
     # at the property 'is melt cell', so we include it in the output. In addition,
     # we always visualize the compaction pressure 'p_c' if this postprocessor is
     # used.

@@ -7,6 +7,7 @@ from matplotlib.colors import ListedColormap
 from cmcrameri import cm # Fabio Crameri's color maps
 import numpy as np
 import os
+import sys
 
 pv.set_plot_theme("document")
 plotter = pv.Plotter(off_screen=True)
@@ -17,18 +18,20 @@ plotter = pv.Plotter(off_screen=True)
 # "../../output-convection-box/solution/solution-00001.pvtu"
 # Remember to change the name of the output file as well.
 mesh = pv.read("../output-convection-box/solution/solution-00004.pvtu")
+
 plot_spatial_bounds = [0, 1, 0, 1, 0, 0]
-mesh = mesh.clip_box(bounds=plot_spatial_bounds, invert=False)
 # calculate median velocity for arrow scaling
 vel = mesh["velocity"]
 vmag = np.linalg.norm(vel, axis=1)
 median_v = float(np.median(vmag[vmag > 0])) if np.any(vmag > 0) else 1.0 # median of nonzero velocities, or 1.0 if all velocities are zero
 
 arrows = mesh.glyph(scale="velocity", factor=0.025 / median_v,orient="velocity")
+mesh_grid = mesh.extract_all_edges()
 
 # scale the meshes down to put the scale bar on the side (like in the docs)
 mesh = mesh.scale(0.75)
 arrows = arrows.scale(0.75)
+mesh_grid = mesh_grid.scale(0.75)
 
 # Define properties for the scalar bar arguments
 sargs = dict(
@@ -45,17 +48,20 @@ sargs = dict(
 
 mesh_actor = plotter.add_mesh(mesh, scalars="T", log_scale=False, scalar_bar_args=sargs,cmap=cm.vik)
 arrows_actor = plotter.add_mesh(arrows,color='white')
+#uncomment the lines relating to grid actor if you want to plot the ASPECT mesh cells.
+#grid_actor = plotter.add_mesh(mesh_grid, color="ivory_black", style="wireframe",line_width=0.3, opacity=1)
 plotter.view_xy()
 
 # Displace the meshes to make room for the scalar bar
 mesh_actor.position = (0.225,0.15,0)
 arrows_actor.position = (0.225,0.15,0)
+#grid_actor.position = (0.225, 0.15, 0)
 
 # shows the axes labels on the actual mesh (show_axes shows a widget in 3d space)
 plotter.show_bounds(
 use_3d_text=False,use_2d=True, # These parameters make it easier to plot 2D data
 axes_ranges=plot_spatial_bounds, # We displaced mesh_actor earlier, so we need to reset the axes ranges
-grid='front',ticks='outside',location='outer',
+ticks='outside',location='outer',
 xtitle='X Axis',ytitle='Y Axis'
 )
 
@@ -83,3 +89,4 @@ camera = [position, focal_point, viewup]
 plotter.camera_position = camera
 plotter.camera_set = True
 plotter.screenshot("../doc/visit0001.png")
+

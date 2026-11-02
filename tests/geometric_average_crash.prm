@@ -32,7 +32,7 @@ subsection Material model
 end
 
 subsection Initial temperature model
-  set Model name = adiabatic
+  set List of model names = adiabatic
 
   subsection Adiabatic
     set Age bottom boundary layer = 1e6

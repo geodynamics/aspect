@@ -1,24 +1,18 @@
-/*
-  Copyright (C) 2011 - 2024 by the authors of the ASPECT code.
+// ------------------------------------------------------
+//
+// SPDX-License-Identifier: GPL-2.0-or-later
+//
+// SPDX-FileCopyrightText: Copyright (C) 2011-2026 by the ASPECT authors.
+//
+// This file is part of ASPECT.
+//
+// Detailed license information governing the source code and
+// contributions can be found in the folder LICENSES and in
+// LICENSE and CONTRIBUTING.md at the top level directory.
+//
+// ------------------------------------------------------
 
-  This file is part of ASPECT.
-
-  ASPECT is free software; you can redistribute it and/or modify
-  it under the terms of the GNU General Public License as published by
-  the Free Software Foundation; either version 2, or (at your option)
-  any later version.
-
-  ASPECT is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  GNU General Public License for more details.
-
-  You should have received a copy of the GNU General Public License
-  along with ASPECT; see the file LICENSE.  If not see
-  <http://www.gnu.org/licenses/>.
-*/
-
-
+#include <algorithm>
 #include <aspect/material_model/latent_heat_melt.h>
 #include <aspect/adiabatic_conditions/interface.h>
 
@@ -61,7 +55,7 @@ namespace aspect
                                         thermal_viscosity_exponent * delta_temp / reference_temperature );
 
 
-          double temperature_dependence = std::max (std::min ( std::exp( - T_dependence ), 1e2 ), 1e-2 );
+          double temperature_dependence = std::clamp(std::exp(-T_dependence), 1e-2, 1e2);
 
           if (std::isnan(temperature_dependence))
             temperature_dependence = 1.0;
@@ -367,14 +361,14 @@ namespace aspect
           prm.declare_entry ("Reference density", "3300.",
                              Patterns::Double (0.),
                              "Reference density $\\rho_0$. "
-                             "Units: $\\frac{\\text{kg}}{\\text{m}^3}$.");
+                             "Units: \\si{\\kilogram\\per\\meter\\cubed}.");
           prm.declare_entry ("Reference temperature", "293.",
                              Patterns::Double (0.),
-                             "The reference temperature $T_0$. Units: $\\text{K}$.");
+                             "The reference temperature $T_0$. Units: \\si{\\kelvin}.");
           prm.declare_entry ("Viscosity", "5e24",
                              Patterns::Double (0.),
                              "The value of the constant viscosity. "
-                             "Units: $\\text{Pa}\\text{s}$.");
+                             "Units: \\si{\\pascal\\second}.");
           prm.declare_entry ("Composition viscosity prefactor", "1.0",
                              Patterns::Double (0.),
                              "A linear dependency of viscosity on composition. Dimensionless prefactor.");
@@ -384,23 +378,23 @@ namespace aspect
           prm.declare_entry ("Thermal conductivity", "2.38",
                              Patterns::Double (0.),
                              "The value of the thermal conductivity $k$. "
-                             "Units: $\\frac{\\text{W}}{\\text{m}\\text{K}}$.");
+                             "Units: \\si{\\watt\\per\\meter\\per\\kelvin}.");
           prm.declare_entry ("Reference specific heat", "1250.",
                              Patterns::Double (0.),
                              "The value of the specific heat $C_p$. "
-                             "Units: $\\frac{\\text{J}}{\\text{K}\\text{kg}}$.");
+                             "Units: \\si{\\joule\\per\\kelvin\\per\\kilogram}.");
           prm.declare_entry ("Thermal expansion coefficient", "4e-5",
                              Patterns::Double (0.),
                              "The value of the thermal expansion coefficient $\\alpha_s$. "
-                             "Units: $\\frac{1}{\\text{K}}$.");
+                             "Units: \\si{\\per\\kelvin}.");
           prm.declare_entry ("Thermal expansion coefficient of melt", "6.8e-5",
                              Patterns::Double (0.),
                              "The value of the thermal expansion coefficient $\\alpha_f$. "
-                             "Units: $\\frac{1}{\\text{K}}$.");
+                             "Units: \\si{\\per\\kelvin}.");
           prm.declare_entry ("Compressibility", "5.124e-12",
                              Patterns::Double (0.),
                              "The value of the compressibility $\\kappa$. "
-                             "Units: $\\frac{1}{\\text{Pa}}$.");
+                             "Units: \\si{\\per\\pascal}.");
           prm.declare_entry ("Density differential for compositional field 1", "0.",
                              Patterns::Double(),
                              "If compositional fields are used, then one would frequently want "
@@ -411,7 +405,7 @@ namespace aspect
                              "fields, then the density only depends on the first one in such a way that "
                              "the density has an additional term of the kind $+\\Delta \\rho \\; c_1(\\mathbf x)$. "
                              "This parameter describes the value of $\\Delta \\rho$. "
-                             "Units: $\\frac{\\text{kg}}{\\text{m}^3}$/unit change in composition.");
+                             "Units: \\si{\\kilogram\\per\\meter\\cubed}/unit change in composition.");
           prm.declare_entry ("A1", "1085.7",
                              Patterns::Double (),
                              "Constant parameter in the quadratic "
@@ -482,7 +476,7 @@ namespace aspect
                              "Prefactor of the linear pressure term "
                              "in the linear function that approximates "
                              "the clinopyroxene reaction coefficient. "
-                             "Units: $\\frac{1}{\\text{Pa}}$.");
+                             "Units: \\si{\\per\\pascal}.");
           prm.declare_entry ("beta", "1.5",
                              Patterns::Double (),
                              "Exponent of the melting temperature in "
@@ -492,7 +486,7 @@ namespace aspect
                              Patterns::Double (),
                              "The entropy change for the phase transition "
                              "from solid to melt of peridotite. "
-                             "Units: $\\frac{\\text{J}}{\\text{K}\\text{kg}}$.");
+                             "Units: \\si{\\joule\\per\\kelvin\\per\\kilogram}.");
           prm.declare_entry ("Mass fraction cpx", "0.15",
                              Patterns::Double (),
                              "Mass fraction of clinopyroxene in the "
@@ -536,7 +530,7 @@ namespace aspect
                              Patterns::Double (),
                              "The entropy change for the phase transition "
                              "from solid to melt of pyroxenite. "
-                             "Units: $\\frac{\\text{J}}{\\text{K}\\text{kg}}$.");
+                             "Units: \\si{\\joule\\per\\kelvin\\per\\kilogram}.");
           prm.declare_entry ("Maximum pyroxenite melt fraction", "0.5429",
                              Patterns::Double (),
                              "Maximum melt fraction of pyroxenite "

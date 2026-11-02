@@ -55,7 +55,7 @@ end
 # by spherical harmonics up to degree 20 that are radially interpolated
 # with a cubic spline.
 subsection Initial temperature model
-  set Model name = function
+  set List of model names = function
 
   subsection Function
     set Function expression = 1

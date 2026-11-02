@@ -1,22 +1,16 @@
-/*
-  Copyright (C) 2015 - 2024 by the authors of the ASPECT code.
-
- This file is part of ASPECT.
-
- ASPECT is free software; you can redistribute it and/or modify
- it under the terms of the GNU General Public License as published by
- the Free Software Foundation; either version 2, or (at your option)
- any later version.
-
- ASPECT is distributed in the hope that it will be useful,
- but WITHOUT ANY WARRANTY; without even the implied warranty of
- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- GNU General Public License for more details.
-
- You should have received a copy of the GNU General Public License
- along with ASPECT; see the file LICENSE.  If not see
- <http://www.gnu.org/licenses/>.
- */
+// ------------------------------------------------------
+//
+// SPDX-License-Identifier: GPL-2.0-or-later
+//
+// SPDX-FileCopyrightText: Copyright (C) 2015-2026 by the ASPECT authors.
+//
+// This file is part of ASPECT.
+//
+// Detailed license information governing the source code and
+// contributions can be found in the folder LICENSES and in
+// LICENSE and CONTRIBUTING.md at the top level directory.
+//
+// ------------------------------------------------------
 
 #include <aspect/particle/integrator/interface.h>
 #include <aspect/simulator_access.h>
@@ -150,11 +144,9 @@ namespace aspect
                            "solves. If, for example, we call the numerical solution "
                            "of the ODE $\\tilde{\\mathbf x}_{k,h}(t)$, then the "
                            "error will typically satisfy a relationship like "
-                           "\\["
-                           "  \\| \\tilde{\\mathbf x}_k(T) - \\tilde{\\mathbf x}_{k,h}(T) \\|"
-                           "  \\le"
-                           "  C(T) \\Delta t^p"
-                           "\\] "
+                           "$\\left\\| \\tilde{\\mathbf{x}}_k(T) "
+                           "- \\tilde{\\mathbf{x}}_{k,h}(T) \\right\\| "
+                           "\\le C(T) \\Delta t^p$, "
                            "where $\\Delta t$ is the time step and $p$ the convergence order "
                            "of the method, and $C(T)$ is a (generally unknown) constant "
                            "that depends on the end time $T$ at which one compares the "
@@ -164,18 +156,15 @@ namespace aspect
                            "$\\| \\mathbf x_k(T) - \\tilde{\\mathbf x}_{k,h}(T) \\|$, "
                            "but this quantity will, in the best case, only satisfy an "
                            "estimate of the form "
-                           "\\["
-                           "  \\| \\mathbf x_k(T) - \\tilde{\\mathbf x}_{k,h}(T) \\|"
-                           "  \\le"
-                           "  C_1(T) \\Delta t^p"
-                           "  + C_2(T) \\| \\mathbf u-\\mathbf u_h \\|"
-                           "  + C_3(T) \\| \\mathbf u_h-\\tilde{\\mathbf u}_h \\|"
-                           "\\] "
+                           "$\\left\\| \\mathbf x_k(T) - \\tilde{\\mathbf x}_{k,h}(T) \\right\\| "
+                           "\\le C_1(T) \\Delta t^p "
+                           "+ C_2(T) \\| \\mathbf u-\\mathbf u_h \\| "
+                           "+ C_3(T) \\| \\mathbf u_h-\\tilde{\\mathbf u}_h \\|$ "
                            "with appropriately chosen norms for the second and third "
                            "term. These second and third terms typically converge to "
                            "zero at relatively low rates (compared to the order $p$ of "
                            "the integrator, which can often be chosen relatively high) "
-                           "in the mesh size $h$ and the time step size $\\\\Delta t$, "
+                           "in the mesh size $h$ and the time step size $\\Delta t$, "
                            "limiting the overall accuracy of the ODE integrator."
                            "\n\n"
                            "Select one of the following models:\n\n"

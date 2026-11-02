@@ -1,22 +1,16 @@
-/*
-  Copyright (C) 2011 - 2025 by the authors of the ASPECT code.
-
-  This file is part of ASPECT.
-
-  ASPECT is free software; you can redistribute it and/or modify
-  it under the terms of the GNU General Public License as published by
-  the Free Software Foundation; either version 2, or (at your option)
-  any later version.
-
-  ASPECT is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  GNU General Public License for more details.
-
-  You should have received a copy of the GNU General Public License
-  along with ASPECT; see the file LICENSE.  If not see
-  <http://www.gnu.org/licenses/>.
-*/
+// ------------------------------------------------------
+//
+// SPDX-License-Identifier: GPL-2.0-or-later
+//
+// SPDX-FileCopyrightText: Copyright (C) 2011-2026 by the ASPECT authors.
+//
+// This file is part of ASPECT.
+//
+// Detailed license information governing the source code and
+// contributions can be found in the folder LICENSES and in
+// LICENSE and CONTRIBUTING.md at the top level directory.
+//
+// ------------------------------------------------------
 
 #ifndef _aspect_material_model_equation_of_state_multicomponent_compressible_h
 #define _aspect_material_model_equation_of_state_multicomponent_compressible_h
@@ -114,6 +108,8 @@ namespace aspect
           /**
            * Vector of reference densities $\rho_0$ with one entry per composition and phase plus one
            * for the background field.
+           *
+           * This variable is read from the parameter file through a parameter called 'Reference densities'.
            */
           std::vector<double> reference_densities;
 
@@ -121,35 +117,42 @@ namespace aspect
           /**
            * Vector of reference temperatures $T_0$ with one entry per composition and phase plus one
            * for the background field.
+           * This variable is read from the parameter file through a parameter called 'Reference temperatures'.
            */
           std::vector<double> reference_temperatures;
 
           /**
            * Vector of reference compressibilities, with one entry per composition and phase plus one
            * for the background field.
+           * This variable is read from the parameter file through a parameter called 'Reference isothermal compressibilities'.
            */
           std::vector<double> reference_isothermal_compressibilities;
 
           /**
            * Vector of isothermal bulk modulus pressure derivatives with one entry per composition and phase plus one
            * for the background field.
+           * This variable is read from the parameter file through a parameter called 'Isothermal bulk modulus pressure derivatives'.
            */
           std::vector<double> isothermal_bulk_modulus_pressure_derivatives;
 
           /**
            * Vector of reference thermal expansivities, with one entry per composition and phase plus one
            * for the background field.
+           * This variable is read from the parameter file through a parameter called 'Reference thermal expansivities'.
            */
           std::vector<double> reference_thermal_expansivities;
 
           /**
            * Vector of isochoric specific heats, with one entry per composition and phase plus one
            * for the background field.
+           * This variable is read from the parameter file through a parameter called 'Isochoric specific heats'.
            */
           std::vector<double> isochoric_specific_heats;
 
           /**
            * Whether to enable the use of phase transitions, which currently breaks thermodynamic consistency
+           *
+           * This variable is read from the parameter file through a parameter called 'Enable phase transitions'.
            */
           bool enable_phase_transitions;
       };

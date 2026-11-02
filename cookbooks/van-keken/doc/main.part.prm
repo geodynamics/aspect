@@ -9,11 +9,10 @@ subsection Material model
 end
 
 subsection Initial composition model
-  set Model name = function
+  set List of model names = function
 
   subsection Function
     set Variable names      = x,z
-    set Function constants  = pi=3.14159
     set Function expression = if( (z>0.2+0.02*cos(pi*x/0.9142)) , 0 , 1 )
   end
 end

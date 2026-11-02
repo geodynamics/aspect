@@ -1,0 +1,74 @@
+
+Number of active cells: 16 (on 3 levels)
+Number of degrees of freedom: 349 (162+25+81+81)
+
+*** Timestep 0:  t=0 seconds, dt=0 seconds
+   Skipping temperature solve because RHS is zero.
+   Solving C_1 system ... 0 iterations.
+   Solving Stokes system (GMG)... 11+0 iterations.
+
+   Postprocessing:
+     Number of advected particles:        1000
+     Particle count per cell min/avg/max: 48, 62, 75
+     Cells per process min/max/avg:       4/4/4
+
+Number of active cells: 28 (on 4 levels)
+Number of degrees of freedom: 605 (282+41+141+141)
+
+*** Timestep 0:  t=0 seconds, dt=0 seconds
+   Skipping temperature solve because RHS is zero.
+   Solving C_1 system ... 0 iterations.
+   Solving Stokes system (GMG)... 15+0 iterations.
+
+   Postprocessing:
+     Number of advected particles:        1000
+     Particle count per cell min/avg/max: 4, 35, 84
+     Cells per process min/max/avg:       4/8/7
+
+Number of active cells: 31 (on 4 levels)
+Number of degrees of freedom: 673 (314+45+157+157)
+
+*** Timestep 0:  t=0 seconds, dt=0 seconds
+   Skipping temperature solve because RHS is zero.
+   Solving C_1 system ... 0 iterations.
+   Solving Stokes system (GMG)... 16+0 iterations.
+
+   Postprocessing:
+     Number of advected particles:        1000
+     Particle count per cell min/avg/max: 6, 32, 84
+     Cells per process min/max/avg:       6/9/7.75
+
+Number of active cells: 40 (on 4 levels)
+Number of degrees of freedom: 827 (386+55+193+193)
+
+*** Timestep 0:  t=0 seconds, dt=0 seconds
+   Skipping temperature solve because RHS is zero.
+   Solving C_1 system ... 0 iterations.
+   Solving Stokes system (GMG)... 13+0 iterations.
+
+   Postprocessing:
+     Number of advected particles:        1000
+     Particle count per cell min/avg/max: 6, 25, 84
+     Cells per process min/max/avg:       8/12/10
+
+Number of active cells: 52 (on 5 levels)
+Number of degrees of freedom: 1,112 (520+72+260+260)
+
+*** Timestep 0:  t=0 seconds, dt=0 seconds
+   Skipping temperature solve because RHS is zero.
+   Advecting particles...  done.
+   Solving C_1 system ... 0 iterations.
+   Solving Stokes system (GMG)... 17+0 iterations.
+
+   Postprocessing:
+     Number of advected particles:        1000
+     Particle count per cell min/avg/max: 3, 19, 74
+     Cells per process min/max/avg:       12/14/13
+
+Number of active cells: 76 (on 5 levels)
+Number of degrees of freedom: 1,585 (742+101+371+371)
+
+Termination requested by criterion: end time
+
+
+

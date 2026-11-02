@@ -1,22 +1,16 @@
-/*
-  Copyright (C) 2011 - 2024 by the authors of the ASPECT code.
-
-  This file is part of ASPECT.
-
-  ASPECT is free software; you can redistribute it and/or modify
-  it under the terms of the GNU General Public License as published by
-  the Free Software Foundation; either version 2, or (at your option)
-  any later version.
-
-  ASPECT is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  GNU General Public License for more details.
-
-  You should have received a copy of the GNU General Public License
-  along with ASPECT; see the file LICENSE.  If not see
-  <http://www.gnu.org/licenses/>.
-*/
+// ------------------------------------------------------
+//
+// SPDX-License-Identifier: GPL-2.0-or-later
+//
+// SPDX-FileCopyrightText: Copyright (C) 2011-2026 by the ASPECT authors.
+//
+// This file is part of ASPECT.
+//
+// Detailed license information governing the source code and
+// contributions can be found in the folder LICENSES and in
+// LICENSE and CONTRIBUTING.md at the top level directory.
+//
+// ------------------------------------------------------
 
 
 #include <aspect/simulator.h>
@@ -39,6 +33,7 @@
 #include <aspect/postprocess/visualization.h>
 #include <aspect/prescribed_solution/interface.h>
 #include <aspect/prescribed_stokes_solution/interface.h>
+#include <aspect/simulator/solver/stokes_matrix_free.h>
 
 #include <deal.II/base/index_set.h>
 #include <deal.II/base/conditional_ostream.h>
@@ -109,6 +104,7 @@ namespace aspect
     GeometryModel::write_plugin_graph<dim>(out);
     GravityModel::write_plugin_graph<dim>(out);
     HeatingModel::Manager<dim>::write_plugin_graph(out);
+    PrescribedDilation::Manager<dim>::write_plugin_graph(out);
     InitialComposition::Manager<dim>::write_plugin_graph(out);
     InitialTemperature::Manager<dim>::write_plugin_graph(out);
     MaterialModel::write_plugin_graph<dim>(out);
@@ -459,6 +455,77 @@ namespace aspect
 
 
   template <int dim>
+  bool Simulator<dim>::synchronize_periodic_refinement_flags ()
+  {
+    bool flags_changed = false;
+    // Local-smoothing GMG needs matching refinement on periodic partners.
+    // Refine both if either is marked; coarsen only if both are marked.
+    for (const auto &cell : dof_handler.active_cell_iterators())
+      if (cell->is_locally_owned())
+        for (const unsigned int face_no : cell->face_indices())
+          if (cell->has_periodic_neighbor(face_no))
+            {
+              const auto periodic_neighbor = cell->periodic_neighbor(face_no);
+
+              // Leave existing mismatches to the solver's mesh check.
+              if (periodic_neighbor->level() != cell->level()
+                  || !periodic_neighbor->is_active())
+                continue;
+
+              const bool refine = cell->refine_flag_set()
+                                  || periodic_neighbor->refine_flag_set();
+              const bool coarsen = cell->coarsen_flag_set()
+                                   && periodic_neighbor->coarsen_flag_set();
+
+              flags_changed |= (refine != static_cast<bool>(cell->refine_flag_set())
+                                || coarsen != cell->coarsen_flag_set());
+              cell->clear_refine_flag();
+              cell->clear_coarsen_flag();
+              if (refine)
+                cell->set_refine_flag();
+              else if (coarsen)
+                cell->set_coarsen_flag();
+            }
+
+    exchange_refinement_flags();
+    return flags_changed;
+  }
+
+
+  template <int dim>
+  void Simulator<dim>::prepare_periodic_refinement ()
+  {
+    // Only owned changes count: smoothing may change ghost flags, which the
+    // next exchange overwrites with their owners' decisions.
+    bool flags_changed;
+    do
+      {
+        flags_changed = synchronize_periodic_refinement_flags();
+        std::vector<std::pair<RefinementCase<dim>, bool>> owned_flags;
+        owned_flags.reserve(triangulation.n_locally_owned_active_cells());
+        for (const auto &cell : dof_handler.active_cell_iterators())
+          if (cell->is_locally_owned())
+            owned_flags.emplace_back(cell->refine_flag_set(), cell->coarsen_flag_set());
+
+        triangulation.prepare_coarsening_and_refinement();
+
+        unsigned int index = 0;
+        for (const auto &cell : dof_handler.active_cell_iterators())
+          if (cell->is_locally_owned())
+            {
+              flags_changed |= owned_flags[index] !=
+                               std::make_pair(cell->refine_flag_set(), cell->coarsen_flag_set());
+              ++index;
+            }
+        exchange_refinement_flags();
+        flags_changed = Utilities::MPI::max(flags_changed ? 1 : 0, mpi_communicator) != 0;
+      }
+    while (flags_changed);
+  }
+
+
+
+  template <int dim>
   void Simulator<dim>::maybe_refine_mesh (const double new_time_step,
                                           unsigned int &max_refinement_level)
   {
@@ -527,31 +594,32 @@ namespace aspect
   {
     // Do a checkpoint if this is the end of simulation,
     // and the termination criteria say to checkpoint at the end.
-    bool write_checkpoint = force_writing_checkpoint;
+    bool write_regular_checkpoint = force_writing_checkpoint;
 
     // If we base checkpoint frequency on timing, measure the time at process 0
     // This prevents race conditions where some processes will checkpoint and others won't
-    if (!write_checkpoint && parameters.checkpoint_time_secs > 0)
+    if (!write_regular_checkpoint && parameters.checkpoint_time_secs > 0)
       {
         const bool global_do_checkpoint = Utilities::MPI::broadcast(mpi_communicator,
                                                                     (std::time(nullptr)-last_checkpoint_time) >=
                                                                     parameters.checkpoint_time_secs,
                                                                     /* root= */0);
         if (global_do_checkpoint)
-          write_checkpoint = true;
+          write_regular_checkpoint = true;
       }
 
     // If we base checkpoint frequency on steps, see if it's time for another checkpoint
-    if (!write_checkpoint &&
+    if (!write_regular_checkpoint &&
         (parameters.checkpoint_time_secs == 0) &&
         (parameters.checkpoint_steps > 0) &&
         (timestep_number % parameters.checkpoint_steps == 0))
-      write_checkpoint = true;
+      write_regular_checkpoint = true;
 
     // Do a checkpoint if indicated by checkpoint parameters
-    if (write_checkpoint)
+    if (write_regular_checkpoint)
       {
-        create_snapshot();
+        create_snapshot(/*is_additional_checkpoint = */ false);
+
         // matrices will be regenerated after a resume, so do that here too
         // to be consistent. otherwise we would get different results
         // for a restarted computation than for one that ran straight
@@ -559,7 +627,33 @@ namespace aspect
         rebuild_stokes_matrix =
           rebuild_stokes_preconditioner = true;
       }
-    return write_checkpoint;
+
+    // See if an additional checkpoint needs to be created. Time has already been advanced
+    // to the next timestep, so we need a checkpoint if the next additional checkpoint time
+    // is less than the current time.
+
+    // TODO if through the other criteria we already determined that a checkpoint needs to be created,
+    // we could copy the checkpoint.
+    if ((parameters.additional_checkpoint_times.size() > 0)
+        &&
+        (parameters.additional_checkpoint_times.front () < time))
+      {
+        create_snapshot(/*is_additional_checkpoint = */ true);
+
+        // Remove all additional checkpoint times that are in the past
+        // (including, but not necessarily limited to the one that
+        // made us do a checkpoint):
+        while ((parameters.additional_checkpoint_times.size() > 0)
+               &&
+               (parameters.additional_checkpoint_times.front () < time))
+          parameters.additional_checkpoint_times
+          .erase (parameters.additional_checkpoint_times.begin());
+
+        rebuild_stokes_matrix =
+          rebuild_stokes_preconditioner = true;
+      }
+
+    return write_regular_checkpoint;
   }
 
 
@@ -1273,6 +1367,15 @@ namespace aspect
 
 
   template <int dim>
+  bool
+  Simulator<dim>::is_stokes_matrix_free() const
+  {
+    return dynamic_cast<StokesMatrixFreeHandler<dim>*>(stokes_solver.get()) != nullptr;
+  }
+
+
+
+  template <int dim>
   void Simulator<dim>::apply_limiter_to_dg_solutions (const AdvectionField &advection_field)
   {
     // TODO: Modify to more robust method
@@ -1597,10 +1700,10 @@ namespace aspect
 
 
   template <int dim>
-  void Simulator<dim>::compute_reactions ()
+  void Simulator<dim>::compute_reactions (const std::vector<AdvectionField> &advection_fields_with_reactions)
   {
-    // if the time step has a length of zero, there are no reactions
-    if (time_step == 0)
+    // If the time step has a length of zero, there are no reactions.
+    if (time_step == 0 || advection_fields_with_reactions.size() == 0)
       return;
 
     computing_timer.enter_subsection("Solve composition reactions");
@@ -1627,9 +1730,9 @@ namespace aspect
     pcout << "   Solving composition reactions... " << std::flush;
 
 
-    // We want to compute reactions in each support point for all fields (compositional fields and temperature). The reaction
-    // rate for an individual field depends on the values of all other fields, so we have to step them forward in time together.
-    // The rates comes from the material and heating model, otherwise we have a simple ODE in each point on each cell to solve.
+    // We want to compute reactions in each support point for all fields listed in advection_fields_with_reactions.
+    // The reaction rate for an individual field can depend on the values of all other fields, so we have to step them forward in time together.
+    // The rates come from the material and heating model, otherwise we have a simple ODE in each point on each cell to solve.
     //
     // So far so good. Except that fields can have different Finite Element discretizations (degree, continuous/discontinuous)
     // and will have different support points. We solve this by computing the union of all support points and evaluating all fields
@@ -1640,16 +1743,13 @@ namespace aspect
     // First compute all unique support points (temperature and compositions):
     std::vector<Point<dim>> unique_support_points;
     std::vector<std::vector<unsigned int>> support_point_index_by_field;
-    std::vector<AdvectionField> advection_fields;
 
-    // First add the temperature field
-    advection_fields.push_back(AdvectionField::temperature());
-    // Then add all compositional fields
-    for (unsigned int c=0; c<introspection.n_compositional_fields; ++c)
-      advection_fields.push_back(AdvectionField::composition(c));
-
-    const unsigned int n_fields = advection_fields.size();
-    compute_unique_advection_support_points(advection_fields, unique_support_points, support_point_index_by_field);
+    // Although we only update the fields in advection_fields_with_reactions, we need to provide
+    // the material model with all fields (a total of n_fields) to compute the reaction rates.
+    const unsigned int n_fields = introspection.n_compositional_fields + 1;
+    Assert (advection_fields_with_reactions.size() <= n_fields,
+            ExcMessage("The number of fields that need reactions should be less than or equal to the total number of advection fields."));
+    compute_unique_advection_support_points(advection_fields_with_reactions, unique_support_points, support_point_index_by_field);
 
     const Quadrature<dim> combined_support_points(unique_support_points);
     FEValues<dim> fe_values (*mapping,
@@ -1787,7 +1887,7 @@ namespace aspect
                 copy_rates_into_one_vector (*reaction_rate_outputs, heating_model_outputs, ydot);
               };
 
-              // Make the reaction time steps: We have to update the values of compositional fields and the temperature.
+              // Make the reaction time steps: We have to update the values of compositional fields with reactions and the temperature
               // We can reuse the same material model inputs and outputs structure for each reaction time step.
               // We store the computed updates to temperature and composition in a separate (accumulated_reactions) vector,
               // so that we can later copy it over to the solution vector.
@@ -1797,9 +1897,12 @@ namespace aspect
               number_of_solves += 1;
 
               for (unsigned int j=0; j<n_q_points; ++j)
-                for (unsigned int f=0; f<n_fields; ++f)
+                for (const auto &field : advection_fields_with_reactions)
                   {
-                    if (f==0)
+                    // Get the index of the field in the list of all advection fields (temperature + all compositional fields).
+                    // f - 1 then is the index of the field in the list of all compositional fields.
+                    const unsigned int f = field.field_index();
+                    if (field.is_temperature())
                       {
                         in.temperature[j]          = fields[j*n_fields+f];
                         accumulated_reactions_T[j] = in.temperature[j] - initial_values_T[j];
@@ -1824,12 +1927,16 @@ namespace aspect
 
                   for (unsigned int j=0; j<n_q_points; ++j)
                     {
-                      for (unsigned int c=0; c<introspection.n_compositional_fields; ++c)
+                      for (const auto &field : advection_fields_with_reactions)
                         {
-                          // simple forward euler
-                          in.composition[j][c] = in.composition[j][c]
-                                                 + reaction_time_step_size * reaction_rate_outputs->reaction_rates[j][c];
-                          accumulated_reactions_C[j][c] += reaction_time_step_size * reaction_rate_outputs->reaction_rates[j][c];
+                          if (!field.is_temperature())
+                            {
+                              const unsigned int c = field.field_index() - 1;
+                              // simple forward euler
+                              in.composition[j][c] = in.composition[j][c]
+                                                     + reaction_time_step_size * reaction_rate_outputs->reaction_rates[j][c];
+                              accumulated_reactions_C[j][c] += reaction_time_step_size * reaction_rate_outputs->reaction_rates[j][c];
+                            }
                         }
                       in.temperature[j] = in.temperature[j]
                                           + reaction_time_step_size * heating_model_outputs.rates_of_temperature_change[j];
@@ -1845,37 +1952,40 @@ namespace aspect
             {
               const auto comp_pair = dof_handler.get_fe().system_to_component_index(dof_idx);
               const unsigned int component_idx = comp_pair.first;
-              if (component_idx>=component_idx_T) // ignore velocity, pressure, etc.
+              const unsigned int field_index = component_idx-component_idx_T;
+
+              unsigned int support_point_index = numbers::invalid_unsigned_int;
+              unsigned int field_index_in_fields_with_reactions = 0;
+              for (const auto &field: advection_fields_with_reactions)
                 {
-                  // We found a DoF that belongs to component component_idx, which is a temperature or compositional
-                  // field. That means we want to find where this DoF in the computed reactions above to copy it
-                  // back into the global solution vector.
-
-                  // These two variables tell us the how-manyth shape function of which field (and therefore
-                  // field) this DoF is:
-                  const unsigned int index_within = comp_pair.second;
-                  const unsigned int field_index = component_idx-component_idx_T;
-                  // Now we can look up in the support_point_index_by_field data structure where this support
-                  // point is in the list of unique_support_points (and in the Quadrature):
-                  const unsigned int point_idx = support_point_index_by_field[field_index][index_within];
-
-                  // The final step is grabbing the value from the reaction computation and write it into
-                  // the global vector (if we own it and if it is not a constrained degree of freedom).:
-                  if (dof_handler.locally_owned_dofs().is_element(local_dof_indices[dof_idx]) &&
-                      !current_constraints.is_constrained(local_dof_indices[dof_idx]))
+                  if (component_idx == field.component_index(introspection))
                     {
-                      // temperatures and compositions are stored differently:
-                      if (component_idx == component_idx_T)
-                        {
-                          distributed_vector(local_dof_indices[dof_idx]) = in.temperature[point_idx];
-                          distributed_reaction_vector(local_dof_indices[dof_idx]) = accumulated_reactions_T[point_idx];
-                        }
-                      else
-                        {
-                          const unsigned int composition = field_index-1; // 0 is temperature...
-                          distributed_vector(local_dof_indices[dof_idx]) = in.composition[point_idx][composition];
-                          distributed_reaction_vector(local_dof_indices[dof_idx]) = accumulated_reactions_C[point_idx][composition];
-                        }
+                      support_point_index = support_point_index_by_field[field_index_in_fields_with_reactions][comp_pair.second];
+                    }
+
+                  ++field_index_in_fields_with_reactions;
+                }
+
+              // This DoF does not belong to a component of an operator splitting field.
+              if (support_point_index == numbers::invalid_unsigned_int)
+                continue;
+
+              // The final step is grabbing the value from the reaction computation and write it into
+              // the global vector (if we own it and if it is not a constrained degree of freedom).:
+              if (dof_handler.locally_owned_dofs().is_element(local_dof_indices[dof_idx]) &&
+                  !current_constraints.is_constrained(local_dof_indices[dof_idx]))
+                {
+                  // temperatures and compositions are stored differently:
+                  if (component_idx == component_idx_T)
+                    {
+                      distributed_vector(local_dof_indices[dof_idx]) = in.temperature[support_point_index];
+                      distributed_reaction_vector(local_dof_indices[dof_idx]) = accumulated_reactions_T[support_point_index];
+                    }
+                  else
+                    {
+                      const unsigned int composition = field_index-1; // 0 is temperature...
+                      distributed_vector(local_dof_indices[dof_idx]) = in.composition[support_point_index][composition];
+                      distributed_reaction_vector(local_dof_indices[dof_idx]) = accumulated_reactions_C[support_point_index][composition];
                     }
                 }
             }
@@ -1891,14 +2001,10 @@ namespace aspect
     constraints.distribute(distributed_reaction_vector);
 
     // put the final values into the solution vector
-    for (unsigned int c=0; c<introspection.n_compositional_fields; ++c)
-      update_solution_vectors_with_reaction_results(introspection.block_indices.compositional_fields[c],
+    for (const auto &field : advection_fields_with_reactions)
+      update_solution_vectors_with_reaction_results(field.block_index(introspection),
                                                     distributed_vector,
                                                     distributed_reaction_vector);
-
-    update_solution_vectors_with_reaction_results(introspection.block_indices.temperature,
-                                                  distributed_vector,
-                                                  distributed_reaction_vector);
 
     double average_iteration_count = number_of_reaction_steps;
     if (parameters.reaction_solver_type == Parameters<dim>::ReactionSolverType::ARKode)
@@ -2246,7 +2352,7 @@ namespace aspect
     MaterialModel::MaterialModelInputs<dim> in(fe_face_values.n_quadrature_points, introspection.n_compositional_fields);
     MaterialModel::MaterialModelOutputs<dim> out(fe_face_values.n_quadrature_points, introspection.n_compositional_fields);
     MeltHandler<dim>::create_material_model_outputs(out);
-    std::shared_ptr<MaterialModel::MeltOutputs<dim>> fluid_out
+    std::shared_ptr<const MaterialModel::MeltOutputs<dim>> fluid_out
       = out.template get_additional_output_object<MaterialModel::MeltOutputs<dim>>();
 
     const auto &tangential_velocity_boundaries =
@@ -2314,15 +2420,13 @@ namespace aspect
 
                     if (consider_darcy_velocity)
                       {
-                        const double porosity = std::max(in.composition[q][porosity_idx], 1e-10);
                         const Tensor<1,dim> gravity = gravity_model->gravity_vector(in.position[q]);
-                        const double solid_density = out.densities[q];
-                        const double fluid_viscosity = fluid_out->fluid_viscosities[q];
-                        const double fluid_density = fluid_out->fluid_densities[q];
-                        const double permeability = fluid_out->permeabilities[q];
-                        const Tensor<1,dim> boundary_darcy_velocity = boundary_velocity -
-                                                                      permeability / fluid_viscosity / porosity * gravity *
-                                                                      (solid_density - fluid_density);
+                        Tensor<1,dim> boundary_darcy_velocity =
+                          aspect::Utilities::calculate_approximate_darcy_velocity(in,
+                                                                                  out,
+                                                                                  fluid_out, boundary_velocity,
+                                                                                  gravity, porosity_idx, q,
+                                                                                  parameters.use_pressure_gradient_for_darcy_field);
                         integrated_flow += (boundary_darcy_velocity * fe_face_values.normal_vector(q)) *
                                            fe_face_values.JxW(q);
                       }
@@ -2852,6 +2956,8 @@ namespace aspect
   template bool Simulator<dim>::maybe_write_checkpoint (const std::time_t, const bool); \
   template bool Simulator<dim>::maybe_do_initial_refinement (const unsigned int max_refinement_level); \
   template void Simulator<dim>::exchange_refinement_flags (); \
+  template bool Simulator<dim>::synchronize_periodic_refinement_flags (); \
+  template void Simulator<dim>::prepare_periodic_refinement (); \
   template void Simulator<dim>::maybe_refine_mesh (const double new_time_step, unsigned int &max_refinement_level); \
   template void Simulator<dim>::advance_time (const double step_size); \
   template void Simulator<dim>::make_pressure_rhs_compatible(LinearAlgebra::BlockVector &vector); \
@@ -2860,12 +2966,13 @@ namespace aspect
   template double Simulator<dim>::compute_initial_stokes_residual(); \
   template bool Simulator<dim>::stokes_matrix_depends_on_solution() const; \
   template bool Simulator<dim>::stokes_A_block_is_symmetric() const; \
+  template bool Simulator<dim>::is_stokes_matrix_free() const; \
   template void Simulator<dim>::interpolate_onto_velocity_system(const TensorFunction<1,dim> &func, LinearAlgebra::Vector &vec) const;\
   template void Simulator<dim>::apply_limiter_to_dg_solutions(const AdvectionField &advection_field); \
   template void Simulator<dim>::compute_unique_advection_support_points(const std::vector<AdvectionField> &advection_fields, \
                                                                         std::vector<Point<dim>> &support_points, \
                                                                         std::vector<std::vector<unsigned int>> &support_point_index_by_field) const; \
-  template void Simulator<dim>::compute_reactions(); \
+  template void Simulator<dim>::compute_reactions(const std::vector<AdvectionField> &advection_fields_with_reactions); \
   template void Simulator<dim>::initialize_current_linearization_point (); \
   template void Simulator<dim>::interpolate_material_output_into_advection_field(const std::vector<AdvectionField> &adv_field); \
   template void Simulator<dim>::check_consistency_of_formulation(); \

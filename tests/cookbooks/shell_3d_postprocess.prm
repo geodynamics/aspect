@@ -1,0 +1,13 @@
+include $ASPECT_SOURCE_DIR/cookbooks/shell_3d_postprocess/shell_3d_postprocess.prm
+
+set End time = 0
+set Output directory = output-shell_3d_postprocess
+
+subsection Mesh refinement
+  set Initial global refinement = 1
+  set Initial adaptive refinement = 0
+end
+
+subsection Postprocess
+  set List of postprocessors = velocity statistics, basic statistics
+end

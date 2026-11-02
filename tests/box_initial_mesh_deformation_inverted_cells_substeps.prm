@@ -1,0 +1,17 @@
+# This input file tests that the mesh deformation handler can apply a steep
+# (step-like) initial topography without turning cells inside out, by applying
+# the initial mesh deformation incrementally in a number of substeps.
+#
+# It is the counterpart of
+# tests/box_initial_mesh_deformation_inverted_cells_fail.prm, which prescribes
+# the same 10000 m step-like topography in a single step and aborts with a
+# negative-Jacobian error. Here the top boundary is deformed in
+# "Number of initial mesh deformation substeps" = 10 incremental steps.
+
+# MPI: 1
+
+include $ASPECT_SOURCE_DIR/tests/box_initial_mesh_deformation_inverted_cells_fail.prm
+
+subsection Mesh deformation
+  set Number of initial mesh deformation substeps = 10
+end

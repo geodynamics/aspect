@@ -1,0 +1,34 @@
+
+#########################################################
+# This is a test for the melting rate functionality. It
+# is similar to the melting_rate_operator_splitting test,
+# but it uses the fractional melting parametrization, and
+# melt is crystallizing rather than melting.
+
+# We choose an initial temperature and melting parameters
+# that produce an equilibrium melt fraction of 0.2, but due
+# to latent heat effects, the temperature increases during
+# freezing so that the final melt fraction should be 0.3.
+# Likewise, the temperature should increase from 1000.2
+# to 1000.3.
+
+include $ASPECT_SOURCE_DIR/tests/melting_rate_operator_splitting.prm
+
+subsection Initial composition model
+  subsection Function
+    # The initial porosity and depletion are 0.4, larger than the equilibrium
+    # melt fraction of 0.2. Melt is therefore expected to freeze.
+    set Function expression = 0.4; 0.4
+  end
+end
+
+subsection Material model
+  subsection Melt simple
+    set Depletion solidus change                  = 200.0
+    set Use fractional melting                    = true
+
+    # The freezing rate is not taken into account in case of fractional melting,
+    # so we set it back to the default value.
+    set Freezing rate                             = 0.0
+  end
+end

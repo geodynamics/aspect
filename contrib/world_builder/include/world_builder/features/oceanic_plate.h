@@ -130,6 +130,11 @@ namespace WorldBuilder
                    const std::vector<size_t> &entry_in_output,
                    std::vector<double> &output) const override final;
 
+        /**
+         * Return an upper bound for all topography models in this feature.
+         */
+        double maximum_topography() const override final;
+
       private:
         /**
          * A vector containing all the pointers to the temperature models. This vector is

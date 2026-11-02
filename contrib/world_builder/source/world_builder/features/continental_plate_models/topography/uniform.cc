@@ -99,9 +99,14 @@ namespace WorldBuilder
           return topography;
         }
 
+        double
+        Uniform::maximum_topography() const
+        {
+          return topography;
+        }
+
         WB_REGISTER_FEATURE_CONTINENTAL_PLATE_TOPOGRAPHY_MODEL(Uniform, uniform)
       } // namespace Topography
     } // namespace ContinentalPlateModels
   } // namespace Features
 } // namespace WorldBuilder
-

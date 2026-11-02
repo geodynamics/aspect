@@ -1,22 +1,16 @@
-/*
-  Copyright (C) 2011 - 2024 by the authors of the ASPECT code.
-
-  This file is part of ASPECT.
-
-  ASPECT is free software; you can redistribute it and/or modify
-  it under the terms of the GNU General Public License as published by
-  the Free Software Foundation; either version 2, or (at your option)
-  any later version.
-
-  ASPECT is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  GNU General Public License for more details.
-
-  You should have received a copy of the GNU General Public License
-  along with ASPECT; see the file LICENSE.  If not see
-  <http://www.gnu.org/licenses/>.
-*/
+// ------------------------------------------------------
+//
+// SPDX-License-Identifier: GPL-2.0-or-later
+//
+// SPDX-FileCopyrightText: Copyright (C) 2011-2026 by the ASPECT authors.
+//
+// This file is part of ASPECT.
+//
+// Detailed license information governing the source code and
+// contributions can be found in the folder LICENSES and in
+// LICENSE and CONTRIBUTING.md at the top level directory.
+//
+// ------------------------------------------------------
 
 
 #include <aspect/global.h>
@@ -78,17 +72,6 @@ namespace aspect
                     ExcMessage("The list of strings for the parameter "
                                "'Boundary composition model/List of model names' contains entries more than once. "
                                "This is not allowed. Please check your parameter file."));
-
-        const std::string model_name = prm.get ("Model name");
-
-        AssertThrow (model_name == "unspecified" || this->plugin_names.size() == 0,
-                     ExcMessage ("The parameter 'Model name' is only used for reasons"
-                                 "of backwards compatibility and can not be used together with "
-                                 "the new functionality 'List of model names'. Please add your "
-                                 "boundary composition model to the list instead."));
-
-        if (!(model_name == "unspecified"))
-          this->plugin_names.push_back(model_name);
 
         // create operator list
         std::vector<std::string> model_operator_names =
@@ -236,17 +219,6 @@ namespace aspect
                           "will be used to append the listed composition models onto "
                           "the previous models. If only one operator is given, "
                           "the same operator is applied to all models.");
-
-        prm.declare_entry ("Model name", "unspecified",
-                           Patterns::Selection (pattern_of_names+"|unspecified"),
-                           "Select one of the following models:\n\n"
-                           +
-                           std::get<dim>(registered_plugins).get_description_string()
-                           + "\n\n" +
-                           "\\textbf{Warning}: This parameter provides an old and "
-                           "deprecated way of specifying "
-                           "boundary composition models and shouldn't be used. "
-                           "Please use 'List of model names' instead.");
 
         prm.declare_entry ("Fixed composition boundary indicators", "",
                            Patterns::List (Patterns::Anything()),

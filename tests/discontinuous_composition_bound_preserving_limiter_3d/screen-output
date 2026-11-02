@@ -16,38 +16,38 @@ Number of degrees of freedom: 9,083 (4,215+223+1,405+3,240)
    Solving Stokes system (GMG)... 11+0 iterations.
 
    Postprocessing:
-     RMS, max velocity:         0.0363 m/year, 0.132 m/year
+     RMS, max velocity:         0.0258 m/year, 0.09 m/year
      Compositions min/max/mass: 0/1/1.204e+16
 
-*** Timestep 1:  t=118162 years, dt=118162 years
-   Skipping temperature solve because RHS is zero.
-   Solving C_1 system ... 3 iterations.
-   Solving Stokes system (GMG)... 2+0 iterations.
-
-   Postprocessing:
-     RMS, max velocity:         0.0241 m/year, 0.0754 m/year
-     Compositions min/max/mass: -0.015/1.005/1.048e+16
-
-*** Timestep 2:  t=325757 years, dt=207594 years
+*** Timestep 1:  t=173561 years, dt=173561 years
    Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 4 iterations.
-   Solving Stokes system (GMG)... 3+0 iterations.
+   Solving Stokes system (GMG)... 11+0 iterations.
 
    Postprocessing:
-     RMS, max velocity:         0.0252 m/year, 0.0878 m/year
-     Compositions min/max/mass: -3.33e-05/1/1.237e+16
+     RMS, max velocity:         0.0256 m/year, 0.0889 m/year
+     Compositions min/max/mass: -0.0007594/1/1.203e+16
 
-Number of active cells: 218 (on 4 levels)
-Number of degrees of freedom: 16,016 (7,320+370+2,440+5,886)
-
-*** Timestep 3:  t=500000 years, dt=174243 years
+*** Timestep 2:  t=349383 years, dt=175821 years
    Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 4 iterations.
-   Solving Stokes system (GMG)... 8+0 iterations.
+   Solving Stokes system (GMG)... 10+0 iterations.
 
    Postprocessing:
-     RMS, max velocity:         0.0255 m/year, 0.0882 m/year
-     Compositions min/max/mass: -0.0142/1/1.28e+16
+     RMS, max velocity:         0.0252 m/year, 0.0879 m/year
+     Compositions min/max/mass: -0.01993/1/1.202e+16
+
+Number of active cells: 176 (on 4 levels)
+Number of degrees of freedom: 13,331 (6,195+319+2,065+4,752)
+
+*** Timestep 3:  t=500000 years, dt=150617 years
+   Skipping temperature solve because RHS is zero.
+   Solving C_1 system ... 4 iterations.
+   Solving Stokes system (GMG)... 13+0 iterations.
+
+   Postprocessing:
+     RMS, max velocity:         0.0249 m/year, 0.0869 m/year
+     Compositions min/max/mass: -0.02028/0.9997/1.202e+16
 
 Termination requested by criterion: end time
 

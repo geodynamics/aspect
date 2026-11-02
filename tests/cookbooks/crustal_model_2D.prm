@@ -1,0 +1,19 @@
+# This test makes sure the cookbook crustal_model_2D runs
+# as expected.
+
+set Dimension                               = 2
+
+include $ASPECT_SOURCE_DIR/cookbooks/crustal_deformation/crustal_model_2D.prm
+
+set End time                                = 0
+set Max nonlinear iterations                = 100
+
+subsection Mesh refinement
+  set Initial adaptive refinement        = 0
+  set Initial global refinement          = 0
+  set Minimum refinement level           = 0
+end
+
+subsection Postprocess
+  set List of postprocessors = velocity statistics, basic statistics
+end

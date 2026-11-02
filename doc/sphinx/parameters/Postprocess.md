@@ -9,7 +9,7 @@
 :name: parameters:Postprocess/List_20of_20postprocessors
 **Default value:**
 
-**Pattern:** [MultipleSelection ODE statistics|Stokes residual|basic statistics|boundary densities|boundary pressures|boundary strain rate residual statistics|boundary velocity residual statistics|command|composition statistics|composition velocity statistics|core statistics|crystal preferred orientation|current surface|depth average|domain volume statistics|dynamic topography|entropy statistics|entropy viscosity statistics|fluid velocity statistics|geoid|global statistics|gravity calculation|heat flux densities|heat flux map|heat flux statistics|heating statistics|load balance statistics|mass flux statistics|material statistics|matrix statistics|maximum depth of field|melt statistics|memory statistics|mobility statistics|particle count statistics|particle distribution score|particle distribution statistics|particles|point values|pressure statistics|rotation statistics|sea level|spherical velocity statistics|temperature statistics|timing statistics|topography|velocity boundary statistics|velocity statistics|viscous dissipation statistics|visualization|volume of fluid statistics ]
+**Pattern:** [MultipleSelection ODE statistics|Stokes residual|basic statistics|boundary densities|boundary pressures|boundary strain rate residual statistics|boundary velocity residual statistics|command|composition statistics|composition velocity statistics|core statistics|crystal preferred orientation|current surface|depth average|domain volume statistics|dynamic topography|entropy statistics|entropy viscosity statistics|finite element information|fluid velocity statistics|geoid|global statistics|gravity calculation|heat flux densities|heat flux map|heat flux statistics|heating statistics|load balance statistics|mass flux statistics|material statistics|matrix statistics|maximum depth of field|melt statistics|memory statistics|mobility statistics|particle count statistics|particle distribution score|particle distribution statistics|particle information|particles|point values|pressure statistics|rotation statistics|sea level|spherical velocity statistics|temperature statistics|timing statistics|topography|velocity boundary statistics|velocity statistics|viscous dissipation statistics|visualization|volume of fluid statistics ]
 
 **Documentation:** A comma separated list of postprocessor objects that should be run at the end of each time step. Some of these postprocessors will declare their own parameters which may, for example, include that they will actually do something only every so many time steps or years. Alternatively, the text &lsquo;all&rsquo; indicates that all available postprocessors should be run after each time step.
 
@@ -55,6 +55,8 @@ The file format then consists of lines with Euclidean coordinates followed by th
 &lsquo;entropy statistics&rsquo;: A postprocessor that computes the number of iterations used for equilibrating temperature when using the entropy material model with multiple components. It returns an average of iterations performed for every time step during the model evolution.
 
 &lsquo;entropy viscosity statistics&rsquo;: A postprocessor that computes the maximum and volume averagedentropy viscosity stabilization for the temperature field.
+
+&lsquo;finite element information&rsquo;: A postprocessor that prints the names and finite element spaces of all solution variables at time zero. For compositional fields, it also prints the compositional field type.
 
 &lsquo;fluid velocity statistics&rsquo;: A postprocessor that computes the maximum fluid velocity in the computational domain. The fluid velocity is either the melt velocity or the Darcy velocity depending on the advection method chosen for the porosity compositional field.
 
@@ -110,6 +112,8 @@ In geodynamics, the term &ldquo;mass flux&rdquo; is often understood to be the q
 
 &lsquo;particle distribution statistics&rsquo;: A postprocessor that computes some statistics about the particle distribution within grid cells. In particular it calculates a point-density function for every cell and derives the maximum, minimum, and standard deviation values for every cell. The postprocessor reports the average of these values from every cell. It also reports the absolute maximum and minimum values across all cells. These sorts of statistics are useful to determine whether schemes that move, add, remove, or otherwise change the number of particles associated with each cell result in a roughly uniform distribution of particles in each cell, or whether particles tend to cluster in some parts of cells leaving other parts mostly empty. For example, comparing the maximum standard deviations of different load balancing schemes applied to a given test case illuminates which load balancing method creates more clustered particles. The maximum and minimum values of these point-density functions are also useful in the same way. These statistical values are computed from the point-density function and make up a quantitative description of particle clustering which is intended to supplement qualitative descriptions of particle clustering. The goal behind describing particle clustering numerically is to assist in developing new methods to add and delete particles which maintain roughly uniform particle density within cells.
 
+&lsquo;particle information&rsquo;: A postprocessor that prints the particle properties in every particle manager at time zero.
+
 &lsquo;particles&rsquo;: A Postprocessor that creates particles that follow the velocity field of the simulation. The particles can be generated and propagated in various ways and they can carry a number of constant or time-varying properties. The postprocessor can write output positions and properties of all particles at chosen intervals, although this is not mandatory. It also allows other parts of the code to query the particles for information.
 
 &lsquo;point values&rsquo;: A postprocessor that evaluates the solution (i.e., velocity, pressure, temperature, and compositional fields along with other fields that are treated as primary variables) at the end of every time step or after a user-specified time interval at a given set of points and then writes this data into the file <point\_values.txt> in the output directory. The points at which the solution should be evaluated are specified in the section `Postprocess/Point values` in the input file.
@@ -124,7 +128,7 @@ Evaluating the solution of a finite element field at arbitrarily chosen points i
 
 &lsquo;rotation statistics&rsquo;: A postprocessor that computes some statistics about the rotational velocity of the model (i.e. integrated net rotation and angular momentum). In 2d we assume the model to be a cross-section through an infinite domain in z direction, with a zero z-velocity. Thus, the z-axis is the only possible rotation axis and both moment of inertia and angular momentum are scalar instead of tensor quantities.
 
-&lsquo;sea level&rsquo;: A postprocessor that computes the sea level for glacial isostatic adjustmentmodeling. When ice melts and enters the ocean, the ocean water needs to beredistributed in a gravitationally consistent way. With the updated surfaceloading (ocean and ice) the free surface deformation needs to be computediteratively before moving to the next time step. A postprocessor intended for use with a deforming top surface. After every step it computes the sea level based on the topography, ocean basin, ice melt, perturbed gravitational potential of the Earth model and gravitational potential of the ice load, relative to a reference datum (initial radius for a spherical shell geometry model). The sea level computation is based on {cite}`Martinec2018`. If the parameter &rsquo;Output to file&rsquo; in subsection &rsquo;Postprocess/Sea level&rsquo; (that is, the subsection corresponding to the current postprocessor) is set to true, this postprocessor also outputs sea level into text files named &lsquo;sea_level.NNNNN&rsquo; in the output directory, where NNNNN is the number of the time step.
+&lsquo;sea level&rsquo;: A postprocessor that computes the sea level for glacial isostatic adjustment modeling. When ice melts and enters the ocean, the ocean water needs to be redistributed in a gravitationally consistent way. With the updated surface loading (ocean and ice) the free surface deformation needs to be computed iteratively before moving to the next time step. A postprocessor intended for use with a deforming top surface. After every step it computes the sea level based on the topography, ocean basin, ice melt, perturbed gravitational potential of the Earth model and gravitational potential of the ice load, relative to a reference datum (initial radius for a spherical shell geometry model). The sea level computation is based on {cite}`Martinec2018`. If the parameter &rsquo;Output to file&rsquo; in subsection &rsquo;Postprocess/Sea level&rsquo; (that is, the subsection corresponding to the current postprocessor) is set to true, this postprocessor also outputs sea level into text files named &lsquo;sea_level.NNNNN&rsquo; in the output directory, where NNNNN is the number of the time step.
 
 The file format then consists of lines with Euclidean coordinates followed by the corresponding sea level value. Sea level is printed/written in meters.
 
@@ -312,7 +316,7 @@ It is worth comparing this postprocessor with the visualization postprocessor ca
 
 **Documentation:** The time interval between each generation of output files. A value of zero indicates that output should be generated every time step.
 
-Units: years if the &rsquo;Use years instead of seconds&rsquo; parameter is set; seconds otherwise.
+Units: \si{\year} if the &rsquo;Use years instead of seconds&rsquo; parameter is set; \si{\second} otherwise.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Write in background thread<parameters:Postprocess/Crystal_20Preferred_20Orientation/Write_20in_20background_20thread>`
@@ -393,7 +397,7 @@ all|temperature|composition|adiabatic temperature|adiabatic pressure|adiabatic d
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
-**Documentation:** The time interval between each generation of graphical output files. A value of zero indicates that output should be generated in each time step. Units: years if the &rsquo;Use years instead of seconds&rsquo; parameter is set; seconds otherwise.
+**Documentation:** The time interval between each generation of graphical output files. A value of zero indicates that output should be generated in each time step. Units: \si{\year} if the &rsquo;Use years instead of seconds&rsquo; parameter is set; \si{\second} otherwise.
 ::::
 
 (parameters:Postprocess/Dynamic_20core_20statistics)=
@@ -762,7 +766,7 @@ all|temperature|composition|adiabatic temperature|adiabatic pressure|adiabatic d
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
-**Documentation:** The time interval between each generation of gravity output files. A value of 0 indicates that output should be generated in each time step. Units: years if the &rsquo;Use years instead of seconds&rsquo; parameter is set; seconds otherwise.
+**Documentation:** The time interval between each generation of gravity output files. A value of 0 indicates that output should be generated in each time step. Units: \si{\year} if the &rsquo;Use years instead of seconds&rsquo; parameter is set; \si{\second} otherwise.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Time steps between gravity output<parameters:Postprocess/Gravity_20calculation/Time_20steps_20between_20gravity_20output>`
@@ -880,7 +884,7 @@ all|temperature|composition|adiabatic temperature|adiabatic pressure|adiabatic d
 
 **Documentation:** The time interval between each generation of output files. A value of zero indicates that output should be generated every time step.
 
-Units: years if the &rsquo;Use years instead of seconds&rsquo; parameter is set; seconds otherwise.
+Units: \si{\year} if the &rsquo;Use years instead of seconds&rsquo; parameter is set; \si{\second} otherwise.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Write in background thread<parameters:Postprocess/Particles/Write_20in_20background_20thread>`
@@ -920,7 +924,7 @@ Units: years if the &rsquo;Use years instead of seconds&rsquo; parameter is set;
 
 **Documentation:** The time interval between each generation of output files. A value of zero indicates that output should be generated every time step.
 
-Units: years if the &rsquo;Use years instead of seconds&rsquo; parameter is set; seconds otherwise.
+Units: \si{\year} if the &rsquo;Use years instead of seconds&rsquo; parameter is set; \si{\second} otherwise.
 ::::
 
 (parameters:Postprocess/Point_20values)=
@@ -940,7 +944,7 @@ Units: years if the &rsquo;Use years instead of seconds&rsquo; parameter is set;
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
-**Documentation:** The time interval between each generation of point values output. A value of zero indicates that output should be generated in each time step. Units: years if the &rsquo;Use years instead of seconds&rsquo; parameter is set; seconds otherwise.
+**Documentation:** The time interval between each generation of point values output. A value of zero indicates that output should be generated in each time step. Units: \si{\year} if the &rsquo;Use years instead of seconds&rsquo; parameter is set; \si{\second} otherwise.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Use natural coordinates<parameters:Postprocess/Point_20values/Use_20natural_20coordinates>`
@@ -1034,7 +1038,7 @@ Units: years if the &rsquo;Use years instead of seconds&rsquo; parameter is set;
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
-**Documentation:** The time interval between each generation of text output files. A value of zero indicates that output should be generated in each time step. Units: years if the &rsquo;Use years instead of seconds&rsquo; parameter is set; seconds otherwise.
+**Documentation:** The time interval between each generation of text output files. A value of zero indicates that output should be generated in each time step. Units: \si{\year} if the &rsquo;Use years instead of seconds&rsquo; parameter is set; \si{\second} otherwise.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Water density<parameters:Postprocess/Sea_20level/Water_20density>`
@@ -1063,7 +1067,7 @@ Units: years if the &rsquo;Use years instead of seconds&rsquo; parameter is set;
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
-**Documentation:** The time interval between each generation of text output files. A value of zero indicates that output should be generated in each time step. Units: years if the &rsquo;Use years instead of seconds&rsquo; parameter is set; seconds otherwise.
+**Documentation:** The time interval between each generation of text output files. A value of zero indicates that output should be generated in each time step. Units: \si{\year} if the &rsquo;Use years instead of seconds&rsquo; parameter is set; \si{\second} otherwise.
 ::::
 
 (parameters:Postprocess/Visualization)=
@@ -1099,7 +1103,7 @@ Of course, activating this option also greatly increases the amount of data ASPE
 :name: parameters:Postprocess/Visualization/List_20of_20output_20variables
 **Default value:**
 
-**Pattern:** [MultipleSelection ISA rotation timescale|Vp anomaly|Vs anomaly|adiabat|artificial viscosity|artificial viscosity composition|boundary indicators|boundary strain rate residual|boundary velocity residual|compositional vector|darcy velocity|density anomaly|depth|depth including mesh deformation|dynamic topography|entropy average|error indicator|geoid|grain lag angle|gravity|heat flux map|heating|material properties|maximum horizontal compressive stress|melt fraction|melt material properties|named additional outputs|nonadiabatic pressure|nonadiabatic temperature|particle count|partition|prescribed solution|principal stress|shear stress|spd factor|spherical velocity components|strain rate|strain rate tensor|stress|stress residual|stress second invariant|surface dynamic topography|surface elevation|surface strain rate tensor|surface stress|temperature anomaly|vertical heat flux|volume of fluid values|volumetric strain rate ]
+**Pattern:** [MultipleSelection ISA rotation timescale|Vp anomaly|Vs anomaly|adiabat|artificial viscosity|artificial viscosity composition|boundary indicators|boundary strain rate residual|boundary velocity residual|compositional vector|darcy velocity|density anomaly|depth|depth including mesh deformation|dynamic topography|entropy average|error indicator|geoid|grain lag angle|gravity|heat flux map|heating|material properties|maximum horizontal compressive stress|melt fraction|melt material properties|named additional outputs|nonadiabatic pressure|nonadiabatic temperature|particle count|partition|prescribed dilation|prescribed solution|principal stress|shear stress|spd factor|spherical velocity components|strain rate|strain rate tensor|stress|stress residual|stress second invariant|surface dynamic topography|surface elevation|surface strain rate tensor|surface stress|temperature anomaly|vertical heat flux|volume of fluid values|volumetric strain rate ]
 
 **Documentation:** A comma separated list of visualization objects that should be run whenever writing graphical output. By default, the graphical output files will always contain the primary variables velocity, pressure, and temperature. However, one frequently wants to also visualize derived quantities, such as the thermodynamic phase that corresponds to a given temperature-pressure value, or the corresponding seismic wave speeds. The visualization objects do exactly this: they compute such derived quantities and place them into the output file. The current parameter is the place where you decide which of these additional output variables you want to have in your output file.
 
@@ -1149,7 +1153,7 @@ Physical units: None.
 
 Physical units: $\frac{\text{m}}{\text{s}}$ or $\frac{\text{m}}{\text{year}}$, depending on settings in the input file.
 
-&lsquo;density anomaly&rsquo;: A visualization output postprocessor that outputs the density minus the depth-average of the density.In the &ldquo;lateral average&rdquo; scheme, the average density is calculated using the lateral averaging functionfrom the &ldquo;depth average&rdquo; postprocessor and interpolated linearly between the layers specified through &ldquo;Number of depth slices&rdquo;. In the &ldquo;reference profile&rdquo; scheme, the adiabatic density is used as theaverage density.
+&lsquo;density anomaly&rsquo;: A visualization output postprocessor that outputs the density minus the depth-average of the density.In the &ldquo;lateral average&rdquo; scheme, the average density is calculated using the lateral averaging function from the &ldquo;depth average&rdquo; postprocessor and interpolated linearly between the layers specified through &ldquo;Number of depth slices&rdquo;. In the &ldquo;reference profile&rdquo; scheme, the adiabatic density is used as the average density.
 
 Physical units: \si{\kg/m^3}.
 
@@ -1225,7 +1229,7 @@ Fig.~\ref{fig:max-horizontal-compressive-stress} shows a simple example for this
 
 Physical units: $\text{Pa}$.
 
-&lsquo;melt fraction&rsquo;: A visualization output object that generates output for the melt fraction at the temperature and pressure of the current point. If the material model computes a melt fraction, this is the quantity that will be visualized. Otherwise, a specific parametrization for batch melting (as described in the following) will be used. It does not take into account latent heat. If there are no compositional fields, or no fields called &rsquo;pyroxenite&rsquo;,  this postprocessor will visualize the melt fraction of peridotite (calculated using the anhydrous model of Katz, 2003). If there is a compositional field called &rsquo;pyroxenite&rsquo;, the postprocessor assumes that this compositional field is the content of pyroxenite, and will visualize the melt fraction for a mixture of peridotite and pyroxenite (using the melting model of Sobolev, 2011 for pyroxenite). All the parameters that were used in these calculations can be changed in the input file, the most relevant maybe being the mass fraction of Cpx in peridotite in the Katz melting model (Mass fraction cpx), which right now has a default of 15\%. The corresponding $p$-$T$-diagrams can be generated by running the tests melt\_postprocessor\_peridotite and melt\_postprocessor\_pyroxenite.
+&lsquo;melt fraction&rsquo;: A visualization output object that generates output for the melt fraction at the temperature and pressure of the current point. If the material model computes a melt fraction, this is the quantity that will be visualized. Otherwise, a specific parametrization for batch melting (as described in the following) will be used. It does not take into account latent heat. If &rsquo;List of melting compositions other than peridotite&rsquo; is empty, this postprocessor will visualize the melt fraction of peridotite (calculated using the anhydrous model of Katz, 2003). If &rsquo;List of melting compositions other than peridotite&rsquo; is not empty, the postprocessor assumes that the melt fracton of this compositional field is determined by the chosen melting model that is not peridotite (currently assumed to be pyroxenite using the model of Sobolev, 2011.) The melt fraction is visualized for a mixture of peridotite and additional compositional fields that have an associated melting model. It assumes that the melting of different composition does not interact with each other.Other melt models for the non-peridotite compositional field can be added by adding a new instance of the melt_fraction function. All the parameters that were used in these calculations can be changed in the input file, the most relevant maybe being the mass fraction of Cpx in peridotite in the Katz melting model (Mass fraction cpx), which right now has a default of 15\%. The corresponding $p$-$T$-diagrams can be generated by running the tests melt\_postprocessor\_peridotite and melt\_postprocessor\_pyroxenite.
 
 Physical units: None.
 
@@ -1256,6 +1260,8 @@ Physical units: None.
 &lsquo;partition&rsquo;: A visualization output object that generates output for the parallel partition that every cell of the mesh is associated with.
 
 Physical units: None.
+
+&lsquo;prescribed dilation&rsquo;: A visualization output postprocessor that outputs prescribed dilation. Physical units: $\si{\per\seconds}$.
 
 &lsquo;prescribed solution&rsquo;: A visualization output object that outputs whether the solution components are prescribed by the prescribed solution plugin system and if so to which value.
 
@@ -1325,7 +1331,7 @@ Physical units: $\text{Pa}$.
 
 &lsquo;temperature anomaly&rsquo;: A visualization output postprocessor that outputs the temperature minus the depth-average of the temperature.The average temperature is calculated using the lateral averaging function from the &ldquo;depth average&rdquo; postprocessor and interpolated linearly between the layers specified through &ldquo;Number of depth slices&rdquo;.
 
-The &rsquo;nonadiabatic temperature&rsquo; is another option to output temperature anomaly, but compared with the reference adiabatic temperature profile instead.Physical units: $\text{K}$.
+The &rsquo;nonadiabatic temperature&rsquo; plugin is another option to output temperature anomalies, but compared to the reference adiabatic temperature profile instead. Physical units: $\text{K}$.
 
 &lsquo;vertical heat flux&rsquo;: A visualization output object that generates output for the heat flux in the vertical direction, which is the sum of the advective and the conductive heat flux, with the sign convention of positive flux upwards.
 
@@ -1418,7 +1424,7 @@ Physical units: $\frac{1}{\text{s}}$.
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
-**Documentation:** The time interval between each generation of graphical output files. A value of zero indicates that output should be generated in each time step. Units: years if the &rsquo;Use years instead of seconds&rsquo; parameter is set; seconds otherwise.
+**Documentation:** The time interval between each generation of graphical output files. A value of zero indicates that output should be generated in each time step. Units: \si{\year} if the &rsquo;Use years instead of seconds&rsquo; parameter is set; \si{\second} otherwise.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Time steps between graphical output<parameters:Postprocess/Visualization/Time_20steps_20between_20graphical_20output>`
@@ -1654,6 +1660,15 @@ viscosity|density|thermal expansivity|specific heat|thermal conductivity|thermal
 **Documentation:** Prefactor of the quadratic depletion term in the quadratic function that approximates the melt fraction of pyroxenite. $\frac{^\circ\text{C}}{\text{Pa}^2}$.
 ::::
 
+::::{dropdown} __Parameter:__ {ref}`List of melting compositions other than peridotite<parameters:Postprocess/Visualization/Melt_20fraction/List_20of_20melting_20compositions_20other_20than_20peridotite>`
+:name: parameters:Postprocess/Visualization/Melt_20fraction/List_20of_20melting_20compositions_20other_20than_20peridotite
+**Default value:**
+
+**Pattern:** [List of <[Anything]> of length 0...4294967295 (inclusive)]
+
+**Documentation:** The list of compositional field names for melting composition other than peridotite. Currently, only pyroxenite is implemented. If a new melting model is added, the name of the default input could be changed accordingly. This input must be the same as the name of the corresponding compositional field prescribed in the &rsquo;Compositional fields&rsquo; subsection so the melt fraction postprocessor can identify which compositional field corresponds to which melting model.
+::::
+
 ::::{dropdown} __Parameter:__ {ref}`Mass fraction cpx<parameters:Postprocess/Visualization/Melt_20fraction/Mass_20fraction_20cpx>`
 :name: parameters:Postprocess/Visualization/Melt_20fraction/Mass_20fraction_20cpx
 **Default value:** 0.15
@@ -1731,7 +1746,7 @@ compaction viscosity|fluid viscosity|permeability|fluid density|fluid density gr
 
 **Pattern:** [Bool]
 
-**Documentation:** If true, use the specified boundary temperatures as average temperatures at the surface. If false, extrapolate the temperature gradient between the first and second cells to the surface. This option will only work for models with a fixed surface temperature.
+**Documentation:** If true, use the maximal specified boundary temperature as the bottom boundary temperature. If false, extrapolate the temperature gradient between the last and second-to-last cells to the bottom. This option will only work correctly for models with a fixed bottom boundary temperature.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Use minimal temperature for surface<parameters:Postprocess/Visualization/Temperature_20anomaly/Use_20minimal_20temperature_20for_20surface>`
@@ -1740,7 +1755,7 @@ compaction viscosity|fluid viscosity|permeability|fluid density|fluid density gr
 
 **Pattern:** [Bool]
 
-**Documentation:** Whether to use the minimal specified boundary temperature as the bottom boundary temperature. This option will only work for models with a fixed bottom boundary temperature.
+**Documentation:** If true, use the minimal specified boundary temperature as the surface boundary temperature. If false, extrapolate the temperature gradient between the first and second cells to the surface. This option will only work correctly for models with a fixed surface boundary temperature.
 ::::
 
 (parameters:Postprocess/Visualization/Volume_20of_20Fluid)=

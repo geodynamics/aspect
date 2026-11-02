@@ -107,11 +107,10 @@ end
 
 # Spatial domain of different compositional fields
 subsection Initial composition model
-  set Model name = function
+  set List of model names = function
 
   subsection Function
     set Variable names      = x,y
-    set Function constants  =
     set Function expression = if ( ( x<43.75e3 && y>25.e3 && y<75.e3) || (x>56.25e3 && y>25.e3 && y<75.e3) || (y>56.25e3 && y<75.e3 && x>=43.75e3 && x<=56.25e3) || (y<43.75e3 && y>25.e3 && x>=43.75e3 && x<=56.25e3), 1, 0); \
                               if (y<=25.e3 || y>=75.e3, 1, 0); \
                               if (y<=56.25e3 && y>=43.75e3 && x>=43.75e3 && x<=56.25e3, 1, 0);
@@ -132,7 +131,7 @@ end
 
 # Temperature initial conditions (isothermal)
 subsection Initial temperature model
-  set Model name = function
+  set List of model names = function
 
   subsection Function
     set Function expression = 293

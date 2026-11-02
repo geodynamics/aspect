@@ -95,7 +95,7 @@ subsection Boundary velocity model
 end
 
 subsection Initial temperature model
-  set Model name = function
+  set List of model names = function
 
   subsection Function
     set Function expression = 1
@@ -104,7 +104,7 @@ subsection Initial temperature model
 end
 
 subsection Initial composition model
-  set Model name = function
+  set List of model names = function
 
   subsection Function
     set Function expression = 1.0 - 0.001/((y+0.1)*(y+0.1))

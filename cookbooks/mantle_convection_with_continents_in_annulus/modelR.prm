@@ -105,7 +105,7 @@ subsection Material model
 end
 
 subsection Initial composition model
-  set Model name = world builder
+  set List of model names = world builder
 end
 
 subsection Geometry model
@@ -144,7 +144,7 @@ subsection Boundary temperature model
 end
 
 subsection Initial temperature model
-  set Model name = world builder
+  set List of model names = world builder
 end
 
 subsection Gravity model

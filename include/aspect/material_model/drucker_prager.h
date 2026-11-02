@@ -1,22 +1,16 @@
-/*
-  Copyright (C) 2015 - 2022 by the authors of the ASPECT code.
-
-  This file is part of ASPECT.
-
-  ASPECT is free software; you can redistribute it and/or modify
-  it under the terms of the GNU General Public License as published by
-  the Free Software Foundation; either version 2, or (at your option)
-  any later version.
-
-  ASPECT is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  GNU General Public License for more details.
-
-  You should have received a copy of the GNU General Public License
-  along with ASPECT; see the file LICENSE.  If not see
-  <http://www.gnu.org/licenses/>.
-*/
+// ------------------------------------------------------
+//
+// SPDX-License-Identifier: GPL-2.0-or-later
+//
+// SPDX-FileCopyrightText: Copyright (C) 2015-2026 by the ASPECT authors.
+//
+// This file is part of ASPECT.
+//
+// Detailed license information governing the source code and
+// contributions can be found in the folder LICENSES and in
+// LICENSE and CONTRIBUTING.md at the top level directory.
+//
+// ------------------------------------------------------
 
 #ifndef _aspect_material_model_drucker_prager_h
 #define _aspect_material_model_drucker_prager_h
@@ -130,7 +124,13 @@ namespace aspect
 
       private:
 
+        /**
+         * This variable is read from the parameter file through a parameter called 'Reference temperature'.
+         */
         double reference_T;
+        /**
+         * This variable is read from the parameter file through a parameter called 'Thermal conductivity'.
+         */
         double thermal_conductivities;
 
         EquationOfState::LinearizedIncompressible<dim> equation_of_state;
@@ -142,22 +142,31 @@ namespace aspect
 
         /**
          * The angle of internal friction
+         *
+         * This variable is read from the parameter file through a parameter called 'Angle of internal friction'.
          */
         double angle_of_internal_friction;
 
         /**
          * The cohesion
+         * This variable is read from the parameter file through a parameter called 'Cohesion'.
          */
         double cohesion;
 
         /**
          * The applied viscosity bounds
+         * This variable is read from the parameter file through a parameter called 'Minimum viscosity'.
          */
         double minimum_viscosity;
+        /**
+         * This variable is read from the parameter file through a parameter called 'Maximum viscosity'.
+         */
         double maximum_viscosity;
 
         /**
          * The reference strain rate used as a first estimate
+         *
+         * This variable is read from the parameter file through a parameter called 'Reference strain rate'.
          */
         double reference_strain_rate;
     };

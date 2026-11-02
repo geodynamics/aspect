@@ -1,22 +1,16 @@
-/*
-  Copyright (C) 2012 - 2024 by the authors of the ASPECT code.
-
-  This file is part of ASPECT.
-
-  ASPECT is free software; you can redistribute it and/or modify
-  it under the terms of the GNU General Public License as published by
-  the Free Software Foundation; either version 2, or (at your option)
-  any later version.
-
-  ASPECT is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  GNU General Public License for more details.
-
-  You should have received a copy of the GNU General Public License
-  along with ASPECT; see the file LICENSE.  If not see
-  <http://www.gnu.org/licenses/>.
-*/
+// ------------------------------------------------------
+//
+// SPDX-License-Identifier: GPL-2.0-or-later
+//
+// SPDX-FileCopyrightText: Copyright (C) 2012-2026 by the ASPECT authors.
+//
+// This file is part of ASPECT.
+//
+// Detailed license information governing the source code and
+// contributions can be found in the folder LICENSES and in
+// LICENSE and CONTRIBUTING.md at the top level directory.
+//
+// ------------------------------------------------------
 
 
 #ifndef _aspect_initial_temperature_adiabatic_h
@@ -110,32 +104,46 @@ namespace aspect
          * Age of the upper thermal boundary layer at the surface of the
          * model. If set to zero, no boundary layer will be present in the
          * model.
+         *
+         * This variable is read from the parameter file through the 'Age top
+         * boundary layer' parameter.
          */
         double age_top_boundary_layer;
 
-        /* Age of the lower thermal boundary layer. */
+        /**
+         * Age of the lower thermal boundary layer. This variable is read from
+         * the parameter file through the 'Age bottom boundary layer' parameter.
+         */
         double age_bottom_boundary_layer;
 
         /**
          * Radius (in m) of the initial temperature perturbation at the bottom
          * of the model domain.
+         * This variable is read from the parameter file through the 'Radius'
+         * parameter.
          */
         double radius;
         /**
          * Amplitude (in K) of the initial temperature perturbation at the
          * bottom of the model domain.
+         * This variable is read from the parameter file through the 'Amplitude'
+         * parameter.
          */
         double amplitude;
-        /*
+        /**
          * Position of the initial temperature perturbation (in the
          * center or at the boundary of the model domain).
+         * This variable is read from the parameter file through the 'Position'
+         * parameter.
          */
         std::string perturbation_position;
 
-        /*
+        /**
          * Deviation from adiabaticity in a subadiabatic mantle
          * temperature profile. 0 for an adiabatic temperature
          * profile.
+         * This variable is read from the parameter file through the
+         * 'Subadiabaticity' parameter.
          */
         double subadiabaticity;
 
@@ -144,14 +152,18 @@ namespace aspect
          */
         BoundaryLayerAgeModel::Kind top_boundary_layer_age_model;
 
-        /*
+        /**
          * Whether to use the half space cooling model, or the plate cooling
          * model
+         * This variable is read from the parameter file through the 'Cooling
+         * model' parameter.
          */
         std::string cooling_model;
 
-        /*
+        /**
          * Depth to the base of the lithosphere for plate cooling model, in m
+         * This variable is read from the parameter file through the
+         * 'Lithosphere thickness' parameter.
          */
         double lithosphere_thickness;
 
@@ -170,6 +182,8 @@ namespace aspect
         /**
          * The coordinate representation to evaluate the function. Possible
          * choices are depth, cartesian and spherical.
+         *
+         * This variable is read from the parameter file through a parameter called 'Coordinate system'.
          */
         Utilities::Coordinates::CoordinateSystem coordinate_system;
 

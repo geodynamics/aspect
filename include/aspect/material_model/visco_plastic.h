@@ -1,22 +1,16 @@
-/*
-  Copyright (C) 2011 - 2023 by the authors of the ASPECT code.
-
-  This file is part of ASPECT.
-
-  ASPECT is free software; you can redistribute it and/or modify
-  it under the terms of the GNU General Public License as published by
-  the Free Software Foundation; either version 2, or (at your option)
-  any later version.
-
-  ASPECT is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  GNU General Public License for more details.
-
-  You should have received a copy of the GNU General Public License
-  along with ASPECT; see the file LICENSE.  If not see
-  <http://www.gnu.org/licenses/>.
-*/
+// ------------------------------------------------------
+//
+// SPDX-License-Identifier: GPL-2.0-or-later
+//
+// SPDX-FileCopyrightText: Copyright (C) 2011-2026 by the ASPECT authors.
+//
+// This file is part of ASPECT.
+//
+// Detailed license information governing the source code and
+// contributions can be found in the folder LICENSES and in
+// LICENSE and CONTRIBUTING.md at the top level directory.
+//
+// ------------------------------------------------------
 
 #ifndef _aspect_material_model_visco_plastic_h
 #define _aspect_material_model_visco_plastic_h
@@ -241,13 +235,21 @@ namespace aspect
          */
         std::unique_ptr<Rheology::ViscoPlastic<dim>> rheology;
 
+        /**
+         * This variable is read from the parameter file through a parameter called 'Thermal diffusivities'.
+         */
         std::vector<double> thermal_diffusivities;
 
         /**
          * Whether to use user-defined thermal conductivities instead of thermal diffusivities.
+         *
+         * This variable is read from the parameter file through a parameter called 'Define thermal conductivities'.
          */
         bool define_conductivities;
 
+        /**
+         * This variable is read from the parameter file through a parameter called 'Thermal conductivities'.
+         */
         std::vector<double> thermal_conductivities;
 
         /**
@@ -272,6 +274,8 @@ namespace aspect
 
         /**
          * Determines whether to look up the dominant phases for each composition in its respective lookup table.
+         *
+         * This variable is read from the parameter file through a parameter called 'Use dominant phase for viscosity'.
          */
         bool use_dominant_phase_for_viscosity;
 
@@ -279,6 +283,11 @@ namespace aspect
          * Object that handles discrete phase transitions for the rheology if requested by the variable use_dominant_phase_for_viscosity.
          */
         std::unique_ptr<MaterialUtilities::PhaseFunctionDiscrete<dim>> phase_function_discrete;
+
+        /**
+         * Record the mapping of reaction progress to phase transitions used in the material model
+         */
+        std::vector<unsigned int> reaction_progress_mapping;
 
     };
 

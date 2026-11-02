@@ -1,22 +1,16 @@
-/*
-  Copyright (C) 2011 - 2023 by the authors of the ASPECT code.
-
-  This file is part of ASPECT.
-
-  ASPECT is free software; you can redistribute it and/or modify
-  it under the terms of the GNU General Public License as published by
-  the Free Software Foundation; either version 2, or (at your option)
-  any later version.
-
-  ASPECT is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  GNU General Public License for more details.
-
-  You should have received a copy of the GNU General Public License
-  along with ASPECT; see the file LICENSE.  If not see
-  <http://www.gnu.org/licenses/>.
-*/
+// ------------------------------------------------------
+//
+// SPDX-License-Identifier: GPL-2.0-or-later
+//
+// SPDX-FileCopyrightText: Copyright (C) 2011-2026 by the ASPECT authors.
+//
+// This file is part of ASPECT.
+//
+// Detailed license information governing the source code and
+// contributions can be found in the folder LICENSES and in
+// LICENSE and CONTRIBUTING.md at the top level directory.
+//
+// ------------------------------------------------------
 
 
 #ifndef _aspect_boundary_velocity_gplates_h
@@ -222,12 +216,15 @@ namespace aspect
          * returned for every field. Depending on the setting of the global
          * 'Use years instead of seconds' flag in the input file,
          * this number is either interpreted as seconds or as years."
+         *
+         * This variable is read from the parameter file through a parameter called 'First data file model time'.
          */
         double first_data_file_model_time;
 
         /**
          * Number of the first data file to be loaded when the model time is
          * larger than 'First data file model time'.
+         * This variable is read from the parameter file through a parameter called 'First data file number'.
          */
         int first_data_file_number;
 
@@ -236,12 +233,14 @@ namespace aspect
          * in decreasing order (e.g. 'Ma BP'). If this flag is set to 'True'
          * the plugin will first load the file with the number 'First data
          * file number' and decrease the file number during the model run.
+         * This variable is read from the parameter file through a parameter called 'Decreasing file order'.
          */
         bool decreasing_file_order;
 
         /**
          * Time in model units (depends on other model inputs) between two
          * velocity files.
+         * This variable is read from the parameter file through a parameter called 'Data file time step'.
          */
         double data_file_time_step;
 
@@ -260,6 +259,7 @@ namespace aspect
 
         /**
          * Directory in which the gplates velocity files are present.
+         * This variable is read from the parameter file through a parameter called 'Data directory'.
          */
         std::string data_directory;
 
@@ -267,11 +267,13 @@ namespace aspect
          * First part of filename of velocity files. The files have to have
          * the pattern velocity_file_name.n.gpml where n is the number of the
          * current timestep (starts from 0).
+         * This variable is read from the parameter file through a parameter called 'Velocity file name'.
          */
         std::string velocity_file_name;
 
         /**
          * Scale the velocity boundary condition by a scalar factor.
+         * This variable is read from the parameter file through a parameter called 'Scale factor'.
          */
         double velocity_scaling_factor;
 
@@ -281,8 +283,13 @@ namespace aspect
          * as if the model is lying in this plane although no actual model
          * coordinate is changed. The strings need to have the format "a,b"
          * where a and b are doubles and define theta and phi on a sphere.
+         * This variable is read from the parameter file through a parameter called 'Point one'.
          */
         std::string point1;
+
+        /**
+         * This variable is read from the parameter file through a parameter called 'Point two'.
+         */
         std::string point2;
 
         /**
@@ -297,6 +304,8 @@ namespace aspect
          * in the whole lithosphere. At every side boundary point with a depth
          * smaller than this value (and thus being located in the lithosphere),
          * the surface velocity will be described.
+         *
+         * This variable is read from the parameter file through a parameter called 'Lithosphere thickness'.
          */
         double lithosphere_thickness;
 

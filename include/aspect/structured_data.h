@@ -1,22 +1,16 @@
-/*
-  Copyright (C) 2014 - 2024 by the authors of the ASPECT code.
-
-  This file is part of ASPECT.
-
-  ASPECT is free software; you can redistribute it and/or modify
-  it under the terms of the GNU General Public License as published by
-  the Free Software Foundation; either version 2, or (at your option)
-  any later version.
-
-  ASPECT is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  GNU General Public License for more details.
-
-  You should have received a copy of the GNU General Public License
-  along with ASPECT; see the file LICENSE.  If not see
-  <http://www.gnu.org/licenses/>.
-*/
+// ------------------------------------------------------
+//
+// SPDX-License-Identifier: GPL-2.0-or-later
+//
+// SPDX-FileCopyrightText: Copyright (C) 2014-2026 by the ASPECT authors.
+//
+// This file is part of ASPECT.
+//
+// Detailed license information governing the source code and
+// contributions can be found in the folder LICENSES and in
+// LICENSE and CONTRIBUTING.md at the top level directory.
+//
+// ------------------------------------------------------
 
 
 #ifndef _aspect_structured_data_h
@@ -26,6 +20,7 @@
 #include <aspect/simulator_access.h>
 
 #include <array>
+#include <set>
 
 namespace aspect
 {
@@ -81,6 +76,16 @@ namespace aspect
          */
         StructuredDataLookup(const unsigned int n_components,
                              const double scale_factor);
+
+        /**
+         * Constructor that explicitly prescribes the number of data columns
+         * in the data file, a constant scale factor to be applied to all
+         * data values, and a set of component indices for which to compute
+         * and store the logarithm of the data values.
+         */
+        StructuredDataLookup(const unsigned int n_components,
+                             const double scale_factor,
+                             const std::set<unsigned int> &log_components);
 
         /**
          * This constructor relies on the list of column names at the beginning
@@ -177,6 +182,10 @@ namespace aspect
          * - ASCII files (typically ending in .txt)
          * - gzip compressed ASCII files (ending in .gz)
          * - URLs starting with "http" (handled by libDAB)
+         *
+         * @param filename The name of the file to load.
+         * The file format is determined by the file extension.
+         * @param communicator The MPI communicator to use for loading the file.
          */
         void
         load_file(const std::string &filename,
@@ -315,6 +324,12 @@ namespace aspect
          * to transform the unit of the data.
          */
         const double scale_factor;
+
+        /**
+         * A set of component indices for which to compute the logarithm of the
+         * data values (for ascii files).
+         */
+        std::set<unsigned int> log_components;
 
         /**
          * Stores whether the coordinate values are equidistant or not,

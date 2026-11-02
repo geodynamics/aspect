@@ -36,7 +36,7 @@ end
 
 # We do not consider temperature in this setup
 subsection Initial temperature model
-  set Model name = function
+  set List of model names = function
 
   subsection Function
     set Function expression = 0

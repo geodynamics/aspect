@@ -1,22 +1,16 @@
-/*
-  Copyright (C) 2011 - 2024 by the authors of the ASPECT code.
-
-  This file is part of ASPECT.
-
-  ASPECT is free software; you can redistribute it and/or modify
-  it under the terms of the GNU General Public License as published by
-  the Free Software Foundation; either version 2, or (at your option)
-  any later version.
-
-  ASPECT is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  GNU General Public License for more details.
-
-  You should have received a copy of the GNU General Public License
-  along with ASPECT; see the file LICENSE.  If not see
-  <http://www.gnu.org/licenses/>.
-*/
+// ------------------------------------------------------
+//
+// SPDX-License-Identifier: GPL-2.0-or-later
+//
+// SPDX-FileCopyrightText: Copyright (C) 2011-2026 by the ASPECT authors.
+//
+// This file is part of ASPECT.
+//
+// Detailed license information governing the source code and
+// contributions can be found in the folder LICENSES and in
+// LICENSE and CONTRIBUTING.md at the top level directory.
+//
+// ------------------------------------------------------
 
 
 #include <aspect/simulator.h>
@@ -48,12 +42,6 @@
 
 // This define has to be in exactly one translation unit and sets up the catch testing framework
 #define CATCH_CONFIG_RUNNER
-
-// work-around for clang 6 error:
-// "error: no member named 'uncaught_exceptions' in namespace 'std'"
-// see https://github.com/catchorg/Catch2/issues/1201
-#define CATCH_INTERNAL_CONFIG_NO_CPP17_UNCAUGHT_EXCEPTIONS
-#define CATCH_CONFIG_NO_CPP17_UNCAUGHT_EXCEPTIONS
 
 #include <catch.hpp>
 
@@ -546,7 +534,7 @@ namespace
               << "       --output-json          (print parameters in JSON format to standard output and exit)\n"
               << "       --output-xml           (print parameters in XML format to standard output and exit)\n"
               << "       --output-plugin-graph  (write a representation of all plugins to standard output and exit)\n"
-              << "       --validate             (parse parameter file and exit or report errors)\n"
+              << "       --validate             (parse given parameter file, initialize simulation, exit, and report any errors)\n"
               << "       --test                 (run the unit tests from unit_tests/, run --test -h for more info)\n"
               << std::endl;
   }
@@ -597,23 +585,32 @@ namespace
         try
           {
             parse_parameters (input_as_string, prm);
+
+            // Set up the simulator exactly the same way as at the beginning of
+            // a real run, so that errors that are only found while setting up
+            // the plugins, the mesh, or the solvers are reported as well. The
+            // setup is stopped before the first time step is taken, so no
+            // actual computation is performed.
+            aspect::Simulator<dim> simulator(MPI_COMM_WORLD, prm);
           }
-        catch (...)
+        catch (const std::exception &exc)
           {
+            if (i_am_proc_0)
+              std::cerr << "Validation failed:\n\n" << exc.what() << std::endl;
+
             throw aspect::QuietException();
           }
         if (i_am_proc_0)
           std::cout << "The provided parameter file is valid."
                     "\n\n"
-                    "Note: This validation only checks parameter file syntax errors, like typos\n"
-                    "in keywords or parameter names, and that each parameter value satisfies a\n"
-                    "basic check by itself. However, it may miss more nuanced errors that\n"
-                    "are only checked when the model actually begins running. In particular,\n"
-                    "checks that involve two or more parameters can not be verified at this\n"
-                    "stage of an ASPECT run. Examples for such errors that can not already\n"
-                    "be reported here are: (i) That every boundary is assigned exactly one type\n"
-                    "of boundary condition; (ii) that parameters that take a list with values for\n"
-                    "each composition field receive a list of the correct size."
+                    "Note: This validation checks the parameter file for syntax errors, like\n"
+                    "typos in keywords or parameter names, and that each parameter value\n"
+                    "satisfies a basic check by itself. It also performs the setup that is\n"
+                    "done when a simulation starts, including creating all plugins, loading\n"
+                    "data files, creating the coarse mesh, and solvers, as well as performing\n"
+                    "all consistency checks. It stops before the first time step, so errors\n"
+                    "that only appear while the equations are actually solved are not\n"
+                    "reported here."
                     << std::endl;
         return;
       }
@@ -773,6 +770,22 @@ int main (int argc, char *argv[])
 
 #ifdef ASPECT_WITH_PYTHON
   Py_Initialize();
+
+  // Add VIRTUAL_ENV site-packages so embedded Python finds numpy, landlab, mpi4py, etc.
+  // site.addsitedir() processes .pth files (needed for uv editable/workspace installs).
+  // Append PYTHONPATH so users can point to a custom landlab install.
+  PyRun_SimpleString(
+    "import sys, os, site\n"
+    "venv = os.environ.get('VIRTUAL_ENV')\n"
+    "if venv:\n"
+    "    ver = '%d.%d' % (sys.version_info.major, sys.version_info.minor)\n"
+    "    sp = os.path.join(venv, 'lib', 'python' + ver, 'site-packages')\n"
+    "    if os.path.isdir(sp):\n"
+    "        site.addsitedir(sp)\n"
+    "for p in os.environ.get('PYTHONPATH', '').split(os.pathsep):\n"
+    "    if p and os.path.isdir(p):\n"
+    "        sys.path.append(p)\n");
+
   // Required for Numpy interop:
   if (_import_array() < 0)
     {

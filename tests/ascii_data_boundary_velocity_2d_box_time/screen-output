@@ -1,12 +1,12 @@
 
 
-   Loading Ascii data boundary file ASPECT_DIR/data/boundary-velocity/ascii-data/test/box_2d_top.0.txt.
+   Loading Ascii data boundary file $ASPECT_SOURCE_DIR/data/boundary-velocity/ascii-data/test/box_2d_top.0.txt.
 
 
-   Also loading next Ascii data boundary file ASPECT_DIR/data/boundary-velocity/ascii-data/test/box_2d_top.1.txt.
+   Also loading next Ascii data boundary file $ASPECT_SOURCE_DIR/data/boundary-velocity/ascii-data/test/box_2d_top.1.txt.
 
 
-   Loading Ascii data boundary file ASPECT_DIR/data/boundary-velocity/ascii-data/test/box_2d_left.0.txt.
+   Loading Ascii data boundary file $ASPECT_SOURCE_DIR/data/boundary-velocity/ascii-data/test/box_2d_left.0.txt.
 
 
    From this timestep onwards, ASPECT will not attempt to load new Ascii data files.
@@ -17,7 +17,7 @@
    will continue unchanged from the last known state into the future).
 
 
-   Loading Ascii data boundary file ASPECT_DIR/data/boundary-velocity/ascii-data/test/box_2d_right.0.txt.
+   Loading Ascii data boundary file $ASPECT_SOURCE_DIR/data/boundary-velocity/ascii-data/test/box_2d_right.0.txt.
 
 
    From this timestep onwards, ASPECT will not attempt to load new Ascii data files.
@@ -59,7 +59,7 @@ Number of degrees of freedom: 1,212 (738+105+369)
 
 *** Timestep 3:  t=247500 years, dt=82500 years
 
-   Loading Ascii data boundary file ASPECT_DIR/data/boundary-velocity/ascii-data/test/box_2d_top.2.txt.
+   Loading Ascii data boundary file $ASPECT_SOURCE_DIR/data/boundary-velocity/ascii-data/test/box_2d_top.2.txt.
 
    Solving temperature system... 16 iterations.
    Solving Stokes system (GMG)... 20+0 iterations.
@@ -80,7 +80,7 @@ Number of degrees of freedom: 1,212 (738+105+369)
 
 *** Timestep 5:  t=412500 years, dt=82500 years
 
-   Loading Ascii data boundary file ASPECT_DIR/data/boundary-velocity/ascii-data/test/box_2d_top.3.txt.
+   Loading Ascii data boundary file $ASPECT_SOURCE_DIR/data/boundary-velocity/ascii-data/test/box_2d_top.3.txt.
 
 
    From this timestep onwards, ASPECT will not attempt to load new Ascii data files.

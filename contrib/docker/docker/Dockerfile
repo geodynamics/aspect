@@ -1,9 +1,9 @@
-FROM ubuntu:22.04
+FROM ubuntu:24.04
 
 LABEL maintainer <rene.gassmoeller@mailbox.org>
 
-ARG VERSION=9.6.0
-ARG REPO=ppa:ginggs/deal.ii-9.6.0-backports
+ARG VERSION=9.8.0
+ARG REPO=ppa:ginggs/deal.ii-9.8.0-backports
 
 RUN DEBIAN_FRONTEND=noninteractive apt update && apt upgrade -yq && \
   apt install -yq --install-recommends sudo software-properties-common \
@@ -18,7 +18,7 @@ RUN DEBIAN_FRONTEND=noninteractive apt update && apt upgrade -yq && \
 
 # add and enable the default user
 ARG USER=dealii
-ARG USER_ID=1000
+ARG USER_ID=1001
 RUN adduser --disabled-password --gecos '' --uid $USER_ID $USER
 RUN adduser $USER sudo; echo '%sudo ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers
 

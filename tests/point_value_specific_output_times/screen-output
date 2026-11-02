@@ -10,9 +10,9 @@ Number of degrees of freedom: 220 (132+22+66)
      Writing graphical output: output-point_value_specific_output_times/solution/solution-00000
      Writing point values:     output-point_value_specific_output_times/point_values.txt
 
-Skipping mesh refinement, because the mesh did not change.
+Skipping mesh refinement, because no cells were flagged for refinement/coarsening.
 
-Skipping mesh refinement, because the mesh did not change.
+Skipping mesh refinement, because no cells were flagged for refinement/coarsening.
 
 *** Timestep 1:  t=3e+16 seconds, dt=3e+16 seconds
    Solving temperature system... 9 iterations.

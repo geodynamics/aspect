@@ -1,39 +1,32 @@
-/*
-  Copyright (C) 2015 - 2024 by the authors of the ASPECT code.
-
-  This file is part of ASPECT.
-
-  ASPECT is free software; you can redistribute it and/or modify
-  it under the terms of the GNU General Public License as published by
-  the Free Software Foundation; either version 2, or (at your option)
-  any later version.
-
-  ASPECT is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  GNU General Public License for more details.
-
-  You should have received a copy of the GNU General Public License
-  along with ASPECT; see the file LICENSE.  If not see
-  <http://www.gnu.org/licenses/>.
-*/
+// ------------------------------------------------------
+//
+// SPDX-License-Identifier: GPL-2.0-or-later
+//
+// SPDX-FileCopyrightText: Copyright (C) 2015-2026 by the ASPECT authors.
+//
+// This file is part of ASPECT.
+//
+// Detailed license information governing the source code and
+// contributions can be found in the folder LICENSES and in
+// LICENSE and CONTRIBUTING.md at the top level directory.
+//
+// ------------------------------------------------------
 
 #include <aspect/particle/manager.h>
+
 #include <aspect/global.h>
 #include <aspect/utilities.h>
-#include <aspect/simulator.h>
 #include <aspect/melt.h>
+#include <aspect/particle/distribution.h>
 
 #include <deal.II/base/quadrature_lib.h>
 #include <deal.II/fe/fe_values.h>
 #include <deal.II/grid/grid_tools.h>
-
 #include <deal.II/fe/mapping_cartesian.h>
 
 #include <boost/serialization/map.hpp>
 #include <boost/archive/text_oarchive.hpp>
 #include <boost/archive/text_iarchive.hpp>
-#include <aspect/particle/distribution.h>
 
 namespace aspect
 {
@@ -41,25 +34,41 @@ namespace aspect
   {
     template <int dim>
     Manager<dim>::Manager()
-      = default;
+    // Set the manager index to an invalid value, but otherwise do what the other
+    // constructor does. This is necessary to allow for default construction of
+    // the class, which is required to be able to de-serialize objects.
+      : Manager(numbers::invalid_unsigned_int)
+    {}
+
+
+
+    template <int dim>
+    Manager<dim>::Manager(const unsigned int particle_manager_index)
+      : particle_manager_index(particle_manager_index)
+    {}
+
+
 
     template <int dim>
     Manager<dim>::~Manager()
       = default;
 
+
+
     template <int dim>
     Manager<dim>::Manager(Manager &&other) noexcept
   :
-    generator(std::move(other.generator)),
-              integrator(std::move(other.integrator)),
-              interpolator(std::move(other.interpolator)),
-              particle_handler(std::move(other.particle_handler)),
-              particle_handler_backup(), // can not move
-              property_manager(std::move(other.property_manager)),
-              particle_load_balancing(other.particle_load_balancing),
-              min_particles_per_cell(other.min_particles_per_cell),
-              max_particles_per_cell(other.max_particles_per_cell),
-              particle_weight(other.particle_weight)
+    particle_manager_index(other.particle_manager_index),
+                           generator(std::move(other.generator)),
+                           integrator(std::move(other.integrator)),
+                           interpolator(std::move(other.interpolator)),
+                           particle_handler(std::move(other.particle_handler)),
+                           particle_handler_backup(), // can not move
+                           property_manager(std::move(other.property_manager)),
+                           particle_load_balancing(other.particle_load_balancing),
+                           min_particles_per_cell(other.min_particles_per_cell),
+                           max_particles_per_cell(other.max_particles_per_cell),
+                           particle_weight(other.particle_weight)
     {}
 
 
@@ -68,6 +77,13 @@ namespace aspect
     void
     Manager<dim>::initialize()
     {
+      // Verify that the object was either created by the constructor
+      // that creates a valid object right away, or that the particle
+      // manager index was set to a valid value through de-serialization.
+      // If not, we have an invalid object that we shouldn't be using.
+      Assert (particle_manager_index != numbers::invalid_unsigned_int,
+              ExcInternalError());
+
       CitationInfo::add("particles");
 
       // Create a particle handler that stores the future particles.
@@ -90,6 +106,30 @@ namespace aspect
     void
     Manager<dim>::update()
     {
+      // Verify that the object was either created by the constructor
+      // that creates a valid object right away, or that the particle
+      // manager index was set to a valid value through de-serialization.
+      // If not, we have an invalid object that we shouldn't be using.
+      Assert (particle_manager_index != numbers::invalid_unsigned_int,
+              ExcInternalError());
+
+      // Give the random number generator a deterministic state at
+      // the beginning of each time step so that we don't have to serialize
+      // it. This is relevant because the random number generator is used
+      // to generate new particles and so might be used different numbers
+      // of times on different processes, which would lead to different
+      // states of the random number generator on different MPI ranks.
+      // We could serialize the random number generators from all processes,
+      // but this would require (i) a global MPI operation, and (ii) we
+      // wouldn't quite know what to do if we restart with a different
+      // number of MPI processes than we had when we created the checkpoint.
+      // The work-around to both issues is to set the state of the random
+      // number generator to a deterministic value at the beginning of
+      // each time step.
+      random_number_generator.seed(this->get_timestep_number() * 1000000  +
+                                   particle_manager_index * 100000 +
+                                   Utilities::MPI::this_mpi_process(this->get_mpi_communicator()));
+
       generator->update();
       integrator->update();
       interpolator->update();
@@ -293,7 +333,6 @@ namespace aspect
               // processes with a lower rank.
 
 
-#if DEAL_II_VERSION_GTE(9,6,0)
               const std::pair<types::particle_index,types::particle_index>
               partial_and_total_sum = Utilities::MPI::partial_and_total_sum (particles_to_add_locally, this->get_mpi_communicator());
 
@@ -302,18 +341,7 @@ namespace aspect
 
               const types::particle_index globally_generated_particles =
                 partial_and_total_sum.second;
-#else
-              types::particle_index local_start_index = 0.0;
 
-              const int ierr = MPI_Scan(&particles_to_add_locally, &local_start_index, 1, DEAL_II_PARTICLE_INDEX_MPI_TYPE, MPI_SUM, this->get_mpi_communicator());
-              AssertThrowMPI(ierr);
-
-              local_start_index -= particles_to_add_locally;
-              local_next_particle_index += local_start_index;
-
-              const types::particle_index globally_generated_particles =
-                dealii::Utilities::MPI::sum(particles_to_add_locally,this->get_mpi_communicator());
-#endif
 
               AssertThrow (particle_handler->get_next_free_particle_index()
                            <= std::numeric_limits<types::particle_index>::max() - globally_generated_particles,
@@ -600,11 +628,7 @@ namespace aspect
     template <int dim>
     unsigned int
     Manager<dim>::cell_weight(const typename parallel::distributed::Triangulation<dim>::cell_iterator &cell,
-#if DEAL_II_VERSION_GTE(9,6,0)
                               const CellStatus status
-#else
-                              const typename parallel::distributed::Triangulation<dim>::CellStatus status
-#endif
                              )
     {
       if (cell->is_active() && !cell->is_locally_owned())
@@ -613,7 +637,6 @@ namespace aspect
       unsigned int n_particles_in_cell = 0;
       switch (status)
         {
-#if DEAL_II_VERSION_GTE(9,6,0)
           case CellStatus::cell_will_persist:
           case CellStatus::cell_will_be_refined:
             n_particles_in_cell = particle_handler->n_particles_in_cell(cell);
@@ -626,20 +649,7 @@ namespace aspect
             for (const auto &child : cell->child_iterators())
               n_particles_in_cell += particle_handler->n_particles_in_cell(child);
             break;
-#else
-          case parallel::distributed::Triangulation<dim>::CELL_PERSIST:
-          case parallel::distributed::Triangulation<dim>::CELL_REFINE:
-            n_particles_in_cell = particle_handler->n_particles_in_cell(cell);
-            break;
 
-          case parallel::distributed::Triangulation<dim>::CELL_INVALID:
-            break;
-
-          case parallel::distributed::Triangulation<dim>::CELL_COARSEN:
-            for (const auto &child : cell->child_iterators())
-              n_particles_in_cell += particle_handler->n_particles_in_cell(child);
-            break;
-#endif
           default:
             Assert(false, ExcInternalError());
             break;
@@ -737,6 +747,15 @@ namespace aspect
 
 
 
+    template<int dim>
+    typename Manager<dim>::ParticleVelocity
+    Manager<dim>::get_particle_velocity_choice() const
+    {
+      return particle_velocity;
+    }
+
+
+
     template <int dim>
     void
     Manager<dim>::local_advect_particles(const typename DoFHandler<dim>::active_cell_iterator &cell,
@@ -757,9 +776,8 @@ namespace aspect
                    ExcMessage("The integrator requires the old old solution vector, but it is not available."));
 
 
-      const bool use_fluid_velocity = this->include_melt_transport() &&
-                                      property_manager->get_data_info().fieldname_exists("melt_presence");
 
+      const bool use_fluid_velocity = (particle_velocity == ParticleVelocity::fluid);
       auto &velocity_evaluator = evaluator.get_velocity_or_fluid_velocity_evaluator(use_fluid_velocity);
       auto &mapping_info = evaluator.get_mapping_info();
       mapping_info.reinit(cell, {positions.data(),positions.size()});
@@ -980,7 +998,13 @@ namespace aspect
     void
     Manager<dim>::advance_timestep()
     {
-      this->get_pcout() << "   Advecting particles... " << std::flush;
+      this->get_pcout() << "   Advecting particles"
+                        << (this->n_particle_managers() >1 ?
+                            // print the particle world number if there are multiple particle worlds,
+                            // starting at one
+                            " (particle manager " + std::to_string(particle_manager_index+1) + ")" :
+                            "")
+                        << "... " << std::flush;
       do
         {
           advect_particles();
@@ -1167,6 +1191,16 @@ namespace aspect
                                "whether this transport is happening. This parameter is "
                                "deprecated and will be removed in the future. Ghost particle "
                                "updates are always performed. Please set the parameter to `true'.");
+            prm.declare_entry ("Particle advection velocity", "automatic",
+                               Patterns::Selection ("automatic|fluid|solid"),
+                               "This parameter determines which velocity will be used "
+                               "to advect a particular particle manager. This can be the solid velocity "
+                               "(if option 'solid' is chosen), or the fluid velocity obtained by solving "
+                               "the coupled Stokes/Darcy equations in simulations with melt transport "
+                               "(if 'fluid' is chosen). If 'automatic' is chosen, particles are advected with "
+                               "the melt velocity in case both melt transport is turned on and the "
+                               "particle property 'melt particle' is used in the simulation.)");
+
 
             Generator::declare_parameters<dim>(prm);
             Integrator::declare_parameters<dim>(prm);
@@ -1183,7 +1217,7 @@ namespace aspect
 
     template <int dim>
     void
-    Manager<dim>::parse_parameters (ParameterHandler &prm, const unsigned int particle_manager)
+    Manager<dim>::parse_parameters (ParameterHandler &prm)
     {
       // First do some error checking. The current algorithm does not find
       // the cells around particles, if the particles moved more than one
@@ -1200,13 +1234,13 @@ namespace aspect
                              "diameter in one time step and therefore skip the layer "
                              "of ghost cells around the local subdomain."));
 
-      if (particle_manager == 0)
+      if (particle_manager_index == 0)
         {
           prm.enter_subsection("Particles");
         }
       else
         {
-          prm.enter_subsection("Particles " + std::to_string(particle_manager+1));
+          prm.enter_subsection("Particles " + std::to_string(particle_manager_index+1));
         }
       {
         min_particles_per_cell = prm.get_integer("Minimum particles per cell");
@@ -1258,19 +1292,13 @@ namespace aspect
 
         if (particle_load_balancing & ParticleLoadBalancing::repartition)
           this->get_triangulation().signals.weight.connect(
-#if DEAL_II_VERSION_GTE(9,6,0)
-            [ &, particle_manager] (const typename parallel::distributed::Triangulation<dim>::cell_iterator &cell,
-                                    const CellStatus status)
+            [&] (const typename parallel::distributed::Triangulation<dim>::cell_iterator &cell,
+                 const CellStatus status)
             -> unsigned int
-#else
-            [ &, particle_manager] (const typename parallel::distributed::Triangulation<dim>::cell_iterator &cell,
-                                    const typename parallel::distributed::Triangulation<dim>::CellStatus status)
-            -> unsigned int
-#endif
           {
             // Only add the base weight of cells in particle manager 0, because all weights will be summed
             // across all particle managers.
-            return (particle_manager == 0) ? 1000 + this->cell_weight(cell, status) : this->cell_weight(cell, status);
+            return (particle_manager_index == 0) ? 1000 + this->cell_weight(cell, status) : this->cell_weight(cell, status);
           });
 
         // The bandwidth to use with the kernel function
@@ -1335,7 +1363,7 @@ namespace aspect
         generator = Generator::create_particle_generator<dim> (prm);
         if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(generator.get()))
           sim->initialize_simulator (this->get_simulator());
-        generator->set_particle_manager_index(particle_manager);
+        generator->set_particle_manager_index(particle_manager_index);
         generator->parse_parameters(prm);
         generator->initialize();
 
@@ -1343,7 +1371,7 @@ namespace aspect
         property_manager = std::make_unique<Property::Manager<dim>> ();
         SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(property_manager.get());
         sim->initialize_simulator (this->get_simulator());
-        property_manager->set_particle_manager_index(particle_manager);
+        property_manager->set_particle_manager_index(particle_manager_index);
         property_manager->parse_parameters(prm);
         property_manager->initialize();
 
@@ -1351,7 +1379,7 @@ namespace aspect
         integrator = Integrator::create_particle_integrator<dim> (prm);
         if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(integrator.get()))
           sim->initialize_simulator (this->get_simulator());
-        integrator->set_particle_manager_index(particle_manager);
+        integrator->set_particle_manager_index(particle_manager_index);
         integrator->parse_parameters(prm);
         integrator->initialize();
 
@@ -1359,11 +1387,33 @@ namespace aspect
         interpolator = Interpolator::create_particle_interpolator<dim> (prm);
         if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(interpolator.get()))
           sim->initialize_simulator (this->get_simulator());
-        interpolator->set_particle_manager_index(particle_manager);
+        interpolator->set_particle_manager_index(particle_manager_index);
         interpolator->parse_parameters(prm);
         interpolator->initialize();
 
         this->get_computing_timer().leave_subsection("Particles: Initialization");
+
+        // Particle velocity which will be used to advect particles
+        const std::string particle_velocity_string = prm.get("Particle advection velocity");
+        if (particle_velocity_string == "automatic")
+          {
+            // If "Particle advection velocity" is not explicitly defined by user, it reverts to old behaviour for backward compatibility
+            if (this->include_melt_transport() && property_manager->get_data_info().fieldname_exists("melt_presence"))
+              {
+                particle_velocity = ParticleVelocity::fluid;
+              }
+            else
+              particle_velocity = ParticleVelocity::solid;
+          }
+        else if (particle_velocity_string == "fluid")
+          {
+            AssertThrow(this->include_melt_transport(), ExcMessage("The particle velocity is set to 'fluid', but melt transport is not included in the simulation."));
+            particle_velocity = ParticleVelocity::fluid;
+          }
+        else
+          {
+            particle_velocity = ParticleVelocity::solid;
+          }
       }
       prm.leave_subsection ();
     }

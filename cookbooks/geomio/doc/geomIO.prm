@@ -18,7 +18,7 @@ end
 
 # We use the ascii data plugin to read in the file created with geomIO.
 subsection Initial composition model
-  set Model name = ascii data
+  set List of model names = ascii data
 
   subsection Ascii data model
     set Data directory       = $ASPECT_SOURCE_DIR/data/initial-composition/ascii-data/test/

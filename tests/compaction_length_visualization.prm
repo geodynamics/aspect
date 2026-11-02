@@ -36,7 +36,7 @@ subsection Gravity model
 end
 
 subsection Initial temperature model
-  set Model name = function
+  set List of model names = function
 
   subsection Function
     set Function expression       = 1 + 4.605170186 * y
@@ -44,7 +44,7 @@ subsection Initial temperature model
 end
 
 subsection Initial composition model
-  set Model name = function
+  set List of model names = function
 
   subsection Function
     set Function expression = 0.5 - 0.4286 * x; 0

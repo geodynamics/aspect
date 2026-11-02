@@ -1,22 +1,16 @@
-/*
-  Copyright (C) 2011 - 2024 by the authors of the ASPECT code.
-
-  This file is part of ASPECT.
-
-  ASPECT is free software; you can redistribute it and/or modify
-  it under the terms of the GNU General Public License as published by
-  the Free Software Foundation; either version 2, or (at your option)
-  any later version.
-
-  ASPECT is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  GNU General Public License for more details.
-
-  You should have received a copy of the GNU General Public License
-  along with ASPECT; see the file LICENSE.  If not see
-  <http://www.gnu.org/licenses/>.
-*/
+// ------------------------------------------------------
+//
+// SPDX-License-Identifier: GPL-2.0-or-later
+//
+// SPDX-FileCopyrightText: Copyright (C) 2011-2026 by the ASPECT authors.
+//
+// This file is part of ASPECT.
+//
+// Detailed license information governing the source code and
+// contributions can be found in the folder LICENSES and in
+// LICENSE and CONTRIBUTING.md at the top level directory.
+//
+// ------------------------------------------------------
 
 
 #ifndef _aspect_mesh_refinement_interface_h
@@ -247,18 +241,23 @@ namespace aspect
 
         /**
          * How to merge the results of multiple mesh refinement criteria.
+         *
+         * This variable is read from the parameter file through a parameter called 'Refinement criteria merge operation'.
          */
         MergeOperation merge_operation;
 
         /**
          * Whether to normalize the individual refinement indicators to the
          * range $[0,1]$ before merging.
+         * This variable is read from the parameter file through a parameter called 'Normalize individual refinement criteria'.
          */
         bool normalize_criteria;
 
         /**
          * The scaling factors that should be applied to the individual
          * refinement indicators before merging.
+         *
+         * This variable is read from the parameter file through a parameter called 'Refinement criteria scaling factors'.
          */
         std::vector<double> scaling_factors;
     };

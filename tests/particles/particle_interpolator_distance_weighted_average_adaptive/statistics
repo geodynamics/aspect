@@ -1,0 +1,26 @@
+# 1: Time step number
+# 2: Time (seconds)
+# 3: Time step size (seconds)
+# 4: Number of mesh cells
+# 5: Number of Stokes degrees of freedom
+# 6: Number of temperature degrees of freedom
+# 7: Number of degrees of freedom for all compositions
+# 8: Iterations for temperature solver
+# 9: Iterations for composition solver 1
+# 10: Iterations for Stokes solver
+# 11: Velocity iterations in Stokes preconditioner
+# 12: Schur complement iterations in Stokes preconditioner
+# 13: RMS velocity (m/s)
+# 14: Max. velocity (m/s)
+# 15: Minimal value for composition advection_field
+# 16: Maximal value for composition advection_field
+# 17: Global mass for composition advection_field
+# 18: Minimal value for composition advection_particle
+# 19: Maximal value for composition advection_particle
+# 20: Global mass for composition advection_particle
+# 21: Minimal value for composition advection_particle2
+# 22: Maximal value for composition advection_particle2
+# 23: Global mass for composition advection_particle2
+# 24: Number of advected particles
+0 0.000000000000e+00 0.000000000000e+00 34 384 168 918 0 0 15 16 16 2.04210281e-04 5.24979757e-04  0.00000000e+00 1.00000000e+00 1.83901597e-01 0.00000000e+00 9.99999950e-01 1.83718481e-01  0.00000000e+00 0.00000000e+00 0.00000000e+00 100000 
+1 7.000000000000e+01 7.000000000000e+01 34 384 168 918 0 5 14 15 15 2.98669509e-04 7.85045476e-04 -1.14047459e-01 1.06932695e+00 1.80782038e-01 0.00000000e+00 9.99999981e-01 1.80883057e-01 -4.23957618e-04 2.77200503e-04 7.16264542e-07 100000 

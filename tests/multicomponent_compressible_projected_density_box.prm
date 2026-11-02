@@ -69,7 +69,7 @@ subsection Formulation
 end
 
 subsection Initial composition model
-  set Model name = adiabatic density
+  set List of model names = adiabatic density
 end
 
 # 1x1 m box with a 2x2 grid (which is the minimum)

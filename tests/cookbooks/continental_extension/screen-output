@@ -1,0 +1,49 @@
+
+Number of active cells: 200 (on 2 levels)
+Number of degrees of freedom: 7,119 (1,722+231+861+861+861+861+861+861)
+
+Number of mesh deformation degrees of freedom: 1,722
+   Solving mesh displacement system... 0 iterations.
+*** Timestep 0:  t=0 years, dt=0 years
+   Solving mesh displacement system... 0 iterations.
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 22+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.56338e-16, 0, 0, 0, 0, 0, 1
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 1
+
+
+   WARNING: The nonlinear solver in the current timestep failed to converge.
+   Acting according to the parameter 'Nonlinear solver failure strategy':
+   Continuing to the next timestep even though solution is not fully converged.
+
+   Postprocessing:
+     Writing particle output: output-continental_extension/particles/particles-00000
+     Temperature min/avg/max: 273 K, 1052 K, 1613 K
+
+*** Timestep 1:  t=10000 years, dt=10000 years
+   Solving mesh surface diffusion
+   Solving mesh displacement system... 1 iterations.
+   Solving temperature system... 7 iterations.
+   Advecting particles...  done.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 21+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0.000139675, 0, 0, 0, 0, 0, 0.348657
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 0.348657
+
+
+   WARNING: The nonlinear solver in the current timestep failed to converge.
+   Acting according to the parameter 'Nonlinear solver failure strategy':
+   Continuing to the next timestep even though solution is not fully converged.
+
+   Postprocessing:
+     Number of advected particles: 800
+     Temperature min/avg/max:      273 K, 1052 K, 1613 K
+
+Termination requested by criterion: end time
+
+
+
+
+WARNING: During this computation 2 nonlinear solver failures occurred!

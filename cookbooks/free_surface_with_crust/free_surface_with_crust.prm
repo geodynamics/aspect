@@ -59,7 +59,7 @@ end
 # As in the free_surface cookbook our temperature initial conditions are simply
 # a blob of hot rock in the center of the domain.
 subsection Initial temperature model
-  set Model name = function
+  set List of model names = function
 
   subsection Function
     set Variable names      = x,y

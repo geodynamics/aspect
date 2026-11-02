@@ -9,6 +9,14 @@ build:
   os: "ubuntu-22.04"
   tools:
       python: "mambaforge-4.10"
+  # Doxygen produces the C++ API reference, which Sphinx publishes below
+  # the manual as ``doxygen/``.
+  apt_packages:
+    - doxygen
+    - graphviz
+  jobs:
+    pre_build:
+      - cd doc && make aspect.tag
 
 # Build documentation in the root directory with Sphinx
 sphinx:

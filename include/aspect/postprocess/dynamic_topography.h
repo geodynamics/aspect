@@ -1,22 +1,16 @@
-/*
-  Copyright (C) 2011 - 2024 by the authors of the ASPECT code.
-
-  This file is part of ASPECT.
-
-  ASPECT is free software; you can redistribute it and/or modify
-  it under the terms of the GNU General Public License as published by
-  the Free Software Foundation; either version 2, or (at your option)
-  any later version.
-
-  ASPECT is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  GNU General Public License for more details.
-
-  You should have received a copy of the GNU General Public License
-  along with ASPECT; see the file LICENSE.  If not see
-  <http://www.gnu.org/licenses/>.
-*/
+// ------------------------------------------------------
+//
+// SPDX-License-Identifier: GPL-2.0-or-later
+//
+// SPDX-FileCopyrightText: Copyright (C) 2011-2026 by the ASPECT authors.
+//
+// This file is part of ASPECT.
+//
+// Detailed license information governing the source code and
+// contributions can be found in the folder LICENSES and in
+// LICENSE and CONTRIBUTING.md at the top level directory.
+//
+// ------------------------------------------------------
 
 
 #ifndef _aspect_postprocess_surface_topography_h
@@ -55,6 +49,20 @@ namespace aspect
          */
         const LinearAlgebra::BlockVector &
         topography_vector() const;
+
+        /**
+         * Return the density value used above the top surface when converting
+         * normal traction to dynamic topography.
+         */
+        double
+        get_density_above() const;
+
+        /**
+         * Return the density value used below the bottom surface when converting
+         * normal traction to dynamic topography.
+         */
+        double
+        get_density_below() const;
 
         /**
          * Return the cell-wise topography vector as calculated by the CBF formulation,
@@ -110,22 +118,28 @@ namespace aspect
         /**
          * A parameter that allows users to set the density value
          * above the top surface.
+         *
+         * This variable is read from the parameter file through a parameter called 'Density above'.
          */
         double density_above;
 
         /**
          * A parameter that allows users to set the density value
          * below the bottom surface.
+         * This variable is read from the parameter file through a parameter called 'Density below'.
          */
         double density_below;
 
         /**
          * Whether to output the surface topography.
+         * This variable is read from the parameter file through a parameter called 'Output surface'.
          */
         bool output_surface;
 
         /**
          * Whether to output the bottom topography.
+         *
+         * This variable is read from the parameter file through a parameter called 'Output bottom'.
          */
         bool output_bottom;
     };

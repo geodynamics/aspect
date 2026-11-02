@@ -1,29 +1,24 @@
-/*
-  Copyright (C) 2016 - 2024 by the authors of the ASPECT code.
-
-  This file is part of ASPECT.
-
-  ASPECT is free software; you can redistribute it and/or modify
-  it under the terms of the GNU General Public License as published by
-  the Free Software Foundation; either version 2, or (at your option)
-  any later version.
-
-  ASPECT is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  GNU General Public License for more details.
-
-  You should have received a copy of the GNU General Public License
-  along with ASPECT; see the file LICENSE.  If not see
-  <http://www.gnu.org/licenses/>.
- */
+// ------------------------------------------------------
+//
+// SPDX-License-Identifier: GPL-2.0-or-later
+//
+// SPDX-FileCopyrightText: Copyright (C) 2016-2026 by the ASPECT authors.
+//
+// This file is part of ASPECT.
+//
+// Detailed license information governing the source code and
+// contributions can be found in the folder LICENSES and in
+// LICENSE and CONTRIBUTING.md at the top level directory.
+//
+// ------------------------------------------------------
 
 
 #include <aspect/newton.h>
+
+#include <aspect/boundary_traction/interface.h>
+#include <aspect/prescribed_dilation/interface.h>
 #include <aspect/simulator/assemblers/advection.h>
 #include <aspect/simulator/assemblers/stokes.h>
-
-#include <aspect/simulator.h>
 
 namespace aspect
 {
@@ -52,7 +47,8 @@ namespace aspect
     assemblers.stokes_system.push_back(std::make_unique<aspect::Assemblers::NewtonStokesIncompressibleTerms<dim>>());
 
     if (this->get_material_model().is_compressible() ||
-        this->get_parameters().enable_prescribed_dilation)
+        this->get_parameters().enable_prescribed_dilation ||
+        this->get_prescribed_dilation_manager().get_active_plugin_names().size() > 0)
       {
         // The compressible part of the preconditioner is only necessary if we use the simplified A block
         if (this->get_parameters().use_full_A_block_preconditioner == false)
@@ -109,6 +105,10 @@ namespace aspect
     if (this->pressure_rhs_needs_compatibility_modification())
       assemblers.stokes_system.push_back(
         std::make_unique<aspect::Assemblers::StokesPressureRHSCompatibilityModification<dim>>());
+
+    if (this->get_prescribed_dilation_manager().get_active_plugin_names().size() > 0)
+      assemblers.stokes_system.push_back(
+        std::make_unique<aspect::Assemblers::StokesPrescribedDilation<dim>>());
   }
 
 

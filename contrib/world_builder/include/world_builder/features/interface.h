@@ -89,6 +89,13 @@ namespace WorldBuilder
                         std::vector<double> &output) const = 0;
 
         /**
+         * Return a guaranteed upper bound for the topography produced by this
+         * feature.
+         */
+        virtual
+        double maximum_topography() const = 0;
+
+        /**
          * A function to register a new type. This is part of the automatic
          * registration of the object factory.
          */

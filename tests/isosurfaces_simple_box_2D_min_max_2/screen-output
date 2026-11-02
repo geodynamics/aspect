@@ -9,7 +9,7 @@ Number of degrees of freedom: 159 (50+9+25+25+25+25)
 
 *** Timestep 0:  t=0 years, dt=0 years
 
-Skipping mesh refinement, because the mesh did not change.
+Skipping mesh refinement, because no cells were flagged for refinement/coarsening.
 
 *** Timestep 0:  t=0 years, dt=0 years
 

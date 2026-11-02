@@ -1,22 +1,16 @@
-/*
-  Copyright (C) 2024 by the authors of the ASPECT code.
-
-  This file is part of ASPECT.
-
-  ASPECT is free software; you can redistribute it and/or modify
-  it under the terms of the GNU General Public License as published by
-  the Free Software Foundation; either version 2, or (at your option)
-  any later version.
-
-  ASPECT is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  GNU General Public License for more details.
-
-  You should have received a copy of the GNU General Public License
-  along with ASPECT; see the file LICENSE.  If not see
-  <http://www.gnu.org/licenses/>.
-*/
+// ------------------------------------------------------
+//
+// SPDX-License-Identifier: GPL-2.0-or-later
+//
+// SPDX-FileCopyrightText: Copyright (C) 2024-2026 by the ASPECT authors.
+//
+// This file is part of ASPECT.
+//
+// Detailed license information governing the source code and
+// contributions can be found in the folder LICENSES and in
+// LICENSE and CONTRIBUTING.md at the top level directory.
+//
+// ------------------------------------------------------
 
 #ifndef _aspect_material_reaction_model_melt_tian2019_solubility_h
 #define _aspect_material_reaction_model_melt_tian2019_solubility_h
@@ -99,10 +93,21 @@ namespace aspect
            * The maximum water content for each of the 4 rock types in the tian approximation
            * method. These are important for keeping the polynomial bounded within reasonable
            * values.
+           *
+           * This variable is read from the parameter file through a parameter called 'Maximum weight percent water in peridotite'.
            */
           double tian_max_peridotite_water;
+          /**
+           * This variable is read from the parameter file through a parameter called 'Maximum weight percent water in gabbro'.
+           */
           double tian_max_gabbro_water;
+          /**
+           * This variable is read from the parameter file through a parameter called 'Maximum weight percent water in MORB'.
+           */
           double tian_max_MORB_water;
+          /**
+           * This variable is read from the parameter file through a parameter called 'Maximum weight percent water in sediment'.
+           */
           double tian_max_sediment_water;
 
           /**
@@ -110,6 +115,8 @@ namespace aspect
            * If false, the full pressure is used instead. When simulating fully coupled
            * fluid transport, setting this to true is recommended since the compaction
            * pressure can lead to numerical instabilities when determining reaction rates.
+           *
+           * This variable is read from the parameter file through a parameter called 'Use adiabatic pressure for reactions'.
            */
           bool use_adiabatic_pressure_for_reactions;
 

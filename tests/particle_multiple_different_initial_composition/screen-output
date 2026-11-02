@@ -1,0 +1,92 @@
+
+Loading shared library <./libparticle_multiple_different_initial_composition.debug.so>
+
+Number of active cells: 512 (on 5 levels)
+Number of degrees of freedom: 15,627 (6,387+4,290+561+2,145+561+561+561+561)
+
+*** Timestep 0:  t=0 years, dt=0 years
+   Solving temperature system... 0 iterations.
+   Advecting particles (particle manager 1)...  done.
+   Advecting particles (particle manager 2)...  done.
+   Solving porosity system ... 0 iterations.
+   Solving Stokes system (direct)... done.
+   Solving fluid velocity system... 12 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.77541e-16, 1.34525e-16, 0, 0, 0, 1
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 1
+
+   Solving temperature system... 0 iterations.
+   Advecting particles (particle manager 1)...  done.
+   Advecting particles (particle manager 2)...  done.
+   Solving porosity system ... 0 iterations.
+   Solving Stokes system (direct)... done.
+   Solving fluid velocity system... 12 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.77541e-16, 1.34525e-16, 0, 0, 0, 4.19577e-14
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 4.19577e-14
+
+
+   Postprocessing:
+     Writing graphical output:  output-particle_multiple_different_initial_composition/solution/solution-00000
+     Compositions min/max/mass: 1.438e-28/0.2/1.257e+08 // 1.416e-26/0.1814/1.257e+08 // 1/1/2e+10 // 0.5/0.5/1e+10
+     RMS, max velocity:         0.00292 m/year, 0.00961 m/year
+     Temperature min/avg/max:   293 K, 1519 K, 1625 K
+     Writing depth average:     output-particle_multiple_different_initial_composition/depth_average
+     Writing particle output:   output-particle_multiple_different_initial_composition/particles/particles-00000, output-particle_multiple_different_initial_composition/particles-2/particles-2-00000
+
+*** Timestep 1:  t=3000 years, dt=3000 years
+   Solving temperature system... 7 iterations.
+   Advecting particles (particle manager 1)...  done.
+   Advecting particles (particle manager 2)...  done.
+   Solving porosity system ... 4 iterations.
+   Solving Stokes system (direct)... done.
+   Solving fluid velocity system... 12 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0.000220202, 0.0288581, 0, 0, 0, 1.76669
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 1.76669
+
+   Solving temperature system... 5 iterations.
+   Advecting particles (particle manager 1)...  done.
+   Advecting particles (particle manager 2)...  done.
+   Solving porosity system ... 4 iterations.
+   Solving Stokes system (direct)... done.
+   Solving fluid velocity system... 12 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 7.66726e-07, 0.00156113, 0, 0, 0, 0.0625681
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 0.0625681
+
+   Solving temperature system... 4 iterations.
+   Advecting particles (particle manager 1)...  done.
+   Advecting particles (particle manager 2)...  done.
+   Solving porosity system ... 3 iterations.
+   Solving Stokes system (direct)... done.
+   Solving fluid velocity system... 12 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 6.15328e-08, 6.71046e-05, 0, 0, 0, 0.00195499
+      Relative nonlinear residual (total system) after nonlinear iteration 3: 0.00195499
+
+   Solving temperature system... 3 iterations.
+   Advecting particles (particle manager 1)...  done.
+   Advecting particles (particle manager 2)...  done.
+   Solving porosity system ... 3 iterations.
+   Solving Stokes system (direct)... done.
+   Solving fluid velocity system... 12 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 2.72621e-09, 3.86374e-06, 0, 0, 0, 0.000150215
+      Relative nonlinear residual (total system) after nonlinear iteration 4: 0.000150215
+
+   Solving temperature system... 2 iterations.
+   Advecting particles (particle manager 1)...  done.
+   Advecting particles (particle manager 2)...  done.
+   Solving porosity system ... 2 iterations.
+   Solving Stokes system (direct)... done.
+   Solving fluid velocity system... 12 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.25969e-10, 1.47814e-07, 0, 0, 0, 4.71333e-06
+      Relative nonlinear residual (total system) after nonlinear iteration 5: 4.71333e-06
+
+
+   Postprocessing:
+     Writing graphical output:     output-particle_multiple_different_initial_composition/solution/solution-00001
+     Compositions min/max/mass:    -5.743e-07/0.1954/1.257e+08 // 1.416e-26/0.1814/1.257e+08 // 1/1/2e+10 // 0.5/0.5/1e+10
+     RMS, max velocity:            0.00294 m/year, 0.00967 m/year
+     Temperature min/avg/max:      293 K, 1518 K, 1625 K
+     Number of advected particles: 512, 512
+
+Termination requested by criterion: end time
+
+
+

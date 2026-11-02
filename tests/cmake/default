@@ -16,8 +16,9 @@ while ( <STDIN> )
   # following lines inside the cmake script, but this makes it easier
   # to generate screen-output files from scratch because the useless
   # lines are already removed.
-  next if $_ =~ m/^-- /;
+  next if $_ =~ m/^--/;
   next if $_ =~ m/^\|/;
+  next if $_ =~ m/^\+--/;
 
   if ($skip>0)
   {

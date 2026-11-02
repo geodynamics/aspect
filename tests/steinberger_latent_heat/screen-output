@@ -4,13 +4,13 @@ Number of degrees of freedom: 10,436 (6,402+833+3,201)
 
 *** Timestep 0:  t=0 years, dt=0 years
    Solving temperature system... 0 iterations.
-   Solving Stokes system (GMG)... 15+0 iterations.
+   Solving Stokes system (GMG)... 13+0 iterations.
 
    Postprocessing:
      Writing graphical output:           output-steinberger_latent_heat/solution/solution-00000
-     RMS, max velocity:                  0.449 m/year, 0.861 m/year
-     Temperature min/avg/max:            273 K, 2610 K, 4250 K
-     Heat fluxes through boundary parts: -1.184e+05 W, 4.832e+05 W, 0 W, 0 W
+     RMS, max velocity:                  0.451 m/year, 0.867 m/year
+     Temperature min/avg/max:            273 K, 2601 K, 4250 K
+     Heat fluxes through boundary parts: -1.376e+05 W, 4.896e+05 W, 0 W, 0 W
 
 Termination requested by criterion: end time
 

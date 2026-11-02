@@ -1,28 +1,24 @@
-/*
-  Copyright (C) 2011 - 2024 by the authors of the ASPECT code.
-
-  This file is part of ASPECT.
-
-  ASPECT is free software; you can redistribute it and/or modify
-  it under the terms of the GNU General Public License as published by
-  the Free Software Foundation; either version 2, or (at your option)
-  any later version.
-
-  ASPECT is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  GNU General Public License for more details.
-
-  You should have received a copy of the GNU General Public License
-  along with ASPECT; see the file LICENSE.  If not see
-  <http://www.gnu.org/licenses/>.
-*/
+// ------------------------------------------------------
+//
+// SPDX-License-Identifier: GPL-2.0-or-later
+//
+// SPDX-FileCopyrightText: Copyright (C) 2011-2026 by the ASPECT authors.
+//
+// This file is part of ASPECT.
+//
+// Detailed license information governing the source code and
+// contributions can be found in the folder LICENSES and in
+// LICENSE and CONTRIBUTING.md at the top level directory.
+//
+// ------------------------------------------------------
 
 
 #include <aspect/postprocess/visualization/darcy_velocity.h>
+
+#include <aspect/gravity_model/interface.h>
+
 #include <aspect/utilities.h>
 #include <aspect/melt.h>
-#include <aspect/simulator.h>
 
 namespace aspect
 {
@@ -73,7 +69,7 @@ namespace aspect
         MaterialModel::MaterialModelOutputs<dim> out(in.n_evaluation_points(), this->n_compositional_fields());
         MeltHandler<dim>::create_material_model_outputs(out);
         this->get_material_model().evaluate(in, out);
-        const std::shared_ptr<MaterialModel::MeltOutputs<dim>> fluid_out
+        const std::shared_ptr<const MaterialModel::MeltOutputs<dim>> fluid_out
           = out.template get_additional_output_object<MaterialModel::MeltOutputs<dim>>();
         AssertThrow(std::isfinite(fluid_out->fluid_viscosities[0]),
                     ExcMessage("To compute the Darcy velocity the material model needs to provide the melt material model "
@@ -81,19 +77,17 @@ namespace aspect
 
         for (unsigned int q=0; q<in.n_evaluation_points(); ++q)
           {
-            const double porosity = std::max(in.composition[q][porosity_idx], 1e-10);
             const Tensor<1,dim> gravity = this->get_gravity_model().gravity_vector(in.position[q]);
-            const double solid_density = out.densities[q];
-            const double fluid_viscosity = fluid_out->fluid_viscosities[q];
-            const double fluid_density = fluid_out->fluid_densities[q];
-            const double permeability = fluid_out->permeabilities[q];
             const Tensor<1,dim> solid_velocity = in.velocity[q];
-            const Tensor<1,dim> darcy_velocity = (solid_velocity -
-                                                  permeability / fluid_viscosity / porosity * gravity *
-                                                  (solid_density - fluid_density)) * velocity_scaling_factor;
 
+            Tensor<1,dim> darcy_velocity =
+              aspect::Utilities::calculate_approximate_darcy_velocity(in,
+                                                                      out,
+                                                                      fluid_out, solid_velocity,
+                                                                      gravity, porosity_idx, q,
+                                                                      this->get_parameters().use_pressure_gradient_for_darcy_field);
             for (unsigned int k=0; k<dim; ++k)
-              computed_quantities[q](k) = darcy_velocity[k];
+              computed_quantities[q](k) = darcy_velocity[k] * velocity_scaling_factor;
           }
       }
     }

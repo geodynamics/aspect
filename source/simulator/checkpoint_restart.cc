@@ -1,22 +1,16 @@
-/*
-  Copyright (C) 2011 - 2024 by the authors of the ASPECT code.
-
-  This file is part of ASPECT.
-
-  ASPECT is free software; you can redistribute it and/or modify
-  it under the terms of the GNU General Public License as published by
-  the Free Software Foundation; either version 2, or (at your option)
-  any later version.
-
-  ASPECT is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  GNU General Public License for more details.
-
-  You should have received a copy of the GNU General Public License
-  along with ASPECT; see the file LICENSE.  If not see
-  <http://www.gnu.org/licenses/>.
-*/
+// ------------------------------------------------------
+//
+// SPDX-License-Identifier: GPL-2.0-or-later
+//
+// SPDX-FileCopyrightText: Copyright (C) 2011-2026 by the ASPECT authors.
+//
+// This file is part of ASPECT.
+//
+// Detailed license information governing the source code and
+// contributions can be found in the folder LICENSES and in
+// LICENSE and CONTRIBUTING.md at the top level directory.
+//
+// ------------------------------------------------------
 
 
 #include <aspect/simulator.h>
@@ -59,7 +53,7 @@ namespace aspect
     template <int dim>
     unsigned int checkpoint_id_width(const Parameters<dim> &parameters)
     {
-      return std::max(2U, static_cast<unsigned int>(std::to_string(parameters.n_checkpoints_to_keep).size()));
+      return std::max(2U, static_cast<unsigned int>(std::to_string(parameters.n_checkpoints_to_keep+parameters.n_additional_checkpoints_to_keep).size()));
     }
 
     template <int dim>
@@ -312,7 +306,7 @@ namespace aspect
 
 
   template <int dim>
-  void Simulator<dim>::create_snapshot()
+  void Simulator<dim>::create_snapshot(const bool is_additional_checkpoint)
   {
     computing_timer.enter_subsection("Create snapshot");
 
@@ -320,8 +314,18 @@ namespace aspect
     total_walltime_until_last_snapshot += wall_timer.wall_time();
     wall_timer.restart();
 
-    // This will rotate from 01 to n_checkpoints_to_keep including:
-    const unsigned int checkpoint_id = (last_checkpoint_id % parameters.n_checkpoints_to_keep) + 1;
+    unsigned int checkpoint_id = 0;
+    if (!is_additional_checkpoint)
+      {
+        // This will rotate from 01 to n_checkpoints_to_keep including:
+        checkpoint_id = (last_regular_checkpoint_id % parameters.n_checkpoints_to_keep) + 1;
+      }
+    else
+      {
+        // Update the additional checkpoint ID and use it for the current ID.
+        ++last_additional_checkpoint_id;
+        checkpoint_id = last_additional_checkpoint_id;
+      }
 
     const std::string checkpoint_path = checkpoint_path_from_id(parameters, checkpoint_id);
     Utilities::create_directory(checkpoint_path, mpi_communicator, true);
@@ -368,7 +372,7 @@ namespace aspect
       triangulation.save (checkpoint_path + "mesh");
     }
 
-    // save general information This calls the serialization functions on all
+    // Save general information. This calls the serialization functions on all
     // processes (so that they can take additional action, if necessary, see
     // the manual) but only writes to the restart file on process 0
     {
@@ -376,6 +380,10 @@ namespace aspect
 
       // Update the checkpoint ID to the current checkpoint ID.
       last_checkpoint_id = checkpoint_id;
+      // Also update the last regular ID if required. The last additional
+      // ID is already set in the calling function.
+      if (!is_additional_checkpoint)
+        last_regular_checkpoint_id = checkpoint_id;
 
       // Serialize into a stringstream. Put the following into a code
       // block of its own to ensure the destruction of the 'oa'
@@ -489,9 +497,9 @@ namespace aspect
   {
     if (parameters.resume_checkpoint_id != 0)
       {
-        AssertThrow(parameters.resume_checkpoint_id <= parameters.n_checkpoints_to_keep,
+        AssertThrow(parameters.resume_checkpoint_id <= parameters.n_checkpoints_to_keep + parameters.n_additional_checkpoints_to_keep,
                     ExcMessage("The requested value for 'Resume checkpoint' is larger than the configured "
-                               "'Number of checkpoints to keep'."));
+                               "'Number of checkpoints to keep' plus the number of additional checkpoint times."));
 
         const unsigned int checkpoint_id = parameters.resume_checkpoint_id;
         const std::string checkpoint_path = checkpoint_path_from_id(parameters, checkpoint_id);
@@ -508,7 +516,7 @@ namespace aspect
         unsigned int best_checkpoint_id = numbers::invalid_unsigned_int;
         double best_time_distance = std::numeric_limits<double>::max();
 
-        for (unsigned int checkpoint_id = 1; checkpoint_id <= parameters.n_checkpoints_to_keep; ++checkpoint_id)
+        for (unsigned int checkpoint_id = 1; checkpoint_id <= parameters.n_checkpoints_to_keep + parameters.n_additional_checkpoints_to_keep; ++checkpoint_id)
           {
             const std::string checkpoint_path = checkpoint_path_from_id(parameters, checkpoint_id);
             if (!Utilities::fexists(checkpoint_path + "metadata.txt", mpi_communicator))
@@ -755,6 +763,8 @@ namespace aspect
     ar &total_walltime_until_last_snapshot;
     ar &nonlinear_solver_failures;
     ar &linear_solver_failures;
+    ar &last_regular_checkpoint_id;
+    ar &last_additional_checkpoint_id;
 
     ar &statistics;
 
@@ -797,6 +807,8 @@ namespace aspect
     if (parameters.mesh_deformation_enabled)
       ar &(*mesh_deformation);
 
+    ar &time_stepping_manager;
+
     // We do not serialize the statistics_last_write_size and
     // statistics_last_hash variables on purpose. This way, upon
     // restart, they are left at the values initialized by the
@@ -815,7 +827,7 @@ namespace aspect
 #define INSTANTIATE(dim) \
   template unsigned int Simulator<dim>::determine_last_good_snapshot() const; \
   template unsigned int Simulator<dim>::determine_resume_snapshot() const; \
-  template void Simulator<dim>::create_snapshot(); \
+  template void Simulator<dim>::create_snapshot(const bool is_additional_checkpoint); \
   template void Simulator<dim>::resume_from_snapshot();
 
   ASPECT_INSTANTIATE(INSTANTIATE)

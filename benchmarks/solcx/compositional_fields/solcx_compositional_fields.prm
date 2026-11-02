@@ -42,7 +42,7 @@ end
 ############### Parameters describing the temperature field
 
 subsection Initial temperature model
-  set Model name = perturbed box
+  set List of model names = perturbed box
 end
 
 subsection Compositional fields
@@ -52,11 +52,11 @@ subsection Compositional fields
 end
 
 subsection Initial composition model
-  set Model name = function
+  set List of model names = function
 
   subsection Function
     set Variable names      = x, z
-    set Function constants  = pi=3.1415926536, eta_b=1e6, background_density=0.0
+    set Function constants  =  eta_b=1e6, background_density=0.0
     set Function expression = background_density - sin(pi*z) * cos(pi*x); if(x<=0.5, 1, eta_b)
   end
 end

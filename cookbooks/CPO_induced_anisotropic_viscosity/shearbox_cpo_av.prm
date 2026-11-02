@@ -10,18 +10,22 @@ set Dimension                    = 3
 set Pressure normalization       = surface
 set Surface pressure             = 0
 set Nonlinear solver scheme      = single Advection, single Stokes
-set End time                     = 0.1
+set End time                     = 0.5
 set Use years instead of seconds = false
 set Output directory             = output_Shearbox_CPO_AV
+
+subsection Termination criteria
+  set End step = 0
+end
 
 subsection Initial composition model
   set List of model names = function
 
   subsection Function
     set Function expression = 0;\
-                              0; 0; 0; 0;\
-                              0; 0; 0; 0;\
-                              0; 0; 0; 0;\
+                              0; 1/3; 1/3; 1/3;\
+                              0; 1/3; 1/3; 1/3;\
+                              0; 1/3; 1/3; 1/3;\
                               0
   end
 end
@@ -67,10 +71,10 @@ subsection Geometry model
 end
 
 subsection Initial temperature model
-  set Model name = function
+  set List of model names = function
 
   subsection Function
-    # Temperature function (anisotropic viscosity in this material is disabled at T<1000K)
+    # Temperature function
     set Function expression = 1600
   end
 end
@@ -119,7 +123,7 @@ subsection Postprocess
 
   subsection Visualization
     set Time between graphical output = 0.1
-    set List of output variables = material properties, strain rate, named additional outputs, shear stress, stress
+    set List of output variables = material properties, strain rate, named additional outputs, shear stress, stress, Anisotropic stress
 
     subsection Material properties
       set List of material properties = density, viscosity
@@ -178,7 +182,7 @@ subsection Particles
 
   subsection CPO Bingham Average
     set Random number seed = 200
-    set Use rotation matrix = false
+    set Rotation format = euler angles
   end
 end
 

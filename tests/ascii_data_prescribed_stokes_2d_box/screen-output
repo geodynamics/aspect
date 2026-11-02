@@ -1,6 +1,6 @@
 
 
-   Loading Ascii data initial file ASPECT_DIR/data/prescribed-stokes-solution/box_2d.txt.
+   Loading Ascii data initial file $ASPECT_SOURCE_DIR/data/prescribed-stokes-solution/box_2d.txt.
 
 Number of active cells: 4 (on 2 levels)
 Number of degrees of freedom: 84 (50+9+25)

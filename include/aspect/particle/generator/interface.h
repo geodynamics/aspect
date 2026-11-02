@@ -1,22 +1,16 @@
-/*
- Copyright (C) 2015 - 2024 by the authors of the ASPECT code.
-
- This file is part of ASPECT.
-
- ASPECT is free software; you can redistribute it and/or modify
- it under the terms of the GNU General Public License as published by
- the Free Software Foundation; either version 2, or (at your option)
- any later version.
-
- ASPECT is distributed in the hope that it will be useful,
- but WITHOUT ANY WARRANTY; without even the implied warranty of
- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- GNU General Public License for more details.
-
- You should have received a copy of the GNU General Public License
- along with ASPECT; see the file LICENSE.  If not see
- <http://www.gnu.org/licenses/>.
- */
+// ------------------------------------------------------
+//
+// SPDX-License-Identifier: GPL-2.0-or-later
+//
+// SPDX-FileCopyrightText: Copyright (C) 2015-2026 by the ASPECT authors.
+//
+// This file is part of ASPECT.
+//
+// Detailed license information governing the source code and
+// contributions can be found in the folder LICENSES and in
+// LICENSE and CONTRIBUTING.md at the top level directory.
+//
+// ------------------------------------------------------
 
 #ifndef _aspect_particle_generator_interface_h
 #define _aspect_particle_generator_interface_h
@@ -67,9 +61,11 @@ namespace aspect
       class Interface : public SimulatorAccess<dim>, public ParticleInterfaceBase
       {
         public:
-          virtual
           void
-          initialize () override;
+          initialize() override;
+
+          void
+          update() override;
 
           /**
            * Generate particles. Every derived class
@@ -156,8 +152,13 @@ namespace aspect
                                       Particles::ParticleHandler<dim> &particle_handler) const;
 
           /**
-           * Random number generator. For reproducibility of tests it is
-           * initialized in the constructor with a constant.
+           * Random number generator.
+           *
+           * This variable is not considered part of the state of the particle
+           * manager and is consequently not serialized. It is re-initialized in the
+           * initialize() and update() functions at the beginning of each time step, and so
+           * has a deterministic state at the beginning of each time step. It
+           * does not need to be restored from a checkpoint.
            */
           std::mt19937            random_number_generator;
       };

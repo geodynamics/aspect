@@ -1,0 +1,25 @@
+####
+# This test is based on the Continental Extension Cookbook.
+#
+# This test used to trigger an assertion in the surface diffusion
+# functionality where we were adding together vectors with ghost
+# entries. That used to be invalid but not checked, but newer deal.II
+# have assertions to make sure it doesn't happen.
+
+# MPI: 4
+
+include $ASPECT_SOURCE_DIR/cookbooks/continental_extension/continental_extension.prm
+
+####  Global parameters
+set End time                               = 30000
+set Max nonlinear iterations               = 2
+
+# Globally refine the mesh to 2.5 km spacing, and then
+# adaptively refine the mesh to 1.25 km spacing above y=50 km
+# and between x=40 and x=160 km. These values ensure areas
+# undergoing brittle deformation are in the high-resolution
+# region.
+subsection Mesh refinement
+  set Initial adaptive refinement        = 0
+  set Initial global refinement          = 1
+end

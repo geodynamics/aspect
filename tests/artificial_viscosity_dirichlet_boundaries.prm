@@ -1,6 +1,6 @@
 # This is a test for the artificial viscosity.
 # In particular, it checks that the entropy viscosity
-# for the composition at dirichlet boundaries can be set
+# for the composition at Dirichlet boundaries can be set
 # to 0 if requested.
 
 set Adiabatic surface temperature          = 1623
@@ -59,7 +59,7 @@ subsection Gravity model
 end
 
 subsection Initial temperature model
-  set Model name = function
+  set List of model names = function
 
   subsection Function
     set Function constants  = l=64000
@@ -69,7 +69,7 @@ subsection Initial temperature model
 end
 
 subsection Initial composition model
-  set Model name = function
+  set List of model names = function
 
   subsection Function
     set Function constants  = l=64000

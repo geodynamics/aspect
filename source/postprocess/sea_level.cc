@@ -1,38 +1,32 @@
-/*
-  Copyright (C) 2011 - 2024 by the authors of the ASPECT code.
-
-  This file is part of ASPECT.
-
-  ASPECT is free software; you can redistribute it and/or modify
-  it under the terms of the GNU General Public License as published by
-  the Free Software Foundation; either version 2, or (at your option)
-  any later version.
-
-  ASPECT is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  GNU General Public License for more details.
-
-  You should have received a copy of the GNU General Public License
-  along with ASPECT; see the file LICENSE.  If not see
-  <http://www.gnu.org/licenses/>.
-*/
+// ------------------------------------------------------
+//
+// SPDX-License-Identifier: GPL-2.0-or-later
+//
+// SPDX-FileCopyrightText: Copyright (C) 2011-2026 by the ASPECT authors.
+//
+// This file is part of ASPECT.
+//
+// Detailed license information governing the source code and
+// contributions can be found in the folder LICENSES and in
+// LICENSE and CONTRIBUTING.md at the top level directory.
+//
+// ------------------------------------------------------
 
 
-#include <aspect/simulator.h>
-#include <aspect/global.h>
-#include <aspect/mesh_deformation/free_surface.h>
-#include <aspect/utilities.h>
-#include <aspect/structured_data.h>
-#include <aspect/geometry_model/spherical_shell.h>
 #include <aspect/postprocess/sea_level.h>
+
+#include <aspect/geometry_model/spherical_shell.h>
+#include <aspect/gravity_model/interface.h>
+#include <aspect/mesh_deformation/free_surface.h>
 #include <aspect/postprocess/geoid.h>
 
-#include <deal.II/base/quadrature_lib.h>
-#include <deal.II/fe/fe_values.h>
+#include <aspect/utilities.h>
+#include <aspect/structured_data.h>
 
 #include <cmath>
+#include <fstream>
 #include <limits>
+#include <sstream>
 
 // TODO:
 // Include geoid anomaly of surface load.
@@ -46,11 +40,21 @@ namespace aspect
   namespace Postprocess
   {
     template <int dim>
+    SeaLevel<dim>::SeaLevel()
+      : last_output_time(std::numeric_limits<double>::lowest())
+    {
+    }
+
+
+
+    template <int dim>
     void
     SeaLevel<dim>::initialize()
     {
       Assert(false, ExcNotImplemented(""));
     }
+
+
 
     template <>
     void
@@ -356,7 +360,7 @@ namespace aspect
       // If this is the first time we get here, set the last output time
       // to the current time - output_interval. This makes sure we
       // always produce data during the first time step.
-      if (std::isnan(last_output_time))
+      if (last_output_time < this->get_parameters().start_time - output_interval)
         {
           last_output_time = this->get_time() - output_interval;
         }
@@ -501,9 +505,9 @@ namespace aspect
                              "The time interval between each generation of "
                              "text output files. A value of zero indicates "
                              "that output should be generated in each time step. "
-                             "Units: years if the "
+                             "Units: \\si{\\year} if the "
                              "'Use years instead of seconds' parameter is set; "
-                             "seconds otherwise.");
+                             "\\si{\\second} otherwise.");
         }
         prm.leave_subsection();
       }
@@ -590,10 +594,10 @@ namespace aspect
   {
     ASPECT_REGISTER_POSTPROCESSOR(SeaLevel,
                                   "sea level",
-                                  "A postprocessor that computes the sea level for glacial isostatic adjustment"
-                                  "modeling. When ice melts and enters the ocean, the ocean water needs to be"
-                                  "redistributed in a gravitationally consistent way. With the updated surface"
-                                  "loading (ocean and ice) the free surface deformation needs to be computed"
+                                  "A postprocessor that computes the sea level for glacial isostatic adjustment "
+                                  "modeling. When ice melts and enters the ocean, the ocean water needs to be "
+                                  "redistributed in a gravitationally consistent way. With the updated surface "
+                                  "loading (ocean and ice) the free surface deformation needs to be computed "
                                   "iteratively before moving to the next time step. "
                                   "A postprocessor intended for use with a deforming top surface. After every step "
                                   "it computes the sea level based on the topography, ocean basin, ice melt, "

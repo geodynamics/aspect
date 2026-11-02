@@ -1,24 +1,18 @@
-/*
-  Copyright (C) 2016 - 2024 by the authors of the ASPECT code.
+// ------------------------------------------------------
+//
+// SPDX-License-Identifier: GPL-2.0-or-later
+//
+// SPDX-FileCopyrightText: Copyright (C) 2016-2026 by the ASPECT authors.
+//
+// This file is part of ASPECT.
+//
+// Detailed license information governing the source code and
+// contributions can be found in the folder LICENSES and in
+// LICENSE and CONTRIBUTING.md at the top level directory.
+//
+// ------------------------------------------------------
 
-  This file is part of ASPECT.
-
-  ASPECT is free software; you can redistribute it and/or modify
-  it under the terms of the GNU General Public License as published by
-  the Free Software Foundation; either version 2, or (at your option)
-  any later version.
-
-  ASPECT is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  GNU General Public License for more details.
-
-  You should have received a copy of the GNU General Public License
-  along with ASPECT; see the file LICENSE.  If not see
-  <http://www.gnu.org/licenses/>.
-*/
-
-
+#include <algorithm>
 #include <aspect/material_model/entropy_model.h>
 #include <aspect/material_model/thermal_conductivity/constant.h>
 #include <aspect/material_model/thermal_conductivity/tosi_stackhouse.h>
@@ -288,7 +282,23 @@ namespace aspect
           out.densities[i] = MaterialUtilities::average_value (volume_fractions, eos_outputs.densities, MaterialUtilities::arithmetic);
           out.thermal_expansion_coefficients[i] = MaterialUtilities::average_value (volume_fractions, eos_outputs.thermal_expansion_coefficients, MaterialUtilities::arithmetic);
 
-          out.specific_heat[i] = MaterialUtilities::average_value (mass_fractions, eos_outputs.specific_heat_capacities, MaterialUtilities::arithmetic);
+          // Limit the specific heat capacity to a maximum value.
+          // This makes diffusively controlled phase transitions more stable.
+          // The expression used below returns the lookup table-defined value
+          // at low values and smoothly transitions from the exact
+          // specific heat capacity when the exact value exceeds a transition threshold.
+          // Empirically, it is found to result in more stable simulations than simply
+          // capping the specific heat capacity at a maximum value, and it also allows
+          // the use of the exact specific heat capacity at low values.
+          const double c_p = MaterialUtilities::average_value (mass_fractions, eos_outputs.specific_heat_capacities, MaterialUtilities::arithmetic);
+
+          if (c_p < max_exact_specific_heat)
+            out.specific_heat[i] = c_p;
+          else
+            {
+              const double fraction_max_c_p = std::exp(ln_ratio_max_exact_max_limit_specific_heat * std::exp((std::log(c_p/max_exact_specific_heat))/ln_ratio_max_exact_max_limit_specific_heat));
+              out.specific_heat[i] = max_limit_specific_heat * fraction_max_c_p;
+            }
           out.compressibilities[i] = MaterialUtilities::average_value (mass_fractions, eos_outputs.compressibilities, MaterialUtilities::arithmetic);
 
           // The component_equilibrated_S will be updated while we are looking for the equilibrated temperature.
@@ -329,7 +339,7 @@ namespace aspect
                       unsigned int c_is_nth_entropy_field = 0;
 
                       unsigned int nth_entropy_index = 0;
-                      for (unsigned int entropy_index : entropy_indices)
+                      for (const unsigned int entropy_index : entropy_indices)
                         {
                           if (c == entropy_index)
                             {
@@ -390,7 +400,7 @@ namespace aspect
                 {
                   double vis_lateral = std::exp(-lateral_viscosity_prefactor_lookup->lateral_viscosity(depth)*delta_temperature/(adjusted_inputs.temperature[i]*reference_temperature));
                   // lateral vis variation
-                  vis_lateral = std::max(std::min((vis_lateral),max_lateral_eta_variation),1/max_lateral_eta_variation);
+                  vis_lateral = std::clamp(vis_lateral, 1/max_lateral_eta_variation, max_lateral_eta_variation);
 
                   if (std::isnan(vis_lateral))
                     vis_lateral = 1.0;
@@ -430,7 +440,7 @@ namespace aspect
                         plastic_out->yielding[i] = eta_plastic < (vis_lateral * viscosity_profile) ? 1 : 0;
                     }
 
-                  out.viscosities[i] = std::max(std::min(effective_viscosity,max_eta),min_eta);
+                  out.viscosities[i] = std::clamp(effective_viscosity, min_eta, max_eta);
                 }
             }
 
@@ -504,12 +514,22 @@ namespace aspect
                              "The value of the angle of internal friction, $\\phi$."
                              "For a value of zero, in 2D the von Mises criterion is retrieved. "
                              "Angles higher than 30 degrees are harder to solve numerically."
-                             "Units: degrees.");
+                             "Units: \\si{\\degree}.");
           prm.declare_entry ("Cohesion", "1e20",
                              Patterns::Double (0.),
-                             "The value of the cohesion, $C$. The extremely large default"
+                             "The value of the cohesion, $C$. The extremely large default "
                              "cohesion value (1e20 Pa) prevents the viscous stress from "
                              "exceeding the yield stress. Units: \\si{\\pascal}.");
+
+          // Specific heat capacity limiting parameters
+          prm.declare_entry ("Maximum limited specific heat capacity", "1e50",
+                             Patterns::Double (0.),
+                             "The maximum allowed value for the specific heat capacity.");
+
+          prm.declare_entry("Maximum exact specific heat capacity", "1e50",
+                            Patterns::Double(0.),
+                            "The maximum specific heat capacity that is exactly equal "
+                            "to the value given by the thermodynamic lookup table.");
 
           // Multicomponent equilibration parameters
           prm.declare_entry ("Maximum iteration for multicomponent equilibration", "50",
@@ -581,9 +601,18 @@ namespace aspect
           max_eta                      = prm.get_double ("Maximum viscosity");
           max_lateral_eta_variation    = prm.get_double ("Maximum lateral viscosity variation");
 
-          // Placiticity parameters
+          // Plasticity parameters
           angle_of_internal_friction   = prm.get_double ("Angle of internal friction") * constants::degree_to_radians;
-          cohesion                     = prm.get_double("Cohesion");
+          cohesion                     = prm.get_double ("Cohesion");
+
+          // Specific heat capacity limiting parameters
+          max_limit_specific_heat      = prm.get_double ("Maximum limited specific heat capacity");
+          max_exact_specific_heat      = prm.get_double ("Maximum exact specific heat capacity");
+
+          AssertThrow(max_limit_specific_heat >= max_exact_specific_heat,
+                      ExcMessage("The maximum limited specific heat capacity must be greater than or equal to the maximum exact specific heat capacity."));
+
+          ln_ratio_max_exact_max_limit_specific_heat = std::log(max_exact_specific_heat / max_limit_specific_heat);
 
           // Multicomponent equilibration parameters
           multicomponent_max_iteration = prm.get_double("Maximum iteration for multicomponent equilibration");

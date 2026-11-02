@@ -71,7 +71,7 @@ subsection Gravity model
 end
 
 subsection Initial temperature model
-  set Model name = adiabatic
+  set List of model names = adiabatic
 
   subsection Adiabatic
     set Age top boundary layer      = 1e6
@@ -83,11 +83,11 @@ subsection Initial temperature model
 end
 
 subsection Initial composition model
-  set Model name = function
+  set List of model names = function
 
   subsection Function
     set Variable names      = x,y
-    set Function constants  = pi=3.1415926,x0=100000,y0=50000,c=10000
+    set Function constants  = x0=100000,y0=50000,c=10000
     set Function expression = 0.2 * exp(-((x-x0)*(x-x0)+(y-y0)*(y-y0))/(2*c*c)); 0.2 * exp(-((x-x0)*(x-x0)+(y-y0)*(y-y0))/(2*c*c))
   end
 end

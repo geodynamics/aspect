@@ -16,9 +16,9 @@ Additional information:
     StokesMatrixFreeHandlerLocalSmoothingImplementation::solve did not
     converge.
     
-    The initial residual was: 1.169088e+14
-    The final residual is: 1.141373e+10
-    The required residual for convergence is: 1.169088e-21
+    The initial residual was: 1.184089e+14
+    The final residual is: 4.941346e+08
+    The required residual for convergence is: 1.184089e-21
     See output-stokes_solver_fail_cheap/solver_history.txt for the full
     convergence history.
     
@@ -32,18 +32,16 @@ Additional information:
     MatrixType = aspect::MatrixFreeStokesOperators::StokesOperator<2, 2,
     double>; PreconditionerType =
     aspect::internal::BlockSchurPreconditioner<aspect::internal::InverseVelocityBlock<dealii::PreconditionMG<2,
-    dealii::LinearAlgebra::distributed::Vector<double,
-    dealii::MemorySpace::Host>, dealii::MGTransferMF<2, double> >,
-    dealii::LinearAlgebra::distributed::Vector<double,
-    dealii::MemorySpace::Host>,
+    dealii::LinearAlgebra::distributed::Vector<double>,
+    dealii::MGTransferMatrixFree<2, double, dealii::MemorySpace::Host> >,
+    dealii::LinearAlgebra::distributed::Vector<double>,
     aspect::MatrixFreeStokesOperators::ABlockOperator<2, 2, double> >,
     aspect::internal::SchurApproximation<dealii::PreconditionMG<2,
-    dealii::LinearAlgebra::distributed::Vector<double,
-    dealii::MemorySpace::Host>, dealii::MGTransferMF<2, double> >,
+    dealii::LinearAlgebra::distributed::Vector<double>,
+    dealii::MGTransferMatrixFree<2, double, dealii::MemorySpace::Host> >,
     aspect::MatrixFreeStokesOperators::StokesOperator<2, 2, double>,
     aspect::MatrixFreeStokesOperators::MassMatrixOperator<2, 1, double>,
-    dealii::LinearAlgebra::distributed::Vector<double,
-    dealii::MemorySpace::Host> >,
+    dealii::LinearAlgebra::distributed::Vector<double> >,
     aspect::MatrixFreeStokesOperators::BTBlockOperator<2, 2, double>,
     dealii::LinearAlgebra::distributed::BlockVector<double> >; VectorType
     = dealii::LinearAlgebra::distributed::BlockVector<double>]
@@ -51,7 +49,7 @@ Additional information:
     iteration_state == SolverControl::success
     Additional information:
     Iterative method reported convergence failure in step 10. The residual
-    in the last step was 1.14137e+10.
+    in the last step was 4.94135e+08.
     
     This error message can indicate that you have simply not allowed a
     sufficiently large number of iterations for your iterative solver to

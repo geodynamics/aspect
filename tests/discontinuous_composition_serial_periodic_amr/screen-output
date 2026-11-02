@@ -16,7 +16,7 @@ Number of degrees of freedom: 2,802 (1,098+147+549+1,008)
    Postprocessing:
      Writing graphical output: output-discontinuous_composition_serial_periodic_amr/solution/solution-00000
 
-Skipping mesh refinement, because the mesh did not change.
+Skipping mesh refinement, because no cells were flagged for refinement/coarsening.
 
 *** Timestep 1:  t=0.0625 seconds, dt=0.0625 seconds
    Skipping temperature solve because RHS is zero.
@@ -85,7 +85,7 @@ Number of degrees of freedom: 2,974 (1,138+151+569+1,116)
    Postprocessing:
      Writing graphical output: output-discontinuous_composition_serial_periodic_amr/solution/solution-00007
 
-Skipping mesh refinement, because the mesh did not change.
+Skipping mesh refinement, because no cells were flagged for refinement/coarsening.
 
 *** Timestep 8:  t=0.5 seconds, dt=0.0625 seconds
    Skipping temperature solve because RHS is zero.
@@ -104,7 +104,7 @@ Number of degrees of freedom: 3,509 (1,334+176+667+1,332)
    Postprocessing:
      Writing graphical output: output-discontinuous_composition_serial_periodic_amr/solution/solution-00009
 
-Skipping mesh refinement, because the mesh did not change.
+Skipping mesh refinement, because no cells were flagged for refinement/coarsening.
 
 *** Timestep 10:  t=0.625 seconds, dt=0.0625 seconds
    Skipping temperature solve because RHS is zero.
@@ -113,7 +113,7 @@ Skipping mesh refinement, because the mesh did not change.
    Postprocessing:
      Writing graphical output: output-discontinuous_composition_serial_periodic_amr/solution/solution-00010
 
-Skipping mesh refinement, because the mesh did not change.
+Skipping mesh refinement, because no cells were flagged for refinement/coarsening.
 
 *** Timestep 11:  t=0.6875 seconds, dt=0.0625 seconds
    Skipping temperature solve because RHS is zero.
@@ -122,7 +122,7 @@ Skipping mesh refinement, because the mesh did not change.
    Postprocessing:
      Writing graphical output: output-discontinuous_composition_serial_periodic_amr/solution/solution-00011
 
-Skipping mesh refinement, because the mesh did not change.
+Skipping mesh refinement, because no cells were flagged for refinement/coarsening.
 
 *** Timestep 12:  t=0.75 seconds, dt=0.0625 seconds
    Skipping temperature solve because RHS is zero.
@@ -131,7 +131,7 @@ Skipping mesh refinement, because the mesh did not change.
    Postprocessing:
      Writing graphical output: output-discontinuous_composition_serial_periodic_amr/solution/solution-00012
 
-Skipping mesh refinement, because the mesh did not change.
+Skipping mesh refinement, because no cells were flagged for refinement/coarsening.
 
 *** Timestep 13:  t=0.8125 seconds, dt=0.0625 seconds
    Skipping temperature solve because RHS is zero.
@@ -210,7 +210,7 @@ Number of degrees of freedom: 3,744 (1,410+189+705+1,440)
    Postprocessing:
      Writing graphical output: output-discontinuous_composition_serial_periodic_amr/solution/solution-00020
 
-Skipping mesh refinement, because the mesh did not change.
+Skipping mesh refinement, because no cells were flagged for refinement/coarsening.
 
 *** Timestep 21:  t=1.3125 seconds, dt=0.0625 seconds
    Skipping temperature solve because RHS is zero.
@@ -219,7 +219,7 @@ Skipping mesh refinement, because the mesh did not change.
    Postprocessing:
      Writing graphical output: output-discontinuous_composition_serial_periodic_amr/solution/solution-00021
 
-Skipping mesh refinement, because the mesh did not change.
+Skipping mesh refinement, because no cells were flagged for refinement/coarsening.
 
 *** Timestep 22:  t=1.375 seconds, dt=0.0625 seconds
    Skipping temperature solve because RHS is zero.
@@ -228,7 +228,7 @@ Skipping mesh refinement, because the mesh did not change.
    Postprocessing:
      Writing graphical output: output-discontinuous_composition_serial_periodic_amr/solution/solution-00022
 
-Skipping mesh refinement, because the mesh did not change.
+Skipping mesh refinement, because no cells were flagged for refinement/coarsening.
 
 *** Timestep 23:  t=1.4375 seconds, dt=0.0625 seconds
    Skipping temperature solve because RHS is zero.
@@ -247,7 +247,7 @@ Number of degrees of freedom: 4,359 (1,654+222+827+1,656)
    Postprocessing:
      Writing graphical output: output-discontinuous_composition_serial_periodic_amr/solution/solution-00024
 
-Skipping mesh refinement, because the mesh did not change.
+Skipping mesh refinement, because no cells were flagged for refinement/coarsening.
 
 *** Timestep 25:  t=1.5625 seconds, dt=0.0625 seconds
    Skipping temperature solve because RHS is zero.
@@ -316,7 +316,7 @@ Number of degrees of freedom: 4,359 (1,654+222+827+1,656)
    Postprocessing:
      Writing graphical output: output-discontinuous_composition_serial_periodic_amr/solution/solution-00031
 
-Skipping mesh refinement, because the mesh did not change.
+Skipping mesh refinement, because no cells were flagged for refinement/coarsening.
 
 *** Timestep 32:  t=2 seconds, dt=0.0625 seconds
    Skipping temperature solve because RHS is zero.
@@ -325,7 +325,7 @@ Skipping mesh refinement, because the mesh did not change.
    Postprocessing:
      Writing graphical output: output-discontinuous_composition_serial_periodic_amr/solution/solution-00032
 
-Skipping mesh refinement, because the mesh did not change.
+Skipping mesh refinement, because no cells were flagged for refinement/coarsening.
 
 *** Timestep 33:  t=2.0625 seconds, dt=0.0625 seconds
    Skipping temperature solve because RHS is zero.
@@ -334,7 +334,7 @@ Skipping mesh refinement, because the mesh did not change.
    Postprocessing:
      Writing graphical output: output-discontinuous_composition_serial_periodic_amr/solution/solution-00033
 
-Skipping mesh refinement, because the mesh did not change.
+Skipping mesh refinement, because no cells were flagged for refinement/coarsening.
 
 *** Timestep 34:  t=2.125 seconds, dt=0.0625 seconds
    Skipping temperature solve because RHS is zero.
@@ -343,7 +343,7 @@ Skipping mesh refinement, because the mesh did not change.
    Postprocessing:
      Writing graphical output: output-discontinuous_composition_serial_periodic_amr/solution/solution-00034
 
-Skipping mesh refinement, because the mesh did not change.
+Skipping mesh refinement, because no cells were flagged for refinement/coarsening.
 
 *** Timestep 35:  t=2.1875 seconds, dt=0.0625 seconds
    Skipping temperature solve because RHS is zero.
@@ -362,7 +362,7 @@ Number of degrees of freedom: 3,824 (1,458+197+729+1,440)
    Postprocessing:
      Writing graphical output: output-discontinuous_composition_serial_periodic_amr/solution/solution-00036
 
-Skipping mesh refinement, because the mesh did not change.
+Skipping mesh refinement, because no cells were flagged for refinement/coarsening.
 
 *** Timestep 37:  t=2.3125 seconds, dt=0.0625 seconds
    Skipping temperature solve because RHS is zero.
@@ -371,7 +371,7 @@ Skipping mesh refinement, because the mesh did not change.
    Postprocessing:
      Writing graphical output: output-discontinuous_composition_serial_periodic_amr/solution/solution-00037
 
-Skipping mesh refinement, because the mesh did not change.
+Skipping mesh refinement, because no cells were flagged for refinement/coarsening.
 
 *** Timestep 38:  t=2.375 seconds, dt=0.0625 seconds
    Skipping temperature solve because RHS is zero.
@@ -390,7 +390,7 @@ Number of degrees of freedom: 4,359 (1,654+222+827+1,656)
    Postprocessing:
      Writing graphical output: output-discontinuous_composition_serial_periodic_amr/solution/solution-00039
 
-Skipping mesh refinement, because the mesh did not change.
+Skipping mesh refinement, because no cells were flagged for refinement/coarsening.
 
 *** Timestep 40:  t=2.5 seconds, dt=0.0625 seconds
    Skipping temperature solve because RHS is zero.
@@ -399,7 +399,7 @@ Skipping mesh refinement, because the mesh did not change.
    Postprocessing:
      Writing graphical output: output-discontinuous_composition_serial_periodic_amr/solution/solution-00040
 
-Skipping mesh refinement, because the mesh did not change.
+Skipping mesh refinement, because no cells were flagged for refinement/coarsening.
 
 *** Timestep 41:  t=2.5625 seconds, dt=0.0625 seconds
    Skipping temperature solve because RHS is zero.
@@ -408,7 +408,7 @@ Skipping mesh refinement, because the mesh did not change.
    Postprocessing:
      Writing graphical output: output-discontinuous_composition_serial_periodic_amr/solution/solution-00041
 
-Skipping mesh refinement, because the mesh did not change.
+Skipping mesh refinement, because no cells were flagged for refinement/coarsening.
 
 *** Timestep 42:  t=2.625 seconds, dt=0.0625 seconds
    Skipping temperature solve because RHS is zero.
@@ -417,7 +417,7 @@ Skipping mesh refinement, because the mesh did not change.
    Postprocessing:
      Writing graphical output: output-discontinuous_composition_serial_periodic_amr/solution/solution-00042
 
-Skipping mesh refinement, because the mesh did not change.
+Skipping mesh refinement, because no cells were flagged for refinement/coarsening.
 
 *** Timestep 43:  t=2.6875 seconds, dt=0.0625 seconds
    Skipping temperature solve because RHS is zero.
@@ -466,7 +466,7 @@ Number of degrees of freedom: 4,359 (1,654+222+827+1,656)
    Postprocessing:
      Writing graphical output: output-discontinuous_composition_serial_periodic_amr/solution/solution-00047
 
-Skipping mesh refinement, because the mesh did not change.
+Skipping mesh refinement, because no cells were flagged for refinement/coarsening.
 
 *** Timestep 48:  t=3 seconds, dt=0.0625 seconds
    Skipping temperature solve because RHS is zero.
@@ -475,7 +475,7 @@ Skipping mesh refinement, because the mesh did not change.
    Postprocessing:
      Writing graphical output: output-discontinuous_composition_serial_periodic_amr/solution/solution-00048
 
-Skipping mesh refinement, because the mesh did not change.
+Skipping mesh refinement, because no cells were flagged for refinement/coarsening.
 
 *** Timestep 49:  t=3.0625 seconds, dt=0.0625 seconds
    Skipping temperature solve because RHS is zero.
@@ -484,7 +484,7 @@ Skipping mesh refinement, because the mesh did not change.
    Postprocessing:
      Writing graphical output: output-discontinuous_composition_serial_periodic_amr/solution/solution-00049
 
-Skipping mesh refinement, because the mesh did not change.
+Skipping mesh refinement, because no cells were flagged for refinement/coarsening.
 
 *** Timestep 50:  t=3.125 seconds, dt=0.0625 seconds
    Skipping temperature solve because RHS is zero.
@@ -493,7 +493,7 @@ Skipping mesh refinement, because the mesh did not change.
    Postprocessing:
      Writing graphical output: output-discontinuous_composition_serial_periodic_amr/solution/solution-00050
 
-Skipping mesh refinement, because the mesh did not change.
+Skipping mesh refinement, because no cells were flagged for refinement/coarsening.
 
 *** Timestep 51:  t=3.1875 seconds, dt=0.0625 seconds
    Skipping temperature solve because RHS is zero.
@@ -512,7 +512,7 @@ Number of degrees of freedom: 3,744 (1,410+189+705+1,440)
    Postprocessing:
      Writing graphical output: output-discontinuous_composition_serial_periodic_amr/solution/solution-00052
 
-Skipping mesh refinement, because the mesh did not change.
+Skipping mesh refinement, because no cells were flagged for refinement/coarsening.
 
 *** Timestep 53:  t=3.3125 seconds, dt=0.0625 seconds
    Skipping temperature solve because RHS is zero.
@@ -521,7 +521,7 @@ Skipping mesh refinement, because the mesh did not change.
    Postprocessing:
      Writing graphical output: output-discontinuous_composition_serial_periodic_amr/solution/solution-00053
 
-Skipping mesh refinement, because the mesh did not change.
+Skipping mesh refinement, because no cells were flagged for refinement/coarsening.
 
 *** Timestep 54:  t=3.375 seconds, dt=0.0625 seconds
    Skipping temperature solve because RHS is zero.
@@ -620,7 +620,7 @@ Number of degrees of freedom: 4,303 (1,622+214+811+1,656)
    Postprocessing:
      Writing graphical output: output-discontinuous_composition_serial_periodic_amr/solution/solution-00063
 
-Skipping mesh refinement, because the mesh did not change.
+Skipping mesh refinement, because no cells were flagged for refinement/coarsening.
 
 *** Timestep 64:  t=4 seconds, dt=0.0625 seconds
    Skipping temperature solve because RHS is zero.
@@ -629,7 +629,7 @@ Skipping mesh refinement, because the mesh did not change.
    Postprocessing:
      Writing graphical output: output-discontinuous_composition_serial_periodic_amr/solution/solution-00064
 
-Skipping mesh refinement, because the mesh did not change.
+Skipping mesh refinement, because no cells were flagged for refinement/coarsening.
 
 Termination requested by criterion: end time
 

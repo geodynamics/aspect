@@ -1,22 +1,16 @@
-/*
-  Copyright (C) 2011 - 2024 by the authors of the ASPECT code.
-
-  This file is part of ASPECT.
-
-  ASPECT is free software; you can redistribute it and/or modify
-  it under the terms of the GNU General Public License as published by
-  the Free Software Foundation; either version 2, or (at your option)
-  any later version.
-
-  ASPECT is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  GNU General Public License for more details.
-
-  You should have received a copy of the GNU General Public License
-  along with ASPECT; see the file LICENSE.  If not see
-  <http://www.gnu.org/licenses/>.
-*/
+// ------------------------------------------------------
+//
+// SPDX-License-Identifier: GPL-2.0-or-later
+//
+// SPDX-FileCopyrightText: Copyright (C) 2011-2026 by the ASPECT authors.
+//
+// This file is part of ASPECT.
+//
+// Detailed license information governing the source code and
+// contributions can be found in the folder LICENSES and in
+// LICENSE and CONTRIBUTING.md at the top level directory.
+//
+// ------------------------------------------------------
 
 #include <aspect/material_model/visco_plastic.h>
 #include <aspect/utilities.h>
@@ -49,7 +43,8 @@ namespace aspect
       Assert(in.n_evaluation_points() == 1, ExcInternalError());
 
       const std::vector<double> volume_fractions = MaterialUtilities::compute_only_composition_fractions(in.composition[0],
-                                                   this->introspection().chemical_composition_field_indices());
+                                                   this->introspection().chemical_composition_field_indices(),
+                                                   this->get_parameters().minimum_composition_fraction);
 
       /* The following handles phases in a similar way as in the 'evaluate' function.
        * Results then enter the calculation of plastic yielding.
@@ -90,7 +85,7 @@ namespace aspect
        */
       const IsostrainViscosities isostrain_viscosities = rheology->calculate_isostrain_viscosities(in, 0, volume_fractions, phase_function_values, phase_function.n_phase_transitions_for_each_composition());
 
-      std::vector<double>::const_iterator max_composition = std::max_element(volume_fractions.begin(), volume_fractions.end());
+      const std::vector<double>::const_iterator max_composition = std::max_element(volume_fractions.begin(), volume_fractions.end());
       const bool plastic_yielding = isostrain_viscosities.composition_yielding[std::distance(volume_fractions.begin(), max_composition)];
 
       return plastic_yielding;
@@ -130,6 +125,23 @@ namespace aspect
                                            :
                                            eos_outputs_all_phases.densities[0];
 
+          // Collect the values of all reaction progress variables and use
+          // them to modify the equation of state properties of the individual phases
+          // before phase averaging.
+          const std::vector<unsigned int> &reaction_progress_indices =
+            this->introspection().get_indices_for_fields_of_type(CompositionalFieldDescription::reaction_progress);
+
+          if (reaction_progress_indices.size() != 0)
+            {
+              std::vector<double> reaction_progress_values(reaction_progress_indices.size(), 0.0);
+              for (unsigned int j=0; j<reaction_progress_indices.size(); ++j)
+                reaction_progress_values[j] = in.composition[i][reaction_progress_indices[j]];
+
+              reaction_progress_modify_equation_of_state_outputs(reaction_progress_values,
+                                                                 reaction_progress_mapping,
+                                                                 n_phase_transitions_for_each_chemical_composition,
+                                                                 eos_outputs_all_phases);
+            }
           // The phase index is set to invalid_unsigned_int, because it is only used internally
           // in phase_average_equation_of_state_outputs to loop over all existing phases
           MaterialUtilities::PhaseFunctionInputs<dim> phase_inputs(in.temperature[i],
@@ -152,7 +164,8 @@ namespace aspect
                                                   eos_outputs);
 
           const std::vector<double> volume_fractions = MaterialUtilities::compute_only_composition_fractions(in.composition[i],
-                                                       this->introspection().chemical_composition_field_indices());
+                                                       this->introspection().chemical_composition_field_indices(),
+                                                       this->get_parameters().minimum_composition_fraction);
 
           // not strictly correct if thermal expansivities are different, since we are interpreting
           // these compositions as volume fractions, but the error introduced should not be too bad.
@@ -251,6 +264,8 @@ namespace aspect
               isostrain_viscosities.composition_yielding.clear();
               isostrain_viscosities.composition_viscosities.clear();
               isostrain_viscosities.drucker_prager_parameters.clear();
+              isostrain_viscosities.diffusion_viscosities.clear();
+              isostrain_viscosities.dislocation_viscosities.clear();
 
               out.viscosities[i] = numbers::signaling_nan<double>();
 
@@ -270,11 +285,14 @@ namespace aspect
           // TODO only when requests_property is set to reaction_terms
           rheology->strain_rheology.fill_reaction_outputs(in, i, rheology->min_strain_rate, plastic_yielding, out);
 
-          // Fill plastic outputs if they exist.
+          // Fill plastic outputs and additional viscosity outputs if they exist.
           // The values in isostrain_viscosities only make sense when the calculate_isostrain_viscosities function
           // has been called.
           if (in.requests_property(MaterialProperties::additional_outputs))
-            rheology->fill_plastic_outputs(i, volume_fractions, plastic_yielding, in, out, isostrain_viscosities);
+            {
+              rheology->fill_plastic_outputs(i, volume_fractions, plastic_yielding, in, out, isostrain_viscosities);
+              rheology->fill_viscosity_outputs(i, volume_fractions, out, isostrain_viscosities);
+            }
 
           if (this->get_parameters().enable_elasticity)
             {
@@ -390,7 +408,17 @@ namespace aspect
                              "for a total of N+1 values, where N is the number of all compositional fields or only "
                              "those corresponding to chemical compositions. "
                              "If only one value is given, then all use the same value. "
-                             "Units: $\\frac{\\text{W}}{\\text{m}\\text{K}}$.");
+                             "Units: \\si{\\watt\\per\\meter\\per\\kelvin}.");
+          prm.declare_entry ("Reaction progress mapping", "",
+                             Patterns::List (Patterns::Integer(0)),
+                             "A list of indices that maps each phase transition to a "
+                             "reaction-progress compositional field. For example, an entry "
+                             "of 0 indicates that the corresponding phase transition uses "
+                             "the 0th reaction-progress composition. All following phase "
+                             "transitions will be affected by the former transition's "
+                             "reaction kinetics. A negative value means the phase transition "
+                             "is assumed to be equilibrium."
+                            );
         }
         prm.leave_subsection();
       }
@@ -456,6 +484,8 @@ namespace aspect
               rheology->parse_parameters(prm, std::make_unique<std::vector<unsigned int>>(n_phases_for_each_chemical_composition));
             }
 
+          reaction_progress_mapping = Utilities::string_to_unsigned_int
+                                      (Utilities::split_string_list(prm.get ("Reaction progress mapping")));
         }
         prm.leave_subsection();
       }
@@ -476,6 +506,7 @@ namespace aspect
     ViscoPlastic<dim>::create_additional_named_outputs (MaterialModel::MaterialModelOutputs<dim> &out) const
     {
       rheology->create_plastic_outputs(out);
+      rheology->create_viscosity_outputs(out);
 
       if (this->get_parameters().enable_elasticity)
         rheology->elastic_rheology.create_elastic_additional_outputs(out);
@@ -606,34 +637,34 @@ namespace aspect
                                    "compositional fields representing these components must be named "
                                    "and listed in a very specific format, which is designed to minimize "
                                    "mislabeling stress tensor components as distinct 'compositional "
-                                   "rock types' (or vice versa). For 2d models, three plus three consecutive "
-                                   "compositional fields must be labeled 'stress\\_xx', 'stress\\_yy', 'stress\\_xy', "
-                                   "'stress\\_xx\\_old', 'stress\\_yy\\_old', and 'stress\\_xy\\_old'. "
-                                   "In 3d, six plus six compositional fields must be labeled 'stress\\_xx', "
-                                   "'stress\\_yy', 'stress\\_zz', 'stress\\_xy', 'stress\\_xz', 'stress\\_yz', "
-                                   "'stress\\_xx\\_old', 'stress\\_yy\\_old', 'stress\\_zz\\_old', 'stress\\_xy\\_old', "
-                                   "'stress\\_xz\\_old', 'stress\\_yz\\_old'. "
+                                   "rock types' (or vice versa). For 2d models, the first three compositional "
+                                   "fields of type stress must be labeled 've\\_stress\\_xx', 've\\_stress\\_yy' "
+                                   "and 've\\_stress\\_xy'. In 3d, the first six compositional fields "
+                                   "of type stress must be labeled 've\\_stress\\_xx', 've\\_stress\\_yy', "
+                                   "'ve\\_stress\\_zz', 've\\_stress\\_xy', 've\\_stress\\_xz', 've\\_stress\\_yz'. "
+                                   "If either 'Use fixed elastic time step' is true or 'Stabilization time scale factor' "
+                                   "is set to a value other than 1, the old stresses are also required. "
+                                   "In that case, the next three (2d) or six (3d) compositional fields of type "
+                                   "stress must be labeled 've\\_stress\\_xx\\_old', 've\\_stress\\_yy\\_old' and "
+                                   "'ve\\_stress\\_xy\\_old' in 2d, and 've\\_stress\\_xx\\_old', 've\\_stress\\_yy\\_old', "
+                                   "'ve\\_stress\\_zz\\_old', 've\\_stress\\_xy\\_old', 've\\_stress\\_xz\\_old' "
+                                   "and 've\\_stress\\_yz\\_old' in 3d. "
                                    "\n\n "
                                    "Combining this viscoelasticity implementation with non-linear viscous flow "
                                    "and plasticity produces a constitutive relationship commonly referred to "
                                    "as partial elastoviscoplastic (e.g., pEVP) in the geodynamics community. "
                                    "While extensively discussed and applied within the geodynamics "
                                    "literature, notable references include: "
-                                   "Moresi et al. (2003), J. Comp. Phys., v. 184, p. 476-497. "
-                                   "Gerya and Yuen (2007), Phys. Earth. Planet. Inter., v. 163, p. 83-105. "
-                                   "Gerya (2010), Introduction to Numerical Geodynamic Modeling. "
-                                   "Kaus (2010), Tectonophysics, v. 484, p. 36-47. "
-                                   "Choi et al. (2013), J. Geophys. Res., v. 118, p. 2429-2444. "
-                                   "Keller et al. (2013), Geophys. J. Int., v. 195, p. 1406-1442. "
+                                   "\\cite{moresi2003lagrangian,gerya2007robust,gerya:2010,kaus:2010,choi2013dynearthsol2d,keller:etal:2013}. "
                                    "\n\n "
-                                   "The overview below directly follows Moresi et al. (2003) eqns. 23-38. "
+                                   "The overview below directly follows \\cite{moresi2003lagrangian} eqns. 23-38. "
                                    "However, an important distinction between this material model and "
                                    "the studies above is the option to use compositional fields, rather than "
                                    "particles, to track individual components of the viscoelastic stress "
                                    "tensor. Calculating viscoelastic stresses with particles is also implemented, "
                                    "and can be switched on by using particles with the particle property 'elastic stress'. "
                                    "\n\n "
-                                   "Moresi et al. (2003) begins (eqn. 23) by writing the deviatoric "
+                                   "\\cite{moresi2003lagrangian} begins (eqn. 23) by writing the deviatoric "
                                    "rate of deformation ($\\hat{D}$) as the sum of elastic "
                                    "($\\hat{D_{e}}$) and viscous ($\\hat{D_{v}}$) components: "
                                    "$\\hat{D} = \\hat{D_{e}} + \\hat{D_{v}}$.  "
@@ -681,7 +712,7 @@ namespace aspect
                                    "viscosity is reduced relative to the initial viscosity. "
                                    "\n\n "
                                    "Elastic effects are introduced into the governing Stokes equations through "
-                                   "an elastic force term (eqn. 30 updated to the term in eqn. 5 in Farrington et al. 2014) "
+                                   "an elastic force term (eqn. 30 updated to the term in eqn. 5 in \\cite{farrington2014role}) "
                                    "using stresses from the previous time step rotated and advected into the current time step: "
                                    "$F^{e,t} = -\\frac{\\eta_{eff}}{\\mu \\Delta t^{e}} \\tau^{0adv}$. "
                                    "This force term is added onto the right-hand side force vector in the "

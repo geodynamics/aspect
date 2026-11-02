@@ -110,7 +110,7 @@ subsection Initial temperature model
 end
 
 subsection Initial composition model
-  set Model name = porosity
+  set List of model names = porosity
 end
 
 subsection Material model

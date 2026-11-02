@@ -1,26 +1,21 @@
-/*
-  Copyright (C) 2011 - 2024 by the authors of the ASPECT code.
-
-  This file is part of ASPECT.
-
-  ASPECT is free software; you can redistribute it and/or modify
-  it under the terms of the GNU General Public License as published by
-  the Free Software Foundation; either version 2, or (at your option)
-  any later version.
-
-  ASPECT is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  GNU General Public License for more details.
-
-  You should have received a copy of the GNU General Public License
-  along with ASPECT; see the file LICENSE.  If not see
-  <http://www.gnu.org/licenses/>.
-*/
+// ------------------------------------------------------
+//
+// SPDX-License-Identifier: GPL-2.0-or-later
+//
+// SPDX-FileCopyrightText: Copyright (C) 2011-2026 by the ASPECT authors.
+//
+// This file is part of ASPECT.
+//
+// Detailed license information governing the source code and
+// contributions can be found in the folder LICENSES and in
+// LICENSE and CONTRIBUTING.md at the top level directory.
+//
+// ------------------------------------------------------
 #include <aspect/global.h>
 #include <aspect/utilities.h>
 #include <aspect/simulator_access.h>
 #include <aspect/geometry_model/interface.h>
+#include <aspect/melt.h>
 
 #ifdef ASPECT_WITH_LIBDAP
 #include <D4Connect.h>
@@ -475,6 +470,43 @@ namespace aspect
             }
         }
       return var_name_list;
+    }
+
+
+
+    template <int dim>
+    Tensor<1, dim>
+    calculate_approximate_darcy_velocity (const MaterialModel::MaterialModelInputs<dim> &in,
+                                          const MaterialModel::MaterialModelOutputs<dim> &out,
+                                          const std::shared_ptr<const MaterialModel::MeltOutputs<dim>> fluid_out,
+                                          const Tensor<1, dim> &solid_velocity,
+                                          const Tensor<1, dim> &gravity,
+                                          const unsigned int porosity_idx,
+                                          const unsigned int q,
+                                          const bool use_pressure_gradient_for_darcy_field)
+    {
+      const double porosity = std::max(in.composition[q][porosity_idx], 1e-10);
+      const double solid_density = out.densities[q];
+      const double fluid_density = fluid_out->fluid_densities[q];
+      const double fluid_viscosity = fluid_out->fluid_viscosities[q];
+      const double permeability = fluid_out->permeabilities[q];
+      Tensor<1,dim> fluid_velocity;
+
+      if (use_pressure_gradient_for_darcy_field)
+        {
+          const Tensor<1,dim> pressure_gradient = in.pressure_gradient[q];
+          fluid_velocity = solid_velocity -
+                           permeability / fluid_viscosity / porosity *
+                           (pressure_gradient - gravity * fluid_density);
+        }
+
+      else
+        {
+          fluid_velocity = solid_velocity -
+                           permeability / fluid_viscosity / porosity *
+                           gravity * (solid_density - fluid_density);
+        }
+      return fluid_velocity;
     }
 
 
@@ -2705,7 +2737,7 @@ namespace aspect
                      const Quadrature<dim>                                     &quadrature,
                      const std::function<void(
                        const typename DoFHandler<dim>::active_cell_iterator &,
-                       const std::vector<Point<dim>> &,
+                       const typename std_cxx20::type_identity<std::vector<Point<dim>>>::type &,
                        std::vector<double> &)>                                 &function,
                      VectorType                                                &vec_result)
     {
@@ -3100,6 +3132,63 @@ namespace aspect
 
 
       SymmetricTensor<2,6>
+      rotate_kelvin_tensor(const Tensor<2,3> &rotation_tensor, const SymmetricTensor<2,6> &input_tensor)
+      {
+        // rotating a 4th order tensor represented as a matrix in kelvin notation
+        // by computing $C'=MCM^T$ and using the same principle as in (Carcione, J. M. (2007).
+        // Wave Fields in Real Media: Wave Propagation in Anisotropic, Anelastic,
+        // Porous and Electromagnetic Media. Netherlands: Elsevier Science. Pages 8-9).
+        // though this time using kelvin notation
+
+        Tensor<2,6> rotation_matrix;
+        rotation_matrix[0][0] = Utilities::fixed_power<2>(rotation_tensor[0][0]);
+        rotation_matrix[0][1] = Utilities::fixed_power<2>(rotation_tensor[0][1]);
+        rotation_matrix[0][2] = Utilities::fixed_power<2>(rotation_tensor[0][2]);
+        rotation_matrix[0][3] = numbers::SQRT2*rotation_tensor[0][1]*rotation_tensor[0][2];
+        rotation_matrix[0][4] = numbers::SQRT2*rotation_tensor[0][0]*rotation_tensor[0][2];
+        rotation_matrix[0][5] = numbers::SQRT2*rotation_tensor[0][0]*rotation_tensor[0][1];
+
+        rotation_matrix[1][0] = Utilities::fixed_power<2>(rotation_tensor[1][0]);
+        rotation_matrix[1][1] = Utilities::fixed_power<2>(rotation_tensor[1][1]);
+        rotation_matrix[1][2] = Utilities::fixed_power<2>(rotation_tensor[1][2]);
+        rotation_matrix[1][3] = numbers::SQRT2*rotation_tensor[1][1]*rotation_tensor[1][2];
+        rotation_matrix[1][4] = numbers::SQRT2*rotation_tensor[1][0]*rotation_tensor[1][2];
+        rotation_matrix[1][5] = numbers::SQRT2*rotation_tensor[1][0]*rotation_tensor[1][1];
+
+        rotation_matrix[2][0] = Utilities::fixed_power<2>(rotation_tensor[2][0]);
+        rotation_matrix[2][1] = Utilities::fixed_power<2>(rotation_tensor[2][1]);
+        rotation_matrix[2][2] = Utilities::fixed_power<2>(rotation_tensor[2][2]);
+        rotation_matrix[2][3] = numbers::SQRT2*rotation_tensor[2][1]*rotation_tensor[2][2];
+        rotation_matrix[2][4] = numbers::SQRT2*rotation_tensor[2][0]*rotation_tensor[2][2];
+        rotation_matrix[2][5] = numbers::SQRT2*rotation_tensor[2][0]*rotation_tensor[2][1];
+
+        rotation_matrix[3][0] = numbers::SQRT2*rotation_tensor[1][0]*rotation_tensor[2][0];
+        rotation_matrix[3][1] = numbers::SQRT2*rotation_tensor[1][1]*rotation_tensor[2][1];
+        rotation_matrix[3][2] = numbers::SQRT2*rotation_tensor[1][2]*rotation_tensor[2][2];
+        rotation_matrix[3][3] = rotation_tensor[1][1]*rotation_tensor[2][2]+rotation_tensor[1][2]*rotation_tensor[2][1];
+        rotation_matrix[3][4] = rotation_tensor[1][0]*rotation_tensor[2][2]+rotation_tensor[1][2]*rotation_tensor[2][0];
+        rotation_matrix[3][5] = rotation_tensor[1][0]*rotation_tensor[2][1]+rotation_tensor[1][1]*rotation_tensor[2][0];
+
+        rotation_matrix[4][0] = numbers::SQRT2*rotation_tensor[0][0]*rotation_tensor[2][0];
+        rotation_matrix[4][1] = numbers::SQRT2*rotation_tensor[0][1]*rotation_tensor[2][1];
+        rotation_matrix[4][2] = numbers::SQRT2*rotation_tensor[0][2]*rotation_tensor[2][2];
+        rotation_matrix[4][3] = rotation_tensor[0][1]*rotation_tensor[2][2]+rotation_tensor[0][2]*rotation_tensor[2][1];
+        rotation_matrix[4][4] = rotation_tensor[0][0]*rotation_tensor[2][2]+rotation_tensor[0][2]*rotation_tensor[2][0];
+        rotation_matrix[4][5] = rotation_tensor[0][0]*rotation_tensor[2][1]+rotation_tensor[0][1]*rotation_tensor[2][0];
+
+        rotation_matrix[5][0] = numbers::SQRT2*rotation_tensor[0][0]*rotation_tensor[1][0];
+        rotation_matrix[5][1] = numbers::SQRT2*rotation_tensor[0][1]*rotation_tensor[1][1];
+        rotation_matrix[5][2] = numbers::SQRT2*rotation_tensor[0][2]*rotation_tensor[1][2];
+        rotation_matrix[5][3] = rotation_tensor[0][1]*rotation_tensor[1][2]+rotation_tensor[0][2]*rotation_tensor[1][1];
+        rotation_matrix[5][4] = rotation_tensor[0][0]*rotation_tensor[1][2]+rotation_tensor[0][2]*rotation_tensor[1][0];
+        rotation_matrix[5][5] = rotation_tensor[0][0]*rotation_tensor[1][1]+rotation_tensor[0][1]*rotation_tensor[1][0];
+
+        return symmetrize((rotation_matrix*input_tensor)*transpose(rotation_matrix));
+      }
+
+
+
+      SymmetricTensor<2,6>
       to_voigt_stiffness_matrix(const SymmetricTensor<4,3> &input_tensor)
       {
         SymmetricTensor<2,6> output;
@@ -3326,6 +3415,63 @@ namespace aspect
     }
 
 
+
+    namespace Quaternions
+    {
+      std::array<double,4>
+      rotation_matrix_to_quaternion(const Tensor<2,3> &rotation_matrix, const double tolerance)
+      {
+        std::array<double,4> quaternion;
+        const double w = 0.5*std::sqrt(std::abs(rotation_matrix[0][0] + rotation_matrix[1][1] + rotation_matrix[2][2] + 1));
+
+        if (std::abs(w) >= tolerance)
+          {
+            quaternion[0] = w;
+            quaternion[1] = (rotation_matrix[2][1] - rotation_matrix[1][2])/(4*w);
+            quaternion[2] = (rotation_matrix[0][2] - rotation_matrix[2][0])/(4*w);
+            quaternion[3] = (rotation_matrix[1][0] - rotation_matrix[0][1])/(4*w);
+          }
+        else
+          {
+            quaternion[0] = w;
+            quaternion[1] = 0.5*std::copysign(1.0,rotation_matrix[2][1]-rotation_matrix[1][2])*std::sqrt(rotation_matrix[0][0]-rotation_matrix[1][1]-rotation_matrix[2][2]+1);
+            quaternion[2] = 0.5*std::copysign(1.0,rotation_matrix[0][2]-rotation_matrix[2][0])*std::sqrt(-rotation_matrix[0][0]+rotation_matrix[1][1]-rotation_matrix[2][2]+1);
+            quaternion[3] = 0.5*std::copysign(1.0,rotation_matrix[1][0]-rotation_matrix[0][1])*std::sqrt(-rotation_matrix[0][0]-rotation_matrix[1][1]+rotation_matrix[2][2]+1);
+          }
+
+        return quaternion;
+      }
+
+
+
+      Tensor<2,3>
+      quaternion_to_rotation_matrix(const std::array<double,4> &quaternion)
+      {
+        const double w = quaternion[0];
+        const double x = quaternion[1];
+        const double y = quaternion[2];
+        const double z = quaternion[3];
+
+        Tensor<2,3> rotation_matrix;
+        rotation_matrix[0][0] = x*x - y*y - z*z + w*w;
+        rotation_matrix[1][1] = y*y - z*z - x*x + w*w;
+        rotation_matrix[2][2] = z*z - x*x - y*y + w*w;
+
+        rotation_matrix[0][1] = 2*(x*y - z*w);
+        rotation_matrix[0][2] = 2*(x*z + y*w);
+        rotation_matrix[1][2] = 2*(y*z - x*w);
+
+        rotation_matrix[1][0] = 2*(x*y + z*w);
+        rotation_matrix[2][0] = 2*(x*z - y*w);
+        rotation_matrix[2][1] = 2*(y*z + x*w);
+
+        return rotation_matrix;
+      }
+
+    }
+
+
+
 // Explicit instantiations
 
 #define INSTANTIATE(dim) \
@@ -3405,7 +3551,7 @@ namespace aspect
                    const Quadrature<dim> &quadrature, \
                    const std::function<void( \
                                              const DoFHandler<dim>::active_cell_iterator &, \
-                                             const std::vector<Point<dim>> &, \
+                                             const std_cxx20::type_identity<std::vector<Point<dim>>>::type &, \
                                              std::vector<double> &)> &function, \
                    dealii::LinearAlgebra::distributed::Vector<double> &vec_result); \
   \
@@ -3421,6 +3567,16 @@ namespace aspect
                                              std::vector<double> &)> &function, \
                    LinearAlgebra::BlockVector &vec_result); \
   \
+  template \
+  Tensor<1, dim> \
+  calculate_approximate_darcy_velocity (const MaterialModel::MaterialModelInputs<dim> &in, \
+                                        const MaterialModel::MaterialModelOutputs<dim> &out, \
+                                        std::shared_ptr<const MaterialModel::MeltOutputs<dim>> fluid_out, \
+                                        const Tensor<1, dim> &solid_velocity, \
+                                        const Tensor<1, dim> &gravity, \
+                                        const unsigned int porosity_idx, \
+                                        unsigned int q, \
+                                        bool use_pressure_gradient_for_darcy_field); \
   namespace Tensors \
   { \
     template \
@@ -3428,6 +3584,13 @@ namespace aspect
     \
     template \
     double consistent_second_invariant_of_deviatoric_tensor(const SymmetricTensor<2,dim> &); \
+  } \
+  \
+  namespace Quaternions \
+  { \
+    std::array<double,4> rotation_matrix_to_quaternion(const Tensor<2,3> &rotation_matrix, const long double tolerance); \
+    \
+    Tensor<2,3> quaternion_to_rotation_matrix(const std::array<double,4> &quaternion); \
   }
 
 

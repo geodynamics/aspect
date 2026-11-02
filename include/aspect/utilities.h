@@ -1,22 +1,16 @@
-/*
-  Copyright (C) 2014 - 2024 by the authors of the ASPECT code.
-
-  This file is part of ASPECT.
-
-  ASPECT is free software; you can redistribute it and/or modify
-  it under the terms of the GNU General Public License as published by
-  the Free Software Foundation; either version 2, or (at your option)
-  any later version.
-
-  ASPECT is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  GNU General Public License for more details.
-
-  You should have received a copy of the GNU General Public License
-  along with ASPECT; see the file LICENSE.  If not see
-  <http://www.gnu.org/licenses/>.
-*/
+// ------------------------------------------------------
+//
+// SPDX-License-Identifier: GPL-2.0-or-later
+//
+// SPDX-FileCopyrightText: Copyright (C) 2014-2026 by the ASPECT authors.
+//
+// This file is part of ASPECT.
+//
+// Detailed license information governing the source code and
+// contributions can be found in the folder LICENSES and in
+// LICENSE and CONTRIBUTING.md at the top level directory.
+//
+// ------------------------------------------------------
 
 
 #ifndef _aspect_utilities_h
@@ -25,6 +19,8 @@
 #include <aspect/global.h>
 
 #include <array>
+#include <deal.II/base/exceptions.h>
+#include <deal.II/base/thread_local_storage.h>
 #include <random>
 #include <deal.II/base/point.h>
 #include <deal.II/base/conditional_ostream.h>
@@ -33,6 +29,7 @@
 #include <deal.II/dofs/dof_handler.h>
 #include <deal.II/fe/component_mask.h>
 #include <deal.II/lac/solver_control.h>
+#include <deal.II/physics/notation.h>
 
 #include <aspect/coordinate_systems.h>
 #include <aspect/structured_data.h>
@@ -43,6 +40,10 @@
 namespace aspect
 {
   template <int dim> class SimulatorAccess;
+  namespace MaterialModel
+  {
+    template <int dim> class MeltOutputs;
+  }
 
   namespace GeometryModel
   {
@@ -56,21 +57,81 @@ namespace aspect
   namespace Utilities
   {
     /**
-    * Because many places in ASPECT assume that all functions in the namespace
-    * <code>dealii::Utilities</code> are available without qualification as
-    * <code>Utilities::function</code>, just as all the function in the
-    * namespace <code>aspect::Utilities</code>, we make sure all these functions
-    * are available inside <code>aspect::Utilities</code>. This is maybe not
-    * the cleanest solution, but it is most compatible with a lot of existing
-    * code, and also allows to migrate ASPECT functions into deal.II when
-    * useful without introducing incompatibilities.
-    *
-    * We need to do this in every header that introduces something into the
-    * namespace <code>aspect::Utilities</code>, because it needs to happen
-    * no matter which header files of ASPECT are included.
-    */
+     * Because many places in ASPECT assume that all functions in the namespace
+     * <code>dealii::Utilities</code> are available without qualification as
+     * <code>Utilities::function</code>, just as all the function in the
+     * namespace <code>aspect::Utilities</code>, we make sure all these functions
+     * are available inside <code>aspect::Utilities</code>. This is maybe not
+     * the cleanest solution, but it is most compatible with a lot of existing
+     * code, and also allows to migrate ASPECT functions into deal.II when
+     * useful without introducing incompatibilities.
+     *
+     * We need to do this in every header that introduces something into the
+     * namespace <code>aspect::Utilities</code>, because it needs to happen
+     * no matter which header files of ASPECT are included.
+     */
     using namespace dealii::Utilities;
 
+
+    /**
+     * A class that allows for creating reusable chunks of memory.
+     * When this class's get_object_from_pool() function is called, it returns a reference to a currently unused object,
+     * or creates a new one if non are available. When done with an object it can be returned to the pool for later use.
+     * This is particularly useful when needing the same size memory in a function which is called in a loop. Since the
+     * objects are not reset, using this scratch space can prevent reallocating memory over and over. This class works
+     * in recursive functions.
+     * The class is recommended to be used with the ScopedScratchObject, which will automatically return the
+     * object to the pool when the ScopedScratchObject goes out of scope.
+     */
+    template <typename T>
+    class ScratchSpace
+    {
+      public:
+        /**
+         * This class takes an object from a ScratchSpace pool and will return it to the pool when the ScopedScratchObject
+         * goes out of scope.
+         */
+        class ScopedScratchObject
+        {
+          public:
+            /**
+             * Constructor
+             */
+            ScopedScratchObject (const ScratchSpace<T> &/*space_*/);
+
+            /**
+             * Destructor: return the object to the pool
+             */
+            ~ScopedScratchObject();
+
+            /**
+             * Get a reference to the object.
+             */
+            operator T &() const;
+
+          private:
+            const ScratchSpace &space;
+            T &t;
+        };
+
+        /**
+         * returns an object from the pool. If there are no unused objects, it creates a new object and returns it.
+         */
+        T &get_object_from_pool() const;
+
+        /**
+         * Destructor
+         */
+        ~ScratchSpace() = default;
+
+        /**
+         * returns an object to the pool to be reused later.
+         */
+        void return_object_to_pool (T &t) const;
+
+      private:
+        mutable dealii::Threads::ThreadLocalStorage<std::list<std::pair<T,bool>>>  object_list;
+    };
 
     /**
      * Given an array @p values, consider three cases:
@@ -358,6 +419,17 @@ namespace aspect
     std::vector<std::string>
     expand_dimensional_variable_names (const std::vector<std::string> &var_declarations);
 
+
+    template <int dim>
+    Tensor<1, dim>
+    calculate_approximate_darcy_velocity (const MaterialModel::MaterialModelInputs<dim> &in,
+                                          const MaterialModel::MaterialModelOutputs<dim> &out,
+                                          const std::shared_ptr<const MaterialModel::MeltOutputs<dim>> fluid_out,
+                                          const Tensor<1, dim> &solid_velocity,
+                                          const Tensor<1, dim> &gravity,
+                                          const unsigned int porosity_idx,
+                                          const unsigned int q,
+                                          const bool use_pressure_gradient_for_darcy_field);
     /**
      * Returns an IndexSet that contains all locally active DoFs that belong to
      * the given component_mask.
@@ -1065,7 +1137,7 @@ namespace aspect
                      const Quadrature<dim>                                     &quadrature,
                      const std::function<void(
                        const typename DoFHandler<dim>::active_cell_iterator &,
-                       const std::vector<Point<dim>> &,
+                       const typename std_cxx20::type_identity<std::vector<Point<dim>>>::type &,
                        std::vector<double> &)>                                 &function,
                      VectorType                                                &vec_result);
 
@@ -1195,6 +1267,49 @@ namespace aspect
 #ifndef DOXYGEN
   namespace Utilities
   {
+    template<typename T>
+    T &ScratchSpace<T>::get_object_from_pool() const
+    {
+      for (auto &pair : object_list.get())
+        if (pair.second == false)
+          {
+            pair.second = true;
+            return pair.first;
+          }
+
+      object_list.get().emplace_back (T(), true);
+      return object_list.get().back().first;
+    }
+
+    template<typename T>
+    void ScratchSpace<T>::return_object_to_pool (T &t) const
+    {
+      for (auto &pair : object_list.get())
+        if (&pair.first == &t)
+          {
+            pair.second = false;
+            return;
+          }
+      AssertThrow(false, ExcMessage("You are tying to return an object to the pool which has apparently not been allocated by this pool."));
+    }
+
+    template<typename T>
+    ScratchSpace<T>::ScopedScratchObject::ScopedScratchObject(const ScratchSpace<T> &space_)
+      : space (space_),
+        t (space.get_object_from_pool())
+    {}
+
+    template<typename T>
+    ScratchSpace<T>::ScopedScratchObject::~ScopedScratchObject()
+    {
+      space.return_object_to_pool(t);
+    }
+
+    template<typename T>
+    ScratchSpace<T>::ScopedScratchObject::operator T &() const
+    {
+      return t;
+    }
 
     template <typename T>
     inline
@@ -1335,6 +1450,12 @@ namespace aspect
       rotate_voigt_stiffness_matrix(const Tensor<2,3> &rotation_tensor, const SymmetricTensor<2,6> &input_tensor);
 
       /**
+       * Rotate a symmetric 6x6 tensor in kelvin notation
+       */
+      SymmetricTensor<2,6>
+      rotate_kelvin_tensor(const Tensor<2,3> &rotation_tensor, const SymmetricTensor<2,6> &input_tensor);
+
+      /**
        * Transform a 4th order full stiffness tensor into a 6x6 Voigt stiffness matrix.
        * See https://en.wikipedia.org/wiki/Voigt_notation for more info on the Voigt notation.
        */
@@ -1412,6 +1533,38 @@ namespace aspect
       template <int dim>
       double
       consistent_second_invariant_of_deviatoric_tensor(const SymmetricTensor<2,dim> &input);
+    }
+
+    namespace Quaternions
+    {
+      /**
+       * Converts an active rotation matrix to a unit quaternion.
+       * Active rotations are given by the column vectors of the new basis. R=[e1'|e2'|e3']
+       * Unit quaternions are a direct representation of rotations by the quaternion algebra
+       * (https://en.wikipedia.org/wiki/Quaternions_and_spatial_rotation)
+       * and avoid an issue known as gimbal lock (https://en.wikipedia.org/wiki/Gimbal_lock)
+       * Quaternions are often split into a scalar part q[0] and a vector part q[i] i \in {1,2,3}
+       * The scalar part is directly related to the rotation angle by q[0] = cos(rot_angle/2)
+       * The vector part corresponds to the rotation axis n by vec(q) = sin(rot_angle/2)*n.
+       * As the first quaternion component q[0] approaches zero (rotations of 180°),
+       * floating point issues can lead to problems in dividing by q[0].
+       * For this case a tolerance is installed, which if crossed reverts to a more expensive,
+       * but equivalent way of computing the quaternion from the rotation matrix.
+       * (https://en.wikipedia.org/wiki/Rotation_matrix#Quaternion)
+       * The tolerance in this expression should be set on the order of 1e-12.
+       * Quaternions are a double cover of the space of rotations, R(q) = R(-q).
+       * We choose the convention to only work with quaternions that fulfill q[0] > 0.
+       */
+      std::array<double,4> rotation_matrix_to_quaternion(const Tensor<2,3> &rotation_matrix,
+                                                         const double tolerance=1e-12);
+
+      /**
+       * Converts a unit quaternion to a rotation matrix.
+       * This relation between a unit quaternion and a rotation matrix
+       * follows from the quaternion algebra.
+       * (https://en.wikipedia.org/wiki/Quaternions_and_spatial_rotation)
+       */
+      Tensor<2,3> quaternion_to_rotation_matrix(const std::array<double,4> &quaternion);
     }
 
   }

@@ -37,7 +37,7 @@ end
 subsection Initial temperature model
   # The actual initial temperature is irrelevant, because it
   # is recalculated from the entropy during the first timestep.
-  set Model name = function
+  set List of model names = function
 
   subsection Function
     set Function expression = 1500

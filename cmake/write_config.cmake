@@ -1,20 +1,16 @@
-# Copyright (C) 2013 - 2024 by the authors of the ASPECT code.
+# ------------------------------------------------------
+#
+# SPDX-License-Identifier: GPL-2.0-or-later
+#
+# SPDX-FileCopyrightText: Copyright (C) 2013-2026 by the ASPECT authors.
 #
 # This file is part of ASPECT.
 #
-# ASPECT is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation; either version 2, or (at your option)
-# any later version.
+# Detailed license information governing the source code and
+# contributions can be found in the folder LICENSES and in
+# LICENSE and CONTRIBUTING.md at the top level directory.
 #
-# ASPECT is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
-#
-# You should have received a copy of the GNU General Public License
-# along with ASPECT; see the file LICENSE.  If not see
-# <http://www.gnu.org/licenses/>.
+# ------------------------------------------------------
 
 
 set(_log_detailed "${CMAKE_BINARY_DIR}/detailed.log")
@@ -39,6 +35,7 @@ _detailed(
 #        ASPECT_USE_SHARED_LIBS:    ${ASPECT_USE_SHARED_LIBS}
 #        ASPECT_HAVE_LINK_H:        ${ASPECT_HAVE_LINK_H}
 #        ASPECT_WITH_FASTSCAPE:     ${ASPECT_WITH_FASTSCAPE}
+#        ASPECT_WITH_LANDLAB:       ${ASPECT_WITH_LANDLAB}
 #        ASPECT_WITH_LIBDAP:        ${ASPECT_WITH_LIBDAP}
 #        ASPECT_WITH_NETCDF:        ${ASPECT_WITH_NETCDF}
 #        ASPECT_WITH_PERPLEX:       ${ASPECT_WITH_PERPLEX}

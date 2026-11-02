@@ -1,20 +1,16 @@
-# Copyright (C) 2013 - 2024 by the authors of the ASPECT code.
+# ------------------------------------------------------
+#
+# SPDX-License-Identifier: GPL-2.0-or-later
+#
+# SPDX-FileCopyrightText: Copyright (C) 2013-2026 by the ASPECT authors.
 #
 # This file is part of ASPECT.
 #
-# ASPECT is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation; either version 2, or (at your option)
-# any later version.
+# Detailed license information governing the source code and
+# contributions can be found in the folder LICENSES and in
+# LICENSE and CONTRIBUTING.md at the top level directory.
 #
-# ASPECT is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
-#
-# You should have received a copy of the GNU General Public License
-# along with ASPECT; see the file doc/COPYING.  If not see
-# <http://www.gnu.org/licenses/>.
+# ------------------------------------------------------
 
 cmake_minimum_required(VERSION 3.13.4)
 project(aspect CXX)
@@ -302,11 +298,22 @@ if(ASPECT_WITH_FASTSCAPE)
     foreach(_line ${_fastscape_info})
       string(STRIP ${_line} _line)
       if("${_line}" MATCHES "^version")
+        if("${_line}" MATCHES "ASPECT")
+          message(STATUS "FastScape version compatible with ASPECT.")
+        else()
+          message(Status "The linked FastScape version is not adapted for use with ASPECT. Consider obtaining a new version from https://github.com/anne-glerum/fastscapelib-fortran.")
+        endif()
         string(REGEX REPLACE "[^0-9.]" "" FASTSCAPE_VERSION ${_line})
       endif()
     endforeach()
     message(STATUS "FastScape version number is ${FASTSCAPE_VERSION}")
 
+    # Get the subversion numbers
+    string(REPLACE "." ";" _fastscape_version_parts "${FASTSCAPE_VERSION}")
+    list(GET _fastscape_version_parts 0 FASTSCAPE_VERSION_MAJOR)
+    list(GET _fastscape_version_parts 1 FASTSCAPE_VERSION_MINOR)
+    list(GET _fastscape_version_parts 2 FASTSCAPE_VERSION_SUBMINOR)
+    
     # Throw an error if the version is too old.
     if(${FASTSCAPE_VERSION} VERSION_LESS 2.8)
       message(FATAL_ERROR "The linked FastScape version is ${FASTSCAPE_VERSION}, however at least 2.8.0 is required.")
@@ -770,14 +777,6 @@ install(PROGRAMS ${CMAKE_BINARY_DIR}/aspect
 	TYPE BIN)
 
 
-# This should be done in DEAL_II_SETUP_TARGET, but deal.II 9.5
-# does not do so, so do it here. Remove this when we require deal.II 9.6.
-if(${ASPECT_BUILD_RELEASE} STREQUAL "ON")
-  if(DEAL_II_PACKAGE_VERSION VERSION_LESS 9.6.0)
-    target_compile_definitions(${TARGET_EXE_RELEASE} PUBLIC "NDEBUG")
-  endif()
-endif()
-
 # Turn on debug checks like invalid element access in c++ standard library:
 if(${ASPECT_BUILD_DEBUG} STREQUAL "ON")
   target_compile_definitions(${TARGET_EXE_DEBUG} PUBLIC "_GLIBCXX_ASSERTIONS")
@@ -1000,6 +999,8 @@ configure_file(
 set(ASPECT_RUN_ALL_TESTS OFF CACHE BOOL "Set up complete test suite to run.")
 set(ASPECT_NEED_TEST_CONFIGURE ON CACHE BOOL "If true, reconfigure test project.")
 set(ASPECT_COMPARE_TEST_RESULTS ON CACHE BOOL "Compare test results with high accuracy.")
+set(ASPECT_ENABLE_PERFORMANCE_TESTS OFF CACHE BOOL "If true, enable performance tests. These are likely to cause timeouts on CI systems.")
+
 
 configure_file(
   ${CMAKE_SOURCE_DIR}/tests/cmake/CTestCustom.ctest.in
@@ -1075,6 +1076,7 @@ if(EXISTS ${CMAKE_SOURCE_DIR}/tests/CMakeLists.txt
     COMMAND ${CMAKE_COMMAND} -G "${ASPECT_TEST_GENERATOR}"
         -D ASPECT_RUN_ALL_TESTS=${ASPECT_RUN_ALL_TESTS}
         -D ASPECT_COMPARE_TEST_RESULTS=${ASPECT_COMPARE_TEST_RESULTS}
+        -D ASPECT_ENABLE_PERFORMANCE_TESTS=${ASPECT_ENABLE_PERFORMANCE_TESTS}
         -D Aspect_DIR=${CMAKE_BINARY_DIR}
         -D CMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}
         -D ASPECT_BINARY=${CMAKE_BINARY_DIR}/aspect

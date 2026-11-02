@@ -6,7 +6,7 @@
 
 # MPI: 2
 
-include $ASPECT_SOURCE_DIR/tests/composition_active.prm
+include $ASPECT_SOURCE_DIR/tests/cookbooks/composition_active.prm
 
 set End time                               = 0.1
 

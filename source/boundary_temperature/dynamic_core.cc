@@ -1,27 +1,20 @@
-/*
-  Copyright (C) 2011 - 2024 by the authors of the ASPECT code.
-
-  This file is part of ASPECT.
-
-  ASPECT is free software; you can redistribute it and/or modify
-  it under the terms of the GNU General Public License as published by
-  the Free Software Foundation; either version 2, or (at your option)
-  any later version.
-
-  ASPECT is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  GNU General Public License for more details.
-
-  You should have received a copy of the GNU General Public License
-  along with ASPECT; see the file doc/COPYING.  If not see
-  <http://www.gnu.org/licenses/>.
-*/
+// ------------------------------------------------------
+//
+// SPDX-License-Identifier: GPL-2.0-or-later
+//
+// SPDX-FileCopyrightText: Copyright (C) 2011-2026 by the ASPECT authors.
+//
+// This file is part of ASPECT.
+//
+// Detailed license information governing the source code and
+// contributions can be found in the folder LICENSES and in
+// LICENSE and CONTRIBUTING.md at the top level directory.
+//
+// ------------------------------------------------------
 
 
 
 #include <aspect/boundary_temperature/dynamic_core.h>
-#include <aspect/postprocess/core_statistics.h>
 #include <aspect/geometry_model/spherical_shell.h>
 #include <aspect/adiabatic_conditions/interface.h>
 #include <aspect/gravity_model/interface.h>
@@ -86,27 +79,8 @@ namespace aspect
       core_data.dt = this->get_timestep();
       core_data.H  = compute_radioheating_rate();
 
-      // It's a bit tricky here.
-      // Didn't use the initialize() function instead because the postprocess is initialized after boundary temperature.
-      // It is not available at the time initialize() function of boundary temperature is called.
       if (is_first_call==true)
         {
-          AssertThrow(this->get_postprocess_manager().template has_matching_active_plugin<const Postprocess::CoreStatistics<dim>>(),
-                      ExcMessage ("Dynamic core boundary condition has to work with dynamic core statistics postprocessor."));
-
-          const Postprocess::CoreStatistics<dim> &core_statistics
-            = this->get_postprocess_manager().template get_matching_active_plugin<const Postprocess::CoreStatistics<dim>>();
-          const internal::CoreData &postprocessor_core_data = core_statistics.get_core_data();
-          const bool restored_core_data = postprocessor_core_data.is_initialized;
-
-          // The restart data is stored in 'core statistics' postprocessor.
-          // If restart from checkpoint, extract data from there.
-          // In a fresh run, the postprocessor has not seen valid dynamic core
-          // data yet, so keep the boundary model's CoreData object and
-          // initialize it from the parameter file below.
-          if (restored_core_data)
-            core_data = postprocessor_core_data;
-
           // Read data of other energy source
           read_data_OES();
 
@@ -127,10 +101,8 @@ namespace aspect
           else
             dTa   = 0.;
 
-          // Setup initial core data from prm input.
-          // If resumed from checkpoint, core_data is read from postprocess instead of set from prm file.
-          // (The boundary_temperature doesn't seem to support restart/resume, the data has to passed and
-          // stored in the postprocessor 'core statistics')
+          // Setup initial core data from prm input. On restart, core_data has
+          // already been restored by DynamicCore::load().
           if (!core_data.is_initialized)
             {
               core_data.Ti = inner_temperature + dTa;
@@ -156,7 +128,7 @@ namespace aspect
                     <<std::setw(15)<<core_data.dX_dt *year_in_seconds<<std::endl;
               this->get_pcout() << output.str();
             }
-          else if (restored_core_data)
+          else
             {
               core_data.dt = this->get_timestep();
               core_data.H = compute_radioheating_rate();
@@ -1017,27 +989,27 @@ namespace aspect
         {
           prm.declare_entry ("Outer temperature", "0.",
                              Patterns::Double (),
-                             "Temperature at the outer boundary (lithosphere water/air). Units: $\\text{K}$.");
+                             "Temperature at the outer boundary (lithosphere water/air). Units: \\si{\\kelvin}.");
           prm.declare_entry ("Inner temperature", "6000.",
                              Patterns::Double (),
                              "Temperature at the inner boundary (core mantle boundary) at the "
-                             "beginning. Units: $\\text{K}$.");
+                             "beginning. Units: \\si{\\kelvin}.");
           prm.declare_entry ("dT over dt", "0.",
                              Patterns::Double (),
                              "Initial CMB temperature changing rate. "
-                             "Units: $\\text{K}$/year.");
+                             "Units: \\si{\\kelvin\\per\\year}.");
           prm.declare_entry ("dR over dt", "0.",
                              Patterns::Double (),
                              "Initial inner core radius changing rate. "
-                             "Units: \\si{\\kilo\\meter}/year.");
+                             "Units: \\si{\\kilo\\meter\\per\\year}.");
           prm.declare_entry ("dX over dt", "0.",
                              Patterns::Double (),
                              "Initial light composition changing rate. "
-                             "Units: 1/year.");
+                             "Units: \\si{\\per\\year}.");
           prm.declare_entry ("Core density", "12.5e3",
                              Patterns::Double (),
                              "Density of the core. "
-                             "Units: $\\frac{\\text{kg}}{\\text{m}^3}$.");
+                             "Units: \\si{\\kilogram\\per\\meter\\cubed}.");
           prm.declare_entry ("CMB pressure", "0.14e12",
                              Patterns::Double (),
                              "Pressure at CMB. Units: \\si{\\pascal}.");
@@ -1051,7 +1023,7 @@ namespace aspect
           prm.declare_entry ("Core heat capacity", "840.",
                              Patterns::Double (0.),
                              "Heat capacity of the core. "
-                             "Units: $\\frac{\\text{J}}{\\text{K}\\text{kg}}$.");
+                             "Units: \\si{\\joule\\per\\kelvin\\per\\kilogram}.");
           prm.declare_entry ("K0", "4.111e11",
                              Patterns::Double (0.),
                              "Core compressibility at zero pressure. "
@@ -1059,11 +1031,11 @@ namespace aspect
           prm.declare_entry ("Rho0", "7.019e3",
                              Patterns::Double (0.),
                              "Core density at zero pressure. "
-                             "Units: $\\frac{\\text{kg}}{\\text{m}^3}$. "
+                             "Units: \\si{\\kilogram\\per\\meter\\cubed}. "
                              "See \\cite{NPB+04} for more details.");
           prm.declare_entry ("Alpha", "1.35e-5",
                              Patterns::Double (0.),
-                             "Core thermal expansivity. Units: $\\frac{1}{\\text{K}}$.");
+                             "Core thermal expansivity. Units: \\si{\\per\\kelvin}.");
           prm.declare_entry ("Lh", "750e3",
                              Patterns::Double (0.),
                              "The latent heat of core freeze. "
@@ -1081,12 +1053,12 @@ namespace aspect
                              "Partition coefficient of the light element.");
           prm.declare_entry ("Core conductivity", "60.",
                              Patterns::Double (0.),
-                             "Core heat conductivity $k_c$. Units: $\\frac{\\text{W}}{\\text{m}\\text{K}}$.");
+                             "Core heat conductivity $k_c$. Units: \\si{\\watt\\per\\meter\\per\\kelvin}.");
           prm.enter_subsection("Geotherm parameters");
           {
             prm.declare_entry ("Tm0","1695.",
                                Patterns::Double (0.),
-                               "Melting curve (\\cite{NPB+04} eq. (40)) parameter Tm0. Units: $\\text{K}$.");
+                               "Melting curve (\\cite{NPB+04} eq. (40)) parameter Tm0. Units: \\si{\\kelvin}.");
             prm.declare_entry ("Tm1","10.9e-12",
                                Patterns::Double (),
                                "Melting curve (\\cite{NPB+04} eq. (40)) parameter Tm1. "
@@ -1245,7 +1217,7 @@ namespace aspect
     ASPECT_REGISTER_BOUNDARY_TEMPERATURE_MODEL(DynamicCore,
                                                "dynamic core",
                                                "This is a boundary temperature model working only with spherical "
-                                               "shell geometry and core statistics postprocessor. The temperature "
+                                               "shell geometry. The temperature "
                                                "at the top is constant, and the core mantle boundary temperature "
                                                "is dynamically evolving through time by calculating the heat flux "
                                                "into the core and solving the core energy balance. The formulation "

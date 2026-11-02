@@ -18,7 +18,7 @@ Number of degrees of freedom: 116,838 (37,358+4,764+18,679+18,679+18,679+18,679)
    Postprocessing:
      RMS, max velocity:                                        0.0194 m/year, 0.0519 m/year
      Compositions max depth [m]:                               7.852e+04 // 1.099e+05 // 7.852e+04
-     Viscous dissipation per field and for whole domain (W/m): 5876 // 7896 // 50.26 // 1.539e+04
+     Viscous dissipation per field and for whole domain (W/m): 1.175e+04 // 1.579e+04 // 100.5 // 3.078e+04
 
 Termination requested by criterion: end time
 

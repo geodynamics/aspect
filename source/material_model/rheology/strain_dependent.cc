@@ -1,37 +1,33 @@
-/*
-  Copyright (C) 2019 - 2024 by the authors of the ASPECT code.
-
-  This file is part of ASPECT.
-
-  ASPECT is free software; you can redistribute it and/or modify
-  it under the terms of the GNU General Public License as published by
-  the Free Software Foundation; either version 2, or (at your option)
-  any later version.
-
-  ASPECT is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  GNU General Public License for more details.
-
-  You should have received a copy of the GNU General Public License
-  along with ASPECT; see the file LICENSE.  If not see
-  <http://www.gnu.org/licenses/>.
-*/
-
+// ------------------------------------------------------
+//
+// SPDX-License-Identifier: GPL-2.0-or-later
+//
+// SPDX-FileCopyrightText: Copyright (C) 2019-2026 by the ASPECT authors.
+//
+// This file is part of ASPECT.
+//
+// Detailed license information governing the source code and
+// contributions can be found in the folder LICENSES and in
+// LICENSE and CONTRIBUTING.md at the top level directory.
+//
+// ------------------------------------------------------
 
 #include <aspect/material_model/rheology/strain_dependent.h>
 
-#include <deal.II/base/signaling_nan.h>
-#include <deal.II/base/parameter_handler.h>
 #include <aspect/utilities.h>
 #include <aspect/postprocess/particles.h>
+#include <aspect/particle/manager.h>
 #include <aspect/particle/property/interface.h>
-#include <aspect/simulator.h>
 #include <aspect/simulator_signals.h>
 
+#include <deal.II/base/signaling_nan.h>
+#include <deal.II/base/parameter_handler.h>
 #include <deal.II/fe/fe_values.h>
 #include <deal.II/numerics/fe_field_function.h>
 #include <deal.II/base/quadrature_lib.h>
+
+#include <algorithm>
+
 
 namespace aspect
 {
@@ -45,7 +41,7 @@ namespace aspect
       {
         prm.declare_entry ("Strain weakening mechanism", "default",
                            Patterns::Selection("none|finite strain tensor|total strain|plastic weakening with plastic strain only|plastic weakening with total strain only|plastic weakening with plastic strain and viscous weakening with viscous strain|viscous weakening with viscous strain only|default"),
-                           "Whether to apply strain weakening to viscosity, cohesion and internal angle"
+                           "Whether to apply strain weakening to viscosity, cohesion and internal angle "
                            "of friction based on accumulated finite strain, and if yes, which method to "
                            "use. The following methods are available:"
                            "\n\n"
@@ -63,7 +59,7 @@ namespace aspect
                            "angle) and the pre-yield viscosity."
                            "\n\n"
                            "\\item ``plastic weakening with plastic strain only'': The finite strain is "
-                           "approximated as the product of the second invariant of the strain rate"
+                           "approximated as the product of the second invariant of the strain rate "
                            "in each time step and the time step size in regions where material is "
                            "plastically yielding. This quantity is integrated and tracked over time, and "
                            "used to weaken the cohesion and friction angle. The pre-yield viscosity is "
@@ -171,7 +167,7 @@ namespace aspect
                            "for background material and compositional fields, "
                            "for a total of N+1 values, where N is the number of all compositional fields "
                            "or only those corresponding to chemical compositions. "
-                           "If only one value is given, then all use the same value. Units: $\\text{K}$.");
+                           "If only one value is given, then all use the same value. Units: \\si{\\kelvin}.");
 
         prm.declare_entry ("Lower temperature for maximum strain weakening", "923.",
                            Patterns::List(Patterns::Double (0.)),
@@ -179,7 +175,7 @@ namespace aspect
                            "for background material and compositional fields, "
                            "for a total of N+1 values, where N is the number of all compositional fields "
                            "or only those corresponding to chemical compositions. "
-                           "If only one value is given, then all use the same value. Units: $\\text{K}$.");
+                           "If only one value is given, then all use the same value. Units: \\si{\\kelvin}.");
 
         prm.declare_entry ("Upper temperature for maximum strain weakening", "1023.",
                            Patterns::List(Patterns::Double (0.)),
@@ -187,15 +183,15 @@ namespace aspect
                            "for background material and compositional fields, "
                            "for a total of N+1 values, where N is the number of all compositional fields "
                            "or only those corresponding to chemical compositions. "
-                           "If only one value is given, then all use the same value. Units: $\\text{K}$.");
+                           "If only one value is given, then all use the same value. Units: \\si{\\kelvin}.");
 
         prm.declare_entry ("Upper temperature for onset of strain weakening", "1123.",
                            Patterns::List(Patterns::Double (0.)),
-                           "List of upper temperatures for onset of strain weakening"
+                           "List of upper temperatures for onset of strain weakening "
                            "for background material and compositional fields, "
                            "for a total of N+1 values, where N is the number of all compositional fields "
                            "or only those corresponding to chemical compositions. "
-                           "If only one value is given, then all use the same value. Units: $\\text{K}$.");
+                           "If only one value is given, then all use the same value. Units: \\si{\\kelvin}.");
 
         prm.declare_entry ("Strain healing mechanism", "no healing",
                            Patterns::Selection("no healing|temperature dependent"),
@@ -213,7 +209,7 @@ namespace aspect
 
         prm.declare_entry ("Strain healing temperature dependent recovery rate", "1.e-15", Patterns::Double(0),
                            "Recovery rate prefactor for temperature dependent "
-                           "strain healing. Units: $1/s$");
+                           "strain healing. Units: \\si{\\per\\second}");
 
         prm.declare_entry ("Strain healing temperature dependent prefactor", "15.", Patterns::Double(0),
                            "Prefactor for temperature dependent "
@@ -600,7 +596,7 @@ namespace aspect
                                   const unsigned int j) const
       {
         // Constrain the second strain invariant of the previous timestep by the strain interval
-        const double cut_off_strain_ii = std::max(std::min(strain_ii,end_plastic_strain_weakening_intervals[j]),start_plastic_strain_weakening_intervals[j]);
+        const double cut_off_strain_ii = std::clamp(strain_ii, start_plastic_strain_weakening_intervals[j], end_plastic_strain_weakening_intervals[j]);
 
         // Linear strain weakening of cohesion and internal friction angle between specified strain values
         const double strain_fraction = (cut_off_strain_ii - start_plastic_strain_weakening_intervals[j]) /
@@ -620,7 +616,7 @@ namespace aspect
                                   const unsigned int j) const
       {
         // Constrain the second strain invariant of the previous timestep by the strain interval
-        const double cut_off_strain_ii = std::max(std::min(strain_ii,end_viscous_strain_weakening_intervals[j]),start_viscous_strain_weakening_intervals[j]);
+        const double cut_off_strain_ii = std::clamp(strain_ii, start_viscous_strain_weakening_intervals[j], end_viscous_strain_weakening_intervals[j]);
 
         // Linear strain weakening of the viscous flow law prefactors between specified strain values
         const double strain_fraction = (cut_off_strain_ii - start_viscous_strain_weakening_intervals[j]) /

@@ -40,7 +40,7 @@ end
 # Initially, there is no free water (the porosity is zero) and the water content
 # of the material is 1%.
 subsection Initial composition model
-  set Model name = function
+  set List of model names = function
 
   subsection Function
     set Function expression = 0.0; 0.01
@@ -90,7 +90,7 @@ end
 # The temperature is not important for this model, so we simply
 # set it to 1600 K everywhere (including the boundary).
 subsection Initial temperature model
-  set Model name = function
+  set List of model names = function
 
   subsection Function
     set Function expression = 1600

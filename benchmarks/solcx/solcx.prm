@@ -44,7 +44,7 @@ end
 
 
 subsection Initial temperature model
-  set Model name = perturbed box
+  set List of model names = perturbed box
 end
 
 ############### Parameters describing the discretization

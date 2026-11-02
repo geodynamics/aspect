@@ -68,7 +68,14 @@ friction angle) and thermodynamic properties for each compositional field
 are based largely on previous numerical studies. Dislocation creep viscous
 flow parameters are taken from published deformation experiments for wet
 quartzite ({cite}`gleason:tullis:1995`), wet anorthite ({cite}`RGWD06`) and dry
-olivine ({cite}`HK04`). Additional compositional fields are used to track plastic
+olivine ({cite}`HK04`). The flow law prefactors are converted from their original
+published formulations to the convention used in ASPECT.
+The conversion accounts for differences in the stress measure used by laboratory
+experiments and the numerical model (differential stress versus the second invariant
+of the deviatoric stress tensor), as well as the treatment of water
+fugacity where applicable. The python script of prefactor conversion could be found at
+[cookbooks/continental_extension/continental_extension_rheology.py].
+Additional compositional fields are used to track plastic
 strain and the non-initial plastic strain, with the latter value tracking
 the same quantity as the plastic strain absent the initial plastic strain
 values. As discussed further on, the plastic strain is used to soften

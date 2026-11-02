@@ -1,22 +1,16 @@
-/*
-  Copyright (C) 2018 - 2024 by the authors of the ASPECT code.
-
-  This file is part of ASPECT.
-
-  ASPECT is free software; you can redistribute it and/or modify
-  it under the terms of the GNU General Public License as published by
-  the Free Software Foundation; either version 2, or (at your option)
-  any later version.
-
-  ASPECT is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  GNU General Public License for more details.
-
-  You should have received a copy of the GNU General Public License
-  along with ASPECT; see the file LICENSE.  If not see
-  <http://www.gnu.org/licenses/>.
-*/
+// ------------------------------------------------------
+//
+// SPDX-License-Identifier: GPL-2.0-or-later
+//
+// SPDX-FileCopyrightText: Copyright (C) 2018-2026 by the ASPECT authors.
+//
+// This file is part of ASPECT.
+//
+// Detailed license information governing the source code and
+// contributions can be found in the folder LICENSES and in
+// LICENSE and CONTRIBUTING.md at the top level directory.
+//
+// ------------------------------------------------------
 
 #include <aspect/postprocess/gravity_point_values.h>
 #include <aspect/geometry_model/spherical_shell.h>
@@ -35,6 +29,8 @@
 #include <boost/archive/text_iarchive.hpp>
 #include <boost/lexical_cast.hpp>
 
+#include <fstream>
+#include <sstream>
 
 namespace aspect
 {
@@ -48,7 +44,7 @@ namespace aspect
       output_interval (0),
       // initialize this to a nonsensical value; set it to the actual time
       // the first time around we get to check it
-      last_output_time (std::numeric_limits<double>::quiet_NaN()),
+      last_output_time (std::numeric_limits<double>::lowest()),
       maximum_timesteps_between_outputs (std::numeric_limits<int>::max()),
       last_output_timestep (numbers::invalid_unsigned_int),
       output_file_number (numbers::invalid_unsigned_int)
@@ -190,7 +186,7 @@ namespace aspect
       const int dim = 3;
 
       // Check time to see if we output gravity
-      if (std::isnan(last_output_time))
+      if (last_output_time < this->get_parameters().start_time - output_interval)
         {
           last_output_time = this->get_time() - output_interval;
           last_output_timestep = this->get_timestep_number();
@@ -212,7 +208,7 @@ namespace aspect
 
       const std::string file_prefix = "gravity-" + Utilities::int_to_string (output_file_number, 5);
       const std::string filename = (this->get_output_directory()
-                                    + "output_gravity/"
+                                    + "gravity_point_values/"
                                     + file_prefix);
 
       // Get quadrature formula and increase the degree of quadrature over the velocity
@@ -677,9 +673,9 @@ namespace aspect
                              "The time interval between each generation of "
                              "gravity output files. A value of 0 indicates "
                              "that output should be generated in each time step. "
-                             "Units: years if the "
+                             "Units: \\si{\\year} if the "
                              "'Use years instead of seconds' parameter is set; "
-                             "seconds otherwise.");
+                             "\\si{\\second} otherwise.");
           prm.declare_entry ("Time steps between gravity output", boost::lexical_cast<std::string>(std::numeric_limits<int>::max()),
                              Patterns::Integer(0,std::numeric_limits<int>::max()),
                              "The maximum number of time steps between each generation of "
@@ -697,7 +693,7 @@ namespace aspect
     void
     GravityPointValues<dim>::parse_parameters (ParameterHandler &prm)
     {
-      const std::string gravity_subdirectory = this->get_output_directory() + "output_gravity/";
+      const std::string gravity_subdirectory = this->get_output_directory() + "gravity_point_values/";
       Utilities::create_directory (gravity_subdirectory,
                                    this->get_mpi_communicator(),
                                    true);

@@ -1,15 +1,12 @@
 
 Number of active cells: 1,024 (on 5 levels)
-Number of degrees of freedom: 93,572 (8,450+1,089+1,089+9,216+9,216+9,216+9,216+9,216+9,216+9,216+9,216+9,216)
+Number of degrees of freedom: 65,924 (8,450+1,089+1,089+9,216+9,216+9,216+9,216+9,216+9,216)
 
 *** Timestep 0:  t=0 years, dt=0 years
    Solving temperature system... 0 iterations.
    Skipping ve_stress_xx composition solve because RHS is zero.
    Skipping ve_stress_yy composition solve because RHS is zero.
    Skipping ve_stress_xy composition solve because RHS is zero.
-   Skipping ve_stress_xx_old composition solve because RHS is zero.
-   Skipping ve_stress_yy_old composition solve because RHS is zero.
-   Skipping ve_stress_xy_old composition solve because RHS is zero.
    Solving block system ... 0 iterations.
    Solving air system ... 0 iterations.
    Solving inclusion system ... 0 iterations.
@@ -18,11 +15,11 @@ Number of degrees of freedom: 93,572 (8,450+1,089+1,089+9,216+9,216+9,216+9,216+
    Rebuilding Stokes preconditioner...
    Solving Stokes system (AMG)... 0+23 iterations.
       Newton system information: Norm of the rhs: 4.27918e+13
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.36302e-17, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.36302e-17, 0, 0, 0, 0, 0, 0, 1
       Relative nonlinear residual (total system) after nonlinear iteration 1: 1
 
    Postprocessing:
-     Compositions min/max/mass: 0/0/0 // 0/0/0 // 0/0/0 // 0/0/0 // 0/0/0 // 0/0/0 // 0/1/4.712e+09 // 0/1/5.104e+09 // 0/1/1.834e+08
+     Compositions min/max/mass: 0/0/0 // 0/0/0 // 0/0/0 // 0/1/4.712e+09 // 0/1/5.104e+09 // 0/1/1.834e+08
      RMS, max velocity:         0.131 m/year, 0.223 m/year
      Writing graphical output:  output-newton_postprocess_nonlinear/solution/solution-00000.0000
 
@@ -30,20 +27,17 @@ Number of degrees of freedom: 93,572 (8,450+1,089+1,089+9,216+9,216+9,216+9,216+
    Skipping ve_stress_xx composition solve because RHS is zero.
    Skipping ve_stress_yy composition solve because RHS is zero.
    Skipping ve_stress_xy composition solve because RHS is zero.
-   Skipping ve_stress_xx_old composition solve because RHS is zero.
-   Skipping ve_stress_yy_old composition solve because RHS is zero.
-   Skipping ve_stress_xy_old composition solve because RHS is zero.
    Solving block system ... 2 iterations.
    Solving air system ... 2 iterations.
    Solving inclusion system ... 1 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system (AMG)... 0+26 iterations.
       Newton system information: Norm of the rhs: 9.08232e+11, Derivative scaling factor: 0
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.92761e-17, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0.0212244
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.92761e-17, 0, 0, 0, 0, 0, 0, 0.0212244
       Relative nonlinear residual (total system) after nonlinear iteration 2: 0.0212244
 
    Postprocessing:
-     Compositions min/max/mass: 0/0/0 // 0/0/0 // 0/0/0 // 0/0/0 // 0/0/0 // 0/0/0 // 0/1/4.712e+09 // 0/1/5.104e+09 // 0/1/1.834e+08
+     Compositions min/max/mass: 0/0/0 // 0/0/0 // 0/0/0 // 0/1/4.712e+09 // 0/1/5.104e+09 // 0/1/1.834e+08
      RMS, max velocity:         0.133 m/year, 0.223 m/year
      Writing graphical output:  output-newton_postprocess_nonlinear/solution/solution-00000.0001
 
@@ -51,9 +45,6 @@ Number of degrees of freedom: 93,572 (8,450+1,089+1,089+9,216+9,216+9,216+9,216+
    Skipping ve_stress_xx composition solve because RHS is zero.
    Skipping ve_stress_yy composition solve because RHS is zero.
    Skipping ve_stress_xy composition solve because RHS is zero.
-   Skipping ve_stress_xx_old composition solve because RHS is zero.
-   Skipping ve_stress_yy_old composition solve because RHS is zero.
-   Skipping ve_stress_xy_old composition solve because RHS is zero.
    Solving block system ... 2 iterations.
    Solving air system ... 2 iterations.
    Solving inclusion system ... 1 iterations.
@@ -61,11 +52,11 @@ Number of degrees of freedom: 93,572 (8,450+1,089+1,089+9,216+9,216+9,216+9,216+
    Rebuilding Stokes preconditioner...
    Solving Stokes system (AMG)... 0+1 iterations.
       Newton system information: Norm of the rhs: 7.35023e+11, Derivative scaling factor: 0
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.36302e-17, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0.0171767
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.36302e-17, 0, 0, 0, 0, 0, 0, 0.0171767
       Relative nonlinear residual (total system) after nonlinear iteration 3: 0.0171767
 
    Postprocessing:
-     Compositions min/max/mass: 0/0/0 // 0/0/0 // 0/0/0 // 0/0/0 // 0/0/0 // 0/0/0 // 0/1/4.712e+09 // 0/1/5.104e+09 // 0/1/1.834e+08
+     Compositions min/max/mass: 0/0/0 // 0/0/0 // 0/0/0 // 0/1/4.712e+09 // 0/1/5.104e+09 // 0/1/1.834e+08
      RMS, max velocity:         0.135 m/year, 0.223 m/year
      Writing graphical output:  output-newton_postprocess_nonlinear/solution/solution-00000.0002
 
@@ -73,9 +64,6 @@ Number of degrees of freedom: 93,572 (8,450+1,089+1,089+9,216+9,216+9,216+9,216+
    Skipping ve_stress_xx composition solve because RHS is zero.
    Skipping ve_stress_yy composition solve because RHS is zero.
    Skipping ve_stress_xy composition solve because RHS is zero.
-   Skipping ve_stress_xx_old composition solve because RHS is zero.
-   Skipping ve_stress_yy_old composition solve because RHS is zero.
-   Skipping ve_stress_xy_old composition solve because RHS is zero.
    Solving block system ... 1 iterations.
    Solving air system ... 1 iterations.
    Solving inclusion system ... 2 iterations.
@@ -83,11 +71,11 @@ Number of degrees of freedom: 93,572 (8,450+1,089+1,089+9,216+9,216+9,216+9,216+
    Rebuilding Stokes preconditioner...
    Solving Stokes system (AMG)... 0+1 iterations.
       Newton system information: Norm of the rhs: 7.27318e+11, Derivative scaling factor: 0
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.52391e-17, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0.0169967
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.52391e-17, 0, 0, 0, 0, 0, 0, 0.0169967
       Relative nonlinear residual (total system) after nonlinear iteration 4: 0.0169967
 
    Postprocessing:
-     Compositions min/max/mass: 0/0/0 // 0/0/0 // 0/0/0 // 0/0/0 // 0/0/0 // 0/0/0 // 0/1/4.712e+09 // 0/1/5.104e+09 // 0/1/1.834e+08
+     Compositions min/max/mass: 0/0/0 // 0/0/0 // 0/0/0 // 0/1/4.712e+09 // 0/1/5.104e+09 // 0/1/1.834e+08
      RMS, max velocity:         0.139 m/year, 0.223 m/year
      Writing graphical output:  output-newton_postprocess_nonlinear/solution/solution-00000.0003
 
@@ -95,9 +83,6 @@ Number of degrees of freedom: 93,572 (8,450+1,089+1,089+9,216+9,216+9,216+9,216+
    Skipping ve_stress_xx composition solve because RHS is zero.
    Skipping ve_stress_yy composition solve because RHS is zero.
    Skipping ve_stress_xy composition solve because RHS is zero.
-   Skipping ve_stress_xx_old composition solve because RHS is zero.
-   Skipping ve_stress_yy_old composition solve because RHS is zero.
-   Skipping ve_stress_xy_old composition solve because RHS is zero.
    Solving block system ... 2 iterations.
    Solving air system ... 2 iterations.
    Solving inclusion system ... 2 iterations.
@@ -105,11 +90,11 @@ Number of degrees of freedom: 93,572 (8,450+1,089+1,089+9,216+9,216+9,216+9,216+
    Rebuilding Stokes preconditioner...
    Solving Stokes system (AMG)... 0+1 iterations.
       Newton system information: Norm of the rhs: 7.23526e+11, Derivative scaling factor: 0
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.98693e-17, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0.016908
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.98693e-17, 0, 0, 0, 0, 0, 0, 0.016908
       Relative nonlinear residual (total system) after nonlinear iteration 5: 0.016908
 
    Postprocessing:
-     Compositions min/max/mass: 0/0/0 // 0/0/0 // 0/0/0 // 0/0/0 // 0/0/0 // 0/0/0 // 0/1/4.712e+09 // 0/1/5.104e+09 // 0/1/1.834e+08
+     Compositions min/max/mass: 0/0/0 // 0/0/0 // 0/0/0 // 0/1/4.712e+09 // 0/1/5.104e+09 // 0/1/1.834e+08
      RMS, max velocity:         0.142 m/year, 0.223 m/year
      Writing graphical output:  output-newton_postprocess_nonlinear/solution/solution-00000.0004
 

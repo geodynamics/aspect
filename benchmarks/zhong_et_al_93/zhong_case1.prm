@@ -17,11 +17,11 @@ end
 # Approximate a delta function
 # perturbation at depth
 subsection Initial temperature model
-  set Model name = function
+  set List of model names = function
 
   subsection Function
     set Variable names      = x1,x2
-    set Function constants  = lambda=1, pi=3.1415926536, L=1, depth=62, sigma = 0.5, N=64
+    set Function constants  = lambda=1, L=1, depth=62, sigma = 0.5, N=64
     set Function expression = 1/(sigma/N*L * sqrt( 2 * pi) ) * exp( -0.5*(x2-depth/N)*(x2-depth/N)/sigma/sigma/L/L*N*N ) * cos(2*pi/lambda*x1/L)
   end
 end

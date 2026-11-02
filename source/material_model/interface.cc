@@ -1,22 +1,16 @@
-/*
-  Copyright (C) 2011 - 2024 by the authors of the ASPECT code.
-
-  This file is part of ASPECT.
-
-  ASPECT is free software; you can redistribute it and/or modify
-  it under the terms of the GNU General Public License as published by
-  the Free Software Foundation; either version 2, or (at your option)
-  any later version.
-
-  ASPECT is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  GNU General Public License for more details.
-
-  You should have received a copy of the GNU General Public License
-  along with ASPECT; see the file LICENSE.  If not see
-  <http://www.gnu.org/licenses/>.
-*/
+// ------------------------------------------------------
+//
+// SPDX-License-Identifier: GPL-2.0-or-later
+//
+// SPDX-FileCopyrightText: Copyright (C) 2011-2026 by the ASPECT authors.
+//
+// This file is part of ASPECT.
+//
+// Detailed license information governing the source code and
+// contributions can be found in the folder LICENSES and in
+// LICENSE and CONTRIBUTING.md at the top level directory.
+//
+// ------------------------------------------------------
 
 
 #include <aspect/global.h>
@@ -321,6 +315,25 @@ namespace aspect
 
     template <int dim>
     void
+    MaterialModelInputs<dim>::resize(const unsigned int n_points,
+                                     const unsigned int n_comp)
+    {
+      AssertThrow(additional_inputs.size() == 0,
+                  ExcMessage("The resize() function is not implemented if additional material inputs are attached."));
+
+      position.assign(n_points, Point<dim>(numbers::signaling_nan<Tensor<1,dim>>()));
+      temperature.assign(n_points, numbers::signaling_nan<double>());
+      pressure.assign(n_points, numbers::signaling_nan<double>());
+      pressure_gradient.assign(n_points, numbers::signaling_nan<Tensor<1,dim>>());
+      velocity.assign(n_points, numbers::signaling_nan<Tensor<1,dim>>());
+      composition.assign(n_points, std::vector<double>(n_comp, numbers::signaling_nan<double>()));
+      strain_rate.assign(n_points, numbers::signaling_nan<SymmetricTensor<2,dim>>());
+    }
+
+
+
+    template <int dim>
+    void
     MaterialModelInputs<dim>::reinit(const FEValuesBase<dim,dim> &fe_values,
                                      const typename DoFHandler<dim>::active_cell_iterator &cell_x,
                                      const Introspection<dim> &introspection,
@@ -382,17 +395,10 @@ namespace aspect
     template <int dim>
     MaterialModelOutputs<dim>::MaterialModelOutputs(const unsigned int n_points,
                                                     const unsigned int n_comp)
-      :
-      viscosities(n_points, numbers::signaling_nan<double>()),
-      densities(n_points, numbers::signaling_nan<double>()),
-      thermal_expansion_coefficients(n_points, numbers::signaling_nan<double>()),
-      specific_heat(n_points, numbers::signaling_nan<double>()),
-      thermal_conductivities(n_points, numbers::signaling_nan<double>()),
-      compressibilities(n_points, numbers::signaling_nan<double>()),
-      entropy_derivative_pressure(n_points, numbers::signaling_nan<double>()),
-      entropy_derivative_temperature(n_points, numbers::signaling_nan<double>()),
-      reaction_terms(n_points, std::vector<double>(n_comp, numbers::signaling_nan<double>()))
-    {}
+    {
+      resize(n_points,n_comp);
+    }
+
 
 
     template <int dim>
@@ -412,6 +418,28 @@ namespace aspect
       Assert (source.additional_outputs.size() == 0,
               ExcMessage ("You can not copy MaterialModelOutputs objects that have "
                           "additional output objects attached"));
+    }
+
+
+
+    template <int dim>
+    void
+    MaterialModelOutputs<dim>::resize(const unsigned int n_points,
+                                      const unsigned int n_comp,
+                                      const bool remove_additional_outputs)
+    {
+      viscosities.assign(n_points, numbers::signaling_nan<double>());
+      densities.assign(n_points, numbers::signaling_nan<double>());
+      thermal_expansion_coefficients.assign(n_points, numbers::signaling_nan<double>());
+      specific_heat.assign(n_points, numbers::signaling_nan<double>());
+      thermal_conductivities.assign(n_points, numbers::signaling_nan<double>());
+      compressibilities.assign(n_points, numbers::signaling_nan<double>());
+      entropy_derivative_pressure.assign(n_points, numbers::signaling_nan<double>());
+      entropy_derivative_temperature.assign(n_points, numbers::signaling_nan<double>());
+      reaction_terms.assign(n_points, std::vector<double>(n_comp, numbers::signaling_nan<double>()));
+
+      if (remove_additional_outputs == true)
+        additional_outputs.clear();
     }
 
 

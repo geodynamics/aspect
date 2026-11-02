@@ -24,7 +24,6 @@ subsection Boundary velocity model
 
   subsection Function
     set Variable names      = x,z,t
-    set Function constants  = pi=3.1415926
     set Function expression = if(t<0.75, if(x<0.5,-1,1), if(x<0.5,-15,15)); 0
   end
 end

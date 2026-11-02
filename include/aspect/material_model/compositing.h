@@ -1,27 +1,22 @@
-/*
-  Copyright (C) 2011 - 2022 by the authors of the ASPECT code.
-
-  This file is part of ASPECT.
-
-  ASPECT is free software; you can redistribute it and/or modify
-  it under the terms of the GNU General Public License as published by
-  the Free Software Foundation; either version 2, or (at your option)
-  any later version.
-
-  ASPECT is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  GNU General Public License for more details.
-
-  You should have received a copy of the GNU General Public License
-  along with ASPECT; see the file LICENSE.  If not see
-  <http://www.gnu.org/licenses/>.
-*/
+// ------------------------------------------------------
+//
+// SPDX-License-Identifier: GPL-2.0-or-later
+//
+// SPDX-FileCopyrightText: Copyright (C) 2011-2026 by the ASPECT authors.
+//
+// This file is part of ASPECT.
+//
+// Detailed license information governing the source code and
+// contributions can be found in the folder LICENSES and in
+// LICENSE and CONTRIBUTING.md at the top level directory.
+//
+// ------------------------------------------------------
 
 #ifndef _aspect_material_model_compositing_h
 #define _aspect_material_model_compositing_h
 
 #include <aspect/material_model/interface.h>
+#include <aspect/material_model/reactive_fluid_transport.h>
 #include <aspect/simulator_access.h>
 
 #include <map>
@@ -139,7 +134,7 @@ namespace aspect
 
     /**
      * Modify the Plugins::plugin_type_matches to account for the compositing material model
-    */
+     */
     template <typename TestType, int dim>
     inline
     bool
@@ -159,13 +154,23 @@ namespace aspect
             return true;
         }
 
+      // Search inside a reactive fluid transport wrapper, which holds a single
+      // base model that provides all solid properties (the property argument
+      // is irrelevant here).
+      if (const auto *reactive_fluid =
+            dynamic_cast<const MaterialModel::ReactiveFluidTransport<dim> *>(&plugin))
+        {
+          if (Plugins::plugin_type_matches<TestType>(reactive_fluid->get_base_model()))
+            return true;
+        }
+
       return false;
     }
 
 
     /**
      * Modify the Plugins::get_plugin_as_type to account for the compositing material model
-    */
+     */
     template <typename TestType, int dim>
     inline
     const TestType &
@@ -183,6 +188,11 @@ namespace aspect
           const auto &submodel = compositing->get_model_for_property(property);
           return Plugins::get_plugin_as_type<TestType>(submodel);
         }
+
+      // Search inside a reactive fluid transport wrapper (single base model).
+      if (const auto *reactive_fluid =
+            dynamic_cast<const MaterialModel::ReactiveFluidTransport<dim> *>(&plugin))
+        return Plugins::get_plugin_as_type<TestType>(reactive_fluid->get_base_model());
 
       AssertThrow(false,
                   ExcMessage("Could not find requested plugin type."));

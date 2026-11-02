@@ -28,7 +28,7 @@ subsection Geometry model
 end
 
 subsection Initial temperature model
-  set Model name = adiabatic boundary
+  set List of model names = adiabatic boundary
 
   subsection Ascii data model
     set Data file name = adiabatic_boundary.txt

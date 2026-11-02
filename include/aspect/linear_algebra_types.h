@@ -1,22 +1,16 @@
-/*
-  Copyright (C) 2011 - 2024 by the authors of the ASPECT code.
-
-  This file is part of ASPECT.
-
-  ASPECT is free software; you can redistribute it and/or modify
-  it under the terms of the GNU General Public License as published by
-  the Free Software Foundation; either version 2, or (at your option)
-  any later version.
-
-  ASPECT is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  GNU General Public License for more details.
-
-  You should have received a copy of the GNU General Public License
-  along with ASPECT; see the file LICENSE.  If not see
-  <http://www.gnu.org/licenses/>.
-*/
+// ------------------------------------------------------
+//
+// SPDX-License-Identifier: GPL-2.0-or-later
+//
+// SPDX-FileCopyrightText: Copyright (C) 2011-2026 by the ASPECT authors.
+//
+// This file is part of ASPECT.
+//
+// Detailed license information governing the source code and
+// contributions can be found in the folder LICENSES and in
+// LICENSE and CONTRIBUTING.md at the top level directory.
+//
+// ------------------------------------------------------
 
 
 #ifndef _aspect_linear_algebra_types_h
@@ -48,60 +42,60 @@ namespace aspect
   {
 #ifdef ASPECT_USE_TPETRA
     /**
-    * Typedef for the base class for all preconditioners.
-    */
+     * Typedef for the base class for all preconditioners.
+     */
     using PreconditionBase = dealii::LinearAlgebra::TpetraWrappers::PreconditionBase<double>;
 
     /**
-    * Typedef for the AMG preconditioner type used for the top left block of
-    * the Stokes matrix.
-    */
+     * Typedef for the AMG preconditioner type used for the top left block of
+     * the Stokes matrix.
+     */
     using PreconditionAMG = dealii::LinearAlgebra::TpetraWrappers::PreconditionAMGMueLu<double>;
 
     /**
-    * Typedef for the Incomplete LU decomposition preconditioner used for
-    * other blocks of the system matrix.
-    */
+     * Typedef for the Incomplete LU decomposition preconditioner used for
+     * other blocks of the system matrix.
+     */
     using PreconditionILU = dealii::LinearAlgebra::TpetraWrappers::PreconditionILU<double>;
 
     /**
-    * Typedef for the Jacobi preconditioner used for free surface velocity
-    * projection.
-    */
+     * Typedef for the Jacobi preconditioner used for free surface velocity
+     * projection.
+     */
     using PreconditionJacobi = dealii::LinearAlgebra::TpetraWrappers::PreconditionJacobi<double>;
 #else
     /**
-    * Typedef for the base class for all preconditioners.
-    */
+     * Typedef for the base class for all preconditioners.
+     */
     using PreconditionBase = dealii::TrilinosWrappers::PreconditionBase;
 
     /**
-    * Typedef for the AMG preconditioner type used for the top left block of
-    * the Stokes matrix.
-    */
+     * Typedef for the AMG preconditioner type used for the top left block of
+     * the Stokes matrix.
+     */
     using PreconditionAMG = dealii::TrilinosWrappers::PreconditionAMG;
 
     /**
-    * Typedef for the Incomplete LU decomposition preconditioner used for
-    * other blocks of the system matrix.
-    */
+     * Typedef for the Incomplete LU decomposition preconditioner used for
+     * other blocks of the system matrix.
+     */
     using PreconditionILU = dealii::TrilinosWrappers::PreconditionILU;
 
     /**
-    * Typedef for the Jacobi preconditioner used for free surface velocity
-    * projection.
-    */
+     * Typedef for the Jacobi preconditioner used for free surface velocity
+     * projection.
+     */
     using PreconditionJacobi = dealii::TrilinosWrappers::PreconditionJacobi;
 #endif
 
     /**
-    * Typedef for the block compressed sparsity pattern type.
-    */
+     * Typedef for the block compressed sparsity pattern type.
+     */
     using BlockDynamicSparsityPattern = dealii::BlockDynamicSparsityPattern;
 
     /**
-    * Typedef for the compressed sparsity pattern type.
-    */
+     * Typedef for the compressed sparsity pattern type.
+     */
     using DynamicSparsityPattern = dealii::DynamicSparsityPattern;
   }
 }

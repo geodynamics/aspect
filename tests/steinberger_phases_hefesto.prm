@@ -1,5 +1,5 @@
 # This is a copy of the steinberger phases test.
-# The only difference is that is uses the hefeasto instead
+# The only difference is that is uses the HeFESTo instead
 # of the perplex data format. It should produce exactly the
 # same results.
 
@@ -23,7 +23,7 @@ subsection Compositional fields
 end
 
 subsection Initial composition model
-  set Model name = function
+  set List of model names = function
 
   subsection Function
     set Function expression = 1e7 * (sqrt(x*x+y*y)-3481000)/(6371000-3481000)
@@ -49,7 +49,7 @@ subsection Gravity model
 end
 
 subsection Initial temperature model
-  set Model name = harmonic perturbation
+  set List of model names = harmonic perturbation
 
   subsection Harmonic perturbation
     set Magnitude = 200.0

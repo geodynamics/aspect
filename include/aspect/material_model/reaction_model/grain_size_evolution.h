@@ -1,22 +1,16 @@
-/*
-  Copyright (C) 2024 by the authors of the ASPECT code.
-
-  This file is part of ASPECT.
-
-  ASPECT is free software; you can redistribute it and/or modify
-  it under the terms of the GNU General Public License as published by
-  the Free Software Foundation; either version 2, or (at your option)
-  any later version.
-
-  ASPECT is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  GNU General Public License for more details.
-
-  You should have received a copy of the GNU General Public License
-  along with ASPECT; see the file LICENSE.  If not see
-  <http://www.gnu.org/licenses/>.
-*/
+// ------------------------------------------------------
+//
+// SPDX-License-Identifier: GPL-2.0-or-later
+//
+// SPDX-FileCopyrightText: Copyright (C) 2024-2026 by the ASPECT authors.
+//
+// This file is part of ASPECT.
+//
+// Detailed license information governing the source code and
+// contributions can be found in the folder LICENSES and in
+// LICENSE and CONTRIBUTING.md at the top level directory.
+//
+// ------------------------------------------------------
 
 #ifndef _aspect_material_model_reaction_model_grain_size_evolution_h
 #define _aspect_material_model_reaction_model_grain_size_evolution_h
@@ -126,20 +120,47 @@ namespace aspect
         private:
           /**
            * Parameters controlling the grain size evolution.
+           *
+           * This variable is read from the parameter file through a parameter called 'Grain growth activation energy'.
            */
           std::vector<double> grain_growth_activation_energy;
+          /**
+           * This variable is read from the parameter file through a parameter called 'Grain growth activation volume'.
+           */
           std::vector<double> grain_growth_activation_volume;
+          /**
+           * This variable is read from the parameter file through a parameter called 'Grain growth rate constant'.
+           */
           std::vector<double> grain_growth_rate_constant;
+          /**
+           * This variable is read from the parameter file through a parameter called 'Grain growth exponent'.
+           */
           std::vector<double> grain_growth_exponent;
+          /**
+           * This variable is read from the parameter file through a parameter called 'Minimum grain size'.
+           */
           double              minimum_grain_size;
+          /**
+           * This variable is read from the parameter file through a parameter called 'Reciprocal required strain'.
+           */
           std::vector<double> reciprocal_required_strain;
+          /**
+           * This variable is read from the parameter file through a parameter called 'Recrystallized grain size'.
+           */
           std::vector<double> recrystallized_grain_size;
 
           /**
            * Parameters controlling the dynamic grain recrystallization.
+           * This variable is read from the parameter file through a parameter called 'Average specific grain boundary energy'.
            */
           std::vector<double> grain_boundary_energy;
+          /**
+           * This variable is read from the parameter file through a parameter called 'Work fraction for boundary area change'.
+           */
           std::vector<double> boundary_area_change_work_fraction;
+          /**
+           * This variable is read from the parameter file through a parameter called 'Geometric constant'.
+           */
           std::vector<double> geometric_constant;
 
           /**
@@ -199,6 +220,7 @@ namespace aspect
           /**
            * A variable that records the formulation of how to evolve grain size.
            * See the type of this variable for a description of available options.
+           * This variable is read from the parameter file through a parameter called 'Grain size evolution formulation'.
            */
           typename Formulation::Kind grain_size_evolution_formulation;
 
@@ -213,9 +235,16 @@ namespace aspect
           /**
            * Parameters controlling the partitioning of energy
            * into grain damage in the pinned state.
+           * This variable is read from the parameter file through a parameter called 'Grain size reduction work fraction exponent'.
            */
           double grain_size_reduction_work_fraction_exponent;
+          /**
+           * This variable is read from the parameter file through a parameter called 'Minimum grain size reduction work fraction'.
+           */
           double minimum_grain_size_reduction_work_fraction;
+          /**
+           * This variable is read from the parameter file through a parameter called 'Maximum grain size reduction work fraction'.
+           */
           double maximum_grain_size_reduction_work_fraction;
           double temperature_minimum_partitioning_power;
           double temperature_maximum_partitioning_power;
@@ -260,11 +289,14 @@ namespace aspect
 
           /**
            * The initial step size taken by the ARKode solver.
+           * This variable is read from the parameter file through a parameter called 'ARKode initial step size'.
            */
           double arkode_initial_step_size;
 
           /**
            * The minimum step size taken by the ARKode solver.
+           *
+           * This variable is read from the parameter file through a parameter called 'ARKode minimum step size'.
            */
           double arkode_minimum_step_size;
       };

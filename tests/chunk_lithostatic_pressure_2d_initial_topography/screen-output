@@ -1,6 +1,6 @@
 
 
-   Loading Ascii data boundary file ASPECT_DIR/data/geometry-model/initial-topography-model/ascii-data/test/shell_2d_outer.0.txt.
+   Loading Ascii data boundary file $ASPECT_SOURCE_DIR/data/geometry-model/initial-topography-model/ascii-data/test/shell_2d_outer.0.txt.
 
 Number of active cells: 4 (on 2 levels)
 Number of degrees of freedom: 109 (50+9+25+25)

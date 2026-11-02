@@ -29,7 +29,7 @@ subsection Geometry model
 end
 
 subsection Initial temperature model
-  set Model name = perturbed box
+  set List of model names = perturbed box
 end
 
 subsection Material model

@@ -1,22 +1,16 @@
-/*
-  Copyright (C) 2019 - 2024 by the authors of the ASPECT code.
-
-  This file is part of ASPECT.
-
-  ASPECT is free software; you can redistribute it and/or modify
-  it under the terms of the GNU General Public License as published by
-  the Free Software Foundation; either version 2, or (at your option)
-  any later version.
-
-  ASPECT is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  GNU General Public License for more details.
-
-  You should have received a copy of the GNU General Public License
-  along with ASPECT; see the file LICENSE.  If not see
-  <http://www.gnu.org/licenses/>.
-*/
+// ------------------------------------------------------
+//
+// SPDX-License-Identifier: GPL-2.0-or-later
+//
+// SPDX-FileCopyrightText: Copyright (C) 2019-2026 by the ASPECT authors.
+//
+// This file is part of ASPECT.
+//
+// Detailed license information governing the source code and
+// contributions can be found in the folder LICENSES and in
+// LICENSE and CONTRIBUTING.md at the top level directory.
+//
+// ------------------------------------------------------
 
 #ifndef _aspect_material_model_rheology_drucker_prager_h
 #define _aspect_material_model_rheology_drucker_prager_h
@@ -104,8 +98,8 @@ namespace aspect
            */
           const DruckerPragerParameters
           compute_drucker_prager_parameters (const unsigned int composition,
-                                             const std::vector<double> &phase_function_values = std::vector<double>(),
-                                             const std::vector<unsigned int> &n_phase_transitions_per_composition = std::vector<unsigned int>()) const;
+                                             const std::vector<double> &phase_function_values = {},
+                                             const std::vector<unsigned int> &n_phase_transitions_per_composition = {}) const;
 
           /**
            * Compute the plastic yield stress based on the Drucker Prager yield criterion.
@@ -183,11 +177,11 @@ namespace aspect
           /**
            * Compute the LHS and RHS dilation terms for the Stokes system.
            * LHS: $\bar\alpha\alpha / \eta^{ve}$;
-           * RHS: $\bar(2\eta^{ve}\varepsilon^{eff} - k) / \eta^{ve}$.
-           * Here $\alpha$ and $\bar\alpha$ correspond to the friction angle
+           * RHS: $\bar\alpha(2\eta^{ve}\varepsilon^{eff} - k) / \eta^{ve}$.
+           * Here $\alpha$ and $\bar\alpha$ correspond to the sine of the friction angle
            * and the dilation angle, respectively, $k$ is cohesion,
            * $\eta^{ve}$ is the non-yielding viscosity, and $\varepsilon^{eff}$
-           * is the effective viscosity.
+           * is the effective strain rate.
            */
           std::pair<double,double>
           compute_dilation_terms_for_stokes_system(const DruckerPragerParameters &drucker_prager_parameters,
@@ -204,6 +198,8 @@ namespace aspect
            * cohesion * cos_phi + pressure * sin_phi in 2D.
            * Phi is an angle of internal friction, that is
            * input by the user in degrees, but stored as radians.
+           *
+           * This variable is read from the parameter file through a parameter called 'Angles of internal friction'.
            */
           std::vector<double> angles_internal_friction;
 
@@ -215,32 +211,39 @@ namespace aspect
            * Psi is an angle of dilation, that is input by the user in degrees,
            * but stored as radians. Note that the dilation angle must not be larger
            * than the internal friction angle.
+           * This variable is read from the parameter file through a parameter called 'Angles of dilation'.
            */
           std::vector<double> angles_dilation;
 
           /**
            * The cohesion is provided and stored in Pa.
+           * This variable is read from the parameter file through a parameter called 'Cohesions'.
            */
           std::vector<double> cohesions;
 
           /**
-           *The prefactors for the yield stress.
+           * The prefactors for the yield stress.
+           * This variable is read from the parameter file through a parameter called 'Prefactors for yield stress'.
            */
           std::vector<double> yield_stress_prefactors;
 
           /**
            * The yield stress is limited to a constant value, stored in Pa.
+           * This variable is read from the parameter file through a parameter called 'Maximum yield stress'.
            */
           std::vector<double> max_yield_stresses;
 
           /**
            * Whether to add a plastic damper in the computation
            * of the drucker prager plastic viscosity.
+           * This variable is read from the parameter file through a parameter called 'Use plastic damper'.
            */
           bool use_plastic_damper;
 
           /**
            * Viscosity of a damper used to stabilize plasticity
+           *
+           * This variable is read from the parameter file through a parameter called 'Plastic damper viscosity'.
            */
           double damper_viscosity;
       };

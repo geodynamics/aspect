@@ -1,22 +1,16 @@
-/*
-  Copyright (C) 2016 - 2024 by the authors of the ASPECT code.
-
-  This file is part of ASPECT.
-
-  ASPECT is free software; you can redistribute it and/or modify
-  it under the terms of the GNU General Public License as published by
-  the Free Software Foundation; either version 2, or (at your option)
-  any later version.
-
-  ASPECT is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  GNU General Public License for more details.
-
-  You should have received a copy of the GNU General Public License
-  along with ASPECT; see the file LICENSE.  If not see
-  <http://www.gnu.org/licenses/>.
-*/
+// ------------------------------------------------------
+//
+// SPDX-License-Identifier: GPL-2.0-or-later
+//
+// SPDX-FileCopyrightText: Copyright (C) 2016-2026 by the ASPECT authors.
+//
+// This file is part of ASPECT.
+//
+// Detailed license information governing the source code and
+// contributions can be found in the folder LICENSES and in
+// LICENSE and CONTRIBUTING.md at the top level directory.
+//
+// ------------------------------------------------------
 
 #ifndef _aspect_material_model_entropy_model_h
 #define _aspect_material_model_entropy_model_h
@@ -122,8 +116,27 @@ namespace aspect
 
       private:
 
+        /**
+         * This variable is read from the parameter file through a parameter called 'Angle of internal friction'.
+         */
         double angle_of_internal_friction;
+        /**
+         * This variable is read from the parameter file through a parameter called 'Cohesion'.
+         */
         double cohesion;
+
+        /**
+         * Parameters limiting the specific heat capacity.
+         * max_limit_specific_heat defines the maximum specific heat capacity allowed by the model.
+         * This value is defined by the 'Maximum limited specific heat capacity' parameter.
+         * max_exact_specific_heat is the exact specific heat capacity value at which the
+         * transition from exact to limited specific heat capacity occurs.
+         * This value is defined by the 'Maximum exact specific heat capacity' parameter.
+         * ln_ratio_max_exact_max_limit_specific_heat is the natural logarithm of the ratio of these two values.
+         */
+        double max_limit_specific_heat;
+        double max_exact_specific_heat;
+        double ln_ratio_max_exact_max_limit_specific_heat;
 
         /**
          * Iteration parameters for multicomponent equilibration.
@@ -131,15 +144,27 @@ namespace aspect
          * reach the tolerance value, which is the maximum temperature difference between the different components
          * when they are considered in equilibrium.
          * If the maximum iteration is reached but the temperature has not been equilibrated, the model will abort.
+         *
+         * This variable is read from the parameter file through a parameter called 'Maximum iteration for multicomponent equilibration'.
          */
         double multicomponent_max_iteration;
+        /**
+         * This variable is read from the parameter file through a parameter called 'Multicomponent equilibration tolerance'.
+         */
         double multicomponent_tolerance;
 
         /**
          * Minimum/Maximum viscosity and lateral viscosity variations.
+         * This variable is read from the parameter file through a parameter called 'Minimum viscosity'.
          */
         double min_eta;
+        /**
+         * This variable is read from the parameter file through a parameter called 'Maximum viscosity'.
+         */
         double max_eta;
+        /**
+         * This variable is read from the parameter file through a parameter called 'Maximum lateral viscosity variation'.
+         */
         double max_lateral_eta_variation;
 
         /**
@@ -162,9 +187,17 @@ namespace aspect
                                          std::vector<double> &composition_equilibrated_S) const;
         /**
          * Information about the location of data files.
+         *
+         * This variable is read from the parameter file through a parameter called 'Data directory'.
          */
         std::string data_directory;
+        /**
+         * This variable is read from the parameter file through a parameter called 'Material file name'.
+         */
         std::vector<std::string> material_file_names;
+        /**
+         * This variable is read from the parameter file through a parameter called 'Lateral viscosity file name'.
+         */
         std::string lateral_viscosity_file_name;
 
         /**

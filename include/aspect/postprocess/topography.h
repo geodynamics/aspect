@@ -1,22 +1,16 @@
-/*
-  Copyright (C) 2011 - 2019 by the authors of the ASPECT code.
-
-  This file is part of ASPECT.
-
-  ASPECT is free software; you can redistribute it and/or modify
-  it under the terms of the GNU General Public License as published by
-  the Free Software Foundation; either version 2, or (at your option)
-  any later version.
-
-  ASPECT is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  GNU General Public License for more details.
-
-  You should have received a copy of the GNU General Public License
-  along with ASPECT; see the file LICENSE.  If not see
-  <http://www.gnu.org/licenses/>.
-*/
+// ------------------------------------------------------
+//
+// SPDX-License-Identifier: GPL-2.0-or-later
+//
+// SPDX-FileCopyrightText: Copyright (C) 2011-2026 by the ASPECT authors.
+//
+// This file is part of ASPECT.
+//
+// Detailed license information governing the source code and
+// contributions can be found in the folder LICENSES and in
+// LICENSE and CONTRIBUTING.md at the top level directory.
+//
+// ------------------------------------------------------
 
 
 #ifndef _aspect_postprocess_topography_h
@@ -40,6 +34,11 @@ namespace aspect
     class Topography : public Interface<dim>, public ::aspect::SimulatorAccess<dim>
     {
       public:
+        /**
+         * Constructor.
+         */
+        Topography();
+
         /**
          * Output topography [m] to file
          */
@@ -85,6 +84,8 @@ namespace aspect
       private:
         /**
          * Whether or not to produce text files with topography values
+         *
+         * This variable is read from the parameter file through a parameter called 'Output to file'.
          */
         bool write_to_file;
 
@@ -92,6 +93,8 @@ namespace aspect
          * Interval between the generation of text output. This parameter
          * is read from the input file and consequently is not part of the
          * state that needs to be saved and restored.
+         *
+         * This variable is read from the parameter file through a parameter called 'Time between text output'.
          */
         double output_interval;
 

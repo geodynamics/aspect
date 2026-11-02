@@ -1,24 +1,18 @@
-/*
-  Copyright (C) 2023 - 2024 by the authors of the ASPECT code.
+// ------------------------------------------------------
+//
+// SPDX-License-Identifier: GPL-2.0-or-later
+//
+// SPDX-FileCopyrightText: Copyright (C) 2023-2026 by the ASPECT authors.
+//
+// This file is part of ASPECT.
+//
+// Detailed license information governing the source code and
+// contributions can be found in the folder LICENSES and in
+// LICENSE and CONTRIBUTING.md at the top level directory.
+//
+// ------------------------------------------------------
 
-  This file is part of ASPECT.
-
-  ASPECT is free software; you can redistribute it and/or modify
-  it under the terms of the GNU General Public License as published by
-  the Free Software Foundation; either version 2, or (at your option)
-  any later version.
-
-  ASPECT is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  GNU General Public License for more details.
-
-  You should have received a copy of the GNU General Public License
-  along with ASPECT; see the file doc/COPYING.  If not see
-  <http://www.gnu.org/licenses/>.
-*/
-
-
+#include <algorithm>
 #include "tomography_based_plate_motions.h"
 #include <aspect/adiabatic_conditions/interface.h>
 #include <aspect/gravity_model/interface.h>
@@ -431,7 +425,7 @@ namespace aspect
                   if (disl_viscosities_out != nullptr)
                     {
                       disl_viscosities_out->diffusion_viscosities[i] = diff_viscosity;
-                      disl_viscosities_out->dislocation_viscosities[i] = std::min(std::max(min_eta,disl_viscosity),1e30);
+                      disl_viscosities_out->dislocation_viscosities[i] = std::clamp(disl_viscosity, min_eta, 1e30);
                     }
 
                   out.viscosities[i] = diff_viscosity * disl_viscosity / (disl_viscosity + diff_viscosity);
@@ -494,7 +488,7 @@ namespace aspect
             }
 
           // Ensure we respect viscosity bounds
-          out.viscosities[i] = std::min(std::max(min_eta, out.viscosities[i]),max_eta);
+          out.viscosities[i] = std::clamp(out.viscosities[i], min_eta, max_eta);
 
           // This represents the viscosity with respect to which we want to define cratons/faults.
           const double background_viscosity_log = std::log10(out.viscosities[i]);
@@ -942,7 +936,7 @@ namespace aspect
             alpha += compositional_fields[i] * material_lookup[i]->thermal_expansivity(temperature,pressure);
         }
 
-      alpha = std::max(std::min(alpha,max_thermal_expansivity),min_thermal_expansivity);
+      alpha = std::clamp(alpha, min_thermal_expansivity, max_thermal_expansivity);
       return alpha;
     }
 
@@ -966,7 +960,7 @@ namespace aspect
             cp += compositional_fields[i] * material_lookup[i]->specific_heat(temperature,pressure);
         }
 
-      cp = std::max(std::min(cp,max_specific_heat),min_specific_heat);
+      cp = std::clamp(cp, min_specific_heat, max_specific_heat);
       return cp;
     }
 

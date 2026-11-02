@@ -37,6 +37,8 @@
 #include <world_builder/coordinate_system.h>
 #include <world_builder/objects/distance_from_surface.h>
 
+#include <algorithm>
+
 #ifdef WB_WITH_MPI
 // we don't need the c++ MPI wrappers
 #define OMPI_SKIP_MPICXX 1
@@ -53,6 +55,16 @@
 namespace WorldBuilder
 {
   using namespace Utilities;
+
+  double
+  World::maximum_topography() const
+  {
+    double maximum = 0.0;
+    for (const auto &feature : parameters.features)
+      maximum = std::max(maximum, feature->maximum_topography());
+
+    return maximum;
+  }
 
   World::World(std::string filename, bool has_output_dir, const std::string &output_dir, unsigned long random_number_seed, const bool limit_debug_consistency_checks_)
     :
@@ -605,4 +617,3 @@ namespace WorldBuilder
   }
 
 } // namespace WorldBuilder
-

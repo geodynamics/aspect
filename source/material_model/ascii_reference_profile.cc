@@ -1,24 +1,18 @@
-/*
-  Copyright (C) 2016 - 2023 by the authors of the ASPECT code.
+// ------------------------------------------------------
+//
+// SPDX-License-Identifier: GPL-2.0-or-later
+//
+// SPDX-FileCopyrightText: Copyright (C) 2016-2026 by the ASPECT authors.
+//
+// This file is part of ASPECT.
+//
+// Detailed license information governing the source code and
+// contributions can be found in the folder LICENSES and in
+// LICENSE and CONTRIBUTING.md at the top level directory.
+//
+// ------------------------------------------------------
 
-  This file is part of ASPECT.
-
-  ASPECT is free software; you can redistribute it and/or modify
-  it under the terms of the GNU General Public License as published by
-  the Free Software Foundation; either version 2, or (at your option)
-  any later version.
-
-  ASPECT is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  GNU General Public License for more details.
-
-  You should have received a copy of the GNU General Public License
-  along with ASPECT; see the file LICENSE.  If not see
-  <http://www.gnu.org/licenses/>.
-*/
-
-
+#include <algorithm>
 #include <aspect/material_model/ascii_reference_profile.h>
 #include <aspect/adiabatic_conditions/interface.h>
 
@@ -75,7 +69,7 @@ namespace aspect
           const double depth = this->get_geometry_model().depth(position);
           const Point<1> profile_position(depth);
 
-          double visc_temperature_dependence = std::max(std::min(std::exp(-thermal_viscosity_exponent*temperature_deviation/this->get_adiabatic_conditions().temperature(position)),1e3),1e-3);
+          double visc_temperature_dependence = std::clamp(std::exp(-thermal_viscosity_exponent*temperature_deviation/this->get_adiabatic_conditions().temperature(position)), 1e-3, 1e3);
           if (std::isnan(visc_temperature_dependence))
             visc_temperature_dependence = 1.0;
 

@@ -1,22 +1,16 @@
-/*
-  Copyright (C) 2011 - 2024 by the authors of the ASPECT code.
-
-  This file is part of ASPECT.
-
-  ASPECT is free software; you can redistribute it and/or modify
-  it under the terms of the GNU General Public License as published by
-  the Free Software Foundation; either version 2, or (at your option)
-  any later version.
-
-  ASPECT is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  GNU General Public License for more details.
-
-  You should have received a copy of the GNU General Public License
-  along with ASPECT; see the file LICENSE.  If not see
-  <http://www.gnu.org/licenses/>.
-*/
+// ------------------------------------------------------
+//
+// SPDX-License-Identifier: GPL-2.0-or-later
+//
+// SPDX-FileCopyrightText: Copyright (C) 2011-2026 by the ASPECT authors.
+//
+// This file is part of ASPECT.
+//
+// Detailed license information governing the source code and
+// contributions can be found in the folder LICENSES and in
+// LICENSE and CONTRIBUTING.md at the top level directory.
+//
+// ------------------------------------------------------
 
 #ifndef _aspect_material_model_utilities_h
 #define _aspect_material_model_utilities_h
@@ -30,6 +24,8 @@
 
 #include <mpi.h>
 
+#include <limits>
+
 
 namespace aspect
 {
@@ -37,19 +33,19 @@ namespace aspect
   namespace Utilities
   {
     /**
-    * Because many places in ASPECT assume that all functions in the namespace
-    * <code>dealii::Utilities</code> are available without qualification as
-    * <code>Utilities::function</code>, just as all the function in the
-    * namespace <code>aspect::Utilities</code>, we make sure all these functions
-    * are available inside <code>aspect::Utilities</code>. This is maybe not
-    * the cleanest solution, but it is most compatible with a lot of existing
-    * code, and also allows to migrate ASPECT functions into deal.II when
-    * useful without introducing incompatibilities.
-    *
-    * We need to do this in every header that introduces something into the
-    * namespace <code>aspect::Utilities</code>, because it needs to happen
-    * no matter which header files of ASPECT are included.
-    */
+     * Because many places in ASPECT assume that all functions in the namespace
+     * <code>dealii::Utilities</code> are available without qualification as
+     * <code>Utilities::function</code>, just as all the function in the
+     * namespace <code>aspect::Utilities</code>, we make sure all these functions
+     * are available inside <code>aspect::Utilities</code>. This is maybe not
+     * the cleanest solution, but it is most compatible with a lot of existing
+     * code, and also allows to migrate ASPECT functions into deal.II when
+     * useful without introducing incompatibilities.
+     *
+     * We need to do this in every header that introduces something into the
+     * namespace <code>aspect::Utilities</code>, because it needs to happen
+     * no matter which header files of ASPECT are included.
+     */
     using namespace dealii::Utilities;
 
     template <int dim>
@@ -365,13 +361,17 @@ namespace aspect
        * one, we assume that there is no background field (i.e., that field value
        * is zero). Otherwise, the difference between the sum of the compositional
        * fields and 1.0 is assumed to be the amount of the background field.
+       * Selected fields strictly smaller than @p minimum_fraction are set to
+       * zero before computing and normalizing the fractions. The default value
+       * preserves the behavior of including every selected field.
        * This function makes no assumptions about the units of the
        * compositional field values; for example, they could correspond to
        * mass or volume fractions.
        */
       std::vector<double>
       compute_only_composition_fractions(const std::vector<double> &compositional_fields,
-                                         const std::vector<unsigned int> &indices_to_use);
+                                         const std::vector<unsigned int> &indices_to_use,
+                                         const double minimum_fraction = -std::numeric_limits<double>::max());
 
       /**
        * For multicomponent material models: Given a vector of compositional
@@ -387,13 +387,17 @@ namespace aspect
        * compositional fields to use during the computation (e.g. because
        * some fields contain unrelated quantities (like strain,
        * porosity, or trace elements). By default, all fields are included.
+       * Selected fields strictly smaller than @p minimum_fraction are set to
+       * zero before computing and normalizing the fractions. The default value
+       * preserves the behavior of including every selected field.
        * This function makes no assumptions about the units of the
        * compositional field values; for example, they could correspond to
        * mass or volume fractions.
        */
       std::vector<double>
       compute_composition_fractions(const std::vector<double> &compositional_fields,
-                                    const ComponentMask &field_mask = ComponentMask());
+                                    const ComponentMask &field_mask = ComponentMask(),
+                                    const double minimum_fraction = -std::numeric_limits<double>::max());
 
       /**
        * Given a vector of component masses,
@@ -502,6 +506,38 @@ namespace aspect
         };
       }
 
+
+
+      /**
+       * This function modifies the parameter values of all phases for a given composition
+       * according to the supplied reaction progress.
+       *
+       * The input @p parameter_values contains the parameter values for every
+       * phase of the composition specified by @p composition_index. This function
+       * uses the corresponding entries in @p reaction_progress_values and
+       * @p reaction_progress_mapping to modify the parameter values of phases
+       * affected by kinetic reactions.
+       *
+       * The vector @p reaction_progress_values contains one value for each kinetic
+       * reaction, while @p reaction_progress_mapping specifies the associated phase
+       * transition index for each reaction. The vector
+       * @p n_phase_transitions_per_composition is used to determine which phase
+       * transitions belong to the selected composition.
+       *
+       * The modified parameter values are written back into @p parameter_values
+       * and can subsequently be used during phase averaging with the specified
+       * averaging @p operation.
+       */
+      void
+      reaction_progress_modify_values (const std::vector<double> &reaction_progress_values,
+                                       const std::vector<unsigned int> &reaction_progress_mapping,
+                                       const std::vector<unsigned int> &n_phase_transitions_per_composition,
+                                       std::vector<double> &parameter_values,
+                                       const unsigned int composition_index,
+                                       const PhaseUtilities::PhaseAveragingOperation operation = PhaseUtilities::arithmetic);
+
+
+
       /**
        * Material models compute output quantities such as the viscosity, the
        * density, etc. For some models, these values may depend on the phase in
@@ -523,8 +559,16 @@ namespace aspect
                                   const std::vector<double> &parameter_values,
                                   const unsigned int composition_index,
                                   const PhaseUtilities::PhaseAveragingOperation operation = PhaseUtilities::arithmetic);
-
-
+      /**
+       * Return whether the phase transition with index
+       * @p phase_transition_index has an associated reaction progress value in
+       * @p reaction_progress_mapping and @p reaction_progress_values. If so, return
+       * the corresponding reaction progress value.
+       */
+      std::pair<bool, double>
+      get_reaction_progress_for_phase_transition(const std::vector<double> &reaction_progress_values,
+                                                 const std::vector<unsigned> &reaction_progress_mapping,
+                                                 const unsigned int phase_transition_index);
 
       /**
        * A data structure with all inputs for the
@@ -664,43 +708,47 @@ namespace aspect
 
         private:
           /**
-          * Directory path where data files are stored.
-          */
+           * Directory path where data files are stored.
+           *
+           * This variable is read from the parameter file through a parameter called 'Data directory'.
+           */
           std::string data_directory;
 
           /**
            * List of file names containing material data for each composition.
-          */
+           *
+           * This variable is read from the parameter file through a parameter called 'Material file names'.
+           */
           std::vector<std::string> material_file_names;
 
           /**
-          * Minimum temperature values for each composition in the P-T table.
-          */
+           * Minimum temperature values for each composition in the P-T table.
+           */
           std::vector<double> minimum_temperature;
 
           /**
-          * Maximum temperature values for each composition in the P-T table.
-          */
+           * Maximum temperature values for each composition in the P-T table.
+           */
           std::vector<double> maximum_temperature;
 
           /**
-          * Temperature intervals used for each composition in the P-T table.
-          */
+           * Temperature intervals used for each composition in the P-T table.
+           */
           std::vector<double> interval_temperature;
 
           /**
-          * Minimum pressure values for each composition in the P-T table.
-          */
+           * Minimum pressure values for each composition in the P-T table.
+           */
           std::vector<double> minimum_pressure;
 
           /**
-          * Maximum pressure values for each composition in the P-T table.
-          */
+           * Maximum pressure values for each composition in the P-T table.
+           */
           std::vector<double> maximum_pressure;
 
           /**
-          * Pressure intervals used for each composition in the P-T table.
-          */
+           * Pressure intervals used for each composition in the P-T table.
+           */
           std::vector<double> interval_pressure;
 
           /**

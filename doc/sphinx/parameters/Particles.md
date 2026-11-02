@@ -51,7 +51,7 @@
 
 In practice, the exact velocity $\mathbf u(\mathbf x,t)$ is of course not available, but only a numerical approximation $\mathbf u_h(\mathbf x,t)$. Furthermore, this approximation is only available at discrete time steps, $\mathbf u^n(\mathbf x)=\mathbf u(\mathbf x,t^n)$, and these need to be interpolated between time steps if the integrator for the equation above requires an evaluation at time points between the discrete time steps. If we denote this interpolation in time by $\tilde{\mathbf u}_h(\mathbf x,t)$ where $\tilde{\mathbf u}_h(\mathbf x,t^n)=\mathbf u^n(\mathbf x)$, then the equation the differential equation solver really tries to solve is $\frac{d}{dt}\tilde{\mathbf x}_k(t) =  \tilde{\mathbf u}_h(\mathbf x_k(t),t)$.
 
-As a consequence of these considerations, if you try to assess convergence properties of an ODE integrator -- for example to verify that the RK4 integrator converges with fourth order --, it is important to recall that the integrator may not solve the equation you think it solves. If, for example, we call the numerical solution of the ODE $\tilde{\mathbf x}_{k,h}(t)$, then the error will typically satisfy a relationship like \[  \| \tilde{\mathbf x}_k(T) - \tilde{\mathbf x}_{k,h}(T) \|  \le  C(T) \Delta t^p\] where $\Delta t$ is the time step and $p$ the convergence order of the method, and $C(T)$ is a (generally unknown) constant that depends on the end time $T$ at which one compares the solutions. On the other hand, an analytically computed trajectory would likely use the *exact* velocity, and one may be tempted to compute $\| \mathbf x_k(T) - \tilde{\mathbf x}_{k,h}(T) \|$, but this quantity will, in the best case, only satisfy an estimate of the form \[  \| \mathbf x_k(T) - \tilde{\mathbf x}_{k,h}(T) \|  \le  C_1(T) \Delta t^p  + C_2(T) \| \mathbf u-\mathbf u_h \|  + C_3(T) \| \mathbf u_h-\tilde{\mathbf u}_h \|\] with appropriately chosen norms for the second and third term. These second and third terms typically converge to zero at relatively low rates (compared to the order $p$ of the integrator, which can often be chosen relatively high) in the mesh size $h$ and the time step size $\\Delta t$, limiting the overall accuracy of the ODE integrator.
+As a consequence of these considerations, if you try to assess convergence properties of an ODE integrator -- for example to verify that the RK4 integrator converges with fourth order --, it is important to recall that the integrator may not solve the equation you think it solves. If, for example, we call the numerical solution of the ODE $\tilde{\mathbf x}_{k,h}(t)$, then the error will typically satisfy a relationship like $\left\| \tilde{\mathbf{x}}_k(T) - \tilde{\mathbf{x}}_{k,h}(T) \right\| \le C(T) \Delta t^p$, where $\Delta t$ is the time step and $p$ the convergence order of the method, and $C(T)$ is a (generally unknown) constant that depends on the end time $T$ at which one compares the solutions. On the other hand, an analytically computed trajectory would likely use the *exact* velocity, and one may be tempted to compute $\| \mathbf x_k(T) - \tilde{\mathbf x}_{k,h}(T) \|$, but this quantity will, in the best case, only satisfy an estimate of the form $\left\| \mathbf x_k(T) - \tilde{\mathbf x}_{k,h}(T) \right\| \le C_1(T) \Delta t^p + C_2(T) \| \mathbf u-\mathbf u_h \| + C_3(T) \| \mathbf u_h-\tilde{\mathbf u}_h \|$ with appropriately chosen norms for the second and third term. These second and third terms typically converge to zero at relatively low rates (compared to the order $p$ of the integrator, which can often be chosen relatively high) in the mesh size $h$ and the time step size $\Delta t$, limiting the overall accuracy of the ODE integrator.
 
 Select one of the following models:
 
@@ -89,13 +89,13 @@ Select one of the following models:
 :name: parameters:Particles/List_20of_20particle_20properties
 **Default value:**
 
-**Pattern:** [MultipleSelection composition|composition reaction|cpo bingham average|cpo elastic tensor|crust and lithosphere formation|crystal preferred orientation|elastic stress|elastic tensor decomposition|function|grain size|initial composition|initial position|integrated strain|integrated strain invariant|melt particle|pT path|position|reference position|strain rate|velocity|velocity gradient|viscoplastic strain invariants ]
+**Pattern:** [MultipleSelection composition|composition reaction|cpo bingham average|cpo elastic tensor|crust and lithosphere formation|crystal preferred orientation|elastic stress|elastic tensor decomposition|function|general composition reaction|grain size|initial composition|initial position|integrated strain|integrated strain invariant|melt particle|pT path|particle generation time|position|reference position|strain rate|velocity|velocity gradient|viscoplastic strain invariants ]
 
 **Documentation:** A comma separated list of particle properties that should be tracked. By default none is selected, which means only position, velocity and id of the particles are output.
 
 The following properties are available:
 
-&lsquo;composition&rsquo;: Implementation of a plugin in which the particle property is defined by the compositional fields in the model. This can be used to track solid compositionevolution over time.
+&lsquo;composition&rsquo;: Implementation of a plugin in which the particle property is defined by the compositional fields in the model. This can be used to track solid composition evolution over time.
 
 &lsquo;composition reaction&rsquo;: Implementation of a plugin in which the particle property is given as the initial composition at the particle&rsquo;s initial position, and is updated during the simulation time according to reactions that are specified as functions in the input file. Each reaction has exactly one reactant and one product. Each particle gets as many properties as there are compositional fields. The reactions are described by two functions, and the change in each composition at the time a reaction occurs is computed as the product of the two functions. The &rsquo;Reaction area function&rsquo; describes the area where the reaction takes place. It can be spatially variable, but does not depend on time. The &rsquo;Reaction rate function&rsquo; describes how the change in composition depends on these compositions themselves and on time. To use this particle property for a given compositional field, set the &rsquo;Mapped particle properties&rsquo; to &rsquo;name_of_field:name_of_field reaction&rsquo;, i.e., the name of the particle property for each field is the name of the compositional field with the word &rsquo;reaction&rsquo; added at the end.
 
@@ -113,9 +113,11 @@ The following properties are available:
 
 &lsquo;function&rsquo;: Implementation of a model in which the particle property is set by evaluating an explicit function at the initial position of each particle. The function is defined in the parameters in section &ldquo;Particles|Function&rdquo;. The format of these functions follows the syntax understood by the muparser library, see {ref}`sec:run-aspect:parameters-overview:muparser-format`.
 
+&lsquo;general composition reaction&rsquo;: A particle property that stores compositional fields and updates them using the &rsquo;reaction terms&rsquo; returned by the material model. While this particle property allows fields to be tracked on different particle managers, for now it is recommended to have only one particle manager with this property in your simulation.
+
 &lsquo;grain size&rsquo;: A plugin in which the particle property is defined as the evolving grain size of a particle. See the grain_size material model documentation for more detailed information.
 
-&lsquo;initial composition&rsquo;: Implementation of a plugin in which the particle property is given as the initial composition at the particle&rsquo;s initial position. The particle gets as many properties as there are compositional fields.
+&lsquo;initial composition&rsquo;: Implementation of a plugin in which the particle property is given as the initial composition at the particle&rsquo;s initial position. The &rsquo;Selected compositional fields&rsquo; chooses which compositional fields to track on this particle manager. If no &rsquo;Selected compositional fields&rsquo; are chosen, the particle manager gets as many properties as there are compositional fields.
 
 &lsquo;initial position&rsquo;: Implementation of a plugin in which the particle property is given as the initial position of the particle. This property is vector-valued with as many components as there are space dimensions. In practice, it is often most useful to only visualize one of the components of this vector, or the magnitude of the vector. For example, in a spherical mantle simulation, the magnitude of this property equals the starting radius of a particle, and is thereby indicative of which part of the mantle a particle comes from.
 
@@ -127,13 +129,15 @@ The following properties are available:
 
 &lsquo;pT path&rsquo;: Implementation of a plugin in which the particle property is defined as the current pressure and temperature at this position. This can be used to generate pressure-temperature paths of material points over time.
 
+&lsquo;particle generation time&rsquo;: A plugin that stores the model time at which the particle was generated in the model domain.
+
 &lsquo;position&rsquo;: Implementation of a plugin in which the particle property is defined as the current position.
 
 &lsquo;reference position&rsquo;: Implementation of a plugin in which the particle property is defined as the current reference position.
 
 &lsquo;strain rate&rsquo;: Implementation of a plugin in which the time evolution of strain rate is saved and stored on the particles.
 
-&lsquo;velocity&rsquo;: Implementation of a plugin in which the particle property is defined as the recent velocity at this position.
+&lsquo;velocity&rsquo;: Implementation of a plugin in which the particle property is defined as the recent velocity at this position. The velocity depends on whether the particle manager is being advected with a solid or fluid velocity.
 
 &lsquo;velocity gradient&rsquo;: Implementation of a plugin in which the particle property is defined as the recent velocity gradient at this position.
 
@@ -183,6 +187,15 @@ The following properties are available:
 **Pattern:** [Selection random|histogram|point density function ]
 
 **Documentation:** Algorithm used to add particles to cells.
+::::
+
+::::{dropdown} __Parameter:__ {ref}`Particle advection velocity<parameters:Particles/Particle_20advection_20velocity>`
+:name: parameters:Particles/Particle_20advection_20velocity
+**Default value:** automatic
+
+**Pattern:** [Selection automatic|fluid|solid ]
+
+**Documentation:** This parameter determines which velocity will be used to advect a particular particle manager. This can be the solid velocity (if option &rsquo;solid&rsquo; is chosen), or the fluid velocity obtained by solving the coupled Stokes/Darcy equations in simulations with melt transport (if &rsquo;fluid&rsquo; is chosen). If &rsquo;automatic&rsquo; is chosen, particles are advected with the melt velocity in case both melt transport is turned on and the particle property &rsquo;melt particle&rsquo; is used in the simulation.)
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Particle generator name<parameters:Particles/Particle_20generator_20name>`
@@ -264,13 +277,13 @@ The following properties are available:
 **Documentation:** The seed used to generate random numbers. This will make sure that results are reproducible as long as the problem is run with the same amount of MPI processes. It is implemented as final seed = Random number seed + MPI Rank.
 ::::
 
-::::{dropdown} __Parameter:__ {ref}`Use rotation matrix<parameters:Particles/CPO_20Bingham_20Average/Use_20rotation_20matrix>`
-:name: parameters:Particles/CPO_20Bingham_20Average/Use_20rotation_20matrix
-**Default value:** true
+::::{dropdown} __Parameter:__ {ref}`Rotation format<parameters:Particles/CPO_20Bingham_20Average/Rotation_20format>`
+:name: parameters:Particles/CPO_20Bingham_20Average/Rotation_20format
+**Default value:** full matrix
 
-**Pattern:** [Bool]
+**Pattern:** [List of <[Anything]> of length 0...4294967295 (inclusive)]
 
-**Documentation:** This determines whether the orientations will be saved as rotation matrices or Euler angles. Setting it to fause means that the orientations will be saved as Euler angles.
+**Documentation:** Options: full matrix, euler angles, quaternion. This determines whether the orientations will be saved as: full matrix: returns 3 eigenvectors, i.e. one full rotation matrix for each axis; Euler angles: returns one set of 3 Euler angles in the zxz convention (not equivalent to the Bunge convention); they represent a passive rotation matrix derived from the principal eigenvectors of each axis; quaternion: returns a unit quaternion representing an active rotation matrix derived from the principal eigenvectors of each axis.
 ::::
 
 (parameters:Particles/Composition_20reaction)=
@@ -383,7 +396,16 @@ A typical example would be to set this runtime parameter to &lsquo;pi=3.14159265
 
 **Pattern:** [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
 
-**Documentation:** Thickness of the crustal layer generated at the surface.Units: \si{\meter}.
+**Documentation:** Thickness of the crustal layer generated at the surface. Units: \si{\meter}.
+::::
+
+::::{dropdown} __Parameter:__ {ref}`Harzburgite profile in lithosphere<parameters:Particles/Crust_20and_20lithosphere_20formation/Harzburgite_20profile_20in_20lithosphere>`
+:name: parameters:Particles/Crust_20and_20lithosphere_20formation/Harzburgite_20profile_20in_20lithosphere
+**Default value:** linear
+
+**Pattern:** [Selection constant|linear ]
+
+**Documentation:** Choose the profile used for the harzburgite fraction within the lithosphere. If set to constant, the harzburgite fraction is 100\% everywhere except where basalt is present. If set to linear, the harzburgite fraction is 100\% at the top of the lithosphere and decreases linearly to 0\% at the bottom of the lithosphere.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Lithosphere thickness<parameters:Particles/Crust_20and_20lithosphere_20formation/Lithosphere_20thickness>`
@@ -392,7 +414,25 @@ A typical example would be to set this runtime parameter to &lsquo;pi=3.14159265
 
 **Pattern:** [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
 
-**Documentation:** Thickness of the lithosphere layer generated below the crust.Units: \si{\meter}.
+**Documentation:** Thickness of the lithosphere layer generated below the crust. Units: \si{\meter}.
+::::
+
+::::{dropdown} __Parameter:__ {ref}`Minimum upwelling angle for crust formation<parameters:Particles/Crust_20and_20lithosphere_20formation/Minimum_20upwelling_20angle_20for_20crust_20formation>`
+:name: parameters:Particles/Crust_20and_20lithosphere_20formation/Minimum_20upwelling_20angle_20for_20crust_20formation
+**Default value:** 30
+
+**Pattern:** [Double 0...90 (inclusive)]
+
+**Documentation:** The minimum upwelling angle required for a particle to be converted into crustal material. This angle is measured between the horizontal direction and the particle velocity vector and ranges from 0 to 90 degrees. A value of 0 means that all particles are converted into crust (basalt) as soon as they reach the required depth. A value of 90 means that only particles moving vertically upward are converted into crust (basalt). Units: \si{\degree}.
+::::
+
+::::{dropdown} __Parameter:__ {ref}`Minimum upwelling angle for lithosphere formation<parameters:Particles/Crust_20and_20lithosphere_20formation/Minimum_20upwelling_20angle_20for_20lithosphere_20formation>`
+:name: parameters:Particles/Crust_20and_20lithosphere_20formation/Minimum_20upwelling_20angle_20for_20lithosphere_20formation
+**Default value:** 30
+
+**Pattern:** [Double 0...90 (inclusive)]
+
+**Documentation:** The minimum upwelling angle required for a particle to be converted into lithospheric material. This angle is measured between the horizontal direction and the particle velocity vector and ranges from 0 to 90 degrees. A value of 0 means that all particles (except for particles with a basaltic composition) are converted into lithosphere (harzburgite) as soon as they reach the required depth. A value of 90 means that only particles (except for particles with a basaltic composition) moving vertically upward are converted into lithosphere (harzburgite). Units: \si{\degree}.
 ::::
 
 (parameters:Particles/Crystal_20Preferred_20Orientation)=
@@ -403,7 +443,7 @@ A typical example would be to set this runtime parameter to &lsquo;pi=3.14159265
 
 **Pattern:** [List of <[Anything]> of length 0...4294967295 (inclusive)]
 
-**Documentation:** Options: Spin tensor
+**Documentation:** Options: Spin tensor, D-Rex 2004
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Number of grains per particle<parameters:Particles/Crystal_20Preferred_20Orientation/Number_20of_20grains_20per_20particle>`
@@ -567,6 +607,15 @@ A typical example would be to set this runtime parameter to &lsquo;pi=3.14159265
 
 (parameters:Particles/Function)=
 ## **Subsection:** Particles / Function
+::::{dropdown} __Parameter:__ {ref}`Coordinate system<parameters:Particles/Function/Coordinate_20system>`
+:name: parameters:Particles/Function/Coordinate_20system
+**Default value:** cartesian
+
+**Pattern:** [Selection cartesian|spherical|depth ]
+
+**Documentation:** A selection that determines the assumed coordinate system for the function variables. Allowed values are &lsquo;cartesian&rsquo;, &lsquo;spherical&rsquo;, and &lsquo;depth&rsquo;. &lsquo;spherical&rsquo; coordinates are interpreted as r,phi or r,phi,theta in 2d/3d respectively with theta being the polar angle. &lsquo;depth&rsquo; will create a function, in which only the first parameter is non-zero, which is interpreted to be the depth of the point.
+::::
+
 ::::{dropdown} __Parameter:__ {ref}`Function constants<parameters:Particles/Function/Function_20constants>`
 :name: parameters:Particles/Function/Function_20constants
 **Default value:**
@@ -605,6 +654,17 @@ If the function you are describing represents a vector-valued function with mult
 **Pattern:** [Anything]
 
 **Documentation:** The names of the variables as they will be used in the function, separated by commas. By default, the names of variables at which the function will be evaluated are &lsquo;x&rsquo; (in 1d), &lsquo;x,y&rsquo; (in 2d) or &lsquo;x,y,z&rsquo; (in 3d) for spatial coordinates and &lsquo;t&rsquo; for time. You can then use these variable names in your function expression and they will be replaced by the values of these variables at which the function is currently evaluated. However, you can also choose a different set of names for the independent variables at which to evaluate your function expression. For example, if you work in spherical coordinates, you may wish to set this input parameter to &lsquo;r,phi,theta,t&rsquo; and then use these variable names in your function expression.
+::::
+
+(parameters:Particles/General_20composition_20reaction)=
+## **Subsection:** Particles / General composition reaction
+::::{dropdown} __Parameter:__ {ref}`Selected compositional fields<parameters:Particles/General_20composition_20reaction/Selected_20compositional_20fields>`
+:name: parameters:Particles/General_20composition_20reaction/Selected_20compositional_20fields
+**Default value:** all
+
+**Pattern:** [List of <[Anything]> of length 0...4294967295 (inclusive)]
+
+**Documentation:** A list that determines which compositional fields are stored for particles in this particle manager. The value &rsquo;all&rsquo; selects every compositional field.
 ::::
 
 (parameters:Particles/Generator)=
@@ -891,6 +951,17 @@ A typical example would be to set this runtime parameter to &lsquo;pi=3.14159265
 **Pattern:** [Integer range 1...2147483647 (inclusive)]
 
 **Documentation:** The number of radial shells of particles that will be generated around the central point.
+::::
+
+(parameters:Particles/Initial_20composition)=
+## **Subsection:** Particles / Initial composition
+::::{dropdown} __Parameter:__ {ref}`Selected compositional fields<parameters:Particles/Initial_20composition/Selected_20compositional_20fields>`
+:name: parameters:Particles/Initial_20composition/Selected_20compositional_20fields
+**Default value:** all
+
+**Pattern:** [List of <[Anything]> of length 0...4294967295 (inclusive)]
+
+**Documentation:** A list that determines which compositional fields to track on this particle manager. The default value &rsquo;all&rsquo; means every composition field is tracked on every particle manager.
 ::::
 
 (parameters:Particles/Integrator)=

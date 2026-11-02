@@ -1,0 +1,16 @@
+
+Number of active cells: 32 (on 2 levels)
+Number of degrees of freedom: 504 (306+45+153)
+
+   Added initial topography to grid
+
+*** Timestep 0:  t=0 years, dt=0 years
+
+   Postprocessing:
+     Writing graphical output: output-world_builder_initial_topography_box/solution/solution-00000
+     Topography min/max:       1e+04 m, 3e+04 m
+
+Termination requested by criterion: end time
+
+
+

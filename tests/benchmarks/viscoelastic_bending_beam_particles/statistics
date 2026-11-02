@@ -1,0 +1,29 @@
+# 1: Time step number
+# 2: Time (years)
+# 3: Time step size (years)
+# 4: Number of mesh cells
+# 5: Number of Stokes degrees of freedom
+# 6: Number of temperature degrees of freedom
+# 7: Number of degrees of freedom for all compositions
+# 8: Number of nonlinear iterations
+# 9: Iterations for temperature solver
+# 10: Iterations for Stokes solver
+# 11: Velocity iterations in Stokes preconditioner
+# 12: Schur complement iterations in Stokes preconditioner
+# 13: Minimal value for composition ve_stress_xx
+# 14: Maximal value for composition ve_stress_xx
+# 15: Global mass for composition ve_stress_xx
+# 16: Minimal value for composition ve_stress_yy
+# 17: Maximal value for composition ve_stress_yy
+# 18: Global mass for composition ve_stress_yy
+# 19: Minimal value for composition ve_stress_xy
+# 20: Maximal value for composition ve_stress_xy
+# 21: Global mass for composition ve_stress_xy
+# 22: Minimal value for composition beam
+# 23: Maximal value for composition beam
+# 24: Global mass for composition beam
+# 25: Number of advected particles
+# 26: Particle file name
+0 0.000000000000e+00 0.000000000000e+00 150 1478 176 5400 2 0 164 167 167  0.00000000e+00 0.00000000e+00  0.00000000e+00  0.00000000e+00 0.00000000e+00 0.00000000e+00  0.00000000e+00 0.00000000e+00  0.00000000e+00 0.00000000e+00 1.00000000e+00 2.25000000e+06 4474 output-viscoelastic_bending_beam_particles/particles/particles-00000 
+1 1.000000000000e+03 1.000000000000e+03 150 1478 176 5400 5 0 410 416 416 -1.67675873e+07 1.55832619e+07 -9.40991588e+11 -7.83056930e+06 8.43525286e+06 4.84007490e+11 -3.42401211e+06 1.21351434e+06 -3.75321599e+12 0.00000000e+00 1.00000000e+00 2.27233655e+06 4472                                                                   "" 
+2 2.000000000000e+03 1.000000000000e+03 150 1478 176 5400 5 0 408 414 414 -2.79378476e+07 2.64643203e+07 -1.12357727e+12 -1.06621603e+07 1.11852046e+07 3.39173541e+11 -4.62541150e+06 1.59144874e+06 -4.08064102e+12 0.00000000e+00 1.00000000e+00 2.28772136e+06 4463                                                                   "" 

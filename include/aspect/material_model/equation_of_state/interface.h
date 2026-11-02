@@ -1,22 +1,16 @@
-/*
-  Copyright (C) 2011 - 2023 by the authors of the ASPECT code.
-
-  This file is part of ASPECT.
-
-  ASPECT is free software; you can redistribute it and/or modify
-  it under the terms of the GNU General Public License as published by
-  the Free Software Foundation; either version 2, or (at your option)
-  any later version.
-
-  ASPECT is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  GNU General Public License for more details.
-
-  You should have received a copy of the GNU General Public License
-  along with ASPECT; see the file LICENSE.  If not see
-  <http://www.gnu.org/licenses/>.
-*/
+// ------------------------------------------------------
+//
+// SPDX-License-Identifier: GPL-2.0-or-later
+//
+// SPDX-FileCopyrightText: Copyright (C) 2011-2026 by the ASPECT authors.
+//
+// This file is part of ASPECT.
+//
+// Detailed license information governing the source code and
+// contributions can be found in the folder LICENSES and in
+// LICENSE and CONTRIBUTING.md at the top level directory.
+//
+// ------------------------------------------------------
 
 #ifndef _aspect_material_model_equation_of_state_interface_h
 #define _aspect_material_model_equation_of_state_interface_h
@@ -96,6 +90,35 @@ namespace aspect
        */
       std::vector<double> entropy_derivative_temperature;
     };
+
+
+
+    /**
+     * Modify the equation of state outputs for all compositions and phases
+     * according to the supplied reaction progress.
+     *
+     * The input @p eos_outputs_all_phases contains equation of state properties
+     * for every phase of every composition at the current conditions. For each
+     * composition, this function uses the corresponding entries in
+     * @p reaction_progress_values and @p reaction_progress_mapping to modify the
+     * equation of state properties of phases affected by kinetic reactions.
+     *
+     * The vector @p reaction_progress_values contains one value for each kinetic
+     * reaction, while @p reaction_progress_mapping specifies the associated phase
+     * transition index for each reaction. The vector
+     * @p n_phase_transitions_per_composition is used to determine which phase
+     * transitions belong to each composition.
+     *
+     * The modified equation of state properties are written back into
+     * @p eos_outputs_all_phases, preserving the data layout for all phases and
+     * compositions so they can subsequently be used during phase averaging.
+     */
+    template <int dim>
+    void
+    reaction_progress_modify_equation_of_state_outputs(const std::vector<double> &reaction_progress_values,
+                                                       const std::vector<unsigned int> &reaction_progress_mapping,
+                                                       const std::vector<unsigned int> &n_phase_transitions_per_composition,
+                                                       EquationOfStateOutputs<dim> &eos_outputs_all_phases);
 
 
 

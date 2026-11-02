@@ -1,6 +1,6 @@
 
 
-   Loading Ascii data boundary file ASPECT_DIR/data/initial-composition/slab-model/shell_3d.txt.
+   Loading Ascii data boundary file $ASPECT_SOURCE_DIR/data/initial-composition/slab-model/shell_3d.txt.
 
 Number of active cells: 192 (on 3 levels)
 Number of degrees of freedom: 10,070 (5,859+305+1,953+1,953)

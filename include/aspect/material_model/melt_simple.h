@@ -1,22 +1,16 @@
-/*
-  Copyright (C) 2015 - 2024 by the authors of the ASPECT code.
-
-  This file is part of ASPECT.
-
-  ASPECT is free software; you can redistribute it and/or modify
-  it under the terms of the GNU General Public License as published by
-  the Free Software Foundation; either version 2, or (at your option)
-  any later version.
-
-  ASPECT is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  GNU General Public License for more details.
-
-  You should have received a copy of the GNU General Public License
-  along with ASPECT; see the file LICENSE.  If not see
-  <http://www.gnu.org/licenses/>.
-*/
+// ------------------------------------------------------
+//
+// SPDX-License-Identifier: GPL-2.0-or-later
+//
+// SPDX-FileCopyrightText: Copyright (C) 2015-2026 by the ASPECT authors.
+//
+// This file is part of ASPECT.
+//
+// Detailed license information governing the source code and
+// contributions can be found in the folder LICENSES and in
+// LICENSE and CONTRIBUTING.md at the top level directory.
+//
+// ------------------------------------------------------
 
 #ifndef _aspect_material_model_melt_simple_h
 #define _aspect_material_model_melt_simple_h
@@ -117,15 +111,42 @@ namespace aspect
 
 
       private:
+        /**
+         * This variable is read from the parameter file through a parameter called 'Use full compressibility'.
+         */
         bool model_is_compressible;
+        /**
+         * This variable is read from the parameter file through a parameter called 'Thermal expansion coefficient'.
+         */
         double thermal_expansivity;
+        /**
+         * This variable is read from the parameter file through a parameter called 'Reference shear viscosity'.
+         */
         double eta_0;
+        /**
+         * This variable is read from the parameter file through a parameter called 'Reference specific heat'.
+         */
         double reference_specific_heat;
         double thermal_conductivity;
+        /**
+         * This variable is read from the parameter file through a parameter called 'Solid compressibility'.
+         */
         double compressibility;
+        /**
+         * This variable is read from the parameter file through a parameter called 'Thermal viscosity exponent'.
+         */
         double thermal_viscosity_exponent;
+        /**
+         * This variable is read from the parameter file through a parameter called 'Reference temperature'.
+         */
         double reference_T;
+        /**
+         * This variable is read from the parameter file through a parameter called 'Depletion density change'.
+         */
         double depletion_density_change;
+        /**
+         * This variable is read from the parameter file through a parameter called 'Reference solid density'.
+         */
         double reference_rho_solid;
 
 
