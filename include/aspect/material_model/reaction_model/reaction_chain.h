@@ -50,21 +50,32 @@ namespace aspect
         public:
           std::vector<ReactionStep<dim>> reactions;
 
-          void initialize();
-          unsigned int n_reactions() const;
+          void
+          initialize();
 
-          std::vector<double> clamp_cumulative_progress(std::vector<double> reaction_progress_values) const;
-          std::vector<double> compute_phase_mass_fractions(const std::vector<double> &reaction_progress_values,
-                                                           const std::vector<double> &phase_densities) const;
+          unsigned int
+          n_reactions() const;
 
-          double net_forward_reaction_rate(const double temperature,
-                                           const double pressure,
-                                           const double delta_forward_gibbs_energy,
-                                           const double cumulative_forward_reaction_progress,
-                                           const unsigned int reaction_index) const;
+          std::vector<double>
+          clamp_cumulative_progress(std::vector<double> reaction_progress_values) const;
 
-          static void declare_parameters(ParameterHandler &prm);
-          void parse_parameters(ParameterHandler &prm);
+          std::vector<double>
+          compute_phase_mass_fractions(const std::vector<double> &reaction_progress_values,
+                                       const std::vector<double> &phase_densities) const;
+
+          double
+          net_forward_reaction_rate(const double temperature,
+                                    const double pressure,
+                                    const double delta_forward_gibbs_energy,
+                                    const double cumulative_forward_reaction_progress,
+                                    const unsigned int reaction_index) const;
+
+          static
+          void
+          declare_parameters(ParameterHandler &prm);
+
+          void
+          parse_parameters(ParameterHandler &prm);
 
         private:
           /**

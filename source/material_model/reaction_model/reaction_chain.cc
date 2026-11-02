@@ -33,12 +33,16 @@ namespace aspect
           }
       }
 
+
+
       template <int dim>
       unsigned int
       ReactionChain<dim>::n_reactions() const
       {
         return reactions.size();
       }
+
+
 
       template <int dim>
       std::vector<double>
@@ -48,22 +52,22 @@ namespace aspect
                     ExcMessage("Size of 'reaction_progress_values' (" + std::to_string(reaction_progress_values.size()) +
                                ") does not match number of reactions (" + std::to_string(reactions.size()) + ")."));
 
-        // Sanity check: reaction progress values should be close to [0, 1]
+        // Reaction progress values should be within tolerance of [0, 1]
         for (unsigned int i = 0; i < reaction_progress_values.size(); ++i)
           {
-            const double val = reaction_progress_values[i];
+            const double progress_value = reaction_progress_values[i];
 
-            AssertThrow(std::isfinite(val),
-                        ExcMessage("'reaction_progress_values[" + std::to_string(i) + "]' = " + std::to_string(val) +
+            AssertThrow(std::isfinite(progress_value),
+                        ExcMessage("'reaction_progress_values[" + std::to_string(i) + "]' = " + std::to_string(progress_value) +
                                    " is not finite (NaN or Inf)."));
 
-            AssertThrow(val > -tolerance_in_reaction_progress && val < 1.0 + tolerance_in_reaction_progress,
-                        ExcMessage("'reaction_progress_values[" + std::to_string(i) + "]' = " + std::to_string(val) +
+            AssertThrow(progress_value > -tolerance_in_reaction_progress && progress_value < 1.0 + tolerance_in_reaction_progress,
+                        ExcMessage("'reaction_progress_values[" + std::to_string(i) + "]' = " + std::to_string(progress_value) +
                                    " is too far outside the physical range [0, 1] (allowed excursion is " +
                                    std::to_string(tolerance_in_reaction_progress) + ")."));
           }
 
-        // Sanity check: reaction progress values should be close to monotonic
+        // Reaction progress values should be close to monotonic
         for (unsigned int i = 1; i < reaction_progress_values.size(); ++i)
           AssertThrow(reaction_progress_values[i] < reaction_progress_values[i-1] + tolerance_in_reaction_progress,
                       ExcMessage("'reaction_progress_values[" + std::to_string(i) + "]' = " +
@@ -74,17 +78,22 @@ namespace aspect
                                  std::to_string(i) + " should not have progressed further than reaction " +
                                  std::to_string(i-1) + " in a sequential chain."));
 
-        if (!reaction_progress_values.empty())
-          reaction_progress_values[0] = std::clamp(reaction_progress_values[0], 0.0, 1.0);
-
-        for (unsigned int i = 1; i < reaction_progress_values.size(); ++i)
+        for (unsigned int i = 0; i < reaction_progress_values.size(); ++i)
           {
-            reaction_progress_values[i] = std::clamp(reaction_progress_values[i], 0.0, 1.0);  // Clamp to valid physical range [0, 1]
-            reaction_progress_values[i] = std::min(reaction_progress_values[i], reaction_progress_values[i-1]);  // Enforce monotonicity xi[i] <= xi[i-1]
+            // Clamp to valid physical range [0, 1]
+            reaction_progress_values[i] = std::clamp(reaction_progress_values[i], 0.0, 1.0);
+
+            if (i>0)
+              {
+                // Enforce monotonicity xi[i] <= xi[i-1]
+                reaction_progress_values[i] = std::min(reaction_progress_values[i], reaction_progress_values[i-1]);
+              }
           }
 
         return reaction_progress_values;
       }
+
+
 
       template <int dim>
       std::vector<double>
@@ -133,6 +142,8 @@ namespace aspect
         return mass_fraction_values;
       }
 
+
+
       template <int dim>
       double
       ReactionChain<dim>::net_forward_reaction_rate(const double temperature,
@@ -148,6 +159,8 @@ namespace aspect
                                                             cumulative_forward_reaction_progress,
                                                             reaction.local_reaction_index);
       }
+
+
 
       template <int dim>
       void
@@ -172,6 +185,8 @@ namespace aspect
         }
         prm.leave_subsection();
       }
+
+
 
       template <int dim>
       void
@@ -226,13 +241,18 @@ namespace aspect
   }
 }
 
+
+
 namespace aspect
 {
   namespace MaterialModel
   {
     namespace ReactionModel
     {
-#define INSTANTIATE(dim) template struct ReactionStep<dim>; template class ReactionChain<dim>;
+#define INSTANTIATE(dim) \
+  template struct ReactionStep<dim>; \
+  template class ReactionChain<dim>;
+
       ASPECT_INSTANTIATE(INSTANTIATE)
 #undef INSTANTIATE
     }
