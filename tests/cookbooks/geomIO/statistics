@@ -12,11 +12,7 @@
 # 12: Schur complement iterations in Stokes preconditioner
 # 13: RMS velocity (m/year)
 # 14: Max. velocity (m/year)
-# 15: Minimal temperature (K)
-# 16: Average temperature (K)
-# 17: Maximal temperature (K)
-# 18: Outward heat flux through boundary with indicator 0 ("left") (W)
-# 19: Outward heat flux through boundary with indicator 1 ("right") (W)
-# 20: Outward heat flux through boundary with indicator 2 ("bottom") (W)
-# 21: Outward heat flux through boundary with indicator 3 ("top") (W)
-0 0.000000000000e+00 0.000000000000e+00 64 659 289 289 0 0 14 15 15 9.99999999e-01 1.00000003e+00 0.00000000e+00 1.83329167e+03 1.91300000e+03 -2.43470096e+06 2.43470096e+06 1.17483740e+05 1.17483674e+05 
+# 15: Minimal value for composition C_1
+# 16: Maximal value for composition C_1
+# 17: Global mass for composition C_1
+0 0.000000000000e+00 0.000000000000e+00 64 659 289 289 0 0 18 19 19 1.26702873e-23 6.98573120e-23 0.00000000e+00 3.00000000e+00 3.61757812e+07 
