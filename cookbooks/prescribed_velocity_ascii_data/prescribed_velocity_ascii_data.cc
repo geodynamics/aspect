@@ -292,22 +292,20 @@ namespace aspect
     SimulatorSignals<3>::parse_additional_parameters.connect (&parse_parameters<3>);
   }
 
-  // Connect constraints function to correct signal.
+  // Cleanup function to free MPI windows before MPI_Finalize
+  template <int dim>
+  void cleanup (const SimulatorAccess<dim> &)
+  {
+    prescribed_velocity_field_data_2d.reset();
+    prescribed_velocity_field_data_3d.reset();
+  }
+
+  // Connect constraints function and cleanup signal to correct signals.
   template <int dim>
   void signal_connector (SimulatorSignals<dim> &signals)
   {
-    std::shared_ptr<void> cleanup_guard(nullptr, [](void *)
-    {
-      prescribed_velocity_field_data_2d.reset();
-      prescribed_velocity_field_data_3d.reset();
-    });
-
-    signals.post_constraints_creation.connect (
-      [cleanup_guard](const SimulatorAccess<dim> &simulator_access,
-                      AffineConstraints<double> &current_constraints)
-    {
-      constrain_internal_velocities<dim>(simulator_access, current_constraints);
-    });
+    signals.post_constraints_creation.connect (&constrain_internal_velocities<dim>);
+    signals.post_simulator_run.connect (&cleanup<dim>);
   }
 
   // Tell ASPECT to send signals to the connector functions
