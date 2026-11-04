@@ -1,0 +1,15 @@
+# This test verifies that the van-keken-vof cookbook runs as expected.
+
+include $ASPECT_SOURCE_DIR/cookbooks/van-keken-vof/van-keken-vof.prm
+
+set End time = 0
+
+subsection Mesh refinement
+  set Initial adaptive refinement        = 0
+  set Initial global refinement          = 2
+  set Time steps between mesh refinement = 0
+end
+
+subsection Postprocess
+  set List of postprocessors = velocity statistics, composition statistics
+end
