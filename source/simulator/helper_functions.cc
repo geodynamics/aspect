@@ -1923,6 +1923,7 @@ namespace aspect
                   material_model->fill_additional_material_model_inputs(in, solution, fe_values, introspection);
 
                   material_model->evaluate(in, out);
+                  signals.modify_reactions(SimulatorAccess<dim>(*this), in, out);
                   heating_model_manager.evaluate(in, out, heating_model_outputs);
 
                   for (unsigned int j=0; j<n_q_points; ++j)
