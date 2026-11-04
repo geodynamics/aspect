@@ -332,6 +332,12 @@ namespace aspect
      */
     boost::signals2::signal<void (Particle::Manager<dim> &)> post_restore_particles;
 
+    /**
+     * A signal that is triggered after Simulator::run() has completed. This allows
+     * plugins to perform cleanup tasks that they cannot or do not want to perform
+     * in their destructor.
+     */
+    boost::signals2::signal<void (const SimulatorAccess<dim> &)> post_simulator_run;
   };
 
 

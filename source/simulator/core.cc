@@ -2448,6 +2448,8 @@ namespace aspect
     pcout << resource_output.str();
 
     CitationInfo::print_info_block (pcout);
+
+    signals.post_simulator_run(*this);
   }
 }
 
