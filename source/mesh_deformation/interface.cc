@@ -236,7 +236,8 @@ namespace aspect
         include_initial_topography(false),
         use_automatic_mapping_order(true),
         explicit_mapping_order(1),
-        initial_deformation_substeps(1)
+        initial_deformation_substeps(1),
+        computing_initial_deformation(false)
     {
     }
 
@@ -1014,7 +1015,7 @@ namespace aspect
       // we solve with higher accuracy in the initial timestep:
       const double tolerance
         = this->get_parameters().linear_stokes_solver_tolerance
-          * ((this->simulator_is_past_initialization()) ? 1.0 : 1e-5);
+          * (computing_initial_deformation ? 1e-5 : 1.0);
 
       SolverControl solver_control(5*rhs.size(), tolerance * rhs.l2_norm());
       SolverCG<LinearAlgebra::Vector> cg(solver_control);
@@ -1043,7 +1044,7 @@ namespace aspect
       fs_mesh_velocity = solution;
 
       // Update the mesh displacement vector
-      if (this->simulator_is_past_initialization())
+      if (!computing_initial_deformation)
         {
           // during the simulation, we add dt*solution
           LinearAlgebra::Vector distributed_mesh_displacements(mesh_locally_owned, this->get_mpi_communicator());
@@ -1244,7 +1245,7 @@ namespace aspect
       fs_mesh_velocity = solution_tmp;
 
       // Update the mesh displacement vector
-      if (this->simulator_is_past_initialization())
+      if (!computing_initial_deformation)
         {
           // during the simulation, we add dt*solution
           LinearAlgebra::Vector distributed_mesh_displacements(mesh_locally_owned, this->get_mpi_communicator());
@@ -1431,10 +1432,10 @@ namespace aspect
                      preconditioner(mesh_deformation_dof_handler, mg, *local_smoothing_mg_transfer);
 
 
-      // solve
+      // we solve with higher accuracy in the initial timestep:
       const double tolerance
         = this->get_parameters().linear_stokes_solver_tolerance
-          * ((this->simulator_is_past_initialization()) ? 1.0 : 1e-5);
+          * (computing_initial_deformation ? 1e-5 : 1.0);
 
       SolverControl solver_control_mf(5 * rhs.size(),
                                       tolerance * rhs.l2_norm());
@@ -1569,9 +1570,10 @@ namespace aspect
                                     mg,
                                     *global_coarsening_mg_transfer);
 
+      // we solve with higher accuracy in the initial timestep:
       const double tolerance
         = this->get_parameters().linear_stokes_solver_tolerance
-          * ((this->simulator_is_past_initialization()) ? 1.0 : 1e-5);
+          * (computing_initial_deformation ? 1e-5 : 1.0);
 
       SolverControl solver_control_mf(5 * rhs.size(),
                                       tolerance * rhs.l2_norm());
@@ -2009,6 +2011,8 @@ namespace aspect
         {
           this->get_computing_timer().enter_subsection("Mesh deformation initialize");
 
+          computing_initial_deformation = true;
+
           // Apply the initial deformation incrementally over a number of
           // substeps instead of all at once. On substep k of K, only a
           // fraction k/K of the full initial topography is prescribed on the
@@ -2032,6 +2036,8 @@ namespace aspect
               else
                 compute_mesh_displacements();
             }
+
+          computing_initial_deformation = false;
 
           this->get_computing_timer().leave_subsection("Mesh deformation initialize");
         }
