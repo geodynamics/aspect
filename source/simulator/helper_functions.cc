@@ -1883,6 +1883,7 @@ namespace aspect
                 copy_fields_into_material_model_inputs (y, in);
                 material_model->fill_additional_material_model_inputs(in, solution, fe_values, introspection);
                 material_model->evaluate(in, out);
+                signals.modify_reactions(SimulatorAccess<dim>(*this), in, out);
                 heating_model_manager.evaluate(in, out, heating_model_outputs);
                 copy_rates_into_one_vector (*reaction_rate_outputs, heating_model_outputs, ydot);
               };
