@@ -1,0 +1,23 @@
+
+Loading shared library <./libpost_simulator_run_signal.debug.so>
+
+Number of active cells: 16 (on 3 levels)
+Number of degrees of freedom: 268 (162+25+81)
+
+*** Timestep 0:  t=0 seconds, dt=0 seconds
+   Solving temperature system... 11 iterations.
+   Solving Stokes system (GMG)... 11+0 iterations.
+
+   Postprocessing:
+
+*** Timestep 1:  t=0.1 seconds, dt=0.1 seconds
+   Solving temperature system... 9 iterations.
+   Solving Stokes system (GMG)... 0+0 iterations.
+
+   Postprocessing:
+
+Termination requested by criterion: end time
+
+
+
+Signal triggered
