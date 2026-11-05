@@ -9,6 +9,10 @@ include free_surface_VE_cylinder_2D_loading.prm
 set Dimension                              = 2
 set Output directory                       = output_free_surface_VE_cylinder_2D_loading_fixed_elastic_dt
 
+# One operator splitting step to update the stresses,
+# not the temperature.
+set Use operator splitting                 = false, true, true, true, true, true, true
+
 # A fixed elastic time step requires the additional (old) stress fields:
 subsection Compositional fields
   set Number of fields = 6

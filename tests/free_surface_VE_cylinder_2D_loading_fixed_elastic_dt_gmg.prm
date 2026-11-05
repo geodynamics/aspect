@@ -12,6 +12,10 @@ set Dimension                              = 2
 set Output directory                       = output_free_surface_VE_cylinder_2D_loading_fixed_elastic_dt_gmg
 set End time = 30
 
+# One operator splitting step to update the stresses,
+# not the temperature.
+set Use operator splitting                 = false, true, true, true, true, true, true
+
 # Number and name of compositional fields
 subsection Compositional fields
   set Number of fields = 6

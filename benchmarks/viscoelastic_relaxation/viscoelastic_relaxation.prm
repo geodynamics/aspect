@@ -19,7 +19,7 @@ set Surface pressure                       = 0.
 set Output directory                       = ve_relaxation_dt125yr_dh10km
 
 # New elasticity settings
-set Use operator splitting                 = true
+set Use operator splitting                 = false, true, true, true
 
 # Solver settings
 subsection Solver parameters
@@ -28,6 +28,7 @@ subsection Solver parameters
     set Reaction solver type                   = fixed step
     set Reaction time step                     = 5000 # larger than maximum Stokes time step
     set Reaction time steps per advection step = 1
+    set Reaction solve strategy                = after nonlinear solver
   end
 end
 
