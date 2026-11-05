@@ -488,7 +488,7 @@ namespace aspect
                                  "Exponent of the melting temperature in the melt "
                                  "fraction calculation before clinopyroxene exhaustion. Must be greater than 0. "
                                  "Units: non-dimensional.");
-              prm.declare_entry ("beta2", "1.2",
+              prm.declare_entry ("beta2", "1.5",
                                  Patterns::Double (0),
                                  "Exponent of the melting temperature in the melt "
                                  "fraction calculation after clinopyroxene exhaustion. Must be greater than 0. "

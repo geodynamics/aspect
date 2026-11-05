@@ -13,7 +13,6 @@
 # set view map
 # splot "file1" using 5:6:7 with points pointtype 5 pointsize 1 palette,
 #       "file2" using 5:6:7 with points pointtype 5 pointsize 1 palette
-# MPI: 2
 
 set Dimension                              = 2
 

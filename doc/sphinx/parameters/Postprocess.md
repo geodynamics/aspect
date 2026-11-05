@@ -1716,7 +1716,7 @@ viscosity|density|thermal expansivity|specific heat|thermal conductivity|thermal
 
 ::::{dropdown} __Parameter:__ {ref}`beta2<parameters:Postprocess/Visualization/Melt_20fraction/beta2>`
 :name: parameters:Postprocess/Visualization/Melt_20fraction/beta2
-**Default value:** 1.2
+**Default value:** 1.5
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
