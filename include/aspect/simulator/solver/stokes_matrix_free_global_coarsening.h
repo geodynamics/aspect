@@ -167,6 +167,30 @@ namespace aspect
 
     private:
       /**
+       * Methods for solving the velocity block on the coarsest GMG level.
+       */
+      enum class VelocityCoarseSolver
+      {
+        /**
+         * Apply the Chebyshev smoother configured for the coarse level.
+         */
+        chebyshev,
+        /**
+         * Apply one AMG V-cycle.
+         */
+        amg,
+        /**
+         * Solve with CG preconditioned by AMG V-cycles.
+         */
+        cg_amg
+      };
+
+      /**
+       * The velocity coarse solver selected in the parameter file.
+       */
+      VelocityCoarseSolver velocity_coarse_solver;
+
+      /**
        * Evaluate the MaterialModel to query information like the viscosity and
        * project this viscosity to the multigrid hierarchy. Also queries
        * other parameters like pressure scaling.

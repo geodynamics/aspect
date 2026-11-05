@@ -487,6 +487,11 @@ namespace aspect
          */
         void set_diagonal (const dealii::LinearAlgebra::distributed::Vector<number> &diag);
 
+        /**
+         * Assemble the sparse matrix represented by this operator.
+         */
+        void assemble_system_matrix(LinearAlgebra::SparseMatrix &system_matrix) const;
+
       private:
         /**
          * Defines the inner-most operator on a single cell batch with
@@ -509,6 +514,15 @@ namespace aspect
                             number> &velocity) const;
 
         /**
+        * Assemble the local cell matrix for assemble_system_matrix().
+        */
+        void cell_operation_local(FEEvaluation<dim,
+                                  degree_v,
+                                  degree_v+1,
+                                  dim,
+                                  number> &velocity) const;
+
+        /**
          * Performs the application of the matrix-free operator. This
          * function is called by vmult() functions
          * MatrixFreeOperators::Base.
@@ -528,6 +542,7 @@ namespace aspect
          * A pointer to the current cell data that contains viscosity and other required parameters per cell.
          */
         const OperatorCellData<dim,number> *cell_data;
+
     };
   }
 
