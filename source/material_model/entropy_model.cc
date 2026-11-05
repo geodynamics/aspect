@@ -84,7 +84,7 @@ namespace aspect
 
       AssertThrow(solver_scheme_is_supported(this->get_parameters()) == true,
                   ExcMessage("The 'entropy model' material model requires the use of a solver scheme that "
-                             "iterates over the advection equations but a non iterating solver scheme was selected. "
+                             "iterates over the advection equations or does not solve for advection at all. "
                              "Please check the consistency of your solver scheme."));
 
       for (unsigned int i = 0; i < material_file_names.size(); ++i)
@@ -584,8 +584,8 @@ namespace aspect
       if (this->introspection().composition_type_exists(CompositionalFieldDescription::Type::chemical_composition))
         {
           AssertThrow (this->get_parameters().use_operator_splitting == true,
-                       ExcMessage("The 'entropy model' material model requires the use of operator splitting for multiple chemical composition. "
-                                  "Please set the 'Use operator splitting' parameter to 1 in the material model parameters."));
+                       ExcMessage("The 'entropy model' material model requires the use of operator splitting for multiple chemical compositions. "
+                                  "Please set the global parameter 'Use operator splitting' to true."));
         }
 
       prm.enter_subsection("Material model");
