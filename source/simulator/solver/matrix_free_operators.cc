@@ -38,6 +38,7 @@
 #include <deal.II/grid/manifold.h>
 
 #include <deal.II/matrix_free/tools.h>
+#include <deal.II/lac/sparsity_tools.h>
 
 namespace aspect
 {
@@ -1012,6 +1013,52 @@ namespace aspect
     velocity.evaluate (EvaluationFlags::gradients);
     this->inner_cell_operation(velocity);
     velocity.integrate(EvaluationFlags::gradients);
+  }
+
+
+
+  template <int dim, int degree_v, typename number>
+  void
+  MatrixFreeStokesOperators::ABlockOperator<dim,degree_v,number>
+  ::cell_operation_local(FEEvaluation<dim,
+                         degree_v,
+                         degree_v+1,
+                         dim,
+                         number> &velocity) const
+  {
+    velocity.evaluate(EvaluationFlags::gradients);
+    this->inner_cell_operation(velocity);
+    velocity.integrate(EvaluationFlags::gradients);
+  }
+
+
+
+  template <int dim, int degree_v, typename number>
+  void
+  MatrixFreeStokesOperators::ABlockOperator<dim,degree_v,number>::assemble_system_matrix(LinearAlgebra::SparseMatrix &system_matrix) const
+  {
+    const auto &matrix_free = *this->get_matrix_free();
+    const auto &dof_handler = matrix_free.get_dof_handler(0);
+    const auto &constraints = matrix_free.get_affine_constraints(0);
+
+    const auto communicator = matrix_free.get_task_info().communicator;
+    const IndexSet locally_relevant = DoFTools::extract_locally_relevant_dofs(dof_handler);
+    LinearAlgebra::DynamicSparsityPattern dsp(locally_relevant);
+    DoFTools::make_sparsity_pattern(dof_handler, dsp, constraints, false,
+                                    Utilities::MPI::this_mpi_process(communicator));
+    SparsityTools::distribute_sparsity_pattern(dsp, dof_handler.locally_owned_dofs(),
+                                               communicator, locally_relevant);
+
+    system_matrix.reinit(dof_handler.locally_owned_dofs(), dsp, communicator);
+    MatrixFreeTools::compute_matrix(
+      matrix_free,
+      constraints,
+      system_matrix,
+      &ABlockOperator::cell_operation_local,
+      this,
+      /*dof_handler_index=*/0,
+      /*quadrature_index=*/0,
+      /*first_selected_component=*/0);
   }
 
 
