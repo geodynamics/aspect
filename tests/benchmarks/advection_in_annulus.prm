@@ -1,0 +1,15 @@
+# Benchmark test for advection_in_annulus
+
+include $ASPECT_SOURCE_DIR/benchmarks/advection_in_annulus/advection_in_annulus.prm
+
+set Additional shared libraries = ./libadvection_in_annulus.so
+set End time = 0.05
+set Output directory = output-advection-in-annulus
+
+subsection Mesh refinement
+  set Initial global refinement = 2
+end
+
+subsection Postprocess
+  set List of postprocessors = velocity statistics, temperature statistics, heat flux statistics
+end
