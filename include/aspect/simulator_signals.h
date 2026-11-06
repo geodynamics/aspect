@@ -300,6 +300,15 @@ namespace aspect
     boost::signals2::signal<void (const SimulatorAccess<dim> &)> post_mesh_deformation;
 
     /**
+     * A signal that is triggered after the material model has been evaluated
+     * in compute_reactions() but before the reactions are applied.
+     */
+    boost::signals2::signal<void (const SimulatorAccess<dim> &,
+                                  const MaterialModel::MaterialModelInputs<dim> &,
+                                  MaterialModel::MaterialModelOutputs<dim> &)>
+    modify_reactions;
+
+    /**
      * A signal that is triggered just before the main solver loop of a time step
      * begins. The arguments to this signal is a reference to the SimulatorAccess
      * object.

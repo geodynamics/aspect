@@ -1,0 +1,7 @@
+# Check that the modify reactions signal works by setting the
+# reaction rate for the porosity and the bound fluid in the
+# tian_peridotite test to 0. The output shows that the compositional
+# fields for porosity and bound fluid do not change from the initial
+# values.
+
+include $ASPECT_SOURCE_DIR/tests/tian_peridotite.prm
