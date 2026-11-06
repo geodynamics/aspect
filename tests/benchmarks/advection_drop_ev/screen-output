@@ -1,9 +1,4 @@
 
-
-The output directory <output-advection-drop-ev/> provided in the input file appears not to exist.
-ASPECT will create it for you.
-
-
 Number of active cells: 64 (on 4 levels)
 Number of degrees of freedom: 1,237 (578+81+289+289)
 
