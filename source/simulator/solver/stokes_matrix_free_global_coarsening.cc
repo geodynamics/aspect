@@ -110,6 +110,12 @@ namespace aspect
                          "This is for internal benchmarking purposes: It is useful if you want to see how the solver "
                          "performs. Otherwise, you don't want to enable this, since it adds additional computational cost "
                          "to get the timing information.");
+      prm.declare_entry ("Minimum number of cells on coarsest level", "1",
+                         Patterns::Integer(1),
+                         "Minimum global number of active cells on the coarsest mesh used by the "
+                         "global coarsening GMG solver for both velocity and pressure. Coarser meshes "
+                         "with fewer cells are skipped. The finest mesh is always retained, even if "
+                         "it has fewer cells than requested. The default value of 1 uses the full hierarchy.");
       prm.declare_entry ("Velocity coarse solver", "Apply Chebyshev smoother",
                          Patterns::Selection("Apply Chebyshev smoother|Apply AMG cycle|Solve CG with AMG"),
                          "Coarse solver for the velocity block of the global coarsening GMG solver. "
@@ -132,6 +138,7 @@ namespace aspect
     {
       print_details = prm.get_bool ("Output details");
       do_timings = prm.get_bool ("Execute solver timings");
+      minimum_coarse_cells = prm.get_integer ("Minimum number of cells on coarsest level");
       const std::string coarse_solver = prm.get("Velocity coarse solver");
       if (coarse_solver == "Apply Chebyshev smoother")
         velocity_coarse_solver = VelocityCoarseSolver::chebyshev;
@@ -264,11 +271,10 @@ namespace aspect
         Schur_complement_block_matrix.set_cell_data(active_cell_data);
       }
 
-    const unsigned int n_levels = this->get_triangulation().n_global_levels();
-    level_cell_data.resize(0,n_levels-1);
+    level_cell_data.resize(min_level, max_level);
 
     MGLevelObject<dealii::LinearAlgebra::distributed::Vector<GMGNumberType>> level_viscosity_vector;
-    level_viscosity_vector.resize(0,n_levels-1);
+    level_viscosity_vector.resize(min_level, max_level);
 
     // Project the active level viscosity vector to multilevel vector representations
     // using MG transfer objects. This transfer is based on the same linear operator used to
@@ -393,7 +399,7 @@ namespace aspect
           active_cell_data.enable_prescribed_dilation = this->get_parameters().enable_prescribed_dilation;
 
           // TODO: these are not implemented yet
-          for (unsigned int level=0; level<n_levels; ++level)
+          for (unsigned int level=min_level; level<=max_level; ++level)
             {
               level_cell_data[level].enable_newton_derivatives = false;
               level_cell_data[level].enable_prescribed_dilation = false;
@@ -594,7 +600,7 @@ namespace aspect
           active_cell_data.dilation_derivative_wrt_pressure_table.reinit(TableIndices<2>(0,0));
           active_cell_data.dilation_derivative_wrt_strain_rate_table.reinit(TableIndices<2>(0,0));
 
-          for (unsigned int level=0; level<n_levels; ++level)
+          for (unsigned int level=min_level; level<=max_level; ++level)
             {
               level_cell_data[level].enable_newton_derivatives = false;
               level_cell_data[level].enable_prescribed_dilation = false;
@@ -855,10 +861,10 @@ namespace aspect
     mg_smoother_A;
     {
       MGLevelObject<typename ASmootherType::AdditionalData> smoother_data_A;
-      smoother_data_A.resize(0, this->get_triangulation().n_global_levels()-1);
-      for (unsigned int level = 0; level<this->get_triangulation().n_global_levels(); ++level)
+      smoother_data_A.resize(min_level, max_level);
+      for (unsigned int level = min_level; level<=max_level; ++level)
         {
-          if (level > 0)
+          if (level > min_level)
             {
               smoother_data_A[level].smoothing_range = 15.;
               smoother_data_A[level].degree = 4;
@@ -866,9 +872,9 @@ namespace aspect
             }
           else
             {
-              smoother_data_A[0].smoothing_range = 1e-3;
-              smoother_data_A[0].degree = 8;
-              smoother_data_A[0].eig_cg_n_iterations = 100;
+              smoother_data_A[level].smoothing_range = 1e-3;
+              smoother_data_A[level].degree = 8;
+              smoother_data_A[level].eig_cg_n_iterations = 100;
             }
           smoother_data_A[level].preconditioner = mg_matrices_A_block[level].get_matrix_diagonal_inverse();
         }
@@ -883,10 +889,10 @@ namespace aspect
     mg_smoother_Schur(4);
     {
       MGLevelObject<typename MSmootherType::AdditionalData> smoother_data_Schur;
-      smoother_data_Schur.resize(0, this->get_triangulation().n_global_levels()-1);
-      for (unsigned int level = 0; level<this->get_triangulation().n_global_levels(); ++level)
+      smoother_data_Schur.resize(min_level, max_level);
+      for (unsigned int level = min_level; level<=max_level; ++level)
         {
-          if (level > 0)
+          if (level > min_level)
             {
               smoother_data_Schur[level].smoothing_range = 15.;
               smoother_data_Schur[level].degree = 4;
@@ -899,10 +905,10 @@ namespace aspect
               // estimate in deal.II uses a mean zero starting vector, so it misses the
               // largest eigenvalue. Instead, we manually prescribe the eigenvalues with
               // a safety factor:
-              smoother_data_Schur[0].max_eigenvalue = 1.2*Utilities::fixed_power<dim>(1.5);
-              smoother_data_Schur[0].smoothing_range = 1.2*Utilities::fixed_power<dim>(3.0);
-              smoother_data_Schur[0].eig_cg_n_iterations = 0;
-              smoother_data_Schur[0].degree = 8;
+              smoother_data_Schur[level].max_eigenvalue = 1.2*Utilities::fixed_power<dim>(1.5);
+              smoother_data_Schur[level].smoothing_range = 1.2*Utilities::fixed_power<dim>(3.0);
+              smoother_data_Schur[level].eig_cg_n_iterations = 0;
+              smoother_data_Schur[level].degree = 8;
             }
           smoother_data_Schur[level].preconditioner = mg_matrices_Schur_complement[level].get_matrix_diagonal_inverse();
         }
@@ -916,7 +922,7 @@ namespace aspect
     //TODO: The setup for the smoother (as well as the entire GMG setup) should
     //       be moved to an assembly timing block instead of the Stokes solve
     //       timing block (as is currently the case).
-    for (unsigned int level = 0; level<this->get_triangulation().n_global_levels(); ++level)
+    for (unsigned int level = min_level; level<=max_level; ++level)
       {
         VectorType temp_velocity;
         VectorType temp_pressure;
@@ -926,7 +932,7 @@ namespace aspect
         mg_smoother_A[level].estimate_eigenvalues(temp_velocity);
         mg_smoother_Schur[level].estimate_eigenvalues(temp_pressure);
 
-        if (level==0)
+        if (level==min_level)
           {
             coarse_A_size = temp_velocity.size();
             coarse_S_size = temp_pressure.size();
@@ -954,17 +960,17 @@ namespace aspect
 #endif
 #if DEAL_II_VERSION_GTE(9,7,0)
         amg_data.constant_modes = DoFTools::extract_constant_modes(
-                                    dofhandlers_v[0], ComponentMask(dim, true));
+                                    dofhandlers_v[min_level], ComponentMask(dim, true));
 #else
-        DoFTools::extract_constant_modes(dofhandlers_v[0],
+        DoFTools::extract_constant_modes(dofhandlers_v[min_level],
                                          ComponentMask(dim, true),
                                          amg_data.constant_modes);
 #endif
 
-        mg_matrices_A_block[0].assemble_system_matrix(coarse_matrix_A);
+        mg_matrices_A_block[min_level].assemble_system_matrix(coarse_matrix_A);
         amg_A.initialize(coarse_matrix_A, amg_data);
         coarse_amg_A = std::make_unique<MGCoarseGridApplyAMG<VectorType>>(
-                         coarse_matrix_A, amg_A, dofhandlers_v[0].locally_owned_dofs(),
+                         coarse_matrix_A, amg_A, dofhandlers_v[min_level].locally_owned_dofs(),
                          this->get_mpi_communicator(), velocity_coarse_solver == VelocityCoarseSolver::cg_amg);
         mg_coarse_A = coarse_amg_A.get();
       }
@@ -980,7 +986,7 @@ namespace aspect
 
         this->get_pcout() << std::endl
                           << "     GMG coarse size A: " << coarse_A_size << ", coarse size S: " << coarse_S_size << std::endl
-                          << "     GMG levels: " << n_levels << std::endl
+                          << "     GMG levels: " << min_level << " - " << max_level << " ("<< n_levels << " levels)" << std::endl
                           << "     Viscosity range: " << minimum_viscosity << " - " << maximum_viscosity << std::endl
                           << "     Stokes solver (" << solver << "): " << std::flush;
       }
@@ -994,13 +1000,15 @@ namespace aspect
                                *mg_coarse_A,
                                *mg_transfer_A_block,
                                mg_smoother_A,
-                               mg_smoother_A);
+                               mg_smoother_A,
+                               min_level, max_level);
 
     Multigrid<VectorType> mg_Schur(mg_matrix_Schur,
                                    mg_coarse_Schur,
                                    *mg_transfer_Schur_complement,
                                    mg_smoother_Schur,
-                                   mg_smoother_Schur);
+                                   mg_smoother_Schur,
+                                   min_level, max_level);
 
     // GMG Preconditioner for ABlock and Schur complement
     using GMGPreconditioner = PreconditionMG<dim, VectorType, GCMGTransferType<dim,double>>;
@@ -1569,6 +1577,11 @@ namespace aspect
     Assert(!trias.empty(), ExcInternalError());
     min_level = 0;
     max_level = trias.size() - 1;
+
+    // Retain the finest mesh even if it has fewer cells than requested.
+    while (min_level < max_level &&
+           trias[min_level]->n_global_active_cells() < minimum_coarse_cells)
+      ++min_level;
     constraints_v.resize(min_level, max_level);
     constraints_p.resize(min_level, max_level);
     dofhandlers_v.resize(min_level, max_level);
@@ -1882,7 +1895,7 @@ namespace aspect
   {
     std::size_t total = active_cell_data.memory_consumption();
 
-    for (unsigned int level=0; level<level_cell_data.max_level(); ++level)
+    for (unsigned int level=level_cell_data.min_level(); level<level_cell_data.max_level(); ++level)
       total += level_cell_data[level].memory_consumption();
 
     return total;

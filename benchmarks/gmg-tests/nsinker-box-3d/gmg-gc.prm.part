@@ -1,0 +1,11 @@
+# enable global coarsening GMG with coarse Chebyshev
+
+subsection Solver parameters
+  subsection Stokes solver parameters
+    set Stokes GMG type = global coarsening
+  end
+  subsection Matrix Free
+    set Velocity coarse solver = Apply Chebyshev smoother
+    set Minimum number of cells on coarsest level = 1
+  end
+end

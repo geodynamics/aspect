@@ -1,0 +1,11 @@
+# global coarsening GMG with coarse AMG solve and somewhat finer coarse mesh
+
+subsection Solver parameters
+  subsection Stokes solver parameters
+    set Stokes GMG type = global coarsening
+  end
+  subsection Matrix Free
+    set Velocity coarse solver = Solve CG with AMG
+    set Minimum number of cells on coarsest level = 256
+  end
+end

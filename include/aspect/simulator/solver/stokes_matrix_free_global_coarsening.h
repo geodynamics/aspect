@@ -215,6 +215,11 @@ namespace aspect
       bool do_timings;
 
       /**
+       * Minimum global number of active cells on the coarsest mesh used by GMG.
+       */
+      unsigned int minimum_coarse_cells;
+
+      /**
        * The max/min of the evaluated viscosities.
        */
       double minimum_viscosity;

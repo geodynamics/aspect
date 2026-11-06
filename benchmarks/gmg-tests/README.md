@@ -32,15 +32,18 @@ The common test problem settings are:
 
 Stokes GMRES iterations on the final mesh with 7.8m Stokes DoFs (10.3m total DoFs) with adaptive refinement:
 
-| boundary condition | GMG global coarsening | GMG local smoothing | AMG |
-|---|---|---|---|
-| no-slip | 37 | 39 | 70 |
-| free-slip | 61 | 73 | 172 |
-| partial-free-slip | 51 | 53 | 105 |
-| partial-set | 32 | 33 | 62 |
-| open | 42 | 44 | 88 |
-| periodic | 33 | - | 85 |
-| free-surface | 67 | 78 | 195 |
+| boundary condition | AMG | LS GMG | GC GMG | GC GMG (+CG AMG) |
+|---|---|---|---|---|
+| no-slip | 70 | 39 | 37 | 36 |
+| free-slip | 172 | 73 | 61 | 36 |
+| partial-free-slip | 105 | 53 | 51 | 45 |
+| partial-set | 62 | 33 | 32 | 28 |
+| open | 88 | 44 | 42 | 41 |
+| periodic | 85 | - | 33 | 32 |
+| free-surface | 195 | 78 | 67 | 39 |
+
+GC GMG uses a Chebyshev coarse solver on the full hierarchy; GC GMG (+CG AMG)
+uses AMG-preconditioned CG on a coarse mesh with at least 256 cells.
 
 Currently unsupported cases:
 - GMG-LS: no support for periodic boundaries

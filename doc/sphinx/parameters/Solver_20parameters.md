@@ -94,6 +94,15 @@
 **Documentation:** Executes different parts of the Stokes solver repeatedly and print timing information. This is for internal benchmarking purposes: It is useful if you want to see how the solver performs. Otherwise, you don&rsquo;t want to enable this, since it adds additional computational cost to get the timing information.
 ::::
 
+::::{dropdown} __Parameter:__ {ref}`Minimum number of cells on coarsest level<parameters:Solver_20parameters/Matrix_20Free/Minimum_20number_20of_20cells_20on_20coarsest_20level>`
+:name: parameters:Solver_20parameters/Matrix_20Free/Minimum_20number_20of_20cells_20on_20coarsest_20level
+**Default value:** 1
+
+**Pattern:** [Integer range 1...2147483647 (inclusive)]
+
+**Documentation:** Minimum global number of active cells on the coarsest mesh used by the global coarsening GMG solver for both velocity and pressure. Coarser meshes with fewer cells are skipped. The finest mesh is always retained, even if it has fewer cells than requested. The default value of 1 uses the full hierarchy.
+::::
+
 ::::{dropdown} __Parameter:__ {ref}`Output details<parameters:Solver_20parameters/Matrix_20Free/Output_20details>`
 :name: parameters:Solver_20parameters/Matrix_20Free/Output_20details
 **Default value:** false

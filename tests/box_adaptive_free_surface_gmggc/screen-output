@@ -10,7 +10,7 @@ Number of mesh deformation degrees of freedom: 14,739
    Solving mesh displacement system... 0 iterations.
    Solving Stokes system (GMG-GC)... 
      GMG coarse size A: 81, coarse size S: 8
-     GMG levels: 4
+     GMG levels: 0 - 3 (4 levels)
      Viscosity range: 0.01 - 58.7981
      Stokes solver (GMRES): 27+0 iterations.
      Schur complement preconditioner: 28+0 iterations.
@@ -29,7 +29,7 @@ Number of mesh deformation degrees of freedom: 32,388
    Solving mesh displacement system... 0 iterations.
    Solving Stokes system (GMG-GC)... 
      GMG coarse size A: 81, coarse size S: 8
-     GMG levels: 5
+     GMG levels: 0 - 4 (5 levels)
      Viscosity range: 0.01 - 98.1794
      Stokes solver (GMRES): 34+0 iterations.
      Schur complement preconditioner: 35+0 iterations.
@@ -48,7 +48,7 @@ Number of mesh deformation degrees of freedom: 69,849
    Solving mesh displacement system... 0 iterations.
    Solving Stokes system (GMG-GC)... 
      GMG coarse size A: 81, coarse size S: 8
-     GMG levels: 6
+     GMG levels: 0 - 5 (6 levels)
      Viscosity range: 0.01 - 99.7721
      Stokes solver (GMRES): 35+0 iterations.
      Schur complement preconditioner: 36+0 iterations.
@@ -67,7 +67,7 @@ Number of mesh deformation degrees of freedom: 148,737
    Solving mesh displacement system... 0 iterations.
    Solving Stokes system (GMG-GC)... 
      GMG coarse size A: 81, coarse size S: 8
-     GMG levels: 7
+     GMG levels: 0 - 6 (7 levels)
      Viscosity range: 0.01 - 99.7721
      Stokes solver (GMRES): 34+0 iterations.
      Schur complement preconditioner: 35+0 iterations.
