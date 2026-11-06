@@ -410,7 +410,7 @@ namespace aspect
       // their own parameters
       for (const auto &plugin_name: this->plugin_names)
         {
-          // create boundary traction objects
+          // create boundary velocity objects
           this->plugin_objects.push_back(std::get<dim>(registered_plugins)
                                          .create_plugin (plugin_name,
                                                          "Boundary velocity::Model names"));
