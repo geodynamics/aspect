@@ -1,0 +1,37 @@
+# This test verifies that the prescribed_velocity_ascii_data cookbook runs as expected.
+
+include $ASPECT_SOURCE_DIR/cookbooks/prescribed_velocity_ascii_data/prescribed_velocity_ascii_data.prm
+
+set End time = 0
+
+subsection Geometry model
+  subsection Box
+    set X repetitions = 8
+    set Y repetitions = 5
+  end
+end
+
+subsection Initial composition model
+  subsection Ascii data model
+    set Data directory = $ASPECT_SOURCE_DIR/tests/cookbooks/
+    set Data file name = prescribed_velocity_ascii_data_composition.txt
+  end
+end
+
+subsection Prescribed velocities
+  subsection Ascii data model
+    set Data directory = $ASPECT_SOURCE_DIR/tests/cookbooks/
+    set Data file name = prescribed_velocity_ascii_data_composition.txt
+  end
+end
+
+subsection Initial temperature model
+  subsection Ascii data model
+    set Data directory = $ASPECT_SOURCE_DIR/tests/cookbooks/
+    set Data file name = prescribed_velocity_ascii_data_temperature.txt
+  end
+end
+
+subsection Postprocess
+  set List of postprocessors = velocity statistics, temperature statistics, composition statistics
+end

@@ -33,8 +33,8 @@ namespace aspect
   aspect::Utilities::AsciiDataBase<2> prescribed_velocity_data_file_2d;
   aspect::Utilities::AsciiDataBase<3> prescribed_velocity_data_file_3d;
 
-  aspect::Utilities::StructuredDataLookup<2> prescribed_velocity_field_data_2d(1, 1.);
-  aspect::Utilities::StructuredDataLookup<3> prescribed_velocity_field_data_3d(1, 1.);
+  std::unique_ptr<aspect::Utilities::StructuredDataLookup<2>> prescribed_velocity_field_data_2d;
+  std::unique_ptr<aspect::Utilities::StructuredDataLookup<3>> prescribed_velocity_field_data_3d;
 
   Functions::ParsedFunction<2> prescribed_velocity_function_2d (2);
   Functions::ParsedFunction<3> prescribed_velocity_function_3d (3);
@@ -168,15 +168,17 @@ namespace aspect
       {
         if (dim == 2)
           {
+            prescribed_velocity_field_data_2d = std::make_unique<aspect::Utilities::StructuredDataLookup<2>>(1, 1.);
             const std::string filename = prescribed_velocity_data_file_2d.data_directory + prescribed_velocity_data_file_2d.data_file_name;
-            prescribed_velocity_field_data_2d.load_file(filename, simulator_access.get_mpi_communicator());
+            prescribed_velocity_field_data_2d->load_file(filename, simulator_access.get_mpi_communicator());
 
             std::cout << "Loaded 2D prescribed velocity ascii file" << std::endl;
           }
         else
           {
+            prescribed_velocity_field_data_3d = std::make_unique<aspect::Utilities::StructuredDataLookup<3>>(1, 1.);
             const std::string filename = prescribed_velocity_data_file_3d.data_directory + prescribed_velocity_data_file_3d.data_file_name;
-            prescribed_velocity_field_data_3d.load_file(filename, simulator_access.get_mpi_communicator());
+            prescribed_velocity_field_data_3d->load_file(filename, simulator_access.get_mpi_communicator());
 
             std::cout << "Loaded 3D prescribed velocity ascii file" << std::endl;
           }
@@ -242,14 +244,14 @@ namespace aspect
                         double indicator, u_i;
                         if (dim == 2)
                           {
-                            indicator = prescribed_velocity_field_data_2d.get_data(as_2d(p),0);
+                            indicator = prescribed_velocity_field_data_2d->get_data(as_2d(p),0);
                             u_i       = prescribed_velocity_function_2d.value
                                         (as_2d(p),
                                          component_direction);
                           }
                         else
                           {
-                            indicator = prescribed_velocity_field_data_3d.get_data(as_3d(p),0);
+                            indicator = prescribed_velocity_field_data_3d->get_data(as_3d(p),0);
                             u_i       = prescribed_velocity_function_3d.value
                                         (as_3d(p),
                                          component_direction);
@@ -290,11 +292,20 @@ namespace aspect
     SimulatorSignals<3>::parse_additional_parameters.connect (&parse_parameters<3>);
   }
 
-  // Connect constraints function to correct signal.
+  // Cleanup function to free MPI windows before MPI_Finalize
+  template <int dim>
+  void cleanup (const SimulatorAccess<dim> &)
+  {
+    prescribed_velocity_field_data_2d.reset();
+    prescribed_velocity_field_data_3d.reset();
+  }
+
+  // Connect constraints function and cleanup signal to correct signals.
   template <int dim>
   void signal_connector (SimulatorSignals<dim> &signals)
   {
     signals.post_constraints_creation.connect (&constrain_internal_velocities<dim>);
+    signals.post_simulator_run.connect (&cleanup<dim>);
   }
 
   // Tell ASPECT to send signals to the connector functions

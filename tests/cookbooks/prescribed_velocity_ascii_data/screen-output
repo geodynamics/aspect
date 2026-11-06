@@ -1,0 +1,32 @@
+
+Loading shared library <./libprescribed_velocity_ascii_data.debug.so>
+
+
+   Loading Ascii data initial file $ASPECT_SOURCE_DIR/tests/cookbooks/prescribed_velocity_ascii_data_temperature.txt.
+
+
+   Loading Ascii data initial file $ASPECT_SOURCE_DIR/tests/cookbooks/prescribed_velocity_ascii_data_composition.txt.
+
+Number of active cells: 40 (on 1 levels)
+Number of degrees of freedom: 802 (374+54+187+187)
+
+Loaded 2D prescribed velocity ascii file
+*** Timestep 0:  t=0 years, dt=0 years
+   Solving temperature system... 0 iterations.
+   Solving C_1 system ... 0 iterations.
+   Solving Stokes system (GMG)... 47+0 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 0.00141686
+
+   Solving Stokes system (GMG)... 1+0 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 2: 5.35214e-11
+
+
+   Postprocessing:
+     RMS, max velocity:         0.0642 m/year, 0.14 m/year
+     Temperature min/avg/max:   1400 K, 1500 K, 1600 K
+     Compositions min/max/mass: 0/1/1.994e+11
+
+Termination requested by criterion: end time
+
+
+
