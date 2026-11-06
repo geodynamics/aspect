@@ -1,0 +1,5 @@
+Changed: Extended the water-saturation treatment based on Ball et al.(2022) in the hydrous melt
+fraction visualization postprocessor to the post-clinopyroxene-exhaustion
+regime, ensuring continuity between the two melting regimes.
+<br>
+(Patricia Rodriguez Batista, 2026/11/05)
