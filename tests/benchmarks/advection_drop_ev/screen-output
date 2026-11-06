@@ -1,0 +1,31 @@
+
+
+The output directory <output-advection-drop-ev/> provided in the input file appears not to exist.
+ASPECT will create it for you.
+
+
+Number of active cells: 64 (on 4 levels)
+Number of degrees of freedom: 1,237 (578+81+289+289)
+
+*** Timestep 0:  t=0 seconds, dt=0 seconds
+   Solving temperature system... 0 iterations.
+   Solving C_1 system ... 0 iterations.
+
+   Postprocessing:
+     RMS, max velocity:                  0.138 m/s, 0.225 m/s
+     Temperature min/avg/max:            0 K, 0.0434 K, 1 K
+     Heat fluxes through boundary parts: 0 W, 0 W, 0 W, 0 W
+
+*** Timestep 1:  t=0.5 seconds, dt=0.5 seconds
+   Solving temperature system... 12 iterations.
+   Solving C_1 system ... 14 iterations.
+
+   Postprocessing:
+     RMS, max velocity:                  0.138 m/s, 0.225 m/s
+     Temperature min/avg/max:            -0.03285 K, 0.04344 K, 1.078 K
+     Heat fluxes through boundary parts: 1.811e-06 W, 6.71e-06 W, 3.756e-07 W, -0.000337 W
+
+Termination requested by criterion: end time
+
+
+

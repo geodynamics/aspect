@@ -1,0 +1,20 @@
+# Benchmark test for advection/drop_ev.prm
+
+include $ASPECT_SOURCE_DIR/benchmarks/advection/drop_supg.prm
+
+set End time = 0.5
+set Output directory = output-advection-drop-ev
+
+subsection Discretization
+  subsection Stabilization parameters
+    set Stabilization method = entropy viscosity
+  end
+end
+
+subsection Mesh refinement
+  set Initial global refinement = 3
+end
+
+subsection Postprocess
+  set List of postprocessors = velocity statistics, temperature statistics, heat flux statistics
+end
