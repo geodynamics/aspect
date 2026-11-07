@@ -1,0 +1,6 @@
+Added: A new cookbook for a pressurized magma chamber in a highly viscous compressible
+ material. This is an example of dilation through compositional heating of a thermally
+expansive material model. It is modeled after the benchmark of a spherical magma chamber
+in elastic half-space commonly used by volcanologists.
+<br>
+(Annie Thompson, Cedric Thieulot 2026/07/25)
