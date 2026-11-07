@@ -1,0 +1,131 @@
+# Test the dominant-deformation-mechanism visualization with six compositional
+# fields that select diffusion creep, dislocation creep, plastic yielding,
+# Peierls creep, the maximum-viscosity limiter, and grain-boundary sliding.
+
+set Dimension = 2
+set End time = 0
+set Nonlinear solver scheme = single Advection, single Stokes
+set Adiabatic surface temperature = 1600
+set Use years instead of seconds = false
+
+subsection Geometry model
+  set Model name = box
+
+  subsection Box
+    set X extent = 6
+    set Y extent = 1
+    set X repetitions = 6
+    set Y repetitions = 1
+  end
+end
+
+subsection Mesh refinement
+  set Initial adaptive refinement = 0
+  set Initial global refinement = 0
+  set Time steps between mesh refinement = 0
+end
+
+subsection Boundary temperature model
+  set List of model names = box
+  set Fixed temperature boundary indicators = bottom, top
+
+  subsection Box
+    set Bottom temperature = 1600
+    set Top temperature = 1600
+  end
+end
+
+subsection Initial temperature model
+  set Model name = function
+
+  subsection Function
+    set Function expression = 1600
+  end
+end
+
+subsection Boundary velocity model
+  set Prescribed velocity boundary indicators = bottom:function, top:function
+  set Tangential velocity boundary indicators = left, right
+
+  subsection Function
+    set Function expression = 2e-15*y; 0
+  end
+end
+
+subsection Compositional fields
+  set Number of fields = 6
+  set Names of fields = diffusion, dislocation, plastic, peierls, maximum_viscosity, grain_boundary_sliding
+end
+
+subsection Initial composition model
+  set Model name = function
+
+  subsection Function
+    set Function expression = if(x<1,1,0); if(x>=1 && x<2,1,0); if(x>=2 && x<3,1,0); if(x>=3 && x<4,1,0); if(x>=4 && x<5,1,0); if(x>=5,1,0)
+  end
+end
+
+subsection Material model
+  set Model name = visco plastic
+
+  subsection Visco Plastic
+    set Viscous flow law = composite
+    set Minimum strain rate = 1e-15
+    set Reference strain rate = 1e-15
+    set Minimum viscosity = 1
+    set Maximum viscosity = background:1e40, diffusion:1e40, dislocation:1e40, plastic:1e40, peierls:1e40, maximum_viscosity:1e20, grain_boundary_sliding:1e40
+
+    set Prefactors for diffusion creep = background:1e-15, diffusion:1e-15, dislocation:1e-50, plastic:1e-30, peierls:1e-50, maximum_viscosity:1e-30, grain_boundary_sliding:1e-50
+    set Grain size exponents for diffusion creep = 0
+    set Activation energies for diffusion creep = 0
+    set Activation volumes for diffusion creep = 0
+
+    set Prefactors for dislocation creep = background:1e-50, diffusion:1e-50, dislocation:1e-15, plastic:1e-50, peierls:1e-50, maximum_viscosity:1e-50, grain_boundary_sliding:1e-50
+    set Stress exponents for dislocation creep = 3
+    set Activation energies for dislocation creep = 0
+    set Activation volumes for dislocation creep = 0
+
+    set Include Peierls creep = true
+    set Peierls creep flow law = viscosity approximation
+    set Prefactors for Peierls creep = background:1e-50, diffusion:1e-50, dislocation:1e-50, plastic:1e-50, peierls:1e-10, maximum_viscosity:1e-50, grain_boundary_sliding:1e-50
+    set Activation energies for Peierls creep = 0
+    set Activation volumes for Peierls creep = 0
+    set Peierls stresses = 5.9e9
+    set Stress exponents for Peierls creep = 2
+    set Peierls fitting parameters = 0.15
+    set Peierls glide parameters p = 0.5
+    set Peierls glide parameters q = 1
+
+    set Include Grain Boundary Sliding = true
+    subsection Grain boundary sliding
+      set Prefactors for grain boundary sliding = background:1e-50, diffusion:1e-50, dislocation:1e-50, plastic:1e-50, peierls:1e-50, maximum_viscosity:1e-50, grain_boundary_sliding:1e-10
+      set Stress exponents for grain boundary sliding = 1
+      set Grain size exponents for grain boundary sliding = 0
+      set Activation energies for grain boundary sliding = 0
+      set Activation volumes for grain boundary sliding = 0
+      set Grain size = 1
+    end
+
+    set Yield mechanism = drucker
+    set Cohesions = background:1e40, diffusion:1e40, dislocation:1e40, plastic:1, peierls:1e40, maximum_viscosity:1e40, grain_boundary_sliding:1e40
+    set Angles of internal friction = 0
+  end
+end
+
+subsection Gravity model
+  set Model name = vertical
+
+  subsection Vertical
+    set Magnitude = 0
+  end
+end
+
+subsection Postprocess
+  set List of postprocessors = visualization
+
+  subsection Visualization
+    set Interpolate output = false
+    set List of output variables = named additional outputs
+    set Output format = vtk
+  end
+end
