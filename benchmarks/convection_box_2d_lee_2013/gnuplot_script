@@ -1,0 +1,60 @@
+#
+set term pngcairo enhanced font "Times,12pt"
+#set grid
+
+#################################################
+
+reftime=3.168809e+10
+refvel=3.155760e-03
+hcond=5
+Tref=3000
+tvdref=15000 
+
+#################################################
+
+set xlabel 'time'
+
+set ylabel 'u_{rms}'
+set output 'vrms.png'
+plot[][]\
+'output_lee_BA4/statistics'   u ($2/reftime):($11/refvel*100) w l t 'BA - ASPECT',\
+'output_lee_EBA4/statistics'  u ($2/reftime):($11/refvel*100) w l t 'EBA - ASPECT',\
+'output_lee_EBAs4/statistics' u ($2/reftime):($11/refvel*100) w l t 'EBAs - ASPECT',\
+42.865 lt -1 dt 2 t 'BA - King et al, 2010',\
+38.5   lt -1 dt 3 t 'EBA - King et al, 2010'
+
+set ylabel '<T>'
+set output 'Tavrg.png'
+plot[][:0.504]\
+'output_lee_BA4/statistics'   u ($2/reftime):(($14-273)/Tref) w l t 'BA - ASPECT',\
+'output_lee_EBA4/statistics'  u ($2/reftime):(($14-273)/Tref) w l t 'EBA - ASPECT',\
+'output_lee_EBAs4/statistics' u ($2/reftime):(($14-273)/Tref) w l t 'EBAs - ASPECT',\
+0.5 lt -1 dt 2 t 'BA - Lee (2013)',\
+0.4912 lt -1 dt 3 t 'EBA - Lee (2013)'
+
+set ylabel 'q_T'
+set output 'qT.png'
+plot[][]\
+'output_lee_BA4/statistics'   u ($2/reftime):($26+$27+$28+$29) w l t 'BA - ASPECT',\
+'output_lee_EBA4/statistics'  u ($2/reftime):($26+$27+$28+$29) w l t 'EBA - ASPECT',\
+'output_lee_EBAs4/statistics' u ($2/reftime):($26+$27+$28+$29) w l t 'EBAs - ASPECT',\
+0 lt -1 dt 2 
+
+set ylabel 'Nu'
+set output 'Nu.png'
+plot[][:7.5]\
+'output_lee_BA4/statistics'   u ($2/reftime):($29/5/3000) w l t 'BA - ASPECT',\
+'output_lee_EBA4/statistics'  u ($2/reftime):($29/5/3000) w l t 'EBA - ASPECT',\
+'output_lee_EBAs4/statistics' u ($2/reftime):($29/5/3000) w l t 'EBAs - ASPECT',\
+4.872 lt -1 dt 2 t 'BA - Lee (2013)',\
+4.092 lt -1 dt 3 t 'EBA - Lee (2013)'
+
+set ylabel '{/Symbol F}'
+set output 'viscous_dissipation.png'
+plot[][:]\
+'output_lee_BA4/statistics'   u ($2/reftime):($25*2/tvdref) w l t 'BA - ASPECT',\
+'output_lee_EBA4/statistics'  u ($2/reftime):($25*2/tvdref) w l t 'EBA - ASPECT',\
+'output_lee_EBAs4/statistics' u ($2/reftime):($25*2/tvdref) w l t 'EBAs - ASPECT',\
+0.773 lt -1 dt 3 t 'EBA - Lee (2013)'
+
+#################################################

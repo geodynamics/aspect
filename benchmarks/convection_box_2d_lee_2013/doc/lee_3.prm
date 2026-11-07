@@ -1,0 +1,13 @@
+subsection Formulation
+  set Formulation          = custom
+  set Mass conservation    = incompressible
+  set Temperature equation = reference density profile
+end
+
+
+subsection Heating model
+  set List of model names = shear heating, adiabatic heating
+  subsection Adiabatic heating
+    set Use simplified adiabatic heating = true
+  end
+end
