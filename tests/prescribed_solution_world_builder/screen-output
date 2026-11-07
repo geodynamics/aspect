@@ -1,0 +1,18 @@
+
+Number of active cells: 16 (on 3 levels)
+Number of degrees of freedom: 349 (162+25+81+81)
+
+*** Timestep 0:  t=0 years, dt=0 years
+   Solving temperature system... 0 iterations.
+   Solving crust system ... 11 iterations.
+   Solving Stokes system (GMG)... 39+0 iterations.
+
+   Postprocessing:
+     RMS, max velocity:         6.63 m/year, 25.1 m/year
+     Temperature min/avg/max:   300 K, 437.5 K, 1200 K
+     Compositions min/max/mass: -9.364e-17/1/3.611e+10
+
+Termination requested by criterion: end time
+
+
+ 
