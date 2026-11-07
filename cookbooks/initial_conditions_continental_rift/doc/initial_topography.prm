@@ -1,0 +1,19 @@
+# Model geometry (400x200 km, 40 km spacing)
+subsection Geometry model
+  set Model name = box
+
+  subsection Box
+    set X repetitions = 10
+    set Y repetitions = 5
+    set X extent      = 400e3
+    set Y extent      = 200e3
+  end
+
+  # With respect to the reference lithosphere,
+  # move the surface of perturbed lithosphere
+  # to obtain isostasy.
+  subsection Initial topography model
+    set Model name = lithosphere with rift
+  end
+
+end
