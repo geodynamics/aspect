@@ -1,0 +1,29 @@
+# 1: Time step number
+# 2: Time (years)
+# 3: Time step size (years)
+# 4: Number of mesh cells
+# 5: Number of Stokes degrees of freedom
+# 6: Number of temperature degrees of freedom
+# 7: Number of degrees of freedom for all compositions
+# 8: Iterations for temperature solver
+# 9: Iterations for composition solver 1
+# 10: Iterations for composition solver 2
+# 11: Iterations for composition solver 3
+# 12: Iterations for composition solver 4
+# 13: Iterations for Stokes solver
+# 14: Velocity iterations in Stokes preconditioner
+# 15: Schur complement iterations in Stokes preconditioner
+# 16: Visualization file name
+# 17: Minimal value for composition field0
+# 18: Maximal value for composition field0
+# 19: Global mass for composition field0
+# 20: Minimal value for composition field1
+# 21: Maximal value for composition field1
+# 22: Global mass for composition field1
+# 23: Minimal value for composition field2
+# 24: Maximal value for composition field2
+# 25: Global mass for composition field2
+# 26: Minimal value for composition field3
+# 27: Maximal value for composition field3
+# 28: Global mass for composition field3
+0 0.000000000000e+00 0.000000000000e+00 80 763 337 1348 0 0 0 0 0 10 11 11 output-subset_fixed_spherical_constant_boundary_3d_sphere/solution/solution-00000 1.00000000e+00 4.00000000e+00 1.51112344e+14 1.00000000e+00 1.00000000e+00 1.27516117e+14 1.00000000e+00 1.00000000e+00 1.27516117e+14 1.00000000e+00 1.00000000e+01 1.98304799e+14 
