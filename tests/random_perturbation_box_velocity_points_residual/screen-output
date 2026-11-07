@@ -1,0 +1,19 @@
+
+Number of active cells: 1,024 (on 6 levels)
+Number of degrees of freedom: 13,764 (8,450+1,089+4,225)
+
+*** Timestep 0:  t=0 years, dt=0 years
+   Solving temperature system... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 36+0 iterations.
+
+   Postprocessing:
+     Writing graphical output:       output-random_perturbation_box_velocity_points_residual/solution/solution-00000
+     RMS, max velocity:              1.52e-06 m/year, 8.75e-06 m/year
+     Velocity residual file and RMS: output-random_perturbation_box_velocity_points_residual/velocity-residual-00000 3.1705738574934617e-07
+     Writing point values:           output-random_perturbation_box_velocity_points_residual/point_values.txt
+
+Termination requested by criterion: end time
+
+
+
