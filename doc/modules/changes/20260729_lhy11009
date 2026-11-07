@@ -1,0 +1,4 @@
+Added: a new User Guide section under "Running ASPECT/Making ASPECT run faster",
+named "Efficient Stokes solver configuration for nonlinear models".
+This section describes strategies for efficiently configuring the nonlinear Stokes solver.
+(Haoyuan Li, 2026/07/29)
