@@ -4,6 +4,7 @@ Number of active cells: 768 (on 2 levels)
 Number of degrees of freedom: 28,690 (20,790+970+6,930)
 
 Number of mesh deformation degrees of freedom: 20,790
+Python: running sequentially!
 * Creating IcosphereGlobalGrid ...
 * The number of Landlab grid nodes is:  162
 * The node coordinates (in radians) are: [2.12437069 1.01722197 4.15881462 5.26596334 4.71238898 1.57079633
@@ -73,7 +74,7 @@ Landlab running update_until: end_time = 0.0
 
 *** Timestep 1:  t=0.0005 seconds, dt=0.0005 seconds
 Landlab running update_until: end_time = 0.0005
-   Solving mesh displacement system... 0 iterations.
+   Solving mesh displacement system... 114 iterations.
 
    Postprocessing:
      Writing graphical output: output-mesh_deformation_landlab_03/solution/solution-00001
@@ -81,7 +82,7 @@ Landlab running update_until: end_time = 0.0005
 
 *** Timestep 2:  t=0.001 seconds, dt=0.0005 seconds
 Landlab running update_until: end_time = 0.001
-   Solving mesh displacement system... 0 iterations.
+   Solving mesh displacement system... 114 iterations.
 
    Postprocessing:
      Writing graphical output: output-mesh_deformation_landlab_03/solution/solution-00002
