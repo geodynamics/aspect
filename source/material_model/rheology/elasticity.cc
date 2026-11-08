@@ -552,34 +552,20 @@ namespace aspect
         if (elastic_additional_out == nullptr || !in.requests_property(MaterialProperties::additional_outputs))
           return;
 
-        const double timestep_ratio = calculate_timestep_ratio();
         const unsigned int stress_start_index = this->introspection().compositional_index_for_name("ve_stress_xx");
 
         for (unsigned int i = 0; i < in.n_evaluation_points(); ++i)
           {
-            const double eta = out.viscosities[i];
-            const SymmetricTensor<2, dim> deviatoric_strain_rate = Utilities::Tensors::consistent_deviator(in.strain_rate[i]);
-            const SymmetricTensor<2,dim> stress_0_advected (Utilities::Tensors::to_symmetric_tensor<dim>(&in.composition[i][stress_start_index],
-                                                            &in.composition[i][stress_start_index]+n_independent_components));
-
-            SymmetricTensor<2,dim> stress_old = numbers::signaling_nan<SymmetricTensor<2, dim>>();
-            if (require_unrotated_viscoelastic_stress())
-              {
-                // Get the old stress that is used to interpolate to timestep $t+\Delta t_c$. It is stored on the
-                // second set of n_independent_components fields, e.g. in 2D on field 3, 4 and 5.
-                stress_old = Utilities::Tensors::to_symmetric_tensor<dim>(&in.composition[i][stress_start_index+n_independent_components],
-                                                                          &in.composition[i][stress_start_index+n_independent_components]+n_independent_components);
-              }
-
-            const double elastic_viscosity = calculate_elastic_viscosity(average_elastic_shear_moduli[i]);
-
-            // Apply the stress update to get the total deviatoric stress of timestep $t+\Delta t_c$.
-            elastic_additional_out->deviatoric_stress[i] = 2. * eta * deviatoric_strain_rate + eta / elastic_viscosity * stress_0_advected;
-            if (require_unrotated_viscoelastic_stress())
-              elastic_additional_out->deviatoric_stress[i] += (1. - timestep_ratio) * (1. - eta / elastic_viscosity) * stress_old;
+            // deviatoric_stress is called by the visualization outputs. At the time of
+            // this postprocessing, the operator split that computes the full deviatoric
+            // stress of the current timestep has already occurred. The stored stress
+            // is therefore the fully updated deviatoric stress.
+            elastic_additional_out->deviatoric_stress[i] = Utilities::Tensors::to_symmetric_tensor<dim>(&in.composition[i][stress_start_index],
+                                                           &in.composition[i][stress_start_index]+n_independent_components);
 
             elastic_additional_out->elastic_shear_moduli[i] = average_elastic_shear_moduli[i];
-            elastic_additional_out->elastic_viscosity[i] = elastic_viscosity;
+
+            elastic_additional_out->elastic_viscosity[i] = calculate_elastic_viscosity(average_elastic_shear_moduli[i]);
           }
       }
 

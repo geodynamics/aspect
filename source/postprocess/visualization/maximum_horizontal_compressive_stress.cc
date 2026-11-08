@@ -57,14 +57,7 @@ namespace aspect
         MaterialModel::MaterialModelOutputs<dim> out(n_quadrature_points,
                                                      this->n_compositional_fields());
 
-        if (this->get_parameters().enable_elasticity)
-          in.requested_properties = MaterialModel::MaterialProperties::viscosity
-                                    | MaterialModel::MaterialProperties::additional_outputs;
-        else
-          in.requested_properties = MaterialModel::MaterialProperties::viscosity;
-
-        if (in.requested_properties & MaterialModel::MaterialProperties::additional_outputs)
-          this->get_material_model().create_additional_named_outputs(out);
+        in.requested_properties = MaterialModel::MaterialProperties::viscosity;
 
         this->get_material_model().evaluate(in, out);
 
@@ -87,13 +80,8 @@ namespace aspect
 
             if (this->get_parameters().enable_elasticity)
               {
-                const auto elastic_additional_out =
-                  out.template get_additional_output_object<MaterialModel::ElasticAdditionalOutputs<dim>>();
-
-                Assert(elastic_additional_out != nullptr,
-                       ExcMessage("Elastic Additional Outputs are needed for the 'maximum horizontal compressive stress' postprocessor, but they have not been created."));
-
-                compressive_stress -= elastic_additional_out->deviatoric_stress[q];
+                compressive_stress -= (Utilities::Tensors::to_symmetric_tensor<dim>(&in.composition[q][this->introspection().compositional_index_for_name("ve_stress_xx")],
+                                                                                    &in.composition[q][this->introspection().compositional_index_for_name("ve_stress_xx")]+n_tensor_components));
               }
             else
               {

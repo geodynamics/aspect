@@ -59,12 +59,10 @@ namespace aspect
         MaterialModel::MaterialModelInputs<dim> in(input_data,
                                                    this->introspection());
 
-        in.requested_properties = MaterialModel::MaterialProperties::viscosity | MaterialModel::MaterialProperties::additional_outputs;
+        in.requested_properties = MaterialModel::MaterialProperties::viscosity;
 
         MaterialModel::MaterialModelOutputs<dim> out(n_quadrature_points,
                                                      this->n_compositional_fields());
-
-        this->get_material_model().create_additional_named_outputs(out);
 
         this->get_material_model().evaluate(in, out);
 
@@ -85,13 +83,8 @@ namespace aspect
             // can be obtained from the viscosity and strain rate.
             if (this->get_parameters().enable_elasticity == true)
               {
-                // Get the total deviatoric stress from the material model.
-                const std::shared_ptr<const MaterialModel::ElasticAdditionalOutputs<dim>> elastic_additional_out
-                  = out.template get_additional_output_object<MaterialModel::ElasticAdditionalOutputs<dim>>();
-
-                Assert(elastic_additional_out != nullptr, ExcMessage("Elastic Additional Outputs are needed for the 'principal stress' postprocessor, but they have not been created."));
-
-                stress -= elastic_additional_out->deviatoric_stress[q];
+                stress -= (Utilities::Tensors::to_symmetric_tensor<dim>(&in.composition[q][this->introspection().compositional_index_for_name("ve_stress_xx")],
+                                                                        &in.composition[q][this->introspection().compositional_index_for_name("ve_stress_xx")]+SymmetricTensor<2, dim>::n_independent_components));
               }
             else
               {
