@@ -31,9 +31,11 @@ done; \
 run_prm() { \
 cd $$1; \
 prm=$$2; \
+extra="$$3"; \
 echo "    running $$prm in `pwd` ..."; \
 [[ -f $$prm ]] || { echo "File '$$prm' missing in `pwd`."; return 7; }; \
 cp $$prm $$prm.tmp || return 5; \
+if [[ -n "$${extra}" ]]; then printf "%s\n" "$${extra}" >> $$prm.tmp; fi; \
 echo "set End time=0" >> $$prm.tmp; \
 echo "set Max nonlinear iterations = 5" >> $$prm.tmp; \
 ${BUILD}/aspect ${CHECK} $$prm.tmp >/dev/null || { rm -f $$prm.tmp; echo "run of $$prm failed"; return 2; }; \
@@ -45,7 +47,7 @@ echo "  running all prms in `pwd` ..."; \
 for file in *.prm; \
   do \
     if [[ "$${file}" != *.part.prm ]]; then \
-      run_prm . $${file} || return 4; \
+      run_prm . $${file} "$$2" || return 4; \
     fi \
   done; \
 echo "  running all prms in `pwd` done"; \
@@ -99,11 +101,11 @@ free_surface_tractions/: dummy
 
 # default file is too fine:
 geoid-spectral-comparison/: dummy
-	@$(def); run_prm $@ spectral-comparison.prm "subsection Mesh refinement\n set Initial global refinement=2\n end"
+	@$(def); run_prm $@ spectral-comparison.prm $$'subsection Mesh refinement\n  set Initial global refinement = 2\nend'
 
 gmg-tests/:  dummy
 	+@$(def); make_lib $@/nsinker-box-3d
-	@$(def); run_all_prms $@/nsinker-box-3d
+	@$(def); run_all_prms $@/nsinker-box-3d $$'subsection Mesh refinement\n  set Initial adaptive refinement = 0\nend'
 
 inclusion/: dummy
 	+@$(def); make_lib $@
@@ -133,9 +135,9 @@ operator_splitting/: dummy
 	@$(def); run_all_prms $@/exponential_decay
 
 particle_integration_scheme/: dummy
-	@$(def); run_prm $@ circle.prm euler.part.prm
-	@$(def); run_prm $@ circle.prm rk2.part.prm
-	@$(def); run_prm $@ circle.prm rk4.part.prm
+	@$(def); test -f $@/euler.part.prm || exit 1; run_prm $@ circle.prm "$$(cat $@/euler.part.prm)"
+	@$(def); test -f $@/rk2.part.prm || exit 1; run_prm $@ circle.prm "$$(cat $@/rk2.part.prm)"
+	@$(def); test -f $@/rk4.part.prm || exit 1; run_prm $@ circle.prm "$$(cat $@/rk4.part.prm)"
 
 rayleigh_taylor_instability/: dummy
 	+@$(def); make_lib $@

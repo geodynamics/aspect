@@ -328,6 +328,6 @@ contribution.
 ## License
 
 ASPECT is published under the
-[GPL v2 or newer](https://github.com/geodynamics/aspect/blob/main/LICENSE);
+[GPL v2 or newer](https://github.com/geodynamics/aspect/blob/main/LICENSES/GPL-2.0-or-later.txt);
 while you will retain copyright on your contributions, all changes to the code
 must be provided under this common license.

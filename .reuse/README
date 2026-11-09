@@ -1,0 +1,13 @@
+The two files in templates/ specify how a license header should look
+when using the REUSE tool to create one. They can be used as follows
+on a source code file:
+
+    reuse annotate --year="${first_year} - ${last_year}" --style="cpp"  --copyright="by the ASPECT authors."  --license="GPL-2.0-or-later" --copyright-prefix="spdx-string-c" --template=dealii file_name
+
+and on a CMake file:
+
+    reuse annotate --year="first_year - last_year" --style="cpp"  --copyright="by the ASPECT authors."  --license="GPL-2.0-or-later" --copyright-prefix="spdx-string-c" --template=dealiicmakefiles file_name
+
+Here first_year and last_year are the copyright years. It is also possible to give a single year instead of a range.
+
+More information on REUSE can be found here: https://reuse.software.

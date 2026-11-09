@@ -1,22 +1,16 @@
-/*
-  Copyright (C) 2019 - 2026 by the authors of the ASPECT code.
-
-  This file is part of ASPECT.
-
-  ASPECT is free software; you can redistribute it and/or modify
-  it under the terms of the GNU General Public License as published by
-  the Free Software Foundation; either version 2, or (at your option)
-  any later version.
-
-  ASPECT is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  GNU General Public License for more details.
-
-  You should have received a copy of the GNU General Public License
-  along with ASPECT; see the file LICENSE.  If not see
-  <http://www.gnu.org/licenses/>.
-*/
+// ------------------------------------------------------
+//
+// SPDX-License-Identifier: GPL-2.0-or-later
+//
+// SPDX-FileCopyrightText: Copyright (C) 2019-2026 by the ASPECT authors.
+//
+// This file is part of ASPECT.
+//
+// Detailed license information governing the source code and
+// contributions can be found in the folder LICENSES and in
+// LICENSE and CONTRIBUTING.md at the top level directory.
+//
+// ------------------------------------------------------
 
 
 #include <aspect/material_model/rheology/elasticity.h>
@@ -650,20 +644,9 @@ namespace aspect
         const std::shared_ptr<ReactionRateOutputs<dim>> reaction_rate_out
           = out.template get_additional_output_object<ReactionRateOutputs<dim>>();
 
-        if (reaction_rate_out == nullptr)
-          return;
-
-        // Set all reaction rates to zero
-        // TODO Should this only set those rates to zero
-        // that are used to update the stresses instead of all rates?
-        // What if other rheologies also fill reaction rates?
-        for (unsigned int i = 0; i < in.n_evaluation_points(); ++i)
-          for (unsigned int c = 0; c < in.composition[i].size(); ++c)
-            reaction_rate_out->reaction_rates[i][c] = 0.0;
-
         // It doesn't make sense to update the stresses at time zero;
         // return reaction rates of zero.
-        if (this->get_timestep_number() == 0)
+        if (reaction_rate_out == nullptr || this->get_timestep_number() == 0)
           return;
 
         // At the moment when the reaction rates are required (at the beginning of the timestep),
@@ -681,7 +664,7 @@ namespace aspect
         // their values and positions correspond to the old solution.
         // This means that in both cases we can use 'in' to get to the $\tau^{t}_{0adv}$ and velocity/strain rate of the
         // previous timestep.
-        // TODO The additional outputs include the reaction rates, so we also have to fill the reaction_rates
+        // ReactionRateOutputs are NamedAdditionalMaterialOutputs, so we also fill the reaction_rates
         // if additional_outputs are requested.
         if (in.current_cell.state() == IteratorState::valid && this->get_timestep_number() > 0 &&
             (in.requests_property(MaterialProperties::reaction_rates) || in.requests_property(MaterialProperties::additional_outputs)))

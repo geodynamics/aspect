@@ -1,0 +1,28 @@
+
+
+   Loading Ascii data initial file $ASPECT_SOURCE_DIR/data/initial-composition/ascii-data/test/jelly.txt.
+
+Number of active cells: 16 (on 3 levels)
+Number of degrees of freedom: 349 (162+25+81+81)
+
+*** Timestep 0:  t=0 years, dt=0 years
+   Solving temperature system... 0 iterations.
+   Solving C_1 system ... 0 iterations.
+   Solving Stokes system (GMG)... 11+0 iterations.
+
+Number of active cells: 64 (on 4 levels)
+Number of degrees of freedom: 1,237 (578+81+289+289)
+
+*** Timestep 0:  t=0 years, dt=0 years
+   Solving temperature system... 0 iterations.
+   Solving C_1 system ... 0 iterations.
+   Solving Stokes system (GMG)... 14+0 iterations.
+
+   Postprocessing:
+     RMS, max velocity:         1 m/year, 1 m/year
+     Compositions min/max/mass: 0/3/3.618e+07
+
+Termination requested by criterion: end time
+
+
+

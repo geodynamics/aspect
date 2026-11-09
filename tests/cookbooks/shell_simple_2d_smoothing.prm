@@ -1,0 +1,13 @@
+include $ASPECT_SOURCE_DIR/cookbooks/shell_simple_2d_smoothing/shell_simple_2d_smoothing.prm
+
+set End time = 0
+set Output directory = output-shell_simple_2d_smoothing
+
+subsection Mesh refinement
+  set Initial global refinement = 2
+  set Initial adaptive refinement = 0
+end
+
+subsection Postprocess
+  set List of postprocessors = velocity statistics, temperature statistics, heat flux statistics, basic statistics
+end

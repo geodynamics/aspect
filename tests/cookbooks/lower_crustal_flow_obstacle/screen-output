@@ -1,0 +1,20 @@
+
+Number of active cells: 50 (on 1 levels)
+Number of degrees of freedom: 3,597 (2,079+132+693+693)
+
+*** Timestep 0:  t=0 years, dt=0 years
+   Skipping temperature solve because RHS is zero.
+   Solving C_1 system ... 0 iterations.
+   Solving Stokes system (GMG)... 0+52 iterations.
+
+   Postprocessing:
+     RMS, max velocity:    0.0651 m/year, 0.142 m/year
+     Pressure min/avg/max: -1.446e+08 Pa, 1.872e-08 Pa, 1.446e+08 Pa
+
+
+
+
+Termination requested by criterion: end time
+
+
+

@@ -163,6 +163,7 @@ jobs:
     - name: archive coverage report
       if: ${{ matrix.coverage != '' }}
       uses: actions/upload-artifact@v7
+      with:
         name: coverage-html
         path: build/html_report
     - name: Coveralls

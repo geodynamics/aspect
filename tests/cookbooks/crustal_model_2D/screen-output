@@ -1,0 +1,138 @@
+
+Number of active cells: 5 (on 1 levels)
+Number of degrees of freedom: 111 (66+12+33)
+
+Number of mesh deformation degrees of freedom: 66
+   Solving mesh displacement system... 0 iterations.
+*** Timestep 0:  t=0 years, dt=0 years
+   Solving mesh displacement system... 0 iterations.
+   Skipping temperature solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 0+13 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 1
+
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 0+13 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 2: 0.112725
+
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 0+14 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 3: 0.0276578
+
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 0+14 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 4: 0.010021
+
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 0+13 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 5: 0.00409236
+
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 0+13 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 6: 0.00179284
+
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 0+13 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 7: 0.000794687
+
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 0+13 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 8: 0.000366114
+
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 0+12 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 9: 0.000168673
+
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 0+12 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 10: 8.64203e-05
+
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 0+12 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 11: 4.18091e-05
+
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 0+12 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 12: 2.74035e-05
+
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 0+11 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 13: 2.28432e-05
+
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 0+10 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 14: 1.87261e-05
+
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 0+10 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 15: 1.67984e-05
+
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 0+9 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 16: 1.55994e-05
+
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 0+8 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 17: 1.3938e-05
+
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 0+9 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 18: 1.13725e-05
+
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 0+9 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 19: 8.87408e-06
+
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 0+9 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 20: 6.8741e-06
+
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 0+8 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 21: 5.54231e-06
+
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 0+8 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 22: 4.62029e-06
+
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 0+8 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 23: 3.91195e-06
+
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 0+8 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 24: 3.36875e-06
+
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 0+8 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 25: 2.95717e-06
+
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 0+8 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 26: 2.64104e-06
+
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 0+8 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 27: 2.38858e-06
+
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 0+8 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 28: 2.17471e-06
+
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 0+8 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 29: 1.98174e-06
+
+
+   Postprocessing:
+     RMS, max velocity: 0.00931 m/year, 0.0125 m/year
+
+Skipping mesh refinement, because no cells were flagged for refinement/coarsening.
+
+
+
+
+Termination requested by criterion: end time
+
+
+

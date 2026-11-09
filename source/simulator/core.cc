@@ -1,22 +1,16 @@
-/*
-  Copyright (C) 2011 - 2026 by the authors of the ASPECT code.
-
-  This file is part of ASPECT.
-
-  ASPECT is free software; you can redistribute it and/or modify
-  it under the terms of the GNU General Public License as published by
-  the Free Software Foundation; either version 2, or (at your option)
-  any later version.
-
-  ASPECT is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  GNU General Public License for more details.
-
-  You should have received a copy of the GNU General Public License
-  along with ASPECT; see the file LICENSE.  If not see
-  <http://www.gnu.org/licenses/>.
-*/
+// ------------------------------------------------------
+//
+// SPDX-License-Identifier: GPL-2.0-or-later
+//
+// SPDX-FileCopyrightText: Copyright (C) 2011-2026 by the ASPECT authors.
+//
+// This file is part of ASPECT.
+//
+// Detailed license information governing the source code and
+// contributions can be found in the folder LICENSES and in
+// LICENSE and CONTRIBUTING.md at the top level directory.
+//
+// ------------------------------------------------------
 
 
 #include <aspect/simulator.h>
@@ -1956,14 +1950,20 @@ namespace aspect
 
           mesh_deformation_trans->interpolate (system_tmp);
 
-          mesh_deformation->mesh_vertex_constraints.distribute (distributed_mesh_displacements);
-          mesh_deformation->mesh_displacements = distributed_mesh_displacements;
+          // During initial pre-refinements we do not want to distribute the
+          // mesh deformation as this will result in the initial coarse mesh solution
+          // being interpolated onto the adaptively refined mesh.
+          if (pre_refinement_step >= parameters.initial_adaptive_refinement)
+            {
+              mesh_deformation->mesh_vertex_constraints.distribute (distributed_mesh_displacements);
+              mesh_deformation->mesh_displacements = distributed_mesh_displacements;
 
-          mesh_deformation->mesh_vertex_constraints.distribute (distributed_old_mesh_displacements);
-          mesh_deformation->old_mesh_displacements = distributed_old_mesh_displacements;
+              mesh_deformation->mesh_vertex_constraints.distribute (distributed_old_mesh_displacements);
+              mesh_deformation->old_mesh_displacements = distributed_old_mesh_displacements;
 
-          mesh_deformation->mesh_vertex_constraints.distribute (distributed_initial_topography);
-          mesh_deformation->initial_topography = distributed_initial_topography;
+              mesh_deformation->mesh_vertex_constraints.distribute (distributed_initial_topography);
+              mesh_deformation->initial_topography = distributed_initial_topography;
+            }
         }
 
       // Possibly load data of plugins associated with cells
@@ -2448,6 +2448,8 @@ namespace aspect
     pcout << resource_output.str();
 
     CitationInfo::print_info_block (pcout);
+
+    signals.post_simulator_run(*this);
   }
 }
 

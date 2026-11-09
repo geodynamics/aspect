@@ -1,22 +1,16 @@
-/*
-  Copyright (C) 2016 - 2026 by the authors of the ASPECT code.
-
-  This file is part of ASPECT.
-
-  ASPECT is free software; you can redistribute it and/or modify
-  it under the terms of the GNU General Public License as published by
-  the Free Software Foundation; either version 2, or (at your option)
-  any later version.
-
-  ASPECT is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  GNU General Public License for more details.
-
-  You should have received a copy of the GNU General Public License
-  along with ASPECT; see the file LICENSE.  If not see
-  <http://www.gnu.org/licenses/>.
-*/
+// ------------------------------------------------------
+//
+// SPDX-License-Identifier: GPL-2.0-or-later
+//
+// SPDX-FileCopyrightText: Copyright (C) 2016-2026 by the ASPECT authors.
+//
+// This file is part of ASPECT.
+//
+// Detailed license information governing the source code and
+// contributions can be found in the folder LICENSES and in
+// LICENSE and CONTRIBUTING.md at the top level directory.
+//
+// ------------------------------------------------------
 
 #include <algorithm>
 #include <aspect/material_model/entropy_model.h>
@@ -90,7 +84,7 @@ namespace aspect
 
       AssertThrow(solver_scheme_is_supported(this->get_parameters()) == true,
                   ExcMessage("The 'entropy model' material model requires the use of a solver scheme that "
-                             "iterates over the advection equations but a non iterating solver scheme was selected. "
+                             "iterates over the advection equations or does not solve for advection at all. "
                              "Please check the consistency of your solver scheme."));
 
       for (unsigned int i = 0; i < material_file_names.size(); ++i)
@@ -590,8 +584,8 @@ namespace aspect
       if (this->introspection().composition_type_exists(CompositionalFieldDescription::Type::chemical_composition))
         {
           AssertThrow (this->get_parameters().use_operator_splitting == true,
-                       ExcMessage("The 'entropy model' material model requires the use of operator splitting for multiple chemical composition. "
-                                  "Please set the 'Use operator splitting' parameter to 1 in the material model parameters."));
+                       ExcMessage("The 'entropy model' material model requires the use of operator splitting for multiple chemical compositions. "
+                                  "Please set the global parameter 'Use operator splitting' to true."));
         }
 
       prm.enter_subsection("Material model");
