@@ -56,6 +56,8 @@ namespace aspect
           amg_dst.reinit(locally_owned_dofs, communicator);
         }
 
+
+
         void operator()(const unsigned int,
                         VectorType &dst,
                         const VectorType &src) const override
@@ -90,6 +92,8 @@ namespace aspect
     };
   }
 
+
+
   template <int dim, int velocity_degree>
   void
   StokesMatrixFreeHandlerGlobalCoarseningImplementation<dim, velocity_degree>::declare_parameters(ParameterHandler &prm)
@@ -106,12 +110,12 @@ namespace aspect
                          "This is for internal benchmarking purposes: It is useful if you want to see how the solver "
                          "performs. Otherwise, you don't want to enable this, since it adds additional computational cost "
                          "to get the timing information.");
-      prm.declare_entry ("Velocity coarse solver", "Apply Smoother",
-                         Patterns::Selection("Apply Smoother|AMG|CG with AMG"),
+      prm.declare_entry ("Velocity coarse solver", "Apply Chebyshev smoother",
+                         Patterns::Selection("Apply Chebyshev smoother|Apply AMG cycle|Solve CG with AMG"),
                          "Coarse solver for the velocity block of the global coarsening GMG solver. "
-                         "Choose 'Apply Smoother' to apply the Chebyshev smoother configured for the coarse level, "
-                         "'AMG' to apply one AMG V-cycle, or 'CG with AMG' to solve with CG preconditioned "
-                         "by the AMG V-cycle.");
+                         "Choose 'Apply Chebyshev smoother' to apply the Chebyshev smoother configured "
+                         "for the coarse level, 'Apply AMG cycle' to apply one AMG V-cycle, or 'Solve "
+                         "CG with AMG' to solve with CG preconditioned by the AMG V-cycle.");
     }
     prm.leave_subsection ();
     prm.leave_subsection ();
@@ -129,12 +133,14 @@ namespace aspect
       print_details = prm.get_bool ("Output details");
       do_timings = prm.get_bool ("Execute solver timings");
       const std::string coarse_solver = prm.get("Velocity coarse solver");
-      if (coarse_solver == "Apply Smoother")
+      if (coarse_solver == "Apply Chebyshev smoother")
         velocity_coarse_solver = VelocityCoarseSolver::chebyshev;
-      else if (coarse_solver == "AMG")
+      else if (coarse_solver == "Apply AMG cycle")
         velocity_coarse_solver = VelocityCoarseSolver::amg;
-      else
+      else if (coarse_solver == "Solve CG with AMG")
         velocity_coarse_solver = VelocityCoarseSolver::cg_amg;
+      else
+        AssertThrow(false, ExcNotImplemented());
     }
     prm.leave_subsection ();
     prm.leave_subsection ();

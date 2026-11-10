@@ -6,6 +6,6 @@ include $ASPECT_SOURCE_DIR/tests/gmg_velocity_boundary_component_gc.prm
 
 subsection Solver parameters
   subsection Matrix Free
-    set Velocity coarse solver = CG with AMG
+    set Velocity coarse solver = Solve CG with AMG
   end
 end
