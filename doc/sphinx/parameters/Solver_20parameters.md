@@ -103,6 +103,15 @@
 **Documentation:** Turns on extra information for the matrix free GMG solver to be printed.
 ::::
 
+::::{dropdown} __Parameter:__ {ref}`Velocity coarse solver<parameters:Solver_20parameters/Matrix_20Free/Velocity_20coarse_20solver>`
+:name: parameters:Solver_20parameters/Matrix_20Free/Velocity_20coarse_20solver
+**Default value:** Apply Chebyshev smoother
+
+**Pattern:** [Selection Apply Chebyshev smoother|Apply AMG cycle|Solve CG with AMG ]
+
+**Documentation:** Coarse solver for the velocity block of the global coarsening GMG solver. Choose &rsquo;Apply Chebyshev smoother&rsquo; to apply the Chebyshev smoother configured for the coarse level, &rsquo;Apply AMG cycle&rsquo; to apply one AMG V-cycle, or &rsquo;Solve CG with AMG&rsquo; to solve with CG preconditioned by the AMG V-cycle.
+::::
+
 (parameters:Solver_20parameters/Newton_20solver_20parameters)=
 ## **Subsection:** Solver parameters / Newton solver parameters
 ::::{dropdown} __Parameter:__ {ref}`Max Newton line search iterations<parameters:Solver_20parameters/Newton_20solver_20parameters/Max_20Newton_20line_20search_20iterations>`

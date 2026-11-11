@@ -27,6 +27,7 @@
 
 #include <deal.II/matrix_free/tools.h>
 #include <deal.II/lac/solver_gmres.h>
+#include <deal.II/lac/solver_cg.h>
 #include <deal.II/lac/solver_idr.h>
 #include <deal.II/lac/precondition.h>
 #include <deal.II/dofs/dof_tools.h>
@@ -37,6 +38,61 @@
 
 namespace aspect
 {
+
+  namespace
+  {
+    template <typename VectorType>
+    class MGCoarseGridApplyAMG : public MGCoarseGridBase<VectorType>
+    {
+      public:
+        MGCoarseGridApplyAMG(const LinearAlgebra::SparseMatrix &matrix,
+                             const LinearAlgebra::PreconditionAMG &amg,
+                             const IndexSet &locally_owned_dofs,
+                             const MPI_Comm communicator,
+                             const bool solve)
+          : matrix(matrix), amg(amg), solve(solve)
+        {
+          amg_src.reinit(locally_owned_dofs, communicator);
+          amg_dst.reinit(locally_owned_dofs, communicator);
+        }
+
+
+
+        void operator()(const unsigned int,
+                        VectorType &dst,
+                        const VectorType &src) const override
+        {
+          internal::ChangeVectorTypes::copy(amg_src, src);
+          if (solve)
+            {
+              amg_dst = 0;
+              if (amg_src.l2_norm() > 1e-50)
+                {
+                  // This approximate linear solve is not a linear
+                  // operator even with a tight tolerance. We need to
+                  // investigate if a switch of the outer GMRES to
+                  // FGMRES and a change of the inner CG for
+                  // "expensive solve" is helpful:
+                  ReductionControl control(1000, 1e-50, 1e-10);
+                  SolverCG<LinearAlgebra::Vector> solver(control);
+                  solver.solve(matrix, amg_dst, amg_src, amg);
+                }
+            }
+          else
+            amg.vmult(amg_dst, amg_src);
+          internal::ChangeVectorTypes::copy(dst, amg_dst);
+        }
+
+      private:
+        const LinearAlgebra::SparseMatrix &matrix;
+        const LinearAlgebra::PreconditionAMG &amg;
+        const bool solve;
+        mutable LinearAlgebra::Vector amg_src;
+        mutable LinearAlgebra::Vector amg_dst;
+    };
+  }
+
+
 
   template <int dim, int velocity_degree>
   void
@@ -54,6 +110,12 @@ namespace aspect
                          "This is for internal benchmarking purposes: It is useful if you want to see how the solver "
                          "performs. Otherwise, you don't want to enable this, since it adds additional computational cost "
                          "to get the timing information.");
+      prm.declare_entry ("Velocity coarse solver", "Apply Chebyshev smoother",
+                         Patterns::Selection("Apply Chebyshev smoother|Apply AMG cycle|Solve CG with AMG"),
+                         "Coarse solver for the velocity block of the global coarsening GMG solver. "
+                         "Choose 'Apply Chebyshev smoother' to apply the Chebyshev smoother configured "
+                         "for the coarse level, 'Apply AMG cycle' to apply one AMG V-cycle, or 'Solve "
+                         "CG with AMG' to solve with CG preconditioned by the AMG V-cycle.");
     }
     prm.leave_subsection ();
     prm.leave_subsection ();
@@ -70,6 +132,15 @@ namespace aspect
     {
       print_details = prm.get_bool ("Output details");
       do_timings = prm.get_bool ("Execute solver timings");
+      const std::string coarse_solver = prm.get("Velocity coarse solver");
+      if (coarse_solver == "Apply Chebyshev smoother")
+        velocity_coarse_solver = VelocityCoarseSolver::chebyshev;
+      else if (coarse_solver == "Apply AMG cycle")
+        velocity_coarse_solver = VelocityCoarseSolver::amg;
+      else if (coarse_solver == "Solve CG with AMG")
+        velocity_coarse_solver = VelocityCoarseSolver::cg_amg;
+      else
+        AssertThrow(false, ExcNotImplemented());
     }
     prm.leave_subsection ();
     prm.leave_subsection ();
@@ -863,10 +934,40 @@ namespace aspect
       }
 
 
-    // Coarse Solver is just an application of the Chebyshev smoother set up
-    // in such a way to be a solver:
-    MGCoarseGridApplySmoother<VectorType> mg_coarse_A;
-    mg_coarse_A.initialize(mg_smoother_A);
+    // Set up AMG only when it is selected as the velocity coarse solver.
+    LinearAlgebra::SparseMatrix coarse_matrix_A;
+    LinearAlgebra::PreconditionAMG amg_A;
+    MGCoarseGridApplySmoother<VectorType> coarse_chebyshev_A;
+    std::unique_ptr<MGCoarseGridApplyAMG<VectorType>> coarse_amg_A;
+    MGCoarseGridBase<VectorType> *mg_coarse_A;
+    if (velocity_coarse_solver == VelocityCoarseSolver::chebyshev)
+      {
+        coarse_chebyshev_A.initialize(mg_smoother_A);
+        mg_coarse_A = &coarse_chebyshev_A;
+      }
+    else
+      {
+        LinearAlgebra::PreconditionAMG::AdditionalData amg_data;
+        amg_data.elliptic = true;
+#ifndef ASPECT_USE_TPETRA
+        amg_data.higher_order_elements = true;
+#endif
+#if DEAL_II_VERSION_GTE(9,7,0)
+        amg_data.constant_modes = DoFTools::extract_constant_modes(
+                                    dofhandlers_v[0], ComponentMask(dim, true));
+#else
+        DoFTools::extract_constant_modes(dofhandlers_v[0],
+                                         ComponentMask(dim, true),
+                                         amg_data.constant_modes);
+#endif
+
+        mg_matrices_A_block[0].assemble_system_matrix(coarse_matrix_A);
+        amg_A.initialize(coarse_matrix_A, amg_data);
+        coarse_amg_A = std::make_unique<MGCoarseGridApplyAMG<VectorType>>(
+                         coarse_matrix_A, amg_A, dofhandlers_v[0].locally_owned_dofs(),
+                         this->get_mpi_communicator(), velocity_coarse_solver == VelocityCoarseSolver::cg_amg);
+        mg_coarse_A = coarse_amg_A.get();
+      }
 
     MGCoarseGridApplySmoother<VectorType> mg_coarse_Schur;
     mg_coarse_Schur.initialize(mg_smoother_Schur);
@@ -890,7 +991,7 @@ namespace aspect
 
     // MG object
     Multigrid<VectorType> mg_A(mg_matrix_A,
-                               mg_coarse_A,
+                               *mg_coarse_A,
                                *mg_transfer_A_block,
                                mg_smoother_A,
                                mg_smoother_A);

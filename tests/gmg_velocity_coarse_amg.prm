@@ -1,0 +1,11 @@
+# Test the AMG V-cycle coarse solver with prescribed velocity constraints.
+#
+# MPI: 2
+
+include $ASPECT_SOURCE_DIR/tests/gmg_velocity_boundary_component_gc.prm
+
+subsection Solver parameters
+  subsection Matrix Free
+    set Velocity coarse solver = Apply AMG cycle
+  end
+end
