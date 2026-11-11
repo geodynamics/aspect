@@ -1,0 +1,5 @@
+Fixed: An issue where pre- and post- refinement signals could become desynced because the
+pre-refinement signal was triggered even if refinement did not actually occur. Moved the 
+pre-refinement signal to only occur if adaptive refinement actually takes place.
+<br>
+(Daniel Douglas, 2026/11/11)
