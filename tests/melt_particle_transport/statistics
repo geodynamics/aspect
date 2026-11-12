@@ -1,0 +1,37 @@
+# 1: Time step number
+# 2: Time (years)
+# 3: Time step size (years)
+# 4: Number of mesh cells
+# 5: Number of Stokes degrees of freedom
+# 6: Number of temperature degrees of freedom
+# 7: Number of degrees of freedom for all compositions
+# 8: Number of nonlinear iterations
+# 9: Iterations for temperature solver
+# 10: Iterations for composition solver 1
+# 11: Iterations for composition solver 2
+# 12: Iterations for composition solver 4
+# 13: Iterations for Stokes solver
+# 14: Velocity iterations in Stokes preconditioner
+# 15: Schur complement iterations in Stokes preconditioner
+# 16: Visualization file name
+# 17: Minimal value for composition porosity
+# 18: Maximal value for composition porosity
+# 19: Global mass for composition porosity
+# 20: Minimal value for composition solid_tracer_fem
+# 21: Maximal value for composition solid_tracer_fem
+# 22: Global mass for composition solid_tracer_fem
+# 23: Minimal value for composition solid_tracer_particles
+# 24: Maximal value for composition solid_tracer_particles
+# 25: Global mass for composition solid_tracer_particles
+# 26: Minimal value for composition melt_tracer_fem
+# 27: Maximal value for composition melt_tracer_fem
+# 28: Global mass for composition melt_tracer_fem
+# 29: Minimal value for composition melt_tracer_particles
+# 30: Maximal value for composition melt_tracer_particles
+# 31: Global mass for composition melt_tracer_particles
+# 32: Number of advected particles
+# 33: Number of advected particles (Particle system 2)
+# 34: Particle file name
+# 35: Particle file name (2)
+0 0.000000000000e+00 0.000000000000e+00 128 1275 561 2805 2  0  0  0  0  7  7 388 output-melt_particle_transport/solution/solution-00000  1.43755635e-28 2.00000000e-01 1.25663070e+08 3.57142857e-03 1.00000000e-02 1.93533187e+08 3.56223677e-03 1.00051094e-02 1.93530280e+08 3.57142857e-02 9.99991000e-02 1.93532126e+09 0.00000000e+00 1.00051094e-01 1.12278185e+09 2048  960 output-melt_particle_transport/particles/particles-00000 output-melt_particle_transport/particles-2/particles-2-00000 
+1 3.000000000000e+03 3.000000000000e+03 128 1275 561 2805 2 14 19 15 17 13 13 856 output-melt_particle_transport/solution/solution-00001 -1.67979330e-04 1.98568814e-01 1.25648369e+08 3.57486134e-03 1.00000491e-02 1.93533654e+08 3.56150820e-03 1.00051277e-02 1.93530522e+08 3.57579315e-02 9.99998131e-02 1.93527242e+09 0.00000000e+00 1.00052920e-01 1.30676917e+09 2048 1248 output-melt_particle_transport/particles/particles-00001 output-melt_particle_transport/particles-2/particles-2-00001 
