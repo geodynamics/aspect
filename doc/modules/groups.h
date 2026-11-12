@@ -245,6 +245,15 @@
  */
 
 /**
+ * @defgroup ParticlePopulations Describing the particle count bounds in each cell
+ *
+ * A module for the definition of functions and classes that determine the
+ * minimum and maximum numbers of particles allowed in each cell.
+ *
+ * @ingroup Particle
+ */
+
+/**
  * @defgroup ParticleOutput Describing the output method of particles
  *
  * A module for the definition of functions and classes that have to do with

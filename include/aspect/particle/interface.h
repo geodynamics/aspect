@@ -24,7 +24,7 @@ namespace aspect
     /**
      * A base class defining methods and member variables
      * shared along all the particle plugins. This includes the generator,
-     * integrator, interpolator and the property classes.
+     * integrator, interpolator, population and property classes.
      *
      * @ingroup Particle
      */
