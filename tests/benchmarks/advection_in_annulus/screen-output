@@ -1,0 +1,34 @@
+
+Loading shared library <./libadvection_in_annulus.debug.so>
+
+Number of active cells: 192 (on 3 levels)
+Number of degrees of freedom: 2,832 (1,728+240+864)
+
+*** Timestep 0:  t=0 seconds, dt=0 seconds
+   Solving temperature system... 0 iterations.
+
+   Postprocessing:
+     RMS, max velocity:                  1.08 m/s, 2.33 m/s
+     Temperature min/avg/max:            0 K, 0.9444 K, 1 K
+     Heat fluxes through boundary parts: -3.968e-15 W, 0.1141 W
+
+*** Timestep 1:  t=0.0280931 seconds, dt=0.0280931 seconds
+   Solving temperature system... 11 iterations.
+
+   Postprocessing:
+     RMS, max velocity:                  1.08 m/s, 2.33 m/s
+     Temperature min/avg/max:            0 K, 0.9439 K, 1.037 K
+     Heat fluxes through boundary parts: -3.967e-15 W, 0.1915 W
+
+*** Timestep 2:  t=0.05 seconds, dt=0.0219069 seconds
+   Solving temperature system... 10 iterations.
+
+   Postprocessing:
+     RMS, max velocity:                  1.08 m/s, 2.33 m/s
+     Temperature min/avg/max:            0 K, 0.9434 K, 1.061 K
+     Heat fluxes through boundary parts: -4.008e-15 W, 0.232 W
+
+Termination requested by criterion: end time
+
+
+
