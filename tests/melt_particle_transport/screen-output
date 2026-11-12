@@ -1,0 +1,79 @@
+
+Loading shared library <./libmelt_particle_transport.debug.so>
+
+Number of active cells: 128 (on 4 levels)
+Number of degrees of freedom: 7,482 (1,122+537+1,122+153+561+561+561+1,152+561+1,152)
+
+*** Timestep 0:  t=0 years, dt=0 years
+   Solving temperature system... 0 iterations.
+   Advecting particles (particle manager 1)...  done.
+   Advecting particles (particle manager 2)...  done.
+   Solving porosity system ... 0 iterations.
+   Solving solid_tracer_fem system ... 0 iterations.
+   Solving melt_tracer_fem system ... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 7+0 iterations.
+   Solving fluid velocity system... 1 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.62658e-16, 2.35861e-16, 1.66531e-16, 0, 1.35076e-16, 0, 0.168633
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 0.168633
+
+   Solving temperature system... 0 iterations.
+   Advecting particles (particle manager 1)...  done.
+   Advecting particles (particle manager 2)...  done.
+   Solving porosity system ... 0 iterations.
+   Solving solid_tracer_fem system ... 0 iterations.
+   Solving melt_tracer_fem system ... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 0+0 iterations.
+   Solving fluid velocity system... 1 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.62658e-16, 2.35861e-16, 1.66531e-16, 0, 1.35076e-16, 0, 4.9169e-08
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 4.9169e-08
+
+
+   Postprocessing:
+     Writing graphical output:  output-melt_particle_transport/solution/solution-00000
+     Compositions min/max/mass: 1.438e-28/0.2/1.257e+08 // 0.003571/0.01/1.935e+08 // 0.003562/0.01001/1.935e+08 // 0.03571/0.1/1.935e+09 // 0/0.1001/1.123e+09
+     Writing particle output:   output-melt_particle_transport/particles/particles-00000, output-melt_particle_transport/particles-2/particles-2-00000
+     Writing point values:      output-melt_particle_transport/point_values.txt
+
+*** Timestep 1:  t=3000 years, dt=3000 years
+   Solving temperature system... 8 iterations.
+   Advecting particles (particle manager 1)...  done.
+   Advecting particles (particle manager 2)...  done.
+   Solving porosity system ... 10 iterations.
+   Solving solid_tracer_fem system ... 8 iterations.
+   Solving melt_tracer_fem system ... 9 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 7+0 iterations.
+   Solving fluid velocity system... 1 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0.000209916, 0.0248571, 0.000399767, 0, 0.00184261, 0, 0.0178187
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 0.0248571
+
+   Solving temperature system... 6 iterations.
+   Advecting particles (particle manager 1)...  done.
+   Advecting particles (particle manager 2)...  done.
+   Solving porosity system ... 9 iterations.
+   Solving solid_tracer_fem system ... 7 iterations.
+   Solving melt_tracer_fem system ... 8 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 6+0 iterations.
+   Solving fluid velocity system... 1 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.46143e-06, 0.00124165, 8.14374e-06, 0, 0.000155436, 0, 0.000822798
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 0.00124165
+
+
+   WARNING: The nonlinear solver in the current timestep failed to converge.
+   Acting according to the parameter 'Nonlinear solver failure strategy':
+   Continuing to the next timestep even though solution is not fully converged.
+
+   Postprocessing:
+     Writing graphical output:  output-melt_particle_transport/solution/solution-00001
+     Compositions min/max/mass: -0.000168/0.1986/1.256e+08 // 0.003575/0.01/1.935e+08 // 0.003562/0.01001/1.935e+08 // 0.03576/0.1/1.935e+09 // 0/0.1001/1.307e+09
+     Writing particle output:   output-melt_particle_transport/particles/particles-00001, output-melt_particle_transport/particles-2/particles-2-00001
+
+Termination requested by criterion: end time
+
+
+
+
+WARNING: During this computation 1 nonlinear solver failures occurred!

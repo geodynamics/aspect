@@ -225,11 +225,13 @@ The following properties are available:
 :name: parameters:Particles/Particle_20population_20name
 **Default value:** constant
 
-**Pattern:** [Selection constant ]
+**Pattern:** [Selection constant|presence of melt ]
 
 **Documentation:** Select one of the following models:
 
 &lsquo;constant&rsquo;: Prescribes a constant minimum and maximum number of particles allowed in each cell. The corresponding input parameters are read from the general &ldquo;Particles/&rdquo; section in the input file. Minimum and maximum particle counts are only enforced if particles are added or removed as part of the particle load balancing.
+
+&lsquo;presence of melt&rsquo;: A particle population model that maintains particles only in cells where the compositional field &rsquo;porosity&rsquo; exceeds a prescribed threshold. Cells without melt have minimum and maximum particle counts of zero. These minimum and maximum particle counts are only enforced  if particles are added and removed, repectively, as part of the particle load balancing.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Particle removal algorithm<parameters:Particles/Particle_20removal_20algorithm>`
@@ -1039,4 +1041,17 @@ A typical example would be to set this runtime parameter to &lsquo;pi=3.14159265
 **Pattern:** [Double 0...1 (inclusive)]
 
 **Documentation:** The minimum porosity that has to be present at the position of a particle for it to be considered a melt particle (in the sense that the melt presence property is set to 1).
+::::
+
+(parameters:Particles/Population)=
+## **Subsection:** Particles / Population
+(parameters:Particles/Population/Presence_20of_20melt)=
+## **Subsection:** Particles / Population / Presence of melt
+::::{dropdown} __Parameter:__ {ref}`Porosity threshold<parameters:Particles/Population/Presence_20of_20melt/Porosity_20threshold>`
+:name: parameters:Particles/Population/Presence_20of_20melt/Porosity_20threshold
+**Default value:** 1e-9
+
+**Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
+
+**Documentation:** The minimum porosity required for a cell to contain particles. If the porosity exceeds this threshold at any quadrature point in a cell, the minimum and maximum particle counts specified in the Particles subsection are used. Otherwise, both counts are zero.
 ::::

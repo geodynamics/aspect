@@ -1,0 +1,7 @@
+New: The particle population plugin 'presence of melt' maintains the
+prescribed minimum and maximum particle counts in cells where porosity
+exceeds a threshold and removes particles from other cells.
+A new benchmark tests this feature by comparing solid and melt composition
+transport on particles and with finite element fields.
+<br>
+(Juliane Dannberg, 2026/11/14)
