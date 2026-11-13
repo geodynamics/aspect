@@ -178,6 +178,9 @@ namespace aspect
            * @param F Melt fraction, dimensionless.
            * @param T_solidus Peridotite solidus temperature, in K.
            * @param T_lherz_liquidus Lherzolite liquidus temperature, in K.
+           * @param T_liquidus Peridotite liquidus temperature, in K.
+           * @param F_cpx_out Melt fraction at clinopyroxene exhaustion, dimensionless.
+           * @param T_cpx_out Temperature at clinopyroxene exhaustion, in K.
            *
            * @returns Melt fraction corrected for water saturation, dimensionless.
            */
@@ -185,7 +188,10 @@ namespace aspect
                                         const double temperature,
                                         const double F,
                                         const double T_solidus,
-                                        const double T_lherz_liquidus) const;
+                                        const double T_lherz_liquidus,
+                                        const double T_liquidus,
+                                        const double F_cpx_out,
+                                        const double T_cpx_out) const;
 
           /**
            * Compute the melt fraction for peridotite after Katz et al. (2003).
