@@ -1,0 +1,50 @@
+# Temperature boundary conditions
+# Top and bottom (fixed) temperatures are consistent with the initial temperature field.
+# Because we use a free surface, the height/depth of the surface can change over time,
+# meaning that if the initial temperature plugin is asked for the temperature
+# at the surface, this temperature could also vary over time. Therefore
+# we also use the box plugin and take the minimum of the initial temperature and
+# the box plugins, thus maintaining a temperature of 293 K.
+subsection Boundary temperature model
+  set Fixed temperature boundary indicators   = bottom, top
+  set List of model names = initial temperature, box
+  set List of model operators = add, minimum
+  subsection Box
+    set Top temperature    =  293
+    # Unrealistically high, so that it is always taken from initial temperature plugin
+    set Bottom temperature = 5000
+  end
+end
+
+# Initial temperature field
+# The initial temperature consists of a typical continental geotherm
+# based on equations Turcotte and Schubert Ch. 4.6.
+# Below the lithosphere-asthenosphere boundary (LAB, defined initially by the
+# bottom of the mantle lithsphere and the 1623 K isotherm,
+# we prescribe an adiabatic temperature increase.
+subsection Initial temperature model
+  set List of model names = adiabatic, lithosphere with rift
+  set List of model operators = add, replace if valid
+  subsection Lithosphere with rift
+    set LAB isotherm temperature = 1573.
+    set Surface temperature = 293.
+    # Whether or not to prescribe the LAB temperature up to a
+    # certain depth (in the area below LAB)
+    # or to use adiabat everywhere below the LAB.
+    set Use temperature compensation depth = true
+    set Temperature compensation depth = 150e3
+  end
+  subsection Adiabatic
+    # A reference profile of the compositional fields
+    # where x represents depth
+    subsection Function
+    # noninitial_plastic_strain, plastic_strain, upper, lower, mantle_L
+    set Function expression           = 0; \
+                                        0; \
+                                        if(x<20e3,1,0); \
+                                        if(x>=20e3&x<35e3,1,0); \
+                                        if(x>=35e3&x<120e3,1,0)
+    end
+  end
+
+end
