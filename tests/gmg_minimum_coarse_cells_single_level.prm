@@ -1,0 +1,10 @@
+# Test retaining the finest mesh when it has fewer cells than requested.
+# MPI: 2
+
+include $ASPECT_SOURCE_DIR/tests/gmg_minimum_coarse_cells.prm
+
+subsection Solver parameters
+  subsection Matrix Free
+    set Minimum number of cells on coarsest level = 1000000
+  end
+end

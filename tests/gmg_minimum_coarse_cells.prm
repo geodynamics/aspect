@@ -1,0 +1,14 @@
+# Test stopping global coarsening at 20 cells (two GMG levels instead of three).
+# The hierarchy has 5, 20, and 80 cells, so equality must retain the 20-cell mesh.
+# MPI: 2
+
+include $ASPECT_SOURCE_DIR/tests/gmg_velocity_boundary_component_gc.prm
+
+set End time = 0
+
+subsection Solver parameters
+  subsection Matrix Free
+    set Output details = true
+    set Minimum number of cells on coarsest level = 20
+  end
+end

@@ -1,0 +1,10 @@
+# Test solving with CG and AMG on the first retained GMG level.
+# MPI: 2
+
+include $ASPECT_SOURCE_DIR/tests/gmg_minimum_coarse_cells.prm
+
+subsection Solver parameters
+  subsection Matrix Free
+    set Velocity coarse solver = Solve CG with AMG
+  end
+end
