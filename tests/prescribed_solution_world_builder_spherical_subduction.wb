@@ -1,0 +1,33 @@
+{
+  "version":"1.2",
+  "coordinate system":{"model":"spherical", "depth method":"begin segment"},
+  "cross section":[[0,0],[10,0]],
+  "maximum distance between coordinates":0.01,
+  "indicator properties":[
+    {"index":0,"name":"temperature"},
+    {"index":1,"name":"velocity"},
+    {"index":2,"name":"composition"}
+  ],
+  "features":[
+    {
+      "model":"subducting plate",
+      "name":"Subducting plate",
+      "coordinates":[[15,41],[15,25],[5,5],[5,-1]],
+      "dip point":[80,0],
+      "segments":[
+        {"length":200e3, "thickness":[95e3], "angle":[0,45]},
+        {"length":400e3, "thickness":[95e3], "angle":[45]},
+        {"length":200e3, "thickness":[95e3], "angle":[45,0]},
+        {"length":100e3, "thickness":[95e3], "angle":[0]}
+      ],
+      "temperature models":[{"model":"uniform", "temperature":600}],
+      "velocity models":[{"model":"along surface", "velocity magnitude":1.0}],
+      "indicator models":[{
+        "model":"uniform",
+        "min distance slab top":0,
+        "max distance slab top":95e3,
+        "indicators":["velocity"]
+      }]
+    }
+  ]
+}
