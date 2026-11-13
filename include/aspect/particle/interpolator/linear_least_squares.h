@@ -17,6 +17,7 @@
 
 #include <aspect/particle/interpolator/interface.h>
 #include <aspect/simulator_access.h>
+#include <aspect/utilities.h>
 
 #include <aspect/particle/interpolator/cell_average.h>
 
@@ -89,6 +90,10 @@ namespace aspect
            * perform a linear least squares interpolation.
            */
           Interpolator::CellAverage<dim> fallback_interpolator;
+
+          Utilities::ScratchSpace<std::vector<std::vector<double>>> vector_vector_double_space;
+          Utilities::ScratchSpace<std::vector<Vector<double>>> vector_Vector_double_space;
+          Utilities::ScratchSpace<std::vector<double>> vector_double_space;
       };
     }
   }
