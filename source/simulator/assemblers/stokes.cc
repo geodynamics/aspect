@@ -41,8 +41,8 @@ namespace aspect
       const double pressure_scaling = this->get_pressure_scaling();
 
       const std::shared_ptr<const MaterialModel::PrescribedPlasticDilation<dim>>
-      prescribed_dilation =
-        this->get_parameters().enable_prescribed_dilation
+      prescribed_plastic_dilation =
+        this->get_parameters().enable_prescribed_plastic_dilation
         ? scratch.material_model_outputs.template get_additional_output_object<MaterialModel::PrescribedPlasticDilation<dim>>()
         : nullptr;
 
@@ -196,11 +196,11 @@ namespace aspect
                   }
             }
 
-          if (prescribed_dilation != nullptr)
+          if (prescribed_plastic_dilation != nullptr)
             {
               for (unsigned int i=0; i<stokes_dofs_per_cell; ++i)
                 for (unsigned int j=0; j<stokes_dofs_per_cell; ++j)
-                  data.local_matrix(i,j) += prescribed_dilation->dilation_lhs_term[q]
+                  data.local_matrix(i,j) += prescribed_plastic_dilation->dilation_lhs_term[q]
                                             * pressure_scaling * pressure_scaling
                                             * scratch.phi_p[i] * scratch.phi_p[j]
                                             * JxW;
@@ -217,14 +217,14 @@ namespace aspect
     {
       const unsigned int n_points = outputs.n_evaluation_points();
 
-      if (this->get_parameters().enable_prescribed_dilation
+      if (this->get_parameters().enable_prescribed_plastic_dilation
           && outputs.template has_additional_output_object<MaterialModel::PrescribedPlasticDilation<dim>>() == false)
         {
           outputs.additional_outputs.push_back(
             std::make_unique<MaterialModel::PrescribedPlasticDilation<dim>>(n_points));
         }
 
-      Assert(!this->get_parameters().enable_prescribed_dilation
+      Assert(!this->get_parameters().enable_prescribed_plastic_dilation
              ||
              outputs.template get_additional_output_object<MaterialModel::PrescribedPlasticDilation<dim>>()->dilation_lhs_term.size()
              == n_points, ExcInternalError());
@@ -300,8 +300,8 @@ namespace aspect
       const std::shared_ptr<const MaterialModel::ElasticOutputs<dim>> elastic_outputs
         = scratch.material_model_outputs.template get_additional_output_object<MaterialModel::ElasticOutputs<dim>>();
 
-      const std::shared_ptr<const MaterialModel::PrescribedPlasticDilation<dim>> prescribed_dilation
-        = (this->get_parameters().enable_prescribed_dilation)
+      const std::shared_ptr<const MaterialModel::PrescribedPlasticDilation<dim>> prescribed_plastic_dilation
+        = (this->get_parameters().enable_prescribed_plastic_dilation)
           ? scratch.material_model_outputs.template get_additional_output_object<MaterialModel::PrescribedPlasticDilation<dim>>()
           : nullptr;
 
@@ -369,7 +369,7 @@ namespace aspect
 
 
           // Viscosity scalar
-          const double eta = ((scratch.rebuild_stokes_matrix || prescribed_dilation)
+          const double eta = ((scratch.rebuild_stokes_matrix || prescribed_plastic_dilation)
                               ?
                               scratch.material_model_outputs.viscosities[q]
                               :
@@ -402,10 +402,10 @@ namespace aspect
                 data.local_rhs(i) += (elastic_outputs->elastic_force[q] * scratch.grads_phi_u[i])
                                      * JxW;
 
-              if (prescribed_dilation != nullptr)
+              if (prescribed_plastic_dilation != nullptr)
                 data.local_rhs(i) += (
                                        - pressure_scaling
-                                       * prescribed_dilation->dilation_rhs_term[q]
+                                       * prescribed_plastic_dilation->dilation_rhs_term[q]
                                        * scratch.phi_p[i]
                                      ) * JxW;
 
@@ -423,9 +423,9 @@ namespace aspect
                                                    scratch.phi_p[i] * scratch.div_phi_u[j])
                                                 // assemble -\bar\alpha\alpha pq / eta^{ve}
                                                 // if plastic dilation is enabled
-                                                - (prescribed_dilation == nullptr ? 0.0 :
+                                                - (prescribed_plastic_dilation == nullptr ? 0.0 :
                                                    pressure_scaling * pressure_scaling *
-                                                   prescribed_dilation->dilation_lhs_term[q] *
+                                                   prescribed_plastic_dilation->dilation_lhs_term[q] *
                                                    scratch.phi_p[i] * scratch.phi_p[j])
                                               )
                                               * JxW;
@@ -473,14 +473,14 @@ namespace aspect
              == n_points, ExcInternalError());
 
       // prescribed dilation:
-      if (this->get_parameters().enable_prescribed_dilation
+      if (this->get_parameters().enable_prescribed_plastic_dilation
           && outputs.template has_additional_output_object<MaterialModel::PrescribedPlasticDilation<dim>>() == false)
         {
           outputs.additional_outputs.push_back(
             std::make_unique<MaterialModel::PrescribedPlasticDilation<dim>> (n_points));
         }
 
-      Assert(!this->get_parameters().enable_prescribed_dilation
+      Assert(!this->get_parameters().enable_prescribed_plastic_dilation
              ||
              (outputs.template get_additional_output_object<MaterialModel::PrescribedPlasticDilation<dim>>()->dilation_lhs_term.size() == n_points &&
               outputs.template get_additional_output_object<MaterialModel::PrescribedPlasticDilation<dim>>()->dilation_rhs_term.size() == n_points),

@@ -430,7 +430,7 @@ namespace aspect
                     // That is the reason why we need the term (epsilon_r : symgrad_phi_Jr) JxW_r.
                     eps_times_sym_grad_u_JxW += cell_data->strain_rate_table(cell,q) * sym_grad_u * u_eval.JxW(q);
                     // The same goes for the term corresponding to compressibility/dilation
-                    if (cell_data->is_compressible || cell_data->enable_prescribed_dilation)
+                    if (cell_data->is_compressible || cell_data->enable_prescribed_plastic_dilation)
                       theta_times_div_u_JxW += trace(cell_data->strain_rate_table(cell,q)) * trace(sym_grad_u) * u_eval.JxW(q);
                   }
               }
@@ -451,7 +451,7 @@ namespace aspect
             VectorizedArray<number> pressure_terms =
               -cell_data->pressure_scaling * div_u;
 
-            if (cell_data->enable_prescribed_dilation)
+            if (cell_data->enable_prescribed_plastic_dilation)
               pressure_terms -= cell_data->pressure_scaling *
                                 cell_data->pressure_scaling *
                                 cell_data->dilation_lhs_term_table(cell,q) *
@@ -465,7 +465,7 @@ namespace aspect
               velocity_terms[d][d] -= cell_data->pressure_scaling * val_p;
 
             if (cell_data->is_compressible ||
-                cell_data->enable_prescribed_dilation)
+                cell_data->enable_prescribed_plastic_dilation)
               for (unsigned int d=0; d<dim; ++d)
                 velocity_terms[d][d] -= viscosity_x_2 / 3. * div_u;
 
@@ -495,7 +495,7 @@ namespace aspect
                   2. * cell_data->strain_rate_table(cell,q) * deta_dp_times_p;
 
                 if (cell_data->is_compressible ||
-                    cell_data->enable_prescribed_dilation)
+                    cell_data->enable_prescribed_plastic_dilation)
                   {
                     constexpr number one_third = 1.0 / 3.0;
                     if (cell_data->symmetrize_newton_system)
@@ -515,7 +515,7 @@ namespace aspect
                           velocity_terms[d][d] -= 2.0 * one_third * trace(cell_data->strain_rate_table(cell,q)) * deta_deps_times_sym_grad_u;
                       }
 
-                    if (cell_data->enable_prescribed_dilation)
+                    if (cell_data->enable_prescribed_plastic_dilation)
                       {
                         pressure_terms += ( ( cell_data->dilation_derivative_wrt_strain_rate_table(cell,q)
                                               * sym_grad_u )
@@ -988,7 +988,7 @@ namespace aspect
         sym_grad_u *= viscosity_x_2;
 
         if (cell_data->is_compressible ||
-            cell_data->enable_prescribed_dilation)
+            cell_data->enable_prescribed_plastic_dilation)
           {
             const VectorizedArray<number> div = trace(sym_grad_u);
             for (unsigned int d=0; d<dim; ++d)
