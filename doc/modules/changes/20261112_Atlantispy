@@ -1,0 +1,4 @@
+Fixed: The SolCx benchmark documentation now gives the density perturbation
+used by the material model.
+<br>
+(Atlantispy, 2026/11/12)
