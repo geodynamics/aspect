@@ -503,6 +503,11 @@ namespace aspect
                                                                 introspection.component_masks.velocities);
 #endif
     Amg_data.higher_order_elements = true;
+#else
+#if DEAL_II_VERSION_GTE(9,9,0)
+    Amg_data.constant_modes = DoFTools::extract_constant_modes (dof_handler,
+                                                                introspection.component_masks.velocities);
+#endif
 #endif
 
     Amg_data.elliptic = true;
@@ -569,6 +574,11 @@ namespace aspect
                                           constant_modes);
         Amg_data.constant_modes = constant_modes;
 #else
+        Amg_data.constant_modes = DoFTools::extract_constant_modes (dof_handler,
+                                                                    cm_pressure);
+#endif
+#else
+#if DEAL_II_VERSION_GTE(9,9,0)
         Amg_data.constant_modes = DoFTools::extract_constant_modes (dof_handler,
                                                                     cm_pressure);
 #endif

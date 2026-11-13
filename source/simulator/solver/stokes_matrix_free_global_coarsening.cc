@@ -949,9 +949,14 @@ namespace aspect
       {
         LinearAlgebra::PreconditionAMG::AdditionalData amg_data;
         amg_data.elliptic = true;
-#ifndef ASPECT_USE_TPETRA
-        amg_data.higher_order_elements = true;
+#ifdef ASPECT_USE_TPETRA
+#if DEAL_II_VERSION_GTE(9,9,0)
+        // constant modes in Tpetra are only supported since deal.II 9.9.0
+        amg_data.constant_modes = DoFTools::extract_constant_modes(
+                                    dofhandlers_v[0], ComponentMask(dim, true));
 #endif
+#else
+        amg_data.higher_order_elements = true;
 #if DEAL_II_VERSION_GTE(9,7,0)
         amg_data.constant_modes = DoFTools::extract_constant_modes(
                                     dofhandlers_v[0], ComponentMask(dim, true));
@@ -959,6 +964,7 @@ namespace aspect
         DoFTools::extract_constant_modes(dofhandlers_v[0],
                                          ComponentMask(dim, true),
                                          amg_data.constant_modes);
+#endif
 #endif
 
         mg_matrices_A_block[0].assemble_system_matrix(coarse_matrix_A);
