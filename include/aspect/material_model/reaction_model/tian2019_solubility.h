@@ -17,6 +17,7 @@
 
 #include <aspect/material_model/interface.h>
 #include <aspect/adiabatic_conditions/interface.h>
+#include <aspect/material_model/reaction_model/fluid_extractor.h>
 #include <aspect/simulator_access.h>
 #include <aspect/melt.h>
 #include <aspect/utilities.h>
@@ -119,6 +120,11 @@ namespace aspect
            * This variable is read from the parameter file through a parameter called 'Use adiabatic pressure for reactions'.
            */
           bool use_adiabatic_pressure_for_reactions;
+
+          /*
+          * Object for computing the fluid extraction parameters
+          */
+          ReactionModel::FluidExtractor<dim> fluid_extractor;
 
           /**
            *
