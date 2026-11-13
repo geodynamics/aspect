@@ -18,6 +18,7 @@
 #include <aspect/simulator_access.h>
 #include <aspect/material_model/interface.h>
 #include <aspect/material_model/equation_of_state/multicomponent_incompressible.h>
+#include <aspect/material_model/reaction_model/reaction_chain.h>
 #include <aspect/material_model/rheology/visco_plastic.h>
 
 #include<deal.II/fe/component_mask.h>
@@ -271,6 +272,11 @@ namespace aspect
          * Object that handles phase transitions.
          */
         MaterialUtilities::PhaseFunction<dim> phase_function;
+
+        /**
+         * Object that validates and manages sequential reaction progress.
+         */
+        ReactionModel::ReactionChain<dim> reaction_chain;
 
         /**
          * Determines whether to look up the dominant phases for each composition in its respective lookup table.
