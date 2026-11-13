@@ -1,0 +1,20 @@
+# 1: Time step number
+# 2: Time (years)
+# 3: Time step size (years)
+# 4: Number of mesh cells
+# 5: Number of Stokes degrees of freedom
+# 6: Number of temperature degrees of freedom
+# 7: Number of degrees of freedom for all compositions
+# 8: Iterations for temperature solver
+# 9: Iterations for Stokes solver
+# 10: Velocity iterations in Stokes preconditioner
+# 11: Schur complement iterations in Stokes preconditioner
+# 12: Minimal value for composition continental_crust
+# 13: Maximal value for composition continental_crust
+# 14: Global mass for composition continental_crust
+# 15: Minimal value for composition oceanic_crust
+# 16: Maximal value for composition oceanic_crust
+# 17: Global mass for composition oceanic_crust
+# 18: Minimum topography (m)
+# 19: Maximum topography (m)
+0 0.000000000000e+00 0.000000000000e+00 1408 13195 5841 11682 0 12 13 13 0.00000000e+00 1.00000000e+00 1.02116886e+11 0.00000000e+00 2.85714286e-01 2.45990901e+10 -1.98974793e+03 1.98974793e+03 
