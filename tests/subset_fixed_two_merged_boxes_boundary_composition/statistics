@@ -1,0 +1,26 @@
+# 1: Time step number
+# 2: Time (seconds)
+# 3: Time step size (seconds)
+# 4: Number of mesh cells
+# 5: Number of Stokes degrees of freedom
+# 6: Number of temperature degrees of freedom
+# 7: Number of degrees of freedom for all compositions
+# 8: Iterations for temperature solver
+# 9: Iterations for composition solver 1
+# 10: Iterations for composition solver 2
+# 11: Iterations for composition solver 3
+# 12: Iterations for Stokes solver
+# 13: Velocity iterations in Stokes preconditioner
+# 14: Schur complement iterations in Stokes preconditioner
+# 15: Minimal value for composition field0
+# 16: Maximal value for composition field0
+# 17: Global mass for composition field0
+# 18: Minimal value for composition field1
+# 19: Maximal value for composition field1
+# 20: Global mass for composition field1
+# 21: Minimal value for composition field2
+# 22: Maximal value for composition field2
+# 23: Global mass for composition field2
+# 24: Visualization file name
+# 25: Surface visualization file name
+0 0.000000000000e+00 0.000000000000e+00 149 5778 1826 5478 0 12 12 12 32 33 33 -4.06250000e+00 3.00000000e+01 6.67126519e+17 -4.06250000e+00 3.00000000e+01 8.22502271e+17 -4.92187500e+00 3.93750000e+01 4.23526614e+17 output-subset_fixed_two_merged_boxes_boundary_composition/solution/solution-00000 output-subset_fixed_two_merged_boxes_boundary_composition/solution_surface/solution_surface-00000 
