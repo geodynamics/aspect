@@ -1,0 +1,14 @@
+include ../../../benchmarks/buiter_et_al_2008_jgr/figure_6_1e20.prm
+
+subsection Termination criteria
+  set End step = 0
+end
+
+set Max nonlinear iterations = 1
+
+subsection Geometry model
+  subsection Box
+    set X repetitions = 10
+    set Y repetitions = 2
+  end
+end
