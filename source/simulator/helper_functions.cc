@@ -30,6 +30,7 @@
 #include <aspect/particle/integrator/interface.h>
 #include <aspect/particle/interpolator/interface.h>
 #include <aspect/particle/property/interface.h>
+#include <aspect/particle/population/interface.h>
 #include <aspect/postprocess/visualization.h>
 #include <aspect/prescribed_solution/interface.h>
 #include <aspect/prescribed_stokes_solution/interface.h>
@@ -112,6 +113,7 @@ namespace aspect
     Particle::Generator::write_plugin_graph<dim>(out);
     Particle::Integrator::write_plugin_graph<dim>(out);
     Particle::Interpolator::write_plugin_graph<dim>(out);
+    Particle::Population::write_plugin_graph<dim>(out);
     Particle::Property::Manager<dim>::write_plugin_graph(out);
     Postprocess::Manager<dim>::write_plugin_graph(out);
     Postprocess::Visualization<dim>::write_plugin_graph(out);
