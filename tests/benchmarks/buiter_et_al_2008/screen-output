@@ -1,0 +1,81 @@
+
+Number of active cells: 20 (on 1 levels)
+Number of degrees of freedom: 1,068 (210+33+105+180+180+180+180)
+
+Number of mesh deformation degrees of freedom: 210
+   Solving mesh displacement system... 0 iterations.
+*** Timestep 0:  t=0 years, dt=0 years
+   Solving mesh displacement system... 0 iterations.
+   Solving temperature system... 0 iterations.
+   Skipping plastic_strain composition solve because RHS is zero.
+   Solving upper system ... 0 iterations.
+   Solving seed system ... 0 iterations.
+   Solving lower system ... 0 iterations.
+   Solving Stokes system (GMG)... 0+24 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 0.983071
+
+
+   WARNING: The nonlinear solver in the current timestep failed to converge.
+   Acting according to the parameter 'Nonlinear solver failure strategy':
+   Continuing to the next timestep even though solution is not fully converged.
+
+   Postprocessing:
+     RMS, max velocity:        0.00299 m/year, 0.00507 m/year
+     Temperature min/avg/max:  273 K, 273 K, 273 K
+     Writing graphical output: output-buiter_et_al_2008/solution/solution-00000
+
+
+
+
+*** Timestep 1:  t=862448 years, dt=862448 years
+   Solving mesh displacement system... 3 iterations.
+   Solving temperature system... 0 iterations.
+   Solving plastic_strain system ... 2 iterations.
+   Solving upper system ... 2 iterations.
+   Solving seed system ... 2 iterations.
+   Solving lower system ... 2 iterations.
+   Solving Stokes system (GMG)... 0+52 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 1.53414
+
+
+   WARNING: The nonlinear solver in the current timestep failed to converge.
+   Acting according to the parameter 'Nonlinear solver failure strategy':
+   Continuing to the next timestep even though solution is not fully converged.
+
+   Postprocessing:
+     RMS, max velocity:        0.00275 m/year, 0.0052 m/year
+     Temperature min/avg/max:  273 K, 273 K, 273 K
+     Writing graphical output: output-buiter_et_al_2008/solution/solution-00001
+
+
+
+
+*** Timestep 2:  t=1e+06 years, dt=137552 years
+   Solving mesh displacement system... 3 iterations.
+   Solving temperature system... 0 iterations.
+   Solving plastic_strain system ... 2 iterations.
+   Solving upper system ... 2 iterations.
+   Solving seed system ... 2 iterations.
+   Solving lower system ... 2 iterations.
+   Solving Stokes system (GMG)... 0+26 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 0.324519
+
+
+   WARNING: The nonlinear solver in the current timestep failed to converge.
+   Acting according to the parameter 'Nonlinear solver failure strategy':
+   Continuing to the next timestep even though solution is not fully converged.
+
+   Postprocessing:
+     RMS, max velocity:        0.00281 m/year, 0.00544 m/year
+     Temperature min/avg/max:  273 K, 273 K, 273 K
+     Writing graphical output: output-buiter_et_al_2008/solution/solution-00002
+
+
+
+
+Termination requested by criterion: end time
+
+
+
+
+WARNING: During this computation 3 nonlinear solver failures occurred!
