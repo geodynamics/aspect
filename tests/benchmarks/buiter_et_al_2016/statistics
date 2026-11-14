@@ -1,0 +1,21 @@
+# 1: Time step number
+# 2: Time (seconds)
+# 3: Time step size (seconds)
+# 4: Number of mesh cells
+# 5: Number of Stokes degrees of freedom
+# 6: Number of temperature degrees of freedom
+# 7: Number of degrees of freedom for all compositions
+# 8: Number of nonlinear iterations
+# 9: Iterations for temperature solver
+# 10: Iterations for composition solver 1
+# 11: Iterations for composition solver 2
+# 12: Iterations for composition solver 3
+# 13: Iterations for composition solver 4
+# 14: Iterations for composition solver 5
+# 15: Iterations for Stokes solver
+# 16: Velocity iterations in Stokes preconditioner
+# 17: Schur complement iterations in Stokes preconditioner
+# 18: RMS velocity (m/s)
+# 19: Max. velocity (m/s)
+# 20: Visualization file name
+0 0.000000000000e+00 0.000000000000e+00 100 1028 451 4500 45 0 0 0 0 0 0 272 61842 272 5.31219977e-06 8.03620810e-06 output-buiter_et_al_2016/solution/solution-00000 
