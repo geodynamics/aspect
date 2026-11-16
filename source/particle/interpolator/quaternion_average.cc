@@ -91,10 +91,11 @@ namespace aspect
         std::vector<std::vector<double>> cell_properties(positions.size(),
                                                           std::vector<double>(n_particle_properties,
                                                                               numbers::signaling_nan<double>()));
-        cell_properties = base_interpolator->properties_at_points(particle_handler,
-                                                                  positions,
-                                                                  selected_properties_not_quaternions,
-                                                                  cell);
+        if (selected_properties_not_quaternions.n_selected_components() > 0)
+          cell_properties = base_interpolator->properties_at_points(particle_handler,
+                                                                    positions,
+                                                                    selected_properties_not_quaternions,
+                                                                    cell);
 
         for (unsigned int mineral_i = 0; mineral_i < n_minerals; mineral_i++)
           if (selected_properties[quaternion_data_pos[mineral_i]])
@@ -170,7 +171,6 @@ namespace aspect
               sim->initialize_simulator (this->get_simulator());
 
             base_interpolator -> set_particle_manager_index(this->get_particle_manager_index());
-            base_interpolator -> initialize();
 
             // // get quaternion data position and number of minerals // //
             const auto &particle_property_manager = this->get_particle_manager(this->get_particle_manager_index()).get_property_manager();
@@ -207,6 +207,8 @@ namespace aspect
         prm.leave_subsection();
 
         base_interpolator -> parse_parameters(prm);
+        base_interpolator -> initialize();
+
       }
 
 
