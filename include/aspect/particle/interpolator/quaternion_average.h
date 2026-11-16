@@ -84,8 +84,8 @@ namespace aspect
 
           /**
            * An average for weighted rotations based on minimizing the Frobenius norm between rotations.
-           * Corresponds to $\mathbf{R}_{\mathrm{mean}} = \mathrm{argmin}_{\mathbf{R}} (\sum_i ||\mathbf{R}_i - \mathbf{R}||_F)$, represented by a quaternion.
-           * Returns the output as a quaternion in the half-space where q.w > 0.
+           * Corresponds to $\mathbf{R}_{\mathrm{mean}} = \mathrm{argmin}_{\mathbf{R}} (\sum_i w_i||\mathbf{R}_i - \mathbf{R}||_F^2)$, represented by a quaternion.
+           * Returns the output as a quaternion in the half-space where q.w $\geq$ 0.
            * See Markley et.al. 2007 (doi:10.2514/1.28949).
            */
           std::array<double,4>
@@ -94,7 +94,7 @@ namespace aspect
           /**
            * Returns the geodesic distance between two rotations, each represented by a quaternion.
            * A geodesic describes the shortest path in a non-Euclidean space.
-           * This metric is equal to the Riemannian metric in $SO(3)$ and lies in the interval $[0,\pi)$.
+           * This metric is equal to the Riemannian metric in $SO(3)$ and lies in the interval $[0,\pi]$.
            * For a comparison of different metrics, see Huynh 2009 (https://doi.org/10.1007%2Fs10851-009-0161-2).
            */
           double

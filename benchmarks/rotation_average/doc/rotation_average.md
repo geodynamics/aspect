@@ -84,13 +84,13 @@ where $\cdot$ is the dot product for vectors in $\mathbb{R}^4$. This is a slight
 Quaternions are also convenient as there exists a well defined average. {cite}`markley:etal:2007` show that the minimization defined in Equ. {math:numref}`eqn:rotation_average` for the euclidean norm Equ. {math:numref}`eqn:rotation_euclidean_norm` can be reformulated into,
 ```{math}
     :label: eqn:markley_average_maximization
-    \bar{\mathbf{q}} = \underset{\mathbf{q}\in \mathbb{H}}{\rm argmax} \ \mathbf{q}^T\mathbf{K}\mathbf{q}
+    \bar{\mathbf{q}} = \underset{\mathbf{q}\in S^3}{\rm argmax} \ \mathbf{q}^T\mathbf{K}\mathbf{q}
 ```
 with the 4x4 traceless matrix,
 ```{math}
     \mathbf{K} = 4\sum_i w_i\mathbf{q}_i\mathbf{q}_i^T - \mathbf{I}_4\sum_i w_i \text{ .}
 ```
-The eigenvector corresponding to the maximum eigenvalue of $\mathbf{K}$ solves the maximization problem Equ. {math:numref}`eqn:markley_average_maximization`. As the matrix is traceless the largest eigenvalue will always be positive. I will give the result of this procedure the name $\bar{\mathbf{q}}_{\rm mk07}$ and define it as,
+The eigenvector corresponding to the maximum eigenvalue of $\mathbf{K}$ solves the maximization problem Equ. {math:numref}`eqn:markley_average_maximization`. As the matrix is traceless the largest eigenvalue will always be positive or exactly zero. I will give the result of this procedure the name $\bar{\mathbf{q}}_{\rm mk07}$ and define it as,
 ```{math}
     \bar{\mathbf{q}}_{\rm mk07}(\{\mathbf{q}_i\}, \{w_i\}) =  \underset{\mathbf{q}\in \mathbb{H}}{\rm argmin} \sum_i w_i d^2_{\rm eucl.}(\mathbf{R}(\mathbf{q}_i), \mathbf{R}(\mathbf{q}))
 ```

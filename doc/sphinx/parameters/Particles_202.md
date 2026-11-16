@@ -82,7 +82,7 @@ Select one of the following models:
 
 &lsquo;quadratic least squares&rsquo;: Interpolates particle properties onto a vector of points using a quadratic least squares method. Note that deal.II must be configured with BLAS/LAPACK.
 
-&lsquo;quaternion average&rsquo;: Return an average rotation represented by quaternions, with the option to take into account a crystal symmetry group.All other properties are averaged with a base interpolation scheme.
+&lsquo;quaternion average&rsquo;: Return an average rotation represented by quaternions, with the option to take into account a crystal symmetry group. All other properties are averaged with a base interpolation scheme.
 
 &lsquo;bilinear least squares&rsquo;: Deprecated, now an alias for &lsquo;linear least squares&rsquo;. This alias will be removed in the future.
 ::::
@@ -1027,9 +1027,9 @@ A typical example would be to set this runtime parameter to &lsquo;pi=3.14159265
 :name: parameters:Particles_202/Interpolator/Quaternion_20average/Symmetry_20group
 **Default value:** triclinic
 
-**Pattern:** [List of <[Anything]> of length 0...4294967295 (inclusive)]
+**Pattern:** [Selection triclinic|orthorhombic ]
 
-**Documentation:** Options: triclinic, orthorhombic. This determines which symmetry operators are used to project rotations into the fundamental zone of the respective symmetry group. triclinic: equates to no symmetry or the identity as the only symmetry operator. In this case a standard average for rotations represented by quaternions is used; see Markley et al. 2007. orthorhombic: symmetry group with 4 symmetry elements. In this case an experimental algorithm to take into account crystal symmetry is used.
+**Documentation:** This determines which symmetry operators are used to project rotations into the fundamental zone of the respective symmetry group. triclinic: equates to no symmetry or the identity as the only symmetry operator. In this case a standard average for rotations represented by quaternions is used; see Markley et al. 2007. orthorhombic: symmetry group with 4 symmetry elements. In this case an experimental algorithm to take into account crystal symmetry is used.
 ::::
 
 (parameters:Particles_202/Melt_20particle)=

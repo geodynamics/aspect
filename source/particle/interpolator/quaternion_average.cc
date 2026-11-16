@@ -119,8 +119,7 @@ namespace aspect
                               Patterns::Selection(Interpolator::get_valid_interpolator_names_pattern<dim>()),
                               "Scheme used to interpolate all properties except quaternions.");
             prm.declare_entry("Symmetry group", "triclinic",
-                              Patterns::List(Patterns::Anything()),
-                              "Options: triclinic, orthorhombic. "
+                              Patterns::Selection("triclinic| orthorhombic"),
                               "This determines which symmetry operators are used to project rotations "
                               "into the fundamental zone of the respective symmetry group. "
                               "triclinic: equates to no symmetry or the identity as the only symmetry operator. "
@@ -242,9 +241,9 @@ namespace aspect
         Vector<double> eigenvalues;
         FullMatrix<double> eigenvectors;
 
-        // only pick eigenvalues larger than 0 -> reduce search space
-        // the maximum eigenvalue has to be > 0 since the eigenvalues add up to one
-        K.compute_eigenvalues_symmetric(0,std::numeric_limits<double>::infinity(), 0, eigenvalues, eigenvectors);
+        // only pick eigenvalues larger or equal to 0 --> reduce search space
+        // the maximum eigenvalue has to be >= 0 since the eigenvalues add up to one
+        K.compute_eigenvalues_symmetric(1e-12, std::numeric_limits<double>::infinity(), 0, eigenvalues, eigenvectors);
 
         unsigned int last_idx = eigenvalues.size()-1;
 
@@ -402,7 +401,7 @@ namespace aspect
     {
       ASPECT_REGISTER_PARTICLE_INTERPOLATOR(QuaternionAverage,
                                             "quaternion average",
-                                            "Return an average rotation represented by quaternions, with the option to take into account a crystal symmetry group."
+                                            "Return an average rotation represented by quaternions, with the option to take into account a crystal symmetry group. "
                                             "All other properties are averaged with a base interpolation scheme.")
     }
   }
