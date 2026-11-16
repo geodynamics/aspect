@@ -16,6 +16,7 @@
 #define _aspect_material_model_reaction_model_reaction_chain_h
 
 #include <aspect/material_model/reaction_model/kinetics/cahn1956_interface.h>
+#include <aspect/simulator_access.h>
 #include <aspect/utilities.h>
 
 namespace aspect
@@ -41,19 +42,29 @@ namespace aspect
        *
        * N is set by the number of entries in "Reaction chain/Kinetic models" (see Cahn1956Interface).
        *
-       * Parsing and evaluating the chain do not require a simulator. The
+       * Parsing and evaluating the existing kinetics models do not require a simulator. The
        * calling material model must validate the reaction count against its
-       * reaction-progress compositional fields.
+       * reaction-progress compositional fields. Simulator access can optionally
+       * be provided to the kinetics models by calling initialize_simulator()
+       * followed by initialize() after parsing the chain.
        *
        * Independent linear chains only. Branching networks (a phase produced/consumed by more than one reaction) or competing back-reaction
        * pathways need a stoichiometry-matrix mass balance and are out of scope here.
        */
       template <int dim>
-      class ReactionChain
+      class ReactionChain : public ::aspect::SimulatorAccess<dim>
       {
         public:
           std::vector<ReactionStep<dim>> reactions;
 
+          /**
+           * Pass the simulator to each distinct kinetics model. When the chain
+           * contains kinetics models, initialize_simulator() must be called
+           * before this function. Standalone parsing and evaluation of kinetics
+           * models that do not use simulator state do not require this function.
+           */
+          void
+          initialize();
 
           unsigned int
           n_reactions() const;

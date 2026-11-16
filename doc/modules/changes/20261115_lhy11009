@@ -1,0 +1,9 @@
+Changed: The visco-plastic material model now uses a reaction chain to
+validate and clamp reaction-progress values before updating equation-of-state
+properties. Existing kinetics models can be parsed and evaluated without a
+simulator, while simulation initialization provides simulator access to the
+kinetics models. The material model validates that the reaction count matches its
+reaction-progress compositional fields. Cases without reaction-progress
+fields remain supported when the kinetics list is empty.
+<br>
+(Haoyuan Li, 2026/11/15)

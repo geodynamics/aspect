@@ -28,6 +28,12 @@ namespace aspect
     void
     ViscoPlastic<dim>::initialize()
     {
+      if (reaction_chain.n_reactions() > 0)
+        {
+          reaction_chain.initialize_simulator(this->get_simulator());
+          reaction_chain.initialize();
+        }
+
       if (use_dominant_phase_for_viscosity)
         {
           phase_function_discrete->initialize();

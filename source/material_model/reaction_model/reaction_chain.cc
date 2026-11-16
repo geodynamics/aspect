@@ -24,6 +24,18 @@ namespace aspect
     namespace ReactionModel
     {
       template <int dim>
+      void
+      ReactionChain<dim>::initialize()
+      {
+        for (auto &kinetics : kinetics_models)
+          {
+            kinetics->initialize_simulator(this->get_simulator());
+          }
+      }
+
+
+
+      template <int dim>
       unsigned int
       ReactionChain<dim>::n_reactions() const
       {
