@@ -754,6 +754,19 @@ namespace aspect
                          "Whether to include additional terms on the right-hand side of "
                          "the Stokes equation to set a given compression term specified in the "
                          "MaterialModel output PrescribedPlasticDilation.");
+      prm.declare_entry ("Enable bulk viscosity", "false",
+                         Patterns::Bool (),
+                         "Whether to include bulk viscosity in the Stokes equation. "
+                         "The bulk viscosity adds a term $+\\zeta (\\nabla \\cdot \\mathbf{u}) \\mathbf{I}$ "
+                         "to the viscous stress, which contributes "
+                         "$+\\zeta (\\nabla \\cdot \\mathbf{v}, \\nabla \\cdot \\mathbf{u})$ "
+                         "to the weak form of the momentum equation.");
+      prm.declare_entry ("Constant bulk viscosity", "0.0",
+                         Patterns::Double (0.),
+                         "Value of the constant bulk viscosity $\\zeta$ used in the Stokes equation "
+                         "if `Enable bulk viscosity' is set to true and the material model does not "
+                         "provide spatially variable bulk viscosity outputs. "
+                         "Units: \\si{\\pascal\\second}.");
     }
     prm.leave_subsection();
 
@@ -1891,6 +1904,8 @@ namespace aspect
       enable_additional_stokes_rhs = prm.get_bool ("Enable additional Stokes RHS");
       enable_elasticity = prm.get_bool("Enable elasticity");
       enable_prescribed_dilation = prm.get_bool("Enable prescribed dilation");
+      enable_bulk_viscosity = prm.get_bool("Enable bulk viscosity");
+      constant_bulk_viscosity = prm.get_double("Constant bulk viscosity");
     }
     prm.leave_subsection ();
 

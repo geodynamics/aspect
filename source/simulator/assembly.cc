@@ -78,6 +78,10 @@ namespace aspect
           std::make_unique<aspect::Assemblers::StokesCompressibleStrainRateViscosityTerm<dim>>());
       }
 
+    if (parameters.enable_bulk_viscosity)
+      assemblers->stokes_system.push_back(
+        std::make_unique<aspect::Assemblers::StokesBulkViscosityTerm<dim>>());
+
     if (parameters.formulation_mass_conservation ==
         Parameters<dim>::Formulation::MassConservation::implicit_reference_density_profile)
       {

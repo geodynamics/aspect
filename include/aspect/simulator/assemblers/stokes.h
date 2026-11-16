@@ -86,6 +86,25 @@ namespace aspect
     };
 
     /**
+     * This class assembles the bulk viscosity term of the Stokes equation.
+     * The bulk viscosity enters the viscous stress as an additional
+     * $+ \zeta (\nabla \cdot \mathbf{u}) \mathbf{I}$ contribution, which
+     * leads to a $+ \zeta (\nabla \cdot \mathbf{v}, \nabla \cdot \mathbf{u})$
+     * term in the weak form.
+     */
+    template <int dim>
+    class StokesBulkViscosityTerm : public Assemblers::Interface<dim>,
+      public SimulatorAccess<dim>
+    {
+      public:
+        void
+        execute(internal::Assembly::Scratch::ScratchBase<dim>   &scratch_base,
+                internal::Assembly::CopyData::CopyDataBase<dim> &data_base) const override;
+
+        void create_additional_material_model_outputs(MaterialModel::MaterialModelOutputs<dim> &outputs) const override;
+    };
+
+    /**
      * This class assembles the compressibility term of the Stokes equation
      * that is caused by the compressibility in the mass conservation equation.
      * It uses an approximation that involves the reference density profile, and

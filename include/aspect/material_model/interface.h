@@ -1239,6 +1239,36 @@ namespace aspect
     };
 
 
+    /**
+     * Additional output field for the bulk viscosity to be added to the
+     * MaterialModel::MaterialModelOutputs structure and filled in the
+     * MaterialModel::Interface::evaluate() function.
+     */
+    template <int dim>
+    class BulkViscosityOutputs : public AdditionalMaterialOutputs<dim>
+    {
+      public:
+        BulkViscosityOutputs(const unsigned int n_points)
+          : bulk_viscosities(n_points)
+        {}
+
+        ~BulkViscosityOutputs() override
+          = default;
+
+        void average (const MaterialAveraging::AveragingOperation /*operation*/,
+                      const FullMatrix<double>  &/*projection_matrix*/,
+                      const FullMatrix<double>  &/*expansion_matrix*/) override
+        {
+          // TODO: not implemented
+        }
+
+        /**
+         * Bulk viscosity in each quadrature point.
+         */
+        std::vector<double> bulk_viscosities;
+    };
+
+
 
     /**
      * An AdditionalOutput that allows prescribing a dilation applied to the

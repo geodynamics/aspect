@@ -498,6 +498,24 @@ namespace aspect
              ||
              outputs.template get_additional_output_object<MaterialModel::ElasticOutputs<dim>>()->elastic_force.size()
              == n_points, ExcInternalError());
+
+      // Bulk viscosity:
+      if (this->get_parameters().enable_bulk_viscosity
+          && outputs.template has_additional_output_object<MaterialModel::BulkViscosityOutputs<dim>>() == false)
+        {
+          auto bulk_viscosity_outputs =
+            std::make_unique<MaterialModel::BulkViscosityOutputs<dim>> (n_points);
+          // Default to the constant bulk viscosity. The material model may
+          // overwrite these values per quadrature point in evaluate().
+          bulk_viscosity_outputs->bulk_viscosities.assign(
+            n_points, this->get_parameters().constant_bulk_viscosity);
+          outputs.additional_outputs.push_back(std::move(bulk_viscosity_outputs));
+        }
+
+      Assert(!this->get_parameters().enable_bulk_viscosity
+             ||
+             outputs.template get_additional_output_object<MaterialModel::BulkViscosityOutputs<dim>>()->bulk_viscosities.size()
+             == n_points, ExcInternalError());
     }
 
 
@@ -539,6 +557,81 @@ namespace aspect
                                           * JxW;
               }
         }
+    }
+
+
+
+    template <int dim>
+    void
+    StokesBulkViscosityTerm<dim>::
+    execute (internal::Assembly::Scratch::ScratchBase<dim>   &scratch_base,
+             internal::Assembly::CopyData::CopyDataBase<dim> &data_base) const
+    {
+      internal::Assembly::Scratch::StokesSystem<dim> &scratch = dynamic_cast<internal::Assembly::Scratch::StokesSystem<dim>&> (scratch_base);
+      internal::Assembly::CopyData::StokesSystem<dim> &data = dynamic_cast<internal::Assembly::CopyData::StokesSystem<dim>&> (data_base);
+
+      if (!scratch.rebuild_stokes_matrix)
+        return;
+
+      const Introspection<dim> &introspection = this->introspection();
+      const unsigned int stokes_dofs_per_cell = data.local_dof_indices.size();
+      const unsigned int n_q_points    = scratch.finite_element_values.n_quadrature_points;
+
+      const std::shared_ptr<const MaterialModel::BulkViscosityOutputs<dim>> bulk_viscosity_outputs
+        = scratch.material_model_outputs.template get_additional_output_object<MaterialModel::BulkViscosityOutputs<dim>>();
+
+      for (unsigned int q=0; q<n_q_points; ++q)
+        {
+          for (unsigned int i_stokes = 0; i_stokes < stokes_dofs_per_cell; ++i_stokes)
+            {
+              const unsigned int i = introspection.stokes_dof_info[i_stokes].local_dof_index;
+              scratch.div_phi_u[i_stokes]   = scratch.finite_element_values[introspection.extractors.velocities].divergence (i, q);
+            }
+
+          // Bulk viscosity at this quadrature point: prefer the value from
+          // the material model outputs if available, otherwise fall back to
+          // the constant parameter value.
+          const double xi = (bulk_viscosity_outputs != nullptr)
+                            ? bulk_viscosity_outputs->bulk_viscosities[q]
+                            : this->get_parameters().constant_bulk_viscosity;
+
+          const double JxW = scratch.finite_element_values.JxW(q);
+
+          for (unsigned int i=0; i<stokes_dofs_per_cell; ++i)
+            for (unsigned int j=0; j<stokes_dofs_per_cell; ++j)
+              {
+                data.local_matrix(i,j) += (xi * (scratch.div_phi_u[i] * scratch.div_phi_u[j]))
+                                          * JxW;
+              }
+        }
+    }
+
+
+
+    template <int dim>
+    void
+    StokesBulkViscosityTerm<dim>::
+    create_additional_material_model_outputs(MaterialModel::MaterialModelOutputs<dim> &outputs) const
+    {
+      const unsigned int n_points = outputs.n_evaluation_points();
+
+      // Bulk viscosity:
+      if (this->get_parameters().enable_bulk_viscosity
+          && outputs.template has_additional_output_object<MaterialModel::BulkViscosityOutputs<dim>>() == false)
+        {
+          auto bulk_viscosity_outputs =
+            std::make_unique<MaterialModel::BulkViscosityOutputs<dim>> (n_points);
+          // Default to the constant bulk viscosity. The material model may
+          // overwrite these values per quadrature point in evaluate().
+          bulk_viscosity_outputs->bulk_viscosities.assign(
+            n_points, this->get_parameters().constant_bulk_viscosity);
+          outputs.additional_outputs.push_back(std::move(bulk_viscosity_outputs));
+        }
+
+      Assert(!this->get_parameters().enable_bulk_viscosity
+             ||
+             outputs.template get_additional_output_object<MaterialModel::BulkViscosityOutputs<dim>>()->bulk_viscosities.size()
+             == n_points, ExcInternalError());
     }
 
 
@@ -960,6 +1053,7 @@ namespace aspect
   template class StokesCompressiblePreconditioner<dim>; \
   template class StokesIncompressibleTerms<dim>; \
   template class StokesCompressibleStrainRateViscosityTerm<dim>; \
+  template class StokesBulkViscosityTerm<dim>; \
   template class StokesReferenceDensityCompressibilityTerm<dim>; \
   template class StokesImplicitReferenceDensityCompressibilityTerm<dim>; \
   template class StokesIsentropicCompressionTerm<dim>; \
