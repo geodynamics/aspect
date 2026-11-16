@@ -2,7 +2,7 @@
 
 set Dimension                              = 2
 
-include $ASPECT_SOURCE_DIR/tests/prescribed_dilation.prm
+include $ASPECT_SOURCE_DIR/tests/prescribed_solution/prescribed_dilation.prm
 
 
 subsection Solver parameters

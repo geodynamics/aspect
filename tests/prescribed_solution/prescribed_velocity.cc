@@ -12,4 +12,4 @@
 //
 // ------------------------------------------------------
 
-#include "../cookbooks/prescribed_velocity/prescribed_velocity.cc"
+#include "../../cookbooks/prescribed_velocity/prescribed_velocity.cc"
