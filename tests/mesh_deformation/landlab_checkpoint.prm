@@ -69,7 +69,7 @@ subsection Mesh deformation
 
   subsection Landlab
     set Script name = mesh_deformation_landlab_checkpoint_restart
-    set Script path = $ASPECT_SOURCE_DIR/tests/
+    set Script path = $ASPECT_SOURCE_DIR/tests/mesh_deformation/
   end
 end
 

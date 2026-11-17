@@ -54,7 +54,7 @@ subsection Mesh deformation
   set Additional tangential mesh velocity boundary indicators = left, right
   subsection Landlab
     set Script name = mesh_deformation_landlab_strain_rate
-    set Script path = $ASPECT_SOURCE_DIR/tests/
+    set Script path = $ASPECT_SOURCE_DIR/tests/mesh_deformation/
 
     # Test that the strain rate is being sent to Landlab
     set List of additional ASPECT quantities = strain rate

@@ -1,7 +1,7 @@
 # Test the spherical geometry model with initial topography function
 # specified in spherical coordinates. No simulation is performed,
 # output is generated to verify topography handling in 2d spherical system.
-include $ASPECT_SOURCE_DIR/tests/spherical_shell_initial_topography_function_3d_spherical.prm
+include $ASPECT_SOURCE_DIR/tests/mesh_deformation/spherical_shell_initial_topography_function_3d_spherical.prm
 
 set Dimension = 2
 

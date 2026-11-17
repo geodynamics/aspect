@@ -1,23 +1,24 @@
 # Test "landlab" mesh deformation Landlab Python module in a
-# 3d spherical shell.
+# 3d box
 #
 # Enable if: ASPECT_WITH_LANDLAB
 # MPI: 1
 
 set Dimension                              = 3
 set Use years instead of seconds           = false
-set End time                               = 0.001
+set End time                               = 0.004
 set Maximum time step                      = 0.0005
 set Nonlinear solver scheme                = no Advection, no Stokes
 set Pressure normalization                 = surface
 set Surface pressure                       = 0
 
 subsection Geometry model
-  set Model name = spherical shell
+  set Model name = box
 
-  subsection Spherical shell
-    set Inner radius = 10
-    set Outer radius = 20
+  subsection Box
+    set X extent = 1
+    set Y extent = 1
+    set Z extent = 1
   end
 end
 
@@ -26,7 +27,7 @@ subsection Initial temperature model
   set List of model names = function
 
   subsection Function
-    set Function expression = 293
+    set Function expression = 100*x+y
   end
 end
 
@@ -37,22 +38,23 @@ end
 
 # Free slip on all boundaries
 subsection Boundary velocity model
-  set Tangential velocity boundary indicators = inner, outer
+  set Tangential velocity boundary indicators = left, right, bottom, top
 end
 
 subsection Mesh deformation
-  set Mesh deformation boundary indicators = outer: landlab
+  set Mesh deformation boundary indicators = top: landlab
+  set Additional tangential mesh velocity boundary indicators = left, right
   subsection Landlab
-    set Script name = mesh_deformation_landlab_spherical
-    set Script path = $ASPECT_SOURCE_DIR/tests/
+    set Script name = mesh_deformation_landlab_cartesian
+    set Script path = $ASPECT_SOURCE_DIR/tests/mesh_deformation/
   end
 end
 
 # Vertical gravity
 subsection Gravity model
-  set Model name = radial constant
+  set Model name = vertical
 
-  subsection Radial constant
+  subsection Vertical
     set Magnitude = 1
   end
 end
@@ -62,25 +64,25 @@ subsection Material model
   set Model name = simple
 
   subsection Simple model
-    set Reference density             = 1000
-    set Reference specific heat       = 0
-    set Reference temperature         = 293
-    set Thermal conductivity          = 0
-    set Thermal expansion coefficient = 0
-    set Viscosity                     = 1e21
+    set Reference density             = 1
+    set Reference specific heat       = 1
+    set Reference temperature         = 0
+    set Thermal conductivity          = 1
+    set Thermal expansion coefficient = 1
+    set Viscosity                     = 1
   end
 end
 
 # We here use a globally refined mesh without
 # adaptive mesh refinement.
 subsection Mesh refinement
-  set Initial global refinement                = 1
+  set Initial global refinement                = 2
   set Initial adaptive refinement              = 0
   set Time steps between mesh refinement       = 0
 end
 
 subsection Postprocess
-  set List of postprocessors = visualization, topography
+  set List of postprocessors = visualization,  topography
 
   subsection Visualization
     set Time between graphical output = 0
