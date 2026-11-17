@@ -503,6 +503,11 @@ namespace aspect
                                                                 introspection.component_masks.velocities);
 #endif
     Amg_data.higher_order_elements = true;
+#else
+#if DEAL_II_VERSION_GTE(9,9,0)
+    Amg_data.constant_modes = DoFTools::extract_constant_modes (dof_handler,
+                                                                introspection.component_masks.velocities);
+#endif
 #endif
 
     Amg_data.elliptic = true;
@@ -571,6 +576,25 @@ namespace aspect
 #else
         Amg_data.constant_modes = DoFTools::extract_constant_modes (dof_handler,
                                                                     cm_pressure);
+#endif
+#else
+#if DEAL_II_VERSION_GTE(9,9,0)
+        // TODO: Providing the constant modes used to work for Trilinos ML, but no
+        // longer works for MueLu, because MueLu rejects constant modes that are
+        // 0 for all DoFs on an aggregate. Because of the mixed pressure elements
+        // frequently used in melt calculations (FE_Q for pressure, FE_DGQ for
+        // compaction pressure) frequently a point can contain 0 columns in the
+        // nullspace vector, leading to crashes in MueLu.
+        // Potential solutions are:
+        // - specify "number of equations: 1" to MueLu in its parameters
+        //   (requires an interface change in deal.II)
+        // - split the pressure blocks in ASPECT (requires solver changes
+        //   in ASPECT)
+        //
+        // For now we choose to not provide the constant modes, even though it likely
+        // degrades the performance of the S block preconditioner.
+        // Amg_data.constant_modes = DoFTools::extract_constant_modes (dof_handler,
+        //                                                             cm_pressure);
 #endif
 #endif
 

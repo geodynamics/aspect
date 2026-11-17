@@ -1006,6 +1006,11 @@ namespace aspect
                                                                   ComponentMask(dim, true));
 #endif
       Amg_data.higher_order_elements = this->get_parameters().stokes_velocity_degree > 1 ? true : false;
+#else
+#if DEAL_II_VERSION_GTE(9,9,0)
+      Amg_data.constant_modes = DoFTools::extract_constant_modes (mesh_deformation_dof_handler,
+                                                                  ComponentMask(dim, true));
+#endif
 #endif
       Amg_data.elliptic = true;
       Amg_data.smoother_sweeps = 2;
