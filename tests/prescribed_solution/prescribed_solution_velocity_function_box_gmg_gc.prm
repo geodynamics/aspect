@@ -1,7 +1,7 @@
 # Like prescribed_solution_velocity_function_box.prm but
 # for global coarsening GMG:
 
-include $ASPECT_SOURCE_DIR/tests/prescribed_solution_velocity_function_box.prm
+include $ASPECT_SOURCE_DIR/tests/prescribed_solution/prescribed_solution_velocity_function_box.prm
 
 subsection Solver parameters
 

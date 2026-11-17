@@ -1,6 +1,6 @@
 set Additional shared libraries = ./libprescribed_field_temperature_max_isotherm.so
 
-include $ASPECT_SOURCE_DIR/tests/prescribed_temperature_in_field.prm
+include $ASPECT_SOURCE_DIR/tests/prescribed_solution/prescribed_temperature_in_field.prm
 
 
 ## The temperature will be fixed in the 'Fixed'
