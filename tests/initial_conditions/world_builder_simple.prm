@@ -1,10 +1,18 @@
 # Enable if: ASPECT_WITH_WORLD_BUILDER
-set Nonlinear solver scheme = no Advection, no Stokes
-set World builder file                     = $ASPECT_SOURCE_DIR/tests/world_builder_simple_2d_cartesian_sticky_air.wb
+# This test uses the Geodynamic World Builder to create
+# initial temperatures and compositions
+
+set World builder file                     = $ASPECT_SOURCE_DIR/tests/initial_conditions/world_builder_simple.wb
 set Use years instead of seconds           = false
-set Output directory = wbdir3
 set Adiabatic surface temperature = 1613
 set End time = 0
+
+subsection Adiabatic conditions model
+  subsection Compute profile
+    set Function expression = if(x > 1500000,1.0,0.0)
+    set Composition reference profile = function
+  end
+end
 
 subsection Boundary velocity model
   set Zero velocity boundary indicators = 1
@@ -12,21 +20,21 @@ subsection Boundary velocity model
 end
 
 subsection Mesh refinement
-  set Initial global refinement = 4
+  set Initial global refinement = 5
 end
 
 subsection Postprocess
   set List of postprocessors = visualization
 
   subsection Visualization
+    set Output format = gnuplot
     set Interpolate output = false
     set List of output variables = adiabat
-    set Output format = gnuplot
   end
 end
 
 subsection Compositional fields
-  set Number of fields = 7
+  set Number of fields = 1
 end
 
 subsection Material model
@@ -44,17 +52,8 @@ subsection Geometry model
   set Model name = box
 
   subsection Box
-    set X extent = 500e3
-    set Y extent = 800e3
-  end
-
-  subsection Initial topography model
-    set Model name = function
-
-    subsection Function
-      set Function expression = 100e3
-      set Maximum topography value = 100e3
-    end
+    set X extent = 1500e3
+    set Y extent = 200e3
   end
 end
 

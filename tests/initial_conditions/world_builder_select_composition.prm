@@ -2,7 +2,7 @@
 # This test is a copy of world_builder_simple.prm and checks that we can select
 # a subset of compositions for which to evaluate the world builder.
 
-set World builder file                     = $ASPECT_SOURCE_DIR/tests/world_builder_select_composition.wb
+set World builder file                     = $ASPECT_SOURCE_DIR/tests/initial_conditions/world_builder_select_composition.wb
 set Use years instead of seconds           = false
 set Adiabatic surface temperature = 1613
 set End time = 0
