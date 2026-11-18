@@ -71,11 +71,14 @@ To efficiently solve this minimization problem we represent rotations by unit qu
 With some algebra we can write the right-hand side as a rotation matrix and find the function $\mathbf{R}(\mathbf{q})$ and the backwards transform $\mathbf{q}(\mathbf{R})$ (https://en.wikipedia.org/wiki/Quaternions_and_spatial_rotation). Physically, unit quaternions are an axis-angle representation of a rotation. The scalar part gives $\cos(\alpha/2)$ and the vector part gives $\sin(\alpha/2)\mathbf{n}$. Here $\alpha$ is the rotation angle and $\mathbf{n}$ is the normalized rotation axis. Each rotation can then be represented by a quaternion, $\mathbf{q}$ or $-\mathbf{q}$, because rotating by the negative angle around the negative axis is exactly the same. Therefore, quaternions are a double cover of the space of rotations, and we will work in the half-space where $q.w > 0$.
 Just as for rotation matrices we can write a rotation by first $\mathbf{q}_1$ and then $\mathbf{q}_2$ as $\mathbf{q}' = \mathbf{q}_2 \circ \mathbf{q}_1$. If we rewrite the symmetry operations in terms of quaternions, $\mathbf{g}_i = \mathbf{q}(\mathbf{P}_i)$, one crystal orientation then becomes the set $\mathbf{q}G_{cr} = \{\mathbf{q}\circ\mathbf{g}_i:g_i \in G_{cr} \}$. For orthotropic symmetry the set of symmetry operations is (e.g. {cite}`kagan:1991`), $G_{\rm ortho.} = \{\pm 1, \pm \mathbf{i}, \pm \mathbf{j}, \pm \mathbf{k}\}$.
 
-Quaternions also enable us to efficiently compute the Riemannian distance as {cite}`huynh:2009`,
+Quaternions also enable us to efficiently compute the euclidian and geodesic distance between two rotations as {cite}`huynh:2009`,
 ```{math}
-d_{\rm geod.}(\mathbf{q}_1, \mathbf{q_2}) = 2\arccos(|\mathbf{q}_1\cdot\mathbf{q}_2|) \text{ .}
+\begin{align}
+    d_{\rm eucl.}(\mathbf{q}_1, \mathbf{q_2}) = 2\sqrt{(2(1-|\mathbf{q}_1\cdot\mathbf{q}_2|^2))} \text{ ,} \\
+    d_{\rm geod.}(\mathbf{q}_1, \mathbf{q_2}) = 2\arccos(|\mathbf{q}_1\cdot\mathbf{q}_2|) \text{ .}
+\end{align}
 ```
-With the riemannian metric and the symmetry operations we can define the objective function in terms of quaternions as,
+With the euclidian metric and the symmetry operations we can define the objective function in terms of quaternions as,
 ```{math}
 F(\bar{\mathbf{q}}, \{\mathbf{g}_i\}) = \frac{1}{\sum_j w_j}\sum_i w_i[\ 2\arccos(|\bar{\mathbf{q}}\cdot(\mathbf{q}_i\circ\mathbf{g}_i)|)\ ]^2 \text{ ,}
 ```

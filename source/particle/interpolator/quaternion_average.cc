@@ -258,14 +258,24 @@ namespace aspect
 
 
 
+      // template <int dim>
+      // double
+      // QuaternionAverage<dim>::SO3_geodesic(const std::array<double,4> &quaternion1, const std::array<double,4> &quaternion2) const
+      // {
+      //   double inner_product = 0;
+      //   for (unsigned int j=0; j<4; j++) inner_product += quaternion1[j]*quaternion2[j];
+
+      //   return 2*std::acos(std::min(std::abs(inner_product),1.0));
+      // }
+
       template <int dim>
       double
-      QuaternionAverage<dim>::SO3_geodesic(const std::array<double,4> &quaternion1, const std::array<double,4> &quaternion2) const
+      QuaternionAverage<dim>::SO3_euclidian_metric(const std::array<double,4> &quaternion1, const std::array<double,4> &quaternion2) const
       {
-        double inner_product = 0;
+        double inner_product = 0.0;
         for (unsigned int j=0; j<4; j++) inner_product += quaternion1[j]*quaternion2[j];
 
-        return 2*std::acos(std::min(std::abs(inner_product),1.0));
+        return 2*std::sqrt( 2*(1 - std::min(inner_product*inner_product, 1.0)) );
       }
 
       template <int dim>
@@ -276,7 +286,7 @@ namespace aspect
         double normalization = 0.;
         for (unsigned int j=0; j<quat_array.size(); j++)
           {
-            objective_fct += weights[j]*Utilities::fixed_power<2>(SO3_geodesic(quat_array[j],mean_quat));
+            objective_fct += weights[j]*Utilities::fixed_power<2>(SO3_euclidian_metric(quat_array[j],mean_quat));
             normalization += weights[j];
           }
 
@@ -310,26 +320,27 @@ namespace aspect
         const unsigned int n_symmetry_elements = possible_mutations.size();
 
         // find minimal geodesic
-        std::vector<double> geodesics (n_symmetry_elements);
-
+        unsigned int min_idx = 0;
+        double metric; double min_metric = 3; // max euclidian metric is ~2.83
         for (unsigned int j=0; j < n_symmetry_elements; j++)
-          geodesics[j] = SO3_geodesic(possible_mutations[j], reference_quaternion);
-
-        unsigned int best_idx = 0;
-        for (unsigned int i = 1; i < n_symmetry_elements; ++i)
-          if (geodesics[i] < geodesics[best_idx])
-            best_idx = i;
-
+          {
+            metric = SO3_euclidian_metric(possible_mutations[j], reference_quaternion);
+            if ((metric < min_metric))
+              {
+                min_idx = j;
+                min_metric = metric;
+              }
+          }
+          
         // corresponding to one optimal permutation
-        std::array<double, 4> closest_quaternion = possible_mutations[best_idx];
+        std::array<double, 4> closest_quaternion = possible_mutations[min_idx];
 
         // remain in halfspace where q[0] > 0
         if (closest_quaternion[0] < 0)
           closest_quaternion = {{
               -closest_quaternion[0], -closest_quaternion[1],
               -closest_quaternion[2], -closest_quaternion[3]
-            }
-          };
+            }};
 
         return closest_quaternion;
       }
@@ -345,17 +356,22 @@ namespace aspect
         // avoid getting stuck in a non-optimal solution for a small number of particles
         std::array<double,4> quat_mean = markley_average(quat_array, weights);
 
-        // find the maximal geodesic distance from the initial mean
-        std::vector<double> geodesics(n_particles);
+        // find the maximal euclidian distance from the initial mean
+        std::array<double,4> sym_quat;
+        unsigned int max_idx = 0;
+        double metric; double max_metric = 0.0; 
         for (unsigned int j=0; j<n_particles; j++)
-          geodesics[j] = SO3_geodesic(quat_array[j], quat_mean);
+          {
+            sym_quat = to_fundamental_zone(quat_array[j], quat_mean);
+            metric = SO3_euclidian_metric(sym_quat, quat_mean);
+            if (metric > max_metric) 
+              {
+                max_idx = j;
+                max_metric = metric;
+              }
+          }
 
-        unsigned int best_idx = 0;
-        for (unsigned int i = 1; i < n_particles; ++i)
-          if (geodesics[i] > geodesics[best_idx])
-            best_idx = i;
-
-        std::array<double,4> quat_0 = quat_array[best_idx];
+        std::array<double,4> quat_0 = quat_array[max_idx];
 
         // initializing loop variables to be optimized
         double objective = objective_function(quat_mean, quat_array, weights);

@@ -96,9 +96,19 @@ namespace aspect
            * A geodesic describes the shortest path in a non-Euclidean space.
            * This metric is equal to the Riemannian metric in $SO(3)$ and lies in the interval $[0,\pi]$.
            * For a comparison of different metrics, see Huynh 2009 (https://doi.org/10.1007%2Fs10851-009-0161-2).
+           * double
+           * SO3_geodesic(const std::array<double,4> &quaternion1, const std::array<double,4> &quaternion2) const;
+          */
+
+          /**
+           * Returns the euclidian distance between two rotations, each represented by a quaternion.
+           * Euclidian here means the shortest path in the ambient space M(3), the space of all 3x3 Matrices. 
+           * This metric is equivalent to the Frobenius norm between two Matrices $||R_1 - R_2||_F$ 
+           * and lies in the interval $[0,2\sqrt{2}]$.
+           * For a comparison of different metrics, see Huynh 2009 (https://doi.org/10.1007%2Fs10851-009-0161-2).
            */
           double
-          SO3_geodesic(const std::array<double,4> &quaternion1, const std::array<double,4> &quaternion2) const;
+          SO3_euclidian_metric(const std::array<double,4> &quaternion1, const std::array<double,4> &quaternion2) const;
 
           /**
            * Sends a quaternion into the fundamental zone of the reference quaternion.
