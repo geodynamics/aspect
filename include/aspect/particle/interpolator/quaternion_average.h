@@ -102,8 +102,8 @@ namespace aspect
 
           /**
            * Returns the euclidian distance between two rotations, each represented by a quaternion.
-           * Euclidian here means the shortest path in the ambient space M(3), the space of all 3x3 Matrices. 
-           * This metric is equivalent to the Frobenius norm between two Matrices $||R_1 - R_2||_F$ 
+           * Euclidian here means the shortest path in the ambient space M(3), the space of all 3x3 Matrices.
+           * This metric is equivalent to the Frobenius norm between two Matrices $||R_1 - R_2||_F$
            * and lies in the interval $[0,2\sqrt{2}]$.
            * For a comparison of different metrics, see Huynh 2009 (https://doi.org/10.1007%2Fs10851-009-0161-2).
            */

@@ -56,6 +56,13 @@ namespace aspect
         // unit weights for average
         // can be adapted to distance weighting in the future
         const std::vector<double> unit_weights(n_particles, 1.0);
+        std::vector<double> normalized_weights(n_particles);
+        double norm = 0.0;
+        for (unsigned int j=0; j<n_particles; j++)
+          norm += unit_weights[j];
+        for (unsigned int j=0; j<n_particles; j++)
+          normalized_weights[j] = unit_weights[j]/norm;
+
 
         // average mineral aggregates separately
         for (unsigned int mineral_i = 0; mineral_i < n_minerals; ++mineral_i)
@@ -74,15 +81,21 @@ namespace aspect
                       quaternion[j] = particle_properties[quaternion_data_pos[mineral_i] + j];
                     quat_array.push_back(quaternion);
                   }
-                switch (symmetry_group)
+                // avoid averaging at all if only one particle is present
+                if (n_particles == 1)
+                  mean_quat[mineral_i] = quat_array[0];
+                else
                   {
-                    case SymmetryGroup::triclinic:
-                    {
-                      mean_quat[mineral_i] = markley_average(quat_array, unit_weights);
-                      break;
-                    }
-                    default:
-                      mean_quat[mineral_i] = symmetry_average(quat_array, unit_weights);
+                    switch (symmetry_group)
+                      {
+                        case SymmetryGroup::triclinic:
+                        {
+                          mean_quat[mineral_i] = markley_average(quat_array, normalized_weights);
+                          break;
+                        }
+                        default:
+                          mean_quat[mineral_i] = symmetry_average(quat_array, normalized_weights);
+                      }
                   }
               }
           }
@@ -217,11 +230,10 @@ namespace aspect
       std::array<double,4>
       QuaternionAverage<dim>::markley_average(const std::vector<std::array<double,4>> &quat_array, const std::vector<double> &weights) const
       {
-        AssertThrow(quat_array.size()==weights.size(), ExcMessage("unequal length of quaternion array and weight array"));
+        AssertThrow(quat_array.size()==weights.size(), ExcMessage("unequal length of quaternion array and weight array "));
 
         // use LAPACK to compute eigenvalues and eigenvectors of a 4x4 real symmetric matrix
         LAPACKFullMatrix<double> K(4,4);
-        double normalization = 0;
 
         for (unsigned int n=0; n < quat_array.size(); n++)
           {
@@ -233,19 +245,18 @@ namespace aspect
                     if ((n == quat_array.size()-1) && (i1 !=i2)) K(i2,i1) = K(i1,i2);
                   }
               }
-            normalization += weights[n];
           }
 
         // ensures matrix is traceless i.e. all eigenvalues add up to 0
         K *= 4.0;
-        for (unsigned int j=0; j<4; j++) K(j,j) -= normalization;
+        for (unsigned int j=0; j<4; j++) K(j,j) -= 1;
 
         Vector<double> eigenvalues;
         FullMatrix<double> eigenvectors;
 
         // only pick eigenvalues larger or equal to 0 --> reduce search space
         // the maximum eigenvalue has to be >= 0 since the eigenvalues add up to one
-        K.compute_eigenvalues_symmetric(1e-12, std::numeric_limits<double>::infinity(), 0, eigenvalues, eigenvectors);
+        K.compute_eigenvalues_symmetric(-1e-12, std::numeric_limits<double>::infinity(), 0, eigenvalues, eigenvectors);
 
         unsigned int last_idx = eigenvalues.size()-1;
 
@@ -255,7 +266,6 @@ namespace aspect
         else
           return {{ eigenvectors(0,last_idx), eigenvectors(1,last_idx), eigenvectors(2,last_idx), eigenvectors(3,last_idx)}};
       }
-
 
 
       // template <int dim>
@@ -283,14 +293,11 @@ namespace aspect
       QuaternionAverage<dim>::objective_function(const std::array<double,4> &mean_quat, const std::vector<std::array<double,4>> &quat_array, const std::vector<double> &weights) const
       {
         double objective_fct = 0.;
-        double normalization = 0.;
         for (unsigned int j=0; j<quat_array.size(); j++)
           {
             objective_fct += weights[j]*Utilities::fixed_power<2>(SO3_euclidian_metric(quat_array[j],mean_quat));
-            normalization += weights[j];
           }
-
-        return objective_fct/normalization;
+        return objective_fct;
       }
 
       template <int dim>
@@ -306,7 +313,7 @@ namespace aspect
             case SymmetryGroup::orthorhombic:
             {
               // for orthorhombic symmetry gi = {+/-1, +/-i, +/-j, +/-k }
-              // note that +/- are the same rotation and have the same geodesic
+              // +/- are the same rotation and have the same metric distance
               possible_mutations.push_back(quaternion);
               possible_mutations.push_back({{-quaternion[1], quaternion[0], quaternion[3],-quaternion[2]}});
               possible_mutations.push_back({{-quaternion[2],-quaternion[3], quaternion[0], quaternion[1]}});
@@ -317,12 +324,11 @@ namespace aspect
               AssertThrow(false, ExcMessage("not a valid symmetry group or not yet implemented"));
           }
 
-        const unsigned int n_symmetry_elements = possible_mutations.size();
-
-        // find minimal geodesic
+        // find minimal metric distance representation
         unsigned int min_idx = 0;
-        double metric; double min_metric = 3; // max euclidian metric is ~2.83
-        for (unsigned int j=0; j < n_symmetry_elements; j++)
+        double metric;
+        double min_metric = 3; // max euclidian metric is ~2.83
+        for (unsigned int j=0; j < possible_mutations.size(); j++)
           {
             metric = SO3_euclidian_metric(possible_mutations[j], reference_quaternion);
             if ((metric < min_metric))
@@ -331,7 +337,7 @@ namespace aspect
                 min_metric = metric;
               }
           }
-          
+
         // corresponding to one optimal permutation
         std::array<double, 4> closest_quaternion = possible_mutations[min_idx];
 
@@ -340,11 +346,11 @@ namespace aspect
           closest_quaternion = {{
               -closest_quaternion[0], -closest_quaternion[1],
               -closest_quaternion[2], -closest_quaternion[3]
-            }};
+            }
+          };
 
         return closest_quaternion;
       }
-
 
 
       template <int dim>
@@ -357,21 +363,47 @@ namespace aspect
         std::array<double,4> quat_mean = markley_average(quat_array, weights);
 
         // find the maximal euclidian distance from the initial mean
-        std::array<double,4> sym_quat;
-        unsigned int max_idx = 0;
-        double metric; double max_metric = 0.0; 
-        for (unsigned int j=0; j<n_particles; j++)
+        // std::array<double,4> sym_quat;
+        // unsigned int max_idx = 0;
+        // double metric; double max_metric = 0.0;
+        // for (unsigned int j=0; j<n_particles; j++)
+        //   {
+        //     sym_quat = to_fundamental_zone(quat_array[j], quat_mean);
+        //     metric = SO3_euclidian_metric(sym_quat, quat_mean);
+        //     if (metric > max_metric)
+        //       {
+        //         max_idx = j;
+        //         max_metric = metric;
+        //       }
+        //     }
+
+        // find minimal objective among all rotations
+        std::vector<std::vector<double>> distances(n_particles, std::vector<double>(n_particles));
+        double min_obj = 3;
+        double obj;
+        unsigned int min_idx = 0;
+        std::array<double,4> quat_sym;
+        for (unsigned int i=0; i<n_particles; i++)
           {
-            sym_quat = to_fundamental_zone(quat_array[j], quat_mean);
-            metric = SO3_euclidian_metric(sym_quat, quat_mean);
-            if (metric > max_metric) 
+            obj = 0.0;
+            for (unsigned int j=i+1; j<n_particles; j++)
               {
-                max_idx = j;
-                max_metric = metric;
+                // only compute metrics in upper half triangle without diagonal
+                quat_sym = to_fundamental_zone(quat_array[j], quat_array[i]);
+                distances[i][j] = SO3_euclidian_metric(quat_sym, quat_array[i]);
+                distances[j][i] = distances[i][j]; // fill lower half
+                obj += weights[j]*Utilities::fixed_power<2>(distances[i][j]);
+              }
+            for (unsigned int j=0; j<i; j++) // sum over lower half triangle
+              obj += weights[j]*Utilities::fixed_power<2>(distances[i][j]);
+            if (obj < min_obj)
+              {
+                min_idx = i;
+                min_obj = obj;
               }
           }
 
-        std::array<double,4> quat_0 = quat_array[max_idx];
+        std::array<double,4> quat_0 = quat_array[min_idx];
 
         // initializing loop variables to be optimized
         double objective = objective_function(quat_mean, quat_array, weights);
@@ -398,7 +430,7 @@ namespace aspect
                 objective = new_objective;
                 quat_0 = quat_mean;
               }
-            else return quat_mean;
+            else return quat_0;
             AssertThrow(n!=max_iterations-1, ExcMessage("maximum number of iterations reached in quaternion average aborting"));
           }
         // we should never reach this point, but just in case so nothing breaks
