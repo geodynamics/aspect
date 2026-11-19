@@ -49,6 +49,7 @@ namespace aspect
         const unsigned int n_particle_properties = particle_handler.n_properties_per_particle();
         AssertThrow(selected_properties.size() == not_quaternion_properties.size(), ExcMessage("component masks have unequal length") );
         ComponentMask selected_properties_not_quaternions = selected_properties & not_quaternion_properties;
+        const unsigned int n_quat_properties = selected_properties.n_selected_components() - selected_properties_not_quaternions.n_selected_components();
 
         // average quaternion for each mineral
         std::vector<std::array<double,4>> mean_quat (n_minerals);
@@ -68,7 +69,7 @@ namespace aspect
         for (unsigned int mineral_i = 0; mineral_i < n_minerals; ++mineral_i)
           {
             // makes sure to not average minerals that are not to be interpolated
-            if (selected_properties[quaternion_data_pos[mineral_i]])
+            if (n_quat_properties > 0)
               {
                 // collect all quaternions in the cell
                 std::vector<std::array<double,4>> quat_array;
@@ -111,7 +112,7 @@ namespace aspect
                                                                     cell);
 
         for (unsigned int mineral_i = 0; mineral_i < n_minerals; mineral_i++)
-          if (selected_properties[quaternion_data_pos[mineral_i]])
+          if (n_quat_properties > 0)
             for (unsigned int pos_index=0; pos_index<positions.size(); pos_index++)
               for (unsigned int j = 0; j<4; j++)
                 cell_properties[pos_index][quaternion_data_pos[mineral_i]+j] = mean_quat[mineral_i][j];
