@@ -80,7 +80,18 @@ namespace aspect
           void
           parse_parameters (ParameterHandler &prm) override;
 
-        private:
+          /**
+           * enable setting the symmetry group for testing purposes
+           */
+          void set_symmetry_group(const SymmetryGroup group);
+
+          /**
+           * Average over the reduced space of rotations $SO(3)/G_{cr}$,
+           * where $G_{cr} \subset SO(3)$ is the symmetry group that contains the rotations under which an orthotropic crystal stays invariant. (e.g. Crystallographic texture and group representation, Chapter 6)
+           * The average is taken by iteratively projecting all rotations into the fundamental zone around a proposed mean value.
+           */
+          std::array<double,4>
+          symmetry_average(const std::vector<std::array<double,4>> &quat_array, const std::vector<double> &weights) const;
 
           /**
            * An average for weighted rotations based on minimizing the Frobenius norm between rotations.
@@ -90,6 +101,8 @@ namespace aspect
            */
           std::array<double,4>
           markley_average(const std::vector<std::array<double,4>> &quat_array, const std::vector<double> &weights) const;
+
+        private:
 
           /**
            * Returns the geodesic distance between two rotations, each represented by a quaternion.
@@ -119,13 +132,6 @@ namespace aspect
           std::array<double,4>
           to_fundamental_zone(const std::array<double,4> &quaternion, const std::array<double,4> &reference_quaternion) const;
 
-          /**
-           * Average over the reduced space of rotations $SO(3)/G_{cr}$,
-           * where $G_{cr} \subset SO(3)$ is the symmetry group that contains the rotations under which an orthotropic crystal stays invariant. (e.g. Crystallographic texture and group representation, Chapter 6)
-           * The average is taken by iteratively projecting all rotations into the fundamental zone around a proposed mean value.
-           */
-          std::array<double,4>
-          symmetry_average(const std::vector<std::array<double,4>> &quat_array, const std::vector<double> &weights) const;
 
           double
           objective_function(const std::array<double,4> &mean_quat, const std::vector<std::array<double,4>> &quat_array, const std::vector<double> &weights) const ;

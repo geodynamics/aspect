@@ -225,7 +225,6 @@ namespace aspect
       }
 
 
-
       template <int dim>
       std::array<double,4>
       QuaternionAverage<dim>::markley_average(const std::vector<std::array<double,4>> &quat_array, const std::vector<double> &weights) const
@@ -352,6 +351,12 @@ namespace aspect
         return closest_quaternion;
       }
 
+      template <int dim>
+      void
+      QuaternionAverage<dim>::set_symmetry_group(const SymmetryGroup group)
+      {
+        symmetry_group = group;
+      };
 
       template <int dim>
       std::array<double,4>
