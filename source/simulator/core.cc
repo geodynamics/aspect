@@ -772,7 +772,7 @@ namespace aspect
     {
       // obtain the boundary indicators that belong to Dirichlet-type
       // composition boundary conditions and interpolate the composition
-      // there
+      // there, but only for those fields that are fixed.
       for (unsigned int c=0; c<introspection.n_compositional_fields; ++c)
         {
           // If we do not want to prescribe Dirichlet boundary conditions on outflow boundaries,
@@ -782,7 +782,7 @@ namespace aspect
             replace_outflow_boundary_ids(boundary_id_offset, true, c);
 
           if (parameters.use_discontinuous_composition_discretization[c] == false)
-            for (const auto p : boundary_composition_manager.get_fixed_composition_boundary_indicators())
+            for (const auto p : boundary_composition_manager.get_fixed_boundaries_for_field(c))
               {
                 VectorFunctionFromScalarFunctionObject<dim> vector_function_object(
                   [&] (const Point<dim> &x) -> double
