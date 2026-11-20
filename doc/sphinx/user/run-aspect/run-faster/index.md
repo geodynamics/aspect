@@ -19,6 +19,7 @@ you are doing and are making conscious decisions.
 debug-vs-optimized.md
 solver-tolerance.md
 preconditioner-tolerance.md
+efficient_stokes_solver_configuration_for_nonlinear_models.md
 lower-order-elements.md
 limiting-postprocessing.md
 pressure-norm-off.md
