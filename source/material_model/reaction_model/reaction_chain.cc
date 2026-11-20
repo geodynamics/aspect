@@ -69,7 +69,7 @@ namespace aspect
 
         // Reaction progress values should be close to monotonic
         for (unsigned int i = 1; i < reaction_progress_values.size(); ++i)
-          AssertThrow(reaction_progress_values[i] < reaction_progress_values[i-1] + tolerance_in_reaction_progress,
+          AssertThrow(reaction_progress_values[i] <= reaction_progress_values[i-1] + tolerance_in_reaction_progress,
                       ExcMessage("'reaction_progress_values[" + std::to_string(i) + "]' = " +
                                  std::to_string(reaction_progress_values[i]) + " exceeds "
                                  "'reaction_progress_values[" + std::to_string(i-1) + "]' = " +
@@ -176,9 +176,9 @@ namespace aspect
                             "sets the number of reactions N, which must equal the number of compositional fields tracking reaction progress.");
 
           prm.declare_entry("Tolerance in reaction progress",
-                            "0.1",
+                            "1e20",
                             Patterns::Double(0.0),
-                            "Allowed excursion before a reaction progress value outside [0, 1] is considered unphysical.");
+                            "Allowed excursion before a reaction progress value outside [0, 1] is considered too extreme for a given timestep.");
 
           // One subsection per registered kinetics model (not per reaction).
           ReactionModelPluginList<dim>::declare_parameters(prm);
@@ -195,10 +195,6 @@ namespace aspect
         prm.enter_subsection("Reaction chain");
         {
           tolerance_in_reaction_progress = prm.get_double("Tolerance in reaction progress");
-
-          AssertThrow(tolerance_in_reaction_progress >= 0.0 && tolerance_in_reaction_progress < 1.0,
-                      ExcMessage("The 'Tolerance in reaction progress' must be between [0, 1), "
-                                 "but was set to " + std::to_string(tolerance_in_reaction_progress) + "."));
 
           const std::vector<std::string> kinetic_model_names = Utilities::split_string_list(prm.get("Kinetic models"), '|');
           const unsigned int n_reactions = kinetic_model_names.size();
