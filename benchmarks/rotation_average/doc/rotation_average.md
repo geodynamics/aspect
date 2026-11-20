@@ -37,22 +37,17 @@ here $d(\cdot, \cdot)$ is a metric in the space of rotations.
 
 An average in the space of rotations is defined as the rotation, which minimizes the squared distance to all samples (e.g. {cite}`moakher:2002`),
 ```{math}
-:label: eqn:rotation_average
+:label: eqn:average_rotation
 \bar{\mathbf{R}} =  \underset{\mathbf{R}\in SO(3)}{\rm argmin}\sum_n d^2(\mathbf{R}_i,\mathbf{R}) \text{ .}
 ```
-The two definitions of the metric distance we consider are the euclidean distance (e.g. straight line through the ambient space),
+In this interplator we will use the distance between two rotation matrices,
 ```{math}
-:label: eqn:rotation_euclidean_norm
-d_{\rm{eucl.}}(\mathbf{R}_1,\mathbf{R}_2) = ||\mathbf{R}_1- \mathbf{R}_2||_F
+:label: eqn:euclidean_distance
+d_{\rm{eucl.}}(\mathbf{R}_1,\mathbf{R}_2) = ||\mathbf{R}_1- \mathbf{R}_2||_F \text{ ,}
 ```
-and the geodesic or Riemannian distance (e.g. arc following the curvature of the space),
+where $|| \cdot ||_F$ denotes the Frobenius norm, $||\mathbf{A}||_F:= \sqrt{\mathrm{Tr}(\mathbf{A}^T \mathbf{A}) }$. This metric is usually called the euclidian distance as it is a straight line through the ambient space $\mathcal{M}(3)$, the space of all 3x3 matrices. For a general crystal symmetry, the minimization problem we have to solve becomes,
 ```{math}
-:label: eqn:rotation_riemann_norm
-d_{\rm{geod.}}(\mathbf{R}_1,\mathbf{R}_2) =  ||\log(\mathbf{R}_1^T\mathbf{R}_2)||_F \text{ .}
-```
-In both cases $|| \cdot ||_F$ denotes the Frobenius norm, $||\mathbf{A}||_F:= \sqrt{\mathrm{Tr}(\mathbf{A}^T \mathbf{A}) }$. For a general crystal symmetry, the minimization problem we have to solve becomes,
-```{math}
-:label: eqn:rotation_symmetry_average
+:label: eqn:symmetry_average
 \bar{\mathbf{R}} =  \underset{\mathbf{R}\in SO(3)}{\rm argmin}\sum_i d_{SO(3)/G_{cr}}^2(\mathbf{R}_i G_{cr},\mathbf{R}G_{cr}) = \underset{\mathbf{R}\in SO(3)}{\rm argmin}\sum_i \min_{\mathbf{P}_i \in G_{cr}} d^2(\mathbf{R}_i\mathbf{P}_i,\mathbf{R}) \text{ .}
 ```
 This is a combinatoric optimization problem for finding the optimal fundamental zone where all rotations are closest to one another. We can also rewrite the problem as a minimization problem for the objective function,
@@ -69,22 +64,19 @@ To efficiently solve this minimization problem we represent rotations by unit qu
 \mathbf{v}' = \mathbf{R}\cdot \mathbf{v} = \mathbf{q}\circ \mathbf{v} \circ \mathbf{q}^{-1} \text{ .}
 ```
 With some algebra we can write the right-hand side as a rotation matrix and find the function $\mathbf{R}(\mathbf{q})$ and the backwards transform $\mathbf{q}(\mathbf{R})$ (https://en.wikipedia.org/wiki/Quaternions_and_spatial_rotation). Physically, unit quaternions are an axis-angle representation of a rotation. The scalar part gives $\cos(\alpha/2)$ and the vector part gives $\sin(\alpha/2)\mathbf{n}$. Here $\alpha$ is the rotation angle and $\mathbf{n}$ is the normalized rotation axis. Each rotation can then be represented by a quaternion, $\mathbf{q}$ or $-\mathbf{q}$, because rotating by the negative angle around the negative axis is exactly the same. Therefore, quaternions are a double cover of the space of rotations, and we will work in the half-space where $q.w > 0$.
-Just as for rotation matrices we can write a rotation by first $\mathbf{q}_1$ and then $\mathbf{q}_2$ as $\mathbf{q}' = \mathbf{q}_2 \circ \mathbf{q}_1$. If we rewrite the symmetry operations in terms of quaternions, $\mathbf{g}_i = \mathbf{q}(\mathbf{P}_i)$, one crystal orientation then becomes the set $\mathbf{q}G_{cr} = \{\mathbf{q}\circ\mathbf{g}_i:g_i \in G_{cr} \}$. For orthotropic symmetry the set of symmetry operations is (e.g. {cite}`kagan:1991`), $G_{\rm ortho.} = \{\pm 1, \pm \mathbf{i}, \pm \mathbf{j}, \pm \mathbf{k}\}$.
+Just as for rotation matrices we can write a rotation by first $\mathbf{q}_1$ and then $\mathbf{q}_2$ as $\mathbf{q}' = \mathbf{q}_2 \circ \mathbf{q}_1$. If we rewrite the symmetry operations in terms of quaternions, $\mathbf{g}_i = \mathbf{q}(\mathbf{P}_i)$, one crystal orientation becomes the set $\mathbf{q}G_{cr} = \{\mathbf{q}\circ\mathbf{g}_i:\mathbf{g}_i \in G_{cr} \}$. For orthotropic symmetry the set of symmetry operations is (e.g. {cite}`kagan:1991`), $G_{\rm ortho.} = \{\pm 1, \pm \mathbf{i}, \pm \mathbf{j}, \pm \mathbf{k}\}$.
 
-Quaternions also enable us to efficiently compute the euclidian and geodesic distance between two rotations as {cite}`huynh:2009`,
+Quaternions also enable us to efficiently compute the euclidian distance between two rotations as {cite}`huynh:2009`,
 ```{math}
-\begin{align}
-    d_{\rm eucl.}(\mathbf{q}_1, \mathbf{q_2}) = 2\sqrt{(2(1-|\mathbf{q}_1\cdot\mathbf{q}_2|^2))} \text{ ,} \\
-    d_{\rm geod.}(\mathbf{q}_1, \mathbf{q_2}) = 2\arccos(|\mathbf{q}_1\cdot\mathbf{q}_2|) \text{ .}
-\end{align}
+    d_{\rm eucl.}(\mathbf{q}_1, \mathbf{q_2}) = 2\sqrt{(2(1-|\mathbf{q}_1\cdot\mathbf{q}_2|^2))} \text{ .} \\
 ```
 With the euclidian metric and the symmetry operations we can define the objective function in terms of quaternions as,
 ```{math}
-F(\bar{\mathbf{q}}, \{\mathbf{g}_i\}) = \frac{1}{\sum_j w_j}\sum_i w_i[\ 2\arccos(|\bar{\mathbf{q}}\cdot(\mathbf{q}_i\circ\mathbf{g}_i)|)\ ]^2 \text{ ,}
+F(\bar{\mathbf{q}}, \{\mathbf{g}_i\}) = \frac{1}{\sum_j w_j}\sum_i w_i 8(1 - |\bar{\mathbf{q}}\cdot(\mathbf{q}_i\circ\mathbf{g}_i)|^2) \text{ ,}
 ```
 where $\cdot$ is the dot product for vectors in $\mathbb{R}^4$. This is a slight generalization, as $w_i$ are weights associated with each rotation (quaternion). In the future, a distance weighting could be implemented based on these.
 
-Quaternions are also convenient as there exists a well defined average. {cite}`markley:etal:2007` show that the minimization defined in Equ. {math:numref}`eqn:rotation_average` for the euclidean norm Equ. {math:numref}`eqn:rotation_euclidean_norm` can be reformulated into,
+Quaternions are also convenient as there exists a well defined average in the space of rotations already. {cite}`markley:etal:2007` show that the minimization defined in Equ. {math:numref}`eqn:average_rotation` for the euclidean distance Equ. {math:numref}`eqn:euclidean_distance` can be reformulated into,
 ```{math}
     :label: eqn:markley_average_maximization
     \bar{\mathbf{q}} = \underset{\mathbf{q}\in S^3}{\rm argmax} \ \mathbf{q}^T\mathbf{K}\mathbf{q}
@@ -94,16 +86,16 @@ with the 4x4 traceless matrix,
     \mathbf{K} = 4\sum_i w_i\mathbf{q}_i\mathbf{q}_i^T - \mathbf{I}_4\sum_i w_i \text{ .}
 ```
 The eigenvector corresponding to the maximum eigenvalue of $\mathbf{K}$ solves the maximization problem Equ. {math:numref}`eqn:markley_average_maximization`. As the matrix is traceless the largest eigenvalue will always be positive or exactly zero. I will give the result of this procedure the name $\bar{\mathbf{q}}_{\rm mk07}$ and define it as,
-```{math}
+```math
     \bar{\mathbf{q}}_{\rm mk07}(\{\mathbf{q}_i\}, \{w_i\}) =  \underset{\mathbf{q}\in \mathbb{H}}{\rm argmin} \sum_i w_i d^2_{\rm eucl.}(\mathbf{R}(\mathbf{q}_i), \mathbf{R}(\mathbf{q}))
 ```
 **Note: This average is valid for general rotations** or crystals with triclinic symmetry (no symmetry objects except the identity). In the interpolator this function is called markley average.
 
 ## Algorithm
 
-I propose the following algorithm to solve the optimization problem {math:numref}`eqn:rotation_symmetry_average`. Our mean value and the set of symmetry operations will be denoted as $\bar{\mathbf{q}}^n$ and $\{\mathbf{g}^n_i\}$ for each iteration $n$. $n$ is restricted to a maximum number of iterations set to 50 as I have not seen more than 20 iteration for 1000 crystal orientations.
+I propose the following algorithm to solve the optimization problem {math:numref}`eqn:symmetry_average`. Our mean value and the set of symmetry operations will be denoted as $\bar{\mathbf{q}}^n$ and $\{\mathbf{g}^n_i\}$ for each iteration $n$. $n$ is restricted to a maximum number of iterations set to 50 as I have not seen more than 20 iteration for 1000 crystal orientations.
 
-  1. Pick an initial guess $\bar{\mathbf{q}}^0$ and compute the objective function $F^0(\bar{\mathbf{q}}^{0}, \{\mathbf{g}_i^0\})$ with $\mathbf{g}_i^0 = (1, \mathbf{0})$ (no symmetrization).
+  1. Pick an initial guess $\bar{\mathbf{q}}^0$ and compute the objective function $F^0(\bar{\mathbf{q}}^{0}, \{\mathbf{g}_i^0\})$ with $\mathbf{g}_i^0$ projecting every rotation in the fundamental zone around $\bar{\mathbf{q}}^0$.
   2. Project all rotations into the fundamental zone around the guess.
      - For each quaternion $\mathbf{q}_i$, compute the geodesic distances $d_{\rm geod.}(\mathbf{q}_iG_{cr}, \bar{\mathbf{q}}^n)$ for all elements in the set $\mathbf{q}_i G_{cr}$.
      - Pick $\mathbf{q}_i' = \mathbf{q}_i\circ\mathbf{g}_i^n$ such that $d_{\rm geod.}(\mathbf{q}_i', \bar{\mathbf{q}}^n)$ is minimal. In other words, find the representation in $\mathbf{q}_i G_{cr}$ that is closest to the current mean value.
@@ -111,9 +103,9 @@ I propose the following algorithm to solve the optimization problem {math:numref
   4. Compute the objective function $F^{n+1}(\bar{\mathbf{q}}^{n+1}, \{\mathbf{g}_i^n\})$.
   5. Check if the objective function got smaller, $F^n > F^{n+1}$ ?
      - true : repeat 2,3 and 4
-     - false: return $\bar{\mathbf{q}}^{n+1}$
+     - false: return $\bar{\mathbf{q}}^n$
 
-The choice of the initial guess for the combinatorial optimization matters for a small number of particles. Here we choose the rotation with the maximum geodesic distance from the initial mean value as the guess. For a unimodal or antipodal distribution, this is likely to be close to the actual mean. More information and justification for these choices will be given in a publication at a later point.
+The initial guess for the combinatorial optimization matters and we choose the orientation with the minimal objective function. More information and justification for this choices will be given in a publication at a later point. For the python version of the algorithm and some run time and accuracy statistics can be found in the git repository [OrientationAverages](https://github.com/Theo-Geo/OrientationAverages.git).
 
 ## Benchmark cases
 
@@ -145,8 +137,8 @@ The prm changing the compositional fields and interpolator is located in [/bench
 The output presented below can be derived from quaternions by recovering the rotation angle $\alpha$ and rotation axis $\mathbf{n}$. They can then be used in the [Rodrigues formula](https://en.wikipedia.org/wiki/Rodrigues%27_rotation_formula) to rotate the 100-axis (or a-axis) from the crystal frame $\mathbf{v}_a^{cr} = (1,0,0)^T$ into the laboratory frame $\mathbf{v}_a$,
 ```{math}
 \begin{aligned}
-    \alpha &= 2\mathrm{arccos}(q.w) \text{ ,} \\
-    \mathbf{n} &= \frac{1}{\sin(\alpha/2)}(q.x,\ q.y,\ q.z)^T \text{ ,} \\
+    \alpha &= 2\mathrm{arccos}(q_w) \text{ ,} \\
+    \mathbf{n} &= \frac{1}{\sin(\alpha/2)}(q_x,\ q_y,\ q_z)^T \text{ ,} \\
     \mathbf{v}_a &= \cos(\alpha) \mathbf{v}_a^{cr} + \sin(\alpha)(\mathbf{n}\times\mathbf{v}_a^{cr}) + (1-\cos\alpha) \mathbf{n}(\mathbf{n}\cdot\mathbf{v}_a^{cr}) \text{ .}
 \end{aligned}
 ```
@@ -156,7 +148,7 @@ If you do not want to compute the rotation axis and angle directly, you can also
 \mathbf{v}_a = (q_x^2 - q_y^2 - q_z^2 + q_w^2,\ 2(q_x q_y + q_z q_w),\ 2(q_x q_z - q_y q_w))^T \text{ .}
 ```
 
-For euler angles the first row of the passive rotation matrix defined in `aspect::Utilities::zxz_euler_angles_to_rotation_matrix` gives back the a-axis.
+For euler angles, the first row of the passive rotation matrix defined in `aspect::Utilities::zxz_euler_angles_to_rotation_matrix` gives back the a-axis.
 ```{math}
 \mathbf{v}_a = (\cos(\phi_2)\cos(\phi_1) - \cos(\theta)\sin(\phi_1)\sin(\phi_2),\ -( \cos(\phi_2)\sin(\phi_1) + \cos(\theta)\cos(\phi_1)\sin(\phi_2)),\ -\sin(\phi_2)\sin(\theta) \ )^T
 ```

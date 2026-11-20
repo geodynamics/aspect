@@ -1,4 +1,4 @@
-set Output directory             = $ASPECT_SOURCE_DIR/benchmarks/rotation_average/output-shearbox-triclinic
+set Output directory             = $ASPECT_SOURCE_DIR/benchmarks/rotation_average/output-shearbox-orthorhombic
 set CFL number                   = 0.1
 set Timing output frequency      = 10000
 set Dimension                    = 2
@@ -141,7 +141,7 @@ subsection Particles
     subsection Interpolator
       subsection Quaternion average
         set Base interpolation scheme = quadratic least squares
-        set Symmetry group            = triclinic
+        set Symmetry group            = orthorhombic
       end
     end
 
