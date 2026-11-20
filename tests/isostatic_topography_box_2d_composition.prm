@@ -1,0 +1,19 @@
+# This test verifies the Isostacy mesh deformation plugin.
+# It computes an initial isostatic surface deformation for a 2-D box
+# containing a continental plate on the left and an oceanic plate on the
+# right, and outputs the resulting topography for comparison.
+# Specifically, the initial composition is prescribed with a different
+# function using the depth as an entry, to be consistent with the isostatic
+# adjustment.
+
+include $ASPECT_SOURCE_DIR/tests/isostatic_topography_box_2d.prm
+
+subsection Initial composition model
+  set List of model names = function
+  subsection Function
+    set Coordinate system   = depth
+    set Variable names = depth, x
+    set Function constants = W=5500e3,H=1000e3,Dcc=35e3,Doc=7.5e3
+    set Function expression = if(x<W/2 && depth<Dcc,1,0); if(x>=W/2 && depth<Doc,1,0)
+  end
+end
