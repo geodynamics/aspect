@@ -91,6 +91,7 @@ endif()
 set(ASPECT_MAX_NUM_PARTICLE_SYSTEMS 2 CACHE STRING "The maximum number of particle systems supported at runtime.")
 
 set(ASPECT_USE_TPETRA OFF CACHE BOOL "If ON, use Tpetra packages in Trilinos. Requires a Trilinos with Tpetra support and deal.II version 9.8.0 or newer.")
+set(ASPECT_USE_TPETRA_GPU OFF CACHE BOOL "Experimental: If ON, use the default memory space in Trilinos, which if Trilinos was compiled with GPU support will be on the GPU. Requires Trilinos with Tpetra and GPU support and deal.II version 9.9.0 or newer.")
 
 
 # ##############################################################################
@@ -186,7 +187,22 @@ else()
   endif()
 endif()
 
+if (ASPECT_USE_TPETRA_GPU AND NOT ASPECT_USE_TPETRA)
+        message(SEND_ERROR
+            "\n-- Tpetra GPU support is only available if Tpetra support is enabled!\n"
+            )
+      set(_DEALII_GOOD OFF)
+endif()
+
+if (ASPECT_USE_TPETRA_GPU AND (NOT ${DEAL_II_PACKAGE_VERSION} VERSION_GREATER_EQUAL 9.9.0))
+        message(SEND_ERROR
+            "\n-- Tpetra GPU support is only available for deal.II version 9.9.0 and newer!\n"
+            )
+      set(_DEALII_GOOD OFF)
+endif()
+
 message(STATUS "Using ASPECT_USE_TPETRA = '${ASPECT_USE_TPETRA}'")
+message(STATUS "Using ASPECT_USE_TPETRA_GPU = '${ASPECT_USE_TPETRA_GPU}'")
 
 if(NOT DEAL_II_WITH_SUNDIALS)
     message(SEND_ERROR
@@ -370,6 +386,11 @@ endif()
 
 # WorldBuilder
 set(ASPECT_WITH_WORLD_BUILDER ON CACHE BOOL "Whether to enable compiling aspect with the Geodynamic World Builder.")
+
+if (ASPECT_WITH_WORLD_BUILDER AND ASPECT_USE_TPETRA_GPU)
+  message(SEND_ERROR "World Builder is currently not supported with TPETRA with GPU support due to a compiler incompatibility.")
+endif()
+
 message(STATUS "Using ASPECT_WITH_WORLD_BUILDER = '${ASPECT_WITH_WORLD_BUILDER}'")
 if(ASPECT_WITH_WORLD_BUILDER)
   # Check whether we can find the WorldBuilder.
@@ -621,6 +642,14 @@ if(ASPECT_PRECOMPILE_HEADERS AND CMAKE_CXX_COMPILER_ID MATCHES "Intel")
   # Intel 19.1 produces internal compiler errors inside bundled boost with
   # precompiled headers, so we deactivate it:
   set(ASPECT_PRECOMPILE_HEADERS OFF CACHE BOOL "" FORCE)
+endif()
+
+if (ASPECT_UNITY_BUILD AND ASPECT_USE_TPETRA_GPU)
+  # nvcc has problems because handler.cc instantiates a class whose members are instantiated again explicitly
+  # in other files. Unity builds may put these files in the same compilation unit. gcc accepts this as valid,
+  # but at least nvcc V13.4.92 does not.
+  # Prevent the problem by excluding handler.cc from the unity build.
+  set_property(SOURCE "${CMAKE_SOURCE_DIR}/source/volume_of_fluid/handler.cc" PROPERTY SKIP_UNITY_BUILD_INCLUSION TRUE )
 endif()
 
 
