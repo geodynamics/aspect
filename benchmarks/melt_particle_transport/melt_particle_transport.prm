@@ -1,0 +1,218 @@
+# This benchmark compares solid and melt transport on particles and finite element fields.
+# It is the same setup as in the rising_melt_blob test,
+# but additional melt and solid compositions are tracked.
+# These compositions are advected both on particles and on finite element fields.
+
+set Additional shared libraries = ./libmelt_particle_transport.so
+set Output directory = output
+
+set Dimension                              = 2
+set Start time                             = 0
+set End time                               = 8e4
+set Use years instead of seconds           = true
+set Adiabatic surface temperature          = 1600
+set Nonlinear solver scheme                = iterated Advection and Stokes
+set Max nonlinear iterations               = 50
+set CFL number                             = 0.2
+set Pressure normalization                 = surface
+set Surface pressure                       = 0
+
+subsection Discretization
+  set Stokes velocity polynomial degree    = 2
+  set Composition polynomial degree        = 2
+  set Use discontinuous composition discretization = false, false, true, false, true
+end
+
+subsection Compositional fields
+  set Number of fields = 5
+  set Names of fields = porosity, solid_tracer_fem, solid_tracer_particles, melt_tracer_fem, melt_tracer_particles
+  set Compositional field methods =  field, field, particles, melt field, particles
+  set Mapped particle properties = solid_tracer_particles: solid_tracer_particles, melt_tracer_particles: melt_tracer_particles
+end
+
+subsection Boundary temperature model
+  set List of model names = box
+  set Fixed temperature boundary indicators   = 2,3
+
+  subsection Box
+    set Bottom temperature = 1600
+    set Top temperature    = 293
+  end
+end
+
+subsection Boundary composition model
+  set List of model names = initial composition
+end
+
+subsection Boundary velocity model
+  set Tangential velocity boundary indicators = 0,1,2,3
+end
+
+subsection Geometry model
+  set Model name = box
+
+  subsection Box
+    set X extent = 200000
+    set Y extent = 100000
+    set X repetitions = 2
+  end
+end
+
+subsection Gravity model
+  set Model name = vertical
+
+  subsection Vertical
+    set Magnitude = 10
+  end
+end
+
+subsection Initial temperature model
+  set List of model names = adiabatic
+
+  subsection Adiabatic
+    set Age top boundary layer      = 1e6
+
+    subsection Function
+      set Function expression       = 0;0;0;0;0
+    end
+  end
+end
+
+subsection Initial composition model
+  set List of model names = function
+
+  subsection Function
+    set Variable names      = x,y
+    set Function constants  = x0=100000, y0=50000, c=10000, C0=0.01, D=0.1, phi_cut=1e-6
+    # Porosity: Gaussian
+    # Solid compositions: equilibrium partitioning
+    # Melt compositions: equilibrium partitioning with a lower cutoff
+    set Function expression = \
+                      0.2*exp(-((x-x0)^2+(y-y0)^2)/(2*c*c)); \
+      D*C0/(D+(1-D) * 0.2*exp(-((x-x0)^2+(y-y0)^2)/(2*c*c))); \
+      D*C0/(D+(1-D) * 0.2*exp(-((x-x0)^2+(y-y0)^2)/(2*c*c))); \
+      C0/(D+(1-D)*max(0.2*exp(-((x-x0)^2+(y-y0)^2)/(2*c*c)),phi_cut)); \
+      C0/(D+(1-D)*max(0.2*exp(-((x-x0)^2+(y-y0)^2)/(2*c*c)),phi_cut))
+  end
+end
+
+subsection Material model
+  set Model name = melting rate
+end
+
+subsection Mesh refinement
+  set Initial adaptive refinement        = 0
+  set Initial global refinement          = 4
+  set Time steps between mesh refinement = 0
+end
+
+subsection Melt settings
+  set Include melt transport                  = true
+end
+
+subsection Postprocess
+  set List of postprocessors = visualization, composition statistics, particles, point values
+
+  subsection Visualization
+    set List of output variables      = material properties, strain rate, melt material properties
+    set Number of grouped files       = 0
+    set Output format                 = vtu
+    set Time between graphical output = 2e3
+    set Interpolate output            = false
+
+    subsection Material properties
+      set List of material properties = density, viscosity, thermal expansivity
+    end
+
+    subsection Melt material properties
+      set List of properties = fluid density, permeability, fluid viscosity, compaction viscosity, is melt cell
+    end
+  end
+
+  # Write point values once at final output step
+  subsection Point values
+    set Time between point values output = 8e4
+  end
+
+  subsection Particles
+    set Time between data output = 2e3
+  end
+  subsection Particles 2
+    set Time between data output = 2e3
+  end
+end
+
+subsection Solver parameters
+  subsection Stokes solver parameters
+    set Use direct solver for Stokes system = false
+  end
+end
+
+subsection Particles
+  set Number of particle systems    = 2
+  set Particle generator name       = reference cell
+  set List of particle properties   = general composition reaction, velocity
+  set Particle advection velocity   = solid
+  set Load balancing strategy       = remove and add particles
+  set Particle addition algorithm   = point density function
+  set Particle removal algorithm    = point density function
+  set Minimum particles per cell    = 16
+  set Maximum particles per cell    = 32
+
+  set Interpolation scheme          = quadratic least squares
+
+  subsection Generator
+    subsection Reference cell
+      set Number of particles per cell per direction = 4
+    end
+  end
+
+  subsection Interpolator
+    subsection Quadratic least squares
+      set Use quadratic least squares limiter = false
+    end
+  end
+
+  subsection General composition reaction
+    set Selected compositional fields = solid_tracer_particles
+  end
+end
+
+subsection Particles 2
+  set Particle generator name       = reference cell
+  set List of particle properties   = general composition reaction, velocity
+  set Particle advection velocity   = fluid
+  set Load balancing strategy       = remove and add particles
+  set Particle addition algorithm   = point density function
+  set Particle removal algorithm    = point density function
+  set Minimum particles per cell    = 16
+  set Maximum particles per cell    = 32
+
+  set Particle population name      = presence of melt
+  subsection Population
+    subsection Presence of melt
+      set Porosity threshold = 1e-6
+    end
+  end
+
+  # Cells without melts do not have particles, so this needs to be set to true.
+  set Allow cells without particles = true
+
+  set Interpolation scheme          = quadratic least squares
+
+  subsection Generator
+    subsection Reference cell
+      set Number of particles per cell per direction = 4
+    end
+  end
+
+  subsection Interpolator
+    subsection Quadratic least squares
+      set Use quadratic least squares limiter = false
+    end
+  end
+
+  subsection General composition reaction
+    set Selected compositional fields = melt_tracer_particles
+  end
+end
