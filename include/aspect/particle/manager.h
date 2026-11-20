@@ -30,6 +30,7 @@
 #include <aspect/particle/integrator/interface.h>
 #include <aspect/particle/interpolator/interface.h>
 #include <aspect/particle/property/interface.h>
+#include <aspect/particle/population/interface.h>
 
 #include <aspect/simulator_access.h>
 #include <aspect/simulator_signals.h>
@@ -309,6 +310,20 @@ namespace aspect
         ParticleVelocity
         get_particle_velocity_choice() const;
 
+        /**
+         * Return the minimum number of particles per cell specified in the
+         * parameter file for this particle manager.
+         */
+        unsigned int
+        get_min_particles_per_cell() const;
+
+        /**
+         * Return the maximum number of particles per cell specified in the
+         * parameter file for this particle manager.
+         */
+        unsigned int
+        get_max_particles_per_cell() const;
+
       private:
 
         /**
@@ -421,6 +436,12 @@ namespace aspect
          * these properties.
          */
         std::unique_ptr<Property::Manager<dim>> property_manager;
+
+        /**
+         * Scheme for determining the minimum and maximum particle
+         * count in each cell in this manager
+         */
+        std::unique_ptr<Population::Interface<dim>> population;
 
         /**
          * Strategy for particle load balancing.
