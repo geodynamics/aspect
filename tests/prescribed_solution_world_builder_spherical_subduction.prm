@@ -1,0 +1,58 @@
+# Enable if: ASPECT_WITH_WORLD_BUILDER
+# Verify that a WorldBuilder indicator prescribes the along-surface velocity
+# of a segmented subducting plate in a two-dimensional spherical geometry.
+
+set Dimension                    = 2
+set End time                     = 0
+set Use years instead of seconds = true
+set World builder file           = $ASPECT_SOURCE_DIR/tests/prescribed_solution_world_builder_spherical_subduction.wb
+
+subsection Geometry model
+  set Model name = chunk
+  subsection Chunk
+    set Chunk inner radius      = 5451e3
+    set Chunk outer radius      = 6371e3
+    set Chunk minimum longitude = 0
+    set Chunk maximum longitude = 25
+    set Longitude repetitions   = 15
+    set Radius repetitions      = 9
+  end
+end
+
+subsection Mesh refinement
+  set Initial global refinement = 0
+end
+
+subsection Initial temperature model
+  set List of model names = function
+  subsection Function
+    set Function expression = 300
+  end
+end
+
+subsection Prescribed solution
+  set List of model names = world builder
+end
+
+subsection Boundary velocity model
+  set Tangential velocity boundary indicators = west, east, inner, outer
+end
+
+subsection Gravity model
+  set Model name = radial constant
+end
+
+subsection Material model
+  set Model name = simple
+end
+
+subsection Solver parameters
+  subsection Stokes solver parameters
+    set Stokes solver type = block AMG
+    set Linear solver tolerance = 1e-2
+  end
+end
+
+subsection Postprocess
+  set List of postprocessors = velocity statistics, temperature statistics
+end
