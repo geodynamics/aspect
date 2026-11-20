@@ -12,4 +12,4 @@
 //
 // ------------------------------------------------------
 
-#include "benchmarks/simple_shear.cc"
+#include "../benchmarks/simple_shear.cc"

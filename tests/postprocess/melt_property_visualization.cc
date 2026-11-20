@@ -12,4 +12,4 @@
 //
 // ------------------------------------------------------
 
-#include "melt_transport_compressible.cc"
+#include "../melt_transport_compressible.cc"

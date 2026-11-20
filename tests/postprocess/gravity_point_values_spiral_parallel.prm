@@ -6,4 +6,4 @@
 
 set Dimension = 3
 
-include $ASPECT_SOURCE_DIR/tests/gravity_point_values_spiral.prm
+include $ASPECT_SOURCE_DIR/tests/postprocess/gravity_point_values_spiral.prm

@@ -12,4 +12,4 @@
 //
 // ------------------------------------------------------
 
-#include "no_adiabatic_heating_03.cc"
+#include "../no_adiabatic_heating_03.cc"

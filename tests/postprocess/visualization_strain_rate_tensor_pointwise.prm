@@ -2,7 +2,7 @@
 
 set Dimension = 2
 
-include $ASPECT_SOURCE_DIR/tests/visualization_strain_rate_tensor.prm
+include $ASPECT_SOURCE_DIR/tests/postprocess/visualization_strain_rate_tensor.prm
 
 
 subsection Postprocess
