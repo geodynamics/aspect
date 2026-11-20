@@ -100,4 +100,5 @@ benchmarks/elastic_line_load/doc/elastic_line_load.md
 benchmarks/free_surface_tractions/viscoelastic/README.md
 benchmarks/free_surface_tractions/viscous/README.md
 benchmarks/zhong_et_al_93/README.md
+benchmarks/rotation_average/doc/rotation_average.md
 :::
