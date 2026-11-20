@@ -97,7 +97,7 @@ namespace aspect
            * An average for weighted rotations based on minimizing the Frobenius norm between rotations.
            * Corresponds to $\mathbf{R}_{\mathrm{mean}} = \mathrm{argmin}_{\mathbf{R}} (\sum_i w_i||\mathbf{R}_i - \mathbf{R}||_F^2)$, represented by a quaternion.
            * Returns the output as a quaternion in the half-space where q.w $\geq$ 0.
-           * See Markley et.al. 2007 (doi:10.2514/1.28949).
+           * See Markley et al. 2007 (doi:10.2514/1.28949).
            */
           std::array<double,4>
           markley_average(const std::vector<std::array<double,4>> &quat_array, const std::vector<double> &weights) const;
@@ -114,14 +114,14 @@ namespace aspect
           */
 
           /**
-           * Returns the euclidian distance between two rotations, each represented by a quaternion.
-           * Euclidian here means the shortest path in the ambient space M(3), the space of all 3x3 Matrices.
+           * Returns the Euclidean distance between two rotations, each represented by a quaternion.
+           * Euclidean here means the shortest path in the ambient space M(3), the space of all 3x3 Matrices.
            * This metric is equivalent to the Frobenius norm between two Matrices $||R_1 - R_2||_F$
            * and lies in the interval $[0,2\sqrt{2}]$.
            * For a comparison of different metrics, see Huynh 2009 (https://doi.org/10.1007%2Fs10851-009-0161-2).
            */
           double
-          SO3_euclidian_metric(const std::array<double,4> &quaternion1, const std::array<double,4> &quaternion2) const;
+          SO3_euclidean_metric(const std::array<double,4> &quaternion1, const std::array<double,4> &quaternion2) const;
 
           /**
            * Sends a quaternion into the fundamental zone of the reference quaternion.
@@ -162,7 +162,7 @@ namespace aspect
           ComponentMask not_quaternion_properties;
 
           /**
-           * Particle interpolater that is used to interpolate all particle properties but quaternions.
+           * Particle interpolator that is used to interpolate all particle properties but quaternions.
            */
           std::unique_ptr<Interface<dim>> base_interpolator;
 

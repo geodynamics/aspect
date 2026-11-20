@@ -280,7 +280,7 @@ namespace aspect
 
       template <int dim>
       double
-      QuaternionAverage<dim>::SO3_euclidian_metric(const std::array<double,4> &quaternion1, const std::array<double,4> &quaternion2) const
+      QuaternionAverage<dim>::SO3_euclidean_metric(const std::array<double,4> &quaternion1, const std::array<double,4> &quaternion2) const
       {
         double inner_product = 0.0;
         for (unsigned int j=0; j<4; j++) inner_product += quaternion1[j]*quaternion2[j];
@@ -295,7 +295,7 @@ namespace aspect
         double objective_fct = 0.;
         for (unsigned int j=0; j<quat_array.size(); j++)
           {
-            objective_fct += weights[j]*Utilities::fixed_power<2>(SO3_euclidian_metric(quat_array[j],mean_quat));
+            objective_fct += weights[j]*Utilities::fixed_power<2>(SO3_euclidean_metric(quat_array[j],mean_quat));
           }
         return objective_fct;
       }
@@ -327,10 +327,10 @@ namespace aspect
         // find minimal metric distance representation
         unsigned int min_idx = 0;
         double metric;
-        double min_metric = 3; // max euclidian metric is ~2.83
+        double min_metric = 3; // max euclidean metric is ~2.83
         for (unsigned int j=0; j < possible_mutations.size(); j++)
           {
-            metric = SO3_euclidian_metric(possible_mutations[j], reference_quaternion);
+            metric = SO3_euclidean_metric(possible_mutations[j], reference_quaternion);
             if ((metric < min_metric))
               {
                 min_idx = j;
@@ -368,14 +368,14 @@ namespace aspect
         // avoid getting stuck in a non-optimal solution for a small number of particles
         std::array<double,4> quat_mean = markley_average(quat_array, weights);
 
-        // find the maximal euclidian distance from the initial mean
+        // find the maximal euclidean distance from the initial mean
         // std::array<double,4> sym_quat;
         // unsigned int max_idx = 0;
         // double metric; double max_metric = 0.0;
         // for (unsigned int j=0; j<n_particles; j++)
         //   {
         //     sym_quat = to_fundamental_zone(quat_array[j], quat_mean);
-        //     metric = SO3_euclidian_metric(sym_quat, quat_mean);
+        //     metric = SO3_euclidean_metric(sym_quat, quat_mean);
         //     if (metric > max_metric)
         //       {
         //         max_idx = j;
@@ -396,7 +396,7 @@ namespace aspect
               {
                 // only compute metrics in upper half triangle without diagonal
                 quat_sym = to_fundamental_zone(quat_array[j], quat_array[i]);
-                distances[i][j] = SO3_euclidian_metric(quat_sym, quat_array[i]);
+                distances[i][j] = SO3_euclidean_metric(quat_sym, quat_array[i]);
                 distances[j][i] = distances[i][j]; // fill lower half
                 obj += weights[j]*Utilities::fixed_power<2>(distances[i][j]);
               }

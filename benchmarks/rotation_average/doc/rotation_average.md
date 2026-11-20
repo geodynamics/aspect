@@ -25,7 +25,7 @@ Formally, the space of crystal orientation is then defined as a quotient set of 
 ```{math}
 SO(3)/G_{cr} = \{\mathbf{R}G_{cr}:\mathbf{R}\in SO(3)\} \text{ .}
 ```
-We can choose one specific representation of the quotient space, e.g. in terms of a range of euler angles. Then we can send all rotation into this range of values by applying the symmetry operations. In crystallography people say they send all rotations into a fundamental zone. A fundamental zone is not unique and can be centered around any point in the space of rotations.
+We can choose one specific representation of the quotient space, e.g. in terms of a range of Euler angles. Then we can send all rotations into this range of values by applying the symmetry operations. In crystallography people say they send all rotations into a fundamental zone. A fundamental zone is not unique and can be centered around any point in the space of rotations.
 
 To define an average between crystal orientations we need to define a distance between two objects in the space $SO(3)/G_{cr}$. If we have two orientations $\mathbf{R}_1G_{cr}$ and $\mathbf{R}_2G_{cr}$, we find a distance by picking the symmetry operations $\mathbf{P}_i$ of one of the crystal orientations such that it is closest to the other. We can also say we send one crystal orientation into the fundamental zone around the other orientation. Following ({cite}`man:2022` Chapter 6.4) we can write,
 ```{math}
@@ -35,22 +35,22 @@ here $d(\cdot, \cdot)$ is a metric in the space of rotations.
 
 ## Definition of an Average
 
-An average in the space of rotations is defined as the rotation, which minimizes the squared distance to all samples (e.g. {cite}`moakher:2002`),
+An average in the space of rotations is defined as the rotation that minimizes the squared distance to all samples (e.g. {cite}`moakher:2002`),
 ```{math}
 :label: eqn:average_rotation
 \bar{\mathbf{R}} =  \underset{\mathbf{R}\in SO(3)}{\rm argmin}\sum_n d^2(\mathbf{R}_i,\mathbf{R}) \text{ .}
 ```
-In this interplator we will use the distance between two rotation matrices,
+In this interpolator we will use the distance between two rotation matrices,
 ```{math}
 :label: eqn:euclidean_distance
 d_{\rm{eucl.}}(\mathbf{R}_1,\mathbf{R}_2) = ||\mathbf{R}_1- \mathbf{R}_2||_F \text{ ,}
 ```
-where $|| \cdot ||_F$ denotes the Frobenius norm, $||\mathbf{A}||_F:= \sqrt{\mathrm{Tr}(\mathbf{A}^T \mathbf{A}) }$. This metric is usually called the euclidian distance as it is a straight line through the ambient space $\mathcal{M}(3)$, the space of all 3x3 matrices. For a general crystal symmetry, the minimization problem we have to solve becomes,
+where $|| \cdot ||_F$ denotes the Frobenius norm, $||\mathbf{A}||_F:= \sqrt{\mathrm{Tr}(\mathbf{A}^T \mathbf{A}) }$. This metric is usually called the Euclidean distance as it is a straight line through the ambient space $\mathcal{M}(3)$, the space of all 3x3 matrices. For a general crystal symmetry, the minimization problem we have to solve becomes,
 ```{math}
 :label: eqn:symmetry_average
 \bar{\mathbf{R}} =  \underset{\mathbf{R}\in SO(3)}{\rm argmin}\sum_i d_{SO(3)/G_{cr}}^2(\mathbf{R}_i G_{cr},\mathbf{R}G_{cr}) = \underset{\mathbf{R}\in SO(3)}{\rm argmin}\sum_i \min_{\mathbf{P}_i \in G_{cr}} d^2(\mathbf{R}_i\mathbf{P}_i,\mathbf{R}) \text{ .}
 ```
-This is a combinatoric optimization problem for finding the optimal fundamental zone where all rotations are closest to one another. We can also rewrite the problem as a minimization problem for the objective function,
+This is a combinatorial optimization problem for finding the optimal fundamental zone where all rotations are closest to one another. We can also rewrite the problem as a minimization problem for the objective function,
 ```{math}
 :label: eqn:objective_function
 F(\mathbf{R}, \{\mathbf{P}_i\}) =  \sum_i d^2(\mathbf{R}_i\mathbf{P}_i,\mathbf{R}) \text{ .}
@@ -64,13 +64,13 @@ To efficiently solve this minimization problem we represent rotations by unit qu
 \mathbf{v}' = \mathbf{R}\cdot \mathbf{v} = \mathbf{q}\circ \mathbf{v} \circ \mathbf{q}^{-1} \text{ .}
 ```
 With some algebra we can write the right-hand side as a rotation matrix and find the function $\mathbf{R}(\mathbf{q})$ and the backwards transform $\mathbf{q}(\mathbf{R})$ (https://en.wikipedia.org/wiki/Quaternions_and_spatial_rotation). Physically, unit quaternions are an axis-angle representation of a rotation. The scalar part gives $\cos(\alpha/2)$ and the vector part gives $\sin(\alpha/2)\mathbf{n}$. Here $\alpha$ is the rotation angle and $\mathbf{n}$ is the normalized rotation axis. Each rotation can then be represented by a quaternion, $\mathbf{q}$ or $-\mathbf{q}$, because rotating by the negative angle around the negative axis is exactly the same. Therefore, quaternions are a double cover of the space of rotations, and we will work in the half-space where $q.w > 0$.
-Just as for rotation matrices we can write a rotation by first $\mathbf{q}_1$ and then $\mathbf{q}_2$ as $\mathbf{q}' = \mathbf{q}_2 \circ \mathbf{q}_1$. If we rewrite the symmetry operations in terms of quaternions, $\mathbf{g}_i = \mathbf{q}(\mathbf{P}_i)$, one crystal orientation becomes the set $\mathbf{q}G_{cr} = \{\mathbf{q}\circ\mathbf{g}_i:\mathbf{g}_i \in G_{cr} \}$. For orthotropic symmetry the set of symmetry operations is (e.g. {cite}`kagan:1991`), $G_{\rm ortho.} = \{\pm 1, \pm \mathbf{i}, \pm \mathbf{j}, \pm \mathbf{k}\}$.
+Just as for rotation matrices, we can write a rotation by first $\mathbf{q}_1$ and then $\mathbf{q}_2$ as $\mathbf{q}' = \mathbf{q}_2 \circ \mathbf{q}_1$. If we rewrite the symmetry operations in terms of quaternions, $\mathbf{g}_i = \mathbf{q}(\mathbf{P}_i)$, one crystal orientation becomes the set $\mathbf{q}G_{cr} = \{\mathbf{q}\circ\mathbf{g}_i:\mathbf{g}_i \in G_{cr} \}$. For orthotropic symmetry the set of symmetry operations is (e.g. {cite}`kagan:1991`), $G_{\rm ortho.} = \{\pm 1, \pm \mathbf{i}, \pm \mathbf{j}, \pm \mathbf{k}\}$.
 
-Quaternions also enable us to efficiently compute the euclidian distance between two rotations as {cite}`huynh:2009`,
+Quaternions also enable us to efficiently compute the Euclidean distance between two rotations as {cite}`huynh:2009`,
 ```{math}
     d_{\rm eucl.}(\mathbf{q}_1, \mathbf{q_2}) = 2\sqrt{(2(1-|\mathbf{q}_1\cdot\mathbf{q}_2|^2))} \text{ .} \\
 ```
-With the euclidian metric and the symmetry operations we can define the objective function in terms of quaternions as,
+With the Euclidean metric and the symmetry operations we can define the objective function in terms of quaternions as,
 ```{math}
 F(\bar{\mathbf{q}}, \{\mathbf{g}_i\}) = \frac{1}{\sum_j w_j}\sum_i w_i 8(1 - |\bar{\mathbf{q}}\cdot(\mathbf{q}_i\circ\mathbf{g}_i)|^2) \text{ ,}
 ```
@@ -86,14 +86,14 @@ with the 4x4 traceless matrix,
     \mathbf{K} = 4\sum_i w_i\mathbf{q}_i\mathbf{q}_i^T - \mathbf{I}_4\sum_i w_i \text{ .}
 ```
 The eigenvector corresponding to the maximum eigenvalue of $\mathbf{K}$ solves the maximization problem Equ. {math:numref}`eqn:markley_average_maximization`. As the matrix is traceless the largest eigenvalue will always be positive or exactly zero. I will give the result of this procedure the name $\bar{\mathbf{q}}_{\rm mk07}$ and define it as,
-```math
+```{math}
     \bar{\mathbf{q}}_{\rm mk07}(\{\mathbf{q}_i\}, \{w_i\}) =  \underset{\mathbf{q}\in \mathbb{H}}{\rm argmin} \sum_i w_i d^2_{\rm eucl.}(\mathbf{R}(\mathbf{q}_i), \mathbf{R}(\mathbf{q}))
 ```
 **Note: This average is valid for general rotations** or crystals with triclinic symmetry (no symmetry objects except the identity). In the interpolator this function is called markley average.
 
 ## Algorithm
 
-I propose the following algorithm to solve the optimization problem {math:numref}`eqn:symmetry_average`. Our mean value and the set of symmetry operations will be denoted as $\bar{\mathbf{q}}^n$ and $\{\mathbf{g}^n_i\}$ for each iteration $n$. $n$ is restricted to a maximum number of iterations set to 50 as I have not seen more than 20 iteration for 1000 crystal orientations.
+I propose the following algorithm to solve the optimization problem {math:numref}`eqn:symmetry_average`. Our mean value and the set of symmetry operations will be denoted as $\bar{\mathbf{q}}^n$ and $\{\mathbf{g}^n_i\}$ for each iteration $n$. $n$ is restricted to a maximum number of iterations set to 50 as I have not seen more than 20 iterations for 1000 crystal orientations.
 
   1. Pick an initial guess $\bar{\mathbf{q}}^0$ and compute the objective function $F^0(\bar{\mathbf{q}}^{0}, \{\mathbf{g}_i^0\})$ with $\mathbf{g}_i^0$ projecting every rotation in the fundamental zone around $\bar{\mathbf{q}}^0$.
   2. Project all rotations into the fundamental zone around the guess.
@@ -105,7 +105,7 @@ I propose the following algorithm to solve the optimization problem {math:numref
      - true : repeat 2,3 and 4
      - false: return $\bar{\mathbf{q}}^n$
 
-The initial guess for the combinatorial optimization matters and we choose the orientation with the minimal objective function. More information and justification for this choices will be given in a publication at a later point. For the python version of the algorithm and some run time and accuracy statistics can be found in the git repository [OrientationAverages](https://github.com/Theo-Geo/OrientationAverages.git).
+The initial guess for the combinatorial optimization matters, and we choose the orientation with the minimal objective function. More information and justification for these choices will be given in a publication at a later point. For the Python version of the algorithm and some runtime and accuracy statistics, see the Git repository [OrientationAverages](https://github.com/Theo-Geo/OrientationAverages.git).
 
 ## Benchmark cases
 
@@ -127,7 +127,7 @@ With the Postprocessor and the Particles we generate an average crystal orientat
 
 The full prm is located in [/benchmarks/rotation_average/convection_box_orthorhombic.prm](https://www.github.com/geodynamics/aspect/blob/main/benchmarks/rotation_average/convection_box_orthorhombic.prm).
 
-To compare to the previously implemented way of averaging rotations I also included an adaptation of the convection box case with euler angles
+To compare to the previously implemented way of averaging rotations, I also included an adaptation of the convection box case with Euler angles.
 
 ```{literalinclude} euler_angle.part.prm
 ```
@@ -148,7 +148,7 @@ If you do not want to compute the rotation axis and angle directly, you can also
 \mathbf{v}_a = (q_x^2 - q_y^2 - q_z^2 + q_w^2,\ 2(q_x q_y + q_z q_w),\ 2(q_x q_z - q_y q_w))^T \text{ .}
 ```
 
-For euler angles, the first row of the passive rotation matrix defined in `aspect::Utilities::zxz_euler_angles_to_rotation_matrix` gives back the a-axis.
+For Euler angles, the first row of the passive rotation matrix defined in `aspect::Utilities::zxz_euler_angles_to_rotation_matrix` gives back the a-axis.
 ```{math}
 \mathbf{v}_a = (\cos(\phi_2)\cos(\phi_1) - \cos(\theta)\sin(\phi_1)\sin(\phi_2),\ -( \cos(\phi_2)\sin(\phi_1) + \cos(\theta)\cos(\phi_1)\sin(\phi_2)),\ -\sin(\phi_2)\sin(\theta) \ )^T
 ```
@@ -174,7 +174,7 @@ At this point, the only implemented rotation average was the Euler-angle average
 ```{figure-md} fig:rotation_average_t1
 <img src="average_comparison.*" style="width:100.0%" />
 
-Expected output of a 2d convection box model in its spin up phase. White arrows are the velocity. Black lines are the 100-axis tracked on particles. White lines is the average 100-axis interpolated to the model grid.
+Expected output of a 2D convection box model in its spin-up phase. White arrows are the velocity. Black lines are the 100-axis tracked on particles. White lines are the average 100-axis interpolated to the model grid.
 ```
 In the figure one can see the a-axis or 100-axis orientation of olivine. The black lines are the expected output tracked on particles and the white lines are the interpolated output on the fields. As we use a cell-wide average and discontinuous elements, there are multiple lines at each evaluation point.
 
@@ -183,7 +183,7 @@ In areas where crystal orientations are close to one another, the triclinic and 
 ```{figure-md} fig:rotation_average_tlast
 <img src="average_comparison_tlast.*" style="width:100.0%" />
 
-Expected output of a 2d convection box model in its steady state phase. White arrows are the velocity. Black lines are the 100-axis tracked on particles. White lines is the average 100-axis interpolated to the model grid.
+Expected output of a 2D convection box model in its steady state phase. White arrows are the velocity. Black lines are the 100-axis tracked on particles. White lines are the average 100-axis interpolated to the model grid.
 ```
 A more thorough evaluation of the new algorithm to coupled anisotropic viscous flow will be given in a future paper.
 
