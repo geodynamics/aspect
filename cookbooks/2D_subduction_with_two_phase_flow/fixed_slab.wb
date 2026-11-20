@@ -1,0 +1,95 @@
+// Composition 1 is bound fluid
+// Composition 2 is peridotite
+// Composition 3 is gabbro
+// Composition 4 is MORB
+// Composition 5 is sediment
+
+{
+  "version": "1.0",
+  "gravity model":{"model":"uniform", "magnitude":9.81},
+  "cross section":[[0,0],[50e3,0]],
+  "surface temperature":273,
+  "thermal expansion coefficient":3.0e-5, 
+  "thermal diffusivity":1.0e-6,
+  "potential mantle temperature":1573,
+  "features":
+  [
+    // Define a mantle layer, which has a uniform temperature of 1573 K. Following the order of compositional fields
+    // listed in the cookbook PRM file, the mantle layer is defined as the third compositional field (index 2), 
+    // which represents peridotite.
+    {"model": "mantle layer", "name": "peridotite mantle", "coordinates": [[-500e3, 100e3], [-500e3, -100e3], [16000e3, -100e3], [16000e3, 100e3]],
+     "min depth": 0, "max depth":10000e3, 
+     "composition models": 
+     [{"model": "uniform", "min depth":0.0, "max depth":10000e3, "compositions": [2]}],
+     "temperature models":
+     [{"model": "uniform", "min depth":0.0, "max depth":10000e3, "temperature": 1573}]},
+    
+     // Define an overriding plate, which is 80 km thick, 2500 km long, has a linear temperature profile, and is assigned the peridotite composition
+     {"model": "oceanic plate", "name": "Overriding Plate",
+     "coordinates": [[4000e3, -100e3], [4000e3, 100e3], [7500e3, 100e3], [7500e3, -100e3]],
+     "min depth": 0,
+     "max depth": 80e3,
+     "composition models": [{"model": "uniform", "compositions": [2], "min depth":0, "max depth": 100e3}],
+     "temperature models": [{"model": "linear", "top temperature":273, "bottom temperature":1573, "min depth": 0, "max depth":80e3}]
+   },
+
+    // Define the unsubducted portion of the subducting plate. The plate is 3000 km long, 120 km thick, has a plate cooling geotherm,
+    // and is assigned a layered composition. From top to bottom, the layers are a 10 km thick sediment, a 10 km thick mid-ocean ridge
+    // basalt, a 10 km thick gabbro, and a 90 km thick peridotite, with and initial bound water equal to 2 wt%, 1 wt%, 0.5 wt%, and 1 wt%,
+    // respectively.
+    {"model": "oceanic plate", "name": "Subducting Plate",
+      "coordinates": [[4000e3, -100e3], [4000e3, 100e3], [1000e3, 100e3], [1000e3, -100e3]],
+      "min depth": 0,
+      "max depth": 300e3,
+      "composition models": 
+      [
+        {"model": "tian water content", "compositions": [1], "min depth":0.0, "max depth": 10e3, "lithology": "sediment", "initial water content": 2, "cutoff pressure": 1},
+        {"model": "tian water content", "compositions": [1], "min depth":10e3, "max depth": 20e3, "lithology": "MORB", "initial water content": 1, "cutoff pressure": 16},
+        {"model": "tian water content", "compositions": [1], "min depth":20e3, "max depth": 30e3, "lithology": "gabbro", "initial water content": 0.5, "cutoff pressure": 26},
+        {"model": "tian water content", "compositions": [1], "min depth":30e3, "max depth": 120e3, "lithology": "peridotite", "initial water content": 1, "cutoff pressure": 10},
+        {"model": "uniform", "compositions": [5], "min depth":0.0, "max depth": 10e3, "operation":"add"},
+        {"model": "uniform", "compositions": [4], "min depth":10e3, "max depth": 20e3, "operation":"add"},
+        {"model": "uniform", "compositions": [3], "min depth":20e3, "max depth": 30e3, "operation":"add"},
+        {"model": "uniform", "compositions": [2], "min depth":30e3, "max depth": 120e3, "operation":"add"}],
+
+      "temperature models": [{"model": "plate model", "ridge coordinates": [[[1000e3,-100e3],[1000e3,100e3]]],
+      "spreading velocity": 0.03
+      , "min depth": 0, "max depth": 300e3, "bottom temperature": 1573}]
+    },
+
+    // Define the subducted portion of the subducting plate. The slab has the same compositional properties as the 
+    // unsubducted portion defined in the feature above. The slab is 1100 km long in total, first curving to a dip 
+    // of 45 degrees over 300 km, and then continuing down at a constant 45 degree dip for another 800 km. The 
+    // temperature is defined using a plate cooling model for the base of the plate, and an infinite half-space
+    // model for the top of the plate. 
+    {"model":"subducting plate", "name":"Slab",   
+
+      "coordinates":[[4000e3, -100e3],[4000e3, 100e3]], 
+      "dip point":[1e10,0],"max depth":1000e3,
+	    "segments":[{"length":300e3,"thickness":[300e3],"top truncation":[-50e3],"angle":[0,45]},
+                        {"length":500e3,"thickness":[300e3],"top truncation":[-50e3],"angle":[45,45]}, 
+                        {"length":300e3,"thickness":[300e3],"top truncation":[-50e3],"angle":[45,45]}],
+
+	    "composition models":[
+        {"model":"tian water content", "compositions":[1], "min distance slab top":0, "max distance slab top":10e3, "lithology":"sediment", "initial water content": 2, "cutoff pressure": 1},
+        {"model":"tian water content", "compositions":[1], "min distance slab top":10e3, "max distance slab top":20e3, "lithology":"MORB", "initial water content": 1, "cutoff pressure": 16},
+        {"model":"tian water content", "compositions":[1], "min distance slab top":20e3, "max distance slab top":30e3, "lithology":"gabbro", "initial water content": 0.5, "cutoff pressure": 26},
+        {"model":"tian water content", "compositions":[1], "min distance slab top":30e3, "max distance slab top":120e3, "lithology":"peridotite", "initial water content": 1, "cutoff pressure": 10},
+        {"model":"uniform", "compositions":[5], "min distance slab top":0.0, "max distance slab top":10e3, "operation":"add"},
+        {"model":"uniform", "compositions":[4], "min distance slab top":10e3, "max distance slab top":20e3, "operation":"add"},
+        {"model":"uniform", "compositions":[3], "min distance slab top":20e3, "max distance slab top":30e3, "operation":"add"},
+        {"model":"uniform", "compositions":[2], "min distance slab top":30e3, "max distance slab top":120e3, "operation":"add"}],
+    
+        "temperature models":[{"model":"mass conserving", 
+	      "reference model name": "plate model",
+		    "density":3300, "thermal conductivity":3.3, "adiabatic heating":false,
+		    "subducting velocity":0.03,
+                    "spreading velocity":0.03,
+		    "ridge coordinates":[[[1000e3,-100e3],[1000e3,100e3]]],
+	 	    "coupling depth":80e3, 
+		    "forearc cooling factor":1.0,
+		    "taper distance":150e3, 
+	 	    "min distance slab top":-200e3, "max distance slab top":300e3}] 
+	 }
+  ]
+}
