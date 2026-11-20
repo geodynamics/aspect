@@ -5554,18 +5554,18 @@ If a compositional field named &rsquo;noninitial\_plastic\_strain&rsquo; is incl
 :name: parameters:Material_20model/Visco_20Plastic/Thermal_20conductivities
 **Default value:** 3.0
 
-**Pattern:** [List of <[Double 0...MAX_DOUBLE (inclusive)]> of length 0...4294967295 (inclusive)]
+**Pattern:** [Anything]
 
-**Documentation:** List of thermal conductivities, for background material and compositional fields, for a total of N+1 values, where N is the number of all compositional fields or only those corresponding to chemical compositions. If only one value is given, then all use the same value. Units: \si{\watt\per\meter\per\kelvin}.
+**Documentation:** List of thermal conductivities, for background material and compositional fields, for a total of N+1 values for models with no phase transitions (or models where the value does not change across any of the phase transitions). For models with phase transitions, the list needs to contain each field name, including the background, for a total of N+1 names, and for each of these names, specify the value for each phase (giving P_c+1 values for each field, with P_c being the number of phase transitions for field c). Therefore, the total number of values given is N+P+1, with P = sum(P_c) the total number of phase transitions, summed over all phases. The format is background: value1|value2|...|valueP_1+1, field1:value1|...|valueP_2+1, ..., fieldN: value1|...|valueP_N+1. If only one value is given, then all fields/phases use the same value. Units: \si{\watt\per\meter\per\kelvin}.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Thermal diffusivities<parameters:Material_20model/Visco_20Plastic/Thermal_20diffusivities>`
 :name: parameters:Material_20model/Visco_20Plastic/Thermal_20diffusivities
 **Default value:** 0.8e-6
 
-**Pattern:** [List of <[Double 0...MAX_DOUBLE (inclusive)]> of length 0...4294967295 (inclusive)]
+**Pattern:** [Anything]
 
-**Documentation:** List of thermal diffusivities, for background material and compositional fields, for a total of N+1 values, where N is the number of all compositional fields or only those corresponding to chemical compositions. If only one value is given, then all use the same value.  Units: \si{\meter\squared\per\second}.
+**Documentation:** List of thermal diffusivities, for background material and compositional fields, for a total of N+1 values for models with no phase transitions (or models where the value does not change across any of the phase transitions). For models with phase transitions, the list needs to contain each field name, including the background, for a total of N+1 names, and for each of these names, specify the value for each phase (giving P_c+1 values for each field, with P_c being the number of phase transitions for field c). Therefore, the total number of values given is N+P+1, with P = sum(P_c) the total number of phase transitions, summed over all phases. The format is background: value1|value2|...|valueP_1+1, field1:value1|...|valueP_2+1, ..., fieldN: value1|...|valueP_N+1. If only one value is given, then all fields/phases use the same value. Units: \si{\meter\squared\per\second}.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Thermal expansivities<parameters:Material_20model/Visco_20Plastic/Thermal_20expansivities>`
