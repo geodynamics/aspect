@@ -20,8 +20,8 @@ The SolCx benchmark computes the Stokes flow field of a fluid driven by
 spatial density variations, subject to a spatially variable viscosity.
 Specifically, the domain is $\Omega=[0,1]^2$, gravity is $\mathbf
 g=(0,-1)^T$ and the density is given by
-$\rho(\mathbf x)=\sin(\pi x_1)\cos(\pi x_2)$; this can be considered a density
-perturbation to a constant background density. The viscosity is
+$\rho(\mathbf x)=\rho_0-\sin(\pi x_2)\cos(\pi x_1)$,
+where $\rho_0$ is the constant background density. The viscosity is
 ```{math}
 \begin{aligned}
   \eta(\mathbf x) = \left\{
