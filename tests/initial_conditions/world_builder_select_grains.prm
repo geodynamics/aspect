@@ -2,9 +2,9 @@
 # This test is a copy of world_builder_simple.prm and checks that we can select
 # a subset of grains for which to evaluate the world builder.
 
-include $ASPECT_SOURCE_DIR/tests/world_builder_select_composition.prm
+include $ASPECT_SOURCE_DIR/tests/initial_conditions/world_builder_select_composition.prm
 
-set World builder file                     = $ASPECT_SOURCE_DIR/tests/world_builder_select_grains.wb
+set World builder file                     = $ASPECT_SOURCE_DIR/tests/initial_conditions/world_builder_select_grains.wb
 set Use years instead of seconds           = false
 set Adiabatic surface temperature = 1613
 set End time = 0
