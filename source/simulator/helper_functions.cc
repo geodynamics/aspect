@@ -33,6 +33,7 @@
 #include <aspect/postprocess/visualization.h>
 #include <aspect/prescribed_solution/interface.h>
 #include <aspect/prescribed_stokes_solution/interface.h>
+#include <aspect/simulator/reaction_progress.h>
 #include <aspect/simulator/solver/stokes_matrix_free.h>
 
 #include <deal.II/base/index_set.h>
@@ -1918,6 +1919,7 @@ namespace aspect
 
           else if (parameters.reaction_solver_type == Parameters<dim>::ReactionSolverType::fixed_step)
             {
+              const auto &composition_descriptions = introspection.get_composition_descriptions();
               for (unsigned int i=0; i<number_of_reaction_steps; ++i)
                 {
                   // Loop over composition element
@@ -1934,10 +1936,13 @@ namespace aspect
                           if (!field.is_temperature())
                             {
                               const unsigned int c = field.field_index() - 1;
-                              // simple forward euler
-                              in.composition[j][c] = in.composition[j][c]
-                                                     + reaction_time_step_size * reaction_rate_outputs->reaction_rates[j][c];
-                              accumulated_reactions_C[j][c] += reaction_time_step_size * reaction_rate_outputs->reaction_rates[j][c];
+                              double increment = reaction_time_step_size * reaction_rate_outputs->reaction_rates[j][c];
+                              if (composition_descriptions[c].type == CompositionalFieldDescription::reaction_progress)
+                                increment = internal::apply_reaction_progress_increment(in.composition[j][c], increment);
+                              else
+                                in.composition[j][c] += increment;
+
+                              accumulated_reactions_C[j][c] += increment;
                             }
                         }
                       in.temperature[j] = in.temperature[j]
