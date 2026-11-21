@@ -2,7 +2,7 @@
 
 set Dimension = 2
 
-include $ASPECT_SOURCE_DIR/tests/visualization_shear_stress.prm
+include $ASPECT_SOURCE_DIR/tests/postprocess/visualization_shear_stress.prm
 
 
 subsection Postprocess

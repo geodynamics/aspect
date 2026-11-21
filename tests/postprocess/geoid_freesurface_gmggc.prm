@@ -2,7 +2,7 @@
 # a 3D spherical shell.
 # MPI: 2
 
-include $ASPECT_SOURCE_DIR/tests/geoid_freesurface.prm
+include $ASPECT_SOURCE_DIR/tests/postprocess/geoid_freesurface.prm
 
 subsection Solver parameters
   subsection Stokes solver parameters

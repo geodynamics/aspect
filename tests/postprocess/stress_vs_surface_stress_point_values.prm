@@ -5,7 +5,7 @@
 
 set Dimension                              = 2
 
-include $ASPECT_SOURCE_DIR/tests/stress_vs_surface_stress.prm
+include $ASPECT_SOURCE_DIR/tests/postprocess/stress_vs_surface_stress.prm
 
 
 subsection Postprocess

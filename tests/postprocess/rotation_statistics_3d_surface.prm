@@ -7,7 +7,7 @@
 
 set Dimension                              = 3
 
-include $ASPECT_SOURCE_DIR/tests/rotation_statistics_3d.prm
+include $ASPECT_SOURCE_DIR/tests/postprocess/rotation_statistics_3d.prm
 
 
 subsection Prescribed Stokes solution

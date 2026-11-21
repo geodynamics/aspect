@@ -3,7 +3,7 @@
 
 set Dimension                              = 2
 
-include $ASPECT_SOURCE_DIR/tests/heat_flux_map_vis.prm
+include $ASPECT_SOURCE_DIR/tests/postprocess/heat_flux_map_vis.prm
 
 
 subsection Postprocess
