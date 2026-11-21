@@ -443,7 +443,8 @@ namespace aspect
               {
                 case stress_limiter:
                 {
-                  //Step 5b-1: always rescale the viscosity back to the yield surface
+                  // Step 5b-1: compute the stress limiter viscosity, which has a form similar to
+                  // Peierls creep, and harmonically average it with the non-yielding viscosity
                   const double viscosity_limiter = yield_stress / (2.0 * ref_strain_rate)
                                                    * std::pow((effective_edot_ii/ref_strain_rate),
                                                               1./exponents_stress_limiter[j] - 1.0);
@@ -741,8 +742,7 @@ namespace aspect
                            Patterns::Selection("diffusion|dislocation|frank kamenetskii|composite|minimum diffusion dislocation"),
                            "Select what type of viscosity law to use between the options diffusion, "
                            "dislocation, frank kamenetskii, composite and the minimum of diffusion and dislocation. "
-                           "Soon there will be an option "
-                           "to select a specific flow law for each assigned composition, "
+                           "The selected flow law is used for all compositions. "
                            "When the full strain rate is used to compute each viscosity "
                            "instead of the properly partitioned diffusion and dislocation creep "
                            "strain rates, it is recommended to take the minimum of the creep "

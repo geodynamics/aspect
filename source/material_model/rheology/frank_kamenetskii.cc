@@ -74,7 +74,8 @@ namespace aspect
                            "A viscosity prefactor for the viscosity approximation, "
                            "for a total of N+1 values, where N is the number of all compositional fields or only "
                            "those corresponding to chemical compositions. "
-                           "If only one value is given, then all use the same value.  Units: None");
+                           "If only one value is given, then all use the same value. "
+                           "Units: \\si{\\pascal\\second}.");
         prm.declare_entry ("Pressure prefactors for Frank Kamenetskii", "0.0",
                            Patterns::List(Patterns::Double (0.)),
                            "A prefactor for the pressure term in the viscosity approximation, "
@@ -90,15 +91,24 @@ namespace aspect
                            "Given for a total of N+1 values, where N is the number of all compositional fields "
                            "or only those corresponding to chemical compositions. If only one "
                            "value is given, then all use the same value. "
+                           "If this parameter is not set, the reference temperature is set to "
+                           "the value of the global parameter `Adiabatic surface temperature'; "
+                           "the default value listed here is only a placeholder that indicates "
+                           "this behavior. Independent of this parameter, `Adiabatic surface "
+                           "temperature' must be set to a positive value when the "
+                           "Frank-Kamenetskii flow law is used. "
                            "Units: K");
         prm.declare_entry ("Reference pressures for Frank Kamenetskii",
                            boost::lexical_cast<std::string>(std::numeric_limits<double>::max()),
                            Patterns::List(Patterns::Double (0.)),
                            "A reference pressure in the viscosity approximation which "
-                           "specifies where the FK pressure dependence goes to 0."
+                           "specifies where the FK pressure dependence goes to 0. "
                            "Given for a total of N+1 values, where N is the number of all compositional fields "
                            "or only those corresponding to chemical compositions. If only one "
                            "value is given, then all use the same value. "
+                           "If this parameter is not set, the reference pressure is set to "
+                           "the value of the global parameter `Surface pressure'; the default "
+                           "value listed here is only a placeholder that indicates this behavior. "
                            "Units: Pa");
       }
 
