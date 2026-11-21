@@ -38,6 +38,29 @@ namespace aspect
 {
   namespace Postprocess
   {
+    namespace internal
+    {
+      void
+      compute_surface_mass_density (const bool top_boundary,
+                                    const std::vector<double> &model_densities,
+                                    const std::vector<double> &topography,
+                                    const double density_above,
+                                    const double density_below,
+                                    std::vector<double> &surface_mass_density)
+      {
+        AssertDimension (model_densities.size(), topography.size());
+        AssertDimension (model_densities.size(), surface_mass_density.size());
+
+        for (unsigned int q=0; q<model_densities.size(); ++q)
+          {
+            const double rho_below = (top_boundary ? model_densities[q] : density_below);
+            const double rho_above = (top_boundary ? density_above : model_densities[q]);
+            surface_mass_density[q] = (rho_below - rho_above) * topography[q];
+          }
+      }
+    }
+
+
 
     template <int dim>
     GravityPointValues<dim>::GravityPointValues ()
@@ -350,11 +373,12 @@ namespace aspect
       // If requested, add the contribution of the mass associated with the
       // dynamic topography of the top and/or bottom boundary. Each boundary
       // quadrature point is treated as a point mass G * sigma * dA, where
-      // sigma = delta_rho * h is the surface mass density of the deflected
-      // boundary. delta_rho uses the 'Density above' and 'Density below'
-      // parameters of the 'dynamic topography' postprocessor, i.e., the same
-      // density contrasts that were used to compute h. The sign convention
-      // for the bottom boundary follows the one of the 'geoid' postprocessor.
+      // sigma = (rho_below - rho_above) * h is the surface mass density of
+      // the deflected boundary, computed by
+      // internal::compute_surface_mass_density(). It uses the 'Density
+      // above' and 'Density below' parameters of the 'dynamic topography'
+      // postprocessor, i.e., the same density contrasts that were used to
+      // compute h, and the sign convention of the 'geoid' postprocessor.
       // Boundaries that are deformed by mesh deformation are skipped, because
       // their topography mass is already part of the volume integral above.
       const bool add_surface_topography = include_surface_topography && !surface_is_deformed;
@@ -394,6 +418,7 @@ namespace aspect
           face_in.requested_properties = MaterialModel::MaterialProperties::density;
 
           std::vector<double> topography_values (n_face_q_points);
+          std::vector<double> surface_mass_density (n_face_q_points);
 
           for (const auto &cell : this->get_dof_handler().active_cell_iterators())
             if (cell->is_locally_owned() && cell->at_boundary())
@@ -419,15 +444,16 @@ namespace aspect
                   face_in.reinit (fe_face_values, cell, this->introspection(), this->get_solution());
                   this->get_material_model().evaluate (face_in, face_out);
 
+                  internal::compute_surface_mass_density (at_top,
+                                                          face_out.densities,
+                                                          topography_values,
+                                                          density_above,
+                                                          density_below,
+                                                          surface_mass_density);
+
                   for (unsigned int q = 0; q < n_face_q_points; ++q)
                     {
-                      const double delta_rho = (at_top
-                                                ?
-                                                face_out.densities[q] - density_above
-                                                :
-                                                density_below - face_out.densities[q]);
-
-                      const double G_sigma_dA = G * delta_rho * topography_values[q] * fe_face_values.JxW(q);
+                      const double G_sigma_dA = G * surface_mass_density[q] * fe_face_values.JxW(q);
 
                       for (unsigned int p=0; p < n_satellites; ++p)
                         {
@@ -859,7 +885,12 @@ namespace aspect
                              "the gravitational acceleration of a mass sheet jumps by "
                              "$4 \\pi G \\sigma$ across the sheet, so the acceleration "
                              "should be evaluated at points above the surface rather "
-                             "than exactly on it; the potential is continuous.");
+                             "than exactly on it; the potential is continuous. "
+                             "This option is currently only available for incompressible "
+                             "models. Supporting compressible models would require the "
+                             "volume integral and the density contrast across the "
+                             "boundary to use the same reference density, which is not "
+                             "implemented yet.");
           prm.declare_entry ("Include bottom topography contribution", "false",
                              Patterns::Bool (),
                              "Whether to include the gravitational contribution of the mass "
@@ -871,7 +902,9 @@ namespace aspect
                              "'Density below' parameter of the dynamic topography "
                              "postprocessor. If the bottom boundary is deformed by a mesh "
                              "deformation plugin, this contribution is already included "
-                             "through the deformed mesh and is not added again.");
+                             "through the deformed mesh and is not added again. "
+                             "As for the surface contribution, this option is currently "
+                             "only available for incompressible models.");
           prm.declare_entry ("Precision in gravity output", "12",
                              Patterns::Integer (1),
                              "Set the precision of gravity acceleration, potential "
@@ -961,6 +994,13 @@ namespace aspect
                        Plugins::plugin_type_matches<const GeometryModel::Sphere<dim>> (this->get_geometry_model()) ||
                        Plugins::plugin_type_matches<const GeometryModel::Chunk<dim>> (this->get_geometry_model()),
                        ExcMessage ("This postprocessor can only be used if the geometry is a sphere, spherical shell or spherical chunk."));
+          AssertThrow (!(include_surface_topography || include_bottom_topography)
+                       || !this->get_material_model().is_compressible(),
+                       ExcMessage ("The surface and bottom topography contributions to gravity "
+                                   "are only implemented for incompressible models. Compressible "
+                                   "models would require the same reference density in the "
+                                   "volume integral and in the density contrast across the "
+                                   "boundary, which is not implemented yet."));
           AssertThrow (! this->get_material_model().is_compressible(),
                        ExcMessage("This postprocessor was only tested for incompressible models so far."));
           AssertThrow (dim==3,
