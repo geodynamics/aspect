@@ -1,0 +1,24 @@
+[build-system]
+requires = ["setuptools>=64"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "aspect-pyvista"
+version = "0.1.0"
+description = "Helper functions for plotting ASPECT simulation results with PyVista"
+requires-python = ">=3.10"
+dependencies = [
+    "pyvista",
+    "numpy",
+    "matplotlib",
+    "cmcrameri",
+]
+
+[project.optional-dependencies]
+docs = []
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools]
+license-files = []

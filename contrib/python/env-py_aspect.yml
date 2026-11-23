@@ -9,3 +9,5 @@ dependencies:
   - matplotlib
   - libnetcdf
   - cmcrameri
+  - pip:
+    - -e ./plotting
