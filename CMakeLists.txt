@@ -396,11 +396,11 @@ if(ASPECT_WITH_WORLD_BUILDER)
     # if we configured with 0.5.0 before, we have a stray include file here. delete it.
     file(REMOVE "${CMAKE_BINARY_DIR}/include/world_builder/config.h")
 
-    set(WB_ENABLE_TESTS OFF)
-    set(WB_ENABLE_APPS OFF)
-    set(WB_ENABLE_HELPER_TARGETS OFF)
-    set(WB_ENABLE_PYTHON OFF)
-    set(WB_MAKE_FORTRAN_WRAPPER OFF)
+    set(WB_ENABLE_TESTS OFF CACHE BOOL "Disabled when building with ASPECT" FORCE)
+    set(WB_ENABLE_APPS OFF CACHE BOOL "Disabled when building with ASPECT" FORCE)
+    set(WB_ENABLE_HELPER_TARGETS OFF CACHE BOOL "Disabled when building with ASPECT" FORCE)
+    set(WB_ENABLE_PYTHON OFF CACHE BOOL "Disabled when building with ASPECT" FORCE)
+    set(WB_MAKE_FORTRAN_WRAPPER OFF CACHE BOOL "Disabled when building with ASPECT" FORCE)
 
     # First for debug mode...
     if(${ASPECT_BUILD_DEBUG} STREQUAL "ON")
