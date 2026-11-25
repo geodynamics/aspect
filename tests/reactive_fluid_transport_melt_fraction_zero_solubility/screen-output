@@ -14,7 +14,7 @@ Number of degrees of freedom: 74 (18+7+18+4+9+9+9)
 
 
    Postprocessing:
-     Melt fraction min/total/max: 0.01669, 6.676e+04, 0.01669
+     Melt fraction min/total/max: 0.01662, 6.649e+04, 0.01662
      Compositions min/max/mass:   0.01/0.01/4e+04 // 0.01/0.01/4e+04
 
 *** Timestep 1:  t=10000 years, dt=10000 years
@@ -23,9 +23,9 @@ Number of degrees of freedom: 74 (18+7+18+4+9+9+9)
    Solving porosity system ... 0 iterations.
    Skipping bound_fluid composition solve because RHS is zero.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system (AMG)... 7+0 iterations.
+   Solving Stokes system (AMG)... 6+0 iterations.
    Solving fluid velocity system... 1 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 2.72322e-16, 6.41101e-17, 0, 1
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 6.80792e-16, 8.67468e-17, 0, 1
       Relative nonlinear residual (total system) after nonlinear iteration 1: 1
 
 
@@ -34,8 +34,8 @@ Number of degrees of freedom: 74 (18+7+18+4+9+9+9)
    Continuing to the next timestep even though solution is not fully converged.
 
    Postprocessing:
-     Melt fraction min/total/max: 0.01669, 6.676e+04, 0.01669
-     Compositions min/max/mass:   0.02483/0.02483/9.931e+04 // 0/0/0
+     Melt fraction min/total/max: 0.01662, 6.649e+04, 0.01662
+     Compositions min/max/mass:   0.02473/0.02473/9.891e+04 // 0/0/0
 
 Termination requested by criterion: end time
 
