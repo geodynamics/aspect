@@ -526,18 +526,65 @@ namespace aspect
                                SolutionEvaluator<dim> &evaluator);
 
         /**
+        * Scratch data for evaluating velocities and advecting particles on
+        * one cell. This structure stores all the necessary variables and buffers
+        * that will be used by individual worker threads.
+        */
+        struct AdvectionScratchData
+        {
+          /**
+           * Constructor.
+           */
+          AdvectionScratchData(const SimulatorAccess<dim> &simulator);
+
+          /**
+           * Copy constructor.
+           */
+          AdvectionScratchData(const AdvectionScratchData &scratch_data);
+
+          /**
+           * Simulator access used to construct an independent evaluator when
+           * copying this scratch object.
+           */
+          const SimulatorAccess<dim> &simulator;
+
+          /**
+           * Evaluator with its own mapping information and evaluation buffers.
+           */
+          std::unique_ptr<SolutionEvaluator<dim>> evaluator;
+
+          /**
+           * Reference positions of the particles in the current cell.
+           */
+          small_vector<Point<dim>> positions;
+
+          /**
+           * Cell-local solution values, reused for old and current solutions.
+           */
+          small_vector<double> solution_values;
+
+          /**
+           * Velocities at the particle positions for the time steps
+           * used by the integrator.
+           */
+          std::vector<Tensor<1,dim>> velocities;
+          std::vector<Tensor<1,dim>> old_velocities;
+        };
+
+        /**
          * Advect the particles of one cell. Performs only one step for
-         * multi-step integrators. Needs to be called until integrator->continue()
-         * evaluates to false. Particles that moved out of their old cell
-         * during this advection step are removed from the local multimap and
-         * stored in @p particles_out_of_cell for further treatment (sorting
-         * them into the new cell).
+         * multi-step integrators. Particles remain associated with their old
+         * cells until advect_particles() sorts them after all cells have been
+         * processed.
+         *
+         * @param scratch_data The evaluator and temporary buffers, reused
+         * across cells.
          */
         void
         local_advect_particles(const typename DoFHandler<dim>::active_cell_iterator &cell,
                                const typename ParticleHandler<dim>::particle_iterator &begin_particle,
                                const typename ParticleHandler<dim>::particle_iterator &end_particle,
-                               SolutionEvaluator<dim> &evaluators);
+                               AdvectionScratchData &scratch_data);
 
         /**
          * This function registers the necessary functions to the

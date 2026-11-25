@@ -757,15 +757,33 @@ namespace aspect
 
 
     template <int dim>
+    Manager<dim>::AdvectionScratchData::AdvectionScratchData(const SimulatorAccess<dim> &simulator)
+      : simulator(simulator),
+        evaluator(construct_solution_evaluator(simulator,
+                                               update_values)),
+        solution_values(simulator.get_fe().dofs_per_cell)
+    {}
+
+
+
+    template <int dim>
+    Manager<dim>::AdvectionScratchData::AdvectionScratchData(const AdvectionScratchData &scratch_data)
+      : AdvectionScratchData(scratch_data.simulator)
+    {}
+
+
+
+    template <int dim>
     void
     Manager<dim>::local_advect_particles(const typename DoFHandler<dim>::active_cell_iterator &cell,
                                          const typename ParticleHandler<dim>::particle_iterator &begin_particle,
                                          const typename ParticleHandler<dim>::particle_iterator &end_particle,
-                                         SolutionEvaluator<dim> &evaluator)
+                                         AdvectionScratchData &scratch_data)
     {
       const unsigned int n_particles_in_cell = particle_handler->n_particles_in_cell(cell);
 
-      small_vector<Point<dim>> positions;
+      auto &positions = scratch_data.positions;
+      positions.clear();
       positions.reserve(n_particles_in_cell);
       for (auto particle = begin_particle; particle!=end_particle; ++particle)
         positions.push_back(particle->get_reference_location());
@@ -778,21 +796,24 @@ namespace aspect
 
 
       const bool use_fluid_velocity = (particle_velocity == ParticleVelocity::fluid);
+      auto &evaluator = *scratch_data.evaluator;
       auto &velocity_evaluator = evaluator.get_velocity_or_fluid_velocity_evaluator(use_fluid_velocity);
       auto &mapping_info = evaluator.get_mapping_info();
       mapping_info.reinit(cell, {positions.data(),positions.size()});
 
-      std::vector<Tensor<1,dim>> velocities;
-      std::vector<Tensor<1,dim>> old_velocities;
+      auto &solution_values = scratch_data.solution_values;
+      auto &velocities = scratch_data.velocities;
+      auto &old_velocities = scratch_data.old_velocities;
+      velocities.clear();
+      old_velocities.clear();
 
       if (required_solution_vectors[1] == true)
         {
-          small_vector<double> old_solution_values(this->get_fe().dofs_per_cell);
           cell->get_dof_values(this->get_old_solution(),
-                               old_solution_values.begin(),
-                               old_solution_values.end());
+                               solution_values.begin(),
+                               solution_values.end());
 
-          velocity_evaluator.evaluate({old_solution_values.data(),old_solution_values.size()},
+          velocity_evaluator.evaluate({solution_values.data(),solution_values.size()},
                                       EvaluationFlags::values);
 
           old_velocities.resize(n_particles_in_cell);
@@ -802,7 +823,6 @@ namespace aspect
 
       if (required_solution_vectors[2] == true)
         {
-          small_vector<double> solution_values(this->get_fe().dofs_per_cell);
           cell->get_dof_values(this->get_current_linearization_point(),
                                solution_values.begin(),
                                solution_values.end());
@@ -960,8 +980,7 @@ namespace aspect
                           "of the class FEPointEvaluation. The mapping currently in use does not support this path. "
                           "It is safe to uncomment this assertion, but you can expect a performance penalty."));
 
-        std::unique_ptr<SolutionEvaluator<dim>> evaluator = construct_solution_evaluator(*this,
-                                                             update_values);
+        AdvectionScratchData scratch_data(*this);
 
         // Loop over all cells and advect the particles cell-wise
         for (const auto &cell : this->get_dof_handler().active_cell_iterators())
@@ -976,7 +995,7 @@ namespace aspect
                   local_advect_particles(cell,
                                          particles_in_cell.begin(),
                                          particles_in_cell.end(),
-                                         *evaluator);
+                                         scratch_data);
                 }
             }
 
