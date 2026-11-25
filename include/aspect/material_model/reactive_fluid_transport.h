@@ -224,18 +224,13 @@ namespace aspect
          *
          * The zero solubility model describes a scenario where the
          * solid cannot accommodate any fluid (i.e., zero solubility).
-         * The fluid volume fraction in equilibrium with the solid
-         * at any point (stored in the melt_fractions vector) is
-         * equal to the sum of the bound fluid content and porosity,
-         * with the latter determined by the assigned initial
-         * porosity, fluid boundary conditions, and fluid
-         * transport through the model. Significantly, this reaction
-         * model is thus assuming that the bound water fraction is a
-         * volume fraction (i.e., since porosity is always a volume
-         * fraction). This latter assumption also requires the selected
-         * base model to be incompressible, as otherwise the advection
-         * equation would only be valid for mass and not volume
-         * fractions.
+         * The equilibrium free fluid mass fraction (stored in the
+         * melt_fractions vector) is the total water mass fraction of
+         * the material. The bound_fluid field is a mass fraction of
+         * the solid, and the porosity field is a volume fraction of
+         * the bulk material. Both are converted to mass fractions of
+         * the bulk material before being added. This reaction model
+         * requires an incompressible base model.
          *
          * The tian approximation model implements parametrized phase
          * diagrams from Tian et al., 2019 G3, https://doi.org/10.1029/2019GC008488

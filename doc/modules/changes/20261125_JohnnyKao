@@ -1,0 +1,5 @@
+Fixed: The zero solubility reaction model now computes the equilibrium free fluid
+mass fraction using the bound water content relative to the bulk material,
+conserving water mass during fluid release.
+<br>
+(Johnny Kao, 2026/11/25)
