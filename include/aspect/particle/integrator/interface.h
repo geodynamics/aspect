@@ -47,6 +47,12 @@ namespace aspect
            * the velocity at the updated particle positions is evaluated and
            * passed as input argument during the next call.
            *
+           * This function must be thread-safe because it may be called
+           * concurrently on multiple particle ranges. Implementations must only
+           * modify the supplied particles and thread-local data. Any functions
+           * called in this function, including geometry-model functions, must
+           * also support concurrent calls.
+           *
            * @param [in] begin_particle An iterator to the first particle to be moved.
            * @param [in] end_particle An iterator to the last particle to be moved.
            * @param [in] old_velocities The velocities at t_n, i.e. before the
