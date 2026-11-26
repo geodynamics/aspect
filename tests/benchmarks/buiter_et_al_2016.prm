@@ -1,4 +1,4 @@
-include ../../../benchmarks/buiter_et_al_2016_jsg/exp_1.prm
+include $ASPECT_SOURCE_DIR/benchmarks/buiter_et_al_2016_jsg/exp_1.prm
 
 subsection Termination criteria
   set End step = 0
