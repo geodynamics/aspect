@@ -199,7 +199,11 @@ namespace aspect
           {
             const Tensor<1,dim> fluid_velocity = (old_fluid_velocity_values[q] +
                                                   old_old_fluid_velocity_values[q]) / 2;
-            velocity_norm = std::max (fluid_velocity.norm(), velocity_norm);
+
+            if (advection_field.advection_method(introspection) == Parameters<dim>::AdvectionFieldMethod::fem_melt_field)
+              velocity_norm = fluid_velocity.norm();
+            else if (advection_field.is_temperature() && melt_handler->melt_parameters.heat_advection_by_melt)
+              velocity_norm = std::max(fluid_velocity.norm(), velocity_norm);
           }
 
         const double strain_rate = ((scratch.old_strain_rates[q]
