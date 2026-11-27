@@ -1010,8 +1010,8 @@ namespace aspect
         // deal.II TpetraWrappers::Vector currently has a multi-thread
         // race-condition if multiple threads access indidividual vector
         // elements. This is because the deal.II internal cached Kokkos
-        // view is initialized on first use, which can be simulatenously
-        // by multiple threads. This condition is unlikely, but
+        // view is initialized on first use, which can simultaneously
+        // happen on multiple threads. This condition is unlikely, but
         // needs to be fixed in deal.II. Until then, initialize the cached
         // view through a single-threaded read access of a single cell.
         if (MultithreadInfo::n_threads() > 1)
