@@ -2,7 +2,7 @@
 //
 // SPDX-License-Identifier: GPL-2.0-or-later
 //
-// SPDX-FileCopyrightText: Copyright (C) 2022 by the ASPECT authors.
+// SPDX-FileCopyrightText: Copyright (C) 2023-2026 by the ASPECT authors.
 //
 // This file is part of ASPECT.
 //
@@ -12,4 +12,4 @@
 //
 // ------------------------------------------------------
 
-#include "compressibility_iterated_stokes_direct_solver.cc"
+#include "../benchmarks/simple_shear.cc"

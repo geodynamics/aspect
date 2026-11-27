@@ -12,4 +12,4 @@
 //
 // ------------------------------------------------------
 
-#include "no_adiabatic_heating_03.cc"
+#include "../melt_transport_compressible.cc"
