@@ -1,0 +1,29 @@
+# Copy of visco_plastic_phases_compositions.prm,
+# but use different thermal diffusivities
+# for different compositions and phases.
+
+include $ASPECT_SOURCE_DIR/tests/visco_plastic_phases_compositions.prm
+
+subsection Mesh refinement
+  set Initial global refinement          = 1
+end
+
+subsection Material model
+  subsection Visco Plastic
+    set Thermal diffusivities = upper_crust: 1.e-6|1.e-7, lower_crust: 1.e-5, background:1.e-6|1.e-7|1.e-8
+  end
+end
+
+subsection Postprocess
+  set List of postprocessors = velocity statistics, mass flux statistics, visualization, material statistics
+
+  subsection Visualization
+    set Interpolate output            = false
+    set Output format                 = gnuplot
+    set List of output variables      = material properties
+
+    subsection Material properties
+      set List of material properties   = thermal conductivity, thermal diffusivity
+    end
+  end
+end
