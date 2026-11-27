@@ -20,6 +20,7 @@
 #include <aspect/postprocess/melt_statistics.h>
 #include <aspect/melt.h>
 #include <aspect/material_model/reaction_model/katz2003_mantle_melting.h>
+#include <aspect/material_model/reaction_model/fluid_extractor.h>
 
 namespace aspect
 {
@@ -155,6 +156,11 @@ namespace aspect
         * Object for computing the melt parameters
         */
         ReactionModel::Katz2003MantleMelting<dim> katz2003_model;
+
+        /*
+        * Object for computing fluid extraction parameters
+        */
+        ReactionModel::FluidExtractor<dim> fluid_extractor_model;
 
     };
 
