@@ -1,17 +1,13 @@
-# This test checks that the zero solubility reaction model correctly 
-# outputs the melt fractions. The initial bound water is 1 wt%, and there is
-# also an initial porosity of 1% (volume fraction). 
-# The melt fraction within the tian reaction model is calculated with:
-# m_f = wt%_bound_water + wt%_free_water
-# So we need to compute the wt%_free_water. The porosity is a volume fraction,
-# so we just need to convert it to a mass fraction with:
-# wt%_free_water = porosity * rho_f / rho_b
-# We use a fluid density of 2000 kg/m^3 and a solid density of 3000 kg/m^3, so the
-# bulk density rho_b is equal to:
-# rho_b = (1 - porosity) * rho_s + porosity * rho_f = 2990 kg/m^3.
-# This results in an initial wt%_free_water equal to 0.0067. Therefore, we can
-# determine that the melt fraction output should be equal to:
-# m_f = 0.01 + 0.0066889 = 0.0166889.
+# This test checks that the zero solubility reaction model conserves
+# water during fluid release. Initially, the solid contains 1 wt% bound
+# water and the porosity is 1% (volume fraction).
+# With solid and fluid densities of 3000 and 2000 kg/m^3, respectively,
+# the bulk density is 2990 kg/m^3. The total water mass fraction is
+# (0.99 * 3000 * 0.01 + 0.01 * 2000) / 2990 = 0.0166220735786.
+# After complete release, the bound water content is zero and the
+# porosity is 3000 * 0.0166220735786 /
+# (2000 + (3000 - 2000) * 0.0166220735786) = 0.024727598388.
+# The equilibrium free fluid mass fraction must remain unchanged.
 include $ASPECT_SOURCE_DIR/tests/reactive_fluid_transport_zero_solubility.prm
 
 set End time = 10e3

@@ -127,10 +127,10 @@ namespace aspect
                   }
                   case zero_solubility:
                   {
-                    // The fluid volume fraction in equilibrium with the solid
-                    // at any point (stored in the melt_fractions vector) is
-                    // equal to the sum of the bound fluid content and porosity.
-                    melt_fractions[q] = in.composition[q][bound_fluid_idx] + mass_fraction_porosity;
+                    // Bound water is a mass fraction of the solid, whereas
+                    // the free water is a mass fraction of the bulk material.
+                    // Convert both to the same mass basis before adding them.
+                    melt_fractions[q] = in.composition[q][bound_fluid_idx] * (1.0 - mass_fraction_porosity) + mass_fraction_porosity;
                     break;
                   }
                   case tian_approximation:
