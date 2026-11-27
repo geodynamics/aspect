@@ -797,8 +797,11 @@ namespace aspect
 
     // Setup a nonlinear solver control that only allows a single iteration
     SolverControl nonlinear_solver_control(1,1.0);
+
     // Announce that we did a single iteration, and assume we have converged
     nonlinear_solver_control.check(1,0.0);
+
+    // Signal nonlinear solver is done
     signals.post_nonlinear_solver(nonlinear_solver_control);
   }
 
@@ -814,8 +817,11 @@ namespace aspect
 
     // Setup a nonlinear solver control that only allows a single iteration
     SolverControl nonlinear_solver_control(1,1.0);
+
     // Announce that we did a single iteration, and assume we have converged
     nonlinear_solver_control.check(1,0.0);
+
+    // Signal nonlinear solver is done
     signals.post_nonlinear_solver(nonlinear_solver_control);
   }
 
@@ -829,8 +835,11 @@ namespace aspect
 
     // Setup a nonlinear solver control that only allows a single iteration
     SolverControl nonlinear_solver_control(1,1.0);
+
     // Announce that we did a single iteration, and assume we have converged
     nonlinear_solver_control.check(1,0.0);
+
+    // Signal nonlinear solver is done
     signals.post_nonlinear_solver(nonlinear_solver_control);
   }
 
@@ -872,8 +881,10 @@ namespace aspect
       }
     while (nonlinear_solver_control.check(nonlinear_iteration, relative_residual) == SolverControl::iterate);
 
-    AssertThrow(nonlinear_solver_control.last_check() != SolverControl::failure, ExcNonlinearSolverNoConvergence());
+    // Signal nonlinear solver is done, no matter if successful or not
     signals.post_nonlinear_solver(nonlinear_solver_control);
+
+    AssertThrow(nonlinear_solver_control.last_check() != SolverControl::failure, ExcNonlinearSolverNoConvergence());
   }
 
 
@@ -931,12 +942,13 @@ namespace aspect
       }
     while (nonlinear_solver_control.check(nonlinear_iteration, relative_residual) == SolverControl::iterate);
 
-    AssertThrow(nonlinear_solver_control.last_check() != SolverControl::failure, ExcNonlinearSolverNoConvergence());
-
     // Reset the linear tolerance to what it was at the beginning of the time step.
     parameters.linear_stokes_solver_tolerance = begin_linear_tolerance;
 
+    // Signal nonlinear solver is done, no matter if successful or not
     signals.post_nonlinear_solver(nonlinear_solver_control);
+
+    AssertThrow(nonlinear_solver_control.last_check() != SolverControl::failure, ExcNonlinearSolverNoConvergence());
   }
 
 
@@ -990,6 +1002,8 @@ namespace aspect
     SolverControl nonlinear_solver_control(1,1.0);
     // Announce that we did a single iteration, and assume we have converged
     nonlinear_solver_control.check(1,0.0);
+
+    // Signal nonlinear solver is done
     signals.post_nonlinear_solver(nonlinear_solver_control);
   }
 
@@ -1007,8 +1021,11 @@ namespace aspect
 
     // Setup a nonlinear solver control that only allows a single iteration
     SolverControl nonlinear_solver_control(1,1.0);
+
     // Announce that we did a single iteration, and assume we have converged
     nonlinear_solver_control.check(1,0.0);
+
+    // Signal nonlinear solver is done
     signals.post_nonlinear_solver(nonlinear_solver_control);
   }
 
@@ -1055,8 +1072,10 @@ namespace aspect
       }
     while (nonlinear_solver_control.check(nonlinear_iteration, relative_residual) == SolverControl::iterate);
 
-    AssertThrow(nonlinear_solver_control.last_check() != SolverControl::failure, ExcNonlinearSolverNoConvergence());
+    // Signal nonlinear solver is done, no matter if successful or not
     signals.post_nonlinear_solver(nonlinear_solver_control);
+
+    AssertThrow(nonlinear_solver_control.last_check() != SolverControl::failure, ExcNonlinearSolverNoConvergence());
   }
 
 
@@ -1164,9 +1183,10 @@ namespace aspect
     // Reset the linear tolerance to what it was at the beginning of the time step.
     parameters.linear_stokes_solver_tolerance = begin_linear_tolerance;
 
-    AssertThrow(nonlinear_solver_control.last_check() != SolverControl::failure, ExcNonlinearSolverNoConvergence());
-
+    // Signal nonlinear solver is done, no matter if successful or not
     signals.post_nonlinear_solver(nonlinear_solver_control);
+
+    AssertThrow(nonlinear_solver_control.last_check() != SolverControl::failure, ExcNonlinearSolverNoConvergence());
   }
 
 
@@ -1263,8 +1283,10 @@ namespace aspect
 
     }
 
-    AssertThrow(nonlinear_solver_control.last_check() != SolverControl::failure, ExcNonlinearSolverNoConvergence());
+    // Signal nonlinear solver is done, no matter if successful or not
     signals.post_nonlinear_solver(nonlinear_solver_control);
+
+    AssertThrow(nonlinear_solver_control.last_check() != SolverControl::failure, ExcNonlinearSolverNoConvergence());
   }
 
 
@@ -1344,8 +1366,10 @@ namespace aspect
       }
     while (nonlinear_solver_control.check(nonlinear_iteration, relative_residual) == SolverControl::iterate);
 
-    AssertThrow(nonlinear_solver_control.last_check() != SolverControl::failure, ExcNonlinearSolverNoConvergence());
+    // Signal nonlinear solver is done, no matter if successful or not
     signals.post_nonlinear_solver(nonlinear_solver_control);
+
+    AssertThrow(nonlinear_solver_control.last_check() != SolverControl::failure, ExcNonlinearSolverNoConvergence());
   }
 
 
@@ -1482,9 +1506,10 @@ namespace aspect
     // Reset the linear tolerance to what it was at the beginning of the time step.
     parameters.linear_stokes_solver_tolerance = begin_linear_tolerance;
 
-    AssertThrow(nonlinear_solver_control.last_check() != SolverControl::failure, ExcNonlinearSolverNoConvergence());
-
+    // Signal nonlinear solver is done, no matter if successful or not
     signals.post_nonlinear_solver(nonlinear_solver_control);
+
+    AssertThrow(nonlinear_solver_control.last_check() != SolverControl::failure, ExcNonlinearSolverNoConvergence());
   }
 }
 
