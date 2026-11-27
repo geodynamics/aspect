@@ -1,0 +1,29 @@
+# 1: Time step number
+# 2: Time (years)
+# 3: Time step size (years)
+# 4: Number of mesh cells
+# 5: Number of Stokes degrees of freedom
+# 6: Number of temperature degrees of freedom
+# 7: Number of degrees of freedom for all compositions
+# 8: Number of nonlinear iterations
+# 9: Iterations for temperature solver
+# 10: Iterations for Stokes solver
+# 11: Velocity iterations in Stokes preconditioner
+# 12: Schur complement iterations in Stokes preconditioner
+# 13: Minimal value for composition ve_stress_xx
+# 14: Maximal value for composition ve_stress_xx
+# 15: Global mass for composition ve_stress_xx
+# 16: Minimal value for composition ve_stress_yy
+# 17: Maximal value for composition ve_stress_yy
+# 18: Global mass for composition ve_stress_yy
+# 19: Minimal value for composition ve_stress_xy
+# 20: Maximal value for composition ve_stress_xy
+# 21: Global mass for composition ve_stress_xy
+# 22: Number of advected particles
+# 23: Particle file name
+# 24: RMS velocity (m/year)
+# 25: Max. velocity (m/year)
+# 26: Visualization file name
+0 0.000000000000e+00 0.000000000000e+00 400 3803 441 10800  2 0  53  54  54 0.00000000e+00 0.00000000e+00 0.00000000e+00  0.00000000e+00  0.00000000e+00  0.00000000e+00  0.00000000e+00 0.00000000e+00 0.00000000e+00 10000 output-viscoelastic_stress_build_up_particles_stress_boundary_conditions/particles/particles-00000 2.57523021e-02 4.46042958e-02 output-viscoelastic_stress_build_up_particles_stress_boundary_conditions/solution/solution-00000 
+1 1.000000000000e+03 1.000000000000e+03 400 3803 441 10800 20 0 801 821 821 6.11502011e+06 7.34749535e+06 6.12174990e+16 -7.34749249e+06 -6.11501983e+06 -6.12174991e+16 -1.72019126e+02 2.17396480e+02 3.26046991e+10 10032 output-viscoelastic_stress_build_up_particles_stress_boundary_conditions/particles/particles-00001 2.57523061e-02 4.46042958e-02 output-viscoelastic_stress_build_up_particles_stress_boundary_conditions/solution/solution-00001 
+2 2.000000000000e+03 1.000000000000e+03 520 5033 583 14040 20 0 437 457 457 1.15468888e+07 2.56765101e+07 1.23053932e+17 -2.56782853e+07 -1.15093972e+07 -1.23054165e+17 -1.69334056e+05 1.76133753e+05 1.08031538e+12 13095 output-viscoelastic_stress_build_up_particles_stress_boundary_conditions/particles/particles-00002 2.57523188e-02 4.46042958e-02 output-viscoelastic_stress_build_up_particles_stress_boundary_conditions/solution/solution-00002 
