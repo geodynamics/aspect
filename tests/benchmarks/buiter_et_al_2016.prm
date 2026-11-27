@@ -1,0 +1,12 @@
+include $ASPECT_SOURCE_DIR/benchmarks/buiter_et_al_2016_jsg/exp_1.prm
+
+subsection Termination criteria
+  set End step = 0
+end
+
+subsection Geometry model
+  subsection Box
+    set X repetitions = 20
+    set Y repetitions = 5
+  end
+end
