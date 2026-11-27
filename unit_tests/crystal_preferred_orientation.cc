@@ -18,6 +18,7 @@
 #include <aspect/particle/property/cpo_elastic_tensor.h>
 #include <deal.II/base/parameter_handler.h>
 #include <aspect/utilities.h>
+#include <aspect/particle/interpolator/quaternion_average.h>
 
 
 /**
@@ -2345,4 +2346,78 @@ TEST_CASE("Utilities Euler Angles to and from Rotation matrix")
     check_rotation_matrices_approx_equal(rot3, rot2);
   }
 
+}
+
+/**
+ * takes circular symmetry aware average of two rotations
+ */
+inline double symmetric_circular_mean(const double &angle1, const double &angle2,
+                                      const double &w1, const double &w2, const bool &reflect)
+{
+  const std::array<double,2> vec1 = {{ std::cos(angle1), std::sin(angle1) }};
+  std::array<double,2> vec2 = {{ std::cos(angle2), std::sin(angle2) }};
+  if (reflect)
+    {
+      // project vec2 into halfcircle of vec1
+      const double dot_product = vec1[0]*vec2[0] + vec1[1]*vec2[1];
+      if (dot_product < 0) vec2 = {{-vec2[0], -vec2[1] }};
+    }
+  // arctan (v_y, v_x)
+  const double mean_angle = std::atan2(w1*vec1[1] + w2*vec2[1], w1*vec1[0] + w2*vec2[0]);
+  return  aspect::Utilities::wrap_angle(mean_angle * aspect::constants::radians_to_degree);
+}
+
+TEST_CASE("standard circular mean and quaternion averages")
+{
+  aspect::Particle::Interpolator::QuaternionAverage<3> quat_ave;
+  quat_ave.set_symmetry_group(aspect::Particle::Interpolator::SymmetryGroup::orthorhombic);
+
+  double phi1 = 70.0;
+  double phi2 = 300.0;
+  std::vector<std::array<double,4>> quat_array (2);
+  // zxz_euler_angle_to_rotation_matrix returns a passive rotation
+  quat_array[0] =   aspect::Utilities::Quaternions::rotation_matrix_to_quaternion(aspect::Utilities::zxz_euler_angles_to_rotation_matrix(-phi1, 0, 0));
+  quat_array[1] =   aspect::Utilities::Quaternions::rotation_matrix_to_quaternion(aspect::Utilities::zxz_euler_angles_to_rotation_matrix(-phi2, 0, 0));
+
+  const std::array<std::vector<double>,3> weights_array = {{
+      {0.5, 0.5}, {2.0/3.0, 1.0/3.0}, {4.0/5.0, 1.0/5.0}
+    }
+  };
+  double true_rot_angle;
+  double rot_angle;
+  std::array<double,4> mean_quat;
+  for (const std::vector<double> &weights : weights_array)
+    {
+      // testing non symmetrized mean -> triclinic/markley average
+      true_rot_angle = symmetric_circular_mean(
+                         phi1*aspect::constants::degree_to_radians,
+                         phi2*aspect::constants::degree_to_radians,
+                         weights[0], weights[1], false);
+      mean_quat = quat_ave.markley_average(quat_array, weights);
+      rot_angle = aspect::Utilities::wrap_angle(2*std::acos(mean_quat[0])*aspect::constants::radians_to_degree);
+
+      INFO("testing circular average");
+      if ((weights[0]==0.5) and (weights[1]==0.5))
+        {
+          CHECK(true_rot_angle == Approx(5.0));
+          CHECK(rot_angle == Approx(5.0));
+        }
+      CHECK(true_rot_angle == Approx(rot_angle));
+
+      // testing symmetrized mean
+      true_rot_angle = symmetric_circular_mean(
+                         phi1*aspect::constants::degree_to_radians,
+                         phi2*aspect::constants::degree_to_radians,
+                         weights[0], weights[1], true);
+      mean_quat = quat_ave.symmetry_average(quat_array, weights);
+      rot_angle = aspect::Utilities::wrap_angle(2*std::acos(mean_quat[0])*aspect::constants::radians_to_degree);
+
+      INFO("testing symmetrized circular average");
+      if ((weights[0]==0.5) and (weights[1]==0.5))
+        {
+          CHECK(true_rot_angle == Approx(95.0));
+          CHECK(rot_angle == Approx(95.0));
+        }
+      CHECK(true_rot_angle == Approx(rot_angle));
+    }
 }

@@ -1,0 +1,464 @@
+/*
+  Copyright (C) 2016 - 2024 by the authors of the ASPECT code.
+
+ This file is part of ASPECT.
+
+ ASPECT is free software; you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation; either version 2, or (at your option)
+ any later version.
+
+ ASPECT is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
+
+ You should have received a copy of the GNU General Public License
+ along with ASPECT; see the file LICENSE.  If not see
+ <http://www.gnu.org/licenses/>.
+ */
+
+#include <aspect/particle/interpolator/quaternion_average.h>
+#include <aspect/particle/property/crystal_preferred_orientation.h>
+#include <aspect/particle/manager.h>
+
+#include <deal.II/grid/grid_tools.h>
+#include <deal.II/lac/lapack_full_matrix.h>
+#include <deal.II/base/signaling_nan.h>
+
+namespace aspect
+{
+  namespace Particle
+  {
+    namespace Interpolator
+    {
+      template <int dim>
+      std::vector<std::vector<double>>
+      QuaternionAverage<dim>::properties_at_points(const ParticleHandler<dim> &particle_handler,
+                                                   const std::vector<Point<dim>> &positions,
+                                                   const ComponentMask &selected_properties,
+                                                   const typename parallel::distributed::Triangulation<dim>::active_cell_iterator &cell) const
+      {
+        const typename ParticleHandler<dim>::particle_iterator_range particle_range =
+          particle_handler.particles_in_cell(cell);
+
+        const unsigned int n_particles = std::distance(particle_range.begin(),particle_range.end());
+
+        AssertThrow(n_particles > 0, ExcMessage("A cell does not contain any particles. This case is not yet supported by the quaternion average."));
+
+        const unsigned int n_particle_properties = particle_handler.n_properties_per_particle();
+        AssertThrow(selected_properties.size() == not_quaternion_properties.size(), ExcMessage("component masks have unequal length") );
+        ComponentMask selected_properties_not_quaternions = selected_properties & not_quaternion_properties;
+        const unsigned int n_quat_properties = selected_properties.n_selected_components() - selected_properties_not_quaternions.n_selected_components();
+
+        // average quaternion for each mineral
+        std::vector<std::array<double,4>> mean_quat (n_minerals);
+
+        // unit weights for average
+        // can be adapted to distance weighting in the future
+        const std::vector<double> unit_weights(n_particles, 1.0);
+        std::vector<double> normalized_weights(n_particles);
+        double norm = 0.0;
+        for (unsigned int j=0; j<n_particles; j++)
+          norm += unit_weights[j];
+        for (unsigned int j=0; j<n_particles; j++)
+          normalized_weights[j] = unit_weights[j]/norm;
+
+
+        // average mineral aggregates separately
+        for (unsigned int mineral_i = 0; mineral_i < n_minerals; ++mineral_i)
+          {
+            // makes sure to not average minerals that are not to be interpolated
+            if (n_quat_properties > 0)
+              {
+                // collect all quaternions in the cell
+                std::vector<std::array<double,4>> quat_array;
+                quat_array.reserve(n_particles);
+                for (const auto &particle : particle_range)
+                  {
+                    const ArrayView<const double> &particle_properties = particle.get_properties();
+                    std::array<double,4> quaternion;
+                    for (unsigned int j = 0; j < 4; ++j)
+                      quaternion[j] = particle_properties[quaternion_data_pos[mineral_i] + j];
+                    quat_array.push_back(quaternion);
+                  }
+                // avoid averaging at all if only one particle is present
+                if (n_particles == 1)
+                  mean_quat[mineral_i] = quat_array[0];
+                else
+                  {
+                    switch (symmetry_group)
+                      {
+                        case SymmetryGroup::triclinic:
+                        {
+                          mean_quat[mineral_i] = markley_average(quat_array, normalized_weights);
+                          break;
+                        }
+                        default:
+                          mean_quat[mineral_i] = symmetry_average(quat_array, normalized_weights);
+                      }
+                  }
+              }
+          }
+
+
+        std::vector<std::vector<double>> cell_properties(positions.size(),
+                                                          std::vector<double>(n_particle_properties,
+                                                                              numbers::signaling_nan<double>()));
+        if (selected_properties_not_quaternions.n_selected_components() > 0)
+          cell_properties = base_interpolator->properties_at_points(particle_handler,
+                                                                    positions,
+                                                                    selected_properties_not_quaternions,
+                                                                    cell);
+
+        for (unsigned int mineral_i = 0; mineral_i < n_minerals; mineral_i++)
+          if (n_quat_properties > 0)
+            for (unsigned int pos_index=0; pos_index<positions.size(); pos_index++)
+              for (unsigned int j = 0; j<4; j++)
+                cell_properties[pos_index][quaternion_data_pos[mineral_i]+j] = mean_quat[mineral_i][j];
+
+        return cell_properties;
+      }
+
+
+
+      template <int dim>
+      void
+      QuaternionAverage<dim>::declare_parameters (ParameterHandler &prm)
+      {
+        prm.enter_subsection("Interpolator");
+        {
+          prm.enter_subsection("Quaternion average");
+          {
+            prm.declare_entry("Base interpolation scheme", "cell average",
+                              Patterns::Selection(Interpolator::get_valid_interpolator_names_pattern<dim>()),
+                              "Scheme used to interpolate all properties except quaternions.");
+            prm.declare_entry("Symmetry group", "triclinic",
+                              Patterns::Selection("triclinic| orthorhombic"),
+                              "This determines which symmetry operators are used to project rotations "
+                              "into the fundamental zone of the respective symmetry group. "
+                              "triclinic: equates to no symmetry or the identity as the only symmetry operator. "
+                              "In this case a standard average for rotations represented by quaternions is used; see Markley et al. 2007. "
+                              "orthorhombic: symmetry group with 4 symmetry elements. "
+                              "In this case an experimental algorithm to take into account crystal symmetry is used.");
+          }
+          prm.leave_subsection();
+        }
+        prm.leave_subsection();
+
+      }
+
+
+
+      template <int dim>
+      void
+      QuaternionAverage<dim>::parse_parameters (ParameterHandler &prm)
+      {
+        prm.enter_subsection("Interpolator");
+        {
+          prm.enter_subsection("Quaternion average");
+          {
+            const std::string temp_symmetry_group = prm.get("Symmetry group");
+            if (temp_symmetry_group == "triclinic")
+              {
+                symmetry_group = SymmetryGroup::triclinic;
+              }
+            else if (temp_symmetry_group == "orthorhombic")
+              {
+                symmetry_group = SymmetryGroup::orthorhombic;
+              }
+            else
+              {
+                AssertThrow(false,
+                            ExcMessage("The symmetry group of the orientations to average must be one of the following: "
+                                       "triclinic, orthorhombic"));
+              }
+
+            AssertThrow( prm.get("Base interpolation scheme") != "quaternion average",
+                         ExcMessage("You may not use the ``quaternion average'' interpolator for averaging objects other than quaternions.") );
+
+            // // create the base model // //
+            // it will get a chance to read its parameters below
+            // and initialize its SimulatorAccess base class after we leave the current section
+            base_interpolator = create_particle_interpolator<dim>(prm.get("Base interpolation scheme"));
+            if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(base_interpolator.get()))
+              sim->initialize_simulator (this->get_simulator());
+
+            base_interpolator -> set_particle_manager_index(this->get_particle_manager_index());
+
+            // // get quaternion data position and number of minerals // //
+            const auto &particle_property_manager = this->get_particle_manager(this->get_particle_manager_index()).get_property_manager();
+            const auto &particle_property_information = particle_property_manager.get_data_info();
+
+            std::vector<std::string> active_plugin_names = particle_property_information.get_property_names();
+            // remove this in case you want to average another rotation-based particle property
+            AssertThrow(particle_property_manager.plugin_name_exists("crystal preferred orientation"),
+                        ExcMessage("No crystal preferred orientation property plugin found."));
+            AssertThrow(particle_property_manager.plugin_name_exists("cpo bingham average"),
+                        ExcMessage("No cpo bingham average property plugin found."));
+
+            const auto &cpo_particle_property = particle_property_manager.template get_matching_active_plugin<Particle::Property::CrystalPreferredOrientation<dim>>();
+            n_minerals = cpo_particle_property.get_number_of_minerals();
+            quaternion_data_pos.resize(n_minerals);
+
+            const unsigned int n_property_components = particle_property_information.n_components();
+
+            std::vector<bool> components_not_quaternions (n_property_components, true);
+
+            for (unsigned int mineral_i = 0; mineral_i < n_minerals; ++mineral_i)
+              {
+                AssertThrow(particle_property_manager.get_data_info().fieldname_exists("cpo mineral " + std::to_string(mineral_i) + " q.n"), ExcMessage("Quaternions must be a particle property.\nThe output rotation in the Bingham average subsection must be set to quaternion."));
+
+                quaternion_data_pos[mineral_i] = particle_property_manager.get_data_info().get_position_by_field_name("cpo mineral " + std::to_string(mineral_i) + " q.w");
+
+                for (unsigned int j=0; j<4; j++)
+                  components_not_quaternions[quaternion_data_pos[mineral_i]+j] = false;
+              }
+            not_quaternion_properties = ComponentMask(components_not_quaternions);
+          }
+          prm.leave_subsection();
+        }
+        prm.leave_subsection();
+
+        base_interpolator -> parse_parameters(prm);
+        base_interpolator -> initialize();
+
+      }
+
+
+      template <int dim>
+      std::array<double,4>
+      QuaternionAverage<dim>::markley_average(const std::vector<std::array<double,4>> &quat_array, const std::vector<double> &weights) const
+      {
+        AssertThrow(quat_array.size()==weights.size(), ExcMessage("unequal length of quaternion array and weight array "));
+
+        // use LAPACK to compute eigenvalues and eigenvectors of a 4x4 real symmetric matrix
+        LAPACKFullMatrix<double> K(4,4);
+
+        for (unsigned int n=0; n < quat_array.size(); n++)
+          {
+            for (unsigned int i1=0; i1<4; i1++)
+              {
+                for (unsigned int i2 =0; i2<i1+1; i2++)
+                  {
+                    K(i1,i2) += quat_array[n][i1]*quat_array[n][i2]*weights[n];
+                    if ((n == quat_array.size()-1) && (i1 !=i2)) K(i2,i1) = K(i1,i2);
+                  }
+              }
+          }
+
+        // ensures matrix is traceless i.e. all eigenvalues add up to 0
+        K *= 4.0;
+        for (unsigned int j=0; j<4; j++) K(j,j) -= 1;
+
+        Vector<double> eigenvalues;
+        FullMatrix<double> eigenvectors;
+
+        // only pick eigenvalues larger or equal to 0 --> reduce search space
+        // the maximum eigenvalue has to be >= 0 since the eigenvalues add up to one
+        K.compute_eigenvalues_symmetric(-1e-12, std::numeric_limits<double>::infinity(), 0, eigenvalues, eigenvectors);
+
+        unsigned int last_idx = eigenvalues.size()-1;
+
+        // stay in positive quaternion half space
+        if (eigenvectors(0, last_idx) < 0)
+          return {{-eigenvectors(0,last_idx),-eigenvectors(1,last_idx),-eigenvectors(2,last_idx),-eigenvectors(3,last_idx)}};
+        else
+          return {{ eigenvectors(0,last_idx), eigenvectors(1,last_idx), eigenvectors(2,last_idx), eigenvectors(3,last_idx)}};
+      }
+
+
+      // template <int dim>
+      // double
+      // QuaternionAverage<dim>::SO3_geodesic(const std::array<double,4> &quaternion1, const std::array<double,4> &quaternion2) const
+      // {
+      //   double inner_product = 0;
+      //   for (unsigned int j=0; j<4; j++) inner_product += quaternion1[j]*quaternion2[j];
+
+      //   return 2*std::acos(std::min(std::abs(inner_product),1.0));
+      // }
+
+      template <int dim>
+      double
+      QuaternionAverage<dim>::SO3_euclidean_metric(const std::array<double,4> &quaternion1, const std::array<double,4> &quaternion2) const
+      {
+        double inner_product = 0.0;
+        for (unsigned int j=0; j<4; j++) inner_product += quaternion1[j]*quaternion2[j];
+
+        return 2*std::sqrt( 2*(1 - std::min(inner_product*inner_product, 1.0)) );
+      }
+
+      template <int dim>
+      double
+      QuaternionAverage<dim>::objective_function(const std::array<double,4> &mean_quat, const std::vector<std::array<double,4>> &quat_array, const std::vector<double> &weights) const
+      {
+        double objective_fct = 0.;
+        for (unsigned int j=0; j<quat_array.size(); j++)
+          {
+            objective_fct += weights[j]*Utilities::fixed_power<2>(SO3_euclidean_metric(quat_array[j],mean_quat));
+          }
+        return objective_fct;
+      }
+
+      template <int dim>
+      std::array<double,4>
+      QuaternionAverage<dim>::to_fundamental_zone(const std::array<double,4> &quaternion, const std::array<double,4> &reference_quaternion) const
+      {
+        std::vector<std::array<double,4>> possible_mutations;
+
+        // q_i = q*g_i are the equivalent representations of one crystal orientation
+        // where g_i are the elements of the selected symmetry group G_cr
+        switch (symmetry_group)
+          {
+            case SymmetryGroup::orthorhombic:
+            {
+              // for orthorhombic symmetry gi = {+/-1, +/-i, +/-j, +/-k }
+              // +/- are the same rotation and have the same metric distance
+              possible_mutations.push_back(quaternion);
+              possible_mutations.push_back({{-quaternion[1], quaternion[0], quaternion[3],-quaternion[2]}});
+              possible_mutations.push_back({{-quaternion[2],-quaternion[3], quaternion[0], quaternion[1]}});
+              possible_mutations.push_back({{-quaternion[3], quaternion[2],-quaternion[1], quaternion[0]}});
+              break;
+            }
+            default:
+              AssertThrow(false, ExcMessage("not a valid symmetry group or not yet implemented"));
+          }
+
+        // find minimal metric distance representation
+        unsigned int min_idx = 0;
+        double metric;
+        double min_metric = 3; // max euclidean metric is ~2.83
+        for (unsigned int j=0; j < possible_mutations.size(); j++)
+          {
+            metric = SO3_euclidean_metric(possible_mutations[j], reference_quaternion);
+            if ((metric < min_metric))
+              {
+                min_idx = j;
+                min_metric = metric;
+              }
+          }
+
+        // corresponding to one optimal permutation
+        std::array<double, 4> closest_quaternion = possible_mutations[min_idx];
+
+        // remain in halfspace where q[0] > 0
+        if (closest_quaternion[0] < 0)
+          closest_quaternion = {{
+              -closest_quaternion[0], -closest_quaternion[1],
+              -closest_quaternion[2], -closest_quaternion[3]
+            }
+          };
+
+        return closest_quaternion;
+      }
+
+      template <int dim>
+      void
+      QuaternionAverage<dim>::set_symmetry_group(const SymmetryGroup group)
+      {
+        symmetry_group = group;
+      };
+
+      template <int dim>
+      std::array<double,4>
+      QuaternionAverage<dim>::symmetry_average(const std::vector<std::array<double,4>> &quat_array, const std::vector<double> &weights) const
+      {
+        const unsigned int n_particles = quat_array.size();
+        // craft an initial guess
+        // avoid getting stuck in a non-optimal solution for a small number of particles
+        std::array<double,4> quat_mean = markley_average(quat_array, weights);
+
+        // find the maximal euclidean distance from the initial mean
+        // std::array<double,4> sym_quat;
+        // unsigned int max_idx = 0;
+        // double metric; double max_metric = 0.0;
+        // for (unsigned int j=0; j<n_particles; j++)
+        //   {
+        //     sym_quat = to_fundamental_zone(quat_array[j], quat_mean);
+        //     metric = SO3_euclidean_metric(sym_quat, quat_mean);
+        //     if (metric > max_metric)
+        //       {
+        //         max_idx = j;
+        //         max_metric = metric;
+        //       }
+        //     }
+
+        // find minimal objective among all rotations
+        std::vector<std::vector<double>> distances(n_particles, std::vector<double>(n_particles));
+        double min_obj = 3;
+        double obj;
+        unsigned int min_idx = 0;
+        std::array<double,4> quat_sym;
+        for (unsigned int i=0; i<n_particles; i++)
+          {
+            obj = 0.0;
+            for (unsigned int j=i+1; j<n_particles; j++)
+              {
+                // only compute metrics in upper half triangle without diagonal
+                quat_sym = to_fundamental_zone(quat_array[j], quat_array[i]);
+                distances[i][j] = SO3_euclidean_metric(quat_sym, quat_array[i]);
+                distances[j][i] = distances[i][j]; // fill lower half
+                obj += weights[j]*Utilities::fixed_power<2>(distances[i][j]);
+              }
+            for (unsigned int j=0; j<i; j++) // sum over lower half triangle
+              obj += weights[j]*Utilities::fixed_power<2>(distances[i][j]);
+            if (obj < min_obj)
+              {
+                min_idx = i;
+                min_obj = obj;
+              }
+          }
+
+        std::array<double,4> quat_0 = quat_array[min_idx];
+
+        // initializing loop variables to be optimized
+        double objective = objective_function(quat_mean, quat_array, weights);
+        double new_objective = objective;
+        std::vector<std::array<double,4>> symmetrized_quat_array(n_particles);
+
+        // combinatoric optimization problem
+        unsigned int max_iterations = 50;
+        for (unsigned int n=0; n<max_iterations; n++)
+          {
+            // send all quaternions into fundamental zone of guess/mean
+            for (unsigned int j=0; j<n_particles; j++)
+              symmetrized_quat_array[j] = to_fundamental_zone(quat_array[j], quat_0);
+
+            // standard average in SO(3)
+            quat_mean = markley_average(symmetrized_quat_array, weights);
+
+            // compute objective function
+            new_objective = objective_function(quat_mean, symmetrized_quat_array, weights);
+
+            // iterate as long as objective function decreases
+            if (objective > new_objective)
+              {
+                objective = new_objective;
+                quat_0 = quat_mean;
+              }
+            else return quat_0;
+            AssertThrow(n!=max_iterations-1, ExcMessage("maximum number of iterations reached in quaternion average aborting"));
+          }
+        // we should never reach this point, but just in case so nothing breaks
+        return {{1.,0.,0.,0.}};
+      }
+
+    }
+  }
+}
+
+
+// explicit instantiations
+namespace aspect
+{
+  namespace Particle
+  {
+    namespace Interpolator
+    {
+      ASPECT_REGISTER_PARTICLE_INTERPOLATOR(QuaternionAverage,
+                                            "quaternion average",
+                                            "Return an average rotation represented by quaternions, with the option to take into account a crystal symmetry group. "
+                                            "All other properties are averaged with a base interpolation scheme.")
+    }
+  }
+}

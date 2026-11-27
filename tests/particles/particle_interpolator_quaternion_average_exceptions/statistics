@@ -1,0 +1,27 @@
+# 1: Time step number
+# 2: Time (seconds)
+# 3: Time step size (seconds)
+# 4: Number of mesh cells
+# 5: Number of Stokes degrees of freedom
+# 6: Number of temperature degrees of freedom
+# 7: Number of degrees of freedom for all compositions
+# 8: Iterations for temperature solver
+# 9: Iterations for composition solver 2
+# 10: Iterations for Stokes solver
+# 11: Velocity iterations in Stokes preconditioner
+# 12: Schur complement iterations in Stokes preconditioner
+# 13: Visualization file name
+# 14: Number of advected particles
+# 15: Particle file name
+# 16: Particle CPO file name
+# 17: Minimal value for composition qx
+# 18: Maximal value for composition qx
+# 19: Global mass for composition qx
+# 20: Minimal value for composition water
+# 21: Maximal value for composition water
+# 22: Global mass for composition water
+0 0.000000000000e+00 0.000000000000e+00 16 187 81 32 0 0 7 8 8 output-particle_interpolator_quaternion_average_exceptions/solution/solution-00000  96 output-particle_interpolator_quaternion_average_exceptions/particles/particles-00000 output-particle_interpolator_quaternion_average_exceptions/particles_cpo/CPO-00000 -8.58747707e-01 9.05924860e-01 -5.76022166e-02 0.00000000e+00 0.00000000e+00 0.00000000e+00 
+1 4.928213475947e-02 4.928213475947e-02 16 187 81 32 9 0 6 7 7                                                                                 "" 103                                                                                   ""                                                                                 "" -6.44644935e-01 7.79401775e-01  4.37552079e-02 0.00000000e+00 0.00000000e+00 0.00000000e+00 
+2 5.659613817162e-02 7.314003412149e-03 16 187 81 32 7 0 6 7 7                                                                                 "" 103                                                                                   ""                                                                                 "" -8.72706670e-01 8.18237979e-01  3.64509370e-02 0.00000000e+00 0.00000000e+00 0.00000000e+00 
+3 5.964363580768e-02 3.047497636062e-03 16 187 81 32 6 0 6 7 7                                                                                 "" 105                                                                                   ""                                                                                 "" -8.43330499e-01 8.73261046e-01  7.17529513e-03 0.00000000e+00 0.00000000e+00 0.00000000e+00 
+4 6.000000000000e-02 3.563641923216e-04 16 187 81 32 4 0 5 6 6                                                                                 "" 105                                                                                   "" output-particle_interpolator_quaternion_average_exceptions/particles_cpo/CPO-00001 -6.98171150e-01 7.92816970e-01  1.51678206e-02 0.00000000e+00 0.00000000e+00 0.00000000e+00 

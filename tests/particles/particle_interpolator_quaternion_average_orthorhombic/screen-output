@@ -1,0 +1,56 @@
+
+Number of active cells: 16 (on 3 levels)
+Number of degrees of freedom: 429 (162+25+81+16+16+16+16+81+16)
+
+*** Timestep 0:  t=0 seconds, dt=0 seconds
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+   Solving Stokes system (GMG)... 7+0 iterations.
+
+   Postprocessing:
+     Writing graphical output:    output-particle_interpolator_quaternion_average_orthorhombic/solution/solution-00000
+     Writing particle output:     output-particle_interpolator_quaternion_average_orthorhombic/particles/particles-00000
+     Writing particle cpo output: output-particle_interpolator_quaternion_average_orthorhombic/particles_cpo/CPO-00000
+     Compositions min/max/mass:   0.02941/0.9773/0.5141 // -0.6501/0.8679/0.147 // -0.805/0.7684/-0.00676 // -0.5057/0.5889/0.01768 // 0.4596/0.7993/0.5942 // 0/0/0
+
+*** Timestep 1:  t=0.0492821 seconds, dt=0.0492821 seconds
+   Solving temperature system... 9 iterations.
+   Advecting particles...  done.
+   Solving Stokes system (GMG)... 6+0 iterations.
+
+   Postprocessing:
+     Number of advected particles: 103
+     Compositions min/max/mass:    0.02242/0.9829/0.5952 // -0.9432/0.8206/0.09282 // -0.8083/0.5861/-0.2481 // -0.3426/0.2393/-0.007452 // 0.4715/0.7374/0.5942 // 0/0/0
+
+*** Timestep 2:  t=0.0565961 seconds, dt=0.007314 seconds
+   Solving temperature system... 7 iterations.
+   Advecting particles...  done.
+   Solving Stokes system (GMG)... 6+0 iterations.
+
+   Postprocessing:
+     Number of advected particles: 103
+     Compositions min/max/mass:    0.0335/0.9061/0.416 // -0.8604/0.9056/0.1009 // -0.7039/0.7494/-0.07541 // -0.7057/0.6095/0.0565 // 0.4284/0.8111/0.586 // 0/0/0
+
+*** Timestep 3:  t=0.0596436 seconds, dt=0.0030475 seconds
+   Solving temperature system... 6 iterations.
+   Advecting particles...  done.
+   Solving Stokes system (GMG)... 6+0 iterations.
+
+   Postprocessing:
+     Number of advected particles: 105
+     Compositions min/max/mass:    0.05331/0.9898/0.4664 // -0.858/0.8065/-0.1064 // -0.8005/0.8454/-0.2056 // -0.6185/0.252/-0.07931 // 0.4176/0.8527/0.6072 // 0/0/0
+
+*** Timestep 4:  t=0.06 seconds, dt=0.000356364 seconds
+   Solving temperature system... 4 iterations.
+   Advecting particles...  done.
+   Solving Stokes system (GMG)... 5+0 iterations.
+
+   Postprocessing:
+     Number of advected particles: 105
+     Writing particle cpo output:  output-particle_interpolator_quaternion_average_orthorhombic/particles_cpo/CPO-00001
+     Compositions min/max/mass:    0.06925/0.9756/0.5765 // -0.7296/0.8581/0.02224 // -0.7346/0.7528/-0.01231 // -0.1811/0.6018/0.09826 // 0.484/0.7676/0.6342 // 0/0/0
+
+Termination requested by criterion: end time
+
+
+
