@@ -1,0 +1,5 @@
+Added: The FastScape mesh deformation plugin can now optionally write a
+full-precision snapshot of the grid, state variables, velocities, and
+erosional parameters passed from ASPECT immediately before FastScape executes.
+<br>
+(Haoyuan Li, 2026/10/10)
