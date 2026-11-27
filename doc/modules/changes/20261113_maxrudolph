@@ -1,0 +1,6 @@
+Changed: The documentation of the 'visco plastic' material model now
+describes the Frank-Kamenetskii and 'minimum diffusion dislocation'
+viscous flow laws, and several outdated or incorrect statements in it
+have been fixed.
+<br>
+(Max Rudolph, 2026/11/13)
