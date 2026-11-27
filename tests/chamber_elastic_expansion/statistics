@@ -1,0 +1,23 @@
+# 1: Time step number
+# 2: Time (years)
+# 3: Time step size (years)
+# 4: Number of mesh cells
+# 5: Number of Stokes degrees of freedom
+# 6: Number of temperature degrees of freedom
+# 7: Number of degrees of freedom for all compositions
+# 8: Number of nonlinear iterations
+# 9: Iterations for temperature solver
+# 10: Iterations for composition solver 1
+# 11: Iterations for composition solver 2
+# 12: Iterations for Stokes solver
+# 13: Velocity iterations in Stokes preconditioner
+# 14: Schur complement iterations in Stokes preconditioner
+# 15: RMS velocity (m/year)
+# 16: Max. velocity (m/year)
+# 17: Minimal temperature (K)
+# 18: Average temperature (K)
+# 19: Maximal temperature (K)
+# 20: Visualization file name
+# 21: Surface visualization file name
+0 0.000000000000e+00 0.000000000000e+00 16 187 25 1152 1 0 0 0  0  0  0 0.00000000e+00 0.00000000e+00 2.93000000e+02 2.93000000e+02 2.93000000e+02 output-chamber_elastic_expansion/solution/solution-00000 output-chamber_elastic_expansion/solution_surface/solution_surface-00000 
+1 1.000000000000e+00 1.000000000000e+00 16 187 25 1152 4 5 0 3 14 14 14 3.64476309e-02 7.44814090e-02 2.78630133e+02 2.98274021e+02 3.73614585e+02 output-chamber_elastic_expansion/solution/solution-00001 output-chamber_elastic_expansion/solution_surface/solution_surface-00001 
