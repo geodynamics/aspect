@@ -1,0 +1,17 @@
+
+Number of active cells: 135 (on 1 levels)
+Number of degrees of freedom: 1,927 (1,178+160+589)
+
+*** Timestep 0:  t=0 years, dt=0 years
+   Solving temperature system... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 12+0 iterations.
+
+   Postprocessing:
+     RMS, max velocity:       0.367 m/year, 1.2 m/year
+     Temperature min/avg/max: 300 K, 300 K, 300 K
+
+Termination requested by criterion: end time
+
+
+

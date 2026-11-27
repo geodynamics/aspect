@@ -1,0 +1,59 @@
+# Enable if: ASPECT_WITH_WORLD_BUILDER
+# Verify that WorldBuilder indicators select prescribed velocity, temperature,
+# and composition values that are also queried from WorldBuilder.
+
+set Dimension                    = 2
+set End time                     = 0
+set Use years instead of seconds = true
+set World builder file           = $ASPECT_SOURCE_DIR/tests/prescribed_solution_world_builder.wb
+
+subsection Geometry model
+  set Model name = box
+  subsection Box
+    set X extent = 1000e3
+    set Y extent = 200e3
+  end
+end
+
+subsection Mesh refinement
+  set Initial global refinement = 2
+end
+
+subsection Initial temperature model
+  set List of model names = function
+  subsection Function
+    set Function expression = 300
+  end
+end
+
+subsection Initial composition model
+  set List of model names = function
+  subsection Function
+    set Function expression = 0
+  end
+end
+
+subsection Compositional fields
+  set Number of fields = 1
+  set Names of fields  = crust
+end
+
+subsection Prescribed solution
+  set List of model names = world builder
+end
+
+subsection Boundary velocity model
+  set Tangential velocity boundary indicators = left, right, bottom, top
+end
+
+subsection Gravity model
+  set Model name = vertical
+end
+
+subsection Material model
+  set Model name = simple
+end
+
+subsection Postprocess
+  set List of postprocessors = velocity statistics, temperature statistics, composition statistics
+end
