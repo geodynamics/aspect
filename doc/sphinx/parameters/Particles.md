@@ -159,7 +159,7 @@ The following properties are available:
 
 **Pattern:** [Integer range 0...2147483647 (inclusive)]
 
-**Documentation:** Upper limit for particle number per cell. This limit is useful for adaptive meshes to prevent coarse cells from slowing down the whole model. It will be checked and enforced after mesh refinement, after MPI transfer of particles and after particle movement. If there are `n\_number\_of\_particles` $>$ `max\_particles\_per\_cell` particles in one cell then `n\_number\_of\_particles` - `max\_particles\_per\_cell` particles in this cell are randomly chosen and destroyed.
+**Documentation:** Upper limit for particle number per cell. This limit is useful for adaptive meshes to prevent coarse cells from slowing down the whole model. It will be checked and enforced after mesh refinement, after MPI transfer of particles and after particle movement, but only if the load balancing strategy includes removing particles. If there are `n\_number\_of\_particles` $>$ `max\_particles\_per\_cell` particles in one cell then `n\_number\_of\_particles` - `max\_particles\_per\_cell` particles in this cell are randomly chosen and destroyed.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Minimum particles per cell<parameters:Particles/Minimum_20particles_20per_20cell>`
@@ -168,7 +168,7 @@ The following properties are available:
 
 **Pattern:** [Integer range 0...2147483647 (inclusive)]
 
-**Documentation:** Lower limit for particle number per cell. This limit is useful for adaptive meshes to prevent fine cells from being empty of particles. It will be checked and enforced after mesh refinement and after particle movement. If there are `n\_number\_of\_particles` $<$ `min\_particles\_per\_cell` particles in one cell then `min\_particles\_per\_cell` - `n\_number\_of\_particles` particles are generated and randomly placed in this cell. If the particles carry properties the individual property plugins control how the properties of the new particles are initialized.
+**Documentation:** Lower limit for particle number per cell. This limit is useful for adaptive meshes to prevent fine cells from being empty of particles. It will be checked and enforced after mesh refinement and after particle movement, but only if the load balancing strategy includes adding particles. If there are `n\_number\_of\_particles` $<$ `min\_particles\_per\_cell` particles in one cell then `min\_particles\_per\_cell` - `n\_number\_of\_particles` particles are generated and randomly placed in this cell. If the particles carry properties the individual property plugins control how the properties of the new particles are initialized.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Number of particle systems<parameters:Particles/Number_20of_20particle_20systems>`
@@ -219,6 +219,17 @@ The following properties are available:
 &lsquo;uniform box&rsquo;: Generate a uniform distribution of particles over a rectangular domain in 2d or 3d. Uniform here means the particles will be generated with an equal spacing in each spatial dimension. Note that in order to produce a regular distribution the number of generated particles might not exactly match the one specified in the input file.
 
 &lsquo;uniform radial&rsquo;: Generate a uniform distribution of particles over a spherical domain in 2d or 3d. Uniform here means the particles will be generated with an equal spacing in each spherical spatial dimension, i.e., the particles are created at positions that increase linearly with equal spacing in radius, colatitude and longitude around a certain center point. Note that in order to produce a regular distribution the number of generated particles might not exactly match the one specified in the input file.
+::::
+
+::::{dropdown} __Parameter:__ {ref}`Particle population name<parameters:Particles/Particle_20population_20name>`
+:name: parameters:Particles/Particle_20population_20name
+**Default value:** constant
+
+**Pattern:** [Selection constant ]
+
+**Documentation:** Select one of the following models:
+
+&lsquo;constant&rsquo;: Prescribes a constant minimum and maximum number of particles allowed in each cell. The corresponding input parameters are read from the general &ldquo;Particles/&rdquo; section in the input file. Minimum and maximum particle counts are only enforced if particles are added or removed as part of the particle load balancing.
 ::::
 
 ::::{dropdown} __Parameter:__ {ref}`Particle removal algorithm<parameters:Particles/Particle_20removal_20algorithm>`
