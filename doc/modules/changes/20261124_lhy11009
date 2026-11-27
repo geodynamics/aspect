@@ -1,0 +1,5 @@
+Fixed: In fixed-step operator splitting, each reaction substep now bounds
+reaction-progress compositional fields to [0, 1] and accumulates only the
+increment actually applied.
+<br>
+(Haoyuan Li, 2026/11/24)

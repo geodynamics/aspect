@@ -14,6 +14,7 @@
 
 #include "catch.hpp"
 #include "common.h"
+#include <aspect/simulator/reaction_progress.h>
 #include <aspect/utilities.h>
 
 TEST_CASE("Utilities::ScratchSpace")
@@ -740,4 +741,23 @@ TEST_CASE("Rotate Kelvin Tensor")
         }
     }
 
+}
+
+TEST_CASE("Fixed-step reaction progress update")
+{
+  const auto check_update = [](double value,
+                               const double proposed_increment,
+                               const double expected_value,
+                               const double expected_increment)
+  {
+    const double applied_increment =
+      aspect::internal::apply_reaction_progress_increment(value, proposed_increment);
+    CHECK(value == Approx(expected_value));
+    CHECK(applied_increment == Approx(expected_increment));
+  };
+
+  check_update(0.9, 0.2, 1.0, 0.1);
+  check_update(0.1, -0.2, 0.0, -0.1);
+  check_update(1.0, 0.2, 1.0, 0.0);
+  check_update(0.4, 0.2, 0.6, 0.2);
 }
