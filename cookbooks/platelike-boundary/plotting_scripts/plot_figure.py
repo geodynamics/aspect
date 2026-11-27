@@ -9,39 +9,36 @@
 
 import numpy as np
 import pyvista as pv
+import matplotlib.pyplot as plt
 from cmcrameri import cm  # Fabio Crameri's color maps
+
+from aspect_pyvista import render_mesh_2d
 
 pv.set_plot_theme("document")
 
 # inputs/config
-timestep = 178
-solution_file = f"../output-platelike-boundary/solution/solution-{timestep:05d}.pvtu"
-output_png    = f"../doc/temperature{timestep:05d}.png"
+timesteps = [0,6,19,31,51,178]
+output_combined = f"../doc/platelike.png"
+output_list = []
 
-# load the solution and compute the domain size used to fit the camera
-mesh = pv.read(solution_file)
-size = max(mesh.bounds[1] - mesh.bounds[0], mesh.bounds[3] - mesh.bounds[2])
+for timestep in timesteps:
+    solution_file = f"../output-platelike-boundary/solution/solution-{timestep:05d}.pvtu"
+    output_png    = f"../doc/temperature{timestep:05d}.png"
 
-# calculate median velocity for arrow scaling
-vel = mesh["velocity"]
-vmag = np.linalg.norm(vel, axis=1)
-median_v = float(np.median(vmag[vmag > 0])) if np.any(vmag > 0) else 1.0
-arrows = mesh.glyph(scale="velocity", factor=0.03 / median_v, orient="velocity", tolerance=0.04)
+    mesh = pv.read(solution_file)
+    img = render_mesh_2d(mesh,scalars="T",cmap=cm.vik,arrows_enabled=True,scalarbar_enable=False,arrows_normalize=mesh["velocity"],arrows_scale=0.02,x_title=" ",y_title=" ",bounds_enable=False)
+    output_list.append(img)
+    # Save the individual images
+    plt.imsave(output_png, img)
 
-# render the bare temperature field with velocity arrows (no scalar bar or axes)
-plotter = pv.Plotter(off_screen=True)
-plotter.window_size = (1024, 1024)
-plotter.set_background("white")
-plotter.add_mesh(mesh, scalars="T", cmap=cm.vik, lighting=False, show_scalar_bar=False)
-glyph_actor = plotter.add_mesh(arrows, color="white")
+# compose the six panels in a grid and save
+fig, axes = plt.subplots(2, 3, figsize=(14, 5))
+for ax, img, title in zip(axes.flat, [output_list[0], output_list[1], output_list[2], output_list[3], output_list[4], output_list[5]],
+                          ["","","","","",""]):
+    ax.imshow(img)
+    ax.set_axis_off()
+    ax.set_title(title, fontsize=24)
 
-# Setting use_bounds to false here allows the camera to cleanly crop out the arrows
-# when using plotter.camera.tight()
-glyph_actor.use_bounds = False
-
-# straight-down 2d camera; parallel_scale fits the render exactly onto the domain bounds
-plotter.camera_position = "xy"
-plotter.camera.tight(padding=0.0)
-
-plotter.screenshot(output_png)
-plotter.close()
+plt.tight_layout()
+plt.savefig(output_combined, dpi=180, bbox_inches="tight", facecolor="white")
+plt.close(fig)
