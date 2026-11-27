@@ -1,0 +1,13 @@
+# This test checks whether the melt particle transport benchmark runs
+# successfully, comparing solid and melt transport on particles and
+# finite element fields.
+# The end time and number of nonlinear iterations are reduced to reduce runtime.
+
+include $ASPECT_SOURCE_DIR/benchmarks/melt_particle_transport/melt_particle_transport.prm
+
+set End time = 3000
+set Max nonlinear iterations = 2
+
+subsection Mesh refinement
+  set Initial global refinement          = 3
+end
