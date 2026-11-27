@@ -64,15 +64,12 @@ namespace aspect
 
         for (unsigned int q = 0; q < n_quadrature_points; ++q)
           {
-            // Compressive stress is negative by the sign convention
-            // used by the engineering community, and as input and used
-            // internally by ASPECT.
-            // Here, we change the sign of the stress to match the
-            // sign convention used by the geoscience community.
-            // TODO Instead of first assembling the total stress
-            // and then taking the deviator, we could only assemble
-            // the deviatoric stress.
-            SymmetricTensor<2,dim> stress = in.pressure[q] * unit_symmetric_tensor<dim>();
+            // Assemble the deviatoric stress without the pressure, and
+            // compute its second invariant below. In 2d, the invariant
+            // accounts for the out-of-plane component of the deviatoric
+            // stress implied by plane strain. The sign convention of
+            // the stress does not matter for the invariant.
+            SymmetricTensor<2,dim> deviatoric_stress;
 
             // If elasticity is enabled, the deviatoric stress is stored
             // in compositional fields, otherwise the deviatoric stress
@@ -83,9 +80,9 @@ namespace aspect
                 const std::shared_ptr<const MaterialModel::ElasticAdditionalOutputs<dim>> elastic_additional_out
                   = out.template get_additional_output_object<MaterialModel::ElasticAdditionalOutputs<dim>>();
 
-                Assert(elastic_additional_out != nullptr, ExcMessage("Elastic Additional Outputs are needed for the 'principal stress' postprocessor, but they have not been created."));
+                Assert(elastic_additional_out != nullptr, ExcMessage("Elastic Additional Outputs are needed for the 'stress second invariant' postprocessor, but they have not been created."));
 
-                stress -= elastic_additional_out->deviatoric_stress[q];
+                deviatoric_stress = elastic_additional_out->deviatoric_stress[q];
               }
             else
               {
@@ -98,12 +95,8 @@ namespace aspect
                      strain_rate);
 
                 const double eta = out.viscosities[q];
-                stress -= 2. * eta * deviatoric_strain_rate;
+                deviatoric_stress = 2. * eta * deviatoric_strain_rate;
               }
-
-            // Compute the deviatoric stress tensor after elastic stresses were added.
-            const SymmetricTensor<2, dim> deviatoric_stress = Utilities::Tensors::consistent_deviator(stress);
-
 
             // Compute the second moment invariant of the deviatoric stress
             // in the same way as the second moment invariant of the deviatoric

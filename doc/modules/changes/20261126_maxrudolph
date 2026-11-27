@@ -1,0 +1,8 @@
+Fixed: The 'stress second invariant' visualization postprocessor
+included part of the pressure in 2d models. Since #6471 it took the
+plane-strain consistent deviator (trace/3) of the total stress, which
+in 2d lacks the out-of-plane component sigma_zz = p, so the output was
+sqrt(tau_II^2 + p^2/3) instead of tau_II. It now computes the invariant
+from the deviatoric stress only. Results in 3d are unchanged.
+<br>
+(Max Rudolph, 2026/11/26)
