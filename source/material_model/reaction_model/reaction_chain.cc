@@ -169,9 +169,8 @@ namespace aspect
         prm.enter_subsection("Reaction chain");
         {
           prm.declare_entry("Kinetic models",
-                            "Interface controlled growth",
-                            Patterns::List(Patterns::Selection(ReactionModelPluginList<dim>::get_pattern_of_names()),
-                                           1, Patterns::List::max_int_value, "|"),
+                            "",
+                            Patterns::List(Patterns::Anything()),
                             "'|'-separated list of registered reaction kinetics model names, one per reaction in the chain. The number of entries "
                             "sets the number of reactions N, which must equal the number of compositional fields tracking reaction progress.");
 

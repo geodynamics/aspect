@@ -1,0 +1,15 @@
+
+
+
+Exception 'ExcMessage("The number of reactions configured in 'Reaction chain/Kinetic models' must match " "the number of reaction progress compositional fields.")' on rank 0 on processing:
+
+An error occurred in file <visco_plastic.cc> in function
+(line in output replaced by default.sh script)
+The violated condition was:
+    reaction_chain.n_reactions() == n_reaction_progress_fields
+Additional information:
+    The number of reactions configured in 'Reaction chain/Kinetic models'
+    must match the number of reaction progress compositional fields.
+
+Stacktrace:
+(rest of the output replaced by default.sh script)
