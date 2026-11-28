@@ -1,0 +1,32 @@
+# Zero-displacement baseline for the boundary topography contributions of
+# the 'gravity point values' postprocessor. The setup is the one of the
+# 'geoid' test, but without the degree 2 density perturbation, so the
+# density is uniform and there is no flow. Switching on the surface and
+# bottom topography contributions must then leave the gravity unchanged:
+# the topography columns (30-35) and the gravity anomaly vanish up to the
+# discretization error of the dynamic topography on this coarse mesh,
+# which is about four orders of magnitude smaller than the contributions
+# in the 'gravity_point_values_dynamic_topography' test, and the gravity
+# matches the analytical value of a uniform shell.
+
+include $ASPECT_SOURCE_DIR/tests/geoid.prm
+
+subsection Initial temperature model
+  subsection Function
+    set Function expression = 0
+  end
+end
+
+subsection Postprocess
+  set List of postprocessors = basic statistics, dynamic topography, gravity calculation
+
+  subsection Gravity calculation
+    set Sampling scheme                         = list of points
+    set List of radius                          = 450000
+    set List of longitude                       = 0, 0, 0, 0, 0
+    set List of latitude                        = 90, 45, 0, -45, -90
+    set Reference density                       = 1.0
+    set Include surface topography contribution = true
+    set Include bottom topography contribution  = true
+  end
+end

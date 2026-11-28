@@ -1,0 +1,11 @@
+New: The 'gravity calculation' postprocessor can now include the
+gravitational contribution of the mass associated with the dynamic
+topography of the top and bottom boundaries. The topography is taken from
+the 'dynamic topography' postprocessor and treated as a thin sheet of mass,
+which makes it possible to compute complete gravity anomalies for models
+with free-slip boundaries, including regional chunk models. The new
+parameters are 'Include surface topography contribution' and 'Include
+bottom topography contribution'. These options are currently restricted
+to incompressible models.
+<br>
+(Bernard Che Ngu, 2026/10/23)

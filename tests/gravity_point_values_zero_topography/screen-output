@@ -1,0 +1,36 @@
+
+Number of active cells: 768 (on 2 levels)
+Number of degrees of freedom: 28,690 (20,790+970+6,930)
+
+*** Timestep 0:  t=0 years, dt=0 years
+   Solving Stokes system (GMG)... 34+0 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 0.00200479
+
+   Solving Stokes system (GMG)... 0+0 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 2: 6.45744e-11
+
+
+   Postprocessing:
+
+     Model domain depth (m):                        200000
+     Temperature contrast across model domain (K):  0
+     Reference depth (m):                           0
+     Reference temperature (K):                     0
+     Reference pressure (Pa):                       0
+     Reference gravity (m/s^2):                     9.8
+     Reference density (kg/m^3):                    1
+     Reference thermal expansion coefficient (1/K): 0.1
+     Reference specific heat capacity (J/(K*kg)):   1
+     Reference thermal conductivity (W/(m*K)):      1
+     Reference viscosity (Pa*s):                    1
+     Reference thermal diffusivity (m^2/s):         1
+     Rayleigh number:                               0
+
+     Pressure at top/bottom of domain: 2.955e-10 Pa, 1.96e+06 Pa
+     Computing dynamic topography      
+     Writing gravity output:           output-gravity_point_values_zero_topography/gravity_point_values/gravity-00000
+
+Termination requested by criterion: end time
+
+
+

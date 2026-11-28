@@ -24,6 +24,47 @@ namespace aspect
 {
   namespace Postprocess
   {
+    namespace internal
+    {
+      /**
+       * Compute the surface mass density of a deflected boundary that is
+       * represented as a thin sheet of mass located at the undeformed
+       * boundary. Following the convention of the 'dynamic topography' and
+       * 'geoid' postprocessors, the topography $h$ is positive upward and
+       * the surface mass density is $\sigma = (\rho_{below} - \rho_{above}) h$,
+       * where $\rho_{below}$ and $\rho_{above}$ are the densities directly
+       * below and above the boundary:
+       * - at the top boundary, $\rho_{below}$ is the density of the model at
+       *   the boundary and $\rho_{above}$ is the 'Density above' parameter of
+       *   the 'dynamic topography' postprocessor;
+       * - at the bottom boundary, $\rho_{below}$ is the 'Density below'
+       *   parameter of the 'dynamic topography' postprocessor and
+       *   $\rho_{above}$ is the density of the model at the boundary.
+       *
+       * Keeping this definition in one place ensures that all postprocessors
+       * that need the mass of the boundary topography use the same density
+       * contrasts and sign convention.
+       *
+       * @param top_boundary Whether the points lie on the top (true) or the
+       * bottom (false) boundary.
+       * @param model_densities The density of the model at the boundary
+       * points.
+       * @param topography The topography $h$ at the same points.
+       * @param density_above The 'Density above' parameter of the 'dynamic
+       * topography' postprocessor.
+       * @param density_below The 'Density below' parameter of the 'dynamic
+       * topography' postprocessor.
+       * @param surface_mass_density The surface mass density $\sigma$ at the
+       * same points. Must have the same size as @p model_densities.
+       */
+      void
+      compute_surface_mass_density (const bool top_boundary,
+                                    const std::vector<double> &model_densities,
+                                    const std::vector<double> &topography,
+                                    const double density_above,
+                                    const double density_below,
+                                    std::vector<double> &surface_mass_density);
+    }
 
     /**
      * A postprocessor that computes gravity, gravity anomalies, gravity potential and
@@ -65,6 +106,15 @@ namespace aspect
          * Specify the creation of gravity_point_values.txt.
          */
         std::pair<std::string,std::string> execute (TableHandler &) override;
+
+        /**
+         * If the contribution of the deflected surface or bottom boundary
+         * is requested, this postprocessor needs the topography computed
+         * by the 'dynamic topography' postprocessor. Let the postprocess
+         * manager know about this dependency.
+         */
+        std::list<std::string>
+        required_other_postprocessors () const override;
 
         /**
          * Declare the parameters this class takes through input files.
@@ -250,6 +300,40 @@ namespace aspect
          * This variable is read from the parameter file through a parameter called 'Reference density'.
          */
         double reference_density;
+
+        /**
+         * Whether to include the gravitational contribution of the mass
+         * associated with the dynamic topography of the top (surface)
+         * boundary. The topography h is taken from the 'dynamic topography'
+         * postprocessor and is treated as a thin sheet of surface mass
+         * density (rho - rho_above) * h located at the boundary.
+         *
+         * This variable is read from the parameter file through a parameter
+         * called 'Include surface topography contribution'.
+         */
+        bool include_surface_topography;
+
+        /**
+         * Whether to include the gravitational contribution of the mass
+         * associated with the dynamic topography of the bottom boundary.
+         * The topography h is taken from the 'dynamic topography'
+         * postprocessor and is treated as a thin sheet of surface mass
+         * density (rho_below - rho) * h located at the boundary.
+         *
+         * This variable is read from the parameter file through a parameter
+         * called 'Include bottom topography contribution'.
+         */
+        bool include_bottom_topography;
+
+        /**
+         * Whether the top or bottom boundaries are deformed by the mesh
+         * deformation (e.g., free surface) plugins. If so, the mass
+         * associated with the boundary topography is already part of the
+         * volume integral over the deformed mesh, and the boundary
+         * contribution must not be added a second time.
+         */
+        bool surface_is_deformed;
+        bool bottom_is_deformed;
 
         /**
          * Specify the sampling scheme determining if gravity calculation is performed.

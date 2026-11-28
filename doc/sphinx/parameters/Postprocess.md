@@ -607,6 +607,24 @@ all|temperature|composition|adiabatic temperature|adiabatic pressure|adiabatic d
 
 (parameters:Postprocess/Gravity_20calculation)=
 ## **Subsection:** Postprocess / Gravity calculation
+::::{dropdown} __Parameter:__ {ref}`Include bottom topography contribution<parameters:Postprocess/Gravity_20calculation/Include_20bottom_20topography_20contribution>`
+:name: parameters:Postprocess/Gravity_20calculation/Include_20bottom_20topography_20contribution
+**Default value:** false
+
+**Pattern:** [Bool]
+
+**Documentation:** Whether to include the gravitational contribution of the mass associated with the dynamic topography of the bottom boundary. The topography is taken from the &rsquo;dynamic topography&rsquo; postprocessor, which is then automatically enabled, and is treated as a thin sheet of mass with surface density $(\rho_{below} - \rho) h$, where $\rho_{below}$ is the &rsquo;Density below&rsquo; parameter of the dynamic topography postprocessor. If the bottom boundary is deformed by a mesh deformation plugin, this contribution is already included through the deformed mesh and is not added again. As for the surface contribution, this option is currently only available for incompressible models.
+::::
+
+::::{dropdown} __Parameter:__ {ref}`Include surface topography contribution<parameters:Postprocess/Gravity_20calculation/Include_20surface_20topography_20contribution>`
+:name: parameters:Postprocess/Gravity_20calculation/Include_20surface_20topography_20contribution
+**Default value:** false
+
+**Pattern:** [Bool]
+
+**Documentation:** Whether to include the gravitational contribution of the mass associated with the dynamic topography of the top boundary. The topography is taken from the &rsquo;dynamic topography&rsquo; postprocessor, which is then automatically enabled, and is treated as a thin sheet of mass with surface density $(\rho - \rho_{above}) h$, where $\rho_{above}$ is the &rsquo;Density above&rsquo; parameter of the dynamic topography postprocessor. If the top boundary is deformed by a mesh deformation plugin (e.g., a free surface), this contribution is already included through the deformed mesh and is not added again. The contribution is added to the gravity, gravity anomaly, potential and gradients, and is also written as separate columns in the output file. Note that the gravitational acceleration of a mass sheet jumps by $4 \pi G \sigma$ across the sheet, so the acceleration should be evaluated at points above the surface rather than exactly on it; the potential is continuous. This option is currently only available for incompressible models. Supporting compressible models would require the volume integral and the density contrast across the boundary to use the same reference density, which is not implemented yet.
+::::
+
 ::::{dropdown} __Parameter:__ {ref}`List of latitude<parameters:Postprocess/Gravity_20calculation/List_20of_20latitude>`
 :name: parameters:Postprocess/Gravity_20calculation/List_20of_20latitude
 **Default value:**

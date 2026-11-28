@@ -1,0 +1,26 @@
+# Test the contribution of the surface and bottom dynamic topography to
+# the gravity computed by the 'gravity point values' postprocessor.
+# The model is the same as in the 'geoid' test: a degree 2, order 0
+# density perturbation in a 3d spherical shell with free-slip boundaries.
+# Gravity is evaluated above the surface (the topography is treated as a
+# mass sheet, whose gravitational acceleration is discontinuous across the
+# boundary) at the poles, at mid latitudes and at the equator, so that the
+# ratios of the interior, surface and bottom contributions can be compared
+# to the spherical harmonic coefficients computed by the 'geoid'
+# postprocessor.
+
+include $ASPECT_SOURCE_DIR/tests/geoid.prm
+
+subsection Postprocess
+  set List of postprocessors = basic statistics, geoid, dynamic topography, gravity calculation
+
+  subsection Gravity calculation
+    set Sampling scheme                         = list of points
+    set List of radius                          = 450000
+    set List of longitude                       = 0, 0, 0, 0, 0
+    set List of latitude                        = 90, 45, 0, -45, -90
+    set Reference density                       = 1.0
+    set Include surface topography contribution = true
+    set Include bottom topography contribution  = true
+  end
+end
